@@ -443,9 +443,9 @@ but never grow.
 
 ## Brand assets
 
-The animated banner, architecture diagram and loop diagram are hand-rolled SVG (CSS keyframes and
-SMIL, no JavaScript, no external fonts), so they render inside GitHub's image sandbox and respect
-`prefers-reduced-motion`. Regenerate them after editing the generator:
+The banner, architecture diagram and loop diagram are hand-rolled static SVG (no animation, no
+JavaScript, no external fonts), so they render identically everywhere and stay readable. The
+version on the banner is read from the package. Regenerate them after editing the generator:
 
 ```bash
 python tools/branding/generate_assets.py
