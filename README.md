@@ -162,6 +162,9 @@ print(model.gini)  # 0.0 at the start, about 0.6 after 100 ticks
 Three pieces, and nothing else: a **scenario** of inputs, **agents** that know one thing each,
 and a **model** that owns the world and advances it.
 
+Coming from Mesa? `python -m modelly.migrate your_model/` rewrites the imports and constructors
+and reports what to change by hand; the map is in `docs/migrating_from_mesa.md`.
+
 ## Record it, then look at it
 
 ```python
@@ -332,6 +335,7 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 | Where | What |
 |---|---|
 | **Use it in your project** | `docs/using_modelly_in_your_project.md`: install, layout, model, data, replications |
+| **Migrating from Mesa** | `docs/migrating_from_mesa.md`: construct-by-construct map, plus `python -m modelly.migrate` |
 | **Tutorials** | `docs/tutorials/`: 12 notebooks, from *your first model* to *hybrid ABM/DES* |
 | **Overview** | `docs/overview.md`: the object model, end to end |
 | **Performance audit** | `docs/performance.md`: measurements, what changed, what is next |

@@ -3,6 +3,22 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.1.0 - 2026-10-22
+
+### Added
+
+- `docs/migrating_from_mesa.md`: a construct-by-construct map from Mesa 2.x and 3.x to Modelly
+  (imports, agents, schedulers, grids, model, data collection, batch runs, events,
+  visualization).
+- `python -m modelly.migrate PATH [--write]`: a codemod that rewrites the mechanical parts
+  (imports, agent constructors, scheduler attributes) and reports every line that needs a
+  decision with the guide section to read.
+
+### Verified
+
+- The visualization and example test modules run green with warnings as errors, and the
+  documentation builds.
+
 ## 1.0.0 - 2026-10-22
 
 First release.
