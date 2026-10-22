@@ -351,9 +351,12 @@ is backed by a measurement in [docs/performance.md](docs/performance.md).
 
 ## Benchmarks
 
-`benchmarks/global_benchmark.py` times the bundled reference models and runs in CI. The latest
-audit (CPU time per step, large configurations, same machine before and after) is summarised
-here; the full table and method are in [docs/performance.md](docs/performance.md).
+`benchmarks/global_benchmark.py` times the bundled reference models and runs in CI;
+`benchmarks/notebooks/` holds four benchmark notebooks (grid epidemic, predator-prey lifecycle,
+flocking, network diffusion) with a headless runner, and `benchmarks/mesaVSmodelly/` runs the
+same medfly notebook under Mesa 2.3 and Modelly. The latest audit (CPU time per step, large
+configurations, same machine before and after) is summarised here; the full tables and method
+are in [docs/performance.md](docs/performance.md).
 
 | Model | Agents | Per step | Change |
 |---|---|---|---|
@@ -475,8 +478,7 @@ but never grow.
 The animated banner, architecture diagram and loop diagram are hand-rolled SVG (CSS keyframes and
 SMIL, no JavaScript, no external fonts), so they render inside GitHub's image sandbox and respect
 `prefers-reduced-motion`. Each ships in a light and a dark variant, switched by
-`prefers-color-scheme`, and the version on the banner is read from the package. Regenerate them
-after editing the generator:
+`prefers-color-scheme`. Regenerate them after editing the generator:
 
 ```bash
 python tools/branding/generate_assets.py
