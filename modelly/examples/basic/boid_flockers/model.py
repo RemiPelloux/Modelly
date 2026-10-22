@@ -115,6 +115,9 @@ class BoidFlockers(Model):
 
         All agents are activated in random order using the AgentSet shuffle_do method.
         """
+        # One KD-tree query for the whole flock: every boid sees the same
+        # snapshot of positions, which is O(n log n) instead of n scans of n.
+        self.neighbor_lists = self.space.neighbors_within(self.scenario.vision)
         self.agents.shuffle_do("step")
         self.update_average_heading()
         self.calculate_angles()
