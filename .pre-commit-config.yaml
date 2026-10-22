@@ -23,8 +23,12 @@ repos:
     rev: v6.0.0  # Use the ref you want to point at
     hooks:
     -   id: trailing-whitespace
+    -   id: end-of-file-fixer
     -   id: check-toml
     -   id: check-yaml
+    -   id: check-merge-conflict
+    -   id: check-added-large-files
+        args: [--maxkb=1024]   # a notebook with outputs baked in does not belong in git
 - repo: https://github.com/codespell-project/codespell
   rev: v2.4.3
   hooks:
