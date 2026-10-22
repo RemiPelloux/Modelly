@@ -40,8 +40,6 @@ To further explore Modelly and its features, we have the following resources ava
 ### Repository of models built using MODELLY
 - [Modelly Examples repository](https://github.com/RemiPelloux/modelly-examples): A collection of example models demonstrating various Modelly features and modeling techniques.
 
-### Migration guide
-- [Modelly 3.0 Migration guide](migration_guide): If you're upgrading from an earlier version of Modelly, this guide will help you navigate the changes in Modelly 3.0.
 
 ### Source Code and development
 - [Modelly GitHub repository](https://github.com/RemiPelloux/Modelly): Access the full source code of Modelly, contribute to its development, or report issues.

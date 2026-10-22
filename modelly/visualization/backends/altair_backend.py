@@ -107,10 +107,9 @@ class AltairBackend(AbstractRenderer):
                 if not dict_portrayal_warned:
                     warnings.warn(
                         (
-                            "Returning a dict from agent_portrayal is deprecated and will be removed in Modelly 4.0. "
+                            "Returning a dict from agent_portrayal is deprecated and will be removed in a future release. "
                             "Please return an AgentPortrayalStyle instance instead. "
                             "For more information, refer to the migration guide: "
-                            "https://modelly.readthedocs.io/latest/migration_guide.html#defining-portrayal-components"
                         ),
                         FutureWarning,
                         stacklevel=2,

@@ -61,10 +61,8 @@ class AbstractAgentSet[A: Agent](SelectionMixin[A], ABC, MutableSet[A]):
             list[Agent]: A list containing all agents in the AbstractAgentSet.
 
         Notes:
-            This method provides an explicit way to convert the AgentSet to a list.
-            It is the recommended approach when list operations (indexing, slicing)
-            are needed, as direct sequence operations on AgentSet are deprecated
-            and will be removed in Modelly 4.0.
+            Use this when you need list operations such as indexing or slicing;
+            an AgentSet is an ordered set, not a sequence.
         """
         ...
 
@@ -76,6 +74,14 @@ class AbstractAgentSet[A: Agent](SelectionMixin[A], ABC, MutableSet[A]):
         through here, so a subclass controls in one place what its views are.
         """
         ...
+
+    def __getitem__(self, item: int | slice):
+        """Return the agent at ``item`` or the list for a slice.
+
+        Agents are materialised in order first, so this is O(n); use
+        :meth:`to_list` once when indexing repeatedly.
+        """
+        return self.to_list()[item]
 
     def __repr__(self) -> str:
         """Return a concise, programmer-facing representation of the AbstractAgentSet."""

@@ -69,9 +69,6 @@ class _HardKeyAgentSet[A: Agent](AbstractAgentSet[A]):
         """Convert the _HardKeyAgentSet to a list."""
         return list(self._agents)
 
-    def __getitem__(self, item):
-        return self.to_list()[item]
-
     def add(self, agent: A):
         """Add an agent to the _HardKeyAgentSet."""
         self._agents[agent] = None

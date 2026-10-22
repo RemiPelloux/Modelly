@@ -264,7 +264,7 @@ agent_df = model.datacollector.get_agent_vars_dataframe()
 ### Visualization
 Modelly uses a browser-based visualization system called SolaraViz. This allows for interactive, customizable visualizations of your models.
 
-Note: SolaraViz is in active development in Modelly 3.x. While we attempt to minimize them, there might be API breaking changes in minor releases.
+Note: SolaraViz is under active development. While we attempt to minimize them, there might be API breaking changes in minor releases.
 > **Note:** SolaraViz instantiates new models using `**model_parameters.value`, so all model inputs must be keyword arguments.
 
 Ensure your model's `__init__` method accepts keyword arguments matching the `model_params` keys.
