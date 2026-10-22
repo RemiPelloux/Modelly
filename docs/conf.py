@@ -24,8 +24,9 @@ from importlib.metadata import version as get_version
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 HERE = osp.abspath(osp.dirname(__file__))
-sys.path.insert(0, os.path.abspath("."))
-sys.path.insert(0, "../modelly")
+# Modelly is imported from the installed package (pip install -e ".[docs]"), never from a
+# relative path: a relative entry depends on the working directory of sphinx-build.
+sys.path.insert(0, HERE)
 
 
 # -- General configuration ------------------------------------------------
@@ -120,6 +121,7 @@ pygments_style = "gruvbox-dark"
 # MODELLY_NB_EXECUTION=off skips running the tutorials (quick local builds).
 nb_execution_timeout = 120
 nb_execution_mode = os.environ.get("MODELLY_NB_EXECUTION", "cache")
+nb_execution_show_tb = True  # log the failing cell's traceback, so CI says why
 nb_execution_allow_errors = False
 nb_execution_raise_on_error = True
 
