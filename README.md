@@ -21,14 +21,18 @@ give your agents behaviour, run the world forward in time, then measure, replay 
 
 ---
 
-**Status:** 1.0, Python 3.12+. The core (model, agents, columns, spaces, time, data) is stable
+**Status:** 1.2, Python 3.12+. The core (model, agents, columns, spaces, time, data) is stable
 and follows semantic versioning; modules under `modelly.experimental` may change between minor
-versions and say so in their docstrings.
+versions and say so in their docstrings. What changed in each release is in
+[CHANGELOG.md](CHANGELOG.md).
 
 ```bash
-pip install -e ".[all]"     # everything: core, network, visualization, examples, docs
-python example.py           # runs a wealth-exchange model and prints its Gini coefficient
+pip install "modelly @ git+https://github.com/RemiPelloux/Modelly.git@v1.2.0"   # as a dependency
+python -c "import modelly; print(modelly.__version__)"
 ```
+
+Or, from a clone, `pip install -e ".[all]"` then `python example.py`: a wealth-exchange model that
+prints its Gini coefficient.
 
 ## Vision
 
@@ -50,10 +54,10 @@ describe and hard to keep correct, reproducible and fast. Modelly exists to remo
   notebook, a browser visualization, a parameter sweep and a batch of replications.
 
 **Where we are going.** The engine keeps one Python object per agent, which is what makes models
-easy to write, and moves the heavy lifting into arrays: `Column` attributes already give the model
-a numpy view of every agent, and the roadmap adds vectorised step phases, a spatial index for
-continuous space, and parallel replications out of the box. The
-[performance audit](docs/performance.md) records what has been done and what is next.
+easy to write, and moves the heavy lifting into arrays: `Column` attributes give the model a numpy
+view of every agent, continuous space answers neighbour queries for the whole population with one
+KD-tree, and the roadmap adds vectorised step phases and parallel replications out of the box.
+The [performance audit](docs/performance.md) records what has been done and what is next.
 
 ## Why Modelly
 
@@ -95,6 +99,15 @@ pip install -e .                 # core: numpy, pandas, scipy, tqdm
 pip install -e ".[viz]"          # + solara, matplotlib, altair
 pip install -e ".[network]"      # + networkx
 ```
+
+To depend on Modelly from your own project, pin a release tag in `pyproject.toml`:
+
+```toml
+dependencies = ["modelly @ git+https://github.com/RemiPelloux/Modelly.git@v1.2.0"]
+```
+
+The full walkthrough, from an empty folder to a tested and replicated model, is
+[docs/using_modelly_in_your_project.md](docs/using_modelly_in_your_project.md).
 
 ## A model in 30 seconds
 
@@ -161,9 +174,6 @@ print(model.gini)  # 0.0 at the start, about 0.6 after 100 ticks
 
 Three pieces, and nothing else: a **scenario** of inputs, **agents** that know one thing each,
 and a **model** that owns the world and advances it.
-
-Coming from Mesa? `python -m modelly.migrate your_model/` rewrites the imports and constructors
-and reports what to change by hand; the map is in `docs/migrating_from_mesa.md`.
 
 ## Record it, then look at it
 
@@ -250,6 +260,41 @@ The last row is the trade-off: use columns for attributes you aggregate, filter,
 in bulk; a plain attribute is still the cheapest thing to touch inside `step`. In the Boltzmann
 example the object loop is unchanged within noise while the model-level work is 30x cheaper.
 
+### The whole population at once
+
+Two more operations run over everyone in one call, so a model can move its population-wide phases
+out of the per-agent loop:
+
+```python
+# Every sheep loses one energy, and the ones below zero die, properly removed.
+table = self.columns[Sheep]
+table.energy -= 1
+table.remove_where(table.energy < 0)
+
+# Continuous space: one KD-tree answers the whole flock, same snapshot for all.
+lists = self.space.neighbors_within(radius=5.0)
+for boid in self.agents:
+    boid.neighbors = lists[boid]
+```
+
+`neighbors_within` is O(n log n) for the whole flock instead of one O(n) scan per agent, and
+is periodic on a torus. The Boids example uses it: 2,000 boids go from 98 ms to 42 ms per step.
+
+## Coming from Mesa
+
+Modelly's authoring model is the one Mesa 3 users know (`Model`, `Agent`, `AgentSet`,
+`DataCollector`), with one grid system and no schedulers. A codemod does the mechanical part of a
+move and reports the rest, each line pointing at a section of the guide:
+
+```bash
+python -m modelly.migrate path/to/your/model/          # dry run: diff plus report
+python -m modelly.migrate path/to/your/model/ --write  # apply the rewrites
+```
+
+It rewrites imports, agent constructors and scheduler attributes, and flags scheduler classes,
+legacy grid calls, `batch_run`, simulators and `seed=` for you to decide. The construct-by-construct
+map, for Mesa 2.x and 3.x, is [docs/migrating_from_mesa.md](docs/migrating_from_mesa.md).
+
 ## Architecture
 
 <p align="center">
@@ -294,6 +339,7 @@ here; the full table and method are in [docs/performance.md](docs/performance.md
 | Wolf-Sheep, 100x100 grid | 1,500 + grass | 17.0 ms | 1.09x faster |
 | Boids, continuous space | 400 | 8.1 ms | 1.5x faster |
 | Boids, continuous space | 2,000 | 41.7 ms | 2.4x faster |
+| Boids, continuous space | 10,000 | 227 ms | from about 2.5 s |
 
 ## Roadmap
 
@@ -340,7 +386,8 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 | **Overview** | `docs/overview.md`: the object model, end to end |
 | **Performance audit** | `docs/performance.md`: measurements, what changed, what is next |
 | **Best practices** | `docs/best-practices.md` |
-| **API reference** | `docs/apis/`: agents, model, space, time, data |
+| **API reference** | `docs/apis/`: agents, agent sets, columns, model, space, time, data, migrate |
+| **Changelog** | `CHANGELOG.md`: what each release added, changed and fixed |
 
 The tutorials are executable: open them locally, in Colab, or through Binder (links at the top of
 each notebook).
@@ -351,6 +398,8 @@ each notebook).
 modelly/                      # the package
 ├── agent.py                  # Agent, create_agents, from_dataframe
 ├── columns.py                # Column: agent attributes stored in model-owned numpy arrays
+├── migrate.py                # python -m modelly.migrate: Mesa to Modelly codemod
+├── py.typed                  # annotations are part of the API
 ├── agentset/                 # ordered agent sets
 │   ├── abstract.py           #   the shared interface and algorithms
 │   ├── selection.py          #   select, select_random
@@ -367,10 +416,12 @@ modelly/                      # the package
 │   ├── grid.py               #   Moore, Von Neumann and hex grids
 │   └── property_layer.py     #   numpy layers exposed on cells
 ├── time/                     # events, generators, schedules
-├── experimental/             # scenarios, signals, data records, actions, states
+├── experimental/             # scenarios, continuous space, signals, data records, actions, states
 ├── examples/                 # the models in the table above
 └── visualization/            # Solara components, matplotlib, altair
-docs/                         # notebooks, guides, API docs, brand assets, performance audit
+docs/                         # notebooks, guides, API docs, performance audit
+example.py                    # the 30-second model above, runnable
+CHANGELOG.md                  # release notes
 benchmarks/                   # timing harnesses for the example models
 scripts/                      # local CI gate and the Pelloux audit
 tests/                        # the test suite
@@ -407,9 +458,8 @@ Issues, ideas and pull requests are welcome on the
 a ticket first is the fastest route: it keeps the patch small and reviewable.
 
 Everything you need is in [CONTRIBUTING.md](CONTRIBUTING.md): local setup, tests, the lint and
-format
-commands CI runs, docs, and how a pull request is reviewed. By taking part you agree to our
-[Code of Conduct](CODE_OF_CONDUCT.md).
+format commands CI runs, docs, and how a pull request is reviewed. By taking part you agree to
+our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Citing
 
