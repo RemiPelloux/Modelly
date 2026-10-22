@@ -125,6 +125,22 @@ Recording a column with `DataCollector` is a straight slice of the table when th
 all columns of one class and the collected agents are that class's whole population; rows are
 then in table order rather than registration order (identical until an agent is removed).
 
+## Continuous space
+
+`get_agents_in_radius` compares one point against every position, so a model where every
+agent asks for its neighbours is O(n²) per step. `ContinuousSpace.neighbors_within(radius)`
+builds one `scipy.spatial.cKDTree` from the positions as they are now and queries it for the
+whole population in a single call; on a torus the tree is periodic. A model uses it once per
+step and gives every agent the same snapshot of positions (a simultaneous update).
+
+| Boids, per step | Per-agent scans | One tree per step |
+|---|---|---|
+| 400 agents | 12.1 ms | 8.1 ms |
+| 2,000 agents | 98.2 ms | 41.7 ms |
+| 10,000 agents | about 2.5 s (extrapolated) | 227 ms |
+
+What remains per agent is its own numpy arithmetic on a handful of neighbours.
+
 ## Considered and rejected
 
 Measured on the same machine; each would have bought a few percent at the cost of complexity or
@@ -159,11 +175,9 @@ These are the changes with the largest remaining upside. Each is a project, not 
 1. **Vectorised step phases.** Columns provide the arrays; the next step is helpers for the
    whole-population phases of a step (decrement energy, draw reproduction, remove the dead) so a
    model can move them out of the per-agent loop without giving up per-agent interactions.
-2. **Spatial index for continuous space.** `get_agents_in_radius` is O(n) per query, so a flocking
-   model is O(n²) per step. A grid hash or a `cKDTree` rebuilt once per step makes it O(n log n).
-3. **Empty-cell index for non-grid spaces.** `DiscreteSpace.empties` on networks and Voronoi meshes
+2. **Empty-cell index for non-grid spaces.** `DiscreteSpace.empties` on networks and Voronoi meshes
    still scans every cell; the grid index can be generalised once those cells get a space hook.
-4. **Parallel replications.** `Scenario.spawn_replications` already yields independent seeded
+3. **Parallel replications.** `Scenario.spawn_replications` already yields independent seeded
    scenarios; running them across processes is plumbing, not research.
 
 ## How to re-run

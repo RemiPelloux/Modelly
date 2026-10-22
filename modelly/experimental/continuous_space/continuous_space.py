@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import warnings
 from collections.abc import Iterable
-from itertools import compress
 from random import Random
 from typing import TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import ArrayLike
+from scipy.spatial import cKDTree
 from scipy.spatial.distance import cdist
 
 from modelly.agent import Agent, AgentSet
@@ -246,11 +246,35 @@ class ContinuousSpace[A: ContinuousSpaceAgent]:
         """Return the agents and their distances within a radius for the point."""
         distances, agents = self.calculate_distances(point)
         logical = distances <= radius
-        agents = list(compress(agents, logical))
-        return (
-            agents,
-            distances[logical],
-        )
+        hits = np.flatnonzero(logical).tolist()
+        return [agents[i] for i in hits], distances[logical]
+
+    def neighbors_within(self, radius: float | int) -> dict[Agent, list[Agent]]:
+        """Return, for every agent, the other agents within ``radius`` of it.
+
+        One KD-tree is built from the positions as they are now and queried for
+        the whole population in a single call, which is O(n log n) instead of the
+        O(n²) of asking each agent in turn. On a torus the tree is periodic, so
+        neighbours across the wrap are found. Use it at the start of a step for a
+        simultaneous update: every agent then sees the same snapshot of positions.
+
+        Returns:
+            dict mapping each agent to a list of its neighbours (itself excluded).
+        """
+        agents = self.active_agents
+        if not agents:
+            return {}
+        positions = self.agent_positions
+        if self.torus:
+            positions = np.mod(positions - self.dimensions[:, 0], self.size)
+            tree = cKDTree(positions, boxsize=self.size)
+        else:
+            tree = cKDTree(positions)
+        hits = tree.query_ball_point(positions, radius)
+        return {
+            agent: [agents[j] for j in indices if j != i]
+            for i, (agent, indices) in enumerate(zip(agents, hits))
+        }
 
     def get_k_nearest_agents(
         self, point: ArrayLike, k: int = 1

@@ -52,12 +52,13 @@ HEX_ROW_SPACING = 1.5  # rows of pointy-topped hexes are 3/4 of a hex apart
 class OrthogonalMooreGrid(Grid[T]):
     """Grid where cells are connected to their 8 neighbors.
 
-    Example for two dimensions:
-    directions = [
-        (-1, -1), (-1, 0), (-1, 1),
-        ( 0, -1),          ( 0, 1),
-        ( 1, -1), ( 1, 0), ( 1, 1),
-    ]
+    Example for two dimensions::
+
+        directions = [
+            (-1, -1), (-1, 0), (-1, 1),
+            ( 0, -1),          ( 0, 1),
+            ( 1, -1), ( 1, 0), ( 1, 1),
+        ]
     """
 
     def _connect_cells_2d(self) -> None:
@@ -83,12 +84,13 @@ class OrthogonalMooreGrid(Grid[T]):
 class OrthogonalVonNeumannGrid(Grid[T]):
     """Grid where cells are connected to their 4 neighbors.
 
-    Example for two dimensions:
-    directions = [
-                (0, -1),
-        (-1, 0),         ( 1, 0),
-                (0,  1),
-    ]
+    Example for two dimensions::
+
+        directions = [
+                    (0, -1),
+            (-1, 0),         ( 1, 0),
+                    (0,  1),
+        ]
     """
 
     def _connect_cells_2d(self) -> None:

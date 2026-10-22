@@ -581,3 +581,37 @@ def test_continuous_space_generics():
     k_nearest, _ = space.get_k_nearest_agents([1.0, 1.0], k=1)
     assert len(k_nearest) == 1
     assert isinstance(k_nearest[0], CustomAgent)
+
+
+def test_neighbors_within_matches_per_agent_query():
+    """The batched KD-tree query agrees with the per-agent scan, torus or not."""
+    for torus in (False, True):
+        model = Model(rng=42)
+        space = ContinuousSpace([[0, 10], [0, 10]], torus=torus, random=model.random)
+        agents = [ContinuousSpaceAgent(space, model) for _ in range(60)]
+        for agent in agents:
+            agent.position = model.rng.random(2) * 10
+        lists = space.neighbors_within(2.5)
+        assert set(lists) == set(agents)
+        for agent in agents:
+            expected, _ = agent.get_neighbors_in_radius(2.5)
+            assert set(lists[agent]) == set(expected)
+            assert agent not in lists[agent]
+
+
+def test_neighbors_within_wraps_on_torus():
+    """Two agents on opposite edges are neighbours only on a torus."""
+    for torus, expected in ((True, 1), (False, 0)):
+        model = Model(rng=1)
+        space = ContinuousSpace([[0, 10], [0, 10]], torus=torus, random=model.random)
+        a, b = ContinuousSpaceAgent(space, model), ContinuousSpaceAgent(space, model)
+        a.position = np.array([0.2, 5.0])
+        b.position = np.array([9.8, 5.0])
+        assert len(space.neighbors_within(1.0)[a]) == expected
+
+
+def test_neighbors_within_empty_space():
+    """An empty space has no neighbour lists."""
+    model = Model(rng=1)
+    space = ContinuousSpace([[0, 10], [0, 10]], random=model.random)
+    assert space.neighbors_within(1.0) == {}

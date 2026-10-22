@@ -17,7 +17,7 @@ class EpsteinAgent(modelly.discrete_space.CellAgent):
         """
         self.neighborhood = self.cell.get_neighborhood(radius=self.scenario.cop_vision)
         self.neighbors = self.neighborhood.agents
-        self.empty_neighbors = [c for c in self.neighborhood if c.is_empty]
+        self.empty_neighbors = self.neighborhood.empties.cells
 
     def move(self):
         """Move to a random empty neighboring cell if movement is enabled."""

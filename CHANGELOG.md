@@ -3,6 +3,33 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.2.0 - 2026-10-22
+
+### Added
+
+- `ContinuousSpace.neighbors_within(radius)`: one KD-tree query for the whole population
+  (periodic on a torus), O(n log n) instead of one O(n) scan per agent. The Boids example uses
+  it for a simultaneous update: 2,000 boids go from 98 ms to 42 ms per step, 10,000 boids run
+  at 227 ms per step.
+- `CellCollection.empties`: the empty cells of a neighbourhood or a space without a property
+  call per cell; `DiscreteSpace.empties` and the Epstein example use it.
+- `ColumnTable.remove_where(mask)`: the whole-population "die" phase in one call.
+- `py.typed`, so type checkers use Modelly's annotations.
+
+### Changed
+
+- Iterating `model.agents` walks a snapshot, like every other `AgentSet`: removing agents
+  inside the loop no longer raises.
+- `ContinuousSpace.get_agents_in_radius` resolves hits by index instead of a Python pass over
+  the whole population.
+- The Boids example determines neighbours from the positions at the start of the step (all
+  boids see the same snapshot), so its trajectories differ from 1.1.0 for the same seed.
+
+### Fixed
+
+- Docstrings of `DataCollector`, the orthogonal grids and `rescale_samples` render without
+  reStructuredText errors; two tutorial notebooks regained their kernel metadata.
+
 ## 1.1.0 - 2026-10-22
 
 ### Added

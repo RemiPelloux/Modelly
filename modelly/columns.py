@@ -128,6 +128,19 @@ class ColumnTable:
         rows = np.flatnonzero(mask).tolist()
         return AgentSet([agents[row] for row in rows], random=self.random)
 
+    def remove_where(self, mask: np.ndarray) -> int:
+        """Remove every agent whose row is True in ``mask``; return how many.
+
+        The whole-population "die" phase of a step: ``table.remove_where(table.energy < 0)``.
+        Each agent is removed through ``agent.remove()``, so spaces and datasets
+        are updated as usual.
+        """
+        agents = self._agents
+        doomed = [agents[row] for row in np.flatnonzero(mask).tolist()]
+        for agent in doomed:
+            agent.remove()
+        return len(doomed)
+
     def to_dataframe(self) -> pd.DataFrame:
         """Copy the live rows into a DataFrame indexed by ``unique_id``."""
         n = len(self._agents)
