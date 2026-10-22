@@ -121,7 +121,7 @@ path = "modelly/__init__.py"
 # Hardcode to Python 3.12.
 # Reminder to update modelly-examples if the value below is changed.
 target-version = "py312"
-extend-exclude = ["build"]
+extend-exclude = ["build", "benchmarks/mesaVSmodelly/**/*.ipynb"]  # benchmark fixtures stay byte-identical
 
 [tool.ruff.lint]
 select = [
@@ -171,7 +171,7 @@ extend-ignore = [
   "S311",   # Standard pseudo-random generators are not suitable for cryptographic purposes
 ]
 # Ignore all docstring errors in examples and tutorials
-per-file-ignores = {"modelly/examples/*"= ["D"], "example.py" = ["D"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
+per-file-ignores = {"modelly/examples/*"= ["D"], "example.py" = ["D"], "benchmarks/mesaVSmodelly/*.py" = ["D", "N", "ISC", "RUF001", "RUF005", "PLC0415", "PLW1510"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

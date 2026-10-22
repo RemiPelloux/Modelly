@@ -3,6 +3,15 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.3.2 - 2026-10-22
+
+### Added
+
+- `benchmarks/mesaVSmodelly/`: the same-notebook comparison against Mesa 2.3 (port script,
+  headless runner with per-cell timing and CSV checksums, compare and smoke scripts, both
+  notebooks as fixtures). Run it with `.venv/bin/python benchmarks/mesaVSmodelly/compare.py`
+  once a Mesa 2.3 environment exists at `.venv-mesa2`.
+
 ## 1.3.1 - 2026-10-22
 
 ### Changed
