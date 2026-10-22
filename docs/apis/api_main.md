@@ -6,6 +6,7 @@
 model
 agent
 agentset
+columns
 time
 discrete_space
 datacollection

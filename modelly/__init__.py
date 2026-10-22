@@ -9,11 +9,13 @@ import modelly.discrete_space as discrete_space
 import modelly.experimental as experimental
 import modelly.time as time
 from modelly.agent import Agent
+from modelly.columns import Column
 from modelly.datacollection import DataCollector
 from modelly.model import Model
 
 __all__ = [
     "Agent",
+    "Column",
     "DataCollector",
     "Model",
     "discrete_space",

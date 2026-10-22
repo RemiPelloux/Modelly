@@ -23,6 +23,8 @@ from typing import Any
 
 import numpy as np
 
+from modelly.columns import ID_COLUMN
+
 LIST_REPORTER_LENGTH = 2  # [function, [param_1, param_2]]
 
 # Exact types that never need a defensive copy. ``issuperset`` over the row's
@@ -153,20 +155,36 @@ def collect_agent_rows(
     Python work is close to zero. A column is copied only if it holds a mutable
     value. Attribute reporters use one ``attrgetter``; a missing attribute
     re-runs the reporter's own getter to produce the descriptive error.
+
+    When every reporter is a ``Column`` of the agents' single class and
+    ``agents`` is that class's whole population, the rows are sliced straight
+    out of the column table in table order, with no per-agent work at all.
     """
     agents = list(agents)
-    ids = list(map(_unique_id, agents))
     funcs = tuple(reporters.values())
     attributes = [getattr(rep, "_modelly_attribute", None) for rep in funcs]
-    if attributes and None not in attributes:
-        try:
-            columns = _attribute_columns(agents, attributes)
-        except AttributeError:
-            columns = [list(map(rep, agents)) for rep in funcs]
+    table = _whole_column_table(agents, attributes)
+    if table is not None:
+        n = len(agents)
+        ids = table._data[ID_COLUMN][:n].tolist()
+        columns = [table._data[name][:n].tolist() for name in attributes]
     else:
-        columns = [list(map(rep, agents)) for rep in funcs]
+        ids = list(map(_unique_id, agents))
+        columns = _reporter_columns(agents, funcs, attributes)
     columns = [_snapshot_column(column) for column in columns]
     return list(zip(repeat(time), ids, *columns))
+
+
+def _reporter_columns(
+    agents: list[Any], funcs: tuple[Callable, ...], attributes: list[str | None]
+) -> list[list]:
+    """One list per reporter; attribute reporters share a single attrgetter pass."""
+    if attributes and None not in attributes:
+        try:
+            return _attribute_columns(agents, attributes)
+        except AttributeError:
+            pass
+    return [list(map(rep, agents)) for rep in funcs]
 
 
 def _attribute_columns(agents: list[Any], attributes: list[str]) -> list[list]:
@@ -175,6 +193,22 @@ def _attribute_columns(agents: list[Any], attributes: list[str]) -> list[list]:
         return [list(map(attrgetter(attributes[0]), agents))]
     rows = map(attrgetter(*attributes), agents)
     return [list(column) for column in zip(*rows)]
+
+
+def _whole_column_table(agents: list[Any], attributes: list[str | None]):
+    """Return the column table when ``agents`` is one class's whole population.
+
+    Requires every attribute to be a Column of that class; otherwise None.
+    """
+    if not agents or not attributes or None in attributes:
+        return None
+    specs = getattr(type(agents[0]), "_column_specs", None)
+    if not specs or any(name not in specs for name in attributes):
+        return None
+    table = agents[0]._column_table
+    if len(table) != len(agents) or len(set(map(type, agents))) != 1:
+        return None
+    return table
 
 
 def _snapshot_column(column: list) -> list:

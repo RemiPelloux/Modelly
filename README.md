@@ -46,11 +46,11 @@ describe and hard to keep correct, reproducible and fast. Modelly exists to remo
 - **One mental model from notebook to cluster.** The same scenario object drives a quick look in a
   notebook, a browser visualization, a parameter sweep and a batch of replications.
 
-**Where we are going.** The current engine keeps one Python object per agent, which is what makes
-models easy to write. The next steps on the roadmap keep that authoring model while moving the
-heavy lifting into arrays: columnar agent state with vectorised reporters, a spatial index for
-continuous space so neighbour queries stop being all-pairs, and parallel replications out of the
-box. The [performance audit](docs/performance.md) records what has been done and what is next.
+**Where we are going.** The engine keeps one Python object per agent, which is what makes models
+easy to write, and moves the heavy lifting into arrays: `Column` attributes already give the model
+a numpy view of every agent, and the roadmap adds vectorised step phases, a spatial index for
+continuous space, and parallel replications out of the box. The
+[performance audit](docs/performance.md) records what has been done and what is next.
 
 ## Why Modelly
 
@@ -60,7 +60,7 @@ reads like the description of the system instead of the plumbing around it:
 | | |
 |---|---|
 | **Scenario** | Parameters as a typed class: one run, one seed, one config object |
-| **Agents** | Typed agent classes with `step()` behaviour, grouped in ordered `AgentSet`s |
+| **Agents** | Typed agent classes with `step()` behaviour, grouped in ordered `AgentSet`s; `Column` attributes live in numpy arrays |
 | **Space** | Orthogonal / hexagonal grids, cells, networks, Voronoi meshes, continuous space |
 | **Time** | Discrete ticks, events, generators and priorities in one scheduler |
 | **Data** | Reporters and datasets that land in pandas, ready to plot |
@@ -187,6 +187,61 @@ Both frames are plain pandas, so everything you already know how to do keeps wor
 Attribute reporters are gathered in C (`operator.attrgetter`), so a string reporter is the fast
 path, not just the convenient one.
 
+## Vectorise the bulk work
+
+An agent-based model has two kinds of work: what one agent does in its `step`, which is Python
+by nature, and what the model does to *all* agents at once (aggregate, filter, record, update),
+which should be numpy. Declare a `Column` and the attribute lives in a model-owned array: the
+agent keeps reading and writing it as before, and the model gets a zero-copy view of everyone.
+
+```python
+import numpy as np
+from modelly import Agent, Column, Model
+
+
+class MoneyAgent(Agent):
+    wealth = Column(int, default=1)  # one numpy array for the whole class
+
+    def step(self):
+        other = self.random.choice(self.model.agents.to_list())
+        if self.wealth > 0:  # per-agent access works as before
+            other.wealth += 1
+            self.wealth -= 1
+
+
+class WealthModel(Model):
+    @property
+    def gini(self):
+        x = np.sort(self.columns[MoneyAgent].wealth)  # view, no copy
+        n = len(x)
+        return 1 + 1 / n - 2 * np.sum(x * (n - np.arange(n))) / (n * x.sum())
+
+    def tax(self):
+        w = self.columns[MoneyAgent].wealth
+        w[w > 10] -= 1  # bulk update, in place
+
+    def rich(self):
+        table = self.columns[MoneyAgent]
+        return table.where(table.wealth > 10)  # an AgentSet
+```
+
+Nothing else changes: `model.agents`, `shuffle_do`, `DataCollector` and the examples work the
+same, and attribute reporters on a column are recorded straight from the array. Measured on
+10,000 agents:
+
+| Operation | Plain attribute | Column |
+|---|---|---|
+| Gini coefficient | 1.09 ms | 0.03 ms |
+| Count agents with `wealth > 0` | 0.94 ms | 0.008 ms |
+| Mean wealth | 0.47 ms | 0.009 ms |
+| Decrement every `wealth > 5` | 0.15 ms | 0.004 ms |
+| `DataCollector.collect`, one reporter | 0.95 ms | 0.46 ms |
+| One `agent.wealth` read inside `step` | 30 ns | 140 ns |
+
+The last row is the trade-off: use columns for attributes you aggregate, filter, record or update
+in bulk; a plain attribute is still the cheapest thing to touch inside `step`. In the Boltzmann
+example the object loop is unchanged within noise while the model-level work is 30x cheaper.
+
 ## Architecture
 
 <p align="center">
@@ -233,8 +288,9 @@ here; the full table and method are in [docs/performance.md](docs/performance.md
 In order of expected impact. Each item keeps today's authoring model: you still write a `Model`,
 an `Agent` subclass and a `Scenario`.
 
-1. **Columnar agent state.** Declared attributes stored in numpy columns owned by the model, so
-   reporters, aggregations and filters become array operations.
+1. **Vectorised step phases.** Columns make the state available as arrays; the next step is
+   helpers for the common whole-population phases (decrement, draw, die, reproduce) so a model
+   can move them out of the per-agent loop.
 2. **Spatial index for continuous space.** Neighbour queries go from all-pairs to O(n log n).
 3. **Parallel replications.** `Scenario.spawn_replications` already yields independent seeded
    scenarios; running them across processes is the missing piece.
@@ -282,6 +338,7 @@ each notebook).
 ```text
 modelly/                      # the package
 ├── agent.py                  # Agent, create_agents, from_dataframe
+├── columns.py                # Column: agent attributes stored in model-owned numpy arrays
 ├── agentset/                 # ordered agent sets
 │   ├── abstract.py           #   the shared interface and algorithms
 │   ├── selection.py          #   select, select_random

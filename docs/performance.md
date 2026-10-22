@@ -93,6 +93,38 @@ The remaining per-step cost in Boltzmann and Schelling is the agents' own Python
 (random choices, list comprehensions over neighbours), which is the expected profile for an
 object-per-agent engine.
 
+## Columnar agent state
+
+`modelly.columns` adds the one structural change with a large constant factor, as an opt-in.
+A `Column` declared on an agent class stores that attribute in a numpy array owned by the
+model (one table per concrete class, rows in insertion order, swap-remove on removal, the same
+scheme the continuous space uses for positions). The agent reads and writes its own row through
+a descriptor; the model reads everyone through `model.columns[Cls].<name>`, a zero-copy view.
+
+Measured on the Boltzmann model with 10,000 agents, CPU time:
+
+| Operation | Plain attribute | Column | Speedup |
+|---|---|---|---|
+| Gini coefficient | 1.09 ms | 0.03 ms | 33x |
+| Count agents with `wealth > 0` | 0.94 ms | 0.008 ms | 125x |
+| Mean wealth (`agg` vs `.mean()`) | 0.47 ms | 0.009 ms | 55x |
+| Decrement every `wealth > 5` | 0.15 ms | 0.004 ms | 36x |
+| Snapshot to a DataFrame | 1.10 ms | 0.31 ms | 3.6x |
+| `AgentSet` of `wealth > 0` (`select` vs `where`) | 0.94 ms | 0.62 ms | 1.5x |
+| `DataCollector.collect`, one attribute reporter | 0.95 ms | 0.46 ms | 2.1x |
+| One `agent.wealth` read / `+= 1` inside `step` | 30 / 40 ns | 140 / 290 ns | 0.2x |
+| Boltzmann `shuffle_do("step")`, object loop | 22.3 ms | 21.0 ms | within noise |
+
+The last two rows are the trade-off: a single access costs a descriptor call and a numpy scalar
+index instead of an instance-dict lookup. It does not show in the object loop because an agent
+step touches the attribute a few times among far more expensive work, but a column is the wrong
+home for a scratch value read in a tight loop. `where` is bounded by building the `AgentSet`
+from 10,000 objects, not by the mask.
+
+Recording a column with `DataCollector` is a straight slice of the table when the reporters are
+all columns of one class and the collected agents are that class's whole population; rows are
+then in table order rather than registration order (identical until an agent is removed).
+
 ## Considered and rejected
 
 Measured on the same machine; each would have bought a few percent at the cost of complexity or
@@ -124,10 +156,9 @@ state on the roadmap, not more micro-tuning.
 
 These are the changes with the largest remaining upside. Each is a project, not a patch.
 
-1. **Columnar agent state.** Keep the `Agent` authoring model but store declared attributes in
-   numpy columns owned by the model, so reporters, aggregations and filters run as array
-   operations. This is the step that turns data collection and `agg` from microseconds per agent
-   into nanoseconds.
+1. **Vectorised step phases.** Columns provide the arrays; the next step is helpers for the
+   whole-population phases of a step (decrement energy, draw reproduction, remove the dead) so a
+   model can move them out of the per-agent loop without giving up per-agent interactions.
 2. **Spatial index for continuous space.** `get_agents_in_radius` is O(n) per query, so a flocking
    model is O(n²) per step. A grid hash or a `cKDTree` rebuilt once per step makes it O(n log n).
 3. **Empty-cell index for non-grid spaces.** `DiscreteSpace.empties` on networks and Voronoi meshes

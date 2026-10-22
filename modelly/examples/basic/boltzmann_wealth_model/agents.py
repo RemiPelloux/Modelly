@@ -1,3 +1,4 @@
+from modelly import Column
 from modelly.discrete_space import CellAgent
 
 
@@ -8,8 +9,12 @@ class MoneyAgent(CellAgent):
     if they occupy the same cell.
 
     Attributes:
-        wealth (int): The agent's current wealth (starts at 1)
+        wealth (int): The agent's current wealth (starts at 1). Declared as a
+            Column, so ``model.columns[MoneyAgent].wealth`` is a numpy view of
+            every agent's wealth at once.
     """
+
+    wealth = Column(int, default=1)
 
     def __init__(self, model, cell):
         """Create a new agent.
@@ -19,7 +24,6 @@ class MoneyAgent(CellAgent):
         """
         super().__init__(model)
         self.cell = cell
-        self.wealth = 1
 
     def move(self):
         """Move the agent to a random neighboring cell."""

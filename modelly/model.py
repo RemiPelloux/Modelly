@@ -15,6 +15,7 @@ import numpy as np
 
 from modelly.agent import Agent
 from modelly.agentset import _HardKeyAgentSet
+from modelly.columns import ColumnStore
 from modelly.experimental.data_collection.dataset import DataRegistry
 from modelly.experimental.scenarios import Scenario
 from modelly.experimental.signals import (
@@ -148,6 +149,8 @@ class Model[A: Agent, S: Scenario](HasEmitters):
         )  # an agenset with all agents
 
         self.data_registry = DataRegistry()
+        # Column tables for agent classes that declare Column attributes.
+        self.columns = ColumnStore(self.random)
 
     def _wrapped_step(self) -> None:
         """Advance time by one unit, processing any scheduled events."""
