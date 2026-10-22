@@ -26,7 +26,17 @@
 ```
 
 ```{eval-rst}
+.. automodule:: modelly.discrete_space.base_grid
+   :members:
+```
+
+```{eval-rst}
 .. automodule:: modelly.discrete_space.grid
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.discrete_space.property_layer
    :members:
 ```
 

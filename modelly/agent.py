@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from modelly.model import Model
 
 from modelly.agentset import AgentSet, _resolve_per_agent_values
+from modelly.columns import Column
 
 
 class Agent[M: Model]:
@@ -36,7 +37,14 @@ class Agent[M: Model]:
     """
 
     _datasets: ClassVar = set()
-    _repr_excluded_fields: ClassVar[set[str]] = {"model", "current_action", "unique_id"}
+    _column_specs: ClassVar[dict[str, Column]] = {}
+    _repr_excluded_fields: ClassVar[set[str]] = {
+        "model",
+        "current_action",
+        "unique_id",
+        "_column_table",
+        "_column_row",
+    }
 
     def __init_subclass__(cls, **kwargs):
         """Called when Agent is subclassed, giving each subclass its own dataset set."""
@@ -46,6 +54,15 @@ class Agent[M: Model]:
         # and ensure the retrieved dataset belongs to the same
         # model instance as the agent
         cls._datasets = set()
+        # Columns declared on this class or inherited from a base, in MRO order.
+        specs: dict[str, Column] = {}
+        for base in reversed(cls.__mro__):
+            specs.update(
+                (name, value)
+                for name, value in vars(base).items()
+                if isinstance(value, Column)
+            )
+        cls._column_specs = specs
 
     def __init__(self, model: M, *args, **kwargs) -> None:
         """Create a new agent.
@@ -63,7 +80,10 @@ class Agent[M: Model]:
 
         self.model: M = model
         self.unique_id = None
+        self._column_row = -1
         self.model.register_agent(self)
+        if self._column_specs:
+            self.model.columns.register(self)
 
         for dataset in self._datasets:
             self.model.data_registry[dataset].add_agent(self)
@@ -72,6 +92,8 @@ class Agent[M: Model]:
         """Remove and delete the agent from the model."""
         with contextlib.suppress(KeyError):
             self.model.deregister_agent(self)
+        if self._column_specs and self._column_row >= 0:
+            self.model.columns.unregister(self)
 
         # ensures models are also removed from datasets
         for dataset in self._datasets:

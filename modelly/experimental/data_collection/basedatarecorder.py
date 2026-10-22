@@ -28,7 +28,7 @@ from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
-from modelly.experimental.modelly_signals import ModelSignals, ObservableSignals
+from modelly.experimental.signals import ModelSignals, ObservableSignals
 
 if TYPE_CHECKING:
     from modelly import Model

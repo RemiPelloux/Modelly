@@ -9,11 +9,13 @@ import modelly.discrete_space as discrete_space
 import modelly.experimental as experimental
 import modelly.time as time
 from modelly.agent import Agent
+from modelly.columns import Column
 from modelly.datacollection import DataCollector
 from modelly.model import Model
 
 __all__ = [
     "Agent",
+    "Column",
     "DataCollector",
     "Model",
     "discrete_space",
@@ -22,7 +24,7 @@ __all__ = [
 ]
 
 __title__ = "modelly"
-__version__ = "4.0.0a0"
+__version__ = "4.0.0a1"
 __license__ = "Apache 2.0"
 _this_year = datetime.datetime.now(tz=datetime.UTC).date().year
 __copyright__ = f"Copyright {_this_year} Modelly Team"

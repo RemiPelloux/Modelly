@@ -4,7 +4,7 @@ from modelly.examples.basic.boltzmann_wealth_model.model import (
     BoltzmannScenario,
     BoltzmannWealth,
 )
-from modelly.modelly_logging import INFO, log_to_stderr
+from modelly.log import INFO, log_to_stderr
 from modelly.visualization import (
     SolaraViz,
     SpaceRenderer,

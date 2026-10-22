@@ -14,7 +14,6 @@ environmental conditions.
 
 from __future__ import annotations
 
-from functools import cache
 from random import Random
 from typing import TYPE_CHECKING
 
@@ -32,6 +31,7 @@ if TYPE_CHECKING:
     from modelly.agent import Agent
 
 Coordinate = tuple[int, ...]
+MIN_NEIGHBORHOOD_RADIUS = 1
 
 
 class Cell:
@@ -44,11 +44,17 @@ class Cell:
         capacity (int): the maximum number of agents that can simultaneously occupy the cell
         random (Random): the random number generator
 
+    Notes:
+        Neighborhoods are cached per cell, keyed on ``(radius, include_center)``.
+        The cache belongs to the cell (not to the class), so discarding a space
+        frees its cells, and changing one cell's connections only invalidates
+        that cell's own neighborhoods.
     """
 
     __slots__ = [
         "_agents",
         "_empty",
+        "_neighborhood_cache",
         "_position",  # physical position
         "capacity",
         "connections",
@@ -101,15 +107,14 @@ class Cell:
         self.coordinate = coordinate  # Logical index
         self._position = position  # Physical position
         self.connections: dict[Coordinate, Cell] = {}
-        self._agents: list[
-            CellAgent
-        ] = []  # TODO:: change to AgentSet or weakrefs? (neither is very performant, )
+        self._agents: list[CellAgent] = []
         self._empty: bool = True  # a freshly created cell holds no agents
         self.capacity: int | None = capacity
         self.properties: dict[
             Coordinate, object
         ] = {}  # fixme still used by voronoi mesh
         self.random = random
+        self._neighborhood_cache: dict[tuple[int, bool], CellCollection[Cell]] = {}
 
     def connect(self, other: Cell, key: Coordinate | None = None) -> None:
         """Connects this cell to another cell.
@@ -147,13 +152,14 @@ class Cell:
             agent (CellAgent): agent to add to this Cell
 
         """
-        n = len(self._agents)
-        self.empty = False
-
-        if self.capacity is not None and n >= self.capacity:
+        agents = self._agents
+        if self.capacity is not None and len(agents) >= self.capacity:
             raise CellFullException(self.coordinate)
 
-        self._agents.append(agent)
+        agents.append(agent)
+        # ``empty`` may be backed by a property layer; only write it on a transition.
+        if len(agents) == 1:
+            self.empty = False
 
     def remove_agent(self, agent: CellAgent) -> None:
         """Removes an agent from the cell.
@@ -167,7 +173,8 @@ class Cell:
         except ValueError as e:
             raise AgentMissingException(agent, self.coordinate) from e
 
-        self.empty = self.is_empty
+        if not self._agents:
+            self.empty = True
 
     @property
     def is_empty(self) -> bool:
@@ -198,8 +205,6 @@ class Cell:
         """
         return self.get_neighborhood()
 
-    # FIXME: Revisit caching strategy on methods
-    @cache  # noqa: B019
     def get_neighborhood(
         self, radius: int = 1, include_center: bool = False
     ) -> CellCollection[Cell]:
@@ -216,13 +221,19 @@ class Cell:
             a CellCollection of all neighboring cells
 
         """
-        return CellCollection[Cell](
+        key = (radius, include_center)
+        cache = self._neighborhood_cache
+        try:
+            return cache[key]
+        except KeyError:
+            pass
+        collection = CellCollection[Cell](
             self._neighborhood(radius=radius, include_center=include_center),
             random=self.random,
         )
+        cache[key] = collection
+        return collection
 
-    # FIXME: Revisit caching strategy on methods
-    @cache  # noqa: B019
     def _neighborhood(
         self, radius: int = 1, include_center: bool = False
     ) -> dict[Cell, list[Agent]]:
@@ -231,8 +242,8 @@ class Cell:
         Note: This implementation uses iterative breadth-first search instead
         of recursion to avoid RecursionError on large radius values.
         """
-        if radius < 1:
-            raise ValueError("radius must be at least 1")
+        if radius < MIN_NEIGHBORHOOD_RADIUS:
+            raise ValueError(f"radius must be at least {MIN_NEIGHBORHOOD_RADIUS}")
 
         # Fast path for radius=1 (most common case) - avoid BFS overhead
         if radius == 1:
@@ -243,18 +254,26 @@ class Cell:
                 neighborhood[self] = self._agents
             return neighborhood
 
-        # Use iterative BFS for radius > 1 to avoid RecursionError
+        neighborhood = self._bfs_neighborhood(radius)
+
+        if include_center:
+            neighborhood[self] = self._agents
+        else:
+            neighborhood.pop(self, None)
+
+        return neighborhood
+
+    def _bfs_neighborhood(self, radius: int) -> dict[Cell, list[Agent]]:
+        """Collect every cell within ``radius`` hops (excluding self) by BFS."""
         visited: set[Cell] = {self}
         current_layer: list[Cell] = list(self.connections.values())
         neighborhood: dict[Cell, list[Agent]] = {}
 
-        # Add immediate neighbors (radius=1)
         for neighbor in current_layer:
             if neighbor not in visited:
                 visited.add(neighbor)
                 neighborhood[neighbor] = neighbor._agents
 
-        # Expand outward for remaining radius levels
         for _ in range(radius - 1):
             next_layer: list[Cell] = []
             for cell in current_layer:
@@ -267,29 +286,23 @@ class Cell:
             if not current_layer:
                 break  # No more cells to explore
 
-        # Handle center inclusion
-        if include_center:
-            neighborhood[self] = self._agents
-        else:
-            neighborhood.pop(self, None)
-
         return neighborhood
 
     def __getstate__(self):
         """Return state of the Cell.
 
         Neighbors are replaced with their coordinates to avoid deep recursion
-        while preserving the connection keys.
+        while preserving the connection keys. The neighborhood cache is dropped;
+        it is rebuilt lazily after unpickling.
         """
         state = super().__getstate__()
-        # Replace neighbor objects with their coordinates to avoid deep recursion
-        # while preserving the connection keys.
-        state[1]["connections"] = {
+        slots = state[1]
+        slots["connections"] = {
             key: neighbor.coordinate for key, neighbor in self.connections.items()
         }
+        slots["_neighborhood_cache"] = {}
         return state
 
     def _clear_cache(self):
-        """Helper function to clear local cache."""
-        self.get_neighborhood.cache_clear()
-        self._neighborhood.cache_clear()
+        """Drop this cell's cached neighborhoods."""
+        self._neighborhood_cache.clear()

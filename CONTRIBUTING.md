@@ -44,6 +44,25 @@ Extras:
 | `.[examples]` | everything needed to run the bundled example models |
 | `.[docs]` | sphinx, myst-nb, pydata theme, seaborn |
 
+## Engineering guidelines
+
+Modelly follows the [Pelloux guidelines](pelloux-guidelines.md): small files (300 lines, hard
+error above 400), short functions (25 lines), surgical changes, no debug leftovers, conventional
+commits without attribution trailers. Read it once before your first pull request.
+
+The whole gate runs locally and is what CI runs:
+
+```bash
+bash scripts/ci-local.sh                 # lint, format, tests, size audit
+bash scripts/ci-local.sh --list          # stage names
+bash scripts/ci-local.sh lint test       # a subset while iterating
+bash scripts/audit-pelloux.sh            # size audit alone
+```
+
+Files that were already over the size limit are listed in `pelloux-baseline.json`; they may
+shrink but never grow. Only re-seed the baseline (`bash scripts/seed-pelloux-baseline.sh`) when a
+split or removal legitimately changes a recorded ceiling, and say so in the pull request.
+
 ## Tests
 
 Run the suite from the repository root:

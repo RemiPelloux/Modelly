@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import pytest
 
-import modelly.experimental.modelly_signals.core as signals_core
+import modelly.experimental.signals.core as signals_core
 from modelly import Agent, Model
-from modelly.experimental.modelly_signals import HasEmitters, Observable
-from modelly.experimental.modelly_signals.core import _hashable_signal
+from modelly.experimental.signals import HasEmitters, Observable
+from modelly.experimental.signals.core import _hashable_signal
 from modelly.experimental.states import (
     ContinuousState,
     Threshold,

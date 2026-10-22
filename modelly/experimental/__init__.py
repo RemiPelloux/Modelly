@@ -5,7 +5,7 @@ features are provided to allow early access and feedback from the Modelly commun
 their APIs may change between releases without following semantic versioning.
 
 Current experimental modules:
-    modelly_signals: Reactive programming capabilities for tracking state changes
+    signals: Reactive programming capabilities for tracking state changes
 
 Notes:
     - Features in this package may be changed or removed without notice
@@ -13,6 +13,6 @@ Notes:
     - Features graduate from experimental status once their APIs are stabilized
 """
 
-from modelly.experimental import actions, continuous_space, meta_agents, modelly_signals
+from modelly.experimental import actions, continuous_space, meta_agents, signals
 
-__all__ = ["actions", "continuous_space", "meta_agents", "modelly_signals"]
+__all__ = ["actions", "continuous_space", "meta_agents", "signals"]

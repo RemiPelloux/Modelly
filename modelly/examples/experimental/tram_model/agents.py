@@ -3,7 +3,7 @@
 import math
 
 from modelly import Agent, Model
-from modelly.experimental.modelly_signals import HasEmitters, Observable
+from modelly.experimental.signals import HasEmitters, Observable
 from modelly.experimental.states import ContinuousState, Threshold
 
 

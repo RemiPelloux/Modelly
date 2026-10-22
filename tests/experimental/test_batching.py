@@ -2,7 +2,7 @@
 
 from unittest.mock import Mock
 
-from modelly.experimental.modelly_signals import (
+from modelly.experimental.signals import (
     HasEmitters,
     ListSignals,
     Observable,
@@ -12,7 +12,7 @@ from modelly.experimental.modelly_signals import (
     aggregate,
     computed_property,
 )
-from modelly.experimental.modelly_signals.signals_util import Message
+from modelly.experimental.signals.signals_util import Message
 
 
 class MyObj(HasEmitters):  # noqa: D101

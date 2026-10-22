@@ -7,6 +7,8 @@ Agents move randomly on a grid, giving one unit of wealth to a random neighbor
 when they occupy the same cell.
 """
 
+import numpy as np
+
 from modelly import Model
 from modelly.datacollection import DataCollector
 from modelly.discrete_space import OrthogonalMooreGrid
@@ -88,9 +90,8 @@ class BoltzmannWealth(Model):
         - A Gini of 0 represents complete equality, where all agents have equal wealth.
         - A Gini of 1 represents maximal inequality, where one agent has all wealth.
         """
-        agent_wealths = [agent.wealth for agent in self.agents]
-        x = sorted(agent_wealths)
-        n = self.num_agents
+        x = np.sort(self.columns[MoneyAgent].wealth)
+        n = len(x)
         # Calculate using the standard formula for Gini coefficient
-        b = sum(xi * (n - i) for i, xi in enumerate(x)) / (n * sum(x))
-        return 1 + (1 / n) - 2 * b
+        b = np.sum(x * (n - np.arange(n))) / (n * x.sum())
+        return float(1 + (1 / n) - 2 * b)

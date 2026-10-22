@@ -41,7 +41,7 @@ import solara.lab
 
 import modelly.visualization.components.altair_components as components_altair
 from modelly.experimental.scenarios import Scenario
-from modelly.modelly_logging import create_module_logger, function_logger
+from modelly.log import create_module_logger, function_logger
 from modelly.visualization.command_console import CommandConsole
 from modelly.visualization.space_renderer import SpaceRenderer
 from modelly.visualization.user_param import Slider, UserParam
