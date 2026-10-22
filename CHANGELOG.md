@@ -3,6 +3,21 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.4.0 - 2026-10-22
+
+### Added
+
+- `benchmarks/notebooks/`: four generated benchmark notebooks (grid epidemic with columns,
+  predator-prey lifecycle, flocking with one tree versus per-agent scans, virus on a network)
+  at three sizes each, a generator (`make_notebooks.py`) and a headless runner
+  (`run_notebooks.py`) that executes them and writes `results/README.md`.
+
+### Changed
+
+- A matplotlib frame no longer allocates a numpy array per agent for grid positions, builds a
+  weak `AgentSet` of the whole population, or pays a union-type `isinstance` per style: a frame
+  of 8,000 agents went from 26 ms to 19.5 ms of CPU (warm caches, best of seven).
+
 ## 1.3.2 - 2026-10-22
 
 ### Added

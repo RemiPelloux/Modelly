@@ -77,9 +77,11 @@ class AgentPortrayalStyle:
 
     def __post_init__(self):
         """Validate that color and size are non-negative."""
-        if isinstance(self.color, int | float) and self.color < 0:
+        # Tuple checks: this runs once per agent per frame, and a union type is
+        # about twice as slow in isinstance.
+        if isinstance(self.color, (int, float)) and self.color < 0:
             raise ValueError("Scalar color values must be non-negative")
-        if isinstance(self.size, int | float) and self.size < 0:
+        if isinstance(self.size, (int, float)) and self.size < 0:
             raise ValueError("Size must be a non-negative number")
 
 

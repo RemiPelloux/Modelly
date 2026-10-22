@@ -121,7 +121,7 @@ path = "modelly/__init__.py"
 # Hardcode to Python 3.12.
 # Reminder to update modelly-examples if the value below is changed.
 target-version = "py312"
-extend-exclude = ["build", "benchmarks/mesaVSmodelly/**/*.ipynb"]  # benchmark fixtures stay byte-identical
+extend-exclude = ["build", "benchmarks/mesaVSmodelly/**/*.ipynb", "benchmarks/notebooks/*.ipynb"]  # fixtures and generated notebooks
 
 [tool.ruff.lint]
 select = [
