@@ -11,7 +11,7 @@ Modelly needs Python 3.12 or newer. From an empty project folder:
 ```bash
 mkdir epidemic && cd epidemic
 python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\activate
-pip install "modelly @ git+https://github.com/RemiPelloux/Modelly.git@v1.0.0"
+pip install "modelly-abm @ git+https://github.com/RemiPelloux/Modelly.git@main"
 ```
 
 Pin the tag you tested against. To declare it in your own `pyproject.toml` instead:
