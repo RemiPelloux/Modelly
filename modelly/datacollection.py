@@ -72,41 +72,34 @@ class DataCollector:
         a method of a class/instance, a partial function, or a function with
         parameters placed in a list.
 
-        Model reporters can take five types of arguments:
-        1. Lambda function:
-           {"agent_count": lambda m: len(m.agents)}
-        2. Method of a class/instance:
-           {"agent_count": self.get_agent_count} # self here is a class instance
-           {"agent_count": Model.get_agent_count} # Model here is a class
-        3. Class attributes of a model:
-           {"model_attribute": "model_attribute"}
-        4. Partial function:
-           {"agent_count": functools.partial(count_agents, multiplier=2)}
-        5. Functions with parameters that have been placed in a list:
-           {"Model_Function": [function, [param_1, param_2]]}
+        Model reporters can take five types of arguments::
 
-        Agent reporters can similarly take:
-        1. Attribute name (string) referring to agent's attribute:
-           {"energy": "energy"}
-        2. Lambda function:
-           {"energy": lambda a: a.energy}
-        3. Method of an agent class/instance:
-           {"agent_action": self.do_action} # self here is an agent class instance
-           {"agent_action": Agent.do_action} # Agent here is a class
-        4. Partial function:
-           {"energy": functools.partial(get_energy, scale=2)}
-        5. Functions with parameters placed in a list:
-           {"Agent_Function": [function, [param_1, param_2]]}
+            {"agent_count": lambda m: len(m.agents)}                  # lambda
+            {"agent_count": self.get_agent_count}                     # bound method
+            {"agent_count": Model.get_agent_count}                    # method of a class
+            {"model_attribute": "model_attribute"}                    # attribute name
+            {"agent_count": functools.partial(count_agents, multiplier=2)}
+            {"Model_Function": [function, [param_1, param_2]]}        # function + params
+
+        Agent reporters can similarly take::
+
+            {"energy": "energy"}                                      # attribute name
+            {"energy": lambda a: a.energy}                            # lambda
+            {"agent_action": self.do_action}                          # bound method
+            {"agent_action": Agent.do_action}                         # method of a class
+            {"energy": functools.partial(get_energy, scale=2)}
+            {"Agent_Function": [function, [param_1, param_2]]}        # function + params
 
         Agenttype reporters take a dictionary mapping agent types to dictionaries
-        of reporter names and attributes/funcs/methods, similar to agent_reporters:
-           {Wolf: {"energy": lambda a: a.energy}}
+        of reporter names and attributes/funcs/methods, similar to agent_reporters::
+
+            {Wolf: {"energy": lambda a: a.energy}}
 
         The tables arg accepts a dictionary mapping names of tables to lists of
         columns. For example, if we want to allow agents to write their age
-        when they are destroyed (to keep track of lifespans), it might look
-        like:
-           {"Lifespan": ["unique_id", "age"]}
+        when they are destroyed (to keep track of lifespans), it might look like::
+
+            {"Lifespan": ["unique_id", "age"]}
 
         Args:
             model_reporters: Dictionary of reporter names and attributes/funcs/methods.
