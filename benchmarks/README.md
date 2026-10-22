@@ -9,6 +9,8 @@ MODELLY uses several example base models for benchmarking performance (Boltzmann
 - `configurations.py`: Contains model configurations for benchmarking
 - `global_benchmark.py`: Main script for running benchmarks
 - `compare_timings.py`: Tool to compare results between benchmark runs
+- `mesa_baseline/`: Times a medfly ABM written for Mesa 2.3 — the "before" number
+  for the same workload. See [`mesa_baseline/README.md`](mesa_baseline/README.md).
 
 ## How to Use
 
