@@ -253,7 +253,7 @@ commands CI runs, docs, and how a pull request is reviewed. By taking part you a
 
 ## License
 
-Modelly is released under the [Apache License 2.0](LICENSE). Third-party attribution, including the
-upstream project this codebase derives from, is recorded in [NOTICE](NOTICE).
+Modelly is released under the [Apache License 2.0](LICENSE). Third-party notices are recorded in
+[NOTICE](NOTICE).
 
 <p align="center"><sub>Modelly — build the system, run the world, watch what emerges.</sub></p>
