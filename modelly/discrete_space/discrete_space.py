@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import warnings
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from functools import cached_property
 from random import Random
 from typing import TypeVar
@@ -29,6 +30,58 @@ from modelly.discrete_space.cell_collection import CellCollection
 from modelly.exceptions import CellMissingException
 
 T = TypeVar("T", bound=Cell)
+
+# Random draws tried before building the empties index. Each draw is O(1), so a
+# sparse space answers in a draw or two; a dense space fails them all once, pays
+# for one O(n) index build, and answers in O(1) ever after.
+EMPTY_SAMPLE_TRIES = 8
+
+
+class _EmptiesIndex:
+    """The empty cells of a space, with O(1) add, discard and random pick.
+
+    A list gives the random pick and a dict maps each cell to its list slot, so
+    a discard swaps the last cell into the freed slot instead of shifting. Once
+    built, every cell of the space points at the index and ``cell.empty``
+    keeps it current.
+    """
+
+    __slots__ = ("_cells", "_slots", "enabled")
+
+    def __init__(self) -> None:
+        self._cells: list[Cell] = []
+        self._slots: dict[Cell, int] = {}
+        self.enabled = False
+
+    def build(self, cells: Sequence[Cell]) -> None:
+        """Index the empty cells among ``cells`` and start tracking transitions."""
+        self._cells = [cell for cell in cells if not cell._agents]
+        self._slots = {cell: i for i, cell in enumerate(self._cells)}
+        for cell in cells:
+            cell._empties_index = self
+        self.enabled = True
+
+    def set_empty(self, cell: Cell, is_empty: bool) -> None:
+        """Record that ``cell`` became empty or occupied."""
+        if is_empty:
+            if cell not in self._slots:
+                self._slots[cell] = len(self._cells)
+                self._cells.append(cell)
+            return
+        slot = self._slots.pop(cell, None)
+        if slot is None:
+            return
+        last = self._cells.pop()
+        if slot < len(self._cells):
+            self._cells[slot] = last
+            self._slots[last] = slot
+
+    def choice(self, random: Random) -> Cell:
+        """Return a random empty cell; raises IndexError when there is none."""
+        return random.choice(self._cells)
+
+    def __len__(self) -> int:
+        return len(self._cells)
 
 
 class DiscreteSpace[T: Cell](ABC):
@@ -74,6 +127,8 @@ class DiscreteSpace[T: Cell](ABC):
             random = Random()
         self.random = random
         self.cell_klass = cell_klass
+        self._empties = _EmptiesIndex()
+        self._try_random = True
 
     @property
     def agents(self) -> AgentSet:
@@ -86,6 +141,12 @@ class DiscreteSpace[T: Cell](ABC):
     @abstractmethod
     def find_nearest_cell(self, position: np.ndarray) -> T:
         """Find the cell at or nearest to the given position."""
+
+    def _reset_empties(self) -> None:
+        """Forget the empties index; it is rebuilt on the next request."""
+        for cell in self._cells.values():
+            cell._empties_index = None
+        self._empties = _EmptiesIndex()
 
     def add_cell(self, cell: T):
         """Add a cell to the space.
@@ -108,6 +169,7 @@ class DiscreteSpace[T: Cell](ABC):
         """
         self.__dict__.pop("all_cells", None)
         self._cells[cell.coordinate] = cell
+        self._reset_empties()
 
     def remove_cell(self, cell: T):
         """Remove a cell from the space.
@@ -128,6 +190,7 @@ class DiscreteSpace[T: Cell](ABC):
             raise CellMissingException(cell.coordinate) from e
 
         self.__dict__.pop("all_cells", None)
+        self._reset_empties()
 
         # iterate over all neighbors
         for neighbor in neighbors.cells:
@@ -182,12 +245,39 @@ class DiscreteSpace[T: Cell](ABC):
         return self.all_cells.empties
 
     def select_random_empty_cell(self) -> T:
-        """Select random empty cell."""
-        return self.random.choice(list(self.empties))
+        """Select a random empty cell.
+
+        Sparse spaces are answered by a few random draws. The first time the draws
+        all fail (or when ``_try_random`` is False) the space builds an index of
+        its empty cells, kept current by ``cell.empty`` from then on, so every
+        later call is O(1) regardless of how full the space is.
+
+        Raises:
+            ValueError: If the space has no empty cell.
+        """
+        empties = self._empties
+        if not empties.enabled:
+            cells = self.all_cells.cells
+            if self._try_random:
+                random = self.random
+                for _ in range(EMPTY_SAMPLE_TRIES):
+                    cell = random.choice(cells)
+                    if not cell._agents:
+                        return cell
+            empties.build(cells)
+
+        try:
+            return empties.choice(self.random)
+        except IndexError as e:
+            raise ValueError(
+                f"{type(self).__name__} is completely full. No empty cells available. "
+                "Cannot select a random empty cell."
+            ) from e
 
     def __setstate__(self, state):
         """Set the state of the discrete space and rebuild the connections."""
         self.__dict__ = state
+        self._empties = _EmptiesIndex()
 
         if self._cells:
             self.cell_klass = type(next(iter(self._cells.values())))

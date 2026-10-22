@@ -1751,3 +1751,23 @@ def test_cell_collection_empties():
     assert occupied not in empties.cells
     assert set(grid.empties.cells) == set(empties.cells)
     assert len(occupied.neighborhood.empties) == 8
+
+
+def test_network_select_random_empty_cell_uses_the_index():
+    """A dense network answers through the empties index and reports when full."""
+    nx = pytest.importorskip("networkx")
+    model = Model(rng=1)
+    space = Network(nx.complete_graph(12), capacity=1, random=model.random)
+    cells = space.all_cells.cells
+    for cell in cells[:11]:
+        CellAgent(model).cell = cell
+    space._try_random = False
+    assert space.select_random_empty_cell() is cells[11]
+    assert space._empties.enabled and len(space._empties) == 1
+    agent = CellAgent(model)
+    agent.cell = cells[11]
+    with pytest.raises(ValueError, match="Network is completely full"):
+        space.select_random_empty_cell()
+    agent.cell = None
+    assert space.select_random_empty_cell() is cells[11]
+    assert len(space.empties) == 1

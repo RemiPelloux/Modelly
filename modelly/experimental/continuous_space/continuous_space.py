@@ -105,6 +105,8 @@ class ContinuousSpace[A: ContinuousSpaceAgent]:
 
         #  a mapping from agents to index and vice versa
         self._index_to_agent: dict[int, Agent] = {}
+        # (radius, n, hash of positions) -> neighbour lists, see neighbors_within
+        self._neighbors_cache: tuple[tuple, dict] | None = None
 
     @property
     def agents(self) -> AgentSet[A]:
@@ -258,6 +260,9 @@ class ContinuousSpace[A: ContinuousSpaceAgent]:
         neighbours across the wrap are found. Use it at the start of a step for a
         simultaneous update: every agent then sees the same snapshot of positions.
 
+        The result is cached on the positions' content, so asking again before any
+        agent moves costs a hash of the position array instead of a new tree.
+
         Returns:
             dict mapping each agent to a list of its neighbours (itself excluded).
         """
@@ -265,16 +270,22 @@ class ContinuousSpace[A: ContinuousSpaceAgent]:
         if not agents:
             return {}
         positions = self.agent_positions
+        key = (radius, len(agents), hash(positions.tobytes()))
+        cached = self._neighbors_cache
+        if cached is not None and cached[0] == key:
+            return cached[1]
         if self.torus:
             positions = np.mod(positions - self.dimensions[:, 0], self.size)
             tree = cKDTree(positions, boxsize=self.size)
         else:
             tree = cKDTree(positions)
         hits = tree.query_ball_point(positions, radius)
-        return {
+        lists = {
             agent: [agents[j] for j in indices if j != i]
             for i, (agent, indices) in enumerate(zip(agents, hits))
         }
+        self._neighbors_cache = (key, lists)
+        return lists
 
     def get_k_nearest_agents(
         self, point: ArrayLike, k: int = 1

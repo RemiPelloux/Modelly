@@ -141,6 +141,18 @@ step and gives every agent the same snapshot of positions (a simultaneous update
 
 What remains per agent is its own numpy arithmetic on a handful of neighbours.
 
+## Caches
+
+Two results are now reused instead of recomputed:
+
+- `DataCollector.get_agent_vars_dataframe` keeps the frame it last built and the number of
+  steps it covered; a later call converts only the new steps and appends them. A dashboard
+  that reads the frame every tick pays for one tick of rows instead of the whole history.
+- `ContinuousSpace.neighbors_within` keys its lists on the radius, the population size and a
+  hash of the position array, so repeated queries within a step cost a hash of the positions
+  (tens of microseconds for 10,000 agents) instead of a tree build, and any position change,
+  including a direct write to the array, invalidates it.
+
 ## Considered and rejected
 
 Measured on the same machine; each would have bought a few percent at the cost of complexity or
@@ -172,13 +184,15 @@ state on the roadmap, not more micro-tuning.
 
 These are the changes with the largest remaining upside. Each is a project, not a patch.
 
-1. **Vectorised step phases.** Columns provide the arrays; the next step is helpers for the
-   whole-population phases of a step (decrement energy, draw reproduction, remove the dead) so a
-   model can move them out of the per-agent loop without giving up per-agent interactions.
-2. **Empty-cell index for non-grid spaces.** `DiscreteSpace.empties` on networks and Voronoi meshes
-   still scans every cell; the grid index can be generalised once those cells get a space hook.
-3. **Parallel replications.** `Scenario.spawn_replications` already yields independent seeded
-   scenarios; running them across processes is plumbing, not research.
+1. **Vectorised movement on grids.** Columns and the phase helpers cover state; moving many
+   agents at once (a coordinate column plus a vectorised neighbourhood lookup) is the next step
+   that would take a grid model's per-agent loop out of Python.
+2. **Shared-memory replications.** `workers=` runs replications in processes that each hold a
+   full model; a shared column store would let a sweep over one large model fan out without
+   copying it.
+3. **Compiled hot loops.** The remaining per-agent cost is Python call overhead on the cell move
+   and the neighbourhood lookup; an optional compiled path for those two would be the last
+   large win before a different authoring model.
 
 ## How to re-run
 

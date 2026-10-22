@@ -3,6 +3,32 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.3.0 - 2026-10-22
+
+### Added
+
+- Published on PyPI as `modelly-abm` (`pip install modelly-abm`); the import name stays `modelly`.
+- Vectorised step phases on column tables: `table.draw(p)` gives one seeded Bernoulli draw per
+  agent (scalar or per-row probabilities), `table.do_where(mask, "method")` calls a method on
+  the masked agents, alongside `remove_where`. A whole-population step reads
+  `energy -= 1; remove_where(energy < 0); do_where(draw(p), "spawn")`.
+- Parallel replications: `run_scenarios(..., workers=n)` runs the scenarios in a process pool
+  it creates and closes itself.
+- The O(1) empty-cell index now serves every discrete space (networks, Voronoi meshes), not
+  only grids: `select_random_empty_cell` builds it lazily and `cell.empty` keeps it current.
+- Smart caches: `DataCollector.get_agent_vars_dataframe` converts only the steps collected
+  since the previous call and appends them; `ContinuousSpace.neighbors_within` reuses its
+  lists while no position changed (keyed on the positions' content).
+- The architecture diagram animates one synchronised tick: a token leaves the scenario,
+  crosses the model, the recorder and the dataset, fans out to the exits and loops back,
+  each card glowing as it arrives.
+
+### Changed
+
+- `ColumnStore` and `ColumnTable` take the model's numpy generator; `table.rng` is available.
+- `Grid` no longer owns an empties index; the base `DiscreteSpace` does, and the error for a
+  full space names the space class.
+
 ## 1.2.0 - 2026-10-22
 
 ### Added
