@@ -104,6 +104,7 @@ The original Modelly conference paper from 2015 is [available here](http://confe
 :maxdepth: 7
 
 Getting started <getting_started>
+Use Modelly in your project <using_modelly_in_your_project>
 Overview <overview>
 Examples <examples>
 Migration guide <migration_guide>

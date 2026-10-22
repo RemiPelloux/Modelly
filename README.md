@@ -24,7 +24,8 @@ give your agents behaviour, run the world forward in time, then measure, replay 
 research use; modules under `modelly.experimental` may still change between minor versions.
 
 ```bash
-pip install -e ".[all]" && python example.py      # a wealth-exchange model, Gini after 100 ticks
+pip install -e ".[all]"     # everything: core, network, visualization, examples, docs
+python example.py           # runs a wealth-exchange model and prints its Gini coefficient
 ```
 
 ## Vision
@@ -57,10 +58,11 @@ continuous space, and parallel replications out of the box. The
 Modelly gives you the boring, load-bearing parts as small composable objects, so your model file
 reads like the description of the system instead of the plumbing around it:
 
-| | |
+| Building block | What it gives you |
 |---|---|
 | **Scenario** | Parameters as a typed class: one run, one seed, one config object |
-| **Agents** | Typed agent classes with `step()` behaviour, grouped in ordered `AgentSet`s; `Column` attributes live in numpy arrays |
+| **Agents** | Agent classes with a `step()`, grouped in ordered `AgentSet`s |
+| **Columns** | Attributes stored in numpy arrays, readable per agent and as a whole |
 | **Space** | Orthogonal / hexagonal grids, cells, networks, Voronoi meshes, continuous space |
 | **Time** | Discrete ticks, events, generators and priorities in one scheduler |
 | **Data** | Reporters and datasets that land in pandas, ready to plot |
@@ -94,7 +96,8 @@ pip install -e ".[network]"      # + networkx
 
 ## A model in 30 seconds
 
-> Runs as-is: `python example.py` prints the Gini coefficient rising.
+Agents wander a grid and hand one unit of wealth to a random cellmate. Inequality emerges.
+The same code ships as `example.py`.
 
 ```python
 from modelly import Model
@@ -141,17 +144,17 @@ class WealthModel(Model):
 
     @property
     def gini(self):
-        x, n = sorted(a.wealth for a in self.agents), len(self.agents)
-        return (
-            1 + 1 / n - 2 * sum(xi * (n - i) for i, xi in enumerate(x)) / (n * sum(x))
-        )
+        x = sorted(a.wealth for a in self.agents)
+        n = len(x)
+        weighted = sum(xi * (n - i) for i, xi in enumerate(x))
+        return 1 + 1 / n - 2 * weighted / (n * sum(x))
 
 
 model = WealthModel()
 for _ in range(100):
     model.step()
 
-print(model.gini)  # 0.0 at t=0 ... ~0.6 after 100 ticks
+print(model.gini)  # 0.0 at the start, about 0.6 after 100 ticks
 ```
 
 Three pieces, and nothing else: a **scenario** of inputs, **agents** that know one thing each,
@@ -248,10 +251,13 @@ example the object loop is unchanged within noise while the model-level work is 
   <img src="docs/images/branding/architecture.svg" alt="Modelly architecture" width="860">
 </p>
 
-- **Scenario to Model.** Inputs enter through one typed object; the model owns state, seed, RNG and time.
-- **Model to AgentSet / Space / Time.** Agents live in sets, act inside some space, and are driven by the scheduler.
+- **Scenario to Model.** Inputs enter through one typed object; the model owns state, seed, RNG and
+time.
+- **Model to AgentSet / Space / Time.** Agents live in sets, act inside some space, and are driven
+by the scheduler.
 - **Model to Dataset.** Reporters sample the model and its agents on intervals you choose.
-- **Dataset to Visualize / Analyze / Reproduce.** Same data, three exits: a browser app, a dataframe, or a seeded re-run.
+- **Dataset to Visualize / Analyze / Reproduce.** Same data, three exits: a browser app, a
+dataframe, or a seeded re-run.
 
 ## How the engine stays fast
 
@@ -321,8 +327,9 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 
 ## Documentation
 
-| | |
+| Where | What |
 |---|---|
+| **Use it in your project** | `docs/using_modelly_in_your_project.md`: install, layout, model, data, replications |
 | **Tutorials** | `docs/tutorials/`: 12 notebooks, from *your first model* to *hybrid ABM/DES* |
 | **Overview** | `docs/overview.md`: the object model, end to end |
 | **Performance audit** | `docs/performance.md`: measurements, what changed, what is next |
@@ -394,7 +401,8 @@ Issues, ideas and pull requests are welcome on the
 [issue tracker](https://github.com/RemiPelloux/Modelly/issues). If you are adding a feature, opening
 a ticket first is the fastest route: it keeps the patch small and reviewable.
 
-Everything you need is in [CONTRIBUTING.md](CONTRIBUTING.md): local setup, tests, the lint and format
+Everything you need is in [CONTRIBUTING.md](CONTRIBUTING.md): local setup, tests, the lint and
+format
 commands CI runs, docs, and how a pull request is reviewed. By taking part you agree to our
 [Code of Conduct](CODE_OF_CONDUCT.md).
 
