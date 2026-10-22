@@ -32,7 +32,9 @@ class MultiLevelAllianceModel(modelly.Model):
         """
         super().__init__(scenario=scenario)
         self.network = nx.Graph()  # Initialize the network
-        self.datacollector = modelly.DataCollector(model_reporters={"Network": "network"})
+        self.datacollector = modelly.DataCollector(
+            model_reporters={"Network": "network"}
+        )
         self.meta_agents = MetaAgents(self)
         self.membership_backend = self.meta_agents.backend
 

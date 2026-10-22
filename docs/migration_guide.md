@@ -115,17 +115,21 @@ if model.time >= 100:
 # Old
 from modelly.batchrunner import batch_run
 
-results = pd.DataFrame(batch_run(
-    MyModel,
-    parameters={"n_agents": [10, 20, 30]},
-    iterations=5,
-    max_steps=100,
-))
+results = pd.DataFrame(
+    batch_run(
+        MyModel,
+        parameters={"n_agents": [10, 20, 30]},
+        iterations=5,
+        max_steps=100,
+    )
+)
 
 # New
 from modelly.experimental.scenarios import RunConfiguration, Scenario, run_scenarios
 
-scenarios = Scenario.from_dataframe(param_df, replications=5)  # one row per n_agents value
+scenarios = Scenario.from_dataframe(
+    param_df, replications=5
+)  # one row per n_agents value
 config = RunConfiguration(MyModel, until=100)
 store = run_scenarios(scenarios, config)
 ```
@@ -199,7 +203,7 @@ for _ in range(10):
     model.step()
 
 # New
-model.run_for(10)    # Functionally equivalent for standard ABMs
+model.run_for(10)  # Functionally equivalent for standard ABMs
 model.run_until(10)  # You can now also run until a specific time
 ```
 `run_for(1)` produces identical results to `step()` for traditional models.
@@ -208,7 +212,7 @@ model.run_until(10)  # You can now also run until a specific time
 
 ```python
 # Schedule a single event at or after a specific time
-model.schedule_event(callback, at=50.0)    # Absolute time
+model.schedule_event(callback, at=50.0)  # Absolute time
 model.schedule_event(callback, after=5.0)  # Relative time
 
 # Cancel if needed
@@ -221,8 +225,12 @@ event.cancel()
 from modelly.time import Schedule
 
 # Schedule an event every 10 time units
-model.schedule_recurring(func, Schedule(interval=10))  # By default, starting after 1 interval (t=10 in this case)
-model.schedule_recurring(func, Schedule(interval=10, start=0))  # Start immediately or at any other time
+model.schedule_recurring(
+    func, Schedule(interval=10)
+)  # By default, starting after 1 interval (t=10 in this case)
+model.schedule_recurring(
+    func, Schedule(interval=10, start=0)
+)  # Start immediately or at any other time
 
 # Save the event and stop it when needed
 gen = model.schedule_recurring(func, Schedule(interval=5.0))
@@ -237,6 +245,7 @@ The experimental Simulator classes are now also deprecated.
 ```python
 # Old - ABMSimulator
 from modelly.experimental.devs.simulator import ABMSimulator
+
 simulator = ABMSimulator()
 simulator.setup(model)
 simulator.run_for(100)
@@ -248,6 +257,7 @@ model.run_for(100)
 ```python
 # Old - DEVSimulator
 from modelly.experimental.devs.simulator import DEVSimulator
+
 simulator = DEVSimulator()
 simulator.setup(model)
 simulator.schedule_event_absolute(callback, time=10.5)
@@ -306,7 +316,7 @@ rng_values = rng.integers(0, sys.maxsize, size=(5,))
 results = modelly.batch_run(
     MoneyModel,
     parameters=params,
-    rng=rng_values.tolist(), # we pass the 5 seed values to rng
+    rng=rng_values.tolist(),  # we pass the 5 seed values to rng
     max_steps=100,
     number_processes=1,
     data_collection_period=1,
@@ -332,8 +342,9 @@ def agent_portrayal(agent):
     return {
         "color": "white" if agent.state == 0 else "black",
         "marker": "s",
-        "size": "30"
+        "size": "30",
     }
+
 
 # New
 def agent_portrayal(agent):
@@ -357,6 +368,7 @@ propertylayer_portrayal = {
         "vmax": 10,
     }
 }
+
 
 # New
 def propertylayer_portrayal(layer):
@@ -478,7 +490,9 @@ Make sure all your model classes explicitly call `super().__init__()` in their `
 ```python
 class MyModel(modelly.Model):
     def __init__(self, some_arg_I_need, seed=None, some_kwarg_I_need=True):
-        super().__init__(seed=seed)  # Calling super is now required, passing seed is highly recommended
+        super().__init__(
+            seed=seed
+        )  # Calling super is now required, passing seed is highly recommended
         # Your model initialization code here
         # this code uses some_arg_I_need and my_init_kwarg
 ```
@@ -724,8 +738,7 @@ SolaraViz(model, components=[make_space_component(agent_portrayal)])
 from modelly.experimental import SolaraViz
 
 
-def make_plot(model):
-    ...
+def make_plot(model): ...
 
 
 SolaraViz(model_cls, model_params, measures=[make_plot, "foo", ["bar", "baz"]])
@@ -733,7 +746,14 @@ SolaraViz(model_cls, model_params, measures=[make_plot, "foo", ["bar", "baz"]])
 # new
 from modelly.visualization import SolaraViz, make_plot_component
 
-SolaraViz(model, components=[make_plot, make_plot_component("foo"), make_plot_component("bar", "baz")])
+SolaraViz(
+    model,
+    components=[
+        make_plot,
+        make_plot_component("foo"),
+        make_plot_component("bar", "baz"),
+    ],
+)
 ```
 
 #### Plotting text
@@ -744,16 +764,20 @@ To plot model-dependent text the experimental SolaraViz provided a `make_text` f
 # old
 from modelly.experimental import SolaraViz, make_text
 
+
 def show_steps(model):
     return f"Steps: {model.steps}"
+
 
 SolaraViz(model_cls, model_params, measures=make_text(show_steps))
 
 # new
 from modelly.visualisation import SolaraViz
 
+
 def show_steps(model):
     return f"Steps: {model.steps}"
+
 
 SolaraViz(model, components=[show_steps])
 ```

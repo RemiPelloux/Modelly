@@ -245,7 +245,9 @@ def test_model_param_checks():
 
     with pytest.raises(
         ValueError,
-        match=re.escape("Modelly's visualization requires the use of keyword arguments"),
+        match=re.escape(
+            "Modelly's visualization requires the use of keyword arguments"
+        ),
     ):
         _check_model_params(
             ModelWithPositionalOnly.__init__, {"param1": 1, "param2": 10}
@@ -253,7 +255,9 @@ def test_model_param_checks():
 
     with pytest.raises(
         ValueError,
-        match=re.escape("Modelly's visualization requires the use of keyword arguments"),
+        match=re.escape(
+            "Modelly's visualization requires the use of keyword arguments"
+        ),
     ):
         _check_model_params(ModelWithPositionalOnly(1), {"param1": 1, "param2": 10})
 
@@ -264,13 +268,17 @@ def test_model_param_checks():
 
     with pytest.raises(
         ValueError,
-        match=re.escape("Modelly's visualization requires the use of keyword arguments"),
+        match=re.escape(
+            "Modelly's visualization requires the use of keyword arguments"
+        ),
     ):
         _check_model_params(ModelWithVarPositional.__init__, {"param1": 1})
 
     with pytest.raises(
         ValueError,
-        match=re.escape("Modelly's visualization requires the use of keyword arguments"),
+        match=re.escape(
+            "Modelly's visualization requires the use of keyword arguments"
+        ),
     ):
         _check_model_params(ModelWithVarPositional(), {"param1": 1})
 

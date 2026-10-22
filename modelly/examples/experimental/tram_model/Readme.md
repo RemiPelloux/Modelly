@@ -15,9 +15,15 @@ To provide a simple demonstration of this capability is a tram route model.
 A single tram runs an ordered route of stations. Departing a station it accelerates at a fixed rate; on reaching cruise speed it coasts; at a brake point computed from `v^2 / 2a` it applies the brakes; on reaching zero speed it has arrived, dwells for a fixed time, and departs for the next station. Every one of those transitions is a `Threshold` crossing:
 
 ```python
-_cruise_threshold = Threshold(state=speed, limit=cruise_speed, callback="start_coasting", direction="rising")
-_braking_threshold = Threshold(state=position, limit=brake_point, callback="brake", direction="rising")
-_stop_threshold = Threshold(state=speed, limit=0.0, callback="arrive_at_station", direction="falling")
+_cruise_threshold = Threshold(
+    state=speed, limit=cruise_speed, callback="start_coasting", direction="rising"
+)
+_braking_threshold = Threshold(
+    state=position, limit=brake_point, callback="brake", direction="rising"
+)
+_stop_threshold = Threshold(
+    state=speed, limit=0.0, callback="arrive_at_station", direction="falling"
+)
 ```
 
 Note that the first two limits are not constants but the `cruise_speed` and `brake_point` Observables. `brake_point` is rewritten at the start of every segment and `cruise_speed` comes from the scenario, and in both cases the threshold observes the attribute and re-solves for the new crossing time on its own; nothing has to re-arm it.

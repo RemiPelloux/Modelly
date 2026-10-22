@@ -586,7 +586,10 @@ class TestErrorHandling:
 
     def test_mixin_combines_with_other_agent_bases(self):
         """Cooperative __init__ lets the mixin ride any Agent subclass."""
-        from modelly.discrete_space import CellAgent, OrthogonalMooreGrid  # noqa: PLC0415
+        from modelly.discrete_space import (  # noqa: PLC0415
+            CellAgent,
+            OrthogonalMooreGrid,
+        )
 
         class Grazer(HasActions, CellAgent):
             pass
