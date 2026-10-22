@@ -17,6 +17,7 @@ from modelly.discrete_space import (
     OrthogonalMooreGrid,
     OrthogonalVonNeumannGrid,
 )
+from modelly.discrete_space.discrete_space import DiscreteSpace
 from modelly.visualization.backends.abstract_renderer import AbstractRenderer
 from modelly.visualization.mpl_space_drawing import _to_numpy_argument_array
 
@@ -104,7 +105,12 @@ class MatplotlibBackend(AbstractRenderer):
         # Warn only once per call instead of once per agent
         dict_portrayal_warned = False
 
-        for agent in space.agents:
+        # Iterate the live agents directly: space.agents would build a weak
+        # AgentSet of the whole population for every frame.
+        agents = (
+            space.all_cells.agents if isinstance(space, DiscreteSpace) else space.agents
+        )
+        for agent in agents:
             portray_input = agent_portrayal(agent)
 
             if isinstance(portray_input, dict):
