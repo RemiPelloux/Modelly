@@ -178,6 +178,24 @@ as a precise ratio. The remaining per-agent cost on this workload is the livenes
 `agent in model.agents` (a property and a Python-level `__contains__`, about 140 ns) and the
 birth and death path above.
 
+## Visualization frame
+
+Drawing is a loop over every agent, so it has its own N+1 traps. In the matplotlib backend
+each frame used to build a weak `AgentSet` of the whole population just to iterate it, allocate
+a numpy array per agent through `Cell.position` to read a grid coordinate, and run two
+union-type `isinstance` checks per portrayal. A frame of 8,000 agents on a 100x100 grid went
+from 26 ms to 19.5 ms of CPU (warm caches, best of seven, alternating before and after); what remains is matplotlib's own scatter and the user's portrayal
+function, called once per agent.
+
+## Benchmark notebooks
+
+`benchmarks/notebooks/` holds four generated notebooks, each running one workload at three
+sizes and printing a table: a grid epidemic with columns, the predator-prey lifecycle, flocking
+with one KD-tree per step against one scan per agent, and a virus on a network.
+`python benchmarks/notebooks/run_notebooks.py` executes them headlessly and writes
+`results/README.md`; the whole set runs in about half a minute. The medfly notebook under
+`benchmarks/mesaVSmodelly/` is the fifth, and the one with a Mesa 2.3 twin.
+
 ## Caches
 
 Two results are now reused instead of recomputed:
