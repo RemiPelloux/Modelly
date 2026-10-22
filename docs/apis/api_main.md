@@ -7,6 +7,7 @@ model
 agent
 agentset
 columns
+migrate
 time
 discrete_space
 datacollection

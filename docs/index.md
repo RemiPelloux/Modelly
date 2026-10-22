@@ -103,6 +103,8 @@ The original Modelly conference paper from 2015 is [available here](http://confe
 
 Getting started <getting_started>
 Use Modelly in your project <using_modelly_in_your_project>
+Migrating from Mesa <migrating_from_mesa>
+Performance <performance>
 Overview <overview>
 Examples <examples>
 API Documentation <apis/api_main>
