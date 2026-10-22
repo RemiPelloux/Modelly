@@ -77,7 +77,11 @@ reads like the description of the system instead of the plumbing around it:
 No global state, no hidden step order, no bespoke loops: reproducibility is the default.
 
 <p align="center">
-  <img src="docs/images/branding/simulation-loop.svg" alt="The Modelly loop: scenario, step, record, visualize" width="720">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/branding/simulation-loop-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/branding/simulation-loop-light.svg">
+    <img src="docs/images/branding/simulation-loop-light.svg" alt="The Modelly loop: scenario, step, record, visualize" width="720">
+  </picture>
 </p>
 
 ## Install
@@ -298,7 +302,11 @@ map, for Mesa 2.x and 3.x, is [docs/migrating_from_mesa.md](docs/migrating_from_
 ## Architecture
 
 <p align="center">
-  <img src="docs/images/branding/architecture.svg" alt="Modelly architecture" width="860">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/branding/architecture-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/branding/architecture-light.svg">
+    <img src="docs/images/branding/architecture-light.svg" alt="Modelly architecture" width="860">
+  </picture>
 </p>
 
 - **Scenario to Model.** Inputs enter through one typed object; the model owns state, seed, RNG and
@@ -443,9 +451,11 @@ but never grow.
 
 ## Brand assets
 
-The banner, architecture diagram and loop diagram are hand-rolled static SVG (no animation, no
-JavaScript, no external fonts), so they render identically everywhere and stay readable. The
-version on the banner is read from the package. Regenerate them after editing the generator:
+The animated banner, architecture diagram and loop diagram are hand-rolled SVG (CSS keyframes and
+SMIL, no JavaScript, no external fonts), so they render inside GitHub's image sandbox and respect
+`prefers-reduced-motion`. Each ships in a light and a dark variant, switched by
+`prefers-color-scheme`, and the version on the banner is read from the package. Regenerate them
+after editing the generator:
 
 ```bash
 python tools/branding/generate_assets.py
