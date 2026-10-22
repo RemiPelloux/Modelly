@@ -277,7 +277,7 @@ is backed by a measurement in [docs/performance.md](docs/performance.md).
 | Cell neighbourhoods | per-cell `dict` cache | One lookup per query; invalidating one cell never touches another, and a discarded grid is freed |
 | Empty cells on a grid | swap-remove list + index | O(1) random empty cell at any fill level, built lazily the first time a grid turns out to be dense |
 | Property layers | `np.ndarray` per layer | Vectorised updates on the array, per-cell accessors on the cells, one source of truth |
-| Continuous space | one `np.ndarray` of positions | Distance queries are numpy operations, agents index into the array |
+| Continuous space | one `np.ndarray` of positions, one KD-tree per step | Per-agent queries are numpy; `neighbors_within` answers the whole population in one periodic tree query |
 | Event queue | `heapq` with lazy cancellation and compaction | O(log n) scheduling that never degrades under repeated cancel/reschedule |
 
 ## Benchmarks
@@ -292,7 +292,8 @@ here; the full table and method are in [docs/performance.md](docs/performance.md
 | Schelling, density 0.8, radius 2 | 8,000 | 24.4 ms | 1.10x faster |
 | Schelling, density 0.98 | 9,800 | 20.7 ms | 6.7x faster |
 | Wolf-Sheep, 100x100 grid | 1,500 + grass | 17.0 ms | 1.09x faster |
-| Boids, continuous space | 400 | 12.1 ms | 1.03x faster |
+| Boids, continuous space | 400 | 8.1 ms | 1.5x faster |
+| Boids, continuous space | 2,000 | 41.7 ms | 2.4x faster |
 
 ## Roadmap
 
@@ -302,10 +303,9 @@ an `Agent` subclass and a `Scenario`.
 1. **Vectorised step phases.** Columns make the state available as arrays; the next step is
    helpers for the common whole-population phases (decrement, draw, die, reproduce) so a model
    can move them out of the per-agent loop.
-2. **Spatial index for continuous space.** Neighbour queries go from all-pairs to O(n log n).
-3. **Parallel replications.** `Scenario.spawn_replications` already yields independent seeded
+2. **Parallel replications.** `Scenario.spawn_replications` already yields independent seeded
    scenarios; running them across processes is the missing piece.
-4. **Empty-cell index for networks and Voronoi meshes**, generalising what grids have today.
+3. **Empty-cell index for networks and Voronoi meshes**, generalising what grids have today.
 
 ## Built-in examples
 
