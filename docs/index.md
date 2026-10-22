@@ -74,7 +74,6 @@ nix develop .#uv2nix # pure shell
 For help getting started with Modelly, check out these resources:
 
 - [Getting started] - Learn about Modelly's core concepts and components
-- [Migration Guide] - Upgrade to Modelly 3.0
 - [Modelly Examples] - Browse user-contributed models and implementations
 - [Modelly releases] - Check what's new in the latest Modelly version
 - [Modelly Extensions] - Overview of modelly's Extensions
@@ -88,7 +87,6 @@ Modelly is an open source project and welcomes contributions:
 - [GitHub Repository] - Access the source code
 - [Issue Tracker] - Report bugs or suggest features
 - [Contributors Guide] - Learn how to contribute
-- [GSoC at Modelly — Candidates Guide] - For candidates interested in participating in the Google Summer of Code at Modelly
 
 ### Citing Modelly
 
@@ -107,7 +105,6 @@ Getting started <getting_started>
 Use Modelly in your project <using_modelly_in_your_project>
 Overview <overview>
 Examples <examples>
-Migration guide <migration_guide>
 API Documentation <apis/api_main>
 
 ```
@@ -119,7 +116,6 @@ API Documentation <apis/api_main>
 - {ref}`search`
 
 [contributors guide]: https://github.com/RemiPelloux/Modelly
-[GSoC at Modelly — Candidates Guide]: GSoC.md
 [github repository]: https://github.com/RemiPelloux/Modelly/
 [github discussions]: https://github.com/RemiPelloux/Modelly/discussions
 [Modelly releases]: https://github.com/RemiPelloux/Modelly/releases
@@ -128,6 +124,5 @@ API Documentation <apis/api_main>
 [modelly]: https://github.com/RemiPelloux/Modelly/
 [modelly overview]: overview
 [modelly examples]: https://modelly.readthedocs.io/stable/examples.html
-[migration guide]: migration_guide
 [Getting started]: getting_started
 [Modelly Extensions]: modelly_extension.md

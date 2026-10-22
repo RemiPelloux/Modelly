@@ -1,7 +1,7 @@
 """Solara based visualization for Modelly models.
 
 .. note::
-    SolaraViz is experimental and still in active development in Modelly 3.x. While we attempt to minimize them, there might be API breaking changes in minor releases.
+    SolaraViz is experimental and under active development. While we attempt to minimize them, there might be API breaking changes in minor releases.
 
 """
 

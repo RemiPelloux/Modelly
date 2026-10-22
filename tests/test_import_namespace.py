@@ -18,9 +18,8 @@ def test_import():
 def test_simulator_classes_removed():
     """Simulator, ABMSimulator, and DEVSimulator must stay removed.
 
-    They were deprecated in Modelly 3.5.0 and removed in Modelly 4.0 along with the
-    entire ``modelly.experimental.devs`` package (#3132, #3277, #3530). This pins
-    the exact error a user hits so it can't silently regress, and so it stays
+    Modelly schedules events on the Model itself and ships no ``devs`` package.
+    This pins the exact error a user hits so it can't silently regress, and so it stays
     consistent with the migration guide.
     """
     import modelly  # noqa: PLC0415

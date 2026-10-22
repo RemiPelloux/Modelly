@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import contextlib
-import warnings
 import weakref
-from collections.abc import Callable, Iterable, Iterator, Sequence
+from collections.abc import Callable, Iterable, Iterator
 from random import Random
-from typing import TYPE_CHECKING, Any, overload
+from typing import TYPE_CHECKING, Any
 
 from modelly.agentset._utils import _resolve_random
 from modelly.agentset.abstract import AbstractAgentSet
@@ -16,7 +15,7 @@ if TYPE_CHECKING:
     from modelly.agent import Agent
 
 
-class AgentSet[A: Agent](AbstractAgentSet[A], Sequence[A]):
+class AgentSet[A: Agent](AbstractAgentSet[A]):
     """A collection class that represents an ordered set of agents using weak references.
 
     This implementation uses weak references to agents, allowing for efficient management
@@ -113,10 +112,8 @@ class AgentSet[A: Agent](AbstractAgentSet[A], Sequence[A]):
             list[Agent]: A list containing all agents in the AgentSet.
 
         Notes:
-            This method provides an explicit way to convert the AgentSet to a list.
-            It is the recommended approach when list operations (indexing, slicing)
-            are needed, as direct sequence operations on AgentSet are deprecated
-            and will be removed in Modelly 4.0.
+            Use this when you need list operations such as indexing or slicing;
+            an AgentSet is an ordered set, not a sequence.
         """
         return [agent for r in list(self._refs) if (agent := r()) is not None]
 
@@ -238,34 +235,6 @@ class AgentSet[A: Agent](AbstractAgentSet[A], Sequence[A]):
             for r in list(refs)
             if (agent := r()) is not None and r in refs
         ]
-
-    @overload
-    def __getitem__(self, item: int) -> A: ...
-
-    @overload
-    def __getitem__(self, item: slice) -> list[A]: ...
-
-    def __getitem__(self, item):
-        """Retrieve an agent or a slice of agents from the AgentSet.
-
-        Args:
-            item (int | slice): The index or slice for selecting agents.
-
-        Returns:
-            Agent | list[Agent]: The selected agent or list of agents based on the index or slice provided.
-
-        .. deprecated::
-            Sequence behavior (indexing/slicing) is deprecated and will be removed in Modelly 4.0.
-            Use :meth:`to_list` instead: ``agentset.to_list()[index]`` or ``agentset.to_list()[start:stop]``.
-        """
-        warnings.warn(
-            "AgentSet.__getitem__ is deprecated and will be removed in Modelly 4.0. "
-            "Use AgentSet.to_list()[index] instead. "
-            "See https://modelly.readthedocs.io/latest/migration_guide.html#AgentSet-sequence-behavior",
-            PendingDeprecationWarning,
-            stacklevel=2,
-        )
-        return self.to_list()[item]
 
     # --- pickling -------------------------------------------------------------
 

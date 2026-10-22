@@ -215,9 +215,8 @@ class Model[A: Agent, S: Scenario](HasEmitters):
     @agents.setter
     def agents(self, agents: Any) -> None:
         raise AttributeError(
-            "You are trying to set model.agents. In Modelly 3.0 and higher, this attribute is "
-            "used by Modelly itself, so you cannot use it directly anymore."
-            "Please adjust your code to use a different attribute name for custom agent storage."
+            "model.agents is managed by Modelly and cannot be assigned. "
+            "Use a different attribute name for custom agent storage."
         )
 
     @property

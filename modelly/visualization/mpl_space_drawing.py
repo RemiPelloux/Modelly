@@ -146,10 +146,9 @@ def collect_agent_data(
             if not dict_portrayal_warned:
                 warnings.warn(
                     (
-                        "Returning a dict from agent_portrayal is deprecated and will be removed in Modelly 4.0. "
+                        "Returning a dict from agent_portrayal is deprecated and will be removed in a future release. "
                         "Please return an AgentPortrayalStyle instance instead. "
                         "For more information, refer to the migration guide: "
-                        "https://modelly.readthedocs.io/latest/migration_guide.html#defining-portrayal-components"
                     ),
                     FutureWarning,
                     stacklevel=2,
@@ -337,10 +336,9 @@ def draw_property_layers(
 
             warnings.warn(
                 (
-                    "The property_layer_portrayal dict is deprecated and will be removed in Modelly 4.0. "
+                    "The property_layer_portrayal dict is deprecated and will be removed in a future release. "
                     "Please use a callable that returns a PropertyLayerStyle instance instead. "
                     "For more information, refer to the migration guide: "
-                    "https://modelly.readthedocs.io/latest/migration_guide.html#defining-portrayal-components"
                 ),
                 FutureWarning,
                 stacklevel=2,
