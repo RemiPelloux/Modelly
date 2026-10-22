@@ -28,16 +28,64 @@ benchmarks/mesa_baseline/
 
 ## Setup
 
-Mesa 2 and Modelly cannot share an environment for this comparison, because
-this is exactly the API that Mesa 3 broke (`Agent(unique_id, model)` and
-`Model.next_id()` are gone). Use a dedicated one:
+Mesa 2 and Modelly cannot share an environment, because this is exactly the
+API that Mesa 3 broke (`Agent(unique_id, model)` and `Model.next_id()` are
+gone). The dedicated environment lives at the repo root:
 
 ```bash
 python -m venv .venv-mesa2
-.venv-mesa2/bin/pip install "mesa==2.3.2" numpy pandas
+.venv-mesa2/bin/pip install "mesa==2.3.2" numpy pandas matplotlib seaborn \
+    jupyterlab ipykernel
+.venv-mesa2/bin/python -m ipykernel install --user --name mesa2-baseline \
+    --display-name "Python 3 — Mesa 2.3 (baseline)"
 ```
 
+Installed and verified here: Mesa 2.3.2, numpy 2.5.4, pandas 3.1.0,
+matplotlib 3.11.2, seaborn 0.13.2, JupyterLab 4.6.4, ipykernel 7.4.0.
+The notebook uses no removed pandas/seaborn/matplotlib APIs, so current
+versions of the analysis stack work with Mesa 2.3.
+
+### Interactive use (the notebook as a playbook)
+
+```bash
+cd benchmarks/mesa_baseline
+../../.venv-mesa2/bin/jupyter lab Notebook_ABM_TIS_Mis_A_Jour.ipynb
+```
+
+Pick the **"Python 3 — Mesa 2.3 (baseline)"** kernel. The notebook is the
+playbook: run cells top to bottom and each section produces its own tables and
+figures (cell 7 writes `resultats_experience_factorielle.csv`, cell 12 writes
+`dynamiques_temporelles_journalieres.csv`).
+
+Neither environment is committed: `.venv-mesa2/` is gitignored, and so are the
+notebook and everything it writes.
+
 ## Running
+
+### The full notebook — this is the one that matters
+
+Every simulation in the study is mandatory, so the authoritative run executes
+**every cell**, in order, in one shared namespace:
+
+```bash
+cd benchmarks/mesa_baseline
+MPLBACKEND=Agg ../../.venv-mesa2/bin/python run_baseline.py --full
+```
+
+That produces the factorial experiment (144 seasons), the fruit-status
+dynamics (20 seasons), the daily population dynamics (60 seasons), and all
+figures — **~2 hours** on this machine. Run it from this directory so the CSVs
+(`resultats_experience_factorielle.csv`, `dynamiques_temporelles_journalieres.csv`)
+land next to the notebook, where the plotting cells look for them. The
+`*.csv`, `*.log` and `*.json` outputs are gitignored along with the notebook.
+
+Results are reproducible from the seeds baked into the notebook (`base_seed=42`,
+`seed=42 + rep * 1000 + ...`); `FORCE_RERUN = True` in cell 7 means the
+factorial is recomputed from scratch rather than loaded from cache.
+
+### Timing individual seasons
+
+These modes are for measurement only (they run no plots and no CSVs):
 
 ```bash
 .venv-mesa2/bin/python benchmarks/mesa_baseline/run_baseline.py              # both crops
@@ -45,10 +93,9 @@ python -m venv .venv-mesa2
 .venv-mesa2/bin/python benchmarks/mesa_baseline/run_baseline.py --factorcrop --crop cherry
 ```
 
-The harness executes cells 0–5 of the notebook (imports, crop parameters,
-agents, model, TIS calendars) and then drives `RematingModel` itself, so
-plotting and the notebook's own experiment loop never run. A *season* is the
-unit: 100 steps for strawberry, 25 for cherry.
+They execute cells 0–5 (imports, crop parameters, agents, model, TIS
+calendars) and then drive `RematingModel` directly. A *season* is the unit:
+100 steps for strawberry, 25 for cherry.
 
 ## Measured numbers
 
