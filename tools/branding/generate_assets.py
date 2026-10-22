@@ -20,12 +20,23 @@ from __future__ import annotations
 
 import math
 import random
+import re
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parents[2] / "docs" / "images" / "branding"
 
 FONT = "Inter, 'Segoe UI', 'Helvetica Neue', system-ui, -apple-system, sans-serif"
 MONO = "'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace"
+PACKAGE_INIT = Path(__file__).resolve().parents[2] / "modelly" / "__init__.py"
+
+
+def version_label() -> str:
+    """The ``vX.Y`` shown on the banner, read from the package so it cannot go stale."""
+    match = re.search(
+        r'__version__ = "(\d+)\.(\d+)', PACKAGE_INIT.read_text(encoding="utf-8")
+    )
+    return f"v{match[1]}.{match[2]}"
+
 
 DARK = {
     "bg1": "#080B1A",
@@ -94,7 +105,6 @@ def network_nodes(seed: int = 7) -> list[tuple[float, float, float]]:
 
 def banner(p: dict, theme_name: str) -> str:
     """Return the 1200x340 hero banner for one colour scheme."""
-    rnd = random.Random(11)
     nodes = network_nodes()
     cols, rows = 6, 4
 
@@ -113,53 +123,26 @@ def banner(p: dict, theme_name: str) -> str:
     for k, (a, b) in enumerate(edges):
         (x1, y1, _), (x2, y2, _) = nodes[a], nodes[b]
         dash = 4 + (k % 3) * 2
-        dur = 5 + (k % 5) * 1.3
         edge_svg.append(
             f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
             f'stroke="{p["edge"]}" stroke-opacity="{p["edge_op"]}" stroke-width="1.1" '
-            f'stroke-dasharray="{dash} {dash + 5}" stroke-linecap="round">'
-            f'<animate attributeName="stroke-dashoffset" from="0" to="-{2 * dash + 5}" '
-            f'dur="{dur}s" repeatCount="indefinite"/></line>'
+            f'stroke-dasharray="{dash} {dash + 5}" stroke-linecap="round"/>'
         )
 
     node_svg = []
     for x, y, rad in nodes:
-        dx = round(rnd.uniform(-5, 5), 1)
-        dy = round(rnd.uniform(-5, 5), 1)
-        dur = round(rnd.uniform(5.5, 10.5), 1)
-        delay = round(rnd.uniform(0, 3), 1)
         hub = rad > 4.2
         node_svg.append(
             f'<g><circle cx="{x}" cy="{y}" r="{rad}" fill="{p["node"]}"'
             + (' opacity="0.95"' if hub else ' opacity="0.8"')
-            + ">"
-            f'<animateTransform attributeName="transform" type="translate" '
-            f'values="0 0; {dx} {dy}; 0 0" dur="{dur}s" begin="-{delay}s" '
-            f'repeatCount="indefinite" calcMode="spline" '
-            f'keySplines="0.45 0 0.55 1;0.45 0 0.55 1"/></circle>'
+            + "/>"
             + (
-                f'<circle cx="{x}" cy="{y}" r="{rad * 3.2:.1f}" fill="none" '
-                f'stroke="{p["node"]}" stroke-opacity="0.18" stroke-width="1">'
-                f'<animate attributeName="r" values="{rad * 2:.1f};{rad * 3.6:.1f};{rad * 2:.1f}" '
-                f'dur="{dur + 1}s" begin="-{delay}s" repeatCount="indefinite"/>'
-                f'<animate attributeName="stroke-opacity" values="0.22;0.04;0.22" '
-                f'dur="{dur + 1}s" begin="-{delay}s" repeatCount="indefinite"/></circle>'
+                f'<circle cx="{x}" cy="{y}" r="{rad * 2.6:.1f}" fill="none" '
+                f'stroke="{p["node"]}" stroke-opacity="0.14" stroke-width="1"/>'
                 if hub
                 else ""
             )
             + "</g>"
-        )
-
-    # two pulses travelling across the lattice
-    pulse_paths = []
-    for a, b in [(0, 5), (5, 23), (12, 17)]:
-        (x1, y1, _), (x2, y2, _) = nodes[a], nodes[b]
-        pulse_paths.append(
-            f'<path id="pp-{theme_name}-{a}-{b}" d="M{x1} {y1} L{x2} {y2}" fill="none" '
-            f'stroke="none"/>'
-            f'<circle r="2.6" fill="{p["g2"]}" opacity="0">'
-            f'<animateMotion dur="{rnd.uniform(4.5, 7):.1f}s" repeatCount="indefinite">'
-            f'<mpath href="#pp-{theme_name}-{a}-{b}"/></animateMotion></circle>'
         )
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" width="1200" height="340" role="img" aria-label="Modelly — agent-based modeling in Python">
@@ -203,24 +186,6 @@ def banner(p: dict, theme_name: str) -> str:
     <clipPath id="frame-{theme_name}">
       <rect width="1200" height="340" rx="26"/>
     </clipPath>
-    <style>
-      @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; }} }}
-      .blob {{ animation: drift 18s cubic-bezier(0.45,0,0.55,1) infinite alternate; }}
-      @keyframes drift {{
-        0%   {{ transform: translate3d(0,0,0) scale(1); opacity: 0.85; }}
-        50%  {{ transform: translate3d(26px,-18px,0) scale(1.08); opacity: 1; }}
-        100% {{ transform: translate3d(-18px,14px,0) scale(0.96); opacity: 0.8; }}
-      }}
-      .sheen {{ animation: sheen 7.5s ease-in-out infinite; }}
-      @keyframes sheen {{
-        0%   {{ transform: translateX(-520px); opacity: 0; }}
-        12%  {{ opacity: 0.9; }}
-        55%  {{ opacity: 0.9; }}
-        70%, 100% {{ transform: translateX(1180px); opacity: 0; }}
-      }}
-      .caret {{ animation: blink 1.6s steps(1,end) infinite; }}
-      @keyframes blink {{ 0%,55% {{ opacity: 1; }} 56%,100% {{ opacity: 0.15; }} }}
-    </style>
   </defs>
 
   <g clip-path="url(#frame-{theme_name})">
@@ -228,32 +193,25 @@ def banner(p: dict, theme_name: str) -> str:
     <rect width="1200" height="340" fill="url(#dots-{theme_name})"/>
 
     <g filter="url(#soft-{theme_name})">
-      <ellipse class="blob" cx="180" cy="60" rx="230" ry="170" fill="url(#glow1-{theme_name})"/>
-      <ellipse class="blob" cx="470" cy="300" rx="250" ry="180" fill="url(#glow2-{theme_name})" style="animation-delay:-6s"/>
-      <ellipse class="blob" cx="1010" cy="250" rx="260" ry="200" fill="url(#glow3-{theme_name})" style="animation-delay:-11s"/>
+      <ellipse cx="180" cy="60" rx="230" ry="170" fill="url(#glow1-{theme_name})"/>
+      <ellipse cx="470" cy="300" rx="250" ry="180" fill="url(#glow2-{theme_name})"/>
+      <ellipse cx="1010" cy="250" rx="260" ry="200" fill="url(#glow3-{theme_name})"/>
     </g>
 
     <g>
       {"".join(edge_svg)}
       {"".join(node_svg)}
-      {"".join(pulse_paths)}
     </g>
 
     <g>
       <rect x="78" y="56" width="188" height="34" rx="17" fill="{p["pill_bg"]}" stroke="{p["pill_stroke"]}" stroke-width="1"/>
-      <circle cx="98" cy="73" r="3.4" fill="{p["g2"]}">
-        <animate attributeName="opacity" values="1;0.25;1" dur="2.4s" repeatCount="indefinite"/>
-      </circle>
-      <text x="112" y="78" font-family="{MONO}" font-size="14" fill="{p["pill_text"]}" letter-spacing="0.6">v4.0 · alpha</text>
+      <circle cx="98" cy="73" r="3.4" fill="{p["g2"]}"/>
+      <text x="112" y="78" font-family="{MONO}" font-size="14" fill="{p["pill_text"]}" letter-spacing="0.6">{version_label()} · stable</text>
     </g>
 
     <text x="78" y="196" font-family="{FONT}" font-size="96" font-weight="700" letter-spacing="-3" fill="url(#word-{theme_name})">Modelly</text>
 
-    <g clip-path="url(#wordclip-{theme_name})">
-      <rect class="sheen" x="0" y="100" width="260" height="120" fill="url(#sheen-{theme_name})" fill-opacity="0.5" transform="skewX(-18)"/>
-    </g>
-
-    <text x="82" y="248" font-family="{FONT}" font-size="26" font-weight="400" fill="{p["sub"]}" letter-spacing="0.2">Agent-based modeling in Python<tspan class="caret" fill="{p["g2"]}">_</tspan></text>
+    <text x="82" y="248" font-family="{FONT}" font-size="26" font-weight="400" fill="{p["sub"]}" letter-spacing="0.2">Agent-based modeling in Python</text>
 
     <g opacity="0.9">
       <rect x="80" y="278" width="10" height="10" rx="3" fill="{p["g1"]}"/>
@@ -311,22 +269,14 @@ def flow(
     delay: float = 0,
     curve: float = 0.0,
 ) -> str:
-    """Animated dashed connector with a travelling pulse."""
+    """Dashed connector ending in a dot at its destination."""
     x1, y1 = a
     x2, y2 = b
     mx = (x1 + x2) / 2 + curve
     my = (y1 + y2) / 2
-    uid = f"f{abs(hash((a, b, curve))) % 100000}"
     return f"""  <g>
-    <path id="{uid}" d="M{x1} {y1} Q{mx} {my} {x2} {y2}" fill="none" stroke="{accent}" stroke-opacity="0.45" stroke-width="1.8" stroke-dasharray="5 7" stroke-linecap="round">
-      <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="{dur}s" repeatCount="indefinite"/>
-    </path>
-    <circle r="3.2" fill="{accent}" opacity="0">
-      <animateMotion dur="{dur * 1.4:.1f}s" begin="-{delay}s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.4 0 0.2 1">
-        <mpath href="#{uid}"/>
-      </animateMotion>
-      <animate attributeName="opacity" values="0;1;1;0" dur="{dur * 1.4:.1f}s" begin="-{delay}s" repeatCount="indefinite"/>
-    </circle>
+    <path d="M{x1} {y1} Q{mx} {my} {x2} {y2}" fill="none" stroke="{accent}" stroke-opacity="0.55" stroke-width="1.8" stroke-dasharray="5 7" stroke-linecap="round"/>
+    <circle cx="{x2}" cy="{y2}" r="3.2" fill="{accent}"/>
   </g>
 """
 
@@ -472,24 +422,13 @@ def architecture() -> str:
     )
 
     parts.append("""  <g>
-    <path id="loopback" d="M1120 752 C1190 752 1190 300 1140 282" fill="none" stroke="#7C5CFF" stroke-opacity="0.38" stroke-width="1.8" stroke-dasharray="6 8" stroke-linecap="round">
-      <animate attributeName="stroke-dashoffset" from="0" to="-28" dur="3.4s" repeatCount="indefinite"/>
-    </path>
-    <circle r="3.6" fill="#7C5CFF" opacity="0">
-      <animateMotion dur="6.5s" repeatCount="indefinite">
-        <mpath href="#loopback"/>
-      </animateMotion>
-    </circle>
+    <path d="M1120 752 C1190 752 1190 300 1140 282" fill="none" stroke="#7C5CFF" stroke-opacity="0.5" stroke-width="1.8" stroke-dasharray="6 8" stroke-linecap="round"/>
+    <circle cx="1140" cy="282" r="3.6" fill="#7C5CFF"/>
     <text x="1058" y="524" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#7A76A8" letter-spacing="1">next tick</text>
   </g>""")
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" role="img" aria-label="Modelly architecture: a scenario configures the model, which runs agents in a space on a schedule, records data into datasets and is explored through visualization and analysis.">
   <title>Modelly architecture</title>
-  <defs>
-    <style>
-      @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; }} }}
-    </style>
-  </defs>
 {os_lines(parts)}
 </svg>
 """
@@ -501,7 +440,7 @@ def os_lines(parts: list[str]) -> str:
 
 
 def simulation_loop() -> str:
-    """Ring diagram of the step loop with a pulse travelling the ring."""
+    """Ring diagram of the step loop."""
     cw, ch = 1000, 560
     cx, cy, r = 500, 285, 142
 
@@ -518,19 +457,13 @@ def simulation_loop() -> str:
     )
     body.append(
         f'  <circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="#7C5CFF" stroke-opacity="0.28" '
-        f'stroke-width="2" stroke-dasharray="4 10">'
-        f'<animate attributeName="stroke-dashoffset" from="0" to="-28" dur="3s" repeatCount="indefinite"/></circle>'
+        f'stroke-width="2" stroke-dasharray="4 10"/>'
     )
     body.append(
         f'  <g transform="translate({cx} {cy})">'
         f'<circle r="{r}" fill="none" stroke="url(#ring)" stroke-width="6" stroke-linecap="round" '
-        f'stroke-dasharray="{2 * math.pi * r * 0.24:.0f} {2 * math.pi * r:.0f}">'
-        f'<animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="9s" repeatCount="indefinite"/>'
-        f"</circle></g>"
-    )
-    body.append(
-        f'  <circle r="4" fill="#12B5C9" opacity="0"><animateMotion dur="9s" repeatCount="indefinite" '
-        f'path="M{cx + r} {cy} A{r} {r} 0 1 1 {cx - r} {cy} A{r} {r} 0 1 1 {cx + r} {cy}"/></circle>'
+        f'stroke-dasharray="{2 * math.pi * r * 0.24:.0f} {2 * math.pi * r:.0f}" transform="rotate(-60)"/>'
+        f"</g>"
     )
     body.append(
         f'  <text x="{cx}" y="{cy - 4}" text-anchor="middle" font-family="{FONT}" font-size="28" font-weight="700" fill="#141833">one tick</text>'
@@ -546,8 +479,7 @@ def simulation_loop() -> str:
             f'<rect x="{x - 118}" y="{y - 34}" width="4" height="68" rx="2" fill="{acc}"/>'
             f'<text x="{x - 100}" y="{y - 6}" font-family="{FONT}" font-size="17" font-weight="600" fill="#141833">{name}</text>'
             f'<text x="{x - 100}" y="{y + 16}" font-family="{MONO}" font-size="12.5" fill="#6B6F96">{sub}</text>'
-            f'<circle cx="{x + 98}" cy="{y}" r="4" fill="{acc}">'
-            f'<animate attributeName="opacity" values="1;0.2;1" dur="2.8s" begin="-{stations.index((name, sub, x, y, acc)) * 0.7}s" repeatCount="indefinite"/></circle></g>'
+            f'<circle cx="{x + 98}" cy="{y}" r="4" fill="{acc}"/></g>'
         )
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" role="img" aria-label="The Modelly simulation loop: scenario, step, record, visualize.">
@@ -558,9 +490,6 @@ def simulation_loop() -> str:
       <stop offset="0.5" stop-color="#12B5C9"/>
       <stop offset="1" stop-color="#E0559F"/>
     </linearGradient>
-    <style>
-      @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; }} }}
-    </style>
   </defs>
 {os_lines(body)}
 </svg>
