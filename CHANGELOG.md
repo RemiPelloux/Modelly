@@ -3,6 +3,14 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Changed
+
+- The Mesa 2.3 comparison harness is no longer in the repository; `docs/performance.md`
+  describes the evaluation method and keeps the measured numbers.
+- Documentation site on GitHub Pages, citation metadata, README and contributing guide refresh.
+
 ## 1.4.0 - 2026-10-22
 
 ### Added

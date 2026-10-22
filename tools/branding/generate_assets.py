@@ -20,14 +20,12 @@ from __future__ import annotations
 
 import math
 import random
-import re
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parents[2] / "docs" / "images" / "branding"
 
 FONT = "Inter, 'Segoe UI', 'Helvetica Neue', system-ui, -apple-system, sans-serif"
 MONO = "'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace"
-PACKAGE_INIT = Path(__file__).resolve().parents[2] / "modelly" / "__init__.py"
 
 # Diagram palettes: one per colour scheme, so the architecture and loop diagrams
 # stay readable on GitHub's light and dark themes (served through <picture>).
@@ -72,14 +70,6 @@ DIAGRAM_DARK = {
     "center": "#F2F4FF",
     "center_sub": "#B3BADC",
 }
-
-
-def version_label() -> str:
-    """The ``vX.Y`` shown on the banner, read from the package so it cannot go stale."""
-    match = re.search(
-        r'__version__ = "(\d+)\.(\d+)', PACKAGE_INIT.read_text(encoding="utf-8")
-    )
-    return f"v{match[1]}.{match[2]}"
 
 
 DARK = {
@@ -295,11 +285,11 @@ def banner(p: dict, theme_name: str) -> str:
     </g>
 
     <g>
-      <rect x="78" y="56" width="188" height="34" rx="17" fill="{p["pill_bg"]}" stroke="{p["pill_stroke"]}" stroke-width="1"/>
+      <rect x="78" y="56" width="216" height="34" rx="17" fill="{p["pill_bg"]}" stroke="{p["pill_stroke"]}" stroke-width="1"/>
       <circle cx="98" cy="73" r="3.4" fill="{p["g2"]}">
         <animate attributeName="opacity" values="1;0.25;1" dur="2.4s" repeatCount="indefinite"/>
       </circle>
-      <text x="112" y="78" font-family="{MONO}" font-size="14" fill="{p["pill_text"]}" letter-spacing="0.6">{version_label()} · stable</text>
+      <text x="112" y="78" font-family="{MONO}" font-size="14" fill="{p["pill_text"]}" letter-spacing="0.6">open source · stable</text>
     </g>
 
     <text x="78" y="196" font-family="{FONT}" font-size="96" font-weight="700" letter-spacing="-3" fill="url(#word-{theme_name})">Modelly</text>

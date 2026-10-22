@@ -162,39 +162,35 @@ writes its registry dicts directly instead of through two method calls; empty da
 skipped; the constructor avoids packing empty arguments. `Model.time` is a plain attribute whose
 CHANGED signal is emitted once per time advance.
 
-### Against Mesa 2.3 on a real model
+### How we evaluate against other frameworks
 
-`benchmarks/mesaVSmodelly/` runs the same medfly notebook (21 cells, a 576-season factorial
-experiment) under Mesa 2.3 and under Modelly, with bit-identical output CSVs. Best of three
-alternating runs on the same machine:
+Micro-benchmarks say where time goes; whether a framework is faster for a researcher is
+decided on a real model. The method we use, and recommend for any comparison:
+
+1. **Same model, same seeds.** Take a research notebook written for the other framework and
+   port it with `python -m modelly.migrate`, changing nothing but the framework API. Seed both
+   from the same value so the random streams match.
+2. **Prove equivalence before timing.** Run both to completion and compare every output table
+   by checksum. Only bit-identical outputs make the timings comparable; a port that changes
+   the activation order or the random stream is a different model.
+3. **Time cell by cell, alternating.** Execute both notebooks headlessly with per-cell wall
+   times, alternate the two frameworks across at least three rounds on the same machine, and
+   keep the best time of each. Single runs on a shared machine swing by 2x.
+4. **Report the whole notebook and the heaviest cell.** The experiment cell is what the
+   researcher waits for; the rest shows the fixed costs.
+
+Applied to a medfly population model (21 cells, a 576-season factorial experiment) written for
+Mesa 2.3, with bit-identical output CSVs, the best of three alternating rounds was:
 
 | | Mesa 2.3 | Modelly |
 |---|---|---|
 | Whole notebook | 27.7 s | 24.5 s |
-| Factorial experiment (cell 7) | 17.2 s | 14.9 s |
+| Factorial experiment, 576 seasons | 17.2 s | 14.9 s |
 
-Single runs on a loaded machine swing by 2x, so read this as parity to a modest advantage, not
-as a precise ratio. The remaining per-agent cost on this workload is the liveness check
-`agent in model.agents` (a property and a Python-level `__contains__`, about 140 ns) and the
-birth and death path above.
-
-## Visualization frame
-
-Drawing is a loop over every agent, so it has its own N+1 traps. In the matplotlib backend
-each frame used to build a weak `AgentSet` of the whole population just to iterate it, allocate
-a numpy array per agent through `Cell.position` to read a grid coordinate, and run two
-union-type `isinstance` checks per portrayal. A frame of 8,000 agents on a 100x100 grid went
-from 26 ms to 19.5 ms of CPU (warm caches, best of seven, alternating before and after); what remains is matplotlib's own scatter and the user's portrayal
-function, called once per agent.
-
-## Benchmark notebooks
-
-`benchmarks/notebooks/` holds four generated notebooks, each running one workload at three
-sizes and printing a table: a grid epidemic with columns, the predator-prey lifecycle, flocking
-with one KD-tree per step against one scan per agent, and a virus on a network.
-`python benchmarks/notebooks/run_notebooks.py` executes them headlessly and writes
-`results/README.md`; the whole set runs in about half a minute. The medfly notebook under
-`benchmarks/mesaVSmodelly/` is the fifth, and the one with a Mesa 2.3 twin.
+Read it as parity to a modest advantage, not as a precise ratio. The remaining per-agent cost
+on that workload is the liveness check `agent in model.agents` (a property and a Python-level
+`__contains__`, about 140 ns) and the birth and death path above. The notebook and its harness
+are not part of this repository.
 
 ## Caches
 

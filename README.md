@@ -16,15 +16,27 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-4C9A2A" alt="license: Apache-2.0"></a>
 </p>
 
-<p align="center"><b>Modelly</b> is a Python framework for <b>agent-based modeling</b>: declare a scenario,
-give your agents behaviour, run the world forward in time, then measure, replay and publish it.</p>
+<h1 align="center">Modelly: agent-based modeling in Python</h1>
+
+<p align="center"><b>Modelly</b> is an <b>agent-based modeling (ABM)</b> framework for Python. Declare a
+typed scenario, give your agents behaviour, run the world forward in time, then measure, replay and
+publish it. Seeded runs, numpy-backed agents, grids, networks and continuous space, discrete-event
+time, pandas data collection, browser visualization. Fast by construction, reproducible by default.</p>
+
+<p align="center">
+  <a href="https://remipelloux.github.io/Modelly/">Documentation</a> ·
+  <a href="https://remipelloux.github.io/Modelly/getting_started.html">Tutorials</a> ·
+  <a href="#built-in-examples">Examples</a> ·
+  <a href="#coming-from-mesa">Coming from Mesa</a> ·
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
 
 ---
 
-**Status:** 1.2, Python 3.12+. The core (model, agents, columns, spaces, time, data) is stable
-and follows semantic versioning; modules under `modelly.experimental` may change between minor
-versions and say so in their docstrings. What changed in each release is in
-[CHANGELOG.md](CHANGELOG.md).
+**Status:** stable, Python 3.12+. The core (model, agents, columns, spaces, time, data) follows
+semantic versioning; modules under `modelly.experimental` may change between minor versions and
+say so in their docstrings. The current version is `modelly.__version__`, and what changed in each
+release is in [CHANGELOG.md](CHANGELOG.md).
 
 ```bash
 pip install modelly-abm                                   # the package name on PyPI
@@ -108,7 +120,7 @@ To depend on Modelly from your own project, add it to `pyproject.toml` (the dist
 `modelly-abm`, the import is `modelly`):
 
 ```toml
-dependencies = ["modelly-abm>=1.3"]
+dependencies = ["modelly-abm"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is
@@ -300,6 +312,24 @@ store = run_scenarios(scenarios, RunConfiguration(WealthModel, until=200), worke
 Each replication carries its own seed derived from the base scenario, so the sweep is
 reproducible; `workers=` spreads it over processes.
 
+## Modelly, Mesa, NetLogo or Agents.jl?
+
+| | Modelly | Mesa | NetLogo | Agents.jl |
+|---|---|---|---|---|
+| Language | Python | Python | NetLogo | Julia |
+| Authoring model | `Model`, `Agent`, `AgentSet`, typed `Scenario` | `Model`, `Agent`, `AgentSet` | turtles, patches, links | `ABM`, agent structs |
+| Per-agent attributes in arrays | `Column`: one numpy array per attribute, zero-copy views | no | no | yes |
+| Population-wide operations | `draw`, `do_where`, `remove_where`, one KD-tree query per step | per-agent loops | built-in primitives | vectorised |
+| Time | ticks, scheduled events, generators, priorities, hybrid ABM/DES | ticks, events | ticks | ticks, events |
+| Reproducibility | one seed on the scenario, derived seeds per replication | model seed | run seed | model RNG |
+| Data out | pandas, incremental frames | pandas | CSV, BehaviorSpace | DataFrames.jl |
+| Visualization | Solara in the browser, matplotlib, altair | Solara | built-in GUI | Makie |
+| Moving from Mesa | codemod plus a construct-by-construct guide | – | – | – |
+
+Pick Modelly when you want Mesa's authoring model with numpy underneath, measured performance,
+and a scenario object that makes every run reproducible. Pick NetLogo for teaching and its GUI,
+Agents.jl when the rest of your stack is Julia.
+
 ## Coming from Mesa
 
 Modelly's authoring model is the one Mesa 3 users know (`Model`, `Agent`, `AgentSet`,
@@ -351,10 +381,13 @@ is backed by a measurement in [docs/performance.md](docs/performance.md).
 
 ## Benchmarks
 
-`benchmarks/global_benchmark.py` times the bundled reference models and runs in CI;
+`benchmarks/global_benchmark.py` times the bundled reference models and runs in CI, and
 `benchmarks/notebooks/` holds four benchmark notebooks (grid epidemic, predator-prey lifecycle,
-flocking, network diffusion) with a headless runner, and `benchmarks/mesaVSmodelly/` runs the
-same medfly notebook under Mesa 2.3 and Modelly. The latest audit (CPU time per step, large
+flocking, network diffusion) with a headless runner. Against other frameworks we evaluate on a
+real research model: the same notebook ported with the codemod, identical seeds, outputs
+checked to be bit-identical, per-cell timings taken best-of-n with the two frameworks
+alternating. On a medfly population model with a 576-season factorial, that puts Modelly at
+parity to a modest advantage over Mesa 2.3. The latest audit (CPU time per step, large
 configurations, same machine before and after) is summarised here; the full tables and method
 are in [docs/performance.md](docs/performance.md).
 
@@ -412,6 +445,7 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 
 | Where | What |
 |---|---|
+| **Documentation site** | [remipelloux.github.io/Modelly](https://remipelloux.github.io/Modelly/): everything below, rendered and searchable |
 | **Use it in your project** | `docs/using_modelly_in_your_project.md`: install, layout, model, data, replications |
 | **Migrating from Mesa** | `docs/migrating_from_mesa.md`: construct-by-construct map, plus `python -m modelly.migrate` |
 | **Tutorials** | `docs/tutorials/`: 12 notebooks, from *your first model* to *hybrid ABM/DES* |
@@ -424,42 +458,6 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 The tutorials are executable: open them locally, in Colab, or through Binder (links at the top of
 each notebook).
 
-## Repository layout
-
-```text
-modelly/                      # the package
-├── agent.py                  # Agent, create_agents, from_dataframe
-├── columns.py                # Column: agent attributes stored in model-owned numpy arrays
-├── migrate.py                # python -m modelly.migrate: Mesa to Modelly codemod
-├── py.typed                  # annotations are part of the API
-├── agentset/                 # ordered agent sets
-│   ├── abstract.py           #   the shared interface and algorithms
-│   ├── selection.py          #   select, select_random
-│   ├── weak.py               #   AgentSet: weak-reference views
-│   ├── strong.py             #   the model's strong-reference registry
-│   └── groupby.py            #   GroupBy
-├── model.py                  # Model: state, seed, time, events
-├── datacollection.py         # DataCollector: reporters -> pandas
-├── reporters.py              # reporter normalisation and fast row collection
-├── log.py                    # module loggers and method tracing
-├── discrete_space/           # cells, grids, networks, Voronoi
-│   ├── cell.py               #   Cell with a per-cell neighbourhood cache
-│   ├── base_grid.py          #   Grid: cell creation, empty-cell index, pickling
-│   ├── grid.py               #   Moore, Von Neumann and hex grids
-│   └── property_layer.py     #   numpy layers exposed on cells
-├── time/                     # events, generators, schedules
-├── experimental/             # scenarios, continuous space, signals, data records, actions, states
-├── examples/                 # the models in the table above
-└── visualization/            # Solara components, matplotlib, altair
-docs/                         # notebooks, guides, API docs, performance audit
-example.py                    # the 30-second model above, runnable
-CHANGELOG.md                  # release notes
-benchmarks/                   # timing harnesses for the example models
-scripts/                      # local CI gate and the Pelloux audit
-tests/                        # the test suite
-tools/branding/               # generator for the animated SVGs on this page
-```
-
 ## Development
 
 ```bash
@@ -471,18 +469,8 @@ bash scripts/ci-local.sh --list   # stage names, run a subset with: ci-local.sh 
 Code discipline is written down in [pelloux-guidelines.md](pelloux-guidelines.md): small files,
 short functions, surgical changes, conventional commits. `scripts/audit-pelloux.sh` enforces the
 size limits against `pelloux-baseline.json`; legacy oversized files are listed there and may shrink
-but never grow.
-
-## Brand assets
-
-The animated banner, architecture diagram and loop diagram are hand-rolled SVG (CSS keyframes and
-SMIL, no JavaScript, no external fonts), so they render inside GitHub's image sandbox and respect
-`prefers-reduced-motion`. Each ships in a light and a dark variant, switched by
-`prefers-color-scheme`. Regenerate them after editing the generator:
-
-```bash
-python tools/branding/generate_assets.py
-```
+but never grow. The repository layout and how the brand assets are generated are in
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Contributing
 
