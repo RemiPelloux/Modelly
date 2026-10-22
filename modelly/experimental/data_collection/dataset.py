@@ -626,18 +626,3 @@ class DataRegistry:
     def __iter__(self):
         """Iterate over datasets."""
         return iter(self.datasets.values())
-
-
-if __name__ == "__main__":
-    from modelly.examples import BoltzmannWealth
-
-    model = BoltzmannWealth()
-    model.test = 5
-    agent_data = AgentDataSet("wealth", model.agents, "wealth")
-    # model_data = ModelDataSet("gini", model, "test", gini=model.compute_gini)
-    data = []
-    for _ in range(5):
-        model.step()
-        data.append(agent_data.data)
-        # data.append(model_data.data)
-    print("blaat")

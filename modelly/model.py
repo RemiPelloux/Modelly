@@ -16,14 +16,14 @@ import numpy as np
 from modelly.agent import Agent
 from modelly.agentset import _HardKeyAgentSet
 from modelly.experimental.data_collection.dataset import DataRegistry
-from modelly.experimental.modelly_signals import (
+from modelly.experimental.scenarios import Scenario
+from modelly.experimental.signals import (
     HasEmitters,
     ModelSignals,
     Observable,
     emit,
 )
-from modelly.experimental.scenarios import Scenario
-from modelly.modelly_logging import create_module_logger, method_logger
+from modelly.log import create_module_logger, method_logger
 from modelly.time import (
     Event,
     EventGenerator,
@@ -274,7 +274,7 @@ class Model[A: Agent, S: Scenario](HasEmitters):
             )
 
         _modelly_logger.debug(
-            f"registered {agent.__class__.__name__} with agent_id {agent.unique_id}"
+            "registered %s with agent_id %s", agent.__class__.__name__, agent.unique_id
         )
 
     @emit("agents", ModelSignals.AGENT_REMOVED)
@@ -291,7 +291,7 @@ class Model[A: Agent, S: Scenario](HasEmitters):
         self._agents_by_type[type(agent)].remove(agent)
         self._all_agents.remove(agent)
 
-        _modelly_logger.debug(f"deregistered agent with agent_id {agent.unique_id}")
+        _modelly_logger.debug("deregistered agent with agent_id %s", agent.unique_id)
 
     def run_model(self) -> None:
         """Run the model until the end condition is reached.

@@ -1,4 +1,4 @@
-"""Tests for modelly_signals."""
+"""Tests for signals."""
 
 import doctest
 from unittest.mock import Mock, patch
@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from modelly import Agent, Model
-from modelly.experimental.modelly_signals import (
+from modelly.experimental.signals import (
     ALL,
     HasEmitters,
     ListSignals,
@@ -18,7 +18,7 @@ from modelly.experimental.modelly_signals import (
     emit,
     signal_types,
 )
-from modelly.experimental.modelly_signals.signals_util import Message, _AllSentinel
+from modelly.experimental.signals.signals_util import Message, _AllSentinel
 
 
 def test_signal_type_docstrings():

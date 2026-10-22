@@ -63,5 +63,5 @@ python model.py
 
 ## Further Reading
 
-The continuous state and threshold API used here lives in `modelly.experimental.states`, and builds on the reactive observables in `modelly.experimental.modelly_signals`. Both are experimental and carry no semver guarantees.
+The continuous state and threshold API used here lives in `modelly.experimental.states`, and builds on the reactive observables in `modelly.experimental.signals`. Both are experimental and carry no semver guarantees.
 

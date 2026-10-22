@@ -1,7 +1,7 @@
 """Continuous States Descriptor.
 
 Provides piecewise-linear and piecewise-quadratic trajectory tracking, and
-declarative threshold monitors natively integrated with modelly_signals and
+declarative threshold monitors natively integrated with signals and
 the standard Modelly event queue.
 """
 
@@ -14,9 +14,9 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-import modelly.experimental.modelly_signals.core as core
-from modelly.experimental.modelly_signals import Observable, ObservableSignals
-from modelly.experimental.modelly_signals.core import (
+import modelly.experimental.signals.core as core
+from modelly.experimental.signals import Observable, ObservableSignals
+from modelly.experimental.signals.core import (
     BaseObservable,
     ComputedState,
     _hashable_signal,
@@ -24,7 +24,7 @@ from modelly.experimental.modelly_signals.core import (
 
 if TYPE_CHECKING:
     from modelly import Agent
-    from modelly.experimental.modelly_signals import HasEmitters
+    from modelly.experimental.signals import HasEmitters
 
 
 class ContinuousState(BaseObservable):

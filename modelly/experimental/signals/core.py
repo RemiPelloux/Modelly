@@ -23,7 +23,7 @@ from collections import defaultdict, namedtuple
 from collections.abc import Callable, Generator, Iterable, MutableSequence
 from typing import Any, ClassVar, Literal
 
-from modelly.experimental.modelly_signals.signals_util import (
+from modelly.experimental.signals.signals_util import (
     ALL,
     Message,
     SignalType,
