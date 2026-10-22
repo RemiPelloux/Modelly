@@ -37,17 +37,12 @@ To further explore Modelly and its features, we have the following resources ava
 ### API documentation
 - [Modelly API reference](apis/api_main.md): Detailed documentation of Modelly's classes and functions.
 
-### Repository of models built using MODELLY
-- [Modelly Examples repository](https://github.com/RemiPelloux/modelly-examples): A collection of example models demonstrating various Modelly features and modeling techniques.
-
-
 ### Source Code and development
 - [Modelly GitHub repository](https://github.com/RemiPelloux/Modelly): Access the full source code of Modelly, contribute to its development, or report issues.
 - [Modelly release notes](https://github.com/RemiPelloux/Modelly/releases): View the detailed changelog of Modelly, including all past releases and their features.
 
 ### Community and support
 - [Modelly GitHub Discussions](https://github.com/RemiPelloux/Modelly/discussions): Join discussions, ask questions, and connect with other Modelly users.
-- [Discord](https://discord.gg/UUGJvdtEJu): Real-time chat for quick questions and community interaction.
 
 Enjoy modelling with Modelly, and feel free to reach out!
 

@@ -1,130 +1,132 @@
-# Modelly: Agent-based modeling in Python
+---
+myst:
+  html_meta:
+    description: "Modelly is an agent-based modeling (ABM) framework for Python: typed scenarios, seeded reproducible runs, numpy-backed agents, grids, networks, continuous space, discrete-event time, pandas data collection and browser visualization."
+    keywords: "agent-based modeling, ABM, agent-based simulation, Python, multi-agent systems, complex systems, discrete-event simulation, Mesa alternative"
+    "og:title": "Modelly: agent-based modeling in Python"
+    "og:description": "Build, run, measure and replay agent-based models in Python. Fast by construction, reproducible by default."
+    "og:type": "website"
+---
 
-```{image} https://joss.theoj.org/papers/10.21105/joss.07668/status.svg
-:target: https://doi.org/10.21105/joss.07668
-```
+# Modelly: agent-based modeling in Python
 
-```{image} https://github.com/RemiPelloux/Modelly/workflows/build/badge.svg
-:target: https://github.com/RemiPelloux/Modelly/actions
-```
+**Modelly** is an [Apache-2.0](https://github.com/RemiPelloux/Modelly/blob/main/LICENSE) licensed
+framework for **agent-based modeling (ABM)** in Python. You declare a scenario, give your agents
+behaviour, run the world forward in time, then measure, replay and publish the result.
 
-```{image} https://codecov.io/gh/RemiPelloux/Modelly/branch/main/graph/badge.svg
-:target: https://codecov.io/gh/RemiPelloux/Modelly
-```
-
-```{image} https://img.shields.io/badge/code%20style-black-000000.svg
-:target: https://github.com/psf/black
-```
-
-```{image} https://img.shields.io/badge/chat-Discord-5865F2?logo=discord&logoColor=white
-:target: https://discord.gg/UUGJvdtEJu
-```
-
-[Modelly] is an Apache2 licensed agent-based modeling (or ABM) framework in Python.
-
-Modelly allows users to quickly create agent-based models using built-in core components (such as spatial grids and agent schedulers) or customized implementations; visualize them using a browser-based interface; and analyze their results using Python's data analysis tools. Modelly's goal is to make simulations accessible to everyone, so humanity can more effectively understand and solve complex problems.
-
-![A screenshot of the Wolf Sheep model in Modelly|100%](images/wolf_sheep.png)
-*A visualisation of the Wolf Sheep model build with Modelly. An online demo is [available here](https://py.cafe/app/EwoutH/modelly-solara-basic-examples).*
-
-## Features
-
-- Built-in core modeling components
-- Flexible agent and model management through AgentSet
-- Browser-based Solara visualization
-- Built-in tools for data collection and analysis
-- Example model library
-
-## Using Modelly
-### Installation Options
-To install our latest stable Modelly 3 release, run:
+It is built for research: every run is seeded, every parameter lives in a typed scenario, every
+dataset lands in pandas, and the hot paths of a simulation are measured and benchmarked in CI.
 
 ```bash
-pip install -U modelly
-```
-Development of Modelly 4 has started. To install our latest Modelly 4 pre-release, use:
-```bash
-pip install -U --pre modelly
-```
-To also install our recommended dependencies:
-```bash
-pip install -U modelly[rec]
+pip install modelly-abm          # the distribution on PyPI; the import name is modelly
 ```
 
-The `[rec]` option installs additional recommended dependencies needed for visualization, plotting, and network modeling capabilities.
+```python
+from modelly import Model
+from modelly.discrete_space import CellAgent, OrthogonalMooreGrid
+from modelly.experimental.scenarios import Scenario
 
-On a Mac, this command might cause an error stating `zsh: no matches found: modelly[all]`.
-In that case, change the command to `pip install -U "modelly[rec]"`.
 
-Furthermore, if you are using `nix`, Modelly comes with a flake with devShells and a runnable app:
+class WealthScenario(Scenario):
+    n: int = 120
+    width: int = 12
+    height: int = 12
 
-```bash
-nix run github:project-RemiPelloux/Modelly # for default Python shell
+
+class MoneyAgent(CellAgent):
+    def __init__(self, model, cell):
+        super().__init__(model)
+        self.cell = cell
+        self.wealth = 1
+
+    def step(self):
+        self.cell = self.cell.neighborhood.select_random_cell()
+        cellmates = [a for a in self.cell.agents if a is not self]
+        if self.wealth > 0 and cellmates:
+            self.random.choice(cellmates).wealth += 1
+            self.wealth -= 1
+
+
+class WealthModel(Model):
+    def __init__(self, scenario: WealthScenario = WealthScenario):
+        super().__init__(scenario=scenario)
+        self.grid = OrthogonalMooreGrid(
+            (scenario.width, scenario.height), random=self.random
+        )
+        cells = self.random.choices(self.grid.all_cells.cells, k=scenario.n)
+        MoneyAgent.create_agents(self, scenario.n, cells)
+
+    def step(self):
+        self.agents.shuffle_do("step")
+
+
+model = WealthModel()
+for _ in range(100):
+    model.step()
 ```
 
-For development shell, clone the repository and run the following command from
-repository root:
+Three pieces: a **scenario** of inputs, **agents** that each know one thing, and a **model** that
+owns the world and advances it.
 
-```bash
-nix develop .#uv2nix # pure shell
-```
+![The Wolf Sheep predator-prey model running in Modelly's browser visualization](images/wolf_sheep.png)
 
-### Resources
+## What you get
 
-For help getting started with Modelly, check out these resources:
+| Building block | What it gives you |
+|---|---|
+| **Scenario** | Parameters as a typed class: one run, one seed, one config object |
+| **Agents** | Agent classes with a `step()`, grouped in ordered `AgentSet`s |
+| **Columns** | Attributes stored in numpy arrays, readable per agent and as a whole |
+| **Space** | Orthogonal and hexagonal grids, cells, networks, Voronoi meshes, continuous space |
+| **Time** | Discrete ticks, scheduled events, generators and priorities in one scheduler |
+| **Data** | Reporters and datasets that land in pandas, ready to plot |
+| **Visualization** | Browser dashboards (Solara), static charts (matplotlib, altair), notebooks |
+| **Replications** | Seeded parameter sweeps spread over processes |
 
-- [Getting started] - Learn about Modelly's core concepts and components
-- [Modelly Examples] - Browse user-contributed models and implementations
-- [Modelly releases] - Check what's new in the latest Modelly version
-- [Modelly Extensions] - Overview of modelly's Extensions
-- [GitHub Discussions] - Ask questions and discuss Modelly
-- [Discord] - Real-time chat with the Modelly community
+## Where to go next
 
-### Development and Support
+- [Getting started](getting_started): the concepts, then twelve executable tutorials from *your
+  first model* to *hybrid ABM / discrete-event simulation*.
+- [Use Modelly in your project](using_modelly_in_your_project): from an empty folder to a tested,
+  replicated model.
+- [Examples](examples): Boltzmann wealth, Schelling, Game of Life, SIR on a network, Boids,
+  Wolf-Sheep, Sugarscape, Epstein civil violence and more, all runnable.
+- [Migrating from Mesa](migrating_from_mesa): a construct-by-construct map and the
+  `python -m modelly.migrate` codemod.
+- [Performance](performance): how the engine stays fast, with the measurements.
+- [Best practices](best-practices) and the [API reference](apis/api_main).
 
-Modelly is an open source project and welcomes contributions:
+## Community and source
 
-- [GitHub Repository] - Access the source code
-- [Issue Tracker] - Report bugs or suggest features
-- [Contributors Guide] - Learn how to contribute
+- [GitHub repository](https://github.com/RemiPelloux/Modelly): source, issues and pull requests.
+- [Discussions](https://github.com/RemiPelloux/Modelly/discussions): questions and ideas.
+- [Changelog](https://github.com/RemiPelloux/Modelly/blob/main/CHANGELOG.md): what each release
+  added, changed and fixed.
+- [Contributing guide](https://github.com/RemiPelloux/Modelly/blob/main/CONTRIBUTING.md): local
+  setup, tests, lint, docs and how a pull request is reviewed.
 
-### Citing Modelly
+## Citing Modelly
 
-To cite Modelly in your publication, you can refer to our peer-reviewed article in the Journal of Open Source Software (JOSS):
-- ter Hoeven, E., Kwakkel, J., Hess, V., Pike, T., Wang, B., rht, & Kazil, J. (2025). Modelly 3: Agent-based modeling with Python in 2025. Journal of Open Source Software, 10(107), 7668. https://doi.org/10.21105/joss.07668
-
-Our [CITATION.cff](https://github.com/RemiPelloux/Modelly/blob/main/CITATION.cff) can be used to generate APA, BibTeX and other citation formats.
-
-The original Modelly conference paper from 2015 is [available here](http://conference.scipy.org.s3-website-us-east-1.amazonaws.com/proceedings/scipy2015/jacqueline_kazil.html).
+If Modelly contributes to a publication, cite it with the metadata in
+[CITATION.cff](https://github.com/RemiPelloux/Modelly/blob/main/CITATION.cff). GitHub's
+"Cite this repository" button formats it as APA or BibTeX.
 
 ```{toctree}
 :hidden: true
-:maxdepth: 7
+:maxdepth: 2
 
 Getting started <getting_started>
 Use Modelly in your project <using_modelly_in_your_project>
+Examples <examples>
 Migrating from Mesa <migrating_from_mesa>
 Performance <performance>
+Best practices <best-practices>
 Overview <overview>
-Examples <examples>
-API Documentation <apis/api_main>
-
+API reference <apis/api_main>
 ```
 
-# Indices and tables
+## Indices
 
 - {ref}`genindex`
 - {ref}`modindex`
 - {ref}`search`
-
-[contributors guide]: https://github.com/RemiPelloux/Modelly
-[github repository]: https://github.com/RemiPelloux/Modelly/
-[github discussions]: https://github.com/RemiPelloux/Modelly/discussions
-[Modelly releases]: https://github.com/RemiPelloux/Modelly/releases
-[issue tracker]: https://github.com/RemiPelloux/Modelly/issues
-[discord]: https://discord.gg/UUGJvdtEJu
-[modelly]: https://github.com/RemiPelloux/Modelly/
-[modelly overview]: overview
-[modelly examples]: https://modelly.readthedocs.io/stable/examples.html
-[Getting started]: getting_started
-[Modelly Extensions]: modelly_extension.md

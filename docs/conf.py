@@ -61,7 +61,9 @@ master_doc = "index"
 
 # General information about the project.
 project = "Modelly"
-copyright = f"2015-{date.today().year}, Modelly Team"
+copyright = f"{date.today().year}, Rémi Pelloux and Modelly contributors"
+author = "Rémi Pelloux and Modelly contributors"
+SITE_URL = "https://remipelloux.github.io/Modelly/"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -113,8 +115,9 @@ pygments_style = "gruvbox-dark"
 # If true, keep warnings as "system message" paragraphs in the built documents.
 # keep_warnings = False
 
-nb_execution_timeout = 60
-nb_execution_mode = "cache"
+# MODELLY_NB_EXECUTION=off skips running the tutorials (quick local builds).
+nb_execution_timeout = 120
+nb_execution_mode = os.environ.get("MODELLY_NB_EXECUTION", "cache")
 nb_execution_allow_errors = False
 nb_execution_raise_on_error = True
 
@@ -132,20 +135,18 @@ if not version_match or version_match.isdigit():
 html_theme_options = {
     "navbar_start": ["navbar-logo", "version-switcher"],
     "switcher": {
-        "json_url": "https://modelly.readthedocs.io/latest/_static/switcher.json",
+        "json_url": f"{SITE_URL}_static/switcher.json",
         "version_match": version_match,
     },
+    "github_url": "https://github.com/RemiPelloux/Modelly",
+    "footer_start": ["copyright"],
+    "footer_end": [],
 }
 
-# Add any paths that contain custom themes here, relative to this directory.
-# html_theme_path = []
-
-# The name for this set of Sphinx documents.  If None, it defaults to
-# "<project> v<release> documentation".
-# html_title = None
-
-# A shorter title for the navigation bar.  Default is the same as html_title.
-# html_short_title = None
+# Canonical URL and <title>: what search engines index and show.
+html_baseurl = SITE_URL
+html_title = "Modelly"
+html_short_title = "Modelly"
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -274,7 +275,7 @@ texinfo_documents = [
         "Modelly Documentation",
         "Modelly Team",
         "Modelly",
-        "One line description of project.",
+        "Agent-based modeling in Python.",
         "Miscellaneous",
     )
 ]

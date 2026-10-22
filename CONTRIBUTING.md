@@ -129,15 +129,56 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py
 Keep new examples small, self-contained and reproducible from a scenario object — they double as
 documentation and as the benchmark inputs.
 
+## Repository layout
+
+```text
+modelly/                      # the package
+├── agent.py                  # Agent, create_agents, from_dataframe
+├── columns.py                # Column: agent attributes stored in model-owned numpy arrays
+├── migrate.py                # python -m modelly.migrate: Mesa to Modelly codemod
+├── py.typed                  # annotations are part of the API
+├── agentset/                 # ordered agent sets
+│   ├── abstract.py           #   the shared interface and algorithms
+│   ├── selection.py          #   select, select_random
+│   ├── weak.py               #   AgentSet: weak-reference views
+│   ├── strong.py             #   the model's strong-reference registry
+│   └── groupby.py            #   GroupBy
+├── model.py                  # Model: state, seed, time, events
+├── datacollection.py         # DataCollector: reporters -> pandas
+├── reporters.py              # reporter normalisation and fast row collection
+├── log.py                    # module loggers and method tracing
+├── discrete_space/           # cells, grids, networks, Voronoi
+│   ├── cell.py               #   Cell with a per-cell neighbourhood cache
+│   ├── base_grid.py          #   Grid: cell creation, empty-cell index, pickling
+│   ├── grid.py               #   Moore, Von Neumann and hex grids
+│   └── property_layer.py     #   numpy layers exposed on cells
+├── time/                     # events, generators, schedules
+├── experimental/             # scenarios, continuous space, signals, data records, actions, states
+├── examples/                 # the models in the table above
+└── visualization/            # Solara components, matplotlib, altair
+docs/                         # notebooks, guides, API docs, performance audit
+example.py                    # the 30-second model above, runnable
+CHANGELOG.md                  # release notes
+benchmarks/                   # timing harnesses for the example models
+scripts/                      # local CI gate and the Pelloux audit
+tests/                        # the test suite
+tools/branding/               # generator for the animated SVGs on this page
+```
+
 ## Brand assets
 
-The animated SVGs in `docs/images/branding/` are generated, not hand-edited:
+The animated banner, architecture diagram and loop diagram in `docs/images/branding/` are
+hand-rolled SVG (CSS keyframes and SMIL, no JavaScript, no external fonts), so they render inside
+GitHub's image sandbox and respect `prefers-reduced-motion`. Each ships in a light and a dark
+variant, switched by `prefers-color-scheme`. They are generated, not hand-edited:
 
 ```bash
 python tools/branding/generate_assets.py
 ```
 
 Edit `tools/branding/generate_assets.py` and commit both the generator and the regenerated SVGs.
+`docs/images/branding/social-preview.png` is the 1280x640 image for GitHub's social preview
+(repository Settings, "Social preview"); regenerate it with `python tools/branding/social_preview.py`.
 
 ## Pull requests
 
