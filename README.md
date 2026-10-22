@@ -12,6 +12,7 @@
   <img src="https://img.shields.io/badge/python-3.12%2B-3B82F6" alt="python 3.12+">
   <img src="https://img.shields.io/badge/ruff-linted-261230" alt="ruff">
   <a href="https://github.com/RemiPelloux/Modelly/discussions"><img src="https://img.shields.io/badge/discussions-open-7C5CFF" alt="discussions"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-4C9A2A" alt="license: Apache-2.0"></a>
 </p>
 
 <p align="center"><b>Modelly</b> is a Python framework for <b>agent-based modeling</b>: declare a scenario,
@@ -105,19 +106,21 @@ class WealthModel(Model):
         )
 
     def step(self):
-        self.agents.shuffle_do("step")   # every agent, in random order
+        self.agents.shuffle_do("step")  # every agent, in random order
 
     @property
     def gini(self):
         x, n = sorted(a.wealth for a in self.agents), len(self.agents)
-        return 1 + 1 / n - 2 * sum(xi * (n - i) for i, xi in enumerate(x)) / (n * sum(x))
+        return (
+            1 + 1 / n - 2 * sum(xi * (n - i) for i, xi in enumerate(x)) / (n * sum(x))
+        )
 
 
 model = WealthModel()
 for _ in range(100):
     model.step()
 
-print(model.gini)   # 0.0 at t=0 ... ~0.62 after 100 ticks
+print(model.gini)  # 0.0 at t=0 ... ~0.62 after 100 ticks
 ```
 
 Three pieces, and nothing else: a **scenario** of inputs, **agents** that know one thing each,
@@ -128,23 +131,24 @@ and a **model** that owns the world and advances it.
 ```python
 from modelly.datacollection import DataCollector
 
+
 class WealthModel(Model):
     def __init__(self, scenario: WealthScenario = WealthScenario):
         super().__init__(scenario=scenario)
         # ... grid and agents as above ...
         self.datacollector = DataCollector(
-            model_reporters={"Gini": "gini"},      # anything reachable from the model
+            model_reporters={"Gini": "gini"},  # anything reachable from the model
             agent_reporters={"Wealth": "wealth"},  # anything on each agent
         )
 
     def step(self):
         self.agents.shuffle_do("step")
-        self.datacollector.collect(self)           # one row per tick
+        self.datacollector.collect(self)  # one row per tick
 ```
 
 ```python
-model_vars = model.datacollector.get_model_vars_dataframe()   # Gini per tick
-agent_vars = model.datacollector.get_agent_vars_dataframe()   # wealth per agent per tick
+model_vars = model.datacollector.get_model_vars_dataframe()  # Gini per tick
+agent_vars = model.datacollector.get_agent_vars_dataframe()  # wealth per agent per tick
 agent_vars.groupby("Step")["Wealth"].mean().plot()
 ```
 
@@ -242,5 +246,14 @@ python tools/branding/generate_assets.py
 Issues, ideas and pull requests are welcome on the
 [issue tracker](https://github.com/RemiPelloux/Modelly/issues). If you are adding a feature, opening
 a ticket first is the fastest route — it keeps the patch small and reviewable.
+
+Everything you need is in [CONTRIBUTING.md](CONTRIBUTING.md): local setup, tests, the lint and format
+commands CI runs, docs, and how a pull request is reviewed. By taking part you agree to our
+[Code of Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+Modelly is released under the [Apache License 2.0](LICENSE). Third-party attribution, including the
+upstream project this codebase derives from, is recorded in [NOTICE](NOTICE).
 
 <p align="center"><sub>Modelly — build the system, run the world, watch what emerges.</sub></p>

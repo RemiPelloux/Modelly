@@ -1,0 +1,39 @@
+Modelly
+Copyright 2026 Remi Pelloux and Modelly contributors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+--------------------------------------------------------------------------
+Attribution notice for included software
+
+Modelly is a derivative work of the Mesa agent-based modeling framework.
+
+  Mesa — https://github.com/mesa/mesa
+  Copyright 2014-2024 Core Mesa Team and contributors
+  Licensed under the Apache License, Version 2.0
+
+Portions of this repository — including the package structure, the agent and
+model abstractions, the discrete and continuous space implementations, the
+time and event scheduling layer, the data collection layer, the example
+models, the test suite and parts of the documentation — originate from that
+project and remain subject to its copyright and license terms.
+
+No per-file copyright headers were present upstream; this NOTICE is the
+attribution record for the whole derived work.
+
+--------------------------------------------------------------------------
+Third-party dependencies
+
+Modelly depends on the following projects at runtime. They are not vendored
+in this repository; the list below is a courtesy, and each project's own
+license governs its use.
+
+  numpy        BSD-3-Clause
+  pandas       BSD-3-Clause
+  scipy        BSD-3-Clause
+  tqdm         MPL-2.0 AND MIT
+  networkx     BSD-3-Clause        (optional: modelly[network])
+  solara       MIT                 (optional: modelly[viz])
+  matplotlib   PSF-based           (optional: modelly[viz])
+  altair       BSD-3-Clause        (optional: modelly[viz])
+  starlette    BSD-3-Clause        (optional: modelly[viz])
