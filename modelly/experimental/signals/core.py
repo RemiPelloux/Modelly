@@ -23,7 +23,7 @@ from collections import defaultdict, namedtuple
 from collections.abc import Callable, Generator, Iterable, MutableSequence
 from typing import Any, ClassVar, Literal
 
-from modelly.experimental.modelly_signals.signals_util import (
+from modelly.experimental.signals.signals_util import (
     ALL,
     Message,
     SignalType,
@@ -393,15 +393,7 @@ class HasEmitters:
     def _has_subscribers(self, name: str, signal_type: str | SignalType) -> bool:
         """Check if there are any subscribers for a given observable and signal type."""
         key = (name, signal_type)
-
-        has_instance_subscribers = (
-            key in self.subscribers and len(self.subscribers[key]) > 0
-        )
-        has_class_subscribers = (
-            key in self._class_subscribers and len(self._class_subscribers[key]) > 0
-        )
-
-        return has_instance_subscribers or has_class_subscribers
+        return bool(self.subscribers.get(key)) or bool(self._class_subscribers.get(key))
 
     def observe(
         self,

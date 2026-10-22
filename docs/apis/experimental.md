@@ -13,18 +13,6 @@ This namespace contains experimental features. These are under development, and 
    :members:
 ```
 
-## Continuous Space
-
-```{eval-rst}
-.. automodule:: experimental.continuous_space.continuous_space
-   :members:
-```
-
-```{eval-rst}
-.. automodule:: experimental.continuous_space.continuous_space_agents
-   :members:
-```
-
 ## Scenarios
 
 ```{eval-rst}
@@ -41,5 +29,17 @@ This namespace contains experimental features. These are under development, and 
 
 ```{eval-rst}
 .. automodule:: experimental.states.state
+   :members:
+```
+
+## Signals
+
+```{eval-rst}
+.. automodule:: experimental.signals.core
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: experimental.signals.signal_types
    :members:
 ```

@@ -34,7 +34,7 @@ from collections.abc import Callable, Iterable
 from enum import IntEnum, auto
 from typing import TYPE_CHECKING
 
-from modelly.modelly_logging import create_module_logger
+from modelly.log import create_module_logger
 from modelly.time import Priority
 
 if TYPE_CHECKING:

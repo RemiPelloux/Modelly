@@ -75,12 +75,6 @@ class DiscreteSpace[T: Cell](ABC):
         self.random = random
         self.cell_klass = cell_klass
 
-        self._empties: dict[tuple[int, ...], None] = {}
-
-    @property
-    def cutoff_empties(self):  # noqa
-        return 7.953 * len(self._cells) ** 0.384
-
     @property
     def agents(self) -> AgentSet:
         """Return an AgentSet with the agents in the space."""

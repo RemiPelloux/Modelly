@@ -85,8 +85,10 @@ class WolfSheep(Model):
             "Sheep": lambda m: len(m.agents_by_type[Sheep]),
         }
         if self.grass:
-            model_reporters["Grass"] = lambda m: len(
-                m.agents_by_type[GrassPatch].select(lambda a: a.fully_grown)
+            # Count directly: building a selection view of every patch just to
+            # take its length costs more than the rest of the step.
+            model_reporters["Grass"] = lambda m: sum(
+                1 for patch in m.agents_by_type[GrassPatch] if patch.fully_grown
             )
 
         self.datacollector = DataCollector(model_reporters)

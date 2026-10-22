@@ -9,8 +9,8 @@ from dataclasses import dataclass
 from typing import Any
 
 from modelly.agent import Agent, AgentSet
-from modelly.experimental.modelly_signals import ModelSignals
-from modelly.experimental.modelly_signals.signals_util import Message
+from modelly.experimental.signals import ModelSignals
+from modelly.experimental.signals.signals_util import Message
 
 from .backend import MembershipBackend, RelationKey, Triplet
 from .meta_agent import (

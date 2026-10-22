@@ -13,7 +13,7 @@ class ObservableSignals(SignalType):
         CHANGED: Emitted when an observable's value changes.
 
     Examples:
-        >>> from modelly.experimental.modelly_signals import Observable, HasEmitters, ObservableSignals
+        >>> from modelly.experimental.signals import Observable, HasEmitters, ObservableSignals
         >>> class MyModel(HasEmitters):
         ...     value = Observable()
         ...     def __init__(self):
@@ -54,7 +54,7 @@ class ListSignals(SignalType):
         REPLACED: Emitted when an item is replaced/modified in the list.
 
     Examples:
-        >>> from modelly.experimental.modelly_signals import ObservableList, HasEmitters, ListSignals
+        >>> from modelly.experimental.signals import ObservableList, HasEmitters, ListSignals
         >>> class MyModel(HasEmitters):
         ...     items = ObservableList()
         ...     def __init__(self):

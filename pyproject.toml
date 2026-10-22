@@ -171,7 +171,7 @@ extend-ignore = [
   "S311",   # Standard pseudo-random generators are not suitable for cryptographic purposes
 ]
 # Ignore all docstring errors in examples and tutorials
-per-file-ignores = {"modelly/examples/*"= ["D"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
+per-file-ignores = {"modelly/examples/*"= ["D"], "example.py" = ["D"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

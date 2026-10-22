@@ -6,11 +6,12 @@
 model
 agent
 agentset
+columns
 time
 discrete_space
 datacollection
 visualization
-logging
+log
 meta_agents
 experimental
 ```

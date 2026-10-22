@@ -1,7 +1,7 @@
 # logging
 
 ```{eval-rst}
-.. automodule:: modelly.modelly_logging
+.. automodule:: modelly.log
    :members:
    :inherited-members:
 ```
