@@ -615,3 +615,20 @@ def test_neighbors_within_empty_space():
     model = Model(rng=1)
     space = ContinuousSpace([[0, 10], [0, 10]], random=model.random)
     assert space.neighbors_within(1.0) == {}
+
+
+def test_neighbors_within_is_cached_until_positions_change():
+    """The same positions reuse the lists; a move or a new agent refreshes them."""
+    model = Model(rng=1)
+    space = ContinuousSpace([[0, 10], [0, 10]], random=model.random)
+    agents = [ContinuousSpaceAgent(space, model) for _ in range(5)]
+    for i, agent in enumerate(agents):
+        agent.position = np.array([float(i), 0.0])
+    first = space.neighbors_within(1.5)
+    assert space.neighbors_within(1.5) is first
+    assert space.neighbors_within(2.5) is not first
+    agents[0].position = np.array([9.0, 9.0])
+    moved = space.neighbors_within(1.5)
+    assert moved is not first and moved[agents[0]] == []
+    ContinuousSpaceAgent(space, model).position = np.array([9.0, 8.5])
+    assert len(space.neighbors_within(1.5)[agents[0]]) == 1

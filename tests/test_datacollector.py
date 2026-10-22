@@ -933,3 +933,32 @@ def test_get_table_dataframe_nonexistent():
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_agent_vars_dataframe_is_incremental():
+    """Repeated calls convert only the new steps and give the same frame as one call."""
+    from modelly import Agent, Model  # noqa: PLC0415
+    from modelly.datacollection import DataCollector  # noqa: PLC0415
+
+    class Counter(Agent):
+        def __init__(self, model):
+            super().__init__(model)
+            self.value = 0
+
+        def step(self):
+            self.value += 1
+
+    model = Model(rng=1)
+    for _ in range(3):
+        Counter(model)
+    dc = DataCollector(agent_reporters={"value": "value"})
+    frames = []
+    for _ in range(4):
+        model.agents.do("step")
+        model.time += 1
+        dc.collect(model)
+        frames.append(dc.get_agent_vars_dataframe())
+    assert [len(f) for f in frames] == [3, 6, 9, 12]
+    fresh = DataCollector(agent_reporters={"value": "value"})
+    fresh._agent_records = dict(dc._agent_records)
+    assert frames[-1].equals(fresh.get_agent_vars_dataframe())

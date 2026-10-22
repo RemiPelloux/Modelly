@@ -126,6 +126,9 @@ class DataCollector:
         self._agent_records = {}
         self._agenttype_records = {}
         self.tables = {}
+        # (steps already in the frame, frame): get_agent_vars_dataframe only
+        # converts the steps collected since the last call.
+        self._agent_frame_cache: tuple[int, pd.DataFrame] | None = None
 
         # add the signal of the validation of model reporter
         self._validated = False
@@ -316,14 +319,19 @@ class DataCollector:
             )
             return pd.DataFrame()
 
-        all_records = itertools.chain.from_iterable(self._agent_records.values())
-        rep_names = list(self.agent_reporters)
-
-        return pd.DataFrame.from_records(
-            data=all_records,
-            columns=["Step", "AgentID", *rep_names],
+        steps = list(self._agent_records.values())
+        cached = self._agent_frame_cache
+        done = cached[0] if cached is not None and cached[0] <= len(steps) else 0
+        new_rows = itertools.chain.from_iterable(steps[done:])
+        frame = pd.DataFrame.from_records(
+            data=list(new_rows),
+            columns=["Step", "AgentID", *self.agent_reporters],
             index=["Step", "AgentID"],
         )
+        if done:
+            frame = pd.concat([cached[1], frame])
+        self._agent_frame_cache = (len(steps), frame)
+        return frame
 
     def get_agenttype_vars_dataframe(self, agent_type):
         """Create a pandas DataFrame from the agent-type variables for a specific agent type.
