@@ -1737,3 +1737,17 @@ def test_voronoi_int_capacity_enforced_at_runtime() -> None:
     a1.move_to(cell)
     with pytest.raises(CellFullException):
         a2.move_to(cell)
+
+
+def test_cell_collection_empties():
+    """A collection's empties are its cells without agents."""
+    model = Model()
+    grid = OrthogonalMooreGrid((3, 3), random=random.Random(1), capacity=1)
+    occupied = grid._cells[(1, 1)]
+    CellAgent(model).cell = occupied
+    empties = grid.all_cells.empties
+    assert isinstance(empties, CellCollection)
+    assert len(empties) == 8
+    assert occupied not in empties.cells
+    assert set(grid.empties.cells) == set(empties.cells)
+    assert len(occupied.neighborhood.empties) == 8

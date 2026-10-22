@@ -179,7 +179,7 @@ class DiscreteSpace[T: Cell](ABC):
     @property
     def empties(self) -> CellCollection[T]:
         """Return all empty in spaces."""
-        return self.all_cells.select(lambda cell: cell.is_empty)
+        return self.all_cells.empties
 
     def select_random_empty_cell(self) -> T:
         """Select random empty cell."""

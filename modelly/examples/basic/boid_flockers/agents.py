@@ -62,8 +62,8 @@ class Boid(ContinuousSpaceAgent):
 
     def step(self):
         """Get the Boid's neighbors, compute the new vector, and move accordingly."""
-        neighbors, distances = self.get_neighbors_in_radius(radius=self.vision)
-        self.neighbors = [n for n in neighbors if n is not self]
+        neighbors = self.model.neighbor_lists[self]
+        self.neighbors = neighbors
 
         # If no neighbors, maintain current direction
         if not neighbors:
@@ -71,6 +71,7 @@ class Boid(ContinuousSpaceAgent):
             return
 
         delta = self.space.calculate_difference_vector(self.position, agents=neighbors)
+        distances = np.linalg.norm(delta, axis=1)
 
         cohere_vector = delta.sum(axis=0) * self.cohere_factor
         separation_vector = (
