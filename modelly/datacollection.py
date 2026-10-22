@@ -32,13 +32,17 @@ Finally, DataCollector can create a pandas DataFrame from each collection.
 
 import contextlib
 import itertools
-import types
 import warnings
-from copy import deepcopy
-from functools import partial
 
 from modelly import Agent
 from modelly.exceptions import TableMissingException
+from modelly.reporters import (
+    check_list_reporter,
+    collect_agent_rows,
+    collect_model_value,
+    make_agent_reporter,
+    validate_model_reporter,
+)
 
 with contextlib.suppress(ImportError):
     import pandas as pd
@@ -153,16 +157,7 @@ class DataCollector:
     @staticmethod
     def _check_list_reporter(name, reporter):
         """Validate that a list-style reporter has the form [callable, [params]]."""
-        if len(reporter) != 2 or not callable(reporter[0]):
-            raise ValueError(
-                f"Reporter '{name}' must use the format [function, [param1, param2]]. "
-                f"Got: {reporter!r}"
-            )
-        if not isinstance(reporter[1], (list, tuple)):
-            raise ValueError(
-                f"Reporter '{name}' must use the format [function, [param1, param2]]. "
-                f"The second element must be a list or tuple of parameters, got: {reporter[1]!r}"
-            )
+        check_list_reporter(name, reporter)
 
     def _validate_model_reporter(self, name, reporter, model):
         """Validate model reporter and handle validation results appropriately.
@@ -179,38 +174,7 @@ class DataCollector:
             RuntimeError: If reporter execution fails
         """
         self._validated = True
-
-        if isinstance(reporter, (types.LambdaType, partial)):
-            try:
-                reporter(model)
-            except Exception as e:
-                raise RuntimeError(
-                    f"Lambda reporter '{name}' failed validation: {e!s}\n"
-                    f"Example: lambda m: len(m.agents)"
-                ) from e
-
-        if callable(reporter) and not isinstance(reporter, (types.LambdaType, partial)):
-            try:
-                reporter()
-            except Exception as e:
-                raise RuntimeError(
-                    f"Method reporter '{name}' failed validation: {e!s}"
-                ) from e
-
-        if isinstance(reporter, str):
-            try:
-                if not hasattr(model, reporter):
-                    raise AttributeError(
-                        f"Model reporter '{name}' references non-existent attribute '{reporter}'\n"
-                    )
-                getattr(model, reporter)
-            except AttributeError as e:
-                raise AttributeError(
-                    f"Model reporter '{name}' attribute validation failed: {e!s}\n"
-                ) from e
-
-        if isinstance(reporter, list):
-            self._check_list_reporter(name, reporter)
+        validate_model_reporter(name, reporter, model)
 
     def _new_model_reporter(self, name, reporter):
         """Add a new model-level reporter to collect.
@@ -224,7 +188,7 @@ class DataCollector:
                 4. List of [function, [parameters]]
         """
         if isinstance(reporter, list):
-            self._check_list_reporter(name, reporter)
+            check_list_reporter(name, reporter)
         self.model_reporters[name] = reporter
         self.model_vars[name] = []
 
@@ -237,34 +201,7 @@ class DataCollector:
                       function with parameters placed in a list that returns the
                       variable when given an agent instance.
         """
-        # Check if the reporter is an attribute string
-        if isinstance(reporter, str):
-            attribute_name = reporter
-
-            def attr_reporter(agent):
-                try:
-                    return getattr(agent, attribute_name)
-                except AttributeError as e:
-                    raise AttributeError(
-                        f"Agent {agent.unique_id} of type {type(agent).__name__} "
-                        f"has no attribute '{attribute_name}' (reporter: '{name}')"
-                    ) from e
-
-            reporter = attr_reporter
-
-        elif isinstance(reporter, list):
-            self._check_list_reporter(name, reporter)
-            func, params = reporter[0], reporter[1]
-
-            def func_with_params(agent):
-                return func(agent, *params)
-
-            reporter = func_with_params
-
-        # For other types (like lambda functions, method of a class/instance),
-        # it's already suitable to be used as a reporter directly.
-
-        self.agent_reporters[name] = reporter
+        self.agent_reporters[name] = make_agent_reporter(name, reporter)
 
     def _new_agenttype_reporter(self, agent_type, name, reporter):
         """Add a new agent-type-level reporter to collect.
@@ -276,34 +213,8 @@ class DataCollector:
                       function with parameters placed in a list that returns the
                       variable when given an agent instance.
         """
-        if agent_type not in self.agenttype_reporters:
-            self.agenttype_reporters[agent_type] = {}
-
-        # Use the same logic as _new_agent_reporter
-        if isinstance(reporter, str):
-            attribute_name = reporter
-
-            def attr_reporter(agent):
-                try:
-                    return getattr(agent, attribute_name)
-                except AttributeError as e:
-                    raise AttributeError(
-                        f"Agent {agent.unique_id} of type {type(agent).__name__} "
-                        f"has no attribute '{attribute_name}' (reporter: '{name}')"
-                    ) from e
-
-            reporter = attr_reporter
-
-        elif isinstance(reporter, list):
-            self._check_list_reporter(name, reporter)
-            func, params = reporter[0], reporter[1]
-
-            def func_with_params(agent):
-                return func(agent, *params)
-
-            reporter = func_with_params
-
-        self.agenttype_reporters[agent_type][name] = reporter
+        reporters = self.agenttype_reporters.setdefault(agent_type, {})
+        reporters[name] = make_agent_reporter(name, reporter)
 
     def _new_table(self, table_name, table_columns):
         """Add a new table that objects can write to.
@@ -317,43 +228,10 @@ class DataCollector:
 
     def _record_agents(self, model):
         """Record agents data in a mapping of functions and agents."""
-        rep_funcs = self.agent_reporters.values()
-        # Immutable types that don't need deepcopy
-        python_immutable_types = (str, int, bool, float, tuple)
-
-        def get_reports(agent):
-            _prefix = (agent.model.time, agent.unique_id)
-            reports = []
-            for rep in rep_funcs:
-                value = rep(agent)
-                # Only deepcopy mutable types to avoid performance overhead
-                if isinstance(value, python_immutable_types):
-                    reports.append(value)
-                else:
-                    reports.append(deepcopy(value))
-            return _prefix + tuple(reports)
-
-        agent_records = map(get_reports, model.agents)
-        return agent_records
+        return collect_agent_rows(model.agents, self.agent_reporters, model.time)
 
     def _record_agenttype(self, model, agent_type):
         """Record agent-type data in a mapping of functions and agents."""
-        rep_funcs = self.agenttype_reporters[agent_type].values()
-        # Immutable types that don't need deepcopy
-        python_immutable_types = (str, int, bool, float, tuple)
-
-        def get_reports(agent):
-            _prefix = (agent.model.time, agent.unique_id)
-            reports = []
-            for rep in rep_funcs:
-                value = rep(agent)
-                # Only deepcopy mutable types to avoid performance overhead
-                if isinstance(value, python_immutable_types):
-                    reports.append(value)
-                else:
-                    reports.append(deepcopy(value))
-            return _prefix + tuple(reports)
-
         if not (isinstance(agent_type, type) and issubclass(agent_type, Agent)):
             raise ValueError(
                 f"Agent type {agent_type} is not recognized as an Agent type in the model or Agent subclass. Use an Agent (sub)class, like {model.agent_types}."
@@ -363,49 +241,31 @@ class DataCollector:
         # included: a reporter keyed on a superclass does not pick up its subclasses.
         # This is consistent regardless of whether agent_type has direct instances.
         agents = model.agents_by_type.get(agent_type, [])
-
-        agenttype_records = map(get_reports, agents)
-        return agenttype_records
+        return collect_agent_rows(
+            agents, self.agenttype_reporters[agent_type], model.time
+        )
 
     def collect(self, model):
         """Collect all the data for the given model object."""
+        time = model.time
         if self.model_reporters:
             if hasattr(self, "_collection_steps"):
-                self._collection_steps.append(model.time)
+                self._collection_steps.append(time)
             if not self._validated:
                 for name, reporter in self.model_reporters.items():
                     self._validate_model_reporter(name, reporter, model)
 
             for var, reporter in self.model_reporters.items():
-                # Check if lambda or partial function
-                if isinstance(reporter, types.LambdaType | partial):
-                    # Use deepcopy to store a copy of the data,
-                    # preventing references from being updated across steps.
-                    self.model_vars[var].append(deepcopy(reporter(model)))
-                # Check if model attribute
-                elif isinstance(reporter, str):
-                    self.model_vars[var].append(
-                        deepcopy(getattr(model, reporter, None))
-                    )
-                # Check if function with arguments
-                elif isinstance(reporter, list):
-                    self._check_list_reporter(var, reporter)
-                    self.model_vars[var].append(deepcopy(reporter[0](*reporter[1])))
-                # Assume it's a callable otherwise (e.g., method)
-                else:
-                    self.model_vars[var].append(deepcopy(reporter()))
+                self.model_vars[var].append(collect_model_value(var, reporter, model))
 
         if self.agent_reporters:
-            agent_records = self._record_agents(model)
-            self._agent_records[model.time] = list(agent_records)
+            self._agent_records[time] = self._record_agents(model)
 
         if self.agenttype_reporters:
-            self._agenttype_records[model.time] = {}
-            for agent_type in self.agenttype_reporters:
-                agenttype_records = self._record_agenttype(model, agent_type)
-                self._agenttype_records[model.time][agent_type] = list(
-                    agenttype_records
-                )
+            self._agenttype_records[time] = {
+                agent_type: self._record_agenttype(model, agent_type)
+                for agent_type in self.agenttype_reporters
+            }
 
     def add_table_row(self, table_name, row, ignore_missing=False):
         """Add a row dictionary to a specific table.
@@ -467,12 +327,11 @@ class DataCollector:
         all_records = itertools.chain.from_iterable(self._agent_records.values())
         rep_names = list(self.agent_reporters)
 
-        df = pd.DataFrame.from_records(
+        return pd.DataFrame.from_records(
             data=all_records,
             columns=["Step", "AgentID", *rep_names],
             index=["Step", "AgentID"],
         )
-        return df
 
     def get_agenttype_vars_dataframe(self, agent_type):
         """Create a pandas DataFrame from the agent-type variables for a specific agent type.
@@ -505,12 +364,11 @@ class DataCollector:
         )
         rep_names = list(self.agenttype_reporters[agent_type])
 
-        df = pd.DataFrame.from_records(
+        return pd.DataFrame.from_records(
             data=all_records,
             columns=["Step", "AgentID", *rep_names],
             index=["Step", "AgentID"],
         )
-        return df
 
     def get_table_dataframe(self, table_name):
         """Create a pandas DataFrame from a particular table.
