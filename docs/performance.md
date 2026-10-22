@@ -141,6 +141,43 @@ step and gives every agent the same snapshot of positions (a simultaneous update
 
 What remains per agent is its own numpy arithmetic on a handful of neighbours.
 
+## Agent lifecycle
+
+Models with high birth and death rates (an insect population, an epidemic with recovery and
+reinfection) spend much of their step creating and removing agents, and Modelly does more per
+birth than a plain object: it registers the agent in two ordered sets, assigns its id, gives it
+a column row when its class declares columns, enrols it in datasets, and emits a signal.
+Measured as `Agent(model)` followed by `agent.remove()`:
+
+| | Birth + death |
+|---|---|
+| Plain object into and out of a dict (the floor) | 74 ns |
+| Modelly before | 861 ns |
+| Modelly after | 549 ns |
+
+What changed: the `emit` wrapper checks for listeners with two dict lookups written inline and
+calls `notify` only when batching, suppressing, or a subscriber exists; `remove()` uses a
+`try/except` instead of a `contextlib.suppress` context manager (about 300 ns); the model
+writes its registry dicts directly instead of through two method calls; empty dataset loops are
+skipped; the constructor avoids packing empty arguments. `Model.time` is a plain attribute whose
+CHANGED signal is emitted once per time advance.
+
+### Against Mesa 2.3 on a real model
+
+`benchmarks/mesaVSmodelly/` runs the same medfly notebook (21 cells, a 576-season factorial
+experiment) under Mesa 2.3 and under Modelly, with bit-identical output CSVs. Best of three
+alternating runs on the same machine:
+
+| | Mesa 2.3 | Modelly |
+|---|---|---|
+| Whole notebook | 27.7 s | 24.5 s |
+| Factorial experiment (cell 7) | 17.2 s | 14.9 s |
+
+Single runs on a loaded machine swing by 2x, so read this as parity to a modest advantage, not
+as a precise ratio. The remaining per-agent cost on this workload is the liveness check
+`agent in model.agents` (a property and a Python-level `__contains__`, about 140 ns) and the
+birth and death path above.
+
 ## Caches
 
 Two results are now reused instead of recomputed:

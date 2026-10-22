@@ -6,7 +6,6 @@ Core Objects: Agent.
 # Postpone annotation evaluation to avoid NameError from forward references (PEP 563). Remove once Python 3.14+ is required.
 from __future__ import annotations
 
-import contextlib
 import itertools
 from random import Random
 from typing import TYPE_CHECKING, ClassVar
@@ -76,7 +75,10 @@ class Agent[M: Model]:
             to make proper use of python's super, in each class remove the arguments and
             keyword arguments you need and pass on the rest to super
         """
-        super().__init__(*args, **kwargs)
+        if args or kwargs:
+            super().__init__(*args, **kwargs)
+        else:
+            super().__init__()  # the common case, without packing empty arguments
 
         self.model: M = model
         self.unique_id = None
@@ -84,20 +86,25 @@ class Agent[M: Model]:
         self.model.register_agent(self)
         if self._column_specs:
             self.model.columns.register(self)
-
-        for dataset in self._datasets:
-            self.model.data_registry[dataset].add_agent(self)
+        if self._datasets:
+            for dataset in self._datasets:
+                self.model.data_registry[dataset].add_agent(self)
 
     def remove(self) -> None:
         """Remove and delete the agent from the model."""
-        with contextlib.suppress(KeyError):
+        # try/except rather than contextlib.suppress: the context manager costs
+        # about 300 ns per call and this runs on every agent death.
+        try:  # noqa: SIM105
             self.model.deregister_agent(self)
+        except KeyError:
+            pass  # already removed
         if self._column_specs and self._column_row >= 0:
             self.model.columns.unregister(self)
 
         # ensures models are also removed from datasets
-        for dataset in self._datasets:
-            self.model.data_registry[dataset].remove_agent(self)
+        if self._datasets:
+            for dataset in self._datasets:
+                self.model.data_registry[dataset].remove_agent(self)
 
     def step(self) -> None:
         """A single step of the agent."""
