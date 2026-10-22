@@ -188,3 +188,41 @@ def test_remove_where_removes_masked_agents():
     for agent in table.agents:
         assert table.wealth[agent._column_row] == agent.wealth
     assert table.remove_where(np.zeros(3, dtype=bool)) == 0
+
+
+class Spawner(Agent):
+    """An agent that can reproduce, for the do_where test."""
+
+    energy = Column(float, default=1.0)
+
+    def spawn(self):
+        """Create one offspring."""
+        Spawner(self.model)
+
+
+def test_draw_is_seeded_and_per_row():
+    """draw() gives one Bernoulli draw per row from the model's numpy generator."""
+    a, b = Model(rng=7), Model(rng=7)
+    for model in (a, b):
+        for _ in range(50):
+            Spawner(model)
+    mask_a = a.columns[Spawner].draw(0.3)
+    mask_b = b.columns[Spawner].draw(0.3)
+    assert mask_a.shape == (50,) and mask_a.dtype == bool
+    assert mask_a.tolist() == mask_b.tolist()
+    assert not a.columns[Spawner].draw(0.0).any()
+    assert a.columns[Spawner].draw(1.0).all()
+    per_row = np.where(np.arange(50) < 10, 1.0, 0.0)
+    assert a.columns[Spawner].draw(per_row).sum() == 10
+
+
+def test_do_where_calls_the_masked_agents_and_tolerates_growth():
+    """do_where snapshots the agents, so spawning during the call is safe."""
+    model = Model(rng=1)
+    for _ in range(6):
+        Spawner(model)
+    table = model.columns[Spawner]
+    mask = np.arange(6) % 2 == 0
+    assert table.do_where(mask, "spawn") == 3
+    assert len(table) == 9
+    assert len(model.agents) == 9

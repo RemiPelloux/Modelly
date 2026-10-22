@@ -21,7 +21,7 @@ from modelly.experimental.scenarios import Scenario
 from modelly.experimental.signals import (
     HasEmitters,
     ModelSignals,
-    Observable,
+    ObservableSignals,
     emit,
 )
 from modelly.log import create_module_logger, method_logger
@@ -67,10 +67,23 @@ class Model[A: Agent, S: Scenario](HasEmitters):
 
     """
 
-    # fixme how can we declare that "agents" is observable?
-    time = (
-        Observable()
-    )  # we can now just subscribe to change events on the observable time
+    # time is a plain attribute for speed: reads are ~40ns vs ~100ns through a
+    # data descriptor. The CHANGED signal is emitted once per time advance by
+    # _set_time(), so BaseDataRecorder and observe("time", ...) keep working.
+    # "time" is registered as an observable in __init_subclass__ (below) and at
+    # module level for the base Model class itself.
+
+    def __init_subclass__(cls, **kwargs):
+        """Register ``time`` as an observable for every Model subclass."""
+        super().__init_subclass__(**kwargs)
+        cls.observables["time"] = ObservableSignals
+
+    def _set_time(self, value: float) -> None:
+        """Set ``time`` and notify subscribers when it changes."""
+        old = self.time
+        self.time = value
+        if old != value:
+            self.notify("time", ObservableSignals.CHANGED, old=old, new=value)
 
     @property
     def scenario(self) -> S:
@@ -112,7 +125,7 @@ class Model[A: Agent, S: Scenario](HasEmitters):
         """
         super().__init__(*args, **kwargs)
         self.running: bool = True
-        self.time: float = 0.0
+        self.time = 0.0
         self.agent_id_counter: int = 1
 
         # Event list for event-based execution
@@ -150,7 +163,7 @@ class Model[A: Agent, S: Scenario](HasEmitters):
 
         self.data_registry = DataRegistry()
         # Column tables for agent classes that declare Column attributes.
-        self.columns = ColumnStore(self.random)
+        self.columns = ColumnStore(self.random, self.rng)
 
     def _wrapped_step(self) -> None:
         """Advance time by one unit, processing any scheduled events."""
@@ -178,13 +191,13 @@ class Model[A: Agent, S: Scenario](HasEmitters):
                 break
 
             if event.time <= until:
-                self.time = event.time
+                self._set_time(event.time)
                 event.execute()
             else:
                 self._event_list.add_event(event)
                 break
 
-        self.time = until
+        self._set_time(until)
 
     @property
     def agents(self) -> _HardKeyAgentSet[A]:
@@ -275,10 +288,6 @@ class Model[A: Agent, S: Scenario](HasEmitters):
                 random=self.random,
             )
 
-        _modelly_logger.debug(
-            "registered %s with agent_id %s", agent.__class__.__name__, agent.unique_id
-        )
-
     @emit("agents", ModelSignals.AGENT_REMOVED)
     def deregister_agent(self, agent: A):
         """Deregister the agent with the model.
@@ -292,8 +301,6 @@ class Model[A: Agent, S: Scenario](HasEmitters):
         """
         self._agents_by_type[type(agent)].remove(agent)
         self._all_agents.remove(agent)
-
-        _modelly_logger.debug("deregistered agent with agent_id %s", agent.unique_id)
 
     def run_model(self) -> None:
         """Run the model until the end condition is reached.
@@ -417,3 +424,9 @@ class Model[A: Agent, S: Scenario](HasEmitters):
             return
 
         self._advance_time(end_time)
+
+
+# Register "time" as an observable for the base Model class itself (subclasses
+# get it via Model.__init_subclass__). Model.time is a plain attribute now, so
+# the descriptor generator no longer discovers it automatically.
+Model.observables["time"] = ObservableSignals
