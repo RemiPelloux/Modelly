@@ -27,8 +27,8 @@ versions and say so in their docstrings. What changed in each release is in
 [CHANGELOG.md](CHANGELOG.md).
 
 ```bash
-pip install "modelly @ git+https://github.com/RemiPelloux/Modelly.git@v1.2.0"   # as a dependency
-python -c "import modelly; print(modelly.__version__)"
+pip install modelly-abm                                   # the package name on PyPI
+python -c "import modelly; print(modelly.__version__)"   # the import name is modelly
 ```
 
 Or, from a clone, `pip install -e ".[all]"` then `python example.py`: a wealth-exchange model that
@@ -104,10 +104,11 @@ pip install -e ".[viz]"          # + solara, matplotlib, altair
 pip install -e ".[network]"      # + networkx
 ```
 
-To depend on Modelly from your own project, pin a release tag in `pyproject.toml`:
+To depend on Modelly from your own project, add it to `pyproject.toml` (the distribution is
+`modelly-abm`, the import is `modelly`):
 
 ```toml
-dependencies = ["modelly @ git+https://github.com/RemiPelloux/Modelly.git@v1.2.0"]
+dependencies = ["modelly-abm>=1.3"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is
@@ -270,10 +271,11 @@ Two more operations run over everyone in one call, so a model can move its popul
 out of the per-agent loop:
 
 ```python
-# Every sheep loses one energy, and the ones below zero die, properly removed.
+# A whole-population step for the sheep: decrement, die, reproduce, no per-agent loop.
 table = self.columns[Sheep]
 table.energy -= 1
 table.remove_where(table.energy < 0)
+table.do_where(table.draw(0.04), "spawn_offspring")  # one seeded draw per sheep
 
 # Continuous space: one KD-tree answers the whole flock, same snapshot for all.
 lists = self.space.neighbors_within(radius=5.0)
@@ -281,8 +283,22 @@ for boid in self.agents:
     boid.neighbors = lists[boid]
 ```
 
-`neighbors_within` is O(n log n) for the whole flock instead of one O(n) scan per agent, and
-is periodic on a torus. The Boids example uses it: 2,000 boids go from 98 ms to 42 ms per step.
+`draw` uses the model's seeded numpy generator, so the run stays reproducible. `neighbors_within`
+is O(n log n) for the whole flock instead of one O(n) scan per agent, is periodic on a torus, and
+is cached while no position changes. The Boids example uses it: 2,000 boids go from 98 ms to
+42 ms per step.
+
+### Replications in parallel
+
+```python
+from modelly.experimental.scenarios import RunConfiguration, run_scenarios
+
+scenarios = WealthScenario(n=5000, rng=1).spawn_replications(32)  # 32 independent seeds
+store = run_scenarios(scenarios, RunConfiguration(WealthModel, until=200), workers=8)
+```
+
+Each replication carries its own seed derived from the base scenario, so the sweep is
+reproducible; `workers=` spreads it over processes.
 
 ## Coming from Mesa
 
@@ -328,7 +344,7 @@ is backed by a measurement in [docs/performance.md](docs/performance.md).
 | `model.agents` (the registry) | ordered `dict` keyed on the agent | Strong references where the lifecycle is explicit; views downgrade to weak sets in one place |
 | `Cell.agents` | `list` | Cells hold a handful of agents; append and remove beat any indexed structure at that size |
 | Cell neighbourhoods | per-cell `dict` cache | One lookup per query; invalidating one cell never touches another, and a discarded grid is freed |
-| Empty cells on a grid | swap-remove list + index | O(1) random empty cell at any fill level, built lazily the first time a grid turns out to be dense |
+| Empty cells in any discrete space | swap-remove list + index | O(1) random empty cell at any fill level, built lazily the first time a space turns out to be dense |
 | Property layers | `np.ndarray` per layer | Vectorised updates on the array, per-cell accessors on the cells, one source of truth |
 | Continuous space | one `np.ndarray` of positions, one KD-tree per step | Per-agent queries are numpy; `neighbors_within` answers the whole population in one periodic tree query |
 | Event queue | `heapq` with lazy cancellation and compaction | O(log n) scheduling that never degrades under repeated cancel/reschedule |
@@ -349,17 +365,22 @@ here; the full table and method are in [docs/performance.md](docs/performance.md
 | Boids, continuous space | 2,000 | 41.7 ms | 2.4x faster |
 | Boids, continuous space | 10,000 | 227 ms | from about 2.5 s |
 
-## Roadmap
+## Future roadmap
 
-In order of expected impact. Each item keeps today's authoring model: you still write a `Model`,
-an `Agent` subclass and a `Scenario`.
+What is shipped: columns, vectorised step phases (`draw`, `do_where`, `remove_where`), one
+KD-tree query for a whole continuous population, an O(1) empty-cell index on every discrete
+space, process-pool replications, and incremental data frames. What comes next, in order of
+expected impact; each item keeps today's authoring model, you still write a `Model`, an
+`Agent` subclass and a `Scenario`:
 
-1. **Vectorised step phases.** Columns make the state available as arrays; the next step is
-   helpers for the common whole-population phases (decrement, draw, die, reproduce) so a model
-   can move them out of the per-agent loop.
-2. **Parallel replications.** `Scenario.spawn_replications` already yields independent seeded
-   scenarios; running them across processes is the missing piece.
-3. **Empty-cell index for networks and Voronoi meshes**, generalising what grids have today.
+1. **Vectorised movement on grids.** A coordinate column plus a vectorised neighbourhood
+   lookup, so a grid model can move its whole population in one numpy operation.
+2. **Shared-memory replications.** Fan a sweep over one large model out to processes without
+   copying the column store.
+3. **Compiled hot loops.** An optional compiled path for the cell move and the neighbourhood
+   lookup, the last two Python-bound costs of a per-agent step.
+4. **Live dashboards.** The incremental data frame is the first piece; a streaming view that
+   updates per tick without re-reading history is the next.
 
 ## Built-in examples
 

@@ -248,8 +248,18 @@ print(pd.DataFrame(runs).groupby("chance")["peak"].describe())
 ```
 
 Each replication has its own seed derived from the base scenario, so the sweep is reproducible
-end to end. Runs are independent, so a `concurrent.futures.ProcessPoolExecutor` over the
-scenarios parallelises the sweep without any change to the model.
+end to end. Runs are independent, so they parallelise without any change to the model:
+
+```python
+from modelly.experimental.scenarios import RunConfiguration, run_scenarios
+
+scenarios = [
+    s
+    for chance in (0.1, 0.2, 0.3)
+    for s in EpidemicScenario(infection_chance=chance, rng=1).spawn_replications(20)
+]
+store = run_scenarios(scenarios, RunConfiguration(Epidemic, until=120), workers=8)
+```
 
 ## 9. Test it
 
@@ -278,6 +288,9 @@ def test_epidemic_ends():
 ## 10. Make it fast
 
 - Put the population-wide work on columns and numpy (`count` above); keep interactions in `step`.
+- Move whole-population phases out of the per-agent loop with the column helpers:
+  `table.days_infected[table.state == 1] += 1`, `table.remove_where(mask)`,
+  `table.do_where(table.draw(p), "method")`. `draw` uses the model's seeded generator.
 - Use `model.agents.shuffle_do("step")` rather than your own loop: it shuffles once and skips
   agents removed earlier in the same tick.
 - `cell.neighborhood` is cached per cell; call it freely.
