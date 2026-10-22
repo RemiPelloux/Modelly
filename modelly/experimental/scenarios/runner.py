@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import traceback
 from collections.abc import Iterable
-from concurrent.futures import BrokenExecutor, as_completed
+from concurrent.futures import BrokenExecutor, ProcessPoolExecutor, as_completed
 from typing import TYPE_CHECKING, Any
 
 import pandas as pd
@@ -177,6 +177,7 @@ def run_scenarios(
     executor: Executor | None = None,
     store: Store | None = None,
     progress: bool = True,
+    workers: int | None = None,
 ) -> Store:
     """Run the scenarios and return a Store object.
 
@@ -196,10 +197,19 @@ def run_scenarios(
         store: the Storage backend to use
         progress: whether to display the progress
             Display a progress bar via ``tqdm`` if installed.
+        workers: run the scenarios in this many processes
+            A shortcut for passing a ``ProcessPoolExecutor``: the pool is created
+            and closed here. Ignored when ``executor`` is given. The model class,
+            the scenarios and the config must be importable (picklable).
 
     Returns: a Store instance
 
     """
+    if workers is not None and executor is None:
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            return run_scenarios(
+                scenarios, config, executor=pool, store=store, progress=progress
+            )
     if store is None:
         store = InMemoryStore()
 

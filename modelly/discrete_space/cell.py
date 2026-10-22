@@ -53,6 +53,7 @@ class Cell:
 
     __slots__ = [
         "_agents",
+        "_empties_index",
         "_empty",
         "_neighborhood_cache",
         "_position",  # physical position
@@ -70,6 +71,9 @@ class Cell:
     @empty.setter
     def empty(self, value: bool) -> None:
         self._empty = value
+        index = self._empties_index
+        if index is not None:
+            index.set_empty(self, value)
 
     @property
     def position(self) -> np.ndarray:
@@ -115,6 +119,8 @@ class Cell:
         ] = {}  # fixme still used by voronoi mesh
         self.random = random
         self._neighborhood_cache: dict[tuple[int, bool], CellCollection[Cell]] = {}
+        # Set by the space's empty-cell index once it is built (see DiscreteSpace).
+        self._empties_index = None
 
     def connect(self, other: Cell, key: Coordinate | None = None) -> None:
         """Connects this cell to another cell.
@@ -301,6 +307,7 @@ class Cell:
             key: neighbor.coordinate for key, neighbor in self.connections.items()
         }
         slots["_neighborhood_cache"] = {}
+        slots["_empties_index"] = None
         return state
 
     def _clear_cache(self):

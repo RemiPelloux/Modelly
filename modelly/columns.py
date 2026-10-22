@@ -79,10 +79,13 @@ class ColumnTable:
     return a view of the live rows. ``table.unique_id`` is always present.
     """
 
-    def __init__(self, specs: dict[str, Column], random: Random) -> None:
+    def __init__(
+        self, specs: dict[str, Column], random: Random, rng: np.random.Generator
+    ) -> None:
         """Allocate one array per column plus the unique_id column."""
         self._specs = specs
         self.random = random
+        self.rng = rng
         self._agents: list[Agent] = []
         self._data: dict[str, np.ndarray] = {
             ID_COLUMN: np.zeros(INITIAL_CAPACITY, dtype=np.int64),
@@ -127,6 +130,25 @@ class ColumnTable:
         agents = self._agents
         rows = np.flatnonzero(mask).tolist()
         return AgentSet([agents[row] for row in rows], random=self.random)
+
+    def draw(self, p: float | np.ndarray) -> np.ndarray:
+        """One Bernoulli draw per agent from the model's seeded numpy generator.
+
+        ``p`` is a probability or one probability per row. The "reproduce with
+        probability p" phase of a step is ``table.do_where(table.draw(p), "spawn")``.
+        """
+        return self.rng.random(len(self._agents)) < p
+
+    def do_where(self, mask: np.ndarray, method: str, *args, **kwargs) -> int:
+        """Call ``method`` on every agent whose row is True in ``mask``; return how many.
+
+        The agents are snapshotted first, so the method may add or remove agents.
+        """
+        agents = self._agents
+        chosen = [agents[row] for row in np.flatnonzero(mask).tolist()]
+        for agent in chosen:
+            getattr(agent, method)(*args, **kwargs)
+        return len(chosen)
 
     def remove_where(self, mask: np.ndarray) -> int:
         """Remove every agent whose row is True in ``mask``; return how many.
@@ -193,10 +215,11 @@ class ColumnStore:
     Indexed by the concrete agent class: ``model.columns[MoneyAgent]``.
     """
 
-    def __init__(self, random: Random) -> None:
+    def __init__(self, random: Random, rng: np.random.Generator) -> None:
         """Create an empty store; tables appear when agents register."""
         self._tables: dict[type, ColumnTable] = {}
         self.random = random
+        self.rng = rng
 
     def __getitem__(self, agent_class: type) -> ColumnTable:
         """Return the table of ``agent_class``; KeyError if it has none."""
@@ -225,7 +248,7 @@ class ColumnStore:
         agent_class = type(agent)
         table = self._tables.get(agent_class)
         if table is None:
-            table = ColumnTable(agent_class._column_specs, self.random)
+            table = ColumnTable(agent_class._column_specs, self.random, self.rng)
             self._tables[agent_class] = table
         table.add(agent)
 

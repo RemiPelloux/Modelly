@@ -20,10 +20,6 @@ from modelly.discrete_space.property_layer import EMPTY_LAYER, HasPropertyLayers
 
 T = TypeVar("T", bound=Cell)
 
-# Random draws tried before building the empties index. Each draw is O(1), so a
-# sparse grid answers in a draw or two; a dense grid fails them all once, pays
-# for one O(n) index build, and answers in O(1) ever after.
-EMPTY_SAMPLE_TRIES = 8
 # Draws tried before scanning the grid for a cell with spare capacity.
 CAPACITY_SAMPLE_TRIES = 50
 GRID_2D = 2
@@ -64,49 +60,6 @@ def _make_grid_cell_class(parent: type) -> type:
         (parent,),
         {"property_layers": set(), "__slots__": (), "__reduce__": pickle_gridcell},
     )
-
-
-class _EmptiesIndex:
-    """The empty cells of a grid, with O(1) add, discard and random pick.
-
-    A list gives the random pick and a dict maps each cell to its list slot, so
-    a discard swaps the last cell into the freed slot instead of shifting.
-    """
-
-    __slots__ = ("_cells", "_slots", "enabled")
-
-    def __init__(self) -> None:
-        self._cells: list[Cell] = []
-        self._slots: dict[Cell, int] = {}
-        self.enabled = False
-
-    def build(self, cells: Sequence[Cell]) -> None:
-        """Index the empty cells among ``cells`` and start tracking transitions."""
-        self._cells = [cell for cell in cells if not cell._agents]
-        self._slots = {cell: i for i, cell in enumerate(self._cells)}
-        self.enabled = True
-
-    def set_empty(self, cell: Cell, is_empty: bool) -> None:
-        """Record that ``cell`` became empty or occupied."""
-        if is_empty:
-            if cell not in self._slots:
-                self._slots[cell] = len(self._cells)
-                self._cells.append(cell)
-            return
-        slot = self._slots.pop(cell, None)
-        if slot is None:
-            return
-        last = self._cells.pop()
-        if slot < len(self._cells):
-            self._cells[slot] = last
-            self._slots[last] = slot
-
-    def choice(self, random: Random) -> Cell:
-        """Return a random empty cell; raises IndexError when there is none."""
-        return random.choice(self._cells)
-
-    def __len__(self) -> int:
-        return len(self._cells)
 
 
 class Grid(HasPropertyLayers, DiscreteSpace[T]):
@@ -162,7 +115,6 @@ class Grid(HasPropertyLayers, DiscreteSpace[T]):
         # Track which property layers are read-only so the constraint survives
         # pickling and deepcopy (see __getstate__/__setstate__).
         self._read_only_layers: set[str] = set()
-        self._empties = _EmptiesIndex()
 
         coordinates = product(*(range(dim) for dim in self.dimensions))
 
@@ -178,15 +130,15 @@ class Grid(HasPropertyLayers, DiscreteSpace[T]):
     def _install_empty_accessor(self) -> None:
         """Back ``cell.empty`` with the "empty" layer and keep the empties index in sync."""
         array = self.property_layers[EMPTY_LAYER]
-        empties = self._empties
 
         def getter(self_cell):
             return array[self_cell.coordinate]
 
         def setter(self_cell, value):
             array[self_cell.coordinate] = value
-            if empties.enabled:
-                empties.set_empty(self_cell, value)
+            index = self_cell._empties_index
+            if index is not None:
+                index.set_empty(self_cell, value)
 
         setattr(
             self.cell_klass,
@@ -259,36 +211,6 @@ class Grid(HasPropertyLayers, DiscreteSpace[T]):
             raise TypeError("Torus must be a boolean.")
         if self.capacity is not None and not isinstance(self.capacity, float | int):
             raise TypeError("Capacity must be a number or None.")
-
-    def select_random_empty_cell(self) -> T:
-        """Select a random empty cell.
-
-        Sparse grids are answered by a few random draws. The first time the draws
-        all fail (or when ``_try_random`` is False) the grid builds an index of
-        its empty cells, kept current by ``cell.empty`` from then on, so every
-        later call is O(1) regardless of how full the grid is.
-
-        Raises:
-            ValueError: If the grid has no empty cell.
-        """
-        empties = self._empties
-        if not empties.enabled:
-            if self._try_random:
-                random = self.random
-                cells = self._celllist
-                for _ in range(EMPTY_SAMPLE_TRIES):
-                    cell = random.choice(cells)
-                    if not cell._agents:
-                        return cell
-            empties.build(self._celllist)
-
-        try:
-            return empties.choice(self.random)
-        except IndexError as e:
-            raise ValueError(
-                "Grid is completely full. No empty cells available. "
-                "Cannot select a random empty cell."
-            ) from e
 
     @property
     def cells_with_capacity(self) -> CellCollection[T]:
@@ -372,9 +294,9 @@ class Grid(HasPropertyLayers, DiscreteSpace[T]):
                 cell.connect(self._cells[ni, nj], (di, dj))
 
     def __getstate__(self) -> dict[str, Any]:
-        """Drop the per-grid cell class and the empties index; both are rebuilt on load."""
+        """Drop the per-grid cell class; it is rebuilt on load."""
         state = super().__getstate__()
-        return {k: v for k, v in state.items() if k not in ("cell_klass", "_empties")}
+        return {k: v for k, v in state.items() if k != "cell_klass"}
 
     def __setstate__(self, state: dict[str, Any]) -> None:
         """Restore state and re-attach property_layer accessors to the cell class.
@@ -386,6 +308,5 @@ class Grid(HasPropertyLayers, DiscreteSpace[T]):
         for cell in self._cells.values():
             cell.__class__ = self.cell_klass
         self._restore_layer_accessors()
-        self._empties = _EmptiesIndex()
         if EMPTY_LAYER in self.property_layers:
             self._install_empty_accessor()
