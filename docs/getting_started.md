@@ -51,8 +51,5 @@ To further explore Modelly and its features, we have the following resources ava
 
 Enjoy modelling with Modelly, and feel free to reach out!
 
-
-
-
-
-
+### Coming from Mesa
+- [Migrating from Mesa](migrating_from_mesa): a construct-by-construct map and a codemod, `python -m modelly.migrate`, that rewrites the mechanical parts and reports the rest.
