@@ -340,8 +340,9 @@ def card(
     card_edge: str | None = None,
     mono: bool = False,
     detail: str | None = None,
+    glow_at: float | None = None,
 ) -> str:
-    """Return one diagram card: accent rail, title, subtitle and optional mono detail."""
+    """Return one diagram card: accent rail, title, subtitle, optional detail and arrival glow."""
     card_bg = card_bg or t["card"]
     card_edge = card_edge or t["card_edge"]
     title_color, sub_color = t["title"], t["sub"]
@@ -351,40 +352,68 @@ def card(
         if detail
         else ""
     )
+    flash = glow(x, y, w, h, accent, glow_at) if glow_at is not None else ""
     return f"""  <g>
     <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" fill="{card_bg}" stroke="{card_edge}" stroke-width="1.2"/>
-    <rect x="{x}" y="{y}" width="4" height="{h}" rx="2" fill="{accent}"/>
+{flash}    <rect x="{x}" y="{y}" width="4" height="{h}" rx="2" fill="{accent}"/>
     <text x="{x + 22}" y="{y + 32}" font-family="{MONO if mono else FONT}" font-size="{14 if mono else 17}" font-weight="600" fill="{title_color}">{title}</text>
     <text x="{x + 22}" y="{y + 56}" font-family="{MONO}" font-size="12.5" fill="{sub_color}">{subtitle}</text>{extra}
   </g>
 """
 
 
+TICK = 9.0  # seconds: one full trip of the token around the architecture diagram
+
+
+def token(path_id: str, accent: str, begin: float, travel: float) -> str:
+    """A pulse that travels ``path_id`` during its slot of the TICK cycle, hidden otherwise."""
+    t0, t1 = begin / TICK, (begin + travel) / TICK
+    fade = 0.02
+    return f"""    <circle r="3.4" fill="{accent}" opacity="0">
+      <animateMotion dur="{TICK}s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;{t0:.3f};{t1:.3f};1" calcMode="spline" keySplines="0 0 1 1;0.4 0 0.2 1;0 0 1 1">
+        <mpath href="#{path_id}"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;{t0:.3f};{min(t0 + fade, t1):.3f};{max(t1 - fade, t0):.3f};{t1:.3f};1" dur="{TICK}s" repeatCount="indefinite"/>
+    </circle>
+"""
+
+
+def glow(
+    x: float, y: float, w: float, h: float, accent: str, at: float, twice: bool = False
+) -> str:
+    """A soft flash of ``accent`` over a card when the token arrives at second ``at``."""
+    a = at / TICK
+    keys = f"0;{a:.3f};{a + 0.02:.3f};{a + 0.12:.3f};1"
+    values = "0;0;0.16;0;0"
+    if twice:  # the model panel is visited at the start and on the loop back
+        b = (TICK - 1.4) / TICK
+        keys = f"0;{a:.3f};{a + 0.02:.3f};{a + 0.12:.3f};{b:.3f};{b + 0.02:.3f};{b + 0.12:.3f};1"
+        values = "0;0;0.16;0;0;0.16;0;0"
+    return (
+        f'    <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="16" fill="{accent}" opacity="0">'
+        f'<animate attributeName="opacity" values="{values}" keyTimes="{keys}" dur="{TICK}s" repeatCount="indefinite"/></rect>\n'
+    )
+
+
 def flow(
     a: tuple[float, float],
     b: tuple[float, float],
     accent: str,
-    dur: float,
-    delay: float = 0,
+    begin: float,
+    travel: float = 0.8,
     curve: float = 0.0,
 ) -> str:
-    """Animated dashed connector with a travelling pulse."""
+    """Dashed connector whose token travels from ``a`` to ``b`` at second ``begin`` of the tick."""
     x1, y1 = a
     x2, y2 = b
     mx = (x1 + x2) / 2 + curve
     my = (y1 + y2) / 2
-    uid = f"f{abs(hash((a, b, curve))) % 100000}"
+    uid = f"f{int(x1)}-{int(y1)}-{int(x2)}-{int(y2)}"
     return f"""  <g>
     <path id="{uid}" d="M{x1} {y1} Q{mx} {my} {x2} {y2}" fill="none" stroke="{accent}" stroke-opacity="0.45" stroke-width="1.8" stroke-dasharray="5 7" stroke-linecap="round">
-      <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="{dur}s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="3s" repeatCount="indefinite"/>
     </path>
-    <circle r="3.2" fill="{accent}" opacity="0">
-      <animateMotion dur="{dur * 1.4:.1f}s" begin="-{delay}s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.4 0 0.2 1">
-        <mpath href="#{uid}"/>
-      </animateMotion>
-      <animate attributeName="opacity" values="0;1;1;0" dur="{dur * 1.4:.1f}s" begin="-{delay}s" repeatCount="indefinite"/>
-    </circle>
-  </g>
+{token(uid, accent, begin, travel)}  </g>
 """
 
 
@@ -408,16 +437,17 @@ def architecture(t: dict) -> str:
             t,
             mono=True,
             detail="class MyScenario(Scenario)",
+            glow_at=0.0,
         )
     )
-    parts.append(flow((600, 108), (600, 168), g1, 2.6))
+    parts.append(flow((600, 108), (600, 168), g1, begin=0.2))
 
     parts.append(f"""  <g>
     <rect x="60" y="168" width="1080" height="196" rx="20" fill="{t["panel"]}" stroke="{t["panel_edge"]}" stroke-width="1.3"/>
     <rect x="60" y="168" width="1080" height="38" rx="20" fill="{t["panel_head"]}"/>
     <rect x="60" y="186" width="1080" height="20" fill="{t["panel_head"]}"/>
     <text x="86" y="193" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="13" font-weight="600" fill="{t["panel_text"]}" letter-spacing="1.6">MODEL  ·  state · random · rng · time</text>
-  </g>""")
+{glow(60, 168, 1080, 196, g1, 1.0, twice=True)}  </g>""")
     parts.append(
         card(
             84,
@@ -458,7 +488,7 @@ def architecture(t: dict) -> str:
         )
     )
 
-    parts.append(flow((600, 364), (600, 424), g2, 3.0))
+    parts.append(flow((600, 364), (600, 424), g2, begin=1.6))
     parts.append(
         card(
             360,
@@ -472,10 +502,11 @@ def architecture(t: dict) -> str:
             mono=True,
             card_bg=t["tint_teal"],
             card_edge=t["tint_teal_edge"],
+            glow_at=2.4,
         )
     )
 
-    parts.append(flow((600, 498), (600, 558), g2, 3.0))
+    parts.append(flow((600, 498), (600, 558), g2, begin=2.8))
     parts.append(
         card(
             360,
@@ -489,12 +520,13 @@ def architecture(t: dict) -> str:
             mono=True,
             card_bg=t["tint_teal"],
             card_edge=t["tint_teal_edge"],
+            glow_at=3.6,
         )
     )
 
-    parts.append(flow((470, 632), (250, 704), g3, 3.2, 0.4, curve=-30))
-    parts.append(flow((600, 632), (600, 704), g3, 3.2, 0.9))
-    parts.append(flow((730, 632), (950, 704), g3, 3.2, 1.4, curve=30))
+    parts.append(flow((470, 632), (250, 704), g3, begin=4.0, travel=1.0, curve=-30))
+    parts.append(flow((600, 632), (600, 704), g3, begin=4.0, travel=1.0))
+    parts.append(flow((730, 632), (950, 704), g3, begin=4.0, travel=1.0, curve=30))
 
     parts.append(
         card(
@@ -508,6 +540,7 @@ def architecture(t: dict) -> str:
             t,
             card_bg=t["tint_pink"],
             card_edge=t["tint_pink_edge"],
+            glow_at=5.0,
         )
     )
     parts.append(
@@ -522,6 +555,7 @@ def architecture(t: dict) -> str:
             t,
             card_bg=t["tint_pink"],
             card_edge=t["tint_pink_edge"],
+            glow_at=5.0,
         )
     )
     parts.append(
@@ -536,6 +570,7 @@ def architecture(t: dict) -> str:
             t,
             card_bg=t["tint_pink"],
             card_edge=t["tint_pink_edge"],
+            glow_at=5.0,
         )
     )
 
@@ -543,12 +578,7 @@ def architecture(t: dict) -> str:
     <path id="loopback" d="M1120 752 C1190 752 1190 300 1140 282" fill="none" stroke="#7C5CFF" stroke-opacity="0.38" stroke-width="1.8" stroke-dasharray="6 8" stroke-linecap="round">
       <animate attributeName="stroke-dashoffset" from="0" to="-28" dur="3.4s" repeatCount="indefinite"/>
     </path>
-    <circle r="3.6" fill="#7C5CFF" opacity="0">
-      <animateMotion dur="6.5s" repeatCount="indefinite">
-        <mpath href="#loopback"/>
-      </animateMotion>
-    </circle>
-    <text x="1058" y="524" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="{t["muted"]}" letter-spacing="1">next tick</text>
+{token("loopback", g1, 5.4, 2.2)}    <text x="1058" y="524" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="{t["muted"]}" letter-spacing="1">next tick<animate attributeName="opacity" values="0.6;0.6;1;1;0.6;0.6" keyTimes="0;0.6;0.63;0.82;0.85;1" dur="{TICK}s" repeatCount="indefinite"/></text>
   </g>""")
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" role="img" aria-label="Modelly architecture: a scenario configures the model, which runs agents in a space on a schedule, records data into datasets and is explored through visualization and analysis.">
