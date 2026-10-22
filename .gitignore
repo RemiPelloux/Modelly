@@ -108,3 +108,30 @@ benchmarks/mesa_baseline/*.png
 benchmarks/mesa_baseline/.venv/
 benchmarks/mesa_baseline/.jupyter/
 .venv-mesa2/
+
+# Local notebook audit (notebook copy + review doc), never committed
+benchmarks/mesa_baseline/audit/
+
+# Secrets and local credentials: never committed
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.secret
+*.token
+secrets/
+credentials*.json
+service-account*.json
+.netrc
+.pypirc
+*.sqlite
+*.sqlite3
+*.db
+
+# Agent and editor scratch
+.claude/
+.ruff_cache/

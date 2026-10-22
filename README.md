@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://github.com/RemiPelloux/Modelly/actions/workflows/build_lint.yml"><img src="https://github.com/RemiPelloux/Modelly/actions/workflows/build_lint.yml/badge.svg" alt="build"></a>
   <a href="https://codecov.io/gh/RemiPelloux/Modelly"><img src="https://codecov.io/gh/RemiPelloux/Modelly/branch/main/graph/badge.svg" alt="coverage"></a>
+  <a href="https://github.com/RemiPelloux/Modelly/releases/latest"><img src="https://img.shields.io/github/v/release/RemiPelloux/Modelly?color=0F766E&label=release" alt="latest release"></a>
   <img src="https://img.shields.io/badge/python-3.12%2B-3B82F6" alt="python 3.12+">
   <img src="https://img.shields.io/badge/ruff-linted-261230" alt="ruff">
   <a href="pelloux-guidelines.md"><img src="https://img.shields.io/badge/code%20discipline-Pelloux-0F766E" alt="Pelloux guidelines"></a>
@@ -20,8 +21,9 @@ give your agents behaviour, run the world forward in time, then measure, replay 
 
 ---
 
-**Status:** alpha, Python 3.12+. The core (model, agents, spaces, time, data) is stable enough for
-research use; modules under `modelly.experimental` may still change between minor versions.
+**Status:** 1.0, Python 3.12+. The core (model, agents, columns, spaces, time, data) is stable
+and follows semantic versioning; modules under `modelly.experimental` may change between minor
+versions and say so in their docstrings.
 
 ```bash
 pip install -e ".[all]"     # everything: core, network, visualization, examples, docs
@@ -334,7 +336,6 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 | **Overview** | `docs/overview.md`: the object model, end to end |
 | **Performance audit** | `docs/performance.md`: measurements, what changed, what is next |
 | **Best practices** | `docs/best-practices.md` |
-| **Migration guide** | `docs/migration_guide.md` |
 | **API reference** | `docs/apis/`: agents, model, space, time, data |
 
 The tutorials are executable: open them locally, in Colab, or through Binder (links at the top of
@@ -413,7 +414,7 @@ If Modelly contributes to a publication, cite it with the metadata in [CITATION.
 
 ## License
 
-Modelly is released under the [Apache License 2.0](LICENSE). Third-party attribution, including the
-upstream project this codebase derives from, is recorded in [NOTICE](NOTICE).
+Modelly is released under the [Apache License 2.0](LICENSE). Third-party attribution is recorded in
+[NOTICE](NOTICE).
 
 <p align="center"><sub>Modelly: build the system, run the world, watch what emerges.</sub></p>

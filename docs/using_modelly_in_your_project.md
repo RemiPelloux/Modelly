@@ -11,7 +11,7 @@ Modelly needs Python 3.12 or newer. From an empty project folder:
 ```bash
 mkdir epidemic && cd epidemic
 python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\activate
-pip install "modelly @ git+https://github.com/RemiPelloux/Modelly.git@v4.0.0a1"
+pip install "modelly @ git+https://github.com/RemiPelloux/Modelly.git@v1.0.0"
 ```
 
 Pin the tag you tested against. To declare it in your own `pyproject.toml` instead:
@@ -22,12 +22,12 @@ name = "epidemic"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-  "modelly @ git+https://github.com/RemiPelloux/Modelly.git@v4.0.0a1",
+  "modelly @ git+https://github.com/RemiPelloux/Modelly.git@v1.0.0",
   "pandas",
 ]
 
 [project.optional-dependencies]
-viz = ["modelly[viz] @ git+https://github.com/RemiPelloux/Modelly.git@v4.0.0a1"]
+viz = ["modelly[viz] @ git+https://github.com/RemiPelloux/Modelly.git@v1.0.0"]
 ```
 
 Then `pip install -e .` (or `pip install -e ".[viz]"` for the browser UI).
@@ -189,7 +189,7 @@ from epidemic.model import Epidemic
 from epidemic.scenario import EpidemicScenario
 
 model = Epidemic(EpidemicScenario(n=1000, rng=7))
-model.run_for(60)                       # 60 ticks; or model.run_model() until running is False
+model.run_for(60)  # 60 ticks; or model.run_model() until running is False
 
 frame = model.datacollector.get_model_vars_dataframe()
 print(frame.tail())
@@ -203,8 +203,10 @@ schedules events (`self.schedule_event(fn, after=3.5)`) mixes ticks and events c
 ## 7. Look at the data
 
 ```python
-model_vars = model.datacollector.get_model_vars_dataframe()   # one row per tick
-agent_vars = model.datacollector.get_agent_vars_dataframe()   # one row per agent per tick
+model_vars = model.datacollector.get_model_vars_dataframe()  # one row per tick
+agent_vars = (
+    model.datacollector.get_agent_vars_dataframe()
+)  # one row per agent per tick
 share_infected = agent_vars["state"].eq(1).groupby("Step").mean()
 ```
 
@@ -212,8 +214,8 @@ For a snapshot of the whole population right now, without going through the coll
 
 ```python
 table = model.columns[Person]
-table.to_dataframe()                     # indexed by unique_id, one column per Column
-table.where(table.state == 1)            # the infected, as an AgentSet
+table.to_dataframe()  # indexed by unique_id, one column per Column
+table.where(table.state == 1)  # the infected, as an AgentSet
 table.days_infected[table.state == 1].mean()
 ```
 
@@ -233,7 +235,14 @@ for chance in (0.1, 0.2, 0.3):
     for scenario in base.spawn_replications(20):
         model = Epidemic(scenario)
         model.run_model()
-        runs.append({"chance": chance, "peak": model.datacollector.get_model_vars_dataframe()["infected"].max()})
+        runs.append(
+            {
+                "chance": chance,
+                "peak": model.datacollector.get_model_vars_dataframe()[
+                    "infected"
+                ].max(),
+            }
+        )
 
 print(pd.DataFrame(runs).groupby("chance")["peak"].describe())
 ```
@@ -289,8 +298,12 @@ from epidemic.model import Epidemic
 
 page = SolaraViz(
     Epidemic(),
-    components=[make_space_component(lambda a: {"color": ["tab:blue", "tab:red", "tab:green"][a.state]}),
-                make_plot_component(["susceptible", "infected", "recovered"])],
+    components=[
+        make_space_component(
+            lambda a: {"color": ["tab:blue", "tab:red", "tab:green"][a.state]}
+        ),
+        make_plot_component(["susceptible", "infected", "recovered"]),
+    ],
     name="Epidemic",
 )
 ```

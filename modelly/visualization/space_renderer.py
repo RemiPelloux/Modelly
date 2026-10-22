@@ -243,9 +243,8 @@ class SpaceRenderer:
         """
         if agent_portrayal is not None:
             warnings.warn(
-                "Passing agent_portrayal to draw_agents() is deprecated and will be removed in Modelly 4.0. "
-                "Use setup_agents(agent_portrayal, **kwargs) before calling draw_agents()."
-                "See https://modelly.readthedocs.io/latest/migration_guide.html#passing-portrayal-arguments-to-draw-methods",
+                "Passing agent_portrayal to draw_agents() is deprecated and will be removed in a future release. "
+                "Use setup_agents(agent_portrayal, **kwargs) before calling draw_agents().",
                 FutureWarning,
                 stacklevel=2,
             )
@@ -286,9 +285,8 @@ class SpaceRenderer:
         """
         if property_layer_portrayal is not None:
             warnings.warn(
-                "Passing property_layer_portrayal to draw_property_layer() is deprecated and will be removed in Modelly 4.0. "
-                "Use setup_property_layer(property_layer_portrayal) before calling draw_property_layer()."
-                "See https://modelly.readthedocs.io/latest/migration_guide.html#passing-portrayal-arguments-to-draw-methods",
+                "Passing property_layer_portrayal to draw_property_layer() is deprecated and will be removed in a future release. "
+                "Use setup_property_layer(property_layer_portrayal) before calling draw_property_layer().",
                 FutureWarning,
                 stacklevel=2,
             )
@@ -313,10 +311,9 @@ class SpaceRenderer:
 
                 warnings.warn(
                     (
-                        "The property_layer_portrayal dict is deprecated and will be removed in Modelly 4.0. "
+                        "The property_layer_portrayal dict is deprecated and will be removed in a future release. "
                         "Please use a callable that returns a PropertyLayerStyle instance instead. "
                         "For more information, refer to the migration guide: "
-                        "https://modelly.readthedocs.io/latest/migration_guide.html#defining-portrayal-components"
                     ),
                     FutureWarning,
                     stacklevel=2,
