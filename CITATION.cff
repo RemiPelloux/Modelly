@@ -1,16 +1,26 @@
 cff-version: "1.2.0"
-title: "Modelly: Agent-based modeling in Python"
+title: "Modelly: agent-based modeling in Python"
 message: If you use this software, please cite it using the metadata below.
 type: software
-version: "1.0.0"
-date-released: "2026-10-22"
 license: Apache-2.0
 authors:
+- family-names: Pelloux
+  given-names: Rémi
 - name: "Modelly contributors"
 repository-code: "https://github.com/RemiPelloux/Modelly"
-url: "https://github.com/RemiPelloux/Modelly"
+url: "https://remipelloux.github.io/Modelly/"
+abstract: >-
+  Modelly is an agent-based modeling (ABM) framework for Python. A model is a typed
+  scenario, agent classes with a step, and a model that owns the world and its seed.
+  Agent attributes can live in numpy arrays, spaces include grids, networks and
+  continuous space, time is discrete ticks or scheduled events, and every dataset
+  lands in pandas.
 keywords:
 - agent-based modeling
+- agent-based simulation
 - ABM
+- multi-agent systems
+- complex systems
+- discrete-event simulation
 - simulation
 - Python

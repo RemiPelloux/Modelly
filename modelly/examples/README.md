@@ -7,15 +7,11 @@ The examples are categorized into three groups:
 2. **Advanced Examples** - More complex models that demonstrate additional concepts and may use some experimental features
 3. **Experimental Examples** - Models built on experimental Modelly APIs that may change without notice
 
-> **Note:** Looking for more examples? Visit the [modelly-examples](https://github.com/RemiPelloux/modelly-examples) repository for user-contributed models and showcases.
-
 ## Basic Examples
 The basic examples are relatively simple and only use stable Modelly features. They are good starting points for learning how to use Modelly.
 
-_An online version of these examples is [available here](https://py.cafe/app/EwoutH/modelly-solara-basic-examples)._
-
 ### [Boltzmann Wealth Model](examples/basic/boltzmann_wealth_model)
-Completed code to go along with the [tutorial](https://modelly.readthedocs.io/latest/tutorials/0_first_model.html) on making a simple model of how a highly-skewed wealth distribution can emerge from simple rules.
+Completed code to go along with the [tutorial](https://remipelloux.github.io/Modelly/tutorials/0_first_model.html) on making a simple model of how a highly-skewed wealth distribution can emerge from simple rules.
 
 ### [Boids Flockers Model](examples/basic/boid_flockers)
 [Boids](https://en.wikipedia.org/wiki/Boids)-style flocking model, demonstrating the use of agents moving through a continuous space following direction vectors.
