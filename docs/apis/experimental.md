@@ -4,42 +4,42 @@ This namespace contains experimental features. These are under development, and 
 ## Continuous Space
 
 ```{eval-rst}
-.. automodule:: experimental.continuous_space.continuous_space
+.. automodule:: modelly.experimental.continuous_space.continuous_space
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: experimental.continuous_space.continuous_space_agents
+.. automodule:: modelly.experimental.continuous_space.continuous_space_agents
    :members:
 ```
 
 ## Scenarios
 
 ```{eval-rst}
-.. automodule:: experimental.scenarios.scenario
+.. automodule:: modelly.experimental.scenarios.scenario
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: experimental.scenarios.runner
+.. automodule:: modelly.experimental.scenarios.runner
    :members:
 ```
 
 ## States
 
 ```{eval-rst}
-.. automodule:: experimental.states.state
+.. automodule:: modelly.experimental.states.state
    :members:
 ```
 
 ## Signals
 
 ```{eval-rst}
-.. automodule:: experimental.signals.core
+.. automodule:: modelly.experimental.signals.core
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: experimental.signals.signal_types
+.. automodule:: modelly.experimental.signals.signal_types
    :members:
 ```

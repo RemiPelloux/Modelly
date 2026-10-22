@@ -1,7 +1,7 @@
 # Data collection
 
 ```{eval-rst}
-.. automodule:: datacollection
+.. automodule:: modelly.datacollection
    :members:
 ```
 
