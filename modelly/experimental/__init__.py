@@ -13,6 +13,6 @@ Notes:
     - Features graduate from experimental status once their APIs are stabilized
 """
 
-from modelly.experimental import actions, continuous_space, modelly_signals, meta_agents
+from modelly.experimental import actions, continuous_space, meta_agents, modelly_signals
 
-__all__ = ["actions", "continuous_space", "modelly_signals", "meta_agents"]
+__all__ = ["actions", "continuous_space", "meta_agents", "modelly_signals"]

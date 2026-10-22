@@ -71,7 +71,9 @@ class AltairBackend(AbstractRenderer):
         }
 
         # Import here to avoid circular import issues
-        from modelly.visualization.components import AgentPortrayalStyle  # noqa: PLC0415
+        from modelly.visualization.components import (  # noqa: PLC0415
+            AgentPortrayalStyle,
+        )
 
         style_fields = {f.name: f.default for f in fields(AgentPortrayalStyle)}
         class_default_size = style_fields.get("size")

@@ -18,6 +18,7 @@ no JavaScript, so it renders inside GitHub's <img> sandbox.
 
 from __future__ import annotations
 
+import math
 import random
 from pathlib import Path
 
@@ -92,6 +93,7 @@ def network_nodes(seed: int = 7) -> list[tuple[float, float, float]]:
 
 
 def banner(p: dict, theme_name: str) -> str:
+    """Return the 1200x340 hero banner for one colour scheme."""
     rnd = random.Random(11)
     nodes = network_nodes()
     cols, rows = 6, 4
@@ -121,7 +123,7 @@ def banner(p: dict, theme_name: str) -> str:
         )
 
     node_svg = []
-    for i, (x, y, rad) in enumerate(nodes):
+    for x, y, rad in nodes:
         dx = round(rnd.uniform(-5, 5), 1)
         dy = round(rnd.uniform(-5, 5), 1)
         dur = round(rnd.uniform(5.5, 10.5), 1)
@@ -129,7 +131,7 @@ def banner(p: dict, theme_name: str) -> str:
         hub = rad > 4.2
         node_svg.append(
             f'<g><circle cx="{x}" cy="{y}" r="{rad}" fill="{p["node"]}"'
-            + (f' opacity="0.95"' if hub else ' opacity="0.8"')
+            + (' opacity="0.95"' if hub else ' opacity="0.8"')
             + ">"
             f'<animateTransform attributeName="transform" type="translate" '
             f'values="0 0; {dx} {dy}; 0 0" dur="{dur}s" begin="-{delay}s" '
@@ -150,7 +152,7 @@ def banner(p: dict, theme_name: str) -> str:
 
     # two pulses travelling across the lattice
     pulse_paths = []
-    for (a, b) in [(0, 5), (5, 23), (12, 17)]:
+    for a, b in [(0, 5), (5, 23), (12, 17)]:
         (x1, y1, _), (x2, y2, _) = nodes[a], nodes[b]
         pulse_paths.append(
             f'<path id="pp-{theme_name}-{a}-{b}" d="M{x1} {y1} L{x2} {y2}" fill="none" '
@@ -232,9 +234,9 @@ def banner(p: dict, theme_name: str) -> str:
     </g>
 
     <g>
-      {''.join(edge_svg)}
-      {''.join(node_svg)}
-      {''.join(pulse_paths)}
+      {"".join(edge_svg)}
+      {"".join(node_svg)}
+      {"".join(pulse_paths)}
     </g>
 
     <g>
@@ -285,6 +287,7 @@ def card(
     mono: bool = False,
     detail: str | None = None,
 ) -> str:
+    """Return one diagram card: accent rail, title, subtitle and optional mono detail."""
     extra = (
         f'\n    <text x="{x + 22}" y="{y + 82}" font-family="{MONO}" font-size="11.5" '
         f'fill="{accent}" fill-opacity="0.85">{detail}</text>'
@@ -300,7 +303,14 @@ def card(
 """
 
 
-def flow(a: tuple[float, float], b: tuple[float, float], accent: str, dur: float, delay: float = 0, curve: float = 0.0) -> str:
+def flow(
+    a: tuple[float, float],
+    b: tuple[float, float],
+    accent: str,
+    dur: float,
+    delay: float = 0,
+    curve: float = 0.0,
+) -> str:
     """Animated dashed connector with a travelling pulse."""
     x1, y1 = a
     x2, y2 = b
@@ -322,11 +332,24 @@ def flow(a: tuple[float, float], b: tuple[float, float], accent: str, dur: float
 
 
 def architecture() -> str:
+    """Return the layered architecture schema."""
     g1, g2, g3 = "#7C5CFF", "#12B5C9", "#E0559F"
-    W, H = 1200, 860
+    cw, ch = 1200, 860
     parts: list[str] = []
 
-    parts.append(card(420, 34, 360, 74, "Scenario", "parameters · seed · config", g1, mono=True, detail="class MyScenario(Scenario)"))
+    parts.append(
+        card(
+            420,
+            34,
+            360,
+            74,
+            "Scenario",
+            "parameters · seed · config",
+            g1,
+            mono=True,
+            detail="class MyScenario(Scenario)",
+        )
+    )
     parts.append(flow((600, 108), (600, 168), g1, 2.6))
 
     parts.append("""  <g>
@@ -335,23 +358,118 @@ def architecture() -> str:
     <rect x="60" y="186" width="1080" height="20" fill="#F3F0FF"/>
     <text x="86" y="193" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="13" font-weight="600" fill="#5B4BD6" letter-spacing="1.6">MODEL  ·  state · random · rng · time</text>
   </g>""")
-    parts.append(card(84, 224, 320, 104, "AgentSet", "agents · do · groupby", "#7C5CFF", detail="self.agents.shuffle_do()"))
-    parts.append(card(440, 224, 320, 104, "Space", "grids · cells · networks", "#12B5C9", detail="OrthogonalMooreGrid"))
-    parts.append(card(796, 224, 320, 104, "Time", "events · generators", "#E0559F", detail="EventList · Schedule"))
+    parts.append(
+        card(
+            84,
+            224,
+            320,
+            104,
+            "AgentSet",
+            "agents · do · groupby",
+            "#7C5CFF",
+            detail="self.agents.shuffle_do()",
+        )
+    )
+    parts.append(
+        card(
+            440,
+            224,
+            320,
+            104,
+            "Space",
+            "grids · cells · networks",
+            "#12B5C9",
+            detail="OrthogonalMooreGrid",
+        )
+    )
+    parts.append(
+        card(
+            796,
+            224,
+            320,
+            104,
+            "Time",
+            "events · generators",
+            "#E0559F",
+            detail="EventList · Schedule",
+        )
+    )
 
     parts.append(flow((600, 364), (600, 424), g2, 3.0))
-    parts.append(card(360, 424, 480, 74, "DataRecorder · DataCollector", "tables · reporters · intervals", g2, mono=True, card_bg="#F7FDFE", card_edge="#CDEBF0"))
+    parts.append(
+        card(
+            360,
+            424,
+            480,
+            74,
+            "DataRecorder · DataCollector",
+            "tables · reporters · intervals",
+            g2,
+            mono=True,
+            card_bg="#F7FDFE",
+            card_edge="#CDEBF0",
+        )
+    )
 
     parts.append(flow((600, 498), (600, 558), g2, 3.0))
-    parts.append(card(360, 558, 480, 74, "Dataset", "pandas DataFrame · tidy rows", g2, mono=True, card_bg="#F7FDFE", card_edge="#CDEBF0"))
+    parts.append(
+        card(
+            360,
+            558,
+            480,
+            74,
+            "Dataset",
+            "pandas DataFrame · tidy rows",
+            g2,
+            mono=True,
+            card_bg="#F7FDFE",
+            card_edge="#CDEBF0",
+        )
+    )
 
     parts.append(flow((470, 632), (250, 704), g3, 3.2, 0.4, curve=-30))
     parts.append(flow((600, 632), (600, 704), g3, 3.2, 0.9))
     parts.append(flow((730, 632), (950, 704), g3, 3.2, 1.4, curve=30))
 
-    parts.append(card(80, 704, 340, 96, "Visualize", "Solara app · browser · Jupyter", g3, card_bg="#FFF7FB", card_edge="#F3D6E6"))
-    parts.append(card(430, 704, 340, 96, "Analyze", "pandas · numpy · statistics", g3, card_bg="#FFF7FB", card_edge="#F3D6E6"))
-    parts.append(card(780, 704, 340, 96, "Reproduce", "seeded runs · scenarios", g3, card_bg="#FFF7FB", card_edge="#F3D6E6"))
+    parts.append(
+        card(
+            80,
+            704,
+            340,
+            96,
+            "Visualize",
+            "Solara app · browser · Jupyter",
+            g3,
+            card_bg="#FFF7FB",
+            card_edge="#F3D6E6",
+        )
+    )
+    parts.append(
+        card(
+            430,
+            704,
+            340,
+            96,
+            "Analyze",
+            "pandas · numpy · statistics",
+            g3,
+            card_bg="#FFF7FB",
+            card_edge="#F3D6E6",
+        )
+    )
+    parts.append(
+        card(
+            780,
+            704,
+            340,
+            96,
+            "Reproduce",
+            "seeded runs · scenarios",
+            g3,
+            card_bg="#FFF7FB",
+            card_edge="#F3D6E6",
+        )
+    )
 
     parts.append("""  <g>
     <path id="loopback" d="M1120 752 C1190 752 1190 300 1140 282" fill="none" stroke="#7C5CFF" stroke-opacity="0.38" stroke-width="1.8" stroke-dasharray="6 8" stroke-linecap="round">
@@ -365,7 +483,7 @@ def architecture() -> str:
     <text x="1058" y="524" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="12" fill="#7A76A8" letter-spacing="1">next tick</text>
   </g>""")
 
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="Modelly architecture: a scenario configures the model, which runs agents in a space on a schedule, records data into datasets and is explored through visualization and analysis.">
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" role="img" aria-label="Modelly architecture: a scenario configures the model, which runs agents in a space on a schedule, records data into datasets and is explored through visualization and analysis.">
   <title>Modelly architecture</title>
   <defs>
     <style>
@@ -378,14 +496,13 @@ def architecture() -> str:
 
 
 def os_lines(parts: list[str]) -> str:
+    """Join generated SVG fragments into one document body."""
     return "\n".join(parts)
 
 
 def simulation_loop() -> str:
     """Ring diagram of the step loop with a pulse travelling the ring."""
-    import math
-
-    W, H = 1000, 560
+    cw, ch = 1000, 560
     cx, cy, r = 500, 285, 142
 
     stations = [
@@ -396,7 +513,9 @@ def simulation_loop() -> str:
     ]
 
     body: list[str] = []
-    body.append(f'  <circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="#EDEAFB" stroke-width="24"/>')
+    body.append(
+        f'  <circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="#EDEAFB" stroke-width="24"/>'
+    )
     body.append(
         f'  <circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="#7C5CFF" stroke-opacity="0.28" '
         f'stroke-width="2" stroke-dasharray="4 10">'
@@ -407,7 +526,7 @@ def simulation_loop() -> str:
         f'<circle r="{r}" fill="none" stroke="url(#ring)" stroke-width="6" stroke-linecap="round" '
         f'stroke-dasharray="{2 * math.pi * r * 0.24:.0f} {2 * math.pi * r:.0f}">'
         f'<animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="9s" repeatCount="indefinite"/>'
-        f'</circle></g>'
+        f"</circle></g>"
     )
     body.append(
         f'  <circle r="4" fill="#12B5C9" opacity="0"><animateMotion dur="9s" repeatCount="indefinite" '
@@ -431,7 +550,7 @@ def simulation_loop() -> str:
             f'<animate attributeName="opacity" values="1;0.2;1" dur="2.8s" begin="-{stations.index((name, sub, x, y, acc)) * 0.7}s" repeatCount="indefinite"/></circle></g>'
         )
 
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="The Modelly simulation loop: scenario, step, record, visualize.">
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {cw} {ch}" width="{cw}" height="{ch}" role="img" aria-label="The Modelly simulation loop: scenario, step, record, visualize.">
   <title>The Modelly simulation loop</title>
   <defs>
     <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
@@ -449,6 +568,7 @@ def simulation_loop() -> str:
 
 
 def main() -> None:
+    """Write every brand asset into docs/images/branding/."""
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "banner-dark.svg").write_text(banner(DARK, "dark"), encoding="utf-8")
     (OUT / "banner-light.svg").write_text(banner(LIGHT, "light"), encoding="utf-8")

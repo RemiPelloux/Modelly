@@ -93,7 +93,9 @@ class MatplotlibBackend(AbstractRenderer):
             "linewidths": [],
         }
         # Import here to prevent circular imports
-        from modelly.visualization.components import AgentPortrayalStyle  # noqa: PLC0415
+        from modelly.visualization.components import (  # noqa: PLC0415
+            AgentPortrayalStyle,
+        )
 
         # Get default values from AgentPortrayalStyle
         style_fields = {f.name: f.default for f in fields(AgentPortrayalStyle)}
