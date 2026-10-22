@@ -24,7 +24,7 @@ __all__ = [
 ]
 
 __title__ = "modelly"
-__version__ = "4.0.0a0"
+__version__ = "4.0.0a1"
 __license__ = "Apache 2.0"
 _this_year = datetime.datetime.now(tz=datetime.UTC).date().year
 __copyright__ = f"Copyright {_this_year} Modelly Team"
