@@ -100,6 +100,18 @@ class CellCollection[T: Cell]:
     def agents(self) -> Iterable[CellAgent]:  # noqa
         return itertools.chain.from_iterable(self._cells.values())
 
+    @property
+    def empties(self) -> CellCollection[T]:
+        """The cells of this collection that hold no agent, as a new collection.
+
+        Reads the live occupancy lists directly, so it costs one truth test per
+        cell rather than a property call per cell.
+        """
+        return CellCollection(
+            {cell: agents for cell, agents in self._cells.items() if not agents},
+            random=self.random,
+        )
+
     def select_random_cell(self, default=RAISES) -> T | None:
         """Select a random cell from the collection.
 

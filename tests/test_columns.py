@@ -173,3 +173,18 @@ def test_repr_hides_column_bookkeeping():
     assert "_column" not in repr(a)
     assert repr(Wealthy.wealth) == "Column(int64, default=1)"
     assert np.dtype(int) == Wealthy.wealth.dtype
+
+
+def test_remove_where_removes_masked_agents():
+    """Remove where removes exactly the masked agents and keeps the table consistent."""
+    model = Model(rng=1)
+    agents = [Wealthy(model, wealth=i) for i in range(6)]
+    table = model.columns[Wealthy]
+    removed = table.remove_where(table.wealth % 2 == 0)
+    assert removed == 3
+    assert sorted(table.wealth.tolist()) == [1, 3, 5]
+    assert len(model.agents) == 3
+    assert all(agent._column_row == -1 for agent in agents[::2])
+    for agent in table.agents:
+        assert table.wealth[agent._column_row] == agent.wealth
+    assert table.remove_where(np.zeros(3, dtype=bool)) == 0

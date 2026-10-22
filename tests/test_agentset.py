@@ -1377,3 +1377,16 @@ def test_select_random_realistic_abm_evolution_scenario():
 
     # Evolutionary pressure via weighted sampling increases population fitness
     assert final_mean_fitness > initial_mean_fitness
+
+
+def test_hardkeyagentset_iteration_survives_removal():
+    """Removing agents while iterating model.agents does not raise."""
+    model = Model()
+    agents = [AgentTest(model) for _ in range(10)]
+    seen = []
+    for agent in model.agents:
+        seen.append(agent)
+        if agent is agents[0]:
+            agents[5].remove()
+    assert len(seen) == 10
+    assert len(model.agents) == 9

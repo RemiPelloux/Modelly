@@ -58,8 +58,8 @@ class _HardKeyAgentSet[A: Agent](AbstractAgentSet[A]):
         return len(self._agents)
 
     def __iter__(self) -> Iterator[A]:
-        """Provide an iterator over the agents in the _HardKeyAgentSet."""
-        return iter(self._agents.keys())
+        """Iterate over a snapshot, so agents may be added or removed meanwhile."""
+        return iter(list(self._agents))
 
     def __contains__(self, agent: A) -> bool:
         """Check if an agent is in the _HardKeyAgentSet. Can be used like `agent in agentset`."""
