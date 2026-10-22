@@ -185,12 +185,17 @@ Edit `tools/branding/generate_assets.py` and commit both the generator and the r
 1. Fork the repository and branch from `main` (`fix/event-priority`, `feat/scenario-inheritance`).
 2. Keep the change focused. Unrelated refactoring belongs in its own pull request.
 3. Add or update tests and docs in the same pull request as the code.
-4. Write commit messages in the imperative mood: `Fix event priority inversion in EventList`. Use
-   the body to explain *why*, not *what* — the diff already shows what.
+4. Give the pull request a conventional title, `type(scope): subject`, for example
+   `fix(time): event priority inversion in EventList`. Pull requests are squash-merged and the
+   title becomes the commit subject on `main`, so it is the line that ends up in the history and
+   the changelog. Use the description to explain *why*, not *what* — the diff already shows what.
 5. Fill in the [pull request template](.github/pull_request_template.md) and link the issue it
    closes (`Closes #123`).
-6. Make sure `pytest tests/`, `ruff check .` and `ruff format --check .` pass locally before asking
-   for review.
+6. Make sure `bash scripts/ci-local.sh` passes locally before asking for review. It runs the same
+   lint, format, test and size-audit stages as CI.
+
+`main` only moves through pull requests: it cannot be force-pushed or deleted, history stays
+linear, and the branch is deleted automatically after the merge.
 
 Reviewers may ask for a smaller diff, a test, or a docstring. That is normal — it means the change is
 worth getting right.

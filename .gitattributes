@@ -1,0 +1,23 @@
+# Normalise line endings so a checkout on Windows never dirties the tree.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.png binary
+*.ico binary
+
+# Notebooks are text; keep tutorial notebooks output-free so their diffs stay reviewable.
+*.ipynb text
+
+# Generated files: collapsed in pull-request diffs and excluded from language statistics.
+docs/images/branding/*.svg linguist-generated
+docs/examples/** linguist-generated
+pelloux-baseline.json linguist-generated
+
+# Documentation and examples should not skew the repository's language breakdown.
+docs/** linguist-documentation
+benchmarks/** linguist-vendored=false
+
+# Keep local-only material out of release archives (git archive, GitHub source zips).
+benchmarks/mesa_baseline/ export-ignore
+benchmarks/mesaVSmodelly/ export-ignore
+.github/ export-ignore
+.pre-commit-config.yaml export-ignore

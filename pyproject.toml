@@ -54,8 +54,8 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 # User collections
-rec = ["modelly[network,viz]"]
-all = ["modelly[network,viz,dev,examples,docs]"]
+rec = ["modelly-abm[network,viz]"]
+all = ["modelly-abm[network,viz,dev,examples,docs]"]
 # Core dependencies
 network = [
   "networkx",
@@ -68,7 +68,7 @@ viz = [
 ]
 # Dev and CI stuff
 dev = [
-  "modelly[rec]",
+  "modelly-abm[rec]",
   "ruff",
   "pytest",
   "pytest-cov",
@@ -81,12 +81,12 @@ dev = [
   "pyarrow",
 ]
 examples = [
-  "modelly[rec]",
+  "modelly-abm[rec]",
   "pytest",
   "scipy",
 ]
 docs = [
-  "modelly[rec]",
+  "modelly-abm[rec]",
   "sphinx",
   "ipython",
   "pydata_sphinx_theme",
