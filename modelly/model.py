@@ -273,15 +273,16 @@ class Model[A: Agent, S: Scenario](HasEmitters):
             is no need to use this if you are subclassing Agent and calling its
             super in the ``__init__`` method.
         """
-        # Add to main storage
-        self._all_agents.add(agent)
+        # The registries' dicts are written directly: this runs on every agent
+        # birth, and two method calls per birth were a third of its cost.
+        self._all_agents._agents[agent] = None
         agent.unique_id = self.agent_id_counter
         self.agent_id_counter += 1
 
         # because AgentSet requires model, we cannot use defaultdict
         # tricks with a function won't work because model then cannot be pickled
         try:
-            self._agents_by_type[type(agent)].add(agent)
+            self._agents_by_type[type(agent)]._agents[agent] = None
         except KeyError:
             self._agents_by_type[type(agent)] = _HardKeyAgentSet(
                 [agent],
@@ -299,8 +300,8 @@ class Model[A: Agent, S: Scenario](HasEmitters):
             This method is called automatically by ``Agent.remove``
 
         """
-        self._agents_by_type[type(agent)].remove(agent)
-        self._all_agents.remove(agent)
+        del self._agents_by_type[type(agent)]._agents[agent]
+        del self._all_agents._agents[agent]
 
     def run_model(self) -> None:
         """Run the model until the end condition is reached.

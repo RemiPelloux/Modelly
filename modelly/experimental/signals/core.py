@@ -731,35 +731,41 @@ def descriptor_generator(
 
 
 def emit(observable_name, signal_to_emit, when: Literal["before", "after"] = "after"):
-    """Decorator to emit a signal before or after the call to method.
+    """Decorator to emit a signal before or after the call to method (HasEmitters only).
 
     Args:
         observable_name: the name of the observable that emits the signal
         signal_to_emit: the signal to emit
         when: whether to emit the signal before or after the function call.
-
-    This only works on HasEmitters subclasses.
-
     """
+    key = (observable_name, signal_to_emit)
+    before = when == "before"
 
     def inner(method):
-        """Wrap func."""
-        if when == "before":
+        """Wrap func; the listener check is inlined since it runs on every agent birth and death."""
 
-            @functools.wraps(method)
-            def wrapper(self, *args, **kwargs):
-                self.notify(observable_name, signal_to_emit, args=args, **kwargs)
+        @functools.wraps(method)
+        def wrapper(self, *args, **kwargs):
+            if before:
+                if (
+                    self._suppress
+                    or self._batch_context is not None
+                    or self.subscribers.get(key)
+                    or self._class_subscribers.get(key)
+                ):
+                    self.notify(observable_name, signal_to_emit, args=args, **kwargs)
                 return method(self, *args, **kwargs)
-        else:
-
-            @functools.wraps(method)
-            def wrapper(self, *args, **kwargs):
-                ret = method(self, *args, **kwargs)
+            ret = method(self, *args, **kwargs)
+            if (
+                self._suppress
+                or self._batch_context is not None
+                or self.subscribers.get(key)
+                or self._class_subscribers.get(key)
+            ):
                 self.notify(observable_name, signal_to_emit, args=args, **kwargs)
-                return ret
+            return ret
 
         wrapper._modelly_signal_emitter = observable_name, signal_to_emit
-
         return wrapper
 
     return inner

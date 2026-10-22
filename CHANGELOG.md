@@ -3,6 +3,21 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.3.1 - 2026-10-22
+
+### Changed
+
+- Agent birth and death are 37% cheaper (861 ns to 549 ns for the pair): the `emit` wrapper
+  checks for listeners inline and calls `notify` only when it would have an effect, `remove()`
+  no longer builds a context manager, the registries are written directly, and empty dataset
+  loops are skipped. Signal semantics are unchanged; `Model.observe("agents", ...)` still fires.
+- Documenting a change that shipped in 1.3.0: `Model.time` is a plain attribute (reads are
+  about three times cheaper than through the observable descriptor); `_set_time` emits the
+  CHANGED signal once per time advance, so `observe("time", ...)` and data recorders keep
+  working. The registration debug log lines are gone.
+- A same-notebook benchmark against Mesa 2.3 (`benchmarks/mesaVSmodelly/`, bit-identical
+  outputs) runs at parity to about 1.15x in Modelly's favour, best of three alternating runs.
+
 ## 1.3.0 - 2026-10-22
 
 ### Added
