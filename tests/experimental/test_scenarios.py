@@ -1080,3 +1080,22 @@ def test_failure_info_is_picklable():
     assert restored.origin is FailureOrigin.RUNNING
     assert restored.exception_type == "RuntimeError"
     assert restored.message == "boom"
+
+
+def test_run_scenarios_with_workers_runs_in_processes():
+    """workers= runs the scenarios in a process pool and records every run."""
+    from modelly.examples.basic.boltzmann_wealth_model.model import (  # noqa: PLC0415
+        BoltzmannScenario,
+        BoltzmannWealth,
+    )
+    from modelly.experimental.scenarios import (  # noqa: PLC0415
+        RunConfiguration,
+        run_scenarios,
+    )
+
+    scenarios = BoltzmannScenario(n=20, width=5, height=5, rng=3).spawn_replications(4)
+    config = RunConfiguration(BoltzmannWealth, until=3)
+    store = run_scenarios(scenarios, config, workers=2, progress=False)
+    assert len(list(store.pending())) == 0
+    sequential = run_scenarios(scenarios, config, progress=False)
+    assert len(list(sequential.pending())) == 0
