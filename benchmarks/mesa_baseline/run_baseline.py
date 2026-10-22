@@ -15,9 +15,16 @@ experiment costs on the framework the port is measured against.
 
 Usage
 -----
+    python benchmarks/mesa_baseline/run_baseline.py --full             # every cell, every run
     python benchmarks/mesa_baseline/run_baseline.py                    # both crops
     python benchmarks/mesa_baseline/run_baseline.py --crop cherry -r 3
     python benchmarks/mesa_baseline/run_baseline.py --factorcrop        # full factorial
+
+``--full`` is the authoritative mode: it executes the notebook cell by cell in
+order, so every simulation in the study runs (factorial experiment, fruit
+dynamics, daily population dynamics) and every CSV and figure is produced.
+Expect ~2 hours. The per-crop modes above only time individual seasons and are
+for measuring, not for producing results.
 
 Requires a *separate* environment from Modelly, because it pins Mesa 2:
 
@@ -30,6 +37,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import statistics
 import time
 from pathlib import Path
@@ -47,6 +55,56 @@ INVASIONS = (("faible", 3), ("moyenne", 10), ("forte", 30))
 BUDGETS = (0, 150, 300, 600)
 REMATING_MODES = 2
 REPLICATES = 3
+
+
+def read_code_cells(notebook: Path) -> list[str]:
+    """Return the source of every code cell in the notebook, in order."""
+    if not notebook.exists():
+        raise SystemExit(
+            f"reference notebook not found: {notebook}\n"
+            "It is intentionally gitignored; drop it back in this directory "
+            "or pass --notebook."
+        )
+    nb = json.loads(notebook.read_text(encoding="utf-8"))
+    return [
+        "".join(cell["source"]) for cell in nb["cells"] if cell["cell_type"] == "code"
+    ]
+
+
+def run_notebook(notebook: Path) -> dict:
+    """Execute every code cell in order, timing each one.
+
+    No jupyter kernel is involved: cells share one namespace, exactly like a
+    kernel session, and ``matplotlib`` runs on Agg so figures are built but
+    never displayed. Results (``*.csv``, ``*.json``) land in the current
+    directory, which is why this is meant to be run from this folder.
+    """
+    os.environ.setdefault("MPLBACKEND", "Agg")
+    cells = read_code_cells(notebook)
+    namespace: dict = {"__name__": "__baseline__"}
+    timings: list[dict] = []
+
+    print(f"executing all {len(cells)} code cells of {notebook.name}", flush=True)
+    started = time.perf_counter()
+    for number, source in enumerate(cells, start=1):
+        print(f"[{number:2d}/{len(cells)}] start", flush=True)
+        cell_started = time.perf_counter()
+        exec(  # noqa: S102 - trusted local research notebook
+            compile(source, f"<cell {number}>", "exec"), namespace
+        )
+        elapsed = time.perf_counter() - cell_started
+        timings.append({"cell": number, "seconds": round(elapsed, 2)})
+        print(f"[{number:2d}/{len(cells)}] done in {elapsed:7.1f} s", flush=True)
+
+    total = time.perf_counter() - started
+    summary = {
+        "notebook": notebook.name,
+        "total_seconds": round(total, 2),
+        "cells": timings,
+    }
+    (HERE / "full_run_summary.json").write_text(json.dumps(summary, indent=2))
+    print(f"\nall cells executed in {total / 60:.1f} min", flush=True)
+    return summary
 
 
 def load_definitions(notebook: Path, n_cells: int = SETUP_CELLS) -> dict:
@@ -107,8 +165,17 @@ def factorial_runs() -> int:
 
 def main() -> None:
     """Run the requested seasons and report wall-clock time."""
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(
+        description=__doc__.splitlines()[0],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__,
+    )
     parser.add_argument("--notebook", type=Path, default=DEFAULT_NOTEBOOK)
+    parser.add_argument(
+        "--full",
+        action="store_true",
+        help="execute every cell of the notebook (all simulations, ~2 h)",
+    )
     parser.add_argument(
         "--crop", choices=("strawberry", "cherry", "both"), default="both"
     )
@@ -133,7 +200,11 @@ def main() -> None:
             f"this baseline needs Mesa 2.x, found {mesa.__version__}.\n"
             "Use a dedicated environment: pip install 'mesa==2.3.2'"
         )
-    print(f"Mesa {mesa.__version__} — reference model, {HERE.name}")
+    print(f"Mesa {mesa.__version__} — reference model, {HERE.name}", flush=True)
+
+    if args.full:
+        run_notebook(args.notebook)
+        return
 
     namespace = load_definitions(args.notebook)
     crops = ("strawberry", "cherry") if args.crop == "both" else (args.crop,)
