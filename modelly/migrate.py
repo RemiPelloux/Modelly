@@ -254,7 +254,9 @@ def main(argv: list[str] | None = None) -> int:
             sys.stdout.write(render_diff(result))
     sys.stdout.write(render_report(results) + "\n")
     if args.write:
-        sys.stdout.write(f"Wrote {sum(result.changed for result in results)} file(s).\n")
+        sys.stdout.write(
+            f"Wrote {sum(result.changed for result in results)} file(s).\n"
+        )
     return 0
 
 
