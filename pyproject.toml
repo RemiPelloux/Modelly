@@ -4,20 +4,28 @@ build-backend = "hatchling.build"
 
 [project]
 name = "modelly-abm"
-description = "Agent-based modeling (ABM) in Python"
+description = "Agent-based modeling (ABM) framework for Python: typed scenarios, seeded reproducible runs, numpy-backed agents, grids, networks, continuous space, discrete-event time, pandas data collection and browser visualization"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.12"
 authors = [
+  { name = "Rémi Pelloux" },
   { name = "Modelly contributors" },
 ]
 keywords = [
-  "agent",
-  "based",
-  "modeling",
-  "model",
+  "agent-based modeling",
+  "agent-based model",
+  "agent-based simulation",
   "ABM",
   "simulation",
-  "multi-agent",
+  "multi-agent systems",
+  "complex systems",
+  "computational social science",
+  "discrete-event simulation",
+  "scientific computing",
+  "numpy",
+  "pandas",
+  "mesa",
+  "netlogo",
 ]
 classifiers = [
   "Topic :: Scientific/Engineering",
@@ -89,8 +97,11 @@ docs = [
 ]
 
 [project.urls]
-homepage = "https://github.com/RemiPelloux/Modelly"
-repository = "https://github.com/RemiPelloux/Modelly"
+Homepage = "https://remipelloux.github.io/Modelly/"
+Documentation = "https://remipelloux.github.io/Modelly/"
+Repository = "https://github.com/RemiPelloux/Modelly"
+Changelog = "https://github.com/RemiPelloux/Modelly/blob/main/CHANGELOG.md"
+Issues = "https://github.com/RemiPelloux/Modelly/issues"
 
 [tool.codespell]
 ignore-words-list = ["ist", "hart", "nD"]
@@ -121,7 +132,7 @@ path = "modelly/__init__.py"
 # Hardcode to Python 3.12.
 # Reminder to update modelly-examples if the value below is changed.
 target-version = "py312"
-extend-exclude = ["build", "benchmarks/mesaVSmodelly/**/*.ipynb", "benchmarks/notebooks/*.ipynb"]  # fixtures and generated notebooks
+extend-exclude = ["build", "benchmarks/notebooks/*.ipynb", "benchmarks/mesaVSmodelly"]  # generated notebooks; local-only harness
 
 [tool.ruff.lint]
 select = [
@@ -171,7 +182,7 @@ extend-ignore = [
   "S311",   # Standard pseudo-random generators are not suitable for cryptographic purposes
 ]
 # Ignore all docstring errors in examples and tutorials
-per-file-ignores = {"modelly/examples/*"= ["D"], "example.py" = ["D"], "benchmarks/mesaVSmodelly/*.py" = ["D", "N", "ISC", "RUF001", "RUF005", "PLC0415", "PLW1510"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
+per-file-ignores = {"modelly/examples/*"= ["D"], "example.py" = ["D"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
