@@ -38,7 +38,11 @@ class AbstractRenderer(ABC):
     def _get_agent_pos(self, agent, space):
         """Get agent position based on space type."""
         if isinstance(space, DiscreteSpace):
-            return agent.cell.position
+            # Avoid Cell.position: it allocates a numpy array per call, and this
+            # runs once per agent per frame. The coordinate tuple plots the same.
+            cell = agent.cell
+            position = cell._position
+            return cell.coordinate if position is None else position
 
         pos = agent.position
         if len(pos) < 2:
