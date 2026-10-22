@@ -55,7 +55,7 @@ Two defects came out of the same pass:
 | Neighbourhood cache | global `functools.cache` | per-cell `dict`; `connect`/`disconnect` clear only that cell |
 | Empty cells | 50 tries then full scan | 8 tries, then a lazily built swap-remove index kept in sync by `cell.empty` |
 | `empty` layer writes | on every add/remove | only on empty/occupied transitions |
-| Agent rows | closure per reporter per agent | one `attrgetter` per agent for attribute reporters; `time` hoisted; copy only mutable values |
+| Agent rows | closure per reporter per agent | gathered column-wise: one C-level `map` per reporter, columns zipped into rows; copy a column only if it holds a mutable value |
 | Grid cell class pickling | global `copyreg` registration | `__reduce__` on the class |
 | Grid unpickling | one class per cell, accessors on the first | cells re-homed onto one class, accessors restored on it |
 | Registration logging | f-string built even when debug is off | lazy `%s` formatting |
@@ -84,13 +84,31 @@ Hot paths, per call:
 | `cell.neighborhood` (cached) | 49 ns | 56 ns |
 | build a 10k-agent `AgentSet` | 0.83 ms | 0.49 ms |
 | `model.agents.select(...)` over 10k agents | 1.98 ms | 1.30 ms |
-| `DataCollector.collect`, 10k agents, 1 attribute | 5.4 ms | 4.1 ms |
+| `DataCollector.collect`, 10k agents, 1 attribute | 1.60 ms | 0.95 ms |
+| `DataCollector.collect`, 10k agents, 2 attributes + 1 lambda | 2.13 ms | 1.43 ms |
 | Wolf-Sheep `collect` (grass count) | 2.2 ms | 0.4 ms |
 | cells alive after discarding 15 grids | 10,000 | 0 |
 
 The remaining per-step cost in Boltzmann and Schelling is the agents' own Python logic
 (random choices, list comprehensions over neighbours), which is the expected profile for an
 object-per-agent engine.
+
+## Considered and rejected
+
+Measured on the same machine; each would have bought a few percent at the cost of complexity or
+of a different random stream for the same seed.
+
+| Idea | Measured | Why not |
+|---|---|---|
+| Shuffle 10k agents with a numpy permutation seeded from the stdlib stream | 810 µs to 310 µs per shuffle, about 3% of a 10k-agent step | needs a size threshold (slower below ~500 agents) and changes which order a seed produces |
+| `cells[int(random() * n)]` instead of `random.choice` | 100 ns to 50 ns per pick | changes the random stream for every model for a 3% gain |
+| Empties index with a slot stored on each cell instead of a dict | 90 ns to 70 ns per move | couples `Cell` to the grid index for 20 ns |
+| Return `Cell.agents` without copying | 60 ns per access | callers that remove agents while iterating would skip elements |
+
+The remaining per-agent framework cost in the grid models is about 0.6 µs of a 1.4 µs
+agent-step (the cell move, the neighbourhood lookup, the shuffle and the membership check);
+the rest is the agent's own logic. Going meaningfully faster from here means the columnar
+state on the roadmap, not more micro-tuning.
 
 ## Behaviour notes
 

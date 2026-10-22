@@ -17,6 +17,7 @@ import types
 from collections.abc import Callable, Iterable
 from copy import deepcopy
 from functools import partial
+from itertools import repeat
 from operator import attrgetter
 from typing import Any
 
@@ -30,6 +31,7 @@ _IMMUTABLE_TYPES = frozenset(
     {str, int, bool, float, complex, bytes, tuple, frozenset, type(None)}
 )
 _IMMUTABLE_BASES = (str, int, float, tuple, np.generic)
+_unique_id = attrgetter("unique_id")
 
 
 def snapshot(value: Any) -> Any:
@@ -146,44 +148,37 @@ def collect_agent_rows(
 ) -> list[tuple]:
     """Return one ``(time, unique_id, *values)`` row per agent.
 
-    ``agents`` must be re-iterable (any AgentSet is). When every reporter is an
-    attribute name the values are gathered by one ``attrgetter`` call per agent;
-    a missing attribute re-runs the generic path to produce the descriptive error.
+    Values are gathered one reporter at a time over all agents (a C-level
+    ``map`` per column) and the columns are zipped into rows, so the per-agent
+    Python work is close to zero. A column is copied only if it holds a mutable
+    value. Attribute reporters use one ``attrgetter``; a missing attribute
+    re-runs the reporter's own getter to produce the descriptive error.
     """
-    attributes = [
-        getattr(rep, "_modelly_attribute", None) for rep in reporters.values()
-    ]
+    agents = list(agents)
+    ids = list(map(_unique_id, agents))
+    funcs = tuple(reporters.values())
+    attributes = [getattr(rep, "_modelly_attribute", None) for rep in funcs]
     if attributes and None not in attributes:
         try:
-            return _collect_attribute_rows(agents, attributes, time)
+            columns = _attribute_columns(agents, attributes)
         except AttributeError:
-            pass
-    return _collect_callable_rows(agents, tuple(reporters.values()), time)
+            columns = [list(map(rep, agents)) for rep in funcs]
+    else:
+        columns = [list(map(rep, agents)) for rep in funcs]
+    columns = [_snapshot_column(column) for column in columns]
+    return list(zip(repeat(time), ids, *columns))
 
 
-def _collect_attribute_rows(
-    agents: Iterable[Any], attributes: list[str], time: float
-) -> list[tuple]:
-    getter = attrgetter(*attributes)
-    single = len(attributes) == 1
-    immutable = _IMMUTABLE_TYPES.issuperset
-    rows = []
-    for agent in agents:
-        values = (getter(agent),) if single else getter(agent)
-        if not immutable(map(type, values)):
-            values = tuple(map(snapshot, values))
-        rows.append((time, agent.unique_id, *values))
-    return rows
+def _attribute_columns(agents: list[Any], attributes: list[str]) -> list[list]:
+    """One list per attribute, gathered with a single attrgetter pass."""
+    if len(attributes) == 1:
+        return [list(map(attrgetter(attributes[0]), agents))]
+    rows = map(attrgetter(*attributes), agents)
+    return [list(column) for column in zip(*rows)]
 
 
-def _collect_callable_rows(
-    agents: Iterable[Any], funcs: tuple[Callable, ...], time: float
-) -> list[tuple]:
-    immutable = _IMMUTABLE_TYPES.issuperset
-    rows = []
-    for agent in agents:
-        values = [rep(agent) for rep in funcs]
-        if not immutable(map(type, values)):
-            values = map(snapshot, values)
-        rows.append((time, agent.unique_id, *values))
-    return rows
+def _snapshot_column(column: list) -> list:
+    """Copy the mutable values of a column; immutable columns are returned as is."""
+    if _IMMUTABLE_TYPES.issuperset(map(type, column)):
+        return column
+    return [snapshot(value) for value in column]
