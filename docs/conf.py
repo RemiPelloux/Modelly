@@ -166,6 +166,13 @@ html_favicon = "images/modelly_logo.ico"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
+# The home page (index.md) is a landing page: its styles and scripts are scoped to .ml-landing.
+html_css_files = [
+    "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap",
+    "landing.css",
+]
+html_js_files = ["landing-sims.js", "landing.js"]
+
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
@@ -182,6 +189,7 @@ html_static_path = ["_static"]
 # Custom sidebar templates, maps document names to template names.
 html_sidebars = {
     "getting_started": [],
+    "index": [],
 }
 
 # Additional templates that should be rendered to pages, maps page names to
