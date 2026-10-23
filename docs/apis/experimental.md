@@ -13,6 +13,11 @@ This namespace contains experimental features. These are under development, and 
    :members:
 ```
 
+```{eval-rst}
+.. automodule:: modelly.experimental.continuous_space.vectorised
+   :members:
+```
+
 ## Scenarios
 
 ```{eval-rst}

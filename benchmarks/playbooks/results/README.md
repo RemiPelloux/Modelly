@@ -8,9 +8,9 @@ Size `large`, 60 steps, CPU seconds; run = the steps, build = model construction
 
 | variant | population | build | run 1 | run 2 | run 3 | run median | speed-up (run) | speed-up (build + run) | deterministic |
 |---|---|---|---|---|---|---|---|---|---|
-| mesa | 20,000 | 0.05 | 9.05 | 10.46 | 11.24 | 10.46 | 1.0x | 1.0x | yes |
-| modelly-cells | 20,000 | 0.25 | 6.95 | 6.31 | 6.68 | 6.68 | 1.6x | 1.5x | yes |
-| modelly | 20,000 | 0.26 | 0.10 | 0.08 | 0.10 | 0.10 | 109.5x | 29.3x | yes |
+| mesa | 20,000 | 0.05 | 11.56 | 10.07 | 11.54 | 11.54 | 1.0x | 1.0x | yes |
+| modelly-cells | 20,000 | 0.26 | 5.92 | 6.08 | 5.21 | 5.92 | 1.9x | 1.9x | yes |
+| modelly | 20,000 | 0.24 | 0.21 | 0.23 | 0.19 | 0.21 | 55.8x | 25.9x | yes |
 
 Agreement over 6 shared seeds at the small size (mean ± sd; p from Welch's t-test against Mesa, flagged below 0.01).
 
@@ -29,9 +29,9 @@ Size `large`, 200 steps, CPU seconds; run = the steps, build = model constructio
 
 | variant | population | build | run 1 | run 2 | run 3 | run median | speed-up (run) | speed-up (build + run) | deterministic |
 |---|---|---|---|---|---|---|---|---|---|
-| mesa | 5,569 | 0.01 | 5.37 | 5.36 | 5.29 | 5.36 | 1.0x | 1.0x | yes |
-| modelly-cells | 5,469 | 0.16 | 5.00 | 5.10 | 3.32 | 5.00 | 1.1x | 1.0x | yes |
-| modelly | 5,436 | 0.20 | 0.63 | 0.68 | 0.27 | 0.63 | 8.5x | 6.5x | yes |
+| mesa | 5,569 | 0.01 | 5.90 | 3.90 | 3.71 | 3.90 | 1.0x | 1.0x | yes |
+| modelly-cells | 5,469 | 0.11 | 4.02 | 2.80 | 2.82 | 2.82 | 1.4x | 1.3x | yes |
+| modelly | 5,436 | 0.11 | 0.61 | 0.46 | 0.47 | 0.47 | 8.3x | 6.7x | yes |
 
 Agreement over 6 shared seeds at the small size (mean ± sd; p from Welch's t-test against Mesa, flagged below 0.01).
 
@@ -49,8 +49,8 @@ Size `large`, 50 steps, CPU seconds; run = the steps, build = model construction
 
 | variant | population | build | run 1 | run 2 | run 3 | run median | speed-up (run) | speed-up (build + run) | deterministic |
 |---|---|---|---|---|---|---|---|---|---|
-| mesa | 4,000 | 0.02 | 33.25 | 25.37 | 30.87 | 30.87 | 1.0x | 1.0x | yes |
-| modelly | 4,000 | 0.02 | 0.61 | 0.45 | 0.98 | 0.61 | 50.5x | 48.8x | yes |
+| mesa | 4,000 | 0.02 | 33.60 | 27.91 | 22.90 | 27.91 | 1.0x | 1.0x | yes |
+| modelly | 4,000 | 0.02 | 0.88 | 0.72 | 0.67 | 0.72 | 38.8x | 37.8x | yes |
 
 Agreement over 6 shared seeds at the small size (mean ± sd; p from Welch's t-test against Mesa, flagged below 0.01).
 
@@ -66,8 +66,8 @@ Size `large`, 100 steps, CPU seconds; run = the steps, build = model constructio
 
 | variant | population | build | run 1 | run 2 | run 3 | run median | speed-up (run) | speed-up (build + run) | deterministic |
 |---|---|---|---|---|---|---|---|---|---|
-| mesa | 30,000 | 0.23 | 10.81 | 12.12 | 8.03 | 10.81 | 1.0x | 1.0x | yes |
-| modelly | 30,000 | 0.68 | 0.31 | 0.24 | 0.37 | 0.31 | 35.0x | 11.2x | yes |
+| mesa | 30,000 | 0.22 | 8.70 | 8.72 | 7.94 | 8.70 | 1.0x | 1.0x | yes |
+| modelly | 30,000 | 0.65 | 0.21 | 0.20 | 0.18 | 0.20 | 43.7x | 10.5x | yes |
 
 Agreement over 6 shared seeds at the small size (mean ± sd; p from Welch's t-test against Mesa, flagged below 0.01).
 
@@ -86,17 +86,17 @@ Size `large`, 120 steps, CPU seconds; run = the steps, build = model constructio
 
 | variant | population | build | run 1 | run 2 | run 3 | run median | speed-up (run) | speed-up (build + run) | deterministic |
 |---|---|---|---|---|---|---|---|---|---|
-| mesa | 26,382 | 0.00 | 6.93 | 6.89 | 6.79 | 6.89 | 1.0x | 1.0x | yes |
-| modelly | 25,781 | 0.00 | 1.47 | 1.53 | 1.03 | 1.47 | 4.7x | 4.7x | yes |
-| modelly-cohorts | 25,613 | 0.00 | 0.02 | 0.03 | 0.02 | 0.02 | 328.2x | 305.0x | yes |
+| mesa | 26,382 | 0.00 | 2.83 | 2.76 | 3.49 | 2.83 | 1.0x | 1.0x | yes |
+| modelly | 25,781 | 0.00 | 0.65 | 0.70 | 0.62 | 0.65 | 4.3x | 4.3x | yes |
+| modelly-cohorts | 26,239 | 0.00 | 0.01 | 0.01 | 0.01 | 0.01 | 212.8x | 191.3x | yes |
 
 Agreement over 6 shared seeds at the small size (mean ± sd; p from Welch's t-test against Mesa, flagged below 0.01).
 
 | statistic | mesa | modelly | modelly-cohorts |
 |---|---|---|---|
-| final_eggs | 968.67 ± 163.08 | 983.17 ± 75.75 (p=0.86) | 949.83 ± 49.84 (p=0.81) |
-| final_larvae | 1,013.17 ± 64.95 | 1,016.67 ± 47.30 (p=0.92) | 1,025.17 ± 18.46 (p=0.71) |
-| final_pupae | 295.00 ± 11.20 | 292.17 ± 15.40 (p=0.75) | 301.50 ± 10.75 (p=0.37) |
-| final_adults | 486.17 ± 14.50 | 493.83 ± 10.45 (p=0.36) | 474.50 ± 5.94 (p=0.14) |
-| mean_adults | 266.28 ± 8.01 | 277.13 ± 8.00 (p=0.06) | 271.61 ± 17.68 (p=0.56) |
-| peak_adults | 490.83 ± 15.45 | 502.17 ± 12.29 (p=0.23) | 483.50 ± 11.25 (p=0.41) |
+| final_eggs | 968.67 ± 163.08 | 983.17 ± 75.75 (p=0.86) | 1,019.67 ± 88.00 (p=0.56) |
+| final_larvae | 1,013.17 ± 64.95 | 1,016.67 ± 47.30 (p=0.92) | 985.33 ± 58.08 (p=0.49) |
+| final_pupae | 295.00 ± 11.20 | 292.17 ± 15.40 (p=0.75) | 308.50 ± 16.94 (p=0.17) |
+| final_adults | 486.17 ± 14.50 | 493.83 ± 10.45 (p=0.36) | 477.67 ± 26.65 (p=0.55) |
+| mean_adults | 266.28 ± 8.01 | 277.13 ± 8.00 (p=0.06) | 270.23 ± 10.22 (p=0.51) |
+| peak_adults | 490.83 ± 15.45 | 502.17 ± 12.29 (p=0.23) | 487.33 ± 18.79 (p=0.75) |

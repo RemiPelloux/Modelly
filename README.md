@@ -311,6 +311,43 @@ store = run_scenarios(scenarios, RunConfiguration(WealthModel, until=200), worke
 Each replication carries its own seed derived from the base scenario, so the sweep is
 reproducible; `workers=` spreads it over processes.
 
+For a plain factorial experiment, `run_grid` is the one-call version: every combination times
+the replicates, each run with its own seed, results in design order whatever the number of
+workers, so the DataFrame is identical to the sequential loop's.
+
+```python
+from modelly import run_grid
+
+
+def season(task):  # a notebook function works: on Linux the workers are forked
+    model = Orchard(budget=task["budget"], invasion=task["invasion"], rng=task["seed"])
+    model.run_for(100)
+    return {"harvested": model.harvested, "rotten": model.rotten}
+
+
+results = run_grid(
+    season, {"budget": [0, 150, 300, 600], "invasion": [3, 10, 30]}, replicates=3
+)
+```
+
+### Populations as cohorts
+
+When individuals in the same state face the same probabilities (an insect's stage, age and
+sex), one row with a count replaces them all, and each per-individual draw becomes one
+binomial draw per row with exactly the same law. `CohortTable` holds such a population with no
+agent objects; the stage-structured playbook runs 213x faster than its individual Mesa
+version and agrees with it statistically.
+
+```python
+from modelly import CohortTable
+
+insects = CohortTable(model.rng, stage=np.int8, age=np.int16, female=bool)
+insects.add(500, stage=EGG)
+insects.thin(daily_survival[insects["stage"]])  # Binomial(count, s) per row
+insects.split(0.5, where=emerging, stage=ADULT, female=True)  # sex at emergence
+eggs = insects.draw(lay_prob, where=mature_females).sum() * clutch
+```
+
 ## Modelly, Mesa, NetLogo or Agents.jl?
 
 | | Modelly | Mesa | NetLogo | Agents.jl |
@@ -396,11 +433,10 @@ Two questions, two methods, both in the repository.
 
 **Same code on both frameworks.** A research notebook written for Mesa 2.3, ported with the
 codemod and nothing else changed, identical seeds, outputs checked bit-identical, CPU time
-pinned and alternating: Modelly is 1.3 to 3.8% faster than Mesa 2.3 when the port seeds with
-Modelly's own `FastRandom` (identical stream), and 1.5 to 2% behind with the standard
-library's generator. Before this round it was at parity (within a few percent, every
-per-agent primitive at or below Mesa's cost). That measures interpreter overhead on
-identical code, and it is documented honestly as parity in
+pinned and alternating: with 1.5.2's compiled random core Modelly is 12% faster than Mesa 2.3
+(paired runs at 0.877 to 0.884 of Mesa's time, identical output in every chunk). In 1.5.0, with
+the pure-Python `FastRandom`, it was 1.3 to 3.8% faster, and 1.5 to 2% behind with the standard
+library's generator. The method and every round are in
 [docs/performance.md](docs/performance.md).
 
 **Same model, each framework's own idiom.** `benchmarks/playbooks/` holds five models written
@@ -412,15 +448,15 @@ of the steps at the large size, median of three rounds, this machine:
 
 | Playbook | Agents | Mesa 2.3 | Modelly | Speed-up |
 |---|---|---|---|---|
-| Grid epidemic (SIR, random walk, synchronous) | 20,000 | 10.5 s | 0.10 s | 110x |
-| Predator-prey with grass (births and deaths every step) | ~5,500 | 5.4 s | 0.63 s | 8.5x |
-| Flocking in continuous space | 4,000 | 30.9 s | 0.61 s | 50x |
-| Virus on a random network | 30,000 | 10.8 s | 0.31 s | 35x |
-| Stage-structured insect population, individuals | ~26,000 | 6.9 s | 1.47 s | 4.7x |
-| Same population as cohorts (binomial thinning) | ~26,000 | 6.9 s | 0.02 s | 330x |
+| Grid epidemic (SIR, random walk, synchronous) | 20,000 | 11.54 s | 0.21 s | 56x |
+| Predator-prey with grass (births and deaths every step) | ~5,500 | 3.90 s | 0.47 s | 8.3x |
+| Flocking in continuous space | 4,000 | 27.91 s | 0.72 s | 39x |
+| Virus on a random network | 30,000 | 8.70 s | 0.20 s | 44x |
+| Stage-structured insect population, individuals | ~26,000 | 2.83 s | 0.65 s | 4.3x |
+| Same population as a `CohortTable` (binomial thinning) | ~26,000 | 2.83 s | 0.013 s | 213x |
 
 Where Modelly keeps Mesa's data structure (agents held in cell lists, `modelly-cells` in the
-results) the gap closes to 1.1 to 1.6x: the layout is where the time is, not the interpreter.
+results) the gap closes to 1.4 to 1.9x: the layout is where the time is, not the interpreter.
 Every vectorised phase rests on a stated equivalence argument, in
 [docs/vectorised_phases.md](docs/vectorised_phases.md); the full tables with the agreement
 checks are in [benchmarks/playbooks/results/README.md](benchmarks/playbooks/results/README.md).

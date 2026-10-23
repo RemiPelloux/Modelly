@@ -21,10 +21,10 @@ Two playbooks carry a third variant. `grid_epidemic` and `predator_prey` have
 `modelly-cells`: the same model with Mesa's data structure, every cell holding
 the list of its agents, so movement and predation stay per-agent loops and
 only the obviously vectorisable phases are arrays. It shows what the layout
-alone is worth. `insect_cohorts` has `modelly-cohorts`, in which one agent
-stands for every insect in the same (stage, age, sex) class and survival is a
-binomial thinning of the cohort; it has the same law as the individual
-models. `docs/vectorised_phases.md` gives the argument for each vectorised
+alone is worth. `insect_cohorts` has `modelly-cohorts`, in which one row of
+a `CohortTable` (no agent objects) stands for every insect in the same (stage,
+age, sex) class and survival is a binomial thinning of the cohort; it has the
+same law as the individual models. `docs/vectorised_phases.md` gives the argument for each vectorised
 phase, for the predation matching and for the compression.
 
 ## Running

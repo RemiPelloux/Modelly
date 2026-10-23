@@ -191,6 +191,30 @@ Every change makes the same `getrandbits` calls in the same order; a test shuffl
 length from 0 to 139 and lengths around each power of two and compares with the standard
 library element for element, and then compares the next draw.
 
+**The compiled core (1.5.2).** Pure Python had nothing left to remove: what remained of a draw
+was the Python function call around a C call. `modelly/_native/fastrng.c` implements
+`randint`, `choice`, `shuffle`, `sample` and `_randbelow` in C as "fastcall" methods (the
+cheapest call CPython has). The type extends `_random.Random` and generates words from the same
+Mersenne Twister state the base class uses, so `random()`, `gauss`, `getrandbits`, `seed` and
+`getstate` from the standard library and the compiled methods consume one stream exactly as
+`random.Random` does; the stdlib's `sample` set-size rule and both of its code paths are
+reproduced draw for draw. Anything outside the fast paths (ranges of 2³² or more, non-int
+arguments, sequences that are not lists or tuples, `counts=`) goes to the standard library's
+own code, which reads the same state. At import a self-test compares a mixed sequence of draws
+with `random.Random`; on any mismatch, on free-threaded builds, without a compiler, or with
+`MODELLY_PURE_PYTHON=1`, `FastRandom` is the pure-Python `PyFastRandom` above. Per call:
+
+| Draw | `random.Random` | `PyFastRandom` | compiled `FastRandom` |
+|---|---|---|---|
+| `randint(6, 11)` | 193 ns | 185 ns | 59 ns |
+| `choice(list of 3,000)` | 190 ns | 168 ns | 72 ns |
+| `shuffle(3,000)`, per element | 206 ns | 156 ns | 38 ns |
+
+Assembly would not beat this: generating a word is 2 to 3 ns of C that compilers already turn
+into near-optimal code, and the rest is the interpreter's call, which no language can avoid.
+Platform wheels carry the compiled module (Linux x86-64 and ARM, macOS); other platforms
+install the pure wheel.
+
 ### How we evaluate against other frameworks
 
 Micro-benchmarks say where time goes; whether a framework is faster for a researcher is
@@ -267,6 +291,15 @@ collector). The win depends on Modelly's generator: with the port's seeding line
 timing. Using `FastRandom` there is fair in the sense this page uses: it is `model.random`'s
 own type, and it reproduces the identical stream, so every output is bit-identical.
 
+With the compiled core (1.5.2) the same paired instrument puts Modelly 12% ahead of Mesa 2.3
+on this notebook, same model code and same CSV in every chunk:
+
+| Paired run | Mesa 2.3 | Modelly 1.5.2 | Modelly / Mesa | median chunk |
+|---|---|---|---|---|
+| 1 | 12.97 s | 11.47 s | 0.884 | 0.829 |
+| 2 | 11.37 s | 10.03 s | 0.882 | 0.842 |
+| 3 | 11.08 s | 9.71 s | 0.877 | 0.825 |
+
 Measured and rejected on this workload: a `shuffle` that draws its random words in one call
 (it reproduces the permutation but leaves the stream in a different place for the next draw,
 and is 3x slower); a cheaper `Model` construction (it is 18 µs; 576 of them are 10 ms).
@@ -298,28 +331,28 @@ Median CPU seconds of the steps at the large size on this machine:
 
 | Playbook | Agents | Mesa 2.3 | Modelly, cell lists | Modelly, columns | Speed-up |
 |---|---|---|---|---|---|
-| Grid epidemic, 60 steps | 20,000 | 10.5 s | 6.7 s | 0.10 s | 110x |
-| Predator-prey with grass, 200 steps | ~5,500 | 5.4 s | 5.0 s | 0.63 s | 8.5x |
-| Flocking, 50 steps | 4,000 | 30.9 s | | 0.61 s | 50x |
-| Virus on a network, 100 steps | 30,000 | 10.8 s | | 0.31 s | 35x |
-| Insect population, individuals, 120 days | ~26,000 | 6.9 s | | 1.47 s | 4.7x |
-| Insect population, cohorts | ~26,000 | 6.9 s | | 0.02 s | 330x |
+| Grid epidemic, 60 steps | 20,000 | 11.54 s | 5.92 s | 0.21 s | 56x |
+| Predator-prey with grass, 200 steps | ~5,500 | 3.90 s | 2.82 s | 0.47 s | 8.3x |
+| Flocking, 50 steps | 4,000 | 27.91 s | | 0.72 s | 39x |
+| Virus on a network, 100 steps | 30,000 | 8.70 s | | 0.20 s | 44x |
+| Insect population, individuals, 120 days | ~26,000 | 2.83 s | | 0.65 s | 4.3x |
+| Insect population, `CohortTable` | ~26,000 | 2.83 s | | 0.013 s | 213x |
 
 The "cell lists" column is the same model with Mesa's data structure, every cell holding the
-list of its agents, so movement and predation stay per-agent loops: 1.1 to 1.6x, consistent
+list of its agents, so movement and predation stay per-agent loops: 1.4 to 1.9x, consistent
 with the port. The gap opens when the cell becomes a column of rows: the random walk is one
 `random_neighbor` call over the grid's CSR adjacency, the exposure count a `bincount`, the
 predation a vectorised matching with the law of the shuffled sequential rule. Construction is
 reported separately (a 180x180 Moore grid builds in 0.11 s, a 30,000-node network in 0.4 s,
 against milliseconds for Mesa's lazy structures); the build+run speed-ups in the results are
-correspondingly lower (29x, 6.5x, 49x, 11x, 4.7x, 305x).
+correspondingly lower (26x, 6.7x, 38x, 10.5x, 4.3x, 191x).
 
 The insect playbook is a stage-structured population under sterile releases, an original
 model with the dynamics of the medfly workload (thousands of eggs a day, stage-specific
 mortality, density-dependent larval survival). Agent creation is at parity, so the
-individual-level gap is the per-agent loop only (4.7x). The cohort variant represents every
+individual-level gap is the per-agent loop only (4.3x). The cohort variant represents every
 insect in the same (stage, age, sex) class as one row and thins it with a binomial draw; it
-has the same law as the individual model (the agreement table shows it) and runs in 20 ms. The machine was under heavy load
+has the same law as the individual model (the agreement table shows it) and runs in 13 ms. The machine was under heavy load
 during these rounds; absolute times vary by up to 2x between sessions, the ratios do not.
 
 ## Caches

@@ -3,10 +3,26 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
-## Unreleased
+## 1.5.2 - 2026-10-23
 
 ### Added
 
+- A compiled random core, `modelly/_native/fastrng.c`: `randint`, `choice`, `shuffle`,
+  `sample` and `_randbelow` in C on CPython's own Mersenne Twister state, identical streams to
+  `random.Random` (verified at import and by tests over interleaved draws of every method).
+  `randint` 193 to 59 ns, `choice` 190 to 72 ns, `shuffle` 206 to 38 ns per element. On the
+  reference Mesa 2.3 workload, same model code and identical output, Modelly is now 12%
+  faster. `FastRandom` falls back to the pure-Python `PyFastRandom` without the extension, on
+  free-threaded builds, or with `MODELLY_PURE_PYTHON=1`.
+- Platform wheels: a hatch build hook (`hatch_build.py`) compiles the core into the wheel; the
+  release workflow builds Linux x86-64 and ARM and macOS wheels with cibuildwheel for CPython
+  3.12 to 3.15, plus a pure wheel and the sdist. `scripts/build-native.sh` builds it in place.
+- `modelly.CohortTable`: a counted population (one row per state, no agent objects) with
+  binomial `thin`, `split` and `draw`, `compact`, `merge`, `totals_by` and `to_dataframe`.
+  The insect playbook's cohort variant now uses it: 213x faster than the individual Mesa model.
+- `modelly.run_batch` and `modelly.run_grid`: parallel runs with results in task order (the
+  output equals the sequential loop's), per-run seeds from `SeedSequence.spawn`, notebook
+  functions and closures supported on Linux, `MODELLY_WORKERS` to set the pool size.
 - `python -m modelly.lint PATH`: a static check for Modelly models. Errors (`MDL0xx`) are
   random draws outside the model's generators, an `__init__` without `super().__init__`, loops
   over sets and mutable class attributes on agents; warnings (`MDL1xx`) are agents scanning
