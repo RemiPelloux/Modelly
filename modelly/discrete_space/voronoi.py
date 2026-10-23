@@ -17,7 +17,6 @@ from itertools import combinations
 from random import Random
 
 import numpy as np
-from scipy.spatial import KDTree
 
 from modelly.discrete_space.cell import Cell
 from modelly.discrete_space.discrete_space import DiscreteSpace
@@ -217,6 +216,10 @@ class VoronoiGrid(DiscreteSpace):
         self.centroids_coordinates = centroids_coordinates
         self.capacity_function = capacity_function
         self._validate_parameters()
+
+        from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
+            KDTree,
+        )
 
         # Build KD-tree for fast nearest-centroid lookup
         self._kdtree = KDTree(np.array(centroids_coordinates))

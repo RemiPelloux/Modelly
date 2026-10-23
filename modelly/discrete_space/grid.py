@@ -24,7 +24,6 @@ from random import Random
 from typing import TypeVar
 
 import numpy as np
-from scipy.spatial import KDTree
 
 from modelly.discrete_space.base_grid import (
     GRID_2D,
@@ -177,6 +176,10 @@ class HexGrid(Grid[T]):
             cell.position = position
             positions.append(position)
             self._kdtree_coords.append(coord)
+
+        from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
+            KDTree,
+        )
 
         self._kdtree = KDTree(np.array(positions))
 
