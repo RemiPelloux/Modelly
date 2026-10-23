@@ -168,14 +168,14 @@ for _ in range(100):
 :hidden: true
 :maxdepth: 2
 
-Getting started <getting_started>
-Use Modelly in your project <using_modelly_in_your_project>
+Get started <getting_started>
+Your project <using_modelly_in_your_project>
 Examples <examples>
-Migrating from Mesa <migrating_from_mesa>
+From Mesa <migrating_from_mesa>
 Performance <performance>
-Vectorised step phases <vectorised_phases>
-Best practices <best-practices>
+API <apis/api_main>
 Overview <overview>
-API reference <apis/api_main>
+Best practices <best-practices>
+Vectorised step phases <vectorised_phases>
 ```
 

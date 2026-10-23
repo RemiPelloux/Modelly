@@ -3,6 +3,25 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Added
+
+- `CellIndex.track(model, agent_class, column="row")`: agents that keep their cell as a row
+  column are listed by `space.agents` and drawn by the visualisation at
+  `index.cells[agent.<column>]`; `CellIndex.cell_of(agent)` returns that cell.
+- `Agent.column_specs()`: the `Column` declarations of a class, in table order.
+
+### Changed
+
+- A `Column` attribute is now a plain `property` on its class reading the agent's row through
+  a `memoryview`: a read went from 79 ns to 27 ns and `+= 1` from 171 ns to 72 ns, and a
+  Boltzmann step over 5,000 column agents from 5.0 ms to 3.1 ms. Reads return Python `int`,
+  `float` and `bool` instead of numpy scalars; strings, objects, complex and datetimes keep
+  numpy indexing, and writes a `memoryview` rejects fall back to numpy's assignment.
+- On the class, a column attribute is that property (its docstring is the column's repr), not
+  the `Column` declaration; use `AgentClass.column_specs()["name"]` for the dtype and default.
+
 ## 1.5.1 - 2026-10-23
 
 ### Changed

@@ -88,6 +88,11 @@ phase needs the cellmates, `Occupancy(table.row, n_cells)` sorts the rows once
 and answers "who is in cell c" and "a random member of cell c" from the sorted
 order, O(n log n) per step instead of a list update per move.
 
+Agents placed this way are in no cell's agent list, so declare them to the
+index for the space and the visualisation: `index.track(model, Person,
+column="row")`. `space.agents` then lists them after the cell-list agents, and
+the renderers place each one at `index.cells[agent.row]`.
+
 **Claim (claim with retry).** Let claimants act in a uniformly random order and
 each take a uniformly random member of its cell not yet taken. Then in every
 cell exactly min(claimants, members) are taken, the taken members form a

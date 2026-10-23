@@ -122,8 +122,9 @@ Rules of thumb:
   `np.random` directly, or your runs stop being reproducible.
 - `self.scenario` is the model's scenario; read parameters from it instead of copying them.
 - Use a `Column` for an attribute the *model* aggregates, filters or records every step. Keep a
-  scratch value that only the agent reads as a plain attribute: a column read costs about 100 ns
-  more per access, which is nothing for a few reads but adds up in a tight loop.
+  scratch value that only the agent reads as a plain attribute: a column read costs about 20 ns
+  more per access and `+= 1` about 60 ns, nothing for a few accesses but it adds up in a tight
+  loop.
 
 ## 5. Write the model
 

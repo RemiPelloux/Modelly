@@ -109,8 +109,6 @@ autoclass_content = "both"
 # output. They are ignored by default.
 # show_authors = False
 
-# The name of the Pygments (syntax highlighting) style to use.
-pygments_style = "gruvbox-dark"
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
@@ -130,22 +128,47 @@ nb_execution_raise_on_error = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = "pydata_sphinx_theme"
-version_match = os.environ.get("READTHEDOCS_VERSION", release)
-if not version_match or version_match.isdigit():
-    version_match = "latest"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
+# One version is published, so the navbar shows it as a pill instead of a switcher;
+# switcher.json stays for the release workflow that maintains it.
 html_theme_options = {
-    "navbar_start": ["navbar-logo", "version-switcher"],
-    "switcher": {
-        "json_url": f"{SITE_URL}_static/switcher.json",
-        "version_match": version_match,
-    },
-    "github_url": "https://github.com/RemiPelloux/Modelly",
+    "logo": {"text": "Modelly", "alt_text": "Modelly home"},
+    "navbar_start": ["navbar-logo", "version-pill"],
+    "navbar_center": ["navbar-nav"],
+    "navbar_end": ["theme-switcher", "navbar-icon-links"],
+    "navbar_persistent": ["search-button-field"],
+    "navbar_align": "left",
+    "header_links_before_dropdown": 6,
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/RemiPelloux/Modelly",
+            "icon": "fa-brands fa-github",
+        },
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/modelly-abm/",
+            "icon": "fa-brands fa-python",
+        },
+    ],
+    "use_edit_page_button": True,
+    "secondary_sidebar_items": ["page-toc", "edit-this-page"],
+    "show_prev_next": True,
     "footer_start": ["copyright"],
     "footer_end": [],
+    "pygments_light_style": "github-light",
+    "pygments_dark_style": "github-dark",
 }
+html_context = {
+    "github_user": "RemiPelloux",
+    "github_repo": "Modelly",
+    "github_version": "main",
+    "doc_path": "docs",
+    "default_mode": "auto",
+}
+html_show_sourcelink = False
 
 # Canonical URL and <title>: what search engines index and show.
 html_baseurl = SITE_URL
@@ -154,7 +177,7 @@ html_short_title = "Modelly"
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = "images/modelly_logo.png"
+html_logo = "_static/modelly-mark.svg"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -166,9 +189,15 @@ html_favicon = "images/modelly_logo.ico"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-# The home page (index.md) is a landing page: its styles and scripts are scoped to .ml-landing.
+# modelly.css is the site theme; the home page (index.md) is a landing page whose styles and
+# scripts are scoped to .ml-landing.
 html_css_files = [
-    "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap",
+    (
+        "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800"
+        "&family=Public+Sans:ital,wght@0,400..700;1,400..700"
+        "&family=JetBrains+Mono:wght@400..600&display=swap"
+    ),
+    "modelly.css",
     "landing.css",
 ]
 html_js_files = ["landing-sims.js", "landing.js"]
@@ -187,9 +216,19 @@ html_js_files = ["landing-sims.js", "landing.js"]
 # html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
+# Pages without children get no section navigation, so no empty sidebar.
 html_sidebars = {
-    "getting_started": [],
-    "index": [],
+    page: []
+    for page in (
+        "index",
+        "getting_started",
+        "using_modelly_in_your_project",
+        "migrating_from_mesa",
+        "performance",
+        "vectorised_phases",
+        "best-practices",
+        "overview",
+    )
 }
 
 # Additional templates that should be rendered to pages, maps page names to

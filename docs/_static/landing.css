@@ -24,8 +24,10 @@ html[data-theme="dark"] .ml-landing {
 
 /* Page chrome: no sidebars, full-width article, the markdown title kept for search engines only. */
 .bd-page-width:has(.ml-landing) { max-width: none; padding: 0; }
-.bd-main:has(.ml-landing) .bd-article-container { max-width: none; padding: 0; }
-.bd-main:has(.ml-landing) .bd-article { padding: 0; }
+.bd-main:has(.ml-landing) .bd-content .bd-article-container { max-width: none; padding: 0; overflow: visible; }
+.bd-main:has(.ml-landing) .bd-content .bd-article-container .bd-article { padding: 0; }
+.bd-container__inner:has(.ml-landing), .bd-main:has(.ml-landing), .bd-main:has(.ml-landing) .bd-content { padding: 0; max-width: none; }
+.bd-main:has(.ml-landing) .bd-header-article, .bd-main:has(.ml-landing) .bd-footer-article { display: none; }
 .bd-container:has(.ml-landing) .bd-sidebar-primary,
 .bd-container:has(.ml-landing) .bd-sidebar-secondary,
 .bd-main:has(.ml-landing) .prev-next-area { display: none; }
@@ -63,6 +65,7 @@ body:has(.ml-landing) { overflow-x: clip; }
   margin: 0 0 1.5rem;
   color: #fff;
 }
+.ml-hero code { color: #e7ecf5; background: #1b2944; border-color: #2a3a5c; }
 .ml-hero-sub { font-size: 1.15rem; line-height: 1.6; color: #b8c3da; margin: 0 0 2rem; max-width: 32rem; }
 .ml-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
 .ml-btn {

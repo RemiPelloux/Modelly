@@ -17,10 +17,10 @@ from __future__ import annotations
 
 import warnings
 from abc import ABC, abstractmethod
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from functools import cached_property
 from random import Random
-from typing import TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 import numpy as np
 
@@ -28,6 +28,10 @@ from modelly.agent import AgentSet
 from modelly.discrete_space.cell import Cell
 from modelly.discrete_space.cell_collection import CellCollection
 from modelly.exceptions import CellMissingException
+
+if TYPE_CHECKING:
+    from modelly.discrete_space.cell_agent import CellAgent
+    from modelly.discrete_space.cell_index import CellIndex
 
 T = TypeVar("T", bound=Cell)
 
@@ -84,6 +88,13 @@ class _EmptiesIndex:
         return len(self._cells)
 
 
+def space_agents(space: DiscreteSpace) -> Iterator[CellAgent]:
+    """The agents in the cells' lists, then those a CellIndex tracks by row column."""
+    yield from space.all_cells.agents
+    if space._cell_index is not None:
+        yield from space._cell_index.tracked_agents()
+
+
 class DiscreteSpace[T: Cell](ABC):
     """Base class for all discrete spaces.
 
@@ -101,6 +112,9 @@ class DiscreteSpace[T: Cell](ABC):
         generator in the model. So, you would do `random=self.random` in a `Model` or `Agent` instance.
 
     """
+
+    # Set by a CellIndex built on this space (see CellIndex.track).
+    _cell_index: CellIndex | None = None
 
     def __init__(
         self,
@@ -132,8 +146,8 @@ class DiscreteSpace[T: Cell](ABC):
 
     @property
     def agents(self) -> AgentSet:
-        """Return an AgentSet with the agents in the space."""
-        return AgentSet(self.all_cells.agents, random=self.random)
+        """Return an AgentSet with the agents in the space, row-placed ones included."""
+        return AgentSet(space_agents(self), random=self.random)
 
     @abstractmethod
     def _connect_cells(self) -> None: ...
