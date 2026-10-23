@@ -41,6 +41,8 @@ class Agent[M: Model]:
     # True when no class after Agent in the MRO defines __init__, so the
     # cooperative super().__init__() would only reach object.__init__.
     _plain_init: ClassVar[bool] = True
+    # True when the class has columns or datasets to update on birth and death.
+    _extra_hooks: ClassVar[bool] = False
     _repr_excluded_fields: ClassVar[set[str]] = {
         "model",
         "current_action",
@@ -68,6 +70,7 @@ class Agent[M: Model]:
         cls._column_specs = specs
         after_agent = cls.__mro__[cls.__mro__.index(Agent) + 1 : -1]
         cls._plain_init = not any("__init__" in vars(base) for base in after_agent)
+        cls._extra_hooks = bool(specs)
 
     def __init__(self, model: M, *args, **kwargs) -> None:
         """Create a new agent.
@@ -87,10 +90,10 @@ class Agent[M: Model]:
             super().__init__()  # a cooperative base class needs the call
 
         self.model: M = model
-        if model._default_registry:
-            # Model.register_agent written out: an agent birth is the hottest
-            # path in lifecycle-heavy models and the call alone is a quarter of
-            # it. Kept in sync with Model.register_agent (tested).
+        if model._quiet:
+            # Model.register_agent written out for the common case (default
+            # registry, nobody listening): a birth is the hottest path in
+            # lifecycle-heavy models. Kept in sync with it (tested).
             model._all_agents[self] = None
             self.unique_id = model.agent_id_counter
             model.agent_id_counter += 1
@@ -98,21 +101,14 @@ class Agent[M: Model]:
                 model._agents_by_type[type(self)][self] = None
             except KeyError:
                 model._register_new_type(self)
-            if (
-                model._suppress
-                or model._batch_context is not None
-                or model.subscribers
-                or model._class_subscribers
-            ):
-                model._notify_agent_added(self)
         else:
             self.unique_id = None
             model.register_agent(self)
-        if self._column_specs:
-            self.model.columns.register(self)
-        if self._datasets:
+        if self._extra_hooks:
+            if self._column_specs:
+                model.columns.register(self)
             for dataset in self._datasets:
-                self.model.data_registry[dataset].add_agent(self)
+                model.data_registry[dataset].add_agent(self)
 
     def remove(self) -> None:
         """Remove and delete the agent from the model."""
@@ -120,28 +116,20 @@ class Agent[M: Model]:
         # about 300 ns per call and this runs on every agent death.
         model = self.model
         try:
-            if model._default_registry:
+            if model._quiet:
                 # Model.deregister_agent written out; see __init__.
                 del model._agents_by_type[type(self)][self]
                 del model._all_agents[self]
-                if (
-                    model._suppress
-                    or model._batch_context is not None
-                    or model.subscribers
-                    or model._class_subscribers
-                ):
-                    model._notify_agent_removed(self)
             else:
                 model.deregister_agent(self)
         except KeyError:
             pass  # already removed
-        if self._column_specs and self._column_row >= 0:
-            self.model.columns.unregister(self)
-
-        # ensures models are also removed from datasets
-        if self._datasets:
+        if self._extra_hooks:
+            if self._column_specs and self._column_row >= 0:
+                model.columns.unregister(self)
+            # ensures models are also removed from datasets
             for dataset in self._datasets:
-                self.model.data_registry[dataset].remove_agent(self)
+                model.data_registry[dataset].remove_agent(self)
 
     def step(self) -> None:
         """A single step of the agent."""

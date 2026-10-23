@@ -60,6 +60,7 @@ class Cell:
         "capacity",
         "connections",
         "coordinate",  # Logical index
+        "index",  # row in CellIndex, -1 until a CellIndex is built
         "properties",
         "random",
     ]
@@ -109,6 +110,7 @@ class Cell:
         """
         super().__init__()
         self.coordinate = coordinate  # Logical index
+        self.index = -1  # row in CellIndex, see modelly.discrete_space.cell_index
         self._position = position  # Physical position
         self.connections: dict[Coordinate, Cell] = {}
         self._agents: list[CellAgent] = []

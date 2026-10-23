@@ -94,6 +94,8 @@ owns the world and advances it.
 - [Migrating from Mesa](migrating_from_mesa): a construct-by-construct map and the
   `python -m modelly.migrate` codemod.
 - [Performance](performance): how the engine stays fast, with the measurements.
+- [Vectorised step phases](vectorised_phases): when a loop over agents is an array
+  operation, with the equivalence arguments the benchmark playbooks check.
 - [Best practices](best-practices) and the [API reference](apis/api_main).
 
 ## Community and source
@@ -120,6 +122,7 @@ Use Modelly in your project <using_modelly_in_your_project>
 Examples <examples>
 Migrating from Mesa <migrating_from_mesa>
 Performance <performance>
+Vectorised step phases <vectorised_phases>
 Best practices <best-practices>
 Overview <overview>
 API reference <apis/api_main>

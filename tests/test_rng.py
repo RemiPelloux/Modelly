@@ -58,3 +58,16 @@ def test_model_random_is_a_fast_random_with_the_same_stream():
     assert [model.random.randint(0, 99) for _ in range(20)] == [
         reference.randint(0, 99) for _ in range(20)
     ]
+
+
+def test_shuffle_matches_stdlib_across_run_boundaries():
+    """Lists around every bit-length boundary shuffle exactly like random.Random."""
+    sizes = [*range(140), 255, 256, 257, 1000, 3000, 4097, 5000]
+    for size in sizes:
+        for seed in (1, 2, 3):
+            expected, actual = list(range(size)), list(range(size))
+            reference, fast = random.Random(seed), FastRandom(seed)
+            reference.shuffle(expected)
+            fast.shuffle(actual)
+            assert actual == expected
+            assert fast.random() == reference.random()

@@ -171,9 +171,19 @@ A quarter to a third of an agent-based model's time is the standard library's `r
 `modelly.FastRandom` reimplements the four with the rejection loop written inline, making the
 same `getrandbits` calls in the same order, so a seed gives exactly the same numbers as
 `random.Random` (tested across seeds, sizes and both `sample` code paths). `model.random` is a
-`FastRandom`. It is a small win: `shuffle` and `sample` are 18 to 20% faster, `randint` and
-`choice` within noise, because the per-draw cost is the C call and the loop, not the method
-dispatch.
+`FastRandom`. On CPython 3.15, against a standard library that has itself become cheaper,
+per call:
+
+| Draw | Faster than `random.Random` by | How |
+|---|---|---|
+| `randint(6, 11)` | 3 to 4% | `type(x) is int` (specialised by the interpreter) instead of two `operator.index` calls; bit length from a 4,096-entry table instead of `int.bit_length()` |
+| `choice` | 11 to 12% | the same table |
+| `sample(list of 3,000, 3)` | 20 to 26% | the table, and the `Sequence` ABC check skipped for `list`, `tuple` and `range` |
+| `shuffle(3,000)` | 15 to 27% | lists over 64 elements are walked in runs of constant bit length, so the inner loop has no lookup at all |
+
+Every change makes the same `getrandbits` calls in the same order; a test shuffles every
+length from 0 to 139 and lengths around each power of two and compares with the standard
+library element for element, and then compares the next draw.
 
 ### How we evaluate against other frameworks
 
@@ -203,24 +213,108 @@ after its random draw, `len(self.slots) < capacity` instead of two property hops
 re-filtering the free-fruit pool only on days when fruits were removed) cut the experiment
 cell by 3x on both frameworks: Modelly 30 s to 9.4 s, Mesa 26 s to 7.8 s, same checksums.
 
-**Stage two: the framework.** On the optimised model, three pinned alternating rounds of the
-experiment cell:
+A third round of model-code changes, again identical on both sides and stream-preserving (an
+incremental rot score per fruit instead of a daily loop over its slots, an inlined capacity
+test in the egg-laying loop, `FastRandom` seeding on the Modelly side), took the experiment
+cell from 14.1 s to 11.2 s on Modelly and from 13.3 s to 11.0 s on Mesa, same checksums.
+Dispatching the 576 independent seasons of the factorial to a forked process pool, records
+reassembled in the original order so the CSV is identical, brings the cell to 1.3 to 1.6 s of
+wall-clock on eight workers: the largest practical gain on this workload, and the one that
+needs no re-validation of the model.
 
-| Round | Mesa 2.3 | Modelly | Modelly, `FastRandom` in the port's seeding line |
+**Stage two: the framework.** Whole-cell rounds swing by up to 2x on a shared machine, so
+the comparison moved to a finer instrument: two persistent processes, one per framework,
+pinned to the same core, running the 576 seasons in 48 chunks with the order alternating,
+each chunk's records hashed and compared (no mismatch in any run). Measured that way, the
+gap before this round was 2.1%, and none of it was in the model's arithmetic:
+
+1. **The random draws.** `FastRandom.randint` had become 4% *slower* than the standard
+   library on CPython 3.15, which now inlines Python-to-Python calls well; the `operator.index`
+   calls were the difference. The table above lists the fixes; this was the largest item.
+2. **Agent birth and death.** One model flag (`_quiet`: default registry and nobody
+   listening) replaces four attribute reads, and one class flag (`_extra_hooks`: columns or
+   datasets) replaces two. The flag only ever turns false (on `observe`, `observe_class`, a
+   batch, a suppress, or an overridden `register_agent`), so a stale value can only send an
+   agent down the slower, still correct path. Creation went from 295 ns to 225 ns at the
+   notebook's live population, against 281 ns for Mesa.
+3. **The garbage collector.** About 11% of the run on both frameworks. Collecting identical
+   garbage costs the same on both (78 to 83 ms per 240,000 objects); what differs is where
+   collections fall relative to season boundaries, which depends on allocation counts. With
+   the collection threshold set equally on both sides, Modelly is ahead at four of five
+   values and behind at one. We report the default threshold. `gc.freeze()` after the imports
+   would have given Modelly another 2.4%; applied to both sides it gives nothing, so it is a
+   process setting rather than an engine property, and Modelly does not do it.
+
+Result at the default settings, experiment cell, separate processes, pinned, alternating
+(same output CSV in every round):
+
+| Round | Mesa 2.3 | Modelly | Modelly faster by |
 |---|---|---|---|
-| 1 | 13.39 s | 14.25 s | 13.98 s |
-| 2 | 13.29 s | 13.97 s | 13.84 s |
-| 3 | 13.47 s | 14.11 s | 13.88 s |
+| 1 | 13.09 s | 12.70 s | 3.0% |
+| 2 | 12.71 s | 12.53 s | 1.4% |
+| 3 | 12.66 s | 12.50 s | 1.3% |
+| 4 | 12.98 s | 12.49 s | 3.8% |
 
-Modelly is 3 to 4% behind with the port's stdlib generator and 3% behind with its own, with
-every per-agent primitive measured at or below Mesa's cost (birth and death, liveness check,
-`random` and `time` reads), construction and data collection equal, and a three-day step at
-peak population at parity. The remainder is diffuse and below what this machine can resolve.
-We call that parity, not a win, and the comparison harness stays outside the repository.
+The paired instrument agrees (Modelly/Mesa 0.985 to 0.994 total; 0.969 to 0.983 outside the
+collector). The win depends on Modelly's generator: with the port's seeding line left as
+`random.Random(seed)`, the same instrument puts Modelly 1.5 to 2% behind, mostly collector
+timing. Using `FastRandom` there is fair in the sense this page uses: it is `model.random`'s
+own type, and it reproduces the identical stream, so every output is bit-identical.
 
 Measured and rejected on this workload: a `shuffle` that draws its random words in one call
 (it reproduces the permutation but leaves the stream in a different place for the next draw,
 and is 3x slower); a cheaper `Model` construction (it is 18 µs; 576 of them are 10 ms).
+
+### The playbooks: same model, each framework's own idiom
+
+The port above answers "what does identical code cost". The second question is what each
+framework lets a modeller write. `benchmarks/playbooks/` holds five models implemented twice,
+for Mesa 2.3 with per-agent methods on `MultiGrid`, `ContinuousSpace` and `NetworkGrid`, and
+for Modelly with `Column` state, `CellIndex` (integer rows for the cells of any discrete space
+plus their sparse adjacency), `Occupancy` / `claim`, `pairs_within` / `move_all` and
+`ColumnTable.thin`. The rules for a fair comparison, enforced by the runner:
+
+1. Same model: same rules, same synchronous phase order, same parameters, same graph and
+   initial positions where seeds can be shared; the Mesa side uses numpy where a Mesa modeller
+   would.
+2. Agreement in distribution, checked: every implementation runs the same seeds and each
+   summary statistic is compared with the Mesa reference by Welch's t-test (flagged below
+   0.01). The implementations draw their random numbers in different orders, so the outputs
+   differ run by run and must agree in law; `vectorised_phases.md` states why each vectorised
+   phase has the law of its per-agent loop.
+3. Determinism, checked: the first seed runs twice per implementation. (This check caught the
+   Mesa side being unseeded when the seed was passed positionally: Mesa 2.3 reads it from the
+   keyword arguments in `Model.__new__`.)
+4. CPU time of a fresh interpreter per run, build and steps timed separately, pinned to one
+   core, implementations alternating over three rounds, every round reported.
+
+Median CPU seconds of the steps at the large size on this machine:
+
+| Playbook | Agents | Mesa 2.3 | Modelly, cell lists | Modelly, columns | Speed-up |
+|---|---|---|---|---|---|
+| Grid epidemic, 60 steps | 20,000 | 10.5 s | 6.7 s | 0.10 s | 110x |
+| Predator-prey with grass, 200 steps | ~5,500 | 5.4 s | 5.0 s | 0.63 s | 8.5x |
+| Flocking, 50 steps | 4,000 | 30.9 s | | 0.61 s | 50x |
+| Virus on a network, 100 steps | 30,000 | 10.8 s | | 0.31 s | 35x |
+| Insect population, individuals, 120 days | ~26,000 | 6.9 s | | 1.47 s | 4.7x |
+| Insect population, cohorts | ~26,000 | 6.9 s | | 0.02 s | 330x |
+
+The "cell lists" column is the same model with Mesa's data structure, every cell holding the
+list of its agents, so movement and predation stay per-agent loops: 1.1 to 1.6x, consistent
+with the port. The gap opens when the cell becomes a column of rows: the random walk is one
+`random_neighbor` call over the grid's CSR adjacency, the exposure count a `bincount`, the
+predation a vectorised matching with the law of the shuffled sequential rule. Construction is
+reported separately (a 180x180 Moore grid builds in 0.11 s, a 30,000-node network in 0.4 s,
+against milliseconds for Mesa's lazy structures); the build+run speed-ups in the results are
+correspondingly lower (29x, 6.5x, 49x, 11x, 4.7x, 305x).
+
+The insect playbook is a stage-structured population under sterile releases, an original
+model with the dynamics of the medfly workload (thousands of eggs a day, stage-specific
+mortality, density-dependent larval survival). Agent creation is at parity, so the
+individual-level gap is the per-agent loop only (4.7x). The cohort variant represents every
+insect in the same (stage, age, sex) class as one row and thins it with a binomial draw; it
+has the same law as the individual model (the agreement table shows it) and runs in 20 ms. The machine was under heavy load
+during these rounds; absolute times vary by up to 2x between sessions, the ratios do not.
 
 ## Caches
 
@@ -265,9 +359,10 @@ state on the roadmap, not more micro-tuning.
 
 These are the changes with the largest remaining upside. Each is a project, not a patch.
 
-1. **Vectorised movement on grids.** Columns and the phase helpers cover state; moving many
-   agents at once (a coordinate column plus a vectorised neighbourhood lookup) is the next step
-   that would take a grid model's per-agent loop out of Python.
+1. **Vectorised movement on grids** is in: a cell-row column plus `CellIndex.random_neighbor`
+   moves a whole population in one call, and `Occupancy` / `claim` answer the per-cell
+   questions a step still has. What remains is a visualisation path for agents that keep
+   their cell as a column rather than in the cell's list.
 2. **Shared-memory replications.** `workers=` runs replications in processes that each hold a
    full model; a shared column store would let a sweep over one large model fan out without
    copying it.
@@ -280,4 +375,5 @@ These are the changes with the largest remaining upside. Each is a project, not 
 ```bash
 python benchmarks/global_benchmark.py        # the four reference models, saves timings_N.pickle
 python benchmarks/compare_timings.py a.pickle b.pickle
+python benchmarks/playbooks/compare.py --core 5   # the five playbooks against Mesa 2.3
 ```

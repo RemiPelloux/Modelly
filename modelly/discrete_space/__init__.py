@@ -22,6 +22,7 @@ from modelly.discrete_space.cell_agent import (
     HexGridMovingAgent,
 )
 from modelly.discrete_space.cell_collection import CellCollection
+from modelly.discrete_space.cell_index import CellIndex
 from modelly.discrete_space.discrete_space import DiscreteSpace
 from modelly.discrete_space.grid import (
     Grid,
@@ -30,12 +31,15 @@ from modelly.discrete_space.grid import (
     OrthogonalVonNeumannGrid,
 )
 from modelly.discrete_space.network import Network
+from modelly.discrete_space.occupancy import NO_MATCH, Occupancy, claim
 from modelly.discrete_space.voronoi import VoronoiGrid
 
 __all__ = [
+    "NO_MATCH",
     "Cell",
     "CellAgent",
     "CellCollection",
+    "CellIndex",
     "DiscreteSpace",
     "FixedAgent",
     "Grid",
@@ -43,7 +47,9 @@ __all__ = [
     "HexGrid",
     "HexGridMovingAgent",
     "Network",
+    "Occupancy",
     "OrthogonalMooreGrid",
     "OrthogonalVonNeumannGrid",
     "VoronoiGrid",
+    "claim",
 ]

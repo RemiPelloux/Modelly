@@ -86,6 +86,8 @@ class Model[A: Agent, S: Scenario](HasSchedule, HasEmitters):
             cls.register_agent is Model.register_agent
             and cls.deregister_agent is Model.deregister_agent
         )
+        if not cls._default_registry:
+            cls._quiet = False  # Agent.__init__ must call the override
 
     def _register_new_type(self, agent: A) -> None:
         """Create the per-type registry for the first agent of a class."""
@@ -94,12 +96,7 @@ class Model[A: Agent, S: Scenario](HasSchedule, HasEmitters):
         )
 
     def _notify_agent_added(self, agent: A) -> None:
-        """Emit AGENT_ADDED; notify itself checks for live subscribers.
-
-        Callers guard this with four attribute reads (suppressed, batching,
-        any instance subscriber, any class subscriber) rather than looking the
-        signal up: that guard runs on every agent birth and death.
-        """
+        """Emit AGENT_ADDED; reached only when the model is not ``_quiet``."""
         self.notify("agents", ModelSignals.AGENT_ADDED, args=(agent,))
 
     def _notify_agent_removed(self, agent: A) -> None:

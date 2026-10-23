@@ -92,16 +92,14 @@ class BaseObservable:
         self.private_name = f"_{name}"
 
     def __set__(self, instance: HasEmitters, value):  # noqa: D105
-        # If no one is listening, Avoid overhead of fetching old value and
-        # creating Message object.
+        # Nobody listening: skip fetching the old value and building a Message.
         if not instance._has_subscribers(self.public_name, ObservableSignals.CHANGED):
             return
         change_signal = self.signal_types(
             "changed"
         )  # look up "changed" in the descriptor's enum
 
-        # this only emits an on change signal, subclasses need to specify
-        # this in more detail
+        # only an on-change signal here; subclasses specify more
         instance.notify(
             self.public_name,
             change_signal,
@@ -120,8 +118,6 @@ class Observable(BaseObservable):
 
     """
 
-    # fixme: when we go to 3.13, we might explore changing this into a property
-    #    instead of descriptor, which is likely to be more performant
     signal_types = ObservableSignals
 
     def __set__(self, instance: HasEmitters, value):  # noqa D103
@@ -366,8 +362,7 @@ class HasEmitters:
 
     """
 
-    # we can't use a weakset here because it does not handle bound methods correctly
-    # also, a list is faster for our use case
+    # a list of weakrefs: a WeakSet mishandles bound methods, and a list is faster
     subscribers: dict[
         tuple[str, SignalType], list[weakref.ref]
     ]  # (observable_name, signal_type) -> list of weakref subscribers
@@ -376,6 +371,9 @@ class HasEmitters:
     _class_subscribers: ClassVar[dict[tuple[str, SignalType], list[weakref.ref]]] = (
         defaultdict(list)
     )
+
+    # False once anything may listen; never reset (a stale False is only slower).
+    _quiet: ClassVar[bool] = True
 
     def __init_subclass__(cls, **kwargs):
         """Initialize a HasEmitters subclass."""
@@ -418,6 +416,7 @@ class HasEmitters:
 
         """
         self._register_observer(self.subscribers, observable_name, signal_type, handler)
+        self._quiet = False
 
     @classmethod
     def _unregister_observer(
@@ -667,6 +666,7 @@ class HasEmitters:
         cls._register_observer(
             cls._class_subscribers, observable_name, signal_type, handler
         )
+        cls._quiet = False
 
     @classmethod
     def _register_observer(

@@ -380,26 +380,38 @@ is backed by a measurement in [docs/performance.md](docs/performance.md).
 
 ## Benchmarks
 
-`benchmarks/global_benchmark.py` times the bundled reference models and runs in CI, and
-`benchmarks/notebooks/` holds four benchmark notebooks (grid epidemic, predator-prey lifecycle,
-flocking, network diffusion) with a headless runner. Against other frameworks we evaluate on a
-real research model: the same notebook ported with the codemod, identical seeds, outputs
-checked to be bit-identical, per-cell timings taken best-of-n with the two frameworks
-alternating. On a medfly population model with a 576-season factorial, that puts Modelly at
-parity with Mesa 2.3: within a few percent, every per-agent primitive at or below Mesa's cost,
-and the model's own code the place where a 3x was found. The latest audit (CPU time per step, large
-configurations, same machine before and after) is summarised here; the full tables and method
-are in [docs/performance.md](docs/performance.md).
+Two questions, two methods, both in the repository.
 
-| Model | Agents | Per step | Change |
-|---|---|---|---|
-| Boltzmann wealth, 100x100 grid | 10,000 | 16.6 ms | 1.16x faster |
-| Schelling, density 0.8, radius 2 | 8,000 | 24.4 ms | 1.10x faster |
-| Schelling, density 0.98 | 9,800 | 20.7 ms | 6.7x faster |
-| Wolf-Sheep, 100x100 grid | 1,500 + grass | 17.0 ms | 1.09x faster |
-| Boids, continuous space | 400 | 8.1 ms | 1.5x faster |
-| Boids, continuous space | 2,000 | 41.7 ms | 2.4x faster |
-| Boids, continuous space | 10,000 | 227 ms | from about 2.5 s |
+**Same code on both frameworks.** A research notebook written for Mesa 2.3, ported with the
+codemod and nothing else changed, identical seeds, outputs checked bit-identical, CPU time
+pinned and alternating: Modelly is 1.3 to 3.8% faster than Mesa 2.3 when the port seeds with
+Modelly's own `FastRandom` (identical stream), and 1.5 to 2% behind with the standard
+library's generator. Before this round it was at parity (within a few percent, every
+per-agent primitive at or below Mesa's cost). That measures interpreter overhead on
+identical code, and it is documented honestly as parity in
+[docs/performance.md](docs/performance.md).
+
+**Same model, each framework's own idiom.** `benchmarks/playbooks/` holds five models written
+twice: for Mesa 2.3 the way its API intends, and for Modelly with columns, vectorised phases,
+`CellIndex` and one KD-tree per step. The runner executes both in their own environments,
+pinned to one core, alternating rounds, checks that the implementations agree in distribution
+(Welch's t-test over shared seeds, every statistic) and that each is deterministic. CPU seconds
+of the steps at the large size, median of three rounds, this machine:
+
+| Playbook | Agents | Mesa 2.3 | Modelly | Speed-up |
+|---|---|---|---|---|
+| Grid epidemic (SIR, random walk, synchronous) | 20,000 | 10.5 s | 0.10 s | 110x |
+| Predator-prey with grass (births and deaths every step) | ~5,500 | 5.4 s | 0.63 s | 8.5x |
+| Flocking in continuous space | 4,000 | 30.9 s | 0.61 s | 50x |
+| Virus on a random network | 30,000 | 10.8 s | 0.31 s | 35x |
+| Stage-structured insect population, individuals | ~26,000 | 6.9 s | 1.47 s | 4.7x |
+| Same population as cohorts (binomial thinning) | ~26,000 | 6.9 s | 0.02 s | 330x |
+
+Where Modelly keeps Mesa's data structure (agents held in cell lists, `modelly-cells` in the
+results) the gap closes to 1.1 to 1.6x: the layout is where the time is, not the interpreter.
+Every vectorised phase rests on a stated equivalence argument, in
+[docs/vectorised_phases.md](docs/vectorised_phases.md); the full tables with the agreement
+checks are in [benchmarks/playbooks/results/README.md](benchmarks/playbooks/results/README.md).
 
 ## Future roadmap
 
