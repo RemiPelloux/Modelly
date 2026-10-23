@@ -90,7 +90,7 @@ No global state, no hidden step order, no bespoke loops: reproducibility is the 
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/images/branding/simulation-loop-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="docs/images/branding/simulation-loop-light.svg">
-    <img src="docs/images/branding/simulation-loop-light.svg" alt="The Modelly loop: scenario, step, record, visualize" width="720">
+    <img src="docs/images/branding/simulation-loop-light.svg" alt="The Modelly loop: a scenario configures the model once; every tick the agents act, data is recorded and time advances; after the run the data is a DataFrame to visualize and analyze" width="860">
   </picture>
 </p>
 
