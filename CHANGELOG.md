@@ -7,6 +7,24 @@ versioning.
 
 ### Added
 
+- `modelly.discrete_space.CellIndex`: integer rows for the cells of any discrete space and
+  the sparse (CSR) adjacency built from their connections, with `counts` (per-cell totals),
+  `neighbor_sum` (one matrix-vector product), `random_neighbor` (a vectorised random walk)
+  and `to_layer`. `cell.index` is the row.
+- `modelly.discrete_space.Occupancy` and `claim`: who is in which cell from a row column,
+  by one sort per step, and a vectorised "each claimant takes one distinct member of its
+  cell" matching with the law of the shuffled sequential rule (tested).
+- `ColumnTable.thin`: binomial thinning of a count column, the cohort (super-individual)
+  form of per-individual survival. Assigning `table.<column>` now writes the live rows in
+  place, so `table.energy -= 1` is safe.
+- `modelly.experimental.continuous_space.pairs_within`, `difference_vectors` and
+  `move_all`: the neighbour relation as index pairs from one periodic KD-tree,
+  torus-corrected pair vectors, and a whole-population move.
+- `benchmarks/playbooks/`: five models written twice, for Mesa 2.3 and for Modelly, with a
+  runner that times both in their own environments, pinned and alternating, checks the
+  implementations agree by Welch's t-test over shared seeds and checks determinism.
+  `docs/vectorised_phases.md` states the equivalence arguments behind each vectorised phase
+  and the cohort compression.
 - `modelly.FastRandom`: a `random.Random` whose `randint`, `choice`, `shuffle` and `sample`
   make exactly the standard library's `getrandbits` calls with fewer Python calls; identical
   streams for a seed, verified by tests. `model.random` is one.
@@ -24,6 +42,8 @@ versioning.
 - Event scheduling and time advance live in `modelly.scheduling.HasSchedule`, mixed into
   `Model`, so `model.py` stays under its size limit.
 - A matplotlib frame no longer builds a weak set or allocates a numpy array per agent.
+- Grid construction writes cell connections directly (no per-connection method call or
+  cache clear on fresh cells): a 180x180 Moore grid builds in 0.11 s instead of 0.17 s.
 
 - The Mesa 2.3 comparison harness is no longer in the repository; `docs/performance.md`
   describes the evaluation method and keeps the measured numbers.

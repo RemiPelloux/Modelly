@@ -222,6 +222,57 @@ Measured and rejected on this workload: a `shuffle` that draws its random words 
 (it reproduces the permutation but leaves the stream in a different place for the next draw,
 and is 3x slower); a cheaper `Model` construction (it is 18 µs; 576 of them are 10 ms).
 
+### The playbooks: same model, each framework's own idiom
+
+The port above answers "what does identical code cost". The second question is what each
+framework lets a modeller write. `benchmarks/playbooks/` holds five models implemented twice,
+for Mesa 2.3 with per-agent methods on `MultiGrid`, `ContinuousSpace` and `NetworkGrid`, and
+for Modelly with `Column` state, `CellIndex` (integer rows for the cells of any discrete space
+plus their sparse adjacency), `Occupancy` / `claim`, `pairs_within` / `move_all` and
+`ColumnTable.thin`. The rules for a fair comparison, enforced by the runner:
+
+1. Same model: same rules, same synchronous phase order, same parameters, same graph and
+   initial positions where seeds can be shared; the Mesa side uses numpy where a Mesa modeller
+   would.
+2. Agreement in distribution, checked: every implementation runs the same seeds and each
+   summary statistic is compared with the Mesa reference by Welch's t-test (flagged below
+   0.01). The implementations draw their random numbers in different orders, so the outputs
+   differ run by run and must agree in law; `vectorised_phases.md` states why each vectorised
+   phase has the law of its per-agent loop.
+3. Determinism, checked: the first seed runs twice per implementation. (This check caught the
+   Mesa side being unseeded when the seed was passed positionally: Mesa 2.3 reads it from the
+   keyword arguments in `Model.__new__`.)
+4. CPU time of a fresh interpreter per run, build and steps timed separately, pinned to one
+   core, implementations alternating over three rounds, every round reported.
+
+Median CPU seconds of the steps at the large size on this machine:
+
+| Playbook | Agents | Mesa 2.3 | Modelly, cell lists | Modelly, columns | Speed-up |
+|---|---|---|---|---|---|
+| Grid epidemic, 60 steps | 20,000 | 10.5 s | 6.7 s | 0.10 s | 110x |
+| Predator-prey with grass, 200 steps | ~5,500 | 5.4 s | 5.0 s | 0.63 s | 8.5x |
+| Flocking, 50 steps | 4,000 | 30.9 s | | 0.61 s | 50x |
+| Virus on a network, 100 steps | 30,000 | 10.8 s | | 0.31 s | 35x |
+| Insect population, individuals, 120 days | ~26,000 | 6.9 s | | 1.47 s | 4.7x |
+| Insect population, cohorts | ~26,000 | 6.9 s | | 0.02 s | 330x |
+
+The "cell lists" column is the same model with Mesa's data structure, every cell holding the
+list of its agents, so movement and predation stay per-agent loops: 1.1 to 1.6x, consistent
+with the port. The gap opens when the cell becomes a column of rows: the random walk is one
+`random_neighbor` call over the grid's CSR adjacency, the exposure count a `bincount`, the
+predation a vectorised matching with the law of the shuffled sequential rule. Construction is
+reported separately (a 180x180 Moore grid builds in 0.11 s, a 30,000-node network in 0.4 s,
+against milliseconds for Mesa's lazy structures); the build+run speed-ups in the results are
+correspondingly lower (29x, 6.5x, 49x, 11x, 4.7x, 305x).
+
+The insect playbook is a stage-structured population under sterile releases, an original
+model with the dynamics of the medfly workload (thousands of eggs a day, stage-specific
+mortality, density-dependent larval survival). Agent creation is at parity, so the
+individual-level gap is the per-agent loop only (4.7x). The cohort variant represents every
+insect in the same (stage, age, sex) class as one row and thins it with a binomial draw; it
+has the same law as the individual model (the agreement table shows it) and runs in 20 ms. The machine was under heavy load
+during these rounds; absolute times vary by up to 2x between sessions, the ratios do not.
+
 ## Caches
 
 Two results are now reused instead of recomputed:
@@ -265,9 +316,10 @@ state on the roadmap, not more micro-tuning.
 
 These are the changes with the largest remaining upside. Each is a project, not a patch.
 
-1. **Vectorised movement on grids.** Columns and the phase helpers cover state; moving many
-   agents at once (a coordinate column plus a vectorised neighbourhood lookup) is the next step
-   that would take a grid model's per-agent loop out of Python.
+1. **Vectorised movement on grids** is in: a cell-row column plus `CellIndex.random_neighbor`
+   moves a whole population in one call, and `Occupancy` / `claim` answer the per-cell
+   questions a step still has. What remains is a visualisation path for agents that keep
+   their cell as a column rather than in the cell's list.
 2. **Shared-memory replications.** `workers=` runs replications in processes that each hold a
    full model; a shared column store would let a sweep over one large model fan out without
    copying it.
@@ -280,4 +332,5 @@ These are the changes with the largest remaining upside. Each is a project, not 
 ```bash
 python benchmarks/global_benchmark.py        # the four reference models, saves timings_N.pickle
 python benchmarks/compare_timings.py a.pickle b.pickle
+python benchmarks/playbooks/compare.py --core 5   # the five playbooks against Mesa 2.3
 ```

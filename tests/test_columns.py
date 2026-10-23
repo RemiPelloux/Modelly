@@ -226,3 +226,40 @@ def test_do_where_calls_the_masked_agents_and_tolerates_growth():
     assert table.do_where(mask, "spawn") == 3
     assert len(table) == 9
     assert len(model.agents) == 9
+
+
+class Cohort(Agent):
+    """A super-individual: one row standing for ``count`` identical insects."""
+
+    count = Column(int, default=0)
+
+
+def test_thin_draws_binomial_survivors_in_place():
+    """thin() replaces every count by Binomial(count, survival) and returns the view."""
+    model = Model(rng=7)
+    for _ in range(50):
+        cohort = Cohort(model)
+        cohort.count = 1000
+    table = model.columns[Cohort]
+    survivors = table.thin("count", 0.9)
+    assert survivors is not None and survivors.shape == (50,)
+    assert (survivors <= 1000).all() and (survivors >= 0).all()
+    assert abs(survivors.mean() - 900) < 15
+    assert table.count.tolist() == survivors.tolist()
+    assert table.thin("count", 0.0).sum() == 0
+    assert table.thin("count", 1.0).sum() == 0
+
+
+def test_assigning_a_table_column_writes_the_rows_in_place():
+    """table.col = values and table.col -= 1 update the column, never shadow it."""
+    model = Model(rng=1)
+    agents = [Wealthy(model) for _ in range(4)]
+    table = model.columns[Wealthy]
+    table.wealth -= 1
+    assert [a.wealth for a in agents] == [0, 0, 0, 0]
+    table.wealth = np.arange(4)
+    assert agents[3].wealth == 3
+    for _ in range(INITIAL_CAPACITY):
+        Wealthy(model)
+    table.wealth += 1
+    assert agents[3].wealth == 4

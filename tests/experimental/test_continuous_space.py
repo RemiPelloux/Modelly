@@ -5,7 +5,13 @@ import pytest
 
 from modelly import Model
 from modelly.agent import AgentSet
-from modelly.experimental.continuous_space import ContinuousSpace, ContinuousSpaceAgent
+from modelly.experimental.continuous_space import (
+    ContinuousSpace,
+    ContinuousSpaceAgent,
+    difference_vectors,
+    move_all,
+    pairs_within,
+)
 
 
 def test_continuous_space():
@@ -632,3 +638,28 @@ def test_neighbors_within_is_cached_until_positions_change():
     assert moved is not first and moved[agents[0]] == []
     ContinuousSpaceAgent(space, model).position = np.array([9.0, 8.5])
     assert len(space.neighbors_within(1.5)[agents[0]]) == 1
+
+
+def test_pairs_within_matches_neighbors_within_and_move_all_wraps():
+    """pairs_within is the pair form of neighbors_within; move_all writes every position."""
+    model = Model(rng=11)
+    space = ContinuousSpace([[0, 10], [0, 10]], torus=True, random=model.random)
+    for _ in range(40):
+        ContinuousSpaceAgent(space, model).position = model.rng.random(2) * 10
+    i, j = pairs_within(space, 2.0)
+    assert (i < j).all()
+    expected = {
+        (
+            min(a._modelly_index, b._modelly_index),
+            max(a._modelly_index, b._modelly_index),
+        )
+        for a, others in space.neighbors_within(2.0).items()
+        for b in others
+    }
+    assert set(zip(i.tolist(), j.tolist())) == expected
+    delta = difference_vectors(space, i, j)
+    assert (np.linalg.norm(delta, axis=1) <= 2.0 + 1e-9).all()
+
+    move_all(space, space.agent_positions + np.array([9.5, -0.5]))
+    assert (space.agent_positions >= 0).all() and (space.agent_positions < 10).all()
+    assert pairs_within(space, 2.0)[0].shape == i.shape

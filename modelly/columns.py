@@ -125,6 +125,18 @@ class ColumnTable:
             return data[name][: len(self.__dict__["_agents"])]
         raise AttributeError(f"{type(self).__name__} has no column {name!r}")
 
+    def __setattr__(self, name: str, value: Any) -> None:
+        """Assigning ``table.<column>`` writes the live rows in place.
+
+        That makes the augmented forms safe: ``table.energy -= 1`` reads the
+        view, subtracts, and writes the result back into the column.
+        """
+        data = self.__dict__.get("_data")
+        if data is not None and name in data:
+            data[name][: len(self.__dict__["_agents"])] = value
+            return
+        object.__setattr__(self, name, value)
+
     def where(self, mask: np.ndarray) -> AgentSet:
         """Return the agents whose row is True in ``mask`` as an AgentSet."""
         agents = self._agents
@@ -162,6 +174,20 @@ class ColumnTable:
         for agent in doomed:
             agent.remove()
         return len(doomed)
+
+    def thin(self, name: str, survival: float | np.ndarray) -> np.ndarray:
+        """Replace the counts in column ``name`` by Binomial(count, survival) draws.
+
+        For a row that stands for ``count`` identical individuals, each surviving
+        independently with probability ``survival``, the number left is
+        Binomial(count, survival): the sum of ``count`` independent Bernoulli
+        draws has exactly that law. One draw per cohort therefore reproduces the
+        individual-level model's survivor counts in distribution. Returns the
+        live-rows view of the column after the draw.
+        """
+        counts = self._data[name][: len(self._agents)]
+        counts[:] = self.rng.binomial(counts, survival)
+        return counts
 
     def to_dataframe(self) -> pd.DataFrame:
         """Copy the live rows into a DataFrame indexed by ``unique_id``."""
