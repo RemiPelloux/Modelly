@@ -130,3 +130,44 @@ def test_agents_by_type_keeps_empty_bucket():
     assert Prey in model.agent_types
     assert len(model.agents_by_type[Prey]) == 0
     assert len(model.agents_by_type[Predator]) == 3
+
+
+def test_inlined_registration_matches_register_agent():
+    """Agent.__init__ inlines Model.register_agent; a subclass override must still be honoured."""
+    from modelly import Agent  # noqa: PLC0415
+    from modelly.experimental.signals import ModelSignals  # noqa: PLC0415
+
+    seen = []
+
+    class Watching(Model):
+        def register_agent(self, agent):
+            seen.append(("add", agent))
+            super().register_agent(agent)
+
+        def deregister_agent(self, agent):
+            seen.append(("remove", agent))
+            super().deregister_agent(agent)
+
+    assert Model._default_registry is True
+    assert Watching._default_registry is False
+    watched = Watching(rng=1)
+    a = Agent(watched)
+    a.remove()
+    assert seen == [("add", a), ("remove", a)]
+
+    plain = Model(rng=1)
+    signals = []
+
+    def on_added(signal):  # handlers are held weakly, so keep named functions alive
+        signals.append(("add", signal.additional_kwargs["args"][0]))
+
+    def on_removed(signal):
+        signals.append(("remove", signal.additional_kwargs["args"][0]))
+
+    plain.observe("agents", ModelSignals.AGENT_ADDED, on_added)
+    plain.observe("agents", ModelSignals.AGENT_REMOVED, on_removed)
+    b = Agent(plain)
+    assert b.unique_id == 1 and b in plain.agents and b in plain.agents_by_type[Agent]
+    b.remove()
+    assert b not in plain.agents and len(plain.agents) == 0
+    assert signals == [("add", b), ("remove", b)]

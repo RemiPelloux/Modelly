@@ -37,6 +37,10 @@ class Agent[M: Model]:
 
     _datasets: ClassVar = set()
     _column_specs: ClassVar[dict[str, Column]] = {}
+    _column_row: int = -1  # instance attribute once the agent has a column row
+    # True when no class after Agent in the MRO defines __init__, so the
+    # cooperative super().__init__() would only reach object.__init__.
+    _plain_init: ClassVar[bool] = True
     _repr_excluded_fields: ClassVar[set[str]] = {
         "model",
         "current_action",
@@ -62,6 +66,8 @@ class Agent[M: Model]:
                 if isinstance(value, Column)
             )
         cls._column_specs = specs
+        after_agent = cls.__mro__[cls.__mro__.index(Agent) + 1 : -1]
+        cls._plain_init = not any("__init__" in vars(base) for base in after_agent)
 
     def __init__(self, model: M, *args, **kwargs) -> None:
         """Create a new agent.
@@ -77,13 +83,31 @@ class Agent[M: Model]:
         """
         if args or kwargs:
             super().__init__(*args, **kwargs)
-        else:
-            super().__init__()  # the common case, without packing empty arguments
+        elif not self._plain_init:
+            super().__init__()  # a cooperative base class needs the call
 
         self.model: M = model
-        self.unique_id = None
-        self._column_row = -1
-        self.model.register_agent(self)
+        if model._default_registry:
+            # Model.register_agent written out: an agent birth is the hottest
+            # path in lifecycle-heavy models and the call alone is a quarter of
+            # it. Kept in sync with Model.register_agent (tested).
+            model._all_agents[self] = None
+            self.unique_id = model.agent_id_counter
+            model.agent_id_counter += 1
+            try:
+                model._agents_by_type[type(self)][self] = None
+            except KeyError:
+                model._register_new_type(self)
+            if (
+                model._suppress
+                or model._batch_context is not None
+                or model.subscribers
+                or model._class_subscribers
+            ):
+                model._notify_agent_added(self)
+        else:
+            self.unique_id = None
+            model.register_agent(self)
         if self._column_specs:
             self.model.columns.register(self)
         if self._datasets:
@@ -94,8 +118,21 @@ class Agent[M: Model]:
         """Remove and delete the agent from the model."""
         # try/except rather than contextlib.suppress: the context manager costs
         # about 300 ns per call and this runs on every agent death.
-        try:  # noqa: SIM105
-            self.model.deregister_agent(self)
+        model = self.model
+        try:
+            if model._default_registry:
+                # Model.deregister_agent written out; see __init__.
+                del model._agents_by_type[type(self)][self]
+                del model._all_agents[self]
+                if (
+                    model._suppress
+                    or model._batch_context is not None
+                    or model.subscribers
+                    or model._class_subscribers
+                ):
+                    model._notify_agent_removed(self)
+            else:
+                model.deregister_agent(self)
         except KeyError:
             pass  # already removed
         if self._column_specs and self._column_row >= 0:
