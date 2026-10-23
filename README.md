@@ -38,7 +38,7 @@ say so in their docstrings. The current version is `modelly.__version__`, and wh
 release is in [CHANGELOG.md](CHANGELOG.md).
 
 ```bash
-pip install modelly-abm                                   # the package name on PyPI
+pip install git+https://github.com/RemiPelloux/Modelly.git  # not on PyPI yet: installs from GitHub
 python -c "import modelly; print(modelly.__version__)"   # the import name is modelly
 ```
 
@@ -119,7 +119,7 @@ To depend on Modelly from your own project, add it to `pyproject.toml` (the dist
 `modelly-abm`, the import is `modelly`):
 
 ```toml
-dependencies = ["modelly-abm"]
+dependencies = ["modelly-abm @ git+https://github.com/RemiPelloux/Modelly.git"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is

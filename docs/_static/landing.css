@@ -83,7 +83,8 @@ body:has(.ml-landing) { overflow-x: clip; }
   margin-top: 1.75rem; display: inline-flex; align-items: center; gap: 0.9rem;
   font-family: var(--pst-font-family-monospace); font-size: 0.95rem; color: #dfe6f3;
   background: #17243e; border: 1px solid var(--ml-night-line); border-radius: 0.6rem;
-  padding: 0.65rem 0.65rem 0.65rem 1rem; cursor: pointer;
+  padding: 0.65rem 0.65rem 0.65rem 1rem; cursor: pointer; max-width: 100%;
+  text-align: left; overflow-wrap: anywhere;
 }
 .ml-pip span { color: var(--ml-r); }
 .ml-pip em { font-style: normal; font-family: var(--pst-font-family-base); font-size: 0.8rem;
