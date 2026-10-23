@@ -3,7 +3,7 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
-## 1.6.0 - 2026-10-23
+## 1.5.2 - 2026-10-23
 
 ### Added
 
@@ -19,7 +19,7 @@ versioning.
   3.12 to 3.15, plus a pure wheel and the sdist. `scripts/build-native.sh` builds it in place.
 - `modelly.CohortTable`: a counted population (one row per state, no agent objects) with
   binomial `thin`, `split` and `draw`, `compact`, `merge`, `totals_by` and `to_dataframe`.
-  The insect playbook's cohort variant now uses it: 285x faster than the individual Mesa model.
+  The insect playbook's cohort variant now uses it: 213x faster than the individual Mesa model.
 - `modelly.run_batch` and `modelly.run_grid`: parallel runs with results in task order (the
   output equals the sequential loop's), per-run seeds from `SeedSequence.spawn`, notebook
   functions and closures supported on Linux, `MODELLY_WORKERS` to set the pool size.

@@ -132,7 +132,7 @@ html_theme = "pydata_sphinx_theme"
 # further.  For a list of options available for each theme, see the
 # documentation.
 # One version is published, so the navbar shows it as a pill instead of a switcher;
-# switcher.json stays for the release workflow that maintains it.
+# switcher.json lists that one version; add entries only when versioned docs are deployed.
 html_theme_options = {
     "logo": {"text": "Modelly", "alt_text": "Modelly home"},
     "navbar_start": ["navbar-logo", "version-pill"],

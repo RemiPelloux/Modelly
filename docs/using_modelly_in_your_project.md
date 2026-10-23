@@ -32,6 +32,18 @@ viz = ["modelly[viz] @ git+https://github.com/RemiPelloux/Modelly.git@v1.0.0"]
 
 Then `pip install -e .` (or `pip install -e ".[viz]"` for the browser UI).
 
+Installing from git (or from the source distribution) compiles Modelly's random core when a C
+compiler is available, and falls back to pure Python otherwise; the platform wheels for Linux
+and macOS ship it compiled. Check which one you have:
+
+```python
+import modelly.rng
+
+print(modelly.rng.NATIVE)  # True: randint, choice, shuffle and sample run in C
+```
+
+The results are the same either way, seed for seed; only the speed differs.
+
 ## 2. Lay out the project
 
 One model per package, with the three Modelly pieces in three files:
@@ -262,6 +274,31 @@ scenarios = [
 store = run_scenarios(scenarios, RunConfiguration(Epidemic, until=120), workers=8)
 ```
 
+For a plain factorial design, `run_grid` is the shortest path: it builds every combination
+times the replicates, gives each run its own seed, runs them in parallel and returns a
+DataFrame in design order, identical whatever the number of workers.
+
+```python
+from modelly import run_grid
+
+
+def peak(task):
+    scenario = EpidemicScenario(infection_chance=task["chance"], rng=task["seed"])
+    model = Epidemic(scenario)
+    model.run_model()
+    return {"peak": model.datacollector.get_model_vars_dataframe()["infected"].max()}
+
+
+if (
+    __name__ == "__main__"
+):  # needed on macOS and Windows, where workers re-import the script
+    results = run_grid(peak, {"chance": [0.1, 0.2, 0.3]}, replicates=20, seed=1)
+    print(results.groupby("chance")["peak"].describe())
+```
+
+On Linux the workers are forked, so a function defined in a notebook works too.
+`MODELLY_WORKERS` sets the pool size; `workers=1` runs inline.
+
 ## 9. Test it
 
 `tests/test_model.py`. Seeds are part of the API, so tests can assert exact numbers:
@@ -295,6 +332,12 @@ def test_epidemic_ends():
 - Use `model.agents.shuffle_do("step")` rather than your own loop: it shuffles once and skips
   agents removed earlier in the same tick.
 - `cell.neighborhood` is cached per cell; call it freely.
+- If identical individuals face identical probabilities (an insect's stage, age and sex), keep
+  them as counts in a `CohortTable`: survival becomes `cohorts.thin(s)`, one binomial draw per
+  row instead of one draw per individual, with the same law. The stage-structured playbook runs
+  hundreds of times faster this way.
+- A column attribute read inside `step` costs about 27 ns against 6 ns for a plain attribute;
+  keep scratch values that only the agent reads as plain attributes.
 - Record with attribute names (`"state"`) rather than lambdas when you can; they are gathered in C.
 - Profile before optimising: `python -m cProfile -s tottime scripts/run.py | head -30`. In a healthy
   model, the top entries are your agents' own methods.
