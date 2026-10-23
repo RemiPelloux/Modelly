@@ -106,10 +106,10 @@
 
   function copyInstall(button) {
     button.addEventListener("click", async () => {
-      const hint = button.querySelector("em");
+      const hint = button.querySelector("em"), icon = hint.innerHTML;
       try { await navigator.clipboard.writeText(button.dataset.copy); hint.textContent = "Copied"; }
       catch (err) { hint.textContent = "Select and copy"; }
-      setTimeout(() => { hint.textContent = "Copy"; }, 1800);
+      setTimeout(() => { hint.innerHTML = icon; }, 1800);
     });
   }
 
