@@ -20,7 +20,7 @@ myst:
 <a class="ml-btn ml-btn-primary" href="tutorials/0_first_model.html">Build your first model</a>
 <a class="ml-btn ml-btn-ghost" href="#ml-bench-title">See the benchmarks</a>
 </div>
-<button type="button" class="ml-pip" data-copy="pip install git+https://github.com/RemiPelloux/Modelly.git" aria-label="Copy the install command"><span>$</span> pip install git+https://github.com/RemiPelloux/Modelly.git <em>Copy</em></button>
+<button type="button" class="ml-pip" data-copy="pip install git+https://github.com/RemiPelloux/Modelly.git" aria-label="Copy the install command"><span>$</span><code title="pip install git+https://github.com/RemiPelloux/Modelly.git">pip install git+https://github.com/RemiPelloux/Modelly.git</code><em><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 3.5V3a1.5 1.5 0 0 0-1.5-1.5h-6A1.5 1.5 0 0 0 2 3v6a1.5 1.5 0 0 0 1.5 1.5H4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></em></button>
 </div>
 <figure class="ml-lab" aria-label="A live epidemic simulation">
 <span class="ml-hint">Click or drag to infect cells</span>
