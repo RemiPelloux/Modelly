@@ -20,7 +20,7 @@ myst:
 <a class="ml-btn ml-btn-primary" href="tutorials/0_first_model.html">Build your first model</a>
 <a class="ml-btn ml-btn-ghost" href="#ml-bench-title">See the benchmarks</a>
 </div>
-<button type="button" class="ml-pip" data-copy="pip install modelly-abm" aria-label="Copy the install command"><span>$</span> pip install modelly-abm <em>Copy</em></button>
+<button type="button" class="ml-pip" data-copy="pip install git+https://github.com/RemiPelloux/Modelly.git" aria-label="Copy the install command"><span>$</span> pip install git+https://github.com/RemiPelloux/Modelly.git <em>Copy</em></button>
 </div>
 <figure class="ml-lab" aria-label="A live epidemic simulation">
 <span class="ml-hint">Click or drag to infect cells</span>
