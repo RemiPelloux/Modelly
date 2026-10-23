@@ -144,23 +144,36 @@ What remains per agent is its own numpy arithmetic on a handful of neighbours.
 ## Agent lifecycle
 
 Models with high birth and death rates (an insect population, an epidemic with recovery and
-reinfection) spend much of their step creating and removing agents, and Modelly does more per
-birth than a plain object: it registers the agent in two ordered sets, assigns its id, gives it
-a column row when its class declares columns, enrols it in datasets, and emits a signal.
-Measured as `Agent(model)` followed by `agent.remove()`:
+reinfection) spend much of their step creating and removing agents, so the framework's share
+of such a model is the lifecycle path. Measured as a bare `Agent(model)` followed by
+`agent.remove()`, and as the notebook agent below inside its real model:
 
-| | Birth + death |
-|---|---|
-| Plain object into and out of a dict (the floor) | 74 ns |
-| Modelly before | 861 ns |
-| Modelly after | 549 ns |
+| Birth + death | Mesa 2.3 | Modelly, first audit | Modelly now |
+|---|---|---|---|
+| bare agent, bare model | 372 ns | 861 ns | 421 ns |
+| `agent in model.agents` (liveness check) | 35 ns | 160 ns | 35 ns |
 
-What changed: the `emit` wrapper checks for listeners with two dict lookups written inline and
-calls `notify` only when batching, suppressing, or a subscriber exists; `remove()` uses a
-`try/except` instead of a `contextlib.suppress` context manager (about 300 ns); the model
-writes its registry dicts directly instead of through two method calls; empty dataset loops are
-skipped; the constructor avoids packing empty arguments. `Model.time` is a plain attribute whose
-CHANGED signal is emitted once per time advance.
+What changed, in order: the `emit` decorator's wrapper checks for listeners inline and calls
+`notify` only when someone can hear; `remove()` uses `try/except` instead of a
+`contextlib.suppress` context manager (about 300 ns); the strong registry is a `dict` subclass,
+so membership, length and the registry writes run in C; `Agent.__init__` and `Agent.remove`
+inline the registration when the model keeps the default `register_agent` and
+`deregister_agent` (a flag computed per class, with a test that an override is still honoured);
+the cooperative `super().__init__()` is skipped for plain subclasses; the listener test is four
+attribute reads with no dict lookups. A three-day bisect at 2,800 agents on the medfly model
+below puts the current path at 11.4 ms against 11.7 ms for a stripped-down path with none of
+Modelly's features and 11.2 ms for Mesa 2.3: the lifecycle is at parity.
+
+### FastRandom
+
+A quarter to a third of an agent-based model's time is the standard library's `random`, whose
+`randint`, `choice`, `shuffle` and `sample` are Python loops calling `_randbelow` per draw.
+`modelly.FastRandom` reimplements the four with the rejection loop written inline, making the
+same `getrandbits` calls in the same order, so a seed gives exactly the same numbers as
+`random.Random` (tested across seeds, sizes and both `sample` code paths). `model.random` is a
+`FastRandom`. It is a small win: `shuffle` and `sample` are 18 to 20% faster, `randint` and
+`choice` within noise, because the per-draw cost is the C call and the loop, not the method
+dispatch.
 
 ### How we evaluate against other frameworks
 
@@ -173,24 +186,41 @@ decided on a real model. The method we use, and recommend for any comparison:
 2. **Prove equivalence before timing.** Run both to completion and compare every output table
    by checksum. Only bit-identical outputs make the timings comparable; a port that changes
    the activation order or the random stream is a different model.
-3. **Time cell by cell, alternating.** Execute both notebooks headlessly with per-cell wall
-   times, alternate the two frameworks across at least three rounds on the same machine, and
-   keep the best time of each. Single runs on a shared machine swing by 2x.
-4. **Report the whole notebook and the heaviest cell.** The experiment cell is what the
-   researcher waits for; the rest shows the fixed costs.
+3. **Time CPU, pinned, alternating.** Wall-clock on a shared machine swings by 2x; CPU time of
+   the experiment cell, in-process, pinned to one core, with the two frameworks alternating
+   for at least three rounds, is stable to a few percent. Keep every round, not only the best.
+4. **Profile both and compare shares.** The profiler inflates call-heavy code, so compare each
+   function's share of its own run, and attribute the remainder by bisection: swap one piece
+   for a minimal stand-in and measure again.
 
-Applied to a medfly population model (21 cells, a 576-season factorial experiment) written for
-Mesa 2.3, with bit-identical output CSVs, the best of three alternating rounds was:
+Applied to a medfly population model written for Mesa 2.3 (21 cells, a 576-season factorial
+experiment, bit-identical output CSVs), the comparison went through two stages.
 
-| | Mesa 2.3 | Modelly |
-|---|---|---|
-| Whole notebook | 27.7 s | 24.5 s |
-| Factorial experiment, 576 seasons | 17.2 s | 14.9 s |
+**Stage one: the model's own code.** The profile put 68% of the time in the notebook's model
+code, 25% in `random` and 7% in Modelly. Three changes to the model, identical in both
+notebooks and preserving the random stream (an early exit in the fruit status update placed
+after its random draw, `len(self.slots) < capacity` instead of two property hops, and
+re-filtering the free-fruit pool only on days when fruits were removed) cut the experiment
+cell by 3x on both frameworks: Modelly 30 s to 9.4 s, Mesa 26 s to 7.8 s, same checksums.
 
-Read it as parity to a modest advantage, not as a precise ratio. The remaining per-agent cost
-on that workload is the liveness check `agent in model.agents` (a property and a Python-level
-`__contains__`, about 140 ns) and the birth and death path above. The notebook and its harness
-are not part of this repository.
+**Stage two: the framework.** On the optimised model, three pinned alternating rounds of the
+experiment cell:
+
+| Round | Mesa 2.3 | Modelly | Modelly, `FastRandom` in the port's seeding line |
+|---|---|---|---|
+| 1 | 13.39 s | 14.25 s | 13.98 s |
+| 2 | 13.29 s | 13.97 s | 13.84 s |
+| 3 | 13.47 s | 14.11 s | 13.88 s |
+
+Modelly is 3 to 4% behind with the port's stdlib generator and 3% behind with its own, with
+every per-agent primitive measured at or below Mesa's cost (birth and death, liveness check,
+`random` and `time` reads), construction and data collection equal, and a three-day step at
+peak population at parity. The remainder is diffuse and below what this machine can resolve.
+We call that parity, not a win, and the comparison harness stays outside the repository.
+
+Measured and rejected on this workload: a `shuffle` that draws its random words in one call
+(it reproduces the permutation but leaves the stream in a different place for the next draw,
+and is 3x slower); a cheaper `Model` construction (it is 18 µs; 576 of them are 10 ms).
 
 ## Caches
 
