@@ -17,7 +17,7 @@ with ``ColumnTable.draw`` into a vectorised step phase. See
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -25,8 +25,10 @@ import numpy as np
 if TYPE_CHECKING:
     from scipy.sparse import csr_matrix
 
+    from modelly.agent import Agent
     from modelly.discrete_space.cell import Cell
     from modelly.discrete_space.discrete_space import DiscreteSpace
+    from modelly.model import Model
 
 
 class CellIndex:
@@ -46,6 +48,35 @@ class CellIndex:
         self.n = len(cells)
         self.dimensions = tuple(getattr(space, "dimensions", ()))
         self._adjacency: csr_matrix | None = None
+        # agent class -> (model, column name) for agents placed by a row column
+        self._tracked: dict[type, tuple[Model, str]] = {}
+        space._cell_index = self
+
+    def track(self, model: Model, agent_class: type, column: str = "row") -> None:
+        """Declare that ``agent_class`` keeps its cell as a row ``column``.
+
+        Such agents are in no cell's agent list; tracking them makes the space
+        list them (``space.agents``) and lets the visualisation place them at
+        ``index.cells[agent.<column>]``.
+        """
+        self._tracked[agent_class] = (model, column)
+
+    def tracked_agents(self) -> Iterator[Agent]:
+        """The live agents of every tracked class, in table order."""
+        for agent_class, (model, _) in self._tracked.items():
+            if agent_class in model.columns:
+                yield from model.columns[agent_class].agents
+
+    def cell_of(self, agent: Agent) -> Cell:
+        """The cell a tracked agent occupies, from its row column."""
+        try:
+            _, column = self._tracked[type(agent)]
+        except KeyError as e:
+            raise ValueError(
+                f"{type(agent).__name__} has no cell and is not tracked; call "
+                "CellIndex.track(model, agent_class, column) for row-placed agents."
+            ) from e
+        return self.cells[getattr(agent, column)]
 
     def __len__(self) -> int:
         """Return the number of cells."""

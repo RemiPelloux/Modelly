@@ -39,7 +39,8 @@ def test_column_specs_collected_in_mro_order():
     assert list(Wealthy._column_specs) == ["wealth", "score"]
     assert list(Richer._column_specs) == ["wealth", "score", "bonus"]
     assert Plain._column_specs == {}
-    assert Wealthy.wealth is Wealthy._column_specs["wealth"]
+    assert Wealthy.column_specs()["wealth"] is Wealthy._column_specs["wealth"]
+    assert isinstance(Wealthy.wealth, property)
 
 
 def test_agent_reads_and_writes_its_row():
@@ -171,8 +172,9 @@ def test_repr_hides_column_bookkeeping():
     model = Model(rng=1)
     a = Wealthy(model)
     assert "_column" not in repr(a)
-    assert repr(Wealthy.wealth) == "Column(int64, default=1)"
-    assert np.dtype(int) == Wealthy.wealth.dtype
+    assert repr(Wealthy.column_specs()["wealth"]) == "Column(int64, default=1)"
+    assert Wealthy.wealth.__doc__ == "Column(int64, default=1)"
+    assert np.dtype(int) == Wealthy.column_specs()["wealth"].dtype
 
 
 def test_remove_where_removes_masked_agents():
@@ -263,3 +265,77 @@ def test_assigning_a_table_column_writes_the_rows_in_place():
         Wealthy(model)
     table.wealth += 1
     assert agents[3].wealth == 4
+
+
+class Mixed(Agent):
+    """Columns of every kind a memoryview can and cannot index."""
+
+    count = Column(np.int8, default=0)
+    alive = Column(bool, default=True)
+    label = Column("U8", default="x")
+    z = Column(complex, default=0)
+
+
+def test_reads_are_python_scalars_and_writes_keep_numpy_semantics():
+    """A read returns int, float or bool; a write accepts what numpy accepts."""
+    model = Model(rng=1)
+    a = Wealthy(model, wealth=4)
+    assert type(a.wealth) is int and type(a.score) is float
+    a.wealth += 1
+    a.wealth = np.int64(10)
+    a.wealth = 7.9  # numpy truncates a float into an int column
+    assert a.wealth == 7
+    assert model.columns[Wealthy].wealth.tolist() == [7]
+    a.score += 0.25
+    assert a.score == pytest.approx(0.75)
+
+
+def test_dtypes_without_a_scalar_memoryview_fall_back_to_numpy():
+    """Strings, complex and bools all read and write through their row."""
+    model = Model(rng=1)
+    m = Mixed(model)
+    assert m.alive is True and type(m.alive) is bool
+    m.alive = False
+    m.label = "hello"
+    m.z = 1 + 2j
+    m.count += 3
+    table = model.columns[Mixed]
+    assert table.alive.tolist() == [False]
+    assert table.label.tolist() == ["hello"]
+    assert table.z.tolist() == [1 + 2j]
+    assert m.count == 3
+    with pytest.raises(OverflowError):
+        m.count = 1000  # out of int8 range, as with numpy
+
+
+def test_views_follow_growth_and_survive_pickling():
+    """Rows stay correct after the arrays grow, and after a pickle round trip."""
+    model = Model(rng=1)
+    agents = [Wealthy(model, wealth=i) for i in range(INITIAL_CAPACITY * 3)]
+    agents[-1].wealth += 100
+    assert agents[-1].wealth == INITIAL_CAPACITY * 3 - 1 + 100
+    assert all(a.wealth == i for i, a in enumerate(agents[:-1]))
+    clone = pickle.loads(pickle.dumps(model))  # noqa: S301
+    moved = clone.columns[Wealthy].agents[5]
+    moved.wealth += 1
+    assert clone.columns[Wealthy].wealth[5] == 6
+
+
+class WealthMixin:
+    """A plain mixin that declares a column."""
+
+    savings = Column(float, default=2.0)
+
+
+class Saver(WealthMixin, Richer):
+    """Columns from a mixin and from an agent base."""
+
+
+def test_columns_from_mixins_and_bases_all_get_rows():
+    """Inherited and mixin columns are collected once each, in MRO order."""
+    assert list(Saver.column_specs()) == ["wealth", "score", "bonus", "savings"]
+    model = Model(rng=1)
+    s = Saver(model)
+    s.savings += 1.5
+    s.bonus += 1
+    assert (s.wealth, s.bonus, s.savings) == (1, 4, 3.5)
