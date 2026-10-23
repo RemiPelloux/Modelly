@@ -191,6 +191,30 @@ Every change makes the same `getrandbits` calls in the same order; a test shuffl
 length from 0 to 139 and lengths around each power of two and compares with the standard
 library element for element, and then compares the next draw.
 
+**The compiled core (1.6.0).** Pure Python had nothing left to remove: what remained of a draw
+was the Python function call around a C call. `modelly/_native/fastrng.c` implements
+`randint`, `choice`, `shuffle`, `sample` and `_randbelow` in C as "fastcall" methods (the
+cheapest call CPython has). The type extends `_random.Random` and generates words from the same
+Mersenne Twister state the base class uses, so `random()`, `gauss`, `getrandbits`, `seed` and
+`getstate` from the standard library and the compiled methods consume one stream exactly as
+`random.Random` does; the stdlib's `sample` set-size rule and both of its code paths are
+reproduced draw for draw. Anything outside the fast paths (ranges of 2³² or more, non-int
+arguments, sequences that are not lists or tuples, `counts=`) goes to the standard library's
+own code, which reads the same state. At import a self-test compares a mixed sequence of draws
+with `random.Random`; on any mismatch, on free-threaded builds, without a compiler, or with
+`MODELLY_PURE_PYTHON=1`, `FastRandom` is the pure-Python `PyFastRandom` above. Per call:
+
+| Draw | `random.Random` | `PyFastRandom` | compiled `FastRandom` |
+|---|---|---|---|
+| `randint(6, 11)` | 193 ns | 185 ns | 59 ns |
+| `choice(list of 3,000)` | 190 ns | 168 ns | 72 ns |
+| `shuffle(3,000)`, per element | 206 ns | 156 ns | 38 ns |
+
+Assembly would not beat this: generating a word is 2 to 3 ns of C that compilers already turn
+into near-optimal code, and the rest is the interpreter's call, which no language can avoid.
+Platform wheels carry the compiled module (Linux x86-64 and ARM, macOS); other platforms
+install the pure wheel.
+
 ### How we evaluate against other frameworks
 
 Micro-benchmarks say where time goes; whether a framework is faster for a researcher is
@@ -266,6 +290,15 @@ collector). The win depends on Modelly's generator: with the port's seeding line
 `random.Random(seed)`, the same instrument puts Modelly 1.5 to 2% behind, mostly collector
 timing. Using `FastRandom` there is fair in the sense this page uses: it is `model.random`'s
 own type, and it reproduces the identical stream, so every output is bit-identical.
+
+With the compiled core (1.6.0) the same paired instrument puts Modelly 12% ahead of Mesa 2.3
+on this notebook, same model code and same CSV in every chunk:
+
+| Paired run | Mesa 2.3 | Modelly 1.6.0 | Modelly / Mesa | median chunk |
+|---|---|---|---|---|
+| 1 | 12.97 s | 11.47 s | 0.884 | 0.829 |
+| 2 | 11.37 s | 10.03 s | 0.882 | 0.842 |
+| 3 | 11.08 s | 9.71 s | 0.877 | 0.825 |
 
 Measured and rejected on this workload: a `shuffle` that draws its random words in one call
 (it reproduces the permutation but leaves the stream in a different place for the next draw,

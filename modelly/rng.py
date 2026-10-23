@@ -1,5 +1,11 @@
 """A faster ``random.Random`` with the standard library's exact streams.
 
+``FastRandom`` is a compiled core (``modelly._native.fastrng``, C on CPython's own
+Mersenne Twister state) when it is built for this interpreter and passes a
+stream self-test at import, and the pure-Python ``PyFastRandom`` otherwise.
+``MODELLY_PURE_PYTHON=1`` forces the Python version. Both give, for a seed,
+exactly the numbers ``random.Random`` gives.
+
 ``random.Random`` implements ``randint``, ``choice``, ``shuffle`` and ``sample``
 in Python, and each draw goes through ``_randbelow`` as a separate method
 call plus argument validation. In an agent-based model those four calls run
@@ -11,6 +17,7 @@ same order, so for a given seed it produces exactly the same numbers as
 
 from __future__ import annotations
 
+import os
 import random
 from collections.abc import MutableSequence, Sequence
 from math import ceil, log
@@ -29,8 +36,11 @@ _SEQUENCE_TYPES = frozenset((list, tuple, range))
 SEGMENTED_SHUFFLE_MIN = 64
 
 
-class FastRandom(random.Random):
-    """``random.Random`` with the hot draws inlined; identical streams."""
+class PyFastRandom(random.Random):
+    """``random.Random`` with the hot draws inlined in Python; identical streams.
+
+    The fallback for ``FastRandom`` where the compiled core is unavailable.
+    """
 
     def randint(self, a: int, b: int) -> int:
         """Return a random integer in [a, b], like ``random.randint``."""
@@ -135,3 +145,61 @@ class FastRandom(random.Random):
             selected.add(j)
             result[i] = population[j]
         return result
+
+
+def _matches_stdlib(cls: type) -> bool:
+    """Whether ``cls`` reproduces ``random.Random`` draw for draw on a mixed sequence."""
+    reference, candidate = random.Random(20261023), cls(20261023)
+    items = list(range(3000))
+    for step in range(400):
+        size = step % 97
+        left, right = list(range(size)), list(range(size))
+        reference.shuffle(left)
+        candidate.shuffle(right)
+        draws = (
+            (reference.randint(0, step + 5), candidate.randint(0, step + 5)),
+            (reference.choice(items), candidate.choice(items)),
+            (reference.sample(items, step % 9), candidate.sample(items, step % 9)),
+            (reference.random(), candidate.random()),
+            (left, right),
+        )
+        if any(a != b for a, b in draws):
+            return False
+    return reference.getstate() == candidate.getstate()
+
+
+def _load_native() -> Any:
+    """The compiled core module, or None when absent, disabled or not exact."""
+    if os.environ.get("MODELLY_PURE_PYTHON"):
+        return None
+    try:
+        from modelly._native import fastrng  # noqa: PLC0415 - optional extension
+    except ImportError:
+        return None
+    fastrng.set_fallbacks(
+        random.Random.randint,
+        random.Random.choice,
+        random.Random.shuffle,
+        random.Random._randbelow_with_getrandbits,
+        random.Random.sample,
+    )
+    return fastrng
+
+
+_fastrng = _load_native()
+
+if _fastrng is not None:
+
+    class FastRandom(_fastrng.Core, random.Random):
+        """``random.Random`` with its hot draws in C; identical streams.
+
+        ``randint``, ``choice``, ``shuffle``, ``sample`` and ``_randbelow`` run in
+        C on the same Mersenne Twister state as the rest of ``random.Random``.
+        """
+
+    if not _matches_stdlib(FastRandom):
+        FastRandom = PyFastRandom  # type: ignore[misc]
+else:
+    FastRandom = PyFastRandom  # type: ignore[misc]
+
+NATIVE: bool = FastRandom is not PyFastRandom
