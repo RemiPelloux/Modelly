@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://codecov.io/gh/RemiPelloux/Modelly"><img src="https://codecov.io/gh/RemiPelloux/Modelly/branch/main/graph/badge.svg" alt="coverage"></a>
+  <a href="#development"><img src="docs/images/badges/coverage.svg" alt="coverage"></a>
   <a href="https://pypi.org/project/modelly-abm/"><img src="https://img.shields.io/pypi/v/modelly-abm?color=0F766E&label=pypi" alt="PyPI version"></a>
   <img src="https://img.shields.io/badge/python-3.12%2B-3B82F6" alt="python 3.12+">
   <img src="https://img.shields.io/badge/ruff-linted-261230" alt="ruff">
@@ -551,6 +551,9 @@ bash scripts/ci-local.sh          # lint, format, tests, size audit: the same ga
 bash scripts/ci-local.sh --list   # stage names, run a subset with: ci-local.sh lint test
 bash scripts/build-native.sh      # compile modelly/_native in place; MODELLY_PURE_PYTHON=1 forces the Python twins
 ```
+
+The coverage badge at the top of this page is produced by that gate: the test stage measures
+coverage and rewrites `docs/images/badges/coverage.svg`, so commit the badge with your change.
 
 Code discipline is written down in [pelloux-guidelines.md](pelloux-guidelines.md): small files,
 short functions, surgical changes, conventional commits. `scripts/audit-pelloux.sh` enforces the

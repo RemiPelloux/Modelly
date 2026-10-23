@@ -7,7 +7,9 @@
 #
 # Uses .venv/bin when it exists, otherwise python3 and ruff from PATH.
 # tests/viz and tests/examples need the optional solara extra and
-# are skipped here; the hosted build workflow still runs them.
+# are skipped when it is missing; the hosted build workflow always runs them.
+# The test stage rewrites docs/images/badges/coverage.svg: commit it with the
+# change.
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -22,12 +24,19 @@ else
 fi
 
 STAGES=(lint format test audit)
+# The test stage measures coverage and refreshes the README badge from it.
+BADGE=docs/images/badges/coverage.svg
+OPTIONAL_SKIPS=()
+if ! "$PYTHON" -c "import solara" 2>/dev/null; then
+  OPTIONAL_SKIPS=(--ignore=tests/viz --ignore=tests/examples)
+fi
 
 run_stage() {
   case "$1" in
     lint)   "$RUFF" check . ;;
     format) "$RUFF" format --check . ;;
-    test)   "$PYTHON" -m pytest -q --ignore=tests/viz --ignore=tests/examples ;;
+    test)   "$PYTHON" -m pytest -q -p pytest_cov --cov --cov-report=xml ${OPTIONAL_SKIPS[@]+"${OPTIONAL_SKIPS[@]}"} \
+              && "$PYTHON" scripts/coverage_badge.py coverage.xml "$BADGE" ;;
     audit)  bash scripts/audit-pelloux.sh ;;
   esac
 }
