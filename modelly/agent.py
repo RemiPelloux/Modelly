@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from modelly.model import Model
 
 from modelly.agentset import AgentSet, _resolve_per_agent_values
+from modelly.column_access import collect_column_specs, install_column_properties
 from modelly.columns import Column
 
 
@@ -59,15 +60,11 @@ class Agent[M: Model]:
         # and ensure the retrieved dataset belongs to the same
         # model instance as the agent
         cls._datasets = set()
-        # Columns declared on this class or inherited from a base, in MRO order.
-        specs: dict[str, Column] = {}
-        for base in reversed(cls.__mro__):
-            specs.update(
-                (name, value)
-                for name, value in vars(base).items()
-                if isinstance(value, Column)
-            )
+        # Columns declared on this class or inherited, in MRO order; each one is
+        # replaced on the class by a fast property (see modelly.column_access).
+        specs = collect_column_specs(cls)
         cls._column_specs = specs
+        install_column_properties(cls, specs)
         after_agent = cls.__mro__[cls.__mro__.index(Agent) + 1 : -1]
         cls._plain_init = not any("__init__" in vars(base) for base in after_agent)
         cls._extra_hooks = bool(specs)
@@ -109,6 +106,15 @@ class Agent[M: Model]:
                 model.columns.register(self)
             for dataset in self._datasets:
                 model.data_registry[dataset].add_agent(self)
+
+    @classmethod
+    def column_specs(cls) -> dict[str, Column]:
+        """The ``Column`` declarations of this class (name to column), in table order.
+
+        On the class, a column attribute is the fast property that reads the
+        agent's row; this returns the declarations themselves (dtype, default).
+        """
+        return dict(cls._column_specs)
 
     def remove(self) -> None:
         """Remove and delete the agent from the model."""

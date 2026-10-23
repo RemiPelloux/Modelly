@@ -16,7 +16,9 @@ while the model gets a zero-copy view of every agent's value at once::
 Rows are in insertion order; removing an agent moves the last row into the
 freed slot, so a view is valid until the next add or remove. Use columns for
 the attributes you aggregate, filter, record or update in bulk; a plain
-attribute is still the cheapest thing to read inside ``step``.
+attribute is still the cheapest thing to read inside ``step``. On the class a
+column is a fast property (``modelly.column_access``); its declaration is in
+``AgentClass.column_specs()``.
 """
 
 from __future__ import annotations
@@ -28,6 +30,7 @@ import numpy as np
 import pandas as pd
 
 from modelly.agentset import AgentSet
+from modelly.column_access import fast_view
 
 if TYPE_CHECKING:
     from modelly.agent import Agent
@@ -94,6 +97,20 @@ class ColumnTable:
                 for name, spec in specs.items()
             },
         }
+        self._refresh_views()
+
+    def _refresh_views(self) -> None:
+        """One fast view per column, in specs order, for per-agent access."""
+        self.__dict__["_views"] = [fast_view(self._data[name]) for name in self._specs]
+
+    def __getstate__(self) -> dict:
+        """Drop the memoryviews, which do not pickle."""
+        return {k: v for k, v in self.__dict__.items() if k != "_views"}
+
+    def __setstate__(self, state: dict) -> None:
+        """Restore the arrays and rebuild the views."""
+        self.__dict__.update(state)
+        self._refresh_views()
 
     def __len__(self) -> int:
         """Return the number of live rows."""
@@ -229,6 +246,7 @@ class ColumnTable:
             grown = np.full(capacity, default, dtype=arr.dtype)
             grown[:old_capacity] = arr
             self._data[name] = grown
+        self._refresh_views()
 
     def __repr__(self) -> str:
         """Return the row count and column names."""

@@ -40,7 +40,14 @@ class AbstractRenderer(ABC):
         if isinstance(space, DiscreteSpace):
             # Avoid Cell.position: it allocates a numpy array per call, and this
             # runs once per agent per frame. The coordinate tuple plots the same.
-            cell = agent.cell
+            cell = getattr(agent, "cell", None)
+            if cell is None:  # placed by a row column (CellIndex.track)
+                index = space._cell_index
+                if index is None:
+                    raise ValueError(
+                        f"{type(agent).__name__} has no cell in this space"
+                    )
+                cell = index.cell_of(agent)
             position = cell._position
             return cell.coordinate if position is None else position
 

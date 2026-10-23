@@ -270,7 +270,7 @@ same, and attribute reporters on a column are recorded straight from the array. 
 | Mean wealth | 0.47 ms | 0.009 ms |
 | Decrement every `wealth > 5` | 0.15 ms | 0.004 ms |
 | `DataCollector.collect`, one reporter | 0.95 ms | 0.46 ms |
-| One `agent.wealth` read inside `step` | 30 ns | 140 ns |
+| One `agent.wealth` read inside `step` | 6 ns | 27 ns |
 
 The last row is the trade-off: use columns for attributes you aggregate, filter, record or update
 in bulk; a plain attribute is still the cheapest thing to touch inside `step`. In the Boltzmann

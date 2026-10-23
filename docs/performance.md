@@ -112,13 +112,19 @@ Measured on the Boltzmann model with 10,000 agents, CPU time:
 | Snapshot to a DataFrame | 1.10 ms | 0.31 ms | 3.6x |
 | `AgentSet` of `wealth > 0` (`select` vs `where`) | 0.94 ms | 0.62 ms | 1.5x |
 | `DataCollector.collect`, one attribute reporter | 0.95 ms | 0.46 ms | 2.1x |
-| One `agent.wealth` read / `+= 1` inside `step` | 30 / 40 ns | 140 / 290 ns | 0.2x |
+| One `agent.wealth` read / `+= 1` inside `step` | 6 / 13 ns | 27 / 72 ns | 0.2x |
 | Boltzmann `shuffle_do("step")`, object loop | 22.3 ms | 21.0 ms | within noise |
 
-The last two rows are the trade-off: a single access costs a descriptor call and a numpy scalar
-index instead of an instance-dict lookup. It does not show in the object loop because an agent
-step touches the attribute a few times among far more expensive work, but a column is the wrong
-home for a scratch value read in a tight loop. `where` is bounded by building the `AgentSet`
+The last two rows are the trade-off. A column attribute is a plain `property` installed on the
+class (the interpreter inlines property getters, which it never does for a custom descriptor)
+that reads the agent's row through a `memoryview`, so a read returns a Python `int`, `float` or
+`bool` rather than building a numpy scalar, and arithmetic on it is Python arithmetic. That took
+a read from 79 ns to 27 ns and `+= 1` from 171 ns to 72 ns (CPython 3.15), and a Boltzmann
+exchange step over 5,000 column agents from 5.0 ms to 3.1 ms, against 1.6 ms with plain
+attributes. Dtypes a `memoryview` cannot index (strings, objects, complex, datetimes) keep
+numpy indexing, and a write a `memoryview` rejects (a float into an int column) falls back to
+numpy's own assignment, so values and errors are unchanged. A column is still not the place for
+a scratch value read in a tight loop. `where` is bounded by building the `AgentSet`
 from 10,000 objects, not by the mask.
 
 Recording a column with `DataCollector` is a straight slice of the table when the reporters are
