@@ -93,6 +93,32 @@ def validate_model_reporter(name: str, reporter: Any, model: Any) -> None:
         check_list_reporter(name, reporter)
 
 
+def compile_model_reporter(name: str, reporter: Any) -> Callable[[Any], Any]:
+    """Turn a model reporter definition into a plain ``callable(model)``.
+
+    The type dispatch happens here, once, instead of on every ``collect``.
+    List reporters are re-checked on every call: the list is user-owned and
+    may have been edited after validation.
+    """
+    if isinstance(reporter, types.LambdaType | partial):
+        return reporter
+    if isinstance(reporter, str):
+        return partial(getattr_or_none, name=reporter)
+    if isinstance(reporter, list):
+
+        def call_list(model):
+            check_list_reporter(name, reporter)
+            return reporter[0](*reporter[1])
+
+        return call_list
+    return lambda model: reporter()  # a bound method or other callable
+
+
+def getattr_or_none(model: Any, name: str) -> Any:
+    """``getattr`` with a ``None`` default, as model attribute reporters have always behaved."""
+    return getattr(model, name, None)
+
+
 def collect_model_value(name: str, reporter: Any, model: Any) -> Any:
     """Evaluate one model reporter against ``model`` and return a stored-safe value.
 
