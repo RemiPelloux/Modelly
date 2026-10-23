@@ -70,3 +70,15 @@ def test_meta_agents():
     from modelly.experimental.meta_agents import MetaAgents  # noqa: PLC0415
 
     assert MetaAgents is modelly.experimental.meta_agents.MetaAgents
+
+
+def test_import_modelly_does_not_load_scipy():
+    """Importing modelly leaves scipy unloaded until a KD-tree or cdist is needed."""
+    import subprocess  # noqa: PLC0415
+    import sys  # noqa: PLC0415
+
+    code = "import modelly, sys; print(any(m.startswith('scipy') for m in sys.modules))"
+    out = subprocess.run(
+        [sys.executable, "-c", code], capture_output=True, text=True, check=True
+    )
+    assert out.stdout.strip() == "False"
