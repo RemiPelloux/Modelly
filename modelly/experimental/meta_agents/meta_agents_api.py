@@ -256,9 +256,7 @@ class MetaAgents:
         relation: RelationKey = "member",
     ) -> MembershipView:
         """Add one member to one group."""
-        if (
-            member not in self.model.agents._agents
-        ):  # use internal attribute for optimization
+        if member not in self.model.agents:  # use internal attribute for optimization
             raise ValueError(f"member {member!r} is not registered in the model")
 
         group = self._resolve_group(group)

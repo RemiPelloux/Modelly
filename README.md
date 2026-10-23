@@ -7,7 +7,6 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/RemiPelloux/Modelly/actions/workflows/build_lint.yml"><img src="https://github.com/RemiPelloux/Modelly/actions/workflows/build_lint.yml/badge.svg" alt="build"></a>
   <a href="https://codecov.io/gh/RemiPelloux/Modelly"><img src="https://codecov.io/gh/RemiPelloux/Modelly/branch/main/graph/badge.svg" alt="coverage"></a>
   <a href="https://github.com/RemiPelloux/Modelly/releases/latest"><img src="https://img.shields.io/github/v/release/RemiPelloux/Modelly?color=0F766E&label=release" alt="latest release"></a>
   <img src="https://img.shields.io/badge/python-3.12%2B-3B82F6" alt="python 3.12+">
@@ -387,7 +386,8 @@ flocking, network diffusion) with a headless runner. Against other frameworks we
 real research model: the same notebook ported with the codemod, identical seeds, outputs
 checked to be bit-identical, per-cell timings taken best-of-n with the two frameworks
 alternating. On a medfly population model with a 576-season factorial, that puts Modelly at
-parity to a modest advantage over Mesa 2.3. The latest audit (CPU time per step, large
+parity with Mesa 2.3: within a few percent, every per-agent primitive at or below Mesa's cost,
+and the model's own code the place where a 3x was found. The latest audit (CPU time per step, large
 configurations, same machine before and after) is summarised here; the full tables and method
 are in [docs/performance.md](docs/performance.md).
 

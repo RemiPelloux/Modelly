@@ -39,8 +39,9 @@ from modelly.exceptions import TableMissingException
 from modelly.reporters import (
     check_list_reporter,
     collect_agent_rows,
-    collect_model_value,
+    compile_model_reporter,
     make_agent_reporter,
+    snapshot,
     validate_model_reporter,
 )
 
@@ -122,6 +123,8 @@ class DataCollector:
         self.agenttype_reporters = {}
 
         self.model_vars = {}
+        # name -> (reporter, callable(model)) compiled once at registration
+        self._model_getters = {}
         self._collection_steps = []
         self._agent_records = {}
         self._agenttype_records = {}
@@ -187,6 +190,7 @@ class DataCollector:
             check_list_reporter(name, reporter)
         self.model_reporters[name] = reporter
         self.model_vars[name] = []
+        self._model_getters[name] = (reporter, compile_model_reporter(name, reporter))
 
     def _new_agent_reporter(self, name, reporter):
         """Add a new agent-level reporter to collect.
@@ -250,8 +254,17 @@ class DataCollector:
                 for name, reporter in self.model_reporters.items():
                     self._validate_model_reporter(name, reporter, model)
 
+            model_vars = self.model_vars
+            getters = self._model_getters
             for var, reporter in self.model_reporters.items():
-                self.model_vars[var].append(collect_model_value(var, reporter, model))
+                compiled = getters.get(var)
+                if compiled is None or compiled[0] is not reporter:
+                    # a reporter was replaced after registration: compile the new one
+                    compiled = getters[var] = (
+                        reporter,
+                        compile_model_reporter(var, reporter),
+                    )
+                model_vars[var].append(snapshot(compiled[1](model)))
 
         if self.agent_reporters:
             self._agent_records[time] = self._record_agents(model)
