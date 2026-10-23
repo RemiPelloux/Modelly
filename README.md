@@ -38,7 +38,7 @@ say so in their docstrings. The current version is `modelly.__version__`, and wh
 release is in [CHANGELOG.md](CHANGELOG.md).
 
 ```bash
-pip install modelly-abm                                   # the package name on PyPI
+pip install git+https://github.com/RemiPelloux/Modelly.git  # not on PyPI yet: installs from GitHub
 python -c "import modelly; print(modelly.__version__)"   # the import name is modelly
 ```
 
@@ -119,7 +119,7 @@ To depend on Modelly from your own project, add it to `pyproject.toml` (the dist
 `modelly-abm`, the import is `modelly`):
 
 ```toml
-dependencies = ["modelly-abm"]
+dependencies = ["modelly-abm @ git+https://github.com/RemiPelloux/Modelly.git"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is
@@ -381,6 +381,18 @@ It rewrites imports, agent constructors and scheduler attributes, and flags sche
 legacy grid calls, `batch_run`, simulators and `seed=` for you to decide. The construct-by-construct
 map, for Mesa 2.x and 3.x, is [docs/migrating_from_mesa.md](docs/migrating_from_mesa.md).
 
+## Checking a model
+
+A static check finds the bugs that break reproducibility (random draws outside the model's
+generators, a missing `super().__init__`, loops over sets) and the loops that make a step
+O(N²) (an agent scanning `self.model.agents`, nested population loops):
+
+```bash
+python -m modelly.lint path/to/your/model/   # exits 1 on findings, so it works in CI
+```
+
+Every rule, with the fix, is in [docs/lint.md](docs/lint.md).
+
 ## Architecture
 
 <p align="center">
@@ -500,6 +512,7 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 | **Overview** | `docs/overview.md`: the object model, end to end |
 | **Performance audit** | `docs/performance.md`: measurements, what changed, what is next |
 | **Best practices** | `docs/best-practices.md` |
+| **Checking a model** | `docs/lint.md`: the `python -m modelly.lint` rules and their fixes |
 | **API reference** | `docs/apis/`: agents, agent sets, columns, model, space, time, data, migrate |
 | **Changelog** | `CHANGELOG.md`: what each release added, changed and fixed |
 

@@ -147,11 +147,6 @@ html_theme_options = {
             "url": "https://github.com/RemiPelloux/Modelly",
             "icon": "fa-brands fa-github",
         },
-        {
-            "name": "PyPI",
-            "url": "https://pypi.org/project/modelly-abm/",
-            "icon": "fa-brands fa-python",
-        },
     ],
     "use_edit_page_button": True,
     "secondary_sidebar_items": ["page-toc", "edit-this-page"],
