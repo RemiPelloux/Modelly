@@ -5,7 +5,25 @@ versioning.
 
 ## Unreleased
 
+### Added
+
+- `modelly.FastRandom`: a `random.Random` whose `randint`, `choice`, `shuffle` and `sample`
+  make exactly the standard library's `getrandbits` calls with fewer Python calls; identical
+  streams for a seed, verified by tests. `model.random` is one.
+
 ### Changed
+
+- The strong agent registry (`model.agents`, `model.agents_by_type[...]`) is a `dict`
+  subclass: membership, length and registration run in C; `agent in model.agents` went from
+  160 ns to 35 ns.
+- `Agent.__init__` and `Agent.remove` inline registration when the model keeps the default
+  `register_agent`/`deregister_agent` (overrides are still honoured, tested), skip the no-op
+  cooperative `super().__init__()` for plain subclasses, and test for signal listeners with
+  four attribute reads. The lifecycle is at parity with Mesa 2.3 on a lifecycle-heavy model.
+- Model reporters are compiled once at registration instead of dispatched on every collect.
+- Event scheduling and time advance live in `modelly.scheduling.HasSchedule`, mixed into
+  `Model`, so `model.py` stays under its size limit.
+- A matplotlib frame no longer builds a weak set or allocates a numpy array per agent.
 
 - The Mesa 2.3 comparison harness is no longer in the repository; `docs/performance.md`
   describes the evaluation method and keeps the measured numbers.

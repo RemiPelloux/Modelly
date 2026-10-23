@@ -6,9 +6,7 @@ Core Objects: Model
 # Postpone annotation evaluation to avoid NameError from forward references (PEP 563). Remove once Python 3.14+ is required.
 from __future__ import annotations
 
-import random
-import warnings
-from collections.abc import Callable, Sequence
+from collections.abc import Sequence
 from typing import Any
 
 import numpy as np
@@ -22,17 +20,16 @@ from modelly.experimental.signals import (
     HasEmitters,
     ModelSignals,
     ObservableSignals,
-    emit,
 )
 from modelly.log import create_module_logger, method_logger
+from modelly.rng import FastRandom
+from modelly.scheduling import HasSchedule
 from modelly.time import (
-    Event,
     EventGenerator,
     EventList,
     Priority,
     Schedule,
 )
-from modelly.time.events import _create_callable_reference
 
 SeedLike = int | np.integer | Sequence[int] | np.random.SeedSequence
 RNGLike = np.random.Generator | np.random.BitGenerator
@@ -40,9 +37,12 @@ RNGLike = np.random.Generator | np.random.BitGenerator
 
 _modelly_logger = create_module_logger()
 
+# Subscriber keys and the observable signals of ``agents``; see register_agent.
+_AGENT_SIGNALS = frozenset({ModelSignals.AGENT_ADDED, ModelSignals.AGENT_REMOVED})
+
 
 # TODO: We can add `= Scenario` default type when Python 3.13+ is required
-class Model[A: Agent, S: Scenario](HasEmitters):
+class Model[A: Agent, S: Scenario](HasSchedule, HasEmitters):
     """Base class for models in the Modelly ABM library.
 
     This class serves as a foundational structure for creating agent-based models.
@@ -73,17 +73,38 @@ class Model[A: Agent, S: Scenario](HasEmitters):
     # "time" is registered as an observable in __init_subclass__ (below) and at
     # module level for the base Model class itself.
 
+    # True when the class keeps the default registration methods, which lets
+    # Agent.__init__ and Agent.remove inline them (see agent.py).
+    _default_registry: bool = True
+
     def __init_subclass__(cls, **kwargs):
         """Register ``time`` as an observable for every Model subclass."""
         super().__init_subclass__(**kwargs)
         cls.observables["time"] = ObservableSignals
+        cls.observables["agents"] = _AGENT_SIGNALS
+        cls._default_registry = (
+            cls.register_agent is Model.register_agent
+            and cls.deregister_agent is Model.deregister_agent
+        )
 
-    def _set_time(self, value: float) -> None:
-        """Set ``time`` and notify subscribers when it changes."""
-        old = self.time
-        self.time = value
-        if old != value:
-            self.notify("time", ObservableSignals.CHANGED, old=old, new=value)
+    def _register_new_type(self, agent: A) -> None:
+        """Create the per-type registry for the first agent of a class."""
+        self._agents_by_type[type(agent)] = _HardKeyAgentSet(
+            [agent], random=self.random
+        )
+
+    def _notify_agent_added(self, agent: A) -> None:
+        """Emit AGENT_ADDED; notify itself checks for live subscribers.
+
+        Callers guard this with four attribute reads (suppressed, batching,
+        any instance subscriber, any class subscriber) rather than looking the
+        signal up: that guard runs on every agent birth and death.
+        """
+        self.notify("agents", ModelSignals.AGENT_ADDED, args=(agent,))
+
+    def _notify_agent_removed(self, agent: A) -> None:
+        """Emit AGENT_REMOVED; see _notify_agent_added."""
+        self.notify("agents", ModelSignals.AGENT_REMOVED, args=(agent,))
 
     @property
     def scenario(self) -> S:
@@ -140,7 +161,7 @@ class Model[A: Agent, S: Scenario](HasEmitters):
 
         self.scenario = scenario
         self.rng: np.random.Generator = scenario.rng
-        self.random = random.Random(scenario._stdlib_seed)
+        self.random = FastRandom(scenario._stdlib_seed)
 
         # Store user's step method and create the default step schedule.
         # Uses EventGenerator to schedule _do_step every 1.0 time units.
@@ -164,40 +185,6 @@ class Model[A: Agent, S: Scenario](HasEmitters):
         self.data_registry = DataRegistry()
         # Column tables for agent classes that declare Column attributes.
         self.columns = ColumnStore(self.random, self.rng)
-
-    def _wrapped_step(self) -> None:
-        """Advance time by one unit, processing any scheduled events."""
-        self._advance_time(self.time + 1)
-
-    def _advance_time(self, until: float) -> None:
-        """Advance time to the given point, processing events along the way.
-
-        Args:
-            until: The time to advance to
-
-        """
-        if until <= self.time:
-            warnings.warn(
-                f"end time {until} is not larger than current time {self.time}",
-                RuntimeWarning,
-                stacklevel=2,
-            )
-
-            return
-        while True:
-            try:
-                event = self._event_list.pop_event()
-            except IndexError:
-                break
-
-            if event.time <= until:
-                self._set_time(event.time)
-                event.execute()
-            else:
-                self._event_list.add_event(event)
-                break
-
-        self._set_time(until)
 
     @property
     def agents(self) -> _HardKeyAgentSet[A]:
@@ -261,7 +248,6 @@ class Model[A: Agent, S: Scenario](HasEmitters):
         """
         return self._agents_by_type
 
-    @emit("agents", ModelSignals.AGENT_ADDED)
     def register_agent(self, agent: A):
         """Register the agent with the model.
 
@@ -275,21 +261,24 @@ class Model[A: Agent, S: Scenario](HasEmitters):
         """
         # The registries' dicts are written directly: this runs on every agent
         # birth, and two method calls per birth were a third of its cost.
-        self._all_agents._agents[agent] = None
+        self._all_agents[agent] = None
         agent.unique_id = self.agent_id_counter
         self.agent_id_counter += 1
 
         # because AgentSet requires model, we cannot use defaultdict
         # tricks with a function won't work because model then cannot be pickled
         try:
-            self._agents_by_type[type(agent)]._agents[agent] = None
+            self._agents_by_type[type(agent)][agent] = None
         except KeyError:
-            self._agents_by_type[type(agent)] = _HardKeyAgentSet(
-                [agent],
-                random=self.random,
-            )
+            self._register_new_type(agent)
+        if (
+            self._suppress
+            or self._batch_context is not None
+            or self.subscribers
+            or self._class_subscribers
+        ):
+            self._notify_agent_added(agent)
 
-    @emit("agents", ModelSignals.AGENT_REMOVED)
     def deregister_agent(self, agent: A):
         """Deregister the agent with the model.
 
@@ -300,8 +289,15 @@ class Model[A: Agent, S: Scenario](HasEmitters):
             This method is called automatically by ``Agent.remove``
 
         """
-        del self._agents_by_type[type(agent)]._agents[agent]
-        del self._all_agents._agents[agent]
+        del self._agents_by_type[type(agent)][agent]
+        del self._all_agents[agent]
+        if (
+            self._suppress
+            or self._batch_context is not None
+            or self.subscribers
+            or self._class_subscribers
+        ):
+            self._notify_agent_removed(agent)
 
     def run_model(self) -> None:
         """Run the model until the end condition is reached.
@@ -329,105 +325,9 @@ class Model[A: Agent, S: Scenario](HasEmitters):
 
         self.data_registry.close()  # this is needed to ensure GC works properly
 
-    ### Event scheduling and time progression methods ###
-    def schedule_event(
-        self,
-        function: Callable,
-        *,
-        at: float | None = None,
-        after: float | None = None,
-        priority: Priority = Priority.DEFAULT,
-    ) -> Event:
-        """Schedule a one-off event.
-
-        Args:
-            function: The callable to execute
-            at: Absolute time to execute (mutually exclusive with after)
-            after: Relative time from now to execute (mutually exclusive with at)
-            priority: Priority level for the event
-
-        Returns:
-            The scheduled Event (can be used to cancel)
-
-        Raises:
-            ValueError: If both or neither of at/after are specified
-            ValueError: If both or neither of at/after are specified, or if the scheduled time is in the past.
-        """
-        if (at is None) == (after is None):
-            raise ValueError("Specify exactly one of 'at' or 'after'")
-
-        time = at if at is not None else self.time + after
-        # Enforce monotonic time progression
-        if time < self.time:
-            raise ValueError(
-                f"Cannot schedule event in the past. "
-                f"Scheduled time is {time}, but current time is {self.time}"
-            )
-
-        callback_ref = _create_callable_reference(function)
-        function = None
-        function = callback_ref()
-        if function is None:
-            raise ValueError("function must be alive at Event creation.")
-
-        event = Event(time, function, priority=priority)
-        self._event_list.add_event(event)
-        return event
-
-    def schedule_recurring(
-        self,
-        function: Callable,
-        schedule: Schedule,
-        priority: Priority = Priority.DEFAULT,
-    ) -> EventGenerator:
-        """Schedule a recurring event based on a Schedule.
-
-        Args:
-            function: The callable to execute repeatedly
-            schedule: The Schedule defining when events occur
-            priority: Priority level for generated events
-
-        Returns:
-            The EventGenerator (can be used to stop)
-
-        Raises:
-            ValueError: If the schedule start time is in the past.
-        """
-        generator = EventGenerator(self, function, schedule, priority)
-        generator.start()
-        return generator
-
-    @emit("model", ModelSignals.RUN_ENDED, when="after")
-    def run_for(self, duration: float | int) -> None:
-        """Run the model for the specified duration.
-
-        Args:
-            duration: Time units to advance
-        """
-        self._advance_time(self.time + duration)
-
-    @emit("model", ModelSignals.RUN_ENDED, when="after")
-    def run_until(self, end_time: float | int) -> None:
-        """Run the model until the specified time.
-
-        Args:
-            end_time: Absolute time to run until
-
-        If model.time is larger than end_time, the method returns directly.
-
-        """
-        if self.time > end_time:
-            warnings.warn(
-                f"end_time {end_time} is not larger than current time {self.time}",
-                RuntimeWarning,
-                stacklevel=2,
-            )
-            return
-
-        self._advance_time(end_time)
-
 
 # Register "time" as an observable for the base Model class itself (subclasses
 # get it via Model.__init_subclass__). Model.time is a plain attribute now, so
 # the descriptor generator no longer discovers it automatically.
 Model.observables["time"] = ObservableSignals
+Model.observables["agents"] = _AGENT_SIGNALS

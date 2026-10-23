@@ -392,6 +392,10 @@ class HasEmitters:
 
     def _has_subscribers(self, name: str, signal_type: str | SignalType) -> bool:
         """Check if there are any subscribers for a given observable and signal type."""
+        # Fast path: the overwhelming majority of models never subscribe to
+        # anything, so skip the tuple allocation and dict lookups entirely.
+        if not self.subscribers and not self._class_subscribers:
+            return False
         key = (name, signal_type)
         return bool(self.subscribers.get(key)) or bool(self._class_subscribers.get(key))
 
