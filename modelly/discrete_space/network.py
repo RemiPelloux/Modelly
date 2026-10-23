@@ -17,7 +17,6 @@ from random import Random
 from typing import Any
 
 import numpy as np
-from scipy.spatial import KDTree
 
 from modelly.discrete_space.cell import Cell
 from modelly.discrete_space.discrete_space import DiscreteSpace
@@ -91,6 +90,10 @@ class Network(DiscreteSpace[Cell]):
             self._kdtree_cells.append(cell)
             positions_for_tree.append(pos)
 
+        from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
+            KDTree,
+        )
+
         if positions_for_tree:
             self._kdtree = KDTree(np.array(positions_for_tree))
         else:
@@ -101,6 +104,10 @@ class Network(DiscreteSpace[Cell]):
     def _rebuild_kdtree(self) -> None:
         """Rebuild the KD-Tree."""
         if self._kdtree_cells:
+            from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
+                KDTree,
+            )
+
             positions = np.array([c._position for c in self._kdtree_cells])
             self._kdtree = KDTree(positions)
         else:

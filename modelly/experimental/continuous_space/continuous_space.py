@@ -9,8 +9,6 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import ArrayLike
-from scipy.spatial import cKDTree
-from scipy.spatial.distance import cdist
 
 from modelly.agent import Agent, AgentSet
 
@@ -239,6 +237,8 @@ class ContinuousSpace[A: ContinuousSpaceAgent]:
                 dists += delta[:, i] ** 2
             dists = np.sqrt(dists)
         else:
+            from scipy.spatial.distance import cdist  # noqa: PLC0415 - scipy is heavy
+
             dists = cdist(point[np.newaxis, :], positions, **kwargs)[0, :]
         return dists, agents
 
@@ -274,6 +274,8 @@ class ContinuousSpace[A: ContinuousSpaceAgent]:
         cached = self._neighbors_cache
         if cached is not None and cached[0] == key:
             return cached[1]
+        from scipy.spatial import cKDTree  # noqa: PLC0415 - scipy is heavy
+
         if self.torus:
             positions = np.mod(positions - self.dimensions[:, 0], self.size)
             tree = cKDTree(positions, boxsize=self.size)

@@ -3,6 +3,14 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.5.1 - 2026-10-23
+
+### Changed
+
+- `import modelly` no longer loads scipy: `KDTree`, `cKDTree` and `cdist` are imported where a
+  hex grid, network, Voronoi mesh or continuous-space query first needs them. Importing the
+  package went from 0.38 s to 0.28 s; a test keeps scipy out of the import.
+
 ## 1.5.0 - 2026-10-23
 
 ### Added
