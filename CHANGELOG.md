@@ -42,6 +42,17 @@ versioning.
 - Event scheduling and time advance live in `modelly.scheduling.HasSchedule`, mixed into
   `Model`, so `model.py` stays under its size limit.
 - A matplotlib frame no longer builds a weak set or allocates a numpy array per agent.
+- `FastRandom` is faster than `random.Random` on every overridden draw on CPython 3.15:
+  `randint` (type checks the interpreter specialises instead of `operator.index`, a bit-length
+  table), `choice`, `sample` (no `Sequence` ABC check for `list`, `tuple`, `range`) and
+  `shuffle` (runs of constant bit length above 64 elements). Streams unchanged, tested across
+  every run boundary.
+- Agent birth and death take one model flag (`_quiet`) and one class flag (`_extra_hooks`)
+  instead of six attribute reads when nobody listens and the registry is the default; the
+  flag only ever turns false, so listeners, batches, suppression and overridden
+  `register_agent` keep their exact behaviour (tested).
+- On the reference Mesa 2.3 workload (same model code, bit-identical outputs), Modelly is now
+  1.3 to 3.8% faster at default settings with `FastRandom` in the port's seeding line.
 - Grid construction writes cell connections directly (no per-connection method call or
   cache clear on fresh cells): a 180x180 Moore grid builds in 0.11 s instead of 0.17 s.
 

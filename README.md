@@ -384,7 +384,9 @@ Two questions, two methods, both in the repository.
 
 **Same code on both frameworks.** A research notebook written for Mesa 2.3, ported with the
 codemod and nothing else changed, identical seeds, outputs checked bit-identical, CPU time
-pinned and alternating: Modelly runs at parity with Mesa 2.3 (within a few percent, every
+pinned and alternating: Modelly is 1.3 to 3.8% faster than Mesa 2.3 when the port seeds with
+Modelly's own `FastRandom` (identical stream), and 1.5 to 2% behind with the standard
+library's generator. Before this round it was at parity (within a few percent, every
 per-agent primitive at or below Mesa's cost). That measures interpreter overhead on
 identical code, and it is documented honestly as parity in
 [docs/performance.md](docs/performance.md).

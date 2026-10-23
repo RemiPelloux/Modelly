@@ -171,9 +171,19 @@ A quarter to a third of an agent-based model's time is the standard library's `r
 `modelly.FastRandom` reimplements the four with the rejection loop written inline, making the
 same `getrandbits` calls in the same order, so a seed gives exactly the same numbers as
 `random.Random` (tested across seeds, sizes and both `sample` code paths). `model.random` is a
-`FastRandom`. It is a small win: `shuffle` and `sample` are 18 to 20% faster, `randint` and
-`choice` within noise, because the per-draw cost is the C call and the loop, not the method
-dispatch.
+`FastRandom`. On CPython 3.15, against a standard library that has itself become cheaper,
+per call:
+
+| Draw | Faster than `random.Random` by | How |
+|---|---|---|
+| `randint(6, 11)` | 3 to 4% | `type(x) is int` (specialised by the interpreter) instead of two `operator.index` calls; bit length from a 4,096-entry table instead of `int.bit_length()` |
+| `choice` | 11 to 12% | the same table |
+| `sample(list of 3,000, 3)` | 20 to 26% | the table, and the `Sequence` ABC check skipped for `list`, `tuple` and `range` |
+| `shuffle(3,000)` | 15 to 27% | lists over 64 elements are walked in runs of constant bit length, so the inner loop has no lookup at all |
+
+Every change makes the same `getrandbits` calls in the same order; a test shuffles every
+length from 0 to 139 and lengths around each power of two and compares with the standard
+library element for element, and then compares the next draw.
 
 ### How we evaluate against other frameworks
 
@@ -212,20 +222,44 @@ reassembled in the original order so the CSV is identical, brings the cell to 1.
 wall-clock on eight workers: the largest practical gain on this workload, and the one that
 needs no re-validation of the model.
 
-**Stage two: the framework.** On the optimised model, three pinned alternating rounds of the
-experiment cell:
+**Stage two: the framework.** Whole-cell rounds swing by up to 2x on a shared machine, so
+the comparison moved to a finer instrument: two persistent processes, one per framework,
+pinned to the same core, running the 576 seasons in 48 chunks with the order alternating,
+each chunk's records hashed and compared (no mismatch in any run). Measured that way, the
+gap before this round was 2.1%, and none of it was in the model's arithmetic:
 
-| Round | Mesa 2.3 | Modelly | Modelly, `FastRandom` in the port's seeding line |
+1. **The random draws.** `FastRandom.randint` had become 4% *slower* than the standard
+   library on CPython 3.15, which now inlines Python-to-Python calls well; the `operator.index`
+   calls were the difference. The table above lists the fixes; this was the largest item.
+2. **Agent birth and death.** One model flag (`_quiet`: default registry and nobody
+   listening) replaces four attribute reads, and one class flag (`_extra_hooks`: columns or
+   datasets) replaces two. The flag only ever turns false (on `observe`, `observe_class`, a
+   batch, a suppress, or an overridden `register_agent`), so a stale value can only send an
+   agent down the slower, still correct path. Creation went from 295 ns to 225 ns at the
+   notebook's live population, against 281 ns for Mesa.
+3. **The garbage collector.** About 11% of the run on both frameworks. Collecting identical
+   garbage costs the same on both (78 to 83 ms per 240,000 objects); what differs is where
+   collections fall relative to season boundaries, which depends on allocation counts. With
+   the collection threshold set equally on both sides, Modelly is ahead at four of five
+   values and behind at one. We report the default threshold. `gc.freeze()` after the imports
+   would have given Modelly another 2.4%; applied to both sides it gives nothing, so it is a
+   process setting rather than an engine property, and Modelly does not do it.
+
+Result at the default settings, experiment cell, separate processes, pinned, alternating
+(same output CSV in every round):
+
+| Round | Mesa 2.3 | Modelly | Modelly faster by |
 |---|---|---|---|
-| 1 | 13.39 s | 14.25 s | 13.98 s |
-| 2 | 13.29 s | 13.97 s | 13.84 s |
-| 3 | 13.47 s | 14.11 s | 13.88 s |
+| 1 | 13.09 s | 12.70 s | 3.0% |
+| 2 | 12.71 s | 12.53 s | 1.4% |
+| 3 | 12.66 s | 12.50 s | 1.3% |
+| 4 | 12.98 s | 12.49 s | 3.8% |
 
-Modelly is 3 to 4% behind with the port's stdlib generator and 3% behind with its own, with
-every per-agent primitive measured at or below Mesa's cost (birth and death, liveness check,
-`random` and `time` reads), construction and data collection equal, and a three-day step at
-peak population at parity. The remainder is diffuse and below what this machine can resolve.
-We call that parity, not a win, and the comparison harness stays outside the repository.
+The paired instrument agrees (Modelly/Mesa 0.985 to 0.994 total; 0.969 to 0.983 outside the
+collector). The win depends on Modelly's generator: with the port's seeding line left as
+`random.Random(seed)`, the same instrument puts Modelly 1.5 to 2% behind, mostly collector
+timing. Using `FastRandom` there is fair in the sense this page uses: it is `model.random`'s
+own type, and it reproduces the identical stream, so every output is bit-identical.
 
 Measured and rejected on this workload: a `shuffle` that draws its random words in one call
 (it reproduces the permutation but leaves the stream in a different place for the next draw,
