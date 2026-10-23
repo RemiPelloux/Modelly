@@ -272,26 +272,39 @@ class Grid(HasPropertyLayers, DiscreteSpace[T]):
             )
         return random.choice(available)
 
+    # The two connectors below write ``cell.connections`` directly: the cells are
+    # fresh, so there is no neighborhood cache to clear, and the per-connection
+    # method call is most of the construction time of a large grid.
+
     def _connect_single_cell_nd(self, cell: T, offsets: list[tuple[int, ...]]) -> None:
         coord = cell.coordinate
+        dimensions = self.dimensions
+        cells = self._cells
+        connections = cell.connections
 
         for d_coord in offsets:
             n_coord = tuple(c + dc for c, dc in zip(coord, d_coord))
             if self.torus:
-                n_coord = tuple(nc % d for nc, d in zip(n_coord, self.dimensions))
-            if all(0 <= nc < d for nc, d in zip(n_coord, self.dimensions)):
-                cell.connect(self._cells[n_coord], d_coord)
+                n_coord = tuple(nc % d for nc, d in zip(n_coord, dimensions))
+            if all(0 <= nc < d for nc, d in zip(n_coord, dimensions)):
+                connections[d_coord] = cells[n_coord]
 
     def _connect_single_cell_2d(self, cell: T, offsets: list[tuple[int, int]]) -> None:
         i, j = cell.coordinate
         height, width = self.dimensions
+        cells = self._cells
+        connections = cell.connections
 
-        for di, dj in offsets:
-            ni, nj = (i + di, j + dj)
-            if self.torus:
-                ni, nj = ni % height, nj % width
+        if self.torus:
+            for offset in offsets:
+                di, dj = offset
+                connections[offset] = cells[(i + di) % height, (j + dj) % width]
+            return
+        for offset in offsets:
+            di, dj = offset
+            ni, nj = i + di, j + dj
             if 0 <= ni < height and 0 <= nj < width:
-                cell.connect(self._cells[ni, nj], (di, dj))
+                connections[offset] = cells[ni, nj]
 
     def __getstate__(self) -> dict[str, Any]:
         """Drop the per-grid cell class; it is rebuilt on load."""

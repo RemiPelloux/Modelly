@@ -165,6 +165,7 @@ class _BatchContext:
     def __enter__(self):
         self._previous = self.instance._batch_context
         self.instance._batch_context = self
+        self.instance._quiet = False
         return self
 
     def capture(self, signal: Message):
@@ -266,6 +267,7 @@ class _SuppressContext:
     def __enter__(self):
         self._previous = self.instance._suppress
         self.instance._suppress = True
+        self.instance._quiet = False
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):

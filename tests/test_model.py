@@ -3,6 +3,7 @@
 import numpy as np
 
 from modelly.agent import Agent, AgentSet
+from modelly.experimental.signals import ModelSignals
 from modelly.model import Model
 
 
@@ -135,7 +136,6 @@ def test_agents_by_type_keeps_empty_bucket():
 def test_inlined_registration_matches_register_agent():
     """Agent.__init__ inlines Model.register_agent; a subclass override must still be honoured."""
     from modelly import Agent  # noqa: PLC0415
-    from modelly.experimental.signals import ModelSignals  # noqa: PLC0415
 
     seen = []
 
@@ -171,3 +171,57 @@ def test_inlined_registration_matches_register_agent():
     b.remove()
     assert b not in plain.agents and len(plain.agents) == 0
     assert signals == [("add", b), ("remove", b)]
+
+
+def test_quiet_fast_path_still_notifies_listeners_added_later():
+    """A model starts quiet; observing, observing the class, batching or suppressing turns it off."""
+
+    class Plain(Model):
+        pass
+
+    model = Plain(rng=1)
+    assert model._quiet
+    Agent(model)
+    seen = []
+
+    def on_added(signal):
+        seen.append(signal)
+
+    model.observe("agents", ModelSignals.AGENT_ADDED, on_added)
+    assert not model._quiet
+    agent = Agent(model)
+    assert len(seen) == 1
+    agent.remove()
+    assert agent not in model.agents
+
+    class Watched(Model):
+        pass
+
+    def on_class_added(signal):
+        seen.append(signal)
+
+    other = Watched(rng=2)
+    Watched.observe_class("agents", ModelSignals.AGENT_ADDED, on_class_added)
+    assert not other._quiet
+    Agent(other)
+    assert len(seen) == 2
+
+    third = Plain(rng=3)
+    with third.suppress():
+        pass
+    assert not third._quiet
+
+
+def test_overridden_registration_disables_the_quiet_path():
+    """A model that overrides register_agent is never quiet, so the override runs."""
+    calls = []
+
+    class Custom(Model):
+        def register_agent(self, agent):
+            calls.append(agent)
+            super().register_agent(agent)
+
+    model = Custom(rng=1)
+    assert not model._quiet
+    agent = Agent(model)
+    assert calls == [agent]

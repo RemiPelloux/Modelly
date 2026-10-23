@@ -343,11 +343,11 @@ class NumpyAgentDataSet[A: Agent]:
             attr: i for i, attr in enumerate(fields)
         }
 
-        # Install properties on the agent class
         self.agent_type = agent_type
         if not hasattr(agent_type, "_datasets"):
             agent_type._datasets = set()
         agent_type._datasets.add(self.name)
+        agent_type._extra_hooks = True
 
         self._install_properties()
 
