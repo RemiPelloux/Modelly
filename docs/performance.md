@@ -203,6 +203,15 @@ after its random draw, `len(self.slots) < capacity` instead of two property hops
 re-filtering the free-fruit pool only on days when fruits were removed) cut the experiment
 cell by 3x on both frameworks: Modelly 30 s to 9.4 s, Mesa 26 s to 7.8 s, same checksums.
 
+A third round of model-code changes, again identical on both sides and stream-preserving (an
+incremental rot score per fruit instead of a daily loop over its slots, an inlined capacity
+test in the egg-laying loop, `FastRandom` seeding on the Modelly side), took the experiment
+cell from 14.1 s to 11.2 s on Modelly and from 13.3 s to 11.0 s on Mesa, same checksums.
+Dispatching the 576 independent seasons of the factorial to a forked process pool, records
+reassembled in the original order so the CSV is identical, brings the cell to 1.3 to 1.6 s of
+wall-clock on eight workers: the largest practical gain on this workload, and the one that
+needs no re-validation of the model.
+
 **Stage two: the framework.** On the optimised model, three pinned alternating rounds of the
 experiment cell:
 
