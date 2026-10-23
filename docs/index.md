@@ -176,6 +176,7 @@ Performance <performance>
 API <apis/api_main>
 Overview <overview>
 Best practices <best-practices>
+Checking a model <lint>
 Vectorised step phases <vectorised_phases>
 ```
 

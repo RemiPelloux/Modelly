@@ -7,6 +7,12 @@ versioning.
 
 ### Added
 
+- `python -m modelly.lint PATH`: a static check for Modelly models. Errors (`MDL0xx`) are
+  random draws outside the model's generators, an `__init__` without `super().__init__`, loops
+  over sets and mutable class attributes on agents; warnings (`MDL1xx`) are agents scanning
+  the whole population, nested population loops, hand-written activation loops, `deepcopy` in
+  `step` and over-branched `step` methods. `# noqa: CODE` silences a line; exits 1 on
+  findings. See `docs/lint.md`.
 - `CellIndex.track(model, agent_class, column="row")`: agents that keep their cell as a row
   column are listed by `space.agents` and drawn by the visualisation at
   `index.cells[agent.<column>]`; `CellIndex.cell_of(agent)` returns that cell.
