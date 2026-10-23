@@ -12,7 +12,9 @@ start clean (``forkserver``, or ``spawn``). A function defined in a notebook, a
 lambda or a closure cannot be imported by a fresh process; on Linux its workers
 are forked instead and inherit it. Python warns that forking a process with
 threads (numpy's BLAS pool, for one) can deadlock the child; it is rare in
-practice, and an importable function avoids it.
+practice, and an importable function avoids it. As with any multiprocessing
+code on macOS and Windows, a script that calls ``run_batch`` needs the usual
+``if __name__ == "__main__":`` guard, because the workers re-import it.
 """
 
 from __future__ import annotations

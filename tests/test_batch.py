@@ -1,5 +1,7 @@
 """run_batch and run_grid: parallel runs with results in a deterministic order."""
 
+import sys
+
 import pandas as pd
 import pytest
 
@@ -21,22 +23,30 @@ def test_run_batch_preserves_order_and_matches_the_loop():
     assert run_batch(season, tasks, workers=4) == expected
 
 
-def test_run_batch_accepts_closures_and_lambdas():
-    """Forked workers inherit the function, so it need not be importable."""
+def boom(x):
+    """Fail on task 3, at module level so every platform's workers can import it."""
+    if x == 3:
+        raise ValueError("run 3 failed")
+    return x
+
+
+def test_closures_and_lambdas_fork_on_linux_and_are_refused_elsewhere():
+    """Forked workers inherit a closure; without fork the error says what to do."""
     offset = 7
-    assert run_batch(lambda x: x + offset, range(10), workers=3) == [
-        x + 7 for x in range(10)
-    ]
+
+    def closure(x):
+        return x + offset
+
+    if sys.platform.startswith("linux"):
+        assert run_batch(closure, range(10), workers=3) == [x + 7 for x in range(10)]
+    else:
+        with pytest.raises(TypeError, match="importable"):
+            run_batch(closure, range(10), workers=3)
+    assert run_batch(closure, range(3), workers=1) == [7, 8, 9]
 
 
 def test_errors_propagate():
     """A failing run raises, as in the sequential loop."""
-
-    def boom(x):
-        if x == 3:
-            raise ValueError("run 3 failed")
-        return x
-
     with pytest.raises(ValueError, match="run 3 failed"):
         run_batch(boom, range(6), workers=2)
 
