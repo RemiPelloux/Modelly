@@ -12,11 +12,13 @@ from modelly.agent import Agent
 from modelly.columns import Column
 from modelly.datacollection import DataCollector
 from modelly.model import Model
+from modelly.rng import FastRandom
 
 __all__ = [
     "Agent",
     "Column",
     "DataCollector",
+    "FastRandom",
     "Model",
     "discrete_space",
     "experimental",
