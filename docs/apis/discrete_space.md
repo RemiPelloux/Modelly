@@ -49,3 +49,14 @@
 .. automodule:: modelly.discrete_space.voronoi
    :members:
 ```
+## Integer cells: index, occupancy and row-placed agents
+
+```{eval-rst}
+.. automodule:: modelly.discrete_space.cell_index
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.discrete_space.occupancy
+   :members:
+```

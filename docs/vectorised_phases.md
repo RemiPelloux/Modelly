@@ -139,9 +139,11 @@ probabilities at every phase. Stage durations that are fixed numbers of days,
 daily survival that depends on stage and on a model-level density, and
 fecundity that depends on stage and age in stage all keep a cohort
 homogeneous. A per-individual continuous trait (body size, position) breaks it
-unless the cohorts are keyed on that trait too. Used by: `insect_cohorts`,
-variant `modelly-cohorts`, against the individual-level `modelly` and `mesa`
-variants.
+unless the cohorts are keyed on that trait too. `modelly.CohortTable`
+implements the three operations: `thin(s)`, `split(p, where, **changes)` and
+`draw(p, where)`, plus `merge()` to keep one row per state. Used by:
+`insect_cohorts`, variant `modelly-cohorts`, against the individual-level
+`modelly` and `mesa` variants.
 
 ## 6. Neighbour search in continuous space
 

@@ -7,6 +7,9 @@ model
 agent
 agentset
 columns
+cohorts
+rng
+batch
 migrate
 time
 discrete_space
