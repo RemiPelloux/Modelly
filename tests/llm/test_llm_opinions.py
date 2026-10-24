@@ -1,5 +1,7 @@
 """The llm_opinions example: 200 persona agents, identical reruns, offline replay."""
 
+import gzip
+
 import pytest
 
 from modelly.examples.llm.llm_opinions.model import (
@@ -46,9 +48,15 @@ def test_replay_never_calls_the_provider():
 
 
 def test_bundled_cache_is_what_the_recipe_records(tmp_path):
-    """record_replay() rebuilds the bundled file byte for byte."""
+    """record_replay() rebuilds the bundled cache: the same calls and replies, line for line.
+
+    Compared after decompression: gzip output depends on the zlib build, so the compressed
+    bytes may differ between machines while the recorded content cannot.
+    """
     path = record_replay(tmp_path / REPLAY_CACHE.name)
-    assert path.read_bytes() == REPLAY_CACHE.read_bytes()
+    assert gzip.decompress(path.read_bytes()) == gzip.decompress(
+        REPLAY_CACHE.read_bytes()
+    )
 
 
 def test_replay_past_the_recording_names_the_missing_call():

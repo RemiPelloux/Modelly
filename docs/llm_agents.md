@@ -97,7 +97,7 @@ the model said.
   them.
 - **Bundles.** `client.cache.export("replies.jsonl.gz")` writes every reply, sorted by key,
   with the request it answered: plain JSON lines a reviewer can read (`.jsonl`), compressed
-  (`.jsonl.gz`, byte-stable) or SQLite (any other suffix). The file travels with the study;
+  (`.jsonl.gz`, the same content for the same calls) or SQLite (any other suffix). The file travels with the study;
   `ResponseCache.from_file(path)` replays it without any network.
 
 ```python
