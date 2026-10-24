@@ -5,6 +5,7 @@
 #   bash scripts/ci-local.sh --list      # stage names
 #   bash scripts/ci-local.sh lint audit  # a subset
 #
+# Tests run with warnings as errors, as in the hosted build workflow.
 # Uses .venv/bin when it exists, otherwise python3 and ruff from PATH.
 # tests/viz and tests/examples need the optional solara extra and
 # are skipped when it is missing; the hosted build workflow always runs them.
@@ -37,7 +38,7 @@ run_stage() {
   case "$1" in
     lint)   "$RUFF" check . ;;
     format) "$RUFF" format --check . ;;
-    test)   "$PYTHON" -m pytest -q -p pytest_cov --cov --cov-report=xml ${OPTIONAL_SKIPS[@]+"${OPTIONAL_SKIPS[@]}"} \
+    test)   "$PYTHON" -m pytest -q -W error -W default::PendingDeprecationWarning -p pytest_cov --cov --cov-report=xml ${OPTIONAL_SKIPS[@]+"${OPTIONAL_SKIPS[@]}"} \
               && "$PYTHON" scripts/coverage_badge.py coverage.xml "$BADGE" ;;
     audit)  bash scripts/audit-pelloux.sh ;;
   esac

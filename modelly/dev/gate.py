@@ -58,7 +58,9 @@ def optional_skips() -> list[str]:
 
 def stage_commands(name: str, python: str = sys.executable) -> list[Command]:
     """The commands of stage ``name``, run in order until one fails."""
-    pytest = [python, "-m", "pytest", "-q", "-p", "pytest_cov", "--cov"]
+    # Warnings are errors, as in the hosted build workflow (-Werror).
+    warnings = ["-W", "error", "-W", "default::PendingDeprecationWarning"]
+    pytest = [python, "-m", "pytest", "-q", *warnings, "-p", "pytest_cov", "--cov"]
     commands = {
         "lint": [[python, "-m", "ruff", "check", "."]],
         "format": [[python, "-m", "ruff", "format", "--check", "."]],
