@@ -4,8 +4,8 @@ import networkx as nx
 
 import modelly
 from modelly import Model
-from modelly.discrete_space import CellCollection, Network
 from modelly.examples.basic.virus_on_network.agents import State, VirusAgent
+from modelly.space import CellCollection, Network
 
 
 def number_state(model, state):

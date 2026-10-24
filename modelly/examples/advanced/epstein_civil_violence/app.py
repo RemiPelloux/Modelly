@@ -4,13 +4,13 @@ from modelly.examples.advanced.epstein_civil_violence.agents import (
     Cop,
 )
 from modelly.examples.advanced.epstein_civil_violence.model import EpsteinCivilViolence
-from modelly.visualization import (
+from modelly.viz import (
     Slider,
     SolaraViz,
     SpaceRenderer,
     make_plot_component,
 )
-from modelly.visualization.components import AgentPortrayalStyle
+from modelly.viz.components import AgentPortrayalStyle
 
 COP_COLOR = "#000000"
 

@@ -5,12 +5,12 @@ from modelly.examples.basic.boltzmann_wealth_model.model import (
     BoltzmannWealth,
 )
 from modelly.log import INFO, log_to_stderr
-from modelly.visualization import (
+from modelly.viz import (
     SolaraViz,
     SpaceRenderer,
     make_plot_component,
 )
-from modelly.visualization.components import AgentPortrayalStyle
+from modelly.viz.components import AgentPortrayalStyle
 
 log_to_stderr(INFO)
 

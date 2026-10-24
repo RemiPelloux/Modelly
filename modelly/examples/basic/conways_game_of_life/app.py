@@ -1,9 +1,9 @@
 from modelly.examples.basic.conways_game_of_life.model import ConwaysGameOfLife
-from modelly.visualization import (
+from modelly.viz import (
     SolaraViz,
     SpaceRenderer,
 )
-from modelly.visualization.components import AgentPortrayalStyle
+from modelly.viz.components import AgentPortrayalStyle
 
 
 def agent_portrayal(agent):

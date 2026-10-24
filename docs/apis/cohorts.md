@@ -5,6 +5,6 @@ per-individual draw replaced by one binomial draw per row with exactly the same 
 [Vectorised step phases](../vectorised_phases.md) for the argument.
 
 ```{eval-rst}
-.. automodule:: modelly.cohorts
+.. automodule:: modelly.batch.cohorts
    :members:
 ```

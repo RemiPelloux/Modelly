@@ -5,6 +5,6 @@ Run independent model runs over processes with the results in a deterministic or
 The output is the same as the sequential loop's, whatever the number of workers.
 
 ```{eval-rst}
-.. automodule:: modelly.batch
+.. automodule:: modelly.batch.runs
    :members: run_batch, run_grid, grid_tasks, default_workers
 ```

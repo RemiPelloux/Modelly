@@ -10,7 +10,7 @@ class CitizenState(Enum):
     ARRESTED = 3
 
 
-class EpsteinAgent(modelly.discrete_space.CellAgent):
+class EpsteinAgent(modelly.space.CellAgent):
     def update_neighbors(self):
         """
         Look around and see who my neighbors are

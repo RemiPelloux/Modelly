@@ -1,6 +1,6 @@
 import math
 
-from modelly.discrete_space import CellAgent
+from modelly.space import CellAgent
 
 
 # Helper function

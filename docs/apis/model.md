@@ -1,7 +1,7 @@
 # Model
 
 ```{eval-rst}
-.. automodule:: modelly.model
+.. automodule:: modelly.core.model
    :members:
    :inherited-members:
 ```

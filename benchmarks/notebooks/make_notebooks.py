@@ -48,9 +48,9 @@ WORKLOADS = {
         ),
         "model": """
 from modelly import Column, Model
-from modelly.datacollection import DataCollector
-from modelly.discrete_space import CellAgent, OrthogonalMooreGrid
-from modelly.experimental.scenarios import Scenario
+from modelly.data.collector import DataCollector
+from modelly.space import CellAgent, OrthogonalMooreGrid
+from modelly.scenarios import Scenario
 
 S, I, R = 0, 1, 2
 

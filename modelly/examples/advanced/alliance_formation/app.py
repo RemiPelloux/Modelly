@@ -7,8 +7,8 @@ from modelly.examples.advanced.alliance_formation.model import (
     AllianceScenario,
     MultiLevelAllianceModel,
 )
-from modelly.visualization import SolaraViz
-from modelly.visualization.utils import update_counter
+from modelly.viz import SolaraViz
+from modelly.viz.utils import update_counter
 
 model_params = {
     "rng": {

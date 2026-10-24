@@ -2,9 +2,9 @@ import networkx as nx
 import numpy as np
 
 import modelly
+from modelly.behaviour.meta_agents import MetaAgents
 from modelly.examples.advanced.alliance_formation.agents import AllianceAgent
-from modelly.experimental.meta_agents import MetaAgents
-from modelly.experimental.scenarios import Scenario
+from modelly.scenarios import Scenario
 
 
 class AllianceScenario(Scenario):

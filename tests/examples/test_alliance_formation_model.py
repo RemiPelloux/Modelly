@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+from modelly.behaviour.meta_agents import MetaAgents
 from modelly.examples.advanced.alliance_formation.model import (
     AllianceScenario,
     MultiLevelAllianceModel,
 )
-from modelly.experimental.meta_agents import MetaAgents
 
 
 def test_alliance_model_records_overlapping_memberships(monkeypatch):
@@ -24,7 +24,7 @@ def test_alliance_model_records_overlapping_memberships(monkeypatch):
         ]
 
     monkeypatch.setattr(
-        "modelly.experimental.meta_agents.MetaAgents.find_combinations",
+        "modelly.behaviour.meta_agents.MetaAgents.find_combinations",
         fake_find_combinations,
     )
 

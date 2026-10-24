@@ -6,7 +6,7 @@
 #   bash scripts/ci-local.sh lint audit  # a subset
 #
 # Uses .venv/bin when it exists, otherwise python3 and ruff from PATH.
-# tests/visualization and tests/examples need the optional solara extra and
+# tests/viz and tests/examples need the optional solara extra and
 # are skipped here; the hosted build workflow still runs them.
 set -uo pipefail
 
@@ -27,7 +27,7 @@ run_stage() {
   case "$1" in
     lint)   "$RUFF" check . ;;
     format) "$RUFF" format --check . ;;
-    test)   "$PYTHON" -m pytest -q --ignore=tests/visualization --ignore=tests/examples ;;
+    test)   "$PYTHON" -m pytest -q --ignore=tests/viz --ignore=tests/examples ;;
     audit)  bash scripts/audit-pelloux.sh ;;
   esac
 }

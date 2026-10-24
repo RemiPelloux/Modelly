@@ -1,4 +1,4 @@
-from modelly.discrete_space import FixedAgent
+from modelly.space import FixedAgent
 
 
 class Cell(FixedAgent):

@@ -1,62 +1,62 @@
 ## Discrete Space
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.__init__
+.. automodule:: modelly.space.__init__
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.cell
+.. automodule:: modelly.space.cells.cell
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.cell_agent
+.. automodule:: modelly.space.cells.agents
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.cell_collection
+.. automodule:: modelly.space.cells.collection
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.discrete_space
+.. automodule:: modelly.space.base
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.base_grid
+.. automodule:: modelly.space.grid.base
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.grid
+.. automodule:: modelly.space.grid.grids
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.property_layer
+.. automodule:: modelly.space.grid.layers
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.network
+.. automodule:: modelly.space.network
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.voronoi
+.. automodule:: modelly.space.voronoi
    :members:
 ```
 ## Integer cells: index, occupancy and row-placed agents
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.cell_index
+.. automodule:: modelly.space.cells.index
    :members:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.discrete_space.occupancy
+.. automodule:: modelly.space.cells.occupancy
    :members:
 ```

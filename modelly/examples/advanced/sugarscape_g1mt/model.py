@@ -3,9 +3,9 @@ from pathlib import Path
 import numpy as np
 
 import modelly
-from modelly.discrete_space import OrthogonalVonNeumannGrid
 from modelly.examples.advanced.sugarscape_g1mt.agents import Trader
-from modelly.experimental.scenarios import Scenario
+from modelly.scenarios import Scenario
+from modelly.space import OrthogonalVonNeumannGrid
 
 
 # Helper Functions

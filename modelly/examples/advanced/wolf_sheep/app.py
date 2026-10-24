@@ -1,13 +1,13 @@
 from modelly.examples.advanced.wolf_sheep.agents import GrassPatch, Sheep, Wolf
 from modelly.examples.advanced.wolf_sheep.model import WolfSheep, WolfSheepScenario
-from modelly.visualization import (
+from modelly.viz import (
     CommandConsole,
     Slider,
     SolaraViz,
     SpaceRenderer,
     make_plot_component,
 )
-from modelly.visualization.components import AgentPortrayalStyle
+from modelly.viz.components import AgentPortrayalStyle
 
 
 def wolf_sheep_portrayal(agent):

@@ -12,7 +12,7 @@ from __future__ import annotations
 import numpy as np
 
 from modelly import Column, Model
-from modelly.discrete_space import CellAgent, CellIndex, OrthogonalMooreGrid
+from modelly.space import CellAgent, CellIndex, OrthogonalMooreGrid
 
 S, I, R = 0, 1, 2
 

@@ -95,7 +95,7 @@ object-per-agent engine.
 
 ## Columnar agent state
 
-`modelly.columns` adds the one structural change with a large constant factor, as an opt-in.
+`modelly.core.columns` adds the one structural change with a large constant factor, as an opt-in.
 A `Column` declared on an agent class stores that attribute in a numpy array owned by the
 model (one table per concrete class, rows in insertion order, swap-remove on removal, the same
 scheme the continuous space uses for positions). The agent reads and writes its own row through

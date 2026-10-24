@@ -10,10 +10,10 @@ Modelly is modular, meaning that its modeling, analysis and visualization compon
 
 Most models consist of one class to represent the model itself and one or more classes for agents. Modelly provides built-in support for managing agents and their interactions. These are implemented in Modelly's modeling modules:
 
-- [modelly.model](apis/model)
-- [modelly.agent](apis/agent)
-- [modelly.agentset](apis/agentset)
-- [modelly.discrete_space](apis/discrete_space)
+- [modelly.core.model](apis/model)
+- [modelly.core.agent](apis/agent)
+- [modelly.core.agentset](apis/agentset)
+- [modelly.space](apis/discrete_space)
 
 The skeleton of a model might look like this:
 
@@ -35,7 +35,7 @@ class MyAgent(modelly.Agent):
 class MyModel(modelly.Model):
     def __init__(self, n_agents):
         super().__init__()
-        self.grid = modelly.discrete_space.OrthogonalMooreGrid((10, 10), torus=True)
+        self.grid = modelly.space.OrthogonalMooreGrid((10, 10), torus=True)
         initial_ages = self.rng.integers(0, 80, size=n_agents)
         agents = MyAgent.create_agents(self, n_agents, initial_ages)
         for agent in agents:
@@ -57,30 +57,30 @@ model.run_for(1)
 Modelly provides several types of spaces where agents can exist and interact:
 
 #### Discrete Spaces
-Modelly implements discrete spaces through the `modelly.discrete_space` module, using a doubly-linked structure where each cell maintains connections to its neighbors. Available variants include:
+Modelly implements discrete spaces through the `modelly.space` module, using a doubly-linked structure where each cell maintains connections to its neighbors. Available variants include:
 
 1. **Grid-based Spaces:**
    ```python
    # Create a Von Neumann grid (4 neighbors per cell)
-   grid = modelly.discrete_space.OrthogonalVonNeumannGrid((width, height), torus=False)
+   grid = modelly.space.OrthogonalVonNeumannGrid((width, height), torus=False)
 
    # Create a Moore grid (8 neighbors per cell)
-   grid = modelly.discrete_space.OrthogonalMooreGrid((width, height), torus=True)
+   grid = modelly.space.OrthogonalMooreGrid((width, height), torus=True)
 
    # Create a hexagonal grid
-   grid = modelly.discrete_space.HexGrid((width, height), torus=False)
+   grid = modelly.space.HexGrid((width, height), torus=False)
    ```
 
 2. **Network Space:**
    ```python
    # Create a network-based space
-   network = modelly.discrete_space.Network(graph)
+   network = modelly.space.Network(graph)
    ```
 
 3. **Voronoi Space:**
    ```python
    # Create an irregular tessellation
-   mesh = modelly.discrete_space.VoronoiMesh(points)
+   mesh = modelly.space.VoronoiMesh(points)
    ```
 
 #### Property Layers
@@ -96,7 +96,7 @@ high_ground = grid.property_layers["elevation"] > 50
 For models requiring continuous movement:
 
 ```python
-from modelly.experimental.continuous_space import ContinuousSpace, ContinuousSpaceAgent
+from modelly.space.continuous import ContinuousSpace, ContinuousSpaceAgent
 
 # Create a continuous space
 space = ContinuousSpace([[0, x_max], [0, y_max]], torus=True, random=model.random)
@@ -106,7 +106,7 @@ agent = ContinuousSpaceAgent(space, model)
 agent.position = (new_x, new_y)
 ```
 
-> **Note:** The legacy `modelly.space` module (including `MultiGrid`, `SingleGrid`, `ContinuousSpace`, etc.) has been removed. Use `modelly.discrete_space` and `modelly.experimental.continuous_space` instead.
+> **Note:** The legacy `modelly.space` module (including `MultiGrid`, `SingleGrid`, `ContinuousSpace`, etc.) has been removed. Use `modelly.space` and `modelly.space.continuous` instead.
 
 ### Time Advancement and Agent Activation
 
@@ -226,7 +226,7 @@ These are just some examples of using the AgentSet, there are many more possibil
 
 If you're using modeling for research, you'll want a way to collect the data each model run generates. You'll probably also want to run the model multiple times, to see how some output changes with different parameters. Data collection is implemented in the appropriately-named analysis modules:
 
-- [modelly.datacollection](apis/datacollection)
+- [modelly.data.collector](apis/datacollection)
 
 
 You'd add a data collector to the model like this:
@@ -275,18 +275,18 @@ class MyModel(Model):
         super().__init__()
         # Initialize the model with N agents
 ```
-The core components for building your own visualizations reside in the [`modelly.visualization`](apis/visualization) namespace.
+The core components for building your own visualizations reside in the [`modelly.viz`](apis/visualization) namespace.
 
 Here's a basic example of how to set up a visualization:
 
 ```python
-from modelly.visualization import (
+from modelly.viz import (
     Slider,
     SolaraViz,
     make_space_component,
     make_plot_component,
 )
-from modelly.visualization.components import AgentPortrayalStyle
+from modelly.viz.components import AgentPortrayalStyle
 
 
 def agent_portrayal(agent):

@@ -1,4 +1,4 @@
-from modelly.discrete_space import CellAgent, FixedAgent
+from modelly.space import CellAgent, FixedAgent
 
 
 class Animal(CellAgent):

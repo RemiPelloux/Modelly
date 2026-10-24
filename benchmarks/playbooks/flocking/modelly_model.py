@@ -11,7 +11,7 @@ from __future__ import annotations
 import numpy as np
 
 from modelly import Model
-from modelly.experimental.continuous_space import (
+from modelly.space.continuous import (
     ContinuousSpace,
     ContinuousSpaceAgent,
     difference_vectors,

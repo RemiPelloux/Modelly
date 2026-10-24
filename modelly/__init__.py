@@ -5,16 +5,14 @@ Core Objects: Model, and Agent.
 
 import datetime
 
-import modelly.discrete_space as discrete_space
-import modelly.experimental as experimental
+import modelly.behaviour as behaviour
+import modelly.data as data
+import modelly.scenarios as scenarios
+import modelly.space as space
 import modelly.time as time
-from modelly.agent import Agent
-from modelly.batch import run_batch, run_grid
-from modelly.cohorts import CohortTable
-from modelly.columns import Column
-from modelly.datacollection import DataCollector
-from modelly.model import Model
-from modelly.rng import FastRandom
+from modelly.batch import CohortTable, run_batch, run_grid
+from modelly.core import Agent, Column, FastRandom, Model
+from modelly.data import DataCollector
 
 __all__ = [
     "Agent",
@@ -23,10 +21,12 @@ __all__ = [
     "DataCollector",
     "FastRandom",
     "Model",
-    "discrete_space",
-    "experimental",
+    "behaviour",
+    "data",
     "run_batch",
     "run_grid",
+    "scenarios",
+    "space",
     "time",
 ]
 

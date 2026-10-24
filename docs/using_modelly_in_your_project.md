@@ -38,9 +38,9 @@ Python package, and building from the source distribution compiles the core when
 is available. Check which one you have:
 
 ```python
-import modelly.rng
+import modelly.core.rng
 
-print(modelly.rng.NATIVE)  # True: randint, choice, shuffle and sample run in C
+print(modelly.core.rng.NATIVE)  # True: randint, choice, shuffle and sample run in C
 ```
 
 The results are the same either way, seed for seed; only the speed differs.
@@ -72,7 +72,7 @@ you reason about, and the model is what you measure. Keeping them apart keeps ea
 `epidemic/scenario.py`. Every parameter has a type and a default, and the seed is part of it:
 
 ```python
-from modelly.experimental.scenarios import Scenario
+from modelly.scenarios import Scenario
 
 
 class EpidemicScenario(Scenario):
@@ -98,7 +98,7 @@ whole population as numpy arrays; the agent still uses them as plain attributes.
 
 ```python
 from modelly import Column
-from modelly.discrete_space import CellAgent
+from modelly.space import CellAgent
 
 SUSCEPTIBLE, INFECTED, RECOVERED = 0, 1, 2
 
@@ -148,8 +148,8 @@ and exposes the quantities you want to measure.
 import numpy as np
 
 from modelly import Model
-from modelly.datacollection import DataCollector
-from modelly.discrete_space import OrthogonalMooreGrid
+from modelly.data.collector import DataCollector
+from modelly.space import OrthogonalMooreGrid
 
 from epidemic.agents import INFECTED, RECOVERED, SUSCEPTIBLE, Person
 from epidemic.scenario import EpidemicScenario
@@ -265,7 +265,7 @@ Each replication has its own seed derived from the base scenario, so the sweep i
 end to end. Runs are independent, so they parallelise without any change to the model:
 
 ```python
-from modelly.experimental.scenarios import RunConfiguration, run_scenarios
+from modelly.scenarios import RunConfiguration, run_scenarios
 
 scenarios = [
     s
@@ -350,7 +350,7 @@ The numbers behind these recommendations are in [performance.md](performance.md)
 With `modelly[viz]` installed:
 
 ```python
-from modelly.visualization import SolaraViz, make_space_component, make_plot_component
+from modelly.viz import SolaraViz, make_space_component, make_plot_component
 
 from epidemic.model import Epidemic
 

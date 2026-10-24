@@ -11,7 +11,7 @@ import networkx as nx
 import numpy as np
 
 from modelly import Column, Model
-from modelly.discrete_space import CellIndex, FixedAgent, Network
+from modelly.space import CellIndex, FixedAgent, Network
 
 S, I, R = 0, 1, 2
 

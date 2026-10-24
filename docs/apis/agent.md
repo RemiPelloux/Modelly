@@ -2,7 +2,7 @@
 
 
 ```{eval-rst}
-.. automodule:: modelly.agent
+.. automodule:: modelly.core.agent
    :members:
    :inherited-members:
 ```

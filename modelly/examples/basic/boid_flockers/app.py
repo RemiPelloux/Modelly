@@ -1,8 +1,8 @@
 from matplotlib.markers import MarkerStyle
 
 from modelly.examples.basic.boid_flockers.model import BoidFlockers, BoidsScenario
-from modelly.visualization import Slider, SolaraViz, SpaceRenderer
-from modelly.visualization.components import AgentPortrayalStyle
+from modelly.viz import Slider, SolaraViz, SpaceRenderer
+from modelly.viz.components import AgentPortrayalStyle
 
 # Pre-compute markers for different angles (e.g., every 10 degrees)
 MARKER_CACHE = {}

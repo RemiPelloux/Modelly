@@ -21,8 +21,8 @@ from modelly.examples.advanced.wolf_sheep.model import WolfSheepScenario
 from modelly.examples.basic.boid_flockers.model import BoidsScenario
 from modelly.examples.basic.boltzmann_wealth_model.model import BoltzmannScenario
 from modelly.examples.basic.schelling.model import SchellingScenario
-from modelly.visualization.components import AgentPortrayalStyle
-from modelly.visualization.components.matplotlib_components import (
+from modelly.viz.components import AgentPortrayalStyle
+from modelly.viz.mpl.components import (
     PlotMatplotlib,
     SpaceMatplotlib,
 )

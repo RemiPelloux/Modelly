@@ -116,11 +116,11 @@ bash scripts/ci-local.sh lint audit         # a subset of stages
 # Individual checks
 .venv/bin/ruff check .
 .venv/bin/ruff format --check .
-.venv/bin/python -m pytest -q --ignore=tests/visualization --ignore=tests/examples
+.venv/bin/python -m pytest -q --ignore=tests/viz --ignore=tests/examples
 bash scripts/audit-pelloux.sh
 ```
 
-`tests/visualization` and `tests/examples` need the optional `viz` extra
+`tests/viz` and `tests/examples` need the optional `viz` extra
 (solara); the local gate skips them and the hosted `build` workflow still runs
 the full suite on push and PR.
 

@@ -32,7 +32,7 @@ from typing import TYPE_CHECKING, Any
 from weakref import ReferenceType, WeakMethod, ref
 
 if TYPE_CHECKING:
-    from modelly import Model
+    from modelly.core.model import Model
 
 
 def _create_callable_reference(

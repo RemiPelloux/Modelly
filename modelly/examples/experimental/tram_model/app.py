@@ -10,8 +10,8 @@ from modelly.examples.experimental.tram_model.utils import (
     draw_track_view,
     tram_portrayal,
 )
-from modelly.visualization import Slider, SolaraViz, make_plot_component
-from modelly.visualization.utils import update_counter
+from modelly.viz import Slider, SolaraViz, make_plot_component
+from modelly.viz.utils import update_counter
 
 model_params = {
     "rng": {

@@ -6,7 +6,7 @@ of flocking behavior.
 
 import numpy as np
 
-from modelly.experimental.continuous_space import ContinuousSpaceAgent
+from modelly.space.continuous import ContinuousSpaceAgent
 
 
 class Boid(ContinuousSpaceAgent):

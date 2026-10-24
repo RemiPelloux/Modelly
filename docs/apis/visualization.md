@@ -36,14 +36,14 @@ For detailed tutorials, please refer to:
 ## Jupyter Visualization
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.solara_viz
+.. automodule:: modelly.viz.solara.app
    :members:
    :undoc-members:
    :show-inheritance:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.components.__init__
+.. automodule:: modelly.viz.components.__init__
    :members:
    :undoc-members:
    :show-inheritance:
@@ -52,7 +52,7 @@ For detailed tutorials, please refer to:
 ## User Parameters
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.user_param
+.. automodule:: modelly.viz.solara.params
    :members:
    :undoc-members:
    :show-inheritance:
@@ -62,14 +62,14 @@ For detailed tutorials, please refer to:
 ## Matplotlib-based visualizations
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.components.matplotlib_components
+.. automodule:: modelly.viz.mpl.components
    :members:
    :undoc-members:
    :show-inheritance:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.mpl_space_drawing
+.. automodule:: modelly.viz.mpl.space
    :members:
    :undoc-members:
    :show-inheritance:
@@ -79,7 +79,7 @@ For detailed tutorials, please refer to:
 ## Altair-based visualizations
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.components.altair_components
+.. automodule:: modelly.viz.altair.components
    :members:
    :undoc-members:
    :show-inheritance:
@@ -89,7 +89,7 @@ For detailed tutorials, please refer to:
 ## Command Console
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.command_console
+.. automodule:: modelly.viz.console.console
    :members:
    :undoc-members:
    :show-inheritance:
@@ -98,7 +98,7 @@ For detailed tutorials, please refer to:
 
 ## Portrayal Components
 ```{eval-rst}
-.. automodule:: modelly.visualization.components.portrayal_components
+.. automodule:: modelly.viz.render.portrayal
    :members:
    :undoc-members:
    :show-inheritance:
@@ -108,28 +108,28 @@ For detailed tutorials, please refer to:
 ## Backends
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.backends.__init__
+.. automodule:: modelly.viz.render.__init__
    :members:
    :undoc-members:
    :show-inheritance:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.backends.abstract_renderer
+.. automodule:: modelly.viz.render.backend
    :members:
    :undoc-members:
    :show-inheritance:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.backends.altair_backend
+.. automodule:: modelly.viz.altair.backend
    :members:
    :undoc-members:
    :show-inheritance:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.backends.matplotlib_backend
+.. automodule:: modelly.viz.mpl.backend
    :members:
    :undoc-members:
    :show-inheritance:
@@ -139,7 +139,7 @@ For detailed tutorials, please refer to:
 ## Space Renderer
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.space_renderer
+.. automodule:: modelly.viz.render.renderer
    :members:
    :undoc-members:
    :show-inheritance:
@@ -149,7 +149,7 @@ For detailed tutorials, please refer to:
 ## Space Drawers
 
 ```{eval-rst}
-.. automodule:: modelly.visualization.space_drawers
+.. automodule:: modelly.viz.render.drawers
    :members:
    :undoc-members:
    :show-inheritance:

@@ -22,17 +22,17 @@ GUIDE = "docs/migrating_from_mesa.md"
 
 # Mesa module -> Modelly module. Order matters: longer prefixes first.
 MODULE_MAP = (
-    ("mesa.experimental.cell_space", "modelly.discrete_space"),
-    ("mesa.experimental.continuous_space", "modelly.experimental.continuous_space"),
-    ("mesa.experimental.meta_agents", "modelly.experimental.meta_agents"),
-    ("mesa.experimental.signals", "modelly.experimental.signals"),
-    ("mesa.datacollection", "modelly.datacollection"),
-    ("mesa.discrete_space", "modelly.discrete_space"),
-    ("mesa.visualization", "modelly.visualization"),
-    ("mesa.batchrunner", "modelly.experimental.scenarios"),
-    ("mesa.space", "modelly.discrete_space"),
-    ("mesa.agent", "modelly.agent"),
-    ("mesa.model", "modelly.model"),
+    ("mesa.experimental.cell_space", "modelly.space"),
+    ("mesa.experimental.continuous_space", "modelly.space.continuous"),
+    ("mesa.experimental.meta_agents", "modelly.behaviour.meta_agents"),
+    ("mesa.experimental.signals", "modelly.time.signals"),
+    ("mesa.datacollection", "modelly.data.collector"),
+    ("mesa.discrete_space", "modelly.space"),
+    ("mesa.visualization", "modelly.viz"),
+    ("mesa.batchrunner", "modelly.scenarios"),
+    ("mesa.space", "modelly.space"),
+    ("mesa.agent", "modelly.core.agent"),
+    ("mesa.model", "modelly.core.model"),
     ("mesa.time", "modelly"),
     ("mesa", "modelly"),
 )

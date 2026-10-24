@@ -40,7 +40,7 @@ jobs:
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_ENVIRONMENT: "MODELLY_REQUIRE_NATIVE=1"
           CIBW_TEST_COMMAND: >-
-            python -c "import modelly.rng as r; assert r.NATIVE, 'compiled core not active'"
+            python -c "import modelly.core.rng as r; assert r.NATIVE, 'compiled core not active'"
       - uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ matrix.os }}

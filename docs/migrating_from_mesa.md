@@ -24,15 +24,15 @@ a Mesa 2 model needs the scheduler and grid sections.
 |---|---|
 | `import mesa` | `import modelly` |
 | `from mesa import Agent, Model, DataCollector` | `from modelly import Agent, Model, DataCollector` |
-| `mesa.datacollection` | `modelly.datacollection` |
-| `mesa.discrete_space` (3.2+), `mesa.experimental.cell_space` (3.0, 3.1) | `modelly.discrete_space` |
-| `mesa.space` (`MultiGrid`, `SingleGrid`, `NetworkGrid`, `ContinuousSpace`) | `modelly.discrete_space`, see [Grids](#grids-and-positions) |
+| `mesa.datacollection` | `modelly.data.collector` |
+| `mesa.discrete_space` (3.2+), `mesa.experimental.cell_space` (3.0, 3.1) | `modelly.space` |
+| `mesa.space` (`MultiGrid`, `SingleGrid`, `NetworkGrid`, `ContinuousSpace`) | `modelly.space`, see [Grids](#grids-and-positions) |
 | `mesa.time` (schedulers) | nothing to import, see [Activation](#activation-and-schedulers) |
-| `mesa.batchrunner.batch_run` | `modelly.experimental.scenarios`, see [Batch runs](#batch-runs) |
-| `mesa.visualization` | `modelly.visualization` (same component names) |
+| `mesa.batchrunner.batch_run` | `modelly.scenarios`, see [Batch runs](#batch-runs) |
+| `mesa.visualization` | `modelly.viz` (same component names) |
 | `mesa.experimental.devs` (`ABMSimulator`, `DEVSimulator`) | methods on `Model`, see [Events](#events-and-simulators) |
-| `mesa.experimental.continuous_space` | `modelly.experimental.continuous_space` |
-| `mesa.experimental.signals`, `mesa.experimental.meta_agents` | `modelly.experimental.signals`, `modelly.experimental.meta_agents` |
+| `mesa.experimental.continuous_space` | `modelly.space.continuous` |
+| `mesa.experimental.signals`, `mesa.experimental.meta_agents` | `modelly.time.signals`, `modelly.behaviour.meta_agents` |
 
 The codemod does all of these.
 
@@ -86,7 +86,7 @@ the same signatures.
 
 ## Grids and positions
 
-Modelly has one grid system, the cell space (`modelly.discrete_space`), which Mesa 3 ships as
+Modelly has one grid system, the cell space (`modelly.space`), which Mesa 3 ships as
 `mesa.discrete_space`. Mesa 2's `mesa.space.MultiGrid` and `SingleGrid` translate as follows. An
 agent that lives on a grid subclasses `CellAgent` and has a `cell` instead of a `pos`.
 
@@ -115,7 +115,7 @@ agent that lives on a grid subclasses `CellAgent` and has a `cell` instead of a 
 Moving along the grid: `agent.move_relative((dx, dy))`, or `Grid2DMovingAgent` with
 `agent.move("north")`.
 
-`ContinuousSpace` lives under `modelly.experimental.continuous_space`; agents subclass
+`ContinuousSpace` lives under `modelly.space.continuous`; agents subclass
 `ContinuousSpaceAgent`, keep their position in a shared numpy array, and query with
 `get_neighbors_in_radius` and `get_nearest_neighbors`.
 
@@ -148,7 +148,7 @@ Mesa's `batch_run(Model, parameters, iterations, max_steps, ...)` becomes scenar
 ```python
 from concurrent.futures import ProcessPoolExecutor
 
-from modelly.experimental.scenarios import RunConfiguration, run_scenarios
+from modelly.scenarios import RunConfiguration, run_scenarios
 
 scenarios = [
     s
@@ -173,7 +173,7 @@ and `run_for` / `run_until` advance time through the same event list that drives
 ## Visualization
 
 `SolaraViz`, `SpaceRenderer`, `make_space_component`, `make_plot_component`, `Slider` and the
-portrayal style classes keep their Mesa 3 names and signatures under `modelly.visualization`.
+portrayal style classes keep their Mesa 3 names and signatures under `modelly.viz`.
 Mesa 2's `ModularServer` and the JavaScript modules have no equivalent; rewrite those
 visualisations with `SolaraViz` (tutorial 6).
 

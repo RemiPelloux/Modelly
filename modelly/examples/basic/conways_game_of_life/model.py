@@ -1,6 +1,6 @@
 from modelly import Model
-from modelly.discrete_space import OrthogonalMooreGrid
 from modelly.examples.basic.conways_game_of_life.agents import Cell
+from modelly.space import OrthogonalMooreGrid
 
 
 class ConwaysGameOfLife(Model):

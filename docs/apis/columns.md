@@ -4,7 +4,7 @@ Columnar agent state: declare a `Column` on an `Agent` subclass and that attribu
 model-owned numpy array, readable per agent and as a whole.
 
 ```{eval-rst}
-.. automodule:: modelly.columns
+.. automodule:: modelly.core.columns
    :members:
 ```
 
@@ -12,6 +12,6 @@ Per-agent access: on the class, each column is a property that reads the agent's
 `memoryview` (see `Agent.column_specs()` for the declarations).
 
 ```{eval-rst}
-.. automodule:: modelly.column_access
+.. automodule:: modelly.core.column_access
    :members:
 ```

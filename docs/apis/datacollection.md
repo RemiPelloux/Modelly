@@ -1,7 +1,7 @@
 # Data collection
 
 ```{eval-rst}
-.. automodule:: modelly.datacollection
+.. automodule:: modelly.data.collector
    :members:
 ```
 
@@ -10,6 +10,6 @@
 The functions behind the collector: reporter normalisation and the fast row-collection paths.
 
 ```{eval-rst}
-.. automodule:: modelly.reporters
+.. automodule:: modelly.data.reporters
    :members:
 ```

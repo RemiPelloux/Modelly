@@ -82,8 +82,8 @@ myst:
 
 ```python
 from modelly import Model
-from modelly.discrete_space import CellAgent, OrthogonalMooreGrid
-from modelly.experimental.scenarios import Scenario
+from modelly.space import CellAgent, OrthogonalMooreGrid
+from modelly.scenarios import Scenario
 
 
 class WealthScenario(Scenario):

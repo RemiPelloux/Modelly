@@ -132,8 +132,8 @@ The same code ships as `example.py`.
 
 ```python
 from modelly import Model
-from modelly.discrete_space import CellAgent, OrthogonalMooreGrid
-from modelly.experimental.scenarios import Scenario
+from modelly.space import CellAgent, OrthogonalMooreGrid
+from modelly.scenarios import Scenario
 
 
 class WealthScenario(Scenario):
@@ -194,7 +194,7 @@ and a **model** that owns the world and advances it.
 ## Record it, then look at it
 
 ```python
-from modelly.datacollection import DataCollector
+from modelly.data.collector import DataCollector
 
 
 class WealthModel(Model):
@@ -302,7 +302,7 @@ is cached while no position changes. The Boids example uses it: 2,000 boids go f
 ### Replications in parallel
 
 ```python
-from modelly.experimental.scenarios import RunConfiguration, run_scenarios
+from modelly.scenarios import RunConfiguration, run_scenarios
 
 scenarios = WealthScenario(n=5000, rng=1).spawn_replications(32)  # 32 independent seeds
 store = run_scenarios(scenarios, RunConfiguration(WealthModel, until=200), workers=8)

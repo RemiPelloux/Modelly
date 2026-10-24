@@ -7,13 +7,13 @@ from modelly.examples.basic.virus_on_network.model import (
     VirusOnNetwork,
     number_infected,
 )
-from modelly.visualization import (
+from modelly.viz import (
     Slider,
     SolaraViz,
     SpaceRenderer,
     make_plot_component,
 )
-from modelly.visualization.components import AgentPortrayalStyle
+from modelly.viz.components import AgentPortrayalStyle
 
 
 def agent_portrayal(agent):

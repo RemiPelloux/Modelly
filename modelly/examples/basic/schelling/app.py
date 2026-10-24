@@ -3,13 +3,13 @@ import os
 import solara
 
 from modelly.examples.basic.schelling.model import Schelling, SchellingScenario
-from modelly.visualization import (
+from modelly.viz import (
     Slider,
     SolaraViz,
     SpaceRenderer,
     make_plot_component,
 )
-from modelly.visualization.components import AgentPortrayalStyle
+from modelly.viz.components import AgentPortrayalStyle
 
 
 def get_happy_agents(model):

@@ -3,8 +3,8 @@
 import math
 
 from modelly import Agent, Model
-from modelly.experimental.signals import HasEmitters, Observable
-from modelly.experimental.states import ContinuousState, Threshold
+from modelly.behaviour.states import ContinuousState, Threshold
+from modelly.time.signals import HasEmitters, Observable
 
 
 class Tram(Agent, HasEmitters):

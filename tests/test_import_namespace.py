@@ -9,7 +9,7 @@ def test_import():
     See https://github.com/RemiPelloux/Modelly/pull/1294.
     """
     import modelly  # noqa: PLC0415
-    from modelly.datacollection import DataCollector  # noqa: PLC0415
+    from modelly.data.collector import DataCollector  # noqa: PLC0415
 
     _ = DataCollector
     _ = modelly.DataCollector
@@ -63,13 +63,42 @@ def test_simulator_replacement_api_present():
 
 
 def test_meta_agents():
-    """Meta-agents live at modelly.experimental.meta_agents."""
+    """Meta-agents live at modelly.behaviour.meta_agents."""
     import modelly  # noqa: PLC0415
 
-    assert hasattr(modelly.experimental, "meta_agents")
-    from modelly.experimental.meta_agents import MetaAgents  # noqa: PLC0415
+    assert hasattr(modelly.behaviour, "meta_agents")
+    from modelly.behaviour.meta_agents import MetaAgents  # noqa: PLC0415
 
-    assert MetaAgents is modelly.experimental.meta_agents.MetaAgents
+    assert MetaAgents is modelly.behaviour.meta_agents.MetaAgents
+
+
+@pytest.mark.parametrize(
+    "old",
+    [
+        "modelly.experimental",
+        "modelly.discrete_space",
+        "modelly.visualization",
+        "modelly.agentset",
+        "modelly.datacollection",
+    ],
+)
+def test_pre_2_0_packages_are_gone(old):
+    """2.0 moved every module into a domain package; the old paths do not import."""
+    import importlib  # noqa: PLC0415
+
+    with pytest.raises(ModuleNotFoundError):
+        importlib.import_module(old)
+
+
+def test_domain_packages_export_their_public_names():
+    """Each domain package re-exports what users import from it."""
+    import modelly  # noqa: PLC0415
+
+    assert modelly.core.Agent is modelly.Agent
+    assert modelly.data.DataCollector is modelly.DataCollector
+    assert modelly.batch.run_batch is modelly.run_batch
+    for name in ("Cell", "CellAgent", "OrthogonalMooreGrid", "Network", "VoronoiGrid"):
+        assert hasattr(modelly.space, name)
 
 
 def test_import_modelly_does_not_load_scipy():

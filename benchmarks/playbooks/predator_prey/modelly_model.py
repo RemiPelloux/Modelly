@@ -13,7 +13,7 @@ from __future__ import annotations
 import numpy as np
 
 from modelly import Agent, Column, Model
-from modelly.discrete_space import (
+from modelly.space import (
     NO_MATCH,
     CellIndex,
     Occupancy,

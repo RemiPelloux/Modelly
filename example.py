@@ -4,8 +4,8 @@ Run with ``python example.py``; it prints the Gini coefficient after 100 ticks.
 """
 
 from modelly import Model
-from modelly.discrete_space import CellAgent, OrthogonalMooreGrid
-from modelly.experimental.scenarios import Scenario
+from modelly.scenarios import Scenario
+from modelly.space import CellAgent, OrthogonalMooreGrid
 
 
 class WealthScenario(Scenario):

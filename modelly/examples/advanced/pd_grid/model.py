@@ -2,9 +2,9 @@ import typing
 from typing import Literal
 
 import modelly
-from modelly.discrete_space import OrthogonalMooreGrid
 from modelly.examples.advanced.pd_grid.agents import PDAgent
-from modelly.experimental.scenarios import Scenario
+from modelly.scenarios import Scenario
+from modelly.space import OrthogonalMooreGrid
 
 
 class PrisonersDilemmaScenario(Scenario):

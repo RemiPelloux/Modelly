@@ -11,7 +11,7 @@ from __future__ import annotations
 import numpy as np
 
 from modelly import Column, Model
-from modelly.discrete_space import CellAgent, CellIndex, OrthogonalMooreGrid
+from modelly.space import CellAgent, CellIndex, OrthogonalMooreGrid
 
 
 class Animal(CellAgent):

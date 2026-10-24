@@ -1,6 +1,6 @@
 from modelly.examples.advanced.sugarscape_g1mt.model import SugarscapeG1mt
-from modelly.visualization import Slider, SolaraViz, SpaceRenderer, make_plot_component
-from modelly.visualization.components import AgentPortrayalStyle, PropertyLayerStyle
+from modelly.viz import Slider, SolaraViz, SpaceRenderer, make_plot_component
+from modelly.viz.components import AgentPortrayalStyle, PropertyLayerStyle
 
 
 def agent_portrayal(agent):

@@ -1,13 +1,13 @@
 from typing import Literal
 
 import modelly
-from modelly.discrete_space import OrthogonalMooreGrid, OrthogonalVonNeumannGrid
 from modelly.examples.advanced.epstein_civil_violence.agents import (
     Citizen,
     CitizenState,
     Cop,
 )
-from modelly.experimental.scenarios import Scenario
+from modelly.scenarios import Scenario
+from modelly.space import OrthogonalMooreGrid, OrthogonalVonNeumannGrid
 
 
 # Define a typed scenario subclass with defaults

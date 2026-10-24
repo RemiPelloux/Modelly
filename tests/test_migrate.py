@@ -52,15 +52,12 @@ class Walker(CellAgent):
 def test_imports_are_mapped():
     """Mesa modules map to their Modelly counterparts, longest prefix first."""
     assert migrate.map_module("mesa") == "modelly"
-    assert migrate.map_module("mesa.discrete_space") == "modelly.discrete_space"
+    assert migrate.map_module("mesa.discrete_space") == "modelly.space"
+    assert migrate.map_module("mesa.experimental.cell_space") == "modelly.space"
+    assert migrate.map_module("mesa.space") == "modelly.space"
+    assert migrate.map_module("mesa.batchrunner") == "modelly.scenarios"
     assert (
-        migrate.map_module("mesa.experimental.cell_space") == "modelly.discrete_space"
-    )
-    assert migrate.map_module("mesa.space") == "modelly.discrete_space"
-    assert migrate.map_module("mesa.batchrunner") == "modelly.experimental.scenarios"
-    assert (
-        migrate.map_module("mesa.visualization.components")
-        == "modelly.visualization.components"
+        migrate.map_module("mesa.visualization.components") == "modelly.viz.components"
     )
     assert migrate.map_module("mesaboard") == "mesaboard"
 
@@ -69,12 +66,9 @@ def test_mesa3_model_needs_only_imports():
     """A Mesa 3 model is fully migrated by the import rewrite."""
     result = migrate.migrate_source(Path("walker.py"), MESA3_MODEL)
     assert "from modelly import Agent, Model" in result.migrated
-    assert (
-        "from modelly.discrete_space import CellAgent, OrthogonalMooreGrid"
-        in result.migrated
-    )
-    assert "from modelly.discrete_space import Cell" in result.migrated
-    assert "import modelly.visualization as viz" in result.migrated
+    assert "from modelly.space import CellAgent, OrthogonalMooreGrid" in result.migrated
+    assert "from modelly.space import Cell" in result.migrated
+    assert "import modelly.viz as viz" in result.migrated
     assert "mesa" not in result.migrated
     assert result.findings == []
 
@@ -88,7 +82,7 @@ def test_mesa2_model_rewrites_and_flags():
     assert 'self.agents.shuffle_do("step")' in migrated
     assert "if self.time > 10:" in migrated
     assert "lambda m: len(m.agents)" in migrated
-    assert "from modelly.discrete_space import MultiGrid" in migrated
+    assert "from modelly.space import MultiGrid" in migrated
 
     reasons = {finding.reason.split(":")[0] for finding in result.findings}
     assert {

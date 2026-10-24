@@ -1,8 +1,8 @@
 from modelly import Model
-from modelly.datacollection import DataCollector
-from modelly.discrete_space import OrthogonalMooreGrid
+from modelly.data.collector import DataCollector
 from modelly.examples.basic.schelling.agents import SchellingAgent
-from modelly.experimental.scenarios import Scenario
+from modelly.scenarios import Scenario
+from modelly.space import OrthogonalMooreGrid
 
 
 class SchellingScenario(Scenario):

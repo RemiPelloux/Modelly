@@ -1,4 +1,4 @@
-from modelly.discrete_space import CellAgent
+from modelly.space import CellAgent
 
 
 class SchellingAgent(CellAgent):

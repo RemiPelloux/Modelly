@@ -10,11 +10,11 @@ when they occupy the same cell.
 import numpy as np
 
 from modelly import Model
-from modelly.datacollection import DataCollector
-from modelly.discrete_space import OrthogonalMooreGrid
+from modelly.data.collector import DataCollector
+from modelly.data.recorders import DataRecorder, DatasetConfig
 from modelly.examples.basic.boltzmann_wealth_model.agents import MoneyAgent
-from modelly.experimental.data_collection import DataRecorder, DatasetConfig
-from modelly.experimental.scenarios import Scenario
+from modelly.scenarios import Scenario
+from modelly.space import OrthogonalMooreGrid
 
 
 class BoltzmannScenario(Scenario):

@@ -15,8 +15,8 @@ import numpy as np
 
 from modelly import Model
 from modelly.examples.basic.boid_flockers.agents import Boid
-from modelly.experimental.continuous_space import ContinuousSpace
-from modelly.experimental.scenarios import Scenario
+from modelly.scenarios import Scenario
+from modelly.space.continuous import ContinuousSpace
 
 
 class BoidsScenario(Scenario):

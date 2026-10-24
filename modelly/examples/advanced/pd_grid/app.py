@@ -3,13 +3,13 @@ Solara-based visualization for the Spatial Prisoner's Dilemma Model.
 """
 
 from modelly.examples.advanced.pd_grid.model import PdGrid, PrisonersDilemmaScenario
-from modelly.visualization import (
+from modelly.viz import (
     Slider,
     SolaraViz,
     SpaceRenderer,
     make_plot_component,
 )
-from modelly.visualization.components import AgentPortrayalStyle
+from modelly.viz.components import AgentPortrayalStyle
 
 
 def pd_agent_portrayal(agent):

@@ -12,10 +12,10 @@ Replication of the model found in NetLogo:
 import math
 
 from modelly import Model
-from modelly.datacollection import DataCollector
-from modelly.discrete_space import OrthogonalVonNeumannGrid
+from modelly.data.collector import DataCollector
 from modelly.examples.advanced.wolf_sheep.agents import GrassPatch, Sheep, Wolf
-from modelly.experimental.scenarios import Scenario
+from modelly.scenarios import Scenario
+from modelly.space import OrthogonalVonNeumannGrid
 
 
 class WolfSheepScenario(Scenario):
