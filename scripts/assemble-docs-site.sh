@@ -36,6 +36,20 @@ if [[ "$VERSION" != dev && "$VERSION" == "$newest" ]]; then
   echo "root updated to $VERSION"
 fi
 
+# The roadmap is newer than some releases: until the root version has its own, /roadmap/
+# sends readers to the dev build's.
+if [[ ! -f "$SITE/roadmap/index.html" && -f "$SITE/dev/roadmap/index.html" ]]; then
+  mkdir -p "$SITE/roadmap"
+  cat > "$SITE/roadmap/index.html" <<'HTML'
+<!doctype html>
+<meta charset="utf-8">
+<title>Roadmap</title>
+<meta http-equiv="refresh" content="0; url=../dev/roadmap/">
+<link rel="canonical" href="../dev/roadmap/">
+<p>The roadmap is at <a href="../dev/roadmap/">dev/roadmap</a>.</p>
+HTML
+fi
+
 "$PYTHON" "$HERE/docs_switcher.py" "$SITE"
 touch "$SITE/.nojekyll"
 echo "site assembled: $(du -sh "$SITE" --exclude=.git | cut -f1) in $SITE"
