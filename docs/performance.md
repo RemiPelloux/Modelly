@@ -352,6 +352,40 @@ would forbid a subclass from relying on `Agent.__dict__` semantics. The two regi
 are the next target; a more compact registry must keep iteration order, membership in C and
 the removal semantics, so it is a design change rather than a patch.
 
+### No regression from release to release
+
+Every release is benchmarked against the previous published one before it is tagged: the
+previous wheel from PyPI against the new wheel built by the release workflow (same
+toolchain), installed with identical dependencies, on one machine. Three measurements, each
+in paired, alternating runs so that load and frequency drift hit both versions alike:
+
+- **Core operations** (17, including Column reads, agent removal with columns, cell moves
+  and neighbourhood walks): two persistent processes pinned to one core, short bursts in
+  ABBA order, over several sessions with the starting version swapped; a numpy-only control
+  must read 1.00.
+- **The playbooks** (13 Modelly variants): the same seeds in two persistent processes, ABBA,
+  CPU time of the steps, results compared seed by seed.
+- **A research notebook** (a 576-season factorial at 1/30 scale): its seasons in chunks
+  alternating between the two versions, records compared chunk by chunk.
+
+1.3.1 against 1.2.0 (median ratio of CPU time, 1.3.1 / 1.2.0; below 1 is faster):
+
+| Measurement | Ratio | Results |
+|---|---|---|
+| `AgentSet.select` | 0.79 | |
+| `AgentSet.agg` | 0.88 | |
+| Creating and removing agents | 0.94 | |
+| `shuffle_do` | 0.97 | |
+| `do`, Column read and write, cell moves, neighbourhood walks, data collection, events, random draws | 0.98 to 1.01, within noise | |
+| Playbooks: insect cohorts (individuals) | 0.94 | identical |
+| Playbooks: the other twelve variants | 0.98 to 1.00 | identical |
+| TIS notebook at 1/30, 576 seasons | 1.00 (17.92 s and 17.92 s) | identical |
+
+1.3.0 had two small regressions that this check found after its release: a Column read
+was about 2.5% slower (the getter kept the column's name for a clearer error) and, on
+regular builds, the neighbourhood walk and the cell move paid for free-threading safety
+they do not need. 1.3.1 removes both; the free-threaded builds keep their safe paths.
+
 ### How we evaluate against other frameworks
 
 Micro-benchmarks say where time goes; whether a framework is faster for a researcher is
