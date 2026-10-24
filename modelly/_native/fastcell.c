@@ -88,7 +88,10 @@ layout_of(PyObject *cell)
     PyTypeObject *type = Py_TYPE(cell);
     if (cached.type != type || cached.version == 0
         || cached.version != LOAD_RELAXED_U32(&type->tp_version_tag)
-        || cached.generation != LOAD_RELAXED_U32(&generation))
+#ifdef Py_GIL_DISABLED /* other threads' caches are cleared by the generation; with the GIL, bind() clears the one cache */
+        || cached.generation != LOAD_RELAXED_U32(&generation)
+#endif
+    )
         learn(type, &cached);
     return &cached;
 }
@@ -145,7 +148,11 @@ bind(PyObject *Py_UNUSED(module), PyObject *const *argv, Py_ssize_t nargs)
         old[i] = *slots[i];
         *slots[i] = Py_NewRef(argv[i]);
     }
+#ifdef Py_GIL_DISABLED
     STORE_RELAXED_U32(&generation, generation + 1); /* every thread relearns every type */
+#else
+    cached.type = NULL; /* relearn every type against the new references, as in 1.2 */
+#endif
     UNLOCK(binding_lock);
     for (int i = 0; i < BOUND_COUNT; i++)
         Py_XDECREF(old[i]); /* outside the lock: a finalizer may run Python code */
