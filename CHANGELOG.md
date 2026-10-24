@@ -3,6 +3,59 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.1.0 - 2026-10-24
+
+### Added
+
+- `modelly.profile`: a runtime profiler. `with Profiler(model) as prof: model.run_for(n)`, then
+  `prof.report()` or `prof.to_dataframe()`, gives the time of each step by agent class and
+  method (calls, agents per call, microseconds per agent), data collection and scheduled events,
+  with hints that point at the matching lint rule. `python -m modelly.profile model.py:MyModel`
+  runs it from the command line. Results are identical with and without the profiler, and the
+  instrumented methods are restored exactly on exit.
+- `python -m modelly` and a `modelly` script: one entry point for `lint`, `migrate` and `profile`,
+  with `--version` and a help page listing every command.
+- `AgentPortrayalStyle.filled` (Altair backend); extra keywords to `draw_agents` reach
+  `mark_point` instead of being dropped.
+- Three benchmark playbooks, each for Mesa 2.3 and Modelly with agreement and determinism
+  checks: `schelling` (27x), `boltzmann_wealth` (7.4x) and `sugarscape` (12x).
+
+### Linter
+
+- New rules: MDL005 wall-clock or OS entropy in model code, MDL006 ordering by `id()` or
+  `hash()`, MDL007 removing agents while looping over the population, MDL008 `global` state in
+  a model method, MDL009 editing `model.agents` directly, MDL106 DataFrames built inside `step`,
+  MDL107 a per-agent loop that only writes columns.
+- MDL001 also catches unseeded `Random()`, `SystemRandom` and numpy generators without a seed,
+  and resolves imports (`default_rng(seed=7)` is no longer flagged); MDL004 skips `__slots__`
+  and `ClassVar`.
+- `# noqa: MDLxxx` suppression, `[tool.modelly.lint]` in `pyproject.toml` (`select`, `ignore`,
+  `per-file-ignores`), `--explain CODE` with a bad and a fixed example, `--statistics`,
+  `--format github` and `--quiet`.
+- Detailed `--help` for `lint` and `migrate`, with examples and exit codes; `docs/lint.md`
+  lists every rule.
+
+### Performance
+
+- Moving an agent between cells runs in a third compiled module (`modelly/_native/fastcell.c`):
+  one move is 205 ns to 107 ns, the cell-list playbooks 7 to 14% faster, with the same results.
+  Subclasses that override `add_agent` or `remove_agent` keep their overrides; the pure-Python
+  twin is used when the module is not built.
+- `import modelly` no longer walks the stack to name its loggers (about 30 ms less).
+
+### Fixed
+
+- Matplotlib marker groups are drawn in first-seen order instead of set order, so the
+  layering no longer changes from run to run.
+- `run_batch` no longer emits Python's multi-threaded fork `DeprecationWarning` for closure
+  batches.
+
+### CI
+
+- Release wheels are built on tags and manual runs only; superseded runs are cancelled;
+  docs-only changes skip the build; Dependabot groups its updates monthly; the `examples` job,
+  which checked out a missing repository, is gone (the test matrix already runs `tests/examples`).
+
 ## 1.0.1 - 2026-10-24
 
 The 1.0.0 code, published to PyPI under a new number: PyPI does not accept a second upload of
