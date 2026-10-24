@@ -66,6 +66,15 @@ MODELS: tuple[ZooModel, ...] = (
         "SEIR over age groups mixing through a contact matrix, as binomial cohorts.",
         "attack rate against the final-size relation, within the CLT bound",
     ),
+    ZooModel(
+        "nagel_schreckenberg",
+        "Nagel-Schreckenberg traffic",
+        "transport",
+        "NagelSchreckenberg",
+        "TrafficScenario",
+        "Cars on a ring road accelerate, brake to the gap ahead and dawdle at random.",
+        "fundamental diagram: exact min(rho v, 1 - rho) without dawdling, rise then fall",
+    ),
 )
 
 
