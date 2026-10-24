@@ -100,3 +100,61 @@ Agreement over 6 shared seeds at the small size (mean ± sd; p from Welch's t-te
 | final_adults | 486.17 ± 14.50 | 493.83 ± 10.45 (p=0.36) | 477.67 ± 26.65 (p=0.55) |
 | mean_adults | 266.28 ± 8.01 | 277.13 ± 8.00 (p=0.06) | 270.23 ± 10.22 (p=0.51) |
 | peak_adults | 490.83 ± 15.45 | 502.17 ± 12.29 (p=0.23) | 487.33 ± 18.79 (p=0.75) |
+
+## schelling: Schelling segregation: unhappy residents move to random empty cells
+
+Size `large`, 40 steps, CPU seconds; run = the steps, build = model construction.
+
+| variant | population | build | run 1 | run 2 | run 3 | run median | speed-up (run) | speed-up (build + run) | deterministic |
+|---|---|---|---|---|---|---|---|---|---|
+| mesa | 31,941 | 0.03 | 3.23 | 3.12 | 3.38 | 3.23 | 1.0x | 1.0x | yes |
+| modelly-cells | 31,941 | 0.19 | 0.24 | 0.21 | 0.22 | 0.22 | 15.0x | 7.9x | yes |
+| modelly | 31,941 | 0.24 | 0.12 | 0.12 | 0.12 | 0.12 | 27.1x | 9.2x | yes |
+
+Agreement over 6 shared seeds at the small size (mean ± sd; p from Welch's t-test against Mesa, flagged below 0.01).
+
+| statistic | mesa | modelly-cells | modelly |
+|---|---|---|---|
+| final_happy | 0.99 ± 0.00 | 1.00 ± 0.00 (p=0.77) | 1.00 ± 0.00 (p=0.61) |
+| mean_happy | 0.96 ± 0.01 | 0.96 ± 0.00 (p=0.89) | 0.97 ± 0.00 (p=0.42) |
+| total_moves | 1,918.00 ± 279.45 | 1,897.50 ± 119.55 (p=0.88) | 1,780.33 ± 227.70 (p=0.41) |
+| segregation | 0.82 ± 0.01 | 0.82 ± 0.01 (p=0.43) | 0.82 ± 0.01 (p=0.84) |
+
+## boltzmann_wealth: Boltzmann wealth exchange with random partners, Gini by a DataCollector
+
+Size `large`, 100 steps, CPU seconds; run = the steps, build = model construction.
+
+| variant | population | build | run 1 | run 2 | run 3 | run median | speed-up (run) | speed-up (build + run) | deterministic |
+|---|---|---|---|---|---|---|---|---|---|
+| mesa | 10,000 | 0.01 | 1.51 | 1.56 | 1.50 | 1.51 | 1.0x | 1.0x | yes |
+| modelly | 10,000 | 0.02 | 0.20 | 0.21 | 0.20 | 0.20 | 7.4x | 6.9x | yes |
+
+Agreement over 6 shared seeds at the small size (mean ± sd; p from Welch's t-test against Mesa, flagged below 0.01).
+
+| statistic | mesa | modelly |
+|---|---|---|
+| final_gini | 0.62 ± 0.02 | 0.62 ± 0.01 (p=0.78) |
+| mean_gini | 0.62 ± 0.00 | 0.63 ± 0.01 (p=0.57) |
+| final_zero_share | 0.46 ± 0.02 | 0.46 ± 0.02 (p=0.96) |
+| final_max_wealth | 7.00 ± 1.00 | 8.83 ± 1.67 (p=0.07) |
+
+## sugarscape: Sugarscape, constant growback: foragers move to the best sugar in sight
+
+Size `large`, 100 steps, CPU seconds; run = the steps, build = model construction.
+
+| variant | population | build | run 1 | run 2 | run 3 | run median | speed-up (run) | speed-up (build + run) | deterministic |
+|---|---|---|---|---|---|---|---|---|---|
+| mesa | 683 | 0.00 | 7.33 | 6.33 | 6.68 | 6.68 | 1.0x | 1.0x | yes |
+| modelly-cells | 676 | 0.02 | 1.17 | 1.14 | 1.29 | 1.17 | 5.7x | 5.6x | yes |
+| modelly | 683 | 0.03 | 0.52 | 0.57 | 0.59 | 0.57 | 11.7x | 11.0x | yes |
+
+Agreement over 6 shared seeds at the small size (mean ± sd; p from Welch's t-test against Mesa, flagged below 0.01).
+
+| statistic | mesa | modelly-cells | modelly |
+|---|---|---|---|
+| final_population | 201.17 ± 8.03 | 201.17 ± 7.01 (p=1.00) | 201.33 ± 6.75 (p=0.97) |
+| mean_population | 222.44 ± 7.76 | 222.24 ± 6.80 (p=0.97) | 222.37 ± 6.77 (p=0.99) |
+| mean_vision | 3.82 ± 0.11 | 3.82 ± 0.12 (p=0.98) | 3.81 ± 0.12 (p=0.95) |
+| mean_metabolism | 1.80 ± 0.07 | 1.80 ± 0.07 (p=0.99) | 1.80 ± 0.07 (p=0.96) |
+| mean_wealth | 112.96 ± 3.49 | 112.68 ± 3.20 (p=0.90) | 112.41 ± 4.12 (p=0.83) |
+| sugar_left | 3,253.83 ± 13.33 | 3,260.00 ± 11.14 (p=0.45) | 3,257.00 ± 11.21 (p=0.69) |
