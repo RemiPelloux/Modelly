@@ -3,6 +3,52 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.2.0 - 2026-10-24
+
+### Added
+
+- Checkpoints: `model.save(path)`, `Model.load(path)` and `model.checkpoint_every(n, pattern)`.
+  A run resumed from a checkpoint, in a new process, gives exactly the run it would have been:
+  both random generators, the event scheduler, spaces, columns and collected data are saved.
+  A checkpoint made with the compiled random core loads into the pure-Python one and the other
+  way round. Loading runs pickle: only load files you trust. Lambdas and closures are refused
+  with an error naming them.
+- Versioned documentation: `/Modelly/` is the latest release, `/Modelly/dev/` is main and
+  each minor release keeps its own folder (`/1.0/`, `/1.1/`, `/1.2/`), with a version switcher
+  in the navbar and a banner on older versions.
+- `modelly profile --sizes 1000,4000` (and `modelly.profile.compare_sizes`) profiles a model
+  at several population sizes and compares the cost per agent, so the MDL101 hint also works
+  for models whose population does not change during a run.
+- `MetaAgents.cache_build(score)`: scores each candidate group once across repeated
+  `find_combinations` calls, with `invalidate()` and an optional `maxsize`.
+- Windows wheels (x86-64) with the compiled modules.
+
+### Changed
+
+- `modelly lint --help`, `modelly migrate --help` and `modelly profile --help` name the
+  command as it was run (`modelly <cmd>`, or `python -m modelly.<cmd>`).
+- MDL107 follows imports of agent classes from other files in the linted tree, so models split
+  into several modules are checked.
+- A `CellCollection` built without a generator takes its cells' or agents' model generator, so
+  the same seed gives the same draws.
+- The creation path of meta agents returns `MetaAgent` instead of `Any`.
+
+### Performance
+
+- Removing an agent that belongs to meta agents reads its own memberships instead of copying
+  the whole membership table: 2,000 removals among 10,000 agents went from 100 s to 0.16 s.
+- `fastcell.c` uses only the public C API, with the same speed as 1.1.0.
+- The Sugarscape playbook ranks cells only when a forager's best cell is taken: 2.5x faster
+  than in 1.1.0, 32x faster than Mesa 2.3 (was 12x), same results.
+
+### Fixed
+
+- A continuous space restored from a pickle kept a copy of the agent positions, so later moves
+  were lost; it now keeps a view.
+- The empty-cell index keeps its order through pickling, so a restored grid draws the same
+  empty cells.
+- `DataCollector` reporters are picklable.
+
 ## 1.1.0 - 2026-10-24
 
 ### Added
