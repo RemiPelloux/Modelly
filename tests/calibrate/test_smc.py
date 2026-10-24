@@ -165,15 +165,15 @@ def test_same_posterior_on_every_executor():
 
 def test_same_posterior_with_the_pure_python_core(tmp_path):
     """MODELLY_PURE_PYTHON=1 in a fresh process gives the posterior of this process."""
-    out = tmp_path / "pure.csv"
+    out = tmp_path / "pure.parquet"
     code = (
         "import sys; from tests.calibrate.test_smc import agent_smc; "
-        "agent_smc('serial').to_csv(sys.argv[1], index=False)"
+        "agent_smc('serial').to_parquet(sys.argv[1])"
     )
     env = {**os.environ, "MODELLY_PURE_PYTHON": "1", "PYTHONPATH": str(ROOT)}
     subprocess.run(
         [sys.executable, "-c", code, str(out)], check=True, env=env, cwd=ROOT
     )
     compiled = agent_smc("serial")
-    pure = pd.read_csv(out, float_precision="round_trip")
+    pure = pd.read_parquet(out)  # exact for floats, unlike a CSV round trip
     pd.testing.assert_frame_equal(pure, compiled, check_exact=True)
