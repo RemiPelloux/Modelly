@@ -60,10 +60,11 @@ def test_command_help_names_the_umbrella(name, capsys):
 
 @pytest.mark.parametrize(("name", "module"), [(n, m) for n, m, _ in COMMANDS])
 def test_command_run_directly_keeps_its_module_name(name, module, capsys):
-    """``python -m modelly.NAME --help`` (main without prog) still names the module."""
+    """``python -m MODULE --help`` (main without prog) still names the module."""
     with pytest.raises(SystemExit):
         importlib.import_module(module).main(["--help"])
-    assert capsys.readouterr().out.startswith(f"usage: python -m modelly.{name} ")
+    package = module.removesuffix(".__main__")
+    assert capsys.readouterr().out.startswith(f"usage: python -m {package} ")
 
 
 def test_command_errors_name_the_umbrella(capsys):

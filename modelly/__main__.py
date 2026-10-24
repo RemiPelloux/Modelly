@@ -19,6 +19,11 @@ EXIT_USAGE = 2
 # (name, module with main(argv, prog) -> int, one-line summary)
 COMMANDS = (
     (
+        "experiment",
+        "modelly.experiments.__main__",
+        "run a parameter sweep from a TOML spec; resumable, on any executor",
+    ),
+    (
         "lint",
         "modelly.lint.__main__",
         "find reproducibility bugs and O(N^2) patterns in a model",
@@ -42,7 +47,8 @@ commands:
 {commands}
 
 examples:
-  modelly lint src/                     check a model (same as python -m modelly.lint src/)
+  modelly experiment run study.toml     run a sweep (resumes where it stopped)
+  modelly lint src/                    check a model (same as python -m modelly.lint src/)
   modelly lint --explain MDL101         why a rule matters, with a fix
   modelly migrate my_mesa_model/        dry run of the Mesa codemod
   modelly profile model.py:MyModel      where each step's time goes
