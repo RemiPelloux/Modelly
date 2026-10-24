@@ -27,6 +27,11 @@ COMMANDS = (
         "modelly.migrate",
         "rewrite a Mesa model for Modelly and report what is left",
     ),
+    (
+        "profile",
+        "modelly.profile.__main__",
+        "time a model's steps by agent class, data collection and events",
+    ),
 )
 
 DESCRIPTION = "Command-line tools for Modelly models."
@@ -39,6 +44,7 @@ examples:
   modelly lint src/                     check a model (same as python -m modelly.lint src/)
   modelly lint --explain MDL101         why a rule matters, with a fix
   modelly migrate my_mesa_model/        dry run of the Mesa codemod
+  modelly profile model.py:MyModel      where each step's time goes
   modelly COMMAND --help                every option of one command
 
 exit status:
