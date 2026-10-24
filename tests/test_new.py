@@ -108,3 +108,12 @@ def test_cli_list_and_umbrella(tmp_path, capsys):
     with pytest.raises(SystemExit) as stop:
         main([])
     assert stop.value.code == EXIT_USAGE
+
+
+def test_from_zoo_copies_a_zoo_model(tmp_path, capsys):
+    """``--from-zoo`` writes the zoo model instead of a template; an unknown name is a usage error."""
+    target = tmp_path / "traffic"
+    assert main([str(target), "--from-zoo", "nagel_schreckenberg"]) == EXIT_CLEAN
+    assert (target / "model.py").is_file()
+    assert "wrote" in capsys.readouterr().out
+    assert main([str(tmp_path / "other"), "--from-zoo", "no_such_model"]) == EXIT_USAGE

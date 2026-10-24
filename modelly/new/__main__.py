@@ -22,10 +22,11 @@ examples:
   modelly new forest-fire                       the grid template, in ./forest-fire
   modelly new epidemic --template network       another template
   modelly new --list-templates                  what each template models
+  modelly new traffic --from-zoo nagel_schreckenberg   start from a validated zoo model
 
 exit status:
   {EXIT_CLEAN}  the project was written
-  {EXIT_USAGE}  usage error: bad name, unknown template, or the folder exists and is not empty"""
+  {EXIT_USAGE}  usage error: bad name, unknown template or zoo model, or the folder exists and is not empty"""
 
 NEXT_STEPS = """\
 created {count} files in {target}
@@ -53,9 +54,23 @@ def build_parser(prog: str = PROG) -> argparse.ArgumentParser:
         help=f"what the model starts from (default: {DEFAULT_TEMPLATE})",
     )
     parser.add_argument(
+        "--from-zoo",
+        metavar="MODEL",
+        help="start from a validated zoo model instead of a template (modelly zoo list)",
+    )
+    parser.add_argument(
         "--list-templates", action="store_true", help="print the templates and exit"
     )
     return parser
+
+
+def write(args: argparse.Namespace) -> list:
+    """The files of the new project: a zoo model's copy, or a template's project."""
+    if args.from_zoo:
+        from modelly.zoo import copy_model  # noqa: PLC0415 - only this option needs the zoo
+
+        return copy_model(args.from_zoo, args.name)
+    return create_project(args.name, args.template)
 
 
 def list_templates() -> str:
@@ -74,10 +89,13 @@ def main(argv: list[str] | None = None, prog: str = PROG) -> int:
     if not args.name:
         parser.error("the project name is required (or --list-templates)")
     try:
-        written = create_project(args.name, args.template)
-    except (ProjectError, OSError) as error:
+        written = write(args)
+    except (ProjectError, OSError, KeyError) as error:
         sys.stderr.write(f"modelly new: {error}\n")
         return EXIT_USAGE
+    if args.from_zoo:
+        sys.stdout.write("".join(f"wrote {path}\n" for path in written))
+        return EXIT_CLEAN
     package = written[0].parent.name  # the template's first file is in the package
     sys.stdout.write(
         NEXT_STEPS.format(count=len(written), target=args.name, package=package)
