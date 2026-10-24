@@ -64,7 +64,7 @@ def load_class(target: str) -> type[Model]:
     return cls
 
 
-def _scenario_class(parameters: dict[str, inspect.Parameter]) -> type[Scenario] | None:
+def scenario_class(parameters: dict[str, inspect.Parameter]) -> type[Scenario] | None:
     """The Scenario class a model's ``scenario`` argument defaults to, if any."""
     scenario = parameters.get("scenario")
     default = scenario.default if scenario is not None else None
@@ -81,7 +81,7 @@ def build_model(cls: type[Model], params: dict[str, Any], seed: int | None) -> M
     parameters = dict(inspect.signature(cls).parameters)
     kwargs = {k: v for k, v in params.items() if k in parameters and k != "scenario"}
     rest = {k: v for k, v in params.items() if k not in kwargs}
-    scenario = _scenario_class(parameters)
+    scenario = scenario_class(parameters)
     if scenario is not None and (rest or seed is not None):
         seeded = {} if seed is None else {"rng": seed}
         kwargs["scenario"] = scenario(**seeded, **rest)
@@ -97,7 +97,7 @@ def parameter_names(cls: type[Model]) -> set[str]:
     """The parameters ``cls`` takes by name, and those its Scenario class declares."""
     parameters = dict(inspect.signature(cls).parameters)
     own = {k for k, p in parameters.items() if p.kind not in VARIADIC}
-    scenario = _scenario_class(parameters)
+    scenario = scenario_class(parameters)
     declared = set(scenario._scenario_defaults) if scenario is not None else set()
     return (own | declared) - {"scenario", "rng"}
 

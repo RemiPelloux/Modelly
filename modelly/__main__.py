@@ -83,6 +83,11 @@ COMMANDS = (
         "modelly.sensitivity.__main__",
         "rank parameters by influence (OAT, Morris, Sobol, PAWN)",
     ),
+    (
+        "studio",
+        "modelly.studio.__main__",
+        "open a model in Modelly Studio, a browser app to run and inspect it",
+    ),
 )
 
 DESCRIPTION = "Command-line tools for Modelly models."
@@ -107,6 +112,7 @@ examples:
   modelly bench --label v1.3.0          time the playbooks, append to the history
   modelly zoo copy age_seir my_model/   start a project from a zoo model
   modelly sensitivity sir.toml          which parameters matter most
+  modelly studio model.py:MyModel       run, scrub and inspect it in the browser
   modelly COMMAND --help                every option of one command
 
 exit status:
