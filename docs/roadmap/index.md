@@ -1,47 +1,28 @@
 # Roadmap
 
-**Status:** proposed · **Written:** 2026-10-24 · **Current release:** 1.2.0
+**Status:** proposed · **Current release:** 1.2.0
 
 Four releases take Modelly from a fast agent-based modelling framework to the research platform
 people use to **build, calibrate, explain, scale, share and publish** a model, in any field, on
 **Windows, macOS and Linux alike**.
 
-| Release | Target date | Theme | One line |
-|---|---|---|---|
-| [1.3.0](1.3.0.md) | 2027-02-26 | Answers and trust | Calibrate, explain and publish a model: experiments, calibration, sensitivity, provenance, Studio, model zoo |
-| [1.4.0](1.4.0.md) | 2027-06-25 | Scale out and connect | Distributed and GPU runs, differentiable models, live data and digital twins, Modelly in the browser |
-| [1.5.0](1.5.0.md) | 2027-10-29 | Ecosystem and collaboration | Model hub, model cards, policy and causal tools, LLM agents II, R and Julia bindings |
-| [2.0.0](2.0.0.md) | 2028-03-10 | Clean foundations | One space API, one clock, columns by default, typed scenarios, stable ABI and checkpoint format |
+| Release | Theme | One line |
+|---|---|---|
+| [1.3.0](1.3.0.md) | Answers and trust | Calibrate, explain and publish a model: experiments, calibration, sensitivity, provenance, Studio, model zoo |
+| [1.4.0](1.4.0.md) | Scale out and connect | Distributed and GPU runs, differentiable models, live data and digital twins, Modelly in the browser |
+| [1.5.0](1.5.0.md) | Ecosystem and collaboration | Model hub, model cards, policy and causal tools, LLM agents II, R and Julia bindings |
+| [2.0.0](2.0.0.md) | Clean foundations | One space API, one clock, columns by default, typed scenarios, stable ABI and checkpoint format |
 
 Every feature on these pages must work on Windows, macOS and Linux before it ships. How that is
 guaranteed, and the support matrix for each release, is on [Platforms](platforms.md).
 
-## Timeline
+## Order, not dates
 
-```{mermaid}
-gantt
-    title Modelly releases, 2026 to 2028
-    dateFormat YYYY-MM-DD
-    axisFormat %b %Y
-    tickInterval 3month
-    section 1.3.0
-    Answers and trust            :r13, 2026-11-02, 2027-02-26
-    section 1.4.0
-    Scale out and connect        :r14, 2027-03-08, 2027-06-25
-    section 1.5.0
-    Ecosystem and collaboration  :r15, 2027-07-12, 2027-10-29
-    section 2.0.0
-    Clean foundations            :r20, 2027-11-08, 2028-03-10
-    section Releases
-    1.3.0                        :milestone, 2027-02-26, 0d
-    1.4.0                        :milestone, 2027-06-25, 0d
-    1.5.0                        :milestone, 2027-10-29, 0d
-    2.0.0                        :milestone, 2028-03-10, 0d
-```
-
-Each release is eight two-week sprints, with three public pre-releases (alpha, beta, release
-candidate) and a break between releases for patch releases and planning. 2.0.0 also skips the
-year-end holidays, so it lands two weeks later than the 1.x rhythm would give.
+The roadmap has no dates. The releases ship in order (1.3.0, 1.4.0, 1.5.0, 2.0.0) because each
+one stands on the one before, as the diagram below shows. Inside a release, work is split into
+eight sprints: a sprint is a unit of work with exit criteria, not a period of time, and the next
+sprint starts as soon as the previous one's criteria hold. Each release has three public
+pre-releases (alpha, beta, release candidate), each behind a gate of checks, not a calendar.
 
 ## How the releases build on each other
 
@@ -102,7 +83,7 @@ release page says which of them each feature serves.
 
 ## How this roadmap is maintained
 
-- The roadmap is a plan, not a promise: dates and scope move as we learn. Changes are made in
+- The roadmap is a plan, not a promise: scope moves as we learn. Changes are made in
   pull requests against `docs/roadmap/` and noted in the release page's review log.
 - At the end of each sprint the release page gets a review entry: what shipped, what slipped and
   why, and the `modelly bench` summary.
