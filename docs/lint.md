@@ -426,3 +426,15 @@ not silently disable the configuration.
 
 With `--format github`, each finding shows as an annotation on the changed line of the pull
 request.
+
+## In a notebook
+
+```text
+%load_ext modelly.ipython
+%modelly lint model.py agents.py
+%modelly lint --diff model.py
+```
+
+`%modelly lint` takes the options of the command line and prints the same report. A project
+made with [`modelly new`](new_project.md) has its `[tool.modelly.lint]` settings and passes every
+rule from the start.

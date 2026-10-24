@@ -391,7 +391,16 @@ make a step O(N²) (an agent scanning `self.model.agents`, nested population loo
 ```bash
 python -m modelly.lint path/to/your/model/   # exits 1 on findings, so it works in CI
 python -m modelly.lint --explain MDL101      # why a rule matters, with a fix
+python -m modelly.lint --diff src/           # the safe fixes (MDL001, 002, 003, 009) as a diff
+python -m modelly.lint --fix src/            # apply them, then report what is left
 ```
+
+A new project starts clean: `modelly new my-model --template grid` (or `network`, `continuous`,
+`cohort`) writes a package with a seeded scenario, an agent and a model, a determinism test, the
+lint settings and a README with an ODD outline. See
+[docs/new_project.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/new_project.md).
+In Jupyter, `%load_ext modelly.ipython` adds `%modelly lint` and `%modelly profile`, and a model
+displays its scenario, time and population by agent class.
 
 Every tool is also one command: `python -m modelly --help` (or `modelly --help` once installed)
 lists them, and `modelly lint src/` is `python -m modelly.lint src/`. Every rule, with the fix, is in [docs/lint.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/lint.md).
@@ -570,7 +579,8 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 | **Overview** | `docs/overview.md`: the object model, end to end |
 | **Performance audit** | `docs/performance.md`: measurements, what changed, what is next |
 | **Best practices** | `docs/best-practices.md` |
-| **Checking a model** | `docs/lint.md`: the `python -m modelly.lint` rules and their fixes |
+| **Starting a project** | `docs/new_project.md`: `modelly new` and its templates |
+| **Checking a model** | `docs/lint.md`: the `python -m modelly.lint` rules, `--fix` and `--diff` |
 | **Profiling a model** | `docs/profile.md`: `python -m modelly.profile`, the report and its hints |
 | **Checkpoints** | `docs/checkpoints.md`: save a run, resume it bit for bit |
 | **API reference** | `docs/apis/`: agents, agent sets, columns, model, space, time, data, migrate |

@@ -174,6 +174,7 @@ for _ in range(100):
 
 Get started <getting_started>
 Your project <using_modelly_in_your_project>
+Starting a project <new_project>
 Examples <examples>
 From Mesa <migrating_from_mesa>
 Performance <performance>

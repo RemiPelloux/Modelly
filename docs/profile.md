@@ -69,6 +69,21 @@ data = prof.to_dict()  # totals per operation, per-step totals, hints
 `Profiler(model, sample_every=10)` times steps 1, 11, 21, ... and lets the others run untimed,
 for long runs. `prof.records` holds one `StepRecord` per profiled step.
 
+## In a notebook
+
+Load the extension once, then profile a model class defined in the notebook by its name, or
+any target the command line takes; every option of the command line works:
+
+```text
+%load_ext modelly.ipython
+%modelly profile MyModel --steps 50 --param n=1000
+%modelly profile path/to/model.py:MyModel --sizes 500,1000,2000
+```
+
+The same extension has `%modelly lint path/to/model.py` (see [Checking a model](lint.md)).
+A model shown as the last expression of a cell displays its class, scenario (parameters and
+seed), time and the number of agents of each class.
+
 ## Comparing population sizes
 
 A scan of the population only shows in one run when the population changes during it. For a
