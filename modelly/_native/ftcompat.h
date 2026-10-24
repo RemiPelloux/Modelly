@@ -73,15 +73,21 @@ PyWeakref_GetRef(PyObject *ref, PyObject **result)
 #define DECLARE_NO_GIL(module) 0
 #endif /* Py_GIL_DISABLED */
 
-/* ``list[index]`` as a new reference, or NULL with no error set once past the end
- * (another thread may shrink a list between a length check and the read). */
+/* ``list[index]`` as a new reference, or NULL with no error set once past the end.
+ * Free-threaded: another thread may shrink the list between a length check and the
+ * read, so the read checks the bounds itself; with the GIL nothing can, and the
+ * inline macros are used. */
 static inline PyObject *
 item_or_end(PyObject *list, Py_ssize_t index)
 {
+#ifdef Py_GIL_DISABLED
     PyObject *item = PyList_GetItemRef(list, index);
     if (item == NULL)
         PyErr_Clear(); /* IndexError: the caller checked that ``list`` is a list */
     return item;
+#else
+    return index < PyList_GET_SIZE(list) ? Py_NewRef(PyList_GET_ITEM(list, index)) : NULL;
+#endif
 }
 
 #endif /* MODELLY_FTCOMPAT_H */

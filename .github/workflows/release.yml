@@ -12,7 +12,7 @@ permissions:
 jobs:
   wheels:
     # Platform wheels with the compiled modules (modelly/_native/fastrng.c, fastloop.c,
-    # fastcell.c, fastset.c).
+    # fastcell.c, fastset.c), for the GIL and the free-threaded interpreters.
     name: Wheels (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -24,24 +24,25 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v4.3.4
         env:
-          CIBW_BUILD: "cp312-* cp313-* cp314-* cp315-*"
-          # Free-threaded builds use the pure-Python FastRandom (see fastrng.c).
-          CIBW_SKIP: "cp3??t-* *-*linux_i686"
+          CIBW_BUILD: "cp312-* cp313-* cp314-* cp315-* cp313t-* cp314t-* cp315t-*"
+          # The C modules declare Py_MOD_GIL_NOT_USED (see modelly/_native/ftcompat.h).
+          CIBW_ENABLE: "cpython-freethreading"
+          CIBW_SKIP: "*-*linux_i686"
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           # AMD64 only: an ARM64 wheel cross-compiled on this x64 runner would be tagged
           # and linked for the host interpreter by the build hook, and could not be tested.
           CIBW_ARCHS_WINDOWS: "AMD64"
           CIBW_ENVIRONMENT: "MODELLY_REQUIRE_NATIVE=1"
           CIBW_TEST_COMMAND: >-
-            python -c "import modelly.core.rng as r, modelly._native.loops as l, modelly._native.cells as c, modelly._native.sets as s; assert r.NATIVE and l.NATIVE and c.NATIVE and s.NATIVE, 'compiled modules not active'"
+            python -c "import sys, sysconfig, modelly.core.rng as r, modelly._native.loops as l, modelly._native.cells as c, modelly._native.sets as s; assert r.NATIVE and l.NATIVE and c.NATIVE and s.NATIVE, 'compiled modules not active'; assert not (sysconfig.get_config_var('Py_GIL_DISABLED') and sys._is_gil_enabled()), 'a compiled module turned the GIL back on'"
       - uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ matrix.os }}
           path: wheelhouse/*.whl
 
   pure:
-    # The sdist and a py3-none-any wheel: every other platform (Windows on ARM, free-threaded
-    # CPython, PyPy) installs this and uses the pure-Python twins of the compiled modules.
+    # The sdist and a py3-none-any wheel: every other platform (Windows on ARM, PyPy, a
+    # Python without a wheel above) installs this and uses the pure-Python twins.
     name: Sdist and pure wheel
     runs-on: ubuntu-latest
     steps:

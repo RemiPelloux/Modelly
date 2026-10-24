@@ -3,7 +3,7 @@
  * Mersenne Twister state.
  *
  * The type extends _random.Random and reads and advances the same state the
- * standard library uses (the RandomObject layout below), so random(),
+ * standard library uses (the RandomObject layout in mtdraws.h), so random(),
  * getrandbits(), seed() and getstate() from the base class and the methods
  * here consume one stream, exactly as random.Random does. Python checks the
  * layout and the stream against the standard library at import and falls
@@ -15,89 +15,25 @@
  */
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include <math.h>
-#include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
-#ifdef _MSC_VER
-#include <intrin.h> /* _BitScanReverse: MSVC has no __builtin_clz */
-#endif
 
-#define MT_N 624
-#define MT_M 397
-#define MATRIX_A 0x9908b0dfU
-#define UPPER_MASK 0x80000000U
-#define LOWER_MASK 0x7fffffffU
+#include "ftcompat.h" /* critical sections before 3.13, DECLARE_NO_GIL */
+#include "mtdraws.h"  /* RandomObject, below32, sample_indices */
 
-/* CPython's Modules/_randommodule.c RandomObject, unchanged since 3.2. */
-typedef struct {
-    PyObject_HEAD
-    int index;
-    uint32_t state[MT_N];
-} RandomObject;
-
+/* The standard library's methods, used outside the fast paths. Set once at import,
+ * before any instance exists (a free-threaded build refuses a second call). */
 static PyObject *py_randint = NULL;   /* random.Random.randint   */
 static PyObject *py_choice = NULL;    /* random.Random.choice    */
 static PyObject *py_shuffle = NULL;   /* random.Random.shuffle   */
 static PyObject *py_randbelow = NULL; /* random.Random._randbelow_with_getrandbits */
 static PyObject *py_sample = NULL;    /* random.Random.sample    */
+#define FALLBACK_COUNT 5
 
-#define SMALL_SET_SIZE 21        /* random.sample: small set minus empty list */
-#define SAMPLE_SET_THRESHOLD 5   /* above this k the set size grows */
-
-static inline uint32_t
-genrand_uint32(RandomObject *self)
-{
-    uint32_t y;
-    static const uint32_t mag01[2] = {0x0U, MATRIX_A};
-    uint32_t *mt = self->state;
-    if (self->index >= MT_N) {
-        int kk;
-        for (kk = 0; kk < MT_N - MT_M; kk++) {
-            y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-            mt[kk] = mt[kk + MT_M] ^ (y >> 1) ^ mag01[y & 0x1U];
-        }
-        for (; kk < MT_N - 1; kk++) {
-            y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-            mt[kk] = mt[kk + (MT_M - MT_N)] ^ (y >> 1) ^ mag01[y & 0x1U];
-        }
-        y = (mt[MT_N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
-        mt[MT_N - 1] = mt[MT_M - 1] ^ (y >> 1) ^ mag01[y & 0x1U];
-        self->index = 0;
-    }
-    y = mt[self->index++];
-    y ^= (y >> 11);
-    y ^= (y << 7) & 0x9d2c5680U;
-    y ^= (y << 15) & 0xefc60000U;
-    y ^= (y >> 18);
-    return y;
-}
-
-/* n.bit_length() for n > 0. */
-static inline int
-bit_length32(uint32_t n)
-{
-#ifdef _MSC_VER
-    unsigned long top;
-    _BitScanReverse(&top, n);
-    return (int)top + 1;
-#else
-    return 32 - __builtin_clz(n);
-#endif
-}
-
-/* _randbelow_with_getrandbits for 0 < n < 2**32: k = n.bit_length(),
- * then getrandbits(k) until below n; getrandbits(k <= 32) is the top k bits
- * of one word. */
-static inline uint32_t
-below32(RandomObject *self, uint32_t n)
-{
-    int k = bit_length32(n);
-    uint32_t r = genrand_uint32(self) >> (32 - k);
-    while (r >= n)
-        r = genrand_uint32(self) >> (32 - k);
-    return r;
-}
+/*
+ * Free-threaded builds: every draw holds the generator's critical section, as
+ * _random.Random's own methods do, so the two never interleave on one state;
+ * a list being read is locked with it (Py_BEGIN_CRITICAL_SECTION2).
+ */
 
 static PyObject *
 call_fallback(PyObject *func, PyObject *self, PyObject *const *args, Py_ssize_t nargs)
@@ -109,14 +45,25 @@ call_fallback(PyObject *func, PyObject *self, PyObject *const *args, Py_ssize_t 
     return PyObject_Vectorcall(func, stack, nargs + 1, NULL);
 }
 
+/* below32 under the generator's lock. */
+static uint32_t
+locked_below(PyObject *self, uint32_t n)
+{
+    uint32_t r;
+    Py_BEGIN_CRITICAL_SECTION(self);
+    r = below32((RandomObject *)self, n);
+    Py_END_CRITICAL_SECTION();
+    return r;
+}
+
 static PyObject *
 fast_randbelow(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 {
     if (nargs == 1 && PyLong_CheckExact(args[0])) {
         int overflow;
         long long n = PyLong_AsLongLongAndOverflow(args[0], &overflow);
-        if (!overflow && n > 0 && n < 4294967296LL)
-            return PyLong_FromUnsignedLong(below32((RandomObject *)self, (uint32_t)n));
+        if (!overflow && n > 0 && n < WORD_RANGE)
+            return PyLong_FromUnsignedLong(locked_below(self, (uint32_t)n));
     }
     return call_fallback(py_randbelow, self, args, nargs);
 }
@@ -128,37 +75,35 @@ fast_randint(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
         int oa, ob;
         long long a = PyLong_AsLongLongAndOverflow(args[0], &oa);
         long long b = PyLong_AsLongLongAndOverflow(args[1], &ob);
-        if (!oa && !ob && b >= a && a > -(1LL << 62) && b < (1LL << 62)) {
+        if (!oa && !ob && b >= a && a > -INT_BOUND && b < INT_BOUND) {
             long long n = b - a + 1;
-            if (n < 4294967296LL)
-                return PyLong_FromLongLong(a + (long long)below32((RandomObject *)self, (uint32_t)n));
+            if (n < WORD_RANGE)
+                return PyLong_FromLongLong(a + (long long)locked_below(self, (uint32_t)n));
         }
     }
     return call_fallback(py_randint, self, args, nargs);
 }
 
+/* One item of a non-empty list or tuple, NULL (no error) when the fast path does not apply. */
+static PyObject *
+choose(PyObject *self, PyObject *seq)
+{
+    PyObject *item = NULL;
+    Py_BEGIN_CRITICAL_SECTION2(self, seq);
+    Py_ssize_t n = PySequence_Fast_GET_SIZE(seq);
+    if (n > 0 && n < WORD_RANGE)
+        item = Py_NewRef(PySequence_Fast_ITEMS(seq)[below32((RandomObject *)self, (uint32_t)n)]);
+    Py_END_CRITICAL_SECTION2();
+    return item;
+}
+
 static PyObject *
 fast_choice(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 {
-    if (nargs == 1) {
-        PyObject *seq = args[0];
-        Py_ssize_t n;
-        PyObject **items;
-        if (PyList_CheckExact(seq)) {
-            n = PyList_GET_SIZE(seq);
-            items = ((PyListObject *)seq)->ob_item;
-        }
-        else if (PyTuple_CheckExact(seq)) {
-            n = PyTuple_GET_SIZE(seq);
-            items = ((PyTupleObject *)seq)->ob_item;
-        }
-        else {
-            return call_fallback(py_choice, self, args, nargs);
-        }
-        if (n > 0 && n < 4294967296LL) {
-            PyObject *item = items[below32((RandomObject *)self, (uint32_t)n)];
-            return Py_NewRef(item);
-        }
+    if (nargs == 1 && (PyList_CheckExact(args[0]) || PyTuple_CheckExact(args[0]))) {
+        PyObject *item = choose(self, args[0]);
+        if (item != NULL)
+            return item;
     }
     return call_fallback(py_choice, self, args, nargs);
 }
@@ -166,127 +111,85 @@ fast_choice(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 static PyObject *
 fast_shuffle(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 {
-    if (nargs == 1 && PyList_CheckExact(args[0])) {
-        PyListObject *list = (PyListObject *)args[0];
-        Py_ssize_t n = PyList_GET_SIZE(list);
-        if (n < 4294967296LL) {
-            /* No Python code runs in this loop, so the list cannot change. */
-            PyObject **items = list->ob_item;
-            for (Py_ssize_t i = n - 1; i > 0; i--) {
-                uint32_t j = below32((RandomObject *)self, (uint32_t)(i + 1));
-                PyObject *tmp = items[i];
-                items[i] = items[j];
-                items[j] = tmp;
-            }
-            Py_RETURN_NONE;
-        }
+    if (nargs != 1 || !PyList_CheckExact(args[0]) || PyList_GET_SIZE(args[0]) >= WORD_RANGE)
+        return call_fallback(py_shuffle, self, args, nargs);
+    PyObject *list = args[0];
+    Py_BEGIN_CRITICAL_SECTION2(self, list);
+    /* No Python code runs in this loop, so the list cannot change. */
+    PyObject **items = ((PyListObject *)list)->ob_item;
+    for (Py_ssize_t i = PyList_GET_SIZE(list) - 1; i > 0; i--) {
+        uint32_t j = below32((RandomObject *)self, (uint32_t)(i + 1));
+        PyObject *tmp = items[i];
+        items[i] = items[j];
+        items[j] = tmp;
     }
-    return call_fallback(py_shuffle, self, args, nargs);
+    Py_END_CRITICAL_SECTION2();
+    Py_RETURN_NONE;
 }
 
-/* random.Random.sample for a list or tuple and an int k, both code paths
- * reproduced draw for draw: a pool copy when n <= setsize, otherwise
- * rejection against the indices already selected. */
+/* sample(pop, k) for a list or tuple: a list, NULL with an error, or NULL without one
+ * when the fast path does not apply. */
 static PyObject *
-sample_indices(RandomObject *self, PyObject **items, Py_ssize_t n, Py_ssize_t k)
+sample_fast(PyObject *self, PyObject *pop, long long k)
 {
-    Py_ssize_t setsize = SMALL_SET_SIZE;
-    if (k > SAMPLE_SET_THRESHOLD)
-        /* 4 ** ceil(math.log(k * 3, 4)), with math.log's own double arithmetic */
-        setsize += (Py_ssize_t)1 << (2 * (int)ceil(log((double)(k * 3)) / log(4.0)));
-    PyObject *result = PyList_New(k);
-    if (result == NULL)
-        return NULL;
-    PyObject **out = ((PyListObject *)result)->ob_item;
-    if (n <= setsize) {
-        PyObject **pool = PyMem_Malloc((size_t)(n > 0 ? n : 1) * sizeof(PyObject *));
-        if (pool == NULL) {
-            Py_DECREF(result);
-            return PyErr_NoMemory();
-        }
-        memcpy(pool, items, (size_t)n * sizeof(PyObject *));
-        for (Py_ssize_t i = 0; i < k; i++) {
-            uint32_t j = below32(self, (uint32_t)(n - i));
-            out[i] = Py_NewRef(pool[j]);
-            pool[j] = pool[n - i - 1];
-        }
-        PyMem_Free(pool);
-        return result;
-    }
-    unsigned char *seen = PyMem_Calloc((size_t)(n / 8 + 1), 1);
-    if (seen == NULL) {
-        Py_DECREF(result);
-        return PyErr_NoMemory();
-    }
-    for (Py_ssize_t i = 0; i < k; i++) {
-        uint32_t j = below32(self, (uint32_t)n);
-        while (seen[j >> 3] & (1u << (j & 7)))
-            j = below32(self, (uint32_t)n);
-        seen[j >> 3] |= (unsigned char)(1u << (j & 7));
-        out[i] = Py_NewRef(items[j]);
-    }
-    PyMem_Free(seen);
+    PyObject *result = NULL;
+    Py_BEGIN_CRITICAL_SECTION2(self, pop);
+    Py_ssize_t n = PySequence_Fast_GET_SIZE(pop);
+    if (n < WORD_RANGE && (k < 0 || k > n))
+        PyErr_SetString(PyExc_ValueError, "Sample larger than population or is negative");
+    else if (n < WORD_RANGE)
+        result = sample_indices((RandomObject *)self, PySequence_Fast_ITEMS(pop), n, (Py_ssize_t)k);
+    Py_END_CRITICAL_SECTION2();
     return result;
+}
+
+/* The stdlib sample with the original arguments (counts= or a keyword k=). */
+static PyObject *
+sample_fallback(PyObject *self, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
+{
+    Py_ssize_t total = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0);
+    PyObject **full = PyMem_Malloc((size_t)(total + 1) * sizeof(PyObject *));
+    if (full == NULL)
+        return PyErr_NoMemory();
+    full[0] = self;
+    memcpy(full + 1, args, (size_t)total * sizeof(PyObject *));
+    PyObject *res = PyObject_Vectorcall(py_sample, full, (size_t)nargs + 1, kwnames);
+    PyMem_Free(full);
+    return res;
 }
 
 static PyObject *
 fast_sample(PyObject *self, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 {
-    if (kwnames == NULL && nargs == 2 && PyLong_CheckExact(args[1])) {
-        PyObject *pop = args[0];
-        Py_ssize_t n = -1;
-        PyObject **items = NULL;
-        if (PyList_CheckExact(pop)) {
-            n = PyList_GET_SIZE(pop);
-            items = ((PyListObject *)pop)->ob_item;
-        }
-        else if (PyTuple_CheckExact(pop)) {
-            n = PyTuple_GET_SIZE(pop);
-            items = ((PyTupleObject *)pop)->ob_item;
-        }
+    if (kwnames == NULL && nargs == 2 && PyLong_CheckExact(args[1])
+        && (PyList_CheckExact(args[0]) || PyTuple_CheckExact(args[0]))) {
         int overflow;
         long long k = PyLong_AsLongLongAndOverflow(args[1], &overflow);
-        if (n >= 0 && !overflow && n < 4294967296LL) {
-            if (k < 0 || k > n) {
-                PyErr_SetString(PyExc_ValueError, "Sample larger than population or is negative");
-                return NULL;
-            }
-            return sample_indices((RandomObject *)self, items, n, (Py_ssize_t)k);
+        if (!overflow) {
+            PyObject *result = sample_fast(self, args[0], k);
+            if (result != NULL || PyErr_Occurred())
+                return result;
         }
     }
-    PyObject *stack[3] = {self, nargs > 0 ? args[0] : NULL, nargs > 1 ? args[1] : NULL};
-    Py_ssize_t total = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0);
-    if (total > 2) {
-        /* rare: counts= or keyword k=; rebuild the call for the stdlib method */
-        PyObject **full = PyMem_Malloc((size_t)(total + 1) * sizeof(PyObject *));
-        if (full == NULL)
-            return PyErr_NoMemory();
-        full[0] = self;
-        memcpy(full + 1, args, (size_t)total * sizeof(PyObject *));
-        PyObject *res = PyObject_Vectorcall(py_sample, full, (size_t)nargs + 1, kwnames);
-        PyMem_Free(full);
-        return res;
-    }
-    if (kwnames != NULL) {
-        PyObject *full[3] = {self, NULL, NULL};
-        memcpy(full + 1, args, (size_t)total * sizeof(PyObject *));
-        return PyObject_Vectorcall(py_sample, full, (size_t)nargs + 1, kwnames);
-    }
-    return PyObject_Vectorcall(py_sample, stack, (size_t)nargs + 1, NULL);
+    return sample_fallback(self, args, nargs, kwnames);
 }
 
 static PyObject *
 set_fallbacks(PyObject *Py_UNUSED(module), PyObject *const *args, Py_ssize_t nargs)
 {
-    if (nargs != 5) {
+    if (nargs != FALLBACK_COUNT) {
         PyErr_SetString(PyExc_TypeError, "set_fallbacks(randint, choice, shuffle, randbelow, sample)");
         return NULL;
     }
-    Py_XSETREF(py_randint, Py_NewRef(args[0]));
-    Py_XSETREF(py_choice, Py_NewRef(args[1]));
-    Py_XSETREF(py_shuffle, Py_NewRef(args[2]));
-    Py_XSETREF(py_randbelow, Py_NewRef(args[3]));
-    Py_XSETREF(py_sample, Py_NewRef(args[4]));
+#ifdef Py_GIL_DISABLED
+    if (py_randint != NULL) { /* another thread may be calling through them */
+        PyErr_SetString(PyExc_RuntimeError, "set_fallbacks runs once on a free-threaded build");
+        return NULL;
+    }
+#endif
+    PyObject **slots[] = {&py_randint, &py_choice, &py_shuffle, &py_randbelow, &py_sample};
+    for (int i = 0; i < FALLBACK_COUNT; i++)
+        Py_XSETREF(*slots[i], Py_NewRef(args[i]));
     Py_RETURN_NONE;
 }
 
@@ -316,14 +219,10 @@ static struct PyModuleDef module_def = {
     -1, module_methods, NULL, NULL, NULL, NULL,
 };
 
-PyMODINIT_FUNC
-PyInit_fastrng(void)
+/* _random.Random, checked to have the RandomObject layout this module reads. */
+static PyObject *
+random_base(void)
 {
-#ifdef Py_GIL_DISABLED
-    /* The state is read and written without the base type's critical section. */
-    PyErr_SetString(PyExc_ImportError, "fastrng is not built for free-threaded CPython");
-    return NULL;
-#endif
     PyObject *random_mod = PyImport_ImportModule("_random");
     if (random_mod == NULL)
         return NULL;
@@ -336,6 +235,16 @@ PyInit_fastrng(void)
         PyErr_SetString(PyExc_ImportError, "_random.Random layout differs from the one fastrng was built for");
         return NULL;
     }
+    return base;
+}
+
+/* The Core type: _random.Random plus the fast methods. */
+static PyObject *
+core_type(void)
+{
+    PyObject *base = random_base();
+    if (base == NULL)
+        return NULL;
     PyType_Slot slots[] = {
         {Py_tp_methods, core_methods},
         {Py_tp_doc, "random.Random's hot draws in C; subclass together with random.Random."},
@@ -347,17 +256,17 @@ PyInit_fastrng(void)
     };
     PyObject *core = PyType_FromSpecWithBases(&spec, base);
     Py_DECREF(base);
-    if (core == NULL)
-        return NULL;
-    PyObject *module = PyModule_Create(&module_def);
-    if (module == NULL) {
-        Py_DECREF(core);
-        return NULL;
-    }
-    if (PyModule_AddObject(module, "Core", core) < 0) {
-        Py_DECREF(core);
-        Py_DECREF(module);
-        return NULL;
-    }
+    return core;
+}
+
+PyMODINIT_FUNC
+PyInit_fastrng(void)
+{
+    PyObject *core = core_type();
+    PyObject *module = core == NULL ? NULL : PyModule_Create(&module_def);
+    if (module != NULL && (PyModule_AddObjectRef(module, "Core", core) < 0
+                           || DECLARE_NO_GIL(module) < 0))
+        Py_CLEAR(module);
+    Py_XDECREF(core);
     return module;
 }
