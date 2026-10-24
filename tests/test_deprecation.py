@@ -21,6 +21,7 @@ CATEGORIES = {"DeprecationWarning", "FutureWarning", "PendingDeprecationWarning"
 
 def test_message_names_replacement_and_removal():
     """The warning says what to use instead and which release removes the name."""
+
     def old():
         deprecated("old()", "new()")
 
