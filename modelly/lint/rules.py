@@ -20,6 +20,26 @@ NUMPY_SEEDED = frozenset(
     {"Generator", "PCG64", "Philox", "SFC64", "MT19937", "SeedSequence"}
 )
 STEP_COMPLEXITY_LIMIT = 12
+# Calls whose value differs between two runs with the same seed.
+CLOCK_CALLS = frozenset(
+    {
+        "time.time",
+        "time.time_ns",
+        "datetime.datetime.now",
+        "datetime.datetime.utcnow",
+        "datetime.datetime.today",
+        "datetime.date.today",
+        "uuid.uuid1",
+        "uuid.uuid4",
+        "os.urandom",
+        "os.getrandom",
+    }
+)
+ENTROPY_MODULES = frozenset({"secrets"})
+# pandas calls that build a whole new frame.
+FRAME_BUILDERS = frozenset({"pandas.DataFrame", "pandas.concat"})
+# AgentSet methods that change its membership.
+MUTATORS = frozenset({"add", "discard", "remove", "clear"})
 
 
 @dataclass(frozen=True)
@@ -60,6 +80,36 @@ RULES = {
             "create it in __init__ (self.items = [])",
         ),
         Rule(
+            "MDL005",
+            "error",
+            "wall clock or OS entropy in model code: the value differs between runs",
+            "draw from self.random / self.rng, or use the model's time (self.time) for timestamps",
+        ),
+        Rule(
+            "MDL006",
+            "error",
+            "hash() or id() decides an outcome: it changes between runs",
+            "order by unique_id or an attribute; derive seeds from the model's generator",
+        ),
+        Rule(
+            "MDL007",
+            "error",
+            "a loop over the population removes agents: removed ones are still visited",
+            "use agents.do / shuffle_do (they skip removed agents) or check `agent in model.agents`",
+        ),
+        Rule(
+            "MDL008",
+            "error",
+            "global statement in a model or agent method: every model in the process shares it",
+            "keep the state on the model (self.model.counter) so each run starts fresh",
+        ),
+        Rule(
+            "MDL009",
+            "error",
+            "the model's agent set is changed directly: its bookkeeping is skipped",
+            "create agents with Agent(model) / create_agents, and remove them with agent.remove()",
+        ),
+        Rule(
             "MDL101",
             "warning",
             "an agent scans the whole population: O(N) per agent, O(N^2) per step",
@@ -88,6 +138,18 @@ RULES = {
             "warning",
             f"step has more than {STEP_COMPLEXITY_LIMIT} branches",
             "split it into named phases (move, interact, update) and call them in order",
+        ),
+        Rule(
+            "MDL106",
+            "warning",
+            "pandas DataFrame built inside step",
+            "record with a DataCollector, or append rows to a list and build the frame once",
+        ),
+        Rule(
+            "MDL107",
+            "warning",
+            "per-agent loop that only writes Column attributes",
+            "update the whole column at once: table = self.columns[Cls]; table.x += 1",
         ),
     )
 }

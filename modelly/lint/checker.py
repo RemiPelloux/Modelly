@@ -4,10 +4,21 @@ from __future__ import annotations
 
 import ast
 
+from modelly.lint.imports import Imports
+from modelly.lint.patterns import (
+    column_names,
+    is_global_random,
+    removed_in_loop,
+    sorts_by_id,
+    writes_columns_only,
+)
 from modelly.lint.rules import (
     AGENT_BASES,
+    CLOCK_CALLS,
+    ENTROPY_MODULES,
+    FRAME_BUILDERS,
     MODEL_BASES,
-    NUMPY_SEEDED,
+    MUTATORS,
     SCANS,
     STEP_COMPLEXITY_LIMIT,
     branches,
@@ -32,36 +43,28 @@ class Checker(ast.NodeVisitor):
         self.kind: str | None = None  # the kind of the class being visited
         self.function: str | None = None
         self.population_depth = 0
-        self.random_modules: set[str] = set()  # names bound to the stdlib random module
-        self.random_functions: set[str] = set()  # names imported from it
-        self.numpy_modules: set[str] = set()  # names bound to numpy
-        self.numpy_random: set[str] = set()  # names bound to numpy.random
+        self.imports = Imports()
+        self.columns: set[str] = set()  # attributes declared as Column in this module
 
     def hit(self, node: ast.AST, code: str) -> None:
         """Record ``code`` at ``node``."""
         self.hits.add((node.lineno, node.col_offset + 1, code))
 
-    # Imports: which local names reach a global random generator.
+    # The module, imports and globals.
+
+    def visit_Module(self, node: ast.Module) -> None:  # noqa: D102
+        self.columns = column_names(node)
+        self.generic_visit(node)
 
     def visit_Import(self, node: ast.Import) -> None:  # noqa: D102
-        for alias in node.names:
-            bound = alias.asname or alias.name
-            if alias.name == "random":
-                self.random_modules.add(bound)
-            elif alias.name == "numpy":
-                self.numpy_modules.add(bound)
-            elif alias.name == "numpy.random":
-                self.numpy_random.add(alias.asname or "numpy.random")
+        self.imports.add(node)
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:  # noqa: D102
-        for alias in node.names:
-            bound = alias.asname or alias.name
-            if node.module == "random" and alias.name not in {"Random", "SystemRandom"}:
-                self.random_functions.add(bound)
-            elif node.module == "numpy" and alias.name == "random":
-                self.numpy_random.add(bound)
-            elif node.module == "numpy.random" and alias.name not in NUMPY_SEEDED:
-                self.random_functions.add(bound)
+        self.imports.add(node)
+
+    def visit_Global(self, node: ast.Global) -> None:  # noqa: D102
+        if self.kind and self.function:
+            self.hit(node, "MDL008")
 
     # Classes and functions: where we are decides which rules apply.
 
@@ -121,6 +124,7 @@ class Checker(ast.NodeVisitor):
         self.visit(node.iter)
         if self.kind == "model" and self.is_activation_loop(node):
             self.hit(node, "MDL103")
+        self.check_population_loop(node)
         self.visit_loop(node, node.iter, [node.target, *node.body, *node.orelse])
 
     def is_activation_loop(self, node: ast.For) -> bool:
@@ -136,6 +140,15 @@ class Checker(ast.NodeVisitor):
             and isinstance(node.target, ast.Name)
             and call.func.value.id == node.target.id
         )
+
+    def check_population_loop(self, node: ast.For) -> None:
+        """MDL007 and MDL107: what the body of a loop over the population does."""
+        if not is_population(node.iter, self.kind == "model"):
+            return
+        if removed_in_loop(node):
+            self.hit(node, "MDL007")
+        if self.kind == "model" and writes_columns_only(node, self.columns):
+            self.hit(node, "MDL107")
 
     def visit_loop(self, node: ast.AST, iterable: ast.AST, body: list[ast.AST]) -> None:
         """Check ``iterable`` and visit ``body`` one population level deeper when it is one."""
@@ -187,49 +200,43 @@ class Checker(ast.NodeVisitor):
         self.visit(node.iter)
         self.visit_loop(node.iter, node.iter, [*node.ifs])
 
-    # Calls: global random generators, AgentSet scans, deepcopy.
+    # Calls: generators, clocks, AgentSet scans and changes, deepcopy, pandas.
 
     def visit_Call(self, node: ast.Call) -> None:  # noqa: D102
-        if self.is_global_random(node.func, node):
-            self.hit(node, "MDL001")
-        func = node.func
-        if (
-            isinstance(func, ast.Attribute)
-            and func.attr in SCANS
-            and self.kind == "agent"
-            and is_population(func.value, False)
-        ):
-            self.hit(node, "MDL101")
-        if self.function == "step" and self.is_deepcopy(func):
-            self.hit(node, "MDL104")
+        for code in self.call_codes(node):
+            self.hit(node, code)
         self.generic_visit(node)
 
-    def is_global_random(self, func: ast.AST, call: ast.Call) -> bool:
-        """MDL001: random.x(), numpy.random.x(), or numpy.random.default_rng() with no seed."""
-        if isinstance(func, ast.Name):
-            return func.id in self.random_functions and not (
-                func.id == "default_rng" and call.args
-            )
-        if not isinstance(func, ast.Attribute):
-            return False
-        owner = func.value
-        if func.attr == "default_rng":
-            return not call.args and self.is_numpy_random(owner)
-        if func.attr in NUMPY_SEEDED or func.attr in {"Random", "SystemRandom"}:
-            return False
-        return (
-            isinstance(owner, ast.Name) and owner.id in self.random_modules
-        ) or self.is_numpy_random(owner)
+    def call_codes(self, node: ast.Call) -> list[str]:
+        """The rules ``node`` breaks, from its resolved name and where it is."""
+        name = self.imports.resolve(node.func) or ""
+        in_model = self.kind == "model"
+        func = node.func
+        method = func.attr if isinstance(func, ast.Attribute) else None
+        owner = func.value if isinstance(func, ast.Attribute) else None
+        checks = {
+            "MDL001": is_global_random(name, node),
+            "MDL005": bool(self.kind)
+            and (name in CLOCK_CALLS or name.split(".")[0] in ENTROPY_MODULES),
+            "MDL006": sorts_by_id(node) or self.hashes(func),
+            "MDL009": method in MUTATORS
+            and not isinstance(owner, ast.Call)
+            and is_population(owner, in_model),
+            "MDL101": method in SCANS
+            and self.kind == "agent"
+            and is_population(owner, False),
+            "MDL104": self.function == "step" and self.is_deepcopy(func),
+            "MDL106": self.function == "step" and name in FRAME_BUILDERS,
+        }
+        return [code for code, broken in checks.items() if broken]
 
-    def is_numpy_random(self, node: ast.AST) -> bool:
-        """Whether ``node`` is ``np.random`` or a name bound to numpy.random."""
-        if isinstance(node, ast.Name):
-            return node.id in self.numpy_random
+    def hashes(self, func: ast.AST) -> bool:
+        """MDL006: the builtin ``hash()`` in model code, outside ``__hash__``."""
         return (
-            isinstance(node, ast.Attribute)
-            and node.attr == "random"
-            and isinstance(node.value, ast.Name)
-            and node.value.id in self.numpy_modules
+            bool(self.kind)
+            and isinstance(func, ast.Name)
+            and func.id == "hash"
+            and self.function != "__hash__"
         )
 
     @staticmethod

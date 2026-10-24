@@ -11,10 +11,16 @@ from modelly.lint.__main__ import main
 
 HEADER = """
 import copy
+import os
 import random
+import time
+import uuid
+from datetime import datetime
 import numpy as np
-from modelly import Agent, Model
+import pandas as pd
+from modelly import Agent, Column, Model
 """
+HEADER_LINES = HEADER.count("\n")
 
 
 def codes(body: str) -> list[str]:
@@ -29,6 +35,14 @@ BAD = {
         "g = np.random.default_rng()",
         "from random import choice\nx = choice([1, 2])",
         "p = [x for b in items for x in random.sample(b, 1)]",
+        "np.random.seed(3)",
+        "g = np.random.default_rng(None)",
+        "g = np.random.default_rng(seed=None)",
+        "from numpy.random import default_rng\ng = default_rng()",
+        "r = random.Random()",
+        "r = random.SystemRandom(1)",
+        "g = np.random.Generator(np.random.PCG64())",
+        "import numpy.random as npr\nx = npr.uniform()",
     ],
     "MDL002": [
         "class A(Agent):\n    def __init__(self, model):\n        self.x = 1",
@@ -42,6 +56,32 @@ BAD = {
     "MDL004": [
         "class A(Agent):\n    friends = []",
         "class A(Agent):\n    seen: dict = {}",
+    ],
+    "MDL005": [
+        "class M(Model):\n    def step(self):\n        self.t = time.time()",
+        "class A(Agent):\n    def step(self):\n        self.born = datetime.now()",
+        "class A(Agent):\n    def __init__(self, model):\n        super().__init__(model)\n        self.tag = uuid.uuid4()",
+        "class A(Agent):\n    def step(self):\n        b = os.urandom(4)",
+        "import secrets\nclass A(Agent):\n    def step(self):\n        b = secrets.token_hex()",
+        "import datetime as dt\nclass M(Model):\n    def step(self):\n        d = dt.date.today()",
+    ],
+    "MDL006": [
+        "class A(Agent):\n    def step(self):\n        self.group = hash(self.name) % 4",
+        "order = sorted(agents, key=id)",
+        "agents.sort(key=lambda a: id(a))",
+        "first = min(agents, key=id)",
+    ],
+    "MDL007": [
+        "class M(Model):\n    def step(self):\n        for a in self.agents:\n            a.prey.remove()",
+        "class A(Agent):\n    def step(self):\n        for b in self.model.agents_by_type[A]:\n            if b.weak:\n                b.target.remove()",
+    ],
+    "MDL008": [
+        "N = 0\nclass A(Agent):\n    def step(self):\n        global N\n        N += 1",
+    ],
+    "MDL009": [
+        "class M(Model):\n    def step(self):\n        self.agents.remove(a)",
+        "class A(Agent):\n    def die(self):\n        self.model.agents.discard(self)",
+        "class M(Model):\n    def setup(self):\n        self.agents_by_type[A].add(a)",
     ],
     "MDL101": [
         "class A(Agent):\n    def step(self):\n        for a in self.model.agents:\n            pass",
@@ -57,6 +97,14 @@ BAD = {
     ],
     "MDL104": [
         "class A(Agent):\n    def step(self):\n        s = copy.deepcopy(self.x)"
+    ],
+    "MDL106": [
+        "class M(Model):\n    def step(self):\n        df = pd.DataFrame(self.rows)",
+        "class M(Model):\n    def step(self):\n        self.log = pd.concat([self.log, row])",
+    ],
+    "MDL107": [
+        "class A(Agent):\n    wealth = Column(int)\nclass M(Model):\n    def step(self):\n        for a in self.agents:\n            a.wealth += 1",
+        "class A(Agent):\n    e: float = Column(float)\nclass M(Model):\n    def step(self):\n        for a in self.agents:\n            if a.e > 0:\n                a.e -= 0.5",
     ],
     "MDL105": [
         "class A(Agent):\n    def step(self):\n"
@@ -78,6 +126,25 @@ GOOD = [
     "class M(Model):\n    def step(self):\n        rich = [a for a in self.agents if a.wealth > 1]",
     "class M(Model):\n    def step(self):\n        for a in self.agents:\n            a.step()\n            a.grow()",
     "class A(Agent):\n    def step(self):\n        if self.x:\n            pass",
+    "g = np.random.default_rng(seed=7)",
+    "g = np.random.Generator(np.random.PCG64(7))",
+    "from numpy.random import Generator, PCG64",
+    "class A(Agent):\n    def step(self):\n        self.g = self.random.random()",
+    "start = time.time()",
+    "class A(Agent):\n    def step(self):\n        t0 = time.perf_counter()",
+    "class A(Agent):\n    def __hash__(self):\n        return hash(self.unique_id)",
+    "order = sorted(agents, key=lambda a: a.unique_id)",
+    "h = hash('a')",
+    "class M(Model):\n    def step(self):\n        for a in self.agents:\n            if a.energy < 0:\n                a.remove()",
+    "class M(Model):\n    def step(self):\n        for a in self.agents:\n            a.items.remove(x)",
+    "class M(Model):\n    def step(self):\n        for c in self.cells:\n            c.agent.remove()",
+    "N = 0\ndef bump():\n    global N\n    N += 1",
+    "class M(Model):\n    def step(self):\n        self.agents.select(lambda a: a.x).remove(a)",
+    "class A(Agent):\n    def step(self):\n        self.cell.agents.remove(self)",
+    "class M(Model):\n    def report(self):\n        return pd.DataFrame(self.rows)",
+    "class A(Agent):\n    wealth = Column(int)\nclass M(Model):\n    def step(self):\n        for a in self.agents:\n            a.wealth += self.random.random()",
+    "class A(Agent):\n    wealth = Column(int)\nclass M(Model):\n    def step(self):\n        for a in self.agents:\n            a.wealth += 1\n            a.move()",
+    "class M(Model):\n    def step(self):\n        for a in self.agents:\n            a.plain += 1",
 ]
 
 
@@ -126,7 +193,8 @@ def test_cli_exit_status_and_text(tmp_path, capsys):
     assert main([str(path)]) == 1
     out = capsys.readouterr().out
     assert (
-        f"{path}:6:5: MDL001" in out and "1 finding(s): 1 error(s), 0 warning(s)" in out
+        f"{path}:{HEADER_LINES + 1}:5: MDL001" in out
+        and "1 finding(s): 1 error(s), 0 warning(s)" in out
     )
     assert main([str(path), "--exit-zero"]) == 0
 
