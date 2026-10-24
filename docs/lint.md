@@ -77,11 +77,12 @@ generators or registry. Nothing raises at once; the failure comes later, far fro
 ```python
 class Sheep(Agent):
     def __init__(self, model):
-        self.energy = 5              # MDL002
+        self.energy = 5  # MDL002
+
 
 class Sheep(Agent):
     def __init__(self, model):
-        super().__init__(model)      # registered, with a unique_id
+        super().__init__(model)  # registered, with a unique_id
         self.energy = 5
 ```
 
@@ -125,10 +126,10 @@ profiling, are not reported.
 ```python
 class Sheep(Agent):
     def step(self):
-        self.born = datetime.now()        # MDL005
-        self.tag = uuid.uuid4()           # MDL005
-        self.born = self.model.time       # the model's clock
-        self.tag = self.unique_id         # already unique and reproducible
+        self.born = datetime.now()  # MDL005
+        self.tag = uuid.uuid4()  # MDL005
+        self.born = self.model.time  # the model's clock
+        self.tag = self.unique_id  # already unique and reproducible
 ```
 
 (mdl006)=
@@ -139,8 +140,8 @@ class Sheep(Agent):
 `hash()` in a model or agent method other than `__hash__`, gives a different result each run.
 
 ```python
-queue = sorted(self.agents, key=id)                     # MDL006
-group = hash(self.name) % 4                             # MDL006
+queue = sorted(self.agents, key=id)  # MDL006
+group = hash(self.name) % 4  # MDL006
 queue = sorted(self.agents, key=lambda a: a.unique_id)
 group = self.unique_id % 4
 ```
@@ -155,8 +156,8 @@ own agent (`for a in ...: a.remove()`) is fine and not reported.
 
 ```python
 for wolf in self.agents_by_type[Wolf]:
-    wolf.prey.remove()                                   # MDL007: that prey may come up later
-self.agents_by_type[Wolf].shuffle_do("hunt")             # hunt() calls self.prey.remove()
+    wolf.prey.remove()  # MDL007: that prey may come up later
+self.agents_by_type[Wolf].shuffle_do("hunt")  # hunt() calls self.prey.remove()
 ```
 
 (mdl008)=
@@ -168,11 +169,12 @@ suite, a notebook re-run) share it and keep mutating it, so a run depends on wha
 ```python
 BORN = 0
 
+
 class Sheep(Agent):
     def step(self):
-        global BORN                   # MDL008
+        global BORN  # MDL008
         BORN += 1
-        self.model.born += 1          # state on the model: each run starts fresh
+        self.model.born += 1  # state on the model: each run starts fresh
 ```
 
 (mdl009)=
@@ -184,7 +186,7 @@ collectors, which then disagree with each other. Creating an agent registers it;
 deregisters it everywhere.
 
 ```python
-self.model.agents.discard(self)          # MDL009
+self.model.agents.discard(self)  # MDL009
 self.remove()
 ```
 
@@ -200,7 +202,7 @@ continuous-space query), or write the phase once at the model level over columns
 [vectorised step phases](vectorised_phases).
 
 ```python
-near = [a for a in self.model.agents if a.cell in self.cell.neighborhood]   # MDL101
+near = [a for a in self.model.agents if a.cell in self.cell.neighborhood]  # MDL101
 near = self.cell.neighborhood.agents
 ```
 
@@ -213,7 +215,7 @@ first with `agents.groupby`.
 
 ```python
 for a in self.agents:
-    for b in self.agents:                    # MDL102
+    for b in self.agents:  # MDL102
         a.meet(b)
 for a in self.agents:
     for b in a.cell.neighborhood.agents:
@@ -228,7 +230,7 @@ it still visits agents removed earlier in the loop. Most models mean
 `self.agents.shuffle_do("step")`, a new random order each step.
 
 ```python
-for agent in self.agents:                    # MDL103
+for agent in self.agents:  # MDL103
     agent.step()
 self.agents.shuffle_do("step")
 ```
@@ -241,7 +243,7 @@ every other agent. Done every step, it costs more than the step itself. Copy the
 need, or keep the previous value in a column.
 
 ```python
-self.previous = copy.deepcopy(self)          # MDL104
+self.previous = copy.deepcopy(self)  # MDL104
 self.previous_energy = self.energy
 ```
 
@@ -268,8 +270,8 @@ list and build the frame once after the run.
 
 ```python
 def step(self):
-    self.log = pd.concat([self.log, pd.DataFrame([row])])   # MDL106
-    self.rows.append(row)                                    # pd.DataFrame(self.rows) at the end
+    self.log = pd.concat([self.log, pd.DataFrame([row])])  # MDL106
+    self.rows.append(row)  # pd.DataFrame(self.rows) at the end
 ```
 
 (mdl107)=
@@ -285,12 +287,13 @@ draws or needs a decision.
 class Sheep(Agent):
     energy = Column(float, default=5.0)
 
+
 class Pasture(Model):
     def step(self):
-        for sheep in self.agents_by_type[Sheep]:       # MDL107
+        for sheep in self.agents_by_type[Sheep]:  # MDL107
             sheep.energy -= 1
         table = self.columns[Sheep]
-        table.energy -= 1                              # one numpy operation
+        table.energy -= 1  # one numpy operation
 ```
 
 ## Silencing a finding
