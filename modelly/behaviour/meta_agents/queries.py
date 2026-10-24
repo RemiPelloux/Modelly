@@ -91,9 +91,8 @@ class MembershipQueries:
         """Return a resolved, read-only snapshot of one entity's memberships."""
         triplets = (
             triplet
-            for triplet in self.backend.as_triplets()
-            if (triplet[0] == entity or triplet[1] == entity)
-            and (relation is None or triplet[2] == relation)
+            for triplet in self.backend.triplets_of(entity)
+            if relation is None or triplet[2] == relation
         )
         return self._resolve_view(entity, triplets)
 

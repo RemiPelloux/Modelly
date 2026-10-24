@@ -14,6 +14,20 @@ RelationKey = Hashable
 Triplet = tuple[Hashable, Hashable, RelationKey]
 
 
+def _discard_from_index(
+    index: dict[Hashable, set[tuple[Hashable, RelationKey]]],
+    entries: Iterable[tuple[Hashable, tuple[Hashable, RelationKey]]],
+) -> None:
+    """Discard ``(key, entry)`` pairs from an index, dropping emptied keys."""
+    for key, entry in entries:
+        bucket = index.get(key)
+        if bucket is None:
+            continue
+        bucket.discard(entry)
+        if not bucket:
+            del index[key]
+
+
 class MembershipBackend:
     """Store of overlapping memberships."""
 
@@ -73,19 +87,25 @@ class MembershipBackend:
 
     def remove_agent(self, agent: Hashable) -> None:
         """Remove an agent and all incident memberships."""
-        # TODO(perf): Current removal is O(degree(agent)) with per-edge updates.
-        # Revisit with bulk/index-aware deletion once benchmark baselines are in place.
-        edges = list(self._by_agent.get(agent, set()))
-        for group, relation in edges:
-            self.remove_membership(agent, group, relation)
+        # One index pop, then one reverse-index update per incident group.
+        edges = self._by_agent.pop(agent, None)
+        if not edges:
+            return
+        self._triplets.difference_update(
+            (agent, group, relation) for group, relation in edges
+        )
+        _discard_from_index(self._by_group, ((g, (agent, r)) for g, r in edges))
 
     def remove_group(self, group: Hashable) -> None:
         """Remove a group and all incident memberships."""
-        # TODO(perf): Current removal is O(degree(agent)) with per-edge updates.
-        # Revisit with bulk/index-aware deletion once benchmark baselines are in place.
-        edges = list(self._by_group.get(group, set()))
-        for agent, relation in edges:
-            self.remove_membership(agent, group, relation)
+        # Mirror of remove_agent with the two indexes swapped.
+        edges = self._by_group.pop(group, None)
+        if not edges:
+            return
+        self._triplets.difference_update(
+            (agent, group, relation) for agent, relation in edges
+        )
+        _discard_from_index(self._by_agent, ((a, (group, r)) for a, r in edges))
 
     def groups_of(
         self, agent: Hashable, relation: RelationKey | None = None
@@ -112,6 +132,18 @@ class MembershipBackend:
             for linked_group, relation in self._by_agent.get(agent, set())
             if linked_group == group
         }
+
+    def triplets_of(self, entity: Hashable) -> set[Triplet]:
+        """Return the memberships where ``entity`` is the agent or the group."""
+        triplets = {
+            (entity, group, relation)
+            for group, relation in self._by_agent.get(entity, ())
+        }
+        triplets.update(
+            (agent, entity, relation)
+            for agent, relation in self._by_group.get(entity, ())
+        )
+        return triplets
 
     def as_triplets(self) -> set[Triplet]:
         """Return all memberships as canonical triplets."""
