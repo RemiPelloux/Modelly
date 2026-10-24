@@ -68,6 +68,11 @@ COMMANDS = (
         "modelly.provenance.commands.odd",
         "write an ODD protocol skeleton of a model",
     ),
+    (
+        "zoo",
+        "modelly.zoo.__main__",
+        "list, describe and copy the validated reference models",
+    ),
 )
 
 DESCRIPTION = "Command-line tools for Modelly models."
@@ -89,6 +94,7 @@ examples:
   modelly bundle runs/ --out study.zip  code, lock file, seeds and outputs
   modelly odd model.py:MyModel > ODD.md ODD protocol skeleton
   modelly bench --label v1.3.0          time the playbooks, append to the history
+  modelly zoo copy age_seir my_model/   start a project from a zoo model
   modelly COMMAND --help                every option of one command
 
 exit status:
