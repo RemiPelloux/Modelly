@@ -3,6 +3,7 @@
 import importlib.util
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -20,6 +21,8 @@ pytestmark = pytest.mark.skipif(GIT is None, reason="needs git")
 def _load():
     spec = importlib.util.spec_from_file_location("release", SCRIPT)
     module = importlib.util.module_from_spec(spec)
+    # Before Python 3.15, @dataclass looks its module up in sys.modules.
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
