@@ -18,6 +18,10 @@ jobs:
       github.event.action == 'labeled' && contains(github.event.pull_request.labels.*.name, 'trigger-benchmarks') ||
       github.event.action == 'opened' ||
       github.event.action == 'ready_for_review'
+    # Job-level so a skipped run (an unrelated label) never cancels a live one.
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python
