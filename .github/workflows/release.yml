@@ -26,7 +26,6 @@ jobs:
         env:
           CIBW_BUILD: "cp312-* cp313-* cp314-* cp315-* cp313t-* cp314t-* cp315t-*"
           # The C modules declare Py_MOD_GIL_NOT_USED (see modelly/_native/ftcompat.h).
-          CIBW_ENABLE: "cpython-freethreading"
           CIBW_SKIP: "*-*linux_i686"
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           # Each Windows runner builds its own architecture only (AMD64 on windows-latest,
