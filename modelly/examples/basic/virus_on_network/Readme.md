@@ -19,7 +19,7 @@ JavaScript library used in this example to render the network: [d3.js](https://d
 
 Install Modelly with recommended dependencies:
 
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 
 Then run the example:
 

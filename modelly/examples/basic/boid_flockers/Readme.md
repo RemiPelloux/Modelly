@@ -10,7 +10,7 @@ This model tests Modelly's continuous space feature, and uses numpy arrays to re
 
 Install Modelly with recommended dependencies:
 
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 
 Then run the example:
 

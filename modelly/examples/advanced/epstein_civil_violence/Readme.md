@@ -10,7 +10,7 @@ The model generates mass uprising as self-reinforcing processes: if enough agent
 
 Install Modelly with recommended dependencies:
 
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 
 Then run the example:
 
@@ -23,7 +23,7 @@ Open the displayed local URL in your browser.
 ## Files
 
 * ``model.py``: Core model code.
-* ``agent.py``: Agent classes.
+* ``agents.py``: Agent classes.
 * ``app.py``: Sets up the interactive visualization.
 * ``Epstein Civil Violence.ipynb``: Jupyter notebook conducting some preliminary analysis of the model.
 

@@ -39,7 +39,7 @@ cross over one another otherwise *end*.
 The model demonstrates several Modelly concepts and features:
  - OrthogonalMooreGrid
  - Multiple agent types (traders, sugar, spice)
- - Dynamically removing agents from the grid and schedule when they die
+ - Dynamically removing agents from the grid and the model when they die
  - Data Collection at the model and agent level
  - custom solara matplotlib space visualization
 
@@ -48,7 +48,7 @@ The model demonstrates several Modelly concepts and features:
 
 Install Modelly with recommended dependencies:
 
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 
 Then run the example:
 
@@ -62,8 +62,7 @@ Open the displayed local URL in your browser.
 * `model.py`: The Sugarscape Constant Growback with Traders model.
 * `agents.py`: Defines the Trader agent class and the Resource agent class which contains an amount of sugar and spice.
 * `app.py`: Runs a visualization server via Solara (`solara run app.py`).
-* `sugar_map.txt`: Provides sugar and spice landscape in raster type format.
-* `tests.py`: Has tests to ensure that the model reproduces the results in shown in Growing Artificial Societies.
+* `sugar-map.txt`: Provides sugar and spice landscape in raster type format.
 
 ## Further Reading
 

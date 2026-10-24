@@ -32,10 +32,11 @@ time, pandas data collection, browser visualization. Fast by construction, repro
 
 ---
 
-**Status:** stable, Python 3.12+. The core (model, agents, columns, spaces, time, data) follows
-semantic versioning; modules under `modelly.experimental` may change between minor versions and
-say so in their docstrings. The current version is `modelly.__version__`, and what changed in each
-release is in [CHANGELOG.md](CHANGELOG.md).
+**Status:** stable, Python 3.12+. Every public package (`core`, `space`, `time`, `data`,
+`behaviour`, `scenarios`, `batch`, `viz`) follows semantic versioning; there is no experimental
+area. Version 2.0.0 moved every module into a domain package, and the old import paths no longer
+import: the old-to-new table is in [CHANGELOG.md](CHANGELOG.md). The current version is
+`modelly.__version__`.
 
 ```bash
 pip install modelly-abm
@@ -119,7 +120,7 @@ To depend on Modelly from your own project, add it to `pyproject.toml` (the dist
 `modelly-abm`, the import is `modelly`):
 
 ```toml
-dependencies = ["modelly-abm>=1.0"]
+dependencies = ["modelly-abm>=2.0"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is
@@ -377,7 +378,8 @@ python -m modelly.migrate path/to/your/model/          # dry run: diff plus repo
 python -m modelly.migrate path/to/your/model/ --write  # apply the rewrites
 ```
 
-It rewrites imports, agent constructors and scheduler attributes, and flags scheduler classes,
+It rewrites imports to the 2.0.0 paths (`modelly.space`, `modelly.time`, `modelly.data`,
+`modelly.batch`, `modelly.viz`), agent constructors and scheduler attributes, and flags scheduler classes,
 legacy grid calls, `batch_run`, simulators and `seed=` for you to decide. The construct-by-construct
 map, for Mesa 2.x and 3.x, is [docs/migrating_from_mesa.md](docs/migrating_from_mesa.md).
 
@@ -410,6 +412,28 @@ by the scheduler.
 - **Model to Dataset.** Reporters sample the model and its agents on intervals you choose.
 - **Dataset to Visualize / Analyze / Reproduce.** Same data, three exits: a browser app, a
 dataframe, or a seeded re-run.
+
+## Package layout
+
+One package per domain; each `__init__.py` lists its public names in `__all__`.
+
+| Package | What it holds |
+|---|---|
+| `modelly.core` | `Agent`, `Model`, `AgentSet`, `Column`, `FastRandom`, exceptions |
+| `modelly.space` | cells, orthogonal and hex grids, networks, Voronoi, property layers, continuous space (`modelly.space.continuous`) |
+| `modelly.time` | `Schedule`, events, event generators, priorities, signals (`modelly.time.signals`) |
+| `modelly.data` | `DataCollector`, reporters, dataset recorders (`modelly.data.recorders`) |
+| `modelly.behaviour` | timed actions (`actions`), continuous states and thresholds (`states`), meta-agents (`meta_agents`) |
+| `modelly.scenarios` | `Scenario`, `RunConfiguration`, `run_scenarios`, result stores |
+| `modelly.batch` | `run_batch`, `run_grid`, `CohortTable` |
+| `modelly.viz` | Solara app, space renderer, matplotlib and altair backends, command console |
+| `modelly.lint` | `python -m modelly.lint`, static checks for models |
+| `modelly.migrate` | `python -m modelly.migrate`, the Mesa codemod |
+| `modelly._native` | the compiled modules (`fastrng.c`, `fastloop.c`), each with a pure-Python twin |
+
+The top-level names (`modelly.Agent`, `modelly.Model`, `modelly.DataCollector`, `modelly.Column`,
+`modelly.CohortTable`, `modelly.FastRandom`, `modelly.run_batch`, `modelly.run_grid`) import from
+`modelly` directly.
 
 ## How the engine stays fast
 
@@ -465,7 +489,8 @@ checks are in [benchmarks/playbooks/results/README.md](benchmarks/playbooks/resu
 
 What is shipped: columns, vectorised step phases (`draw`, `do_where`, `remove_where`), one
 KD-tree query for a whole continuous population, an O(1) empty-cell index on every discrete
-space, process-pool replications, and incremental data frames. What comes next, in order of
+space, process-pool replications, incremental data frames, and compiled `do` / `shuffle_do`
+loops and neighbourhood walk (`modelly/_native/fastloop.c`). What comes next, in order of
 expected impact; each item keeps today's authoring model, you still write a `Model`, an
 `Agent` subclass and a `Scenario`:
 
@@ -473,8 +498,9 @@ expected impact; each item keeps today's authoring model, you still write a `Mod
    lookup, so a grid model can move its whole population in one numpy operation.
 2. **Shared-memory replications.** Fan a sweep over one large model out to processes without
    copying the column store.
-3. **Compiled hot loops.** An optional compiled path for the cell move and the neighbourhood
-   lookup, the last two Python-bound costs of a per-agent step.
+3. **Compiled cell moves.** An optional compiled path for the cell move, the last
+   Python-bound cost of a per-agent step now that the agent-set loops and the neighbourhood
+   walk are compiled.
 4. **Live dashboards.** The incremental data frame is the first piece; a streaming view that
    updates per tick without re-reading history is the next.
 
@@ -525,6 +551,7 @@ each notebook).
 pip install -e ".[dev]"
 bash scripts/ci-local.sh          # lint, format, tests, size audit: the same gate as CI
 bash scripts/ci-local.sh --list   # stage names, run a subset with: ci-local.sh lint test
+bash scripts/build-native.sh      # compile modelly/_native in place; MODELLY_PURE_PYTHON=1 forces the Python twins
 ```
 
 Code discipline is written down in [pelloux-guidelines.md](pelloux-guidelines.md): small files,

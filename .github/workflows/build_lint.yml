@@ -76,6 +76,24 @@ jobs:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
+  pure-python:
+    # The suite once more with the compiled modules switched off, so the pure-Python
+    # twins of modelly/_native (FastRandom, the agent-set loops, the neighbourhood walk)
+    # stay tested.
+    runs-on: ubuntu-latest
+    env:
+      MODELLY_PURE_PYTHON: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: "pip"
+      - run: pip install uv
+      - run: uv pip install --system .[dev]
+      - run: playwright install chromium-headless-shell
+      - run: pytest --durations=10 tests/ -Werror -Wdefault::PendingDeprecationWarning
+
   examples:
     runs-on: ubuntu-latest
     steps:

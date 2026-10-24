@@ -10,7 +10,7 @@ By default, the number of similar neighbors the agents need to be happy is set t
 
 Install Modelly with recommended dependencies:
 
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 
 Then run the example:
 
@@ -24,7 +24,7 @@ Open the displayed local URL in your browser.
 * ``model.py``: Contains the Schelling model class
 *  ``agents.py``: Contains the Schelling agent class
 * ``app.py``: Code for the interactive visualization.
-* ``analysis.ipynb``: Notebook demonstrating how to run experiments and parameter sweeps on the model.
+* ``resources/``: Images used by the visualization.
 
 ## Further Reading
 

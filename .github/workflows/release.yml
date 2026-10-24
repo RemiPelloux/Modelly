@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   wheels:
-    # Platform wheels with the compiled random core (modelly/_native/fastrng.c).
+    # Platform wheels with the compiled modules (modelly/_native/fastrng.c, fastloop.c).
     name: Wheels (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -40,7 +40,7 @@ jobs:
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_ENVIRONMENT: "MODELLY_REQUIRE_NATIVE=1"
           CIBW_TEST_COMMAND: >-
-            python -c "import modelly.core.rng as r; assert r.NATIVE, 'compiled core not active'"
+            python -c "import modelly.core.rng as r, modelly._native.loops as l; assert r.NATIVE and l.NATIVE, 'compiled modules not active'"
       - uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ matrix.os }}
@@ -48,7 +48,7 @@ jobs:
 
   pure:
     # The sdist and a py3-none-any wheel: every other platform (Windows, free-threaded
-    # CPython, PyPy) installs this and FastRandom uses its pure-Python implementation.
+    # CPython, PyPy) installs this and uses the pure-Python twins of the compiled modules.
     name: Sdist and pure wheel
     runs-on: ubuntu-latest
     steps:

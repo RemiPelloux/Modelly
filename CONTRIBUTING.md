@@ -33,7 +33,15 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 
 pip install -e ".[dev]"            # runtime deps + test and lint tooling
 playwright install chromium-headless-shell   # required by the visualization tests
+bash scripts/build-native.sh       # rebuild modelly/_native in place after editing a .c file
 ```
+
+`modelly/_native` holds two C modules: `fastrng.c` (`FastRandom`) and `fastloop.c` (agent-set
+`do` / `shuffle_do` and the neighbourhood walk). Each has a pure-Python twin with identical
+results, used when the module is not built. `pip install -e` compiles them in place when a C
+compiler is available; after editing a `.c` file, rebuild with `bash scripts/build-native.sh`
+(set `PYTHON=` to pick an interpreter). The built `.so` files are gitignored.
+`MODELLY_PURE_PYTHON=1` forces the Python twins at run time, which is how CI tests them.
 
 Extras:
 
@@ -48,7 +56,9 @@ Extras:
 
 Modelly follows the [Pelloux guidelines](pelloux-guidelines.md): small files (300 lines, hard
 error above 400), short functions (25 lines), surgical changes, no debug leftovers, conventional
-commits without attribution trailers. Read it once before your first pull request.
+commits without attribution trailers. Read it once before your first pull request; §11 holds
+the Python rules for code under `modelly/` (layout and imports, public API, hot paths,
+determinism, native code, measuring performance).
 
 The whole gate runs locally and is what CI runs:
 
@@ -65,12 +75,18 @@ split or removal legitimately changes a recorded ceiling, and say so in the pull
 
 ## Tests
 
-Run the suite from the repository root:
+Run the suite from the repository root. Tests mirror the package layout:
+`tests/<domain>/test_<module>.py`, with one folder per package (`tests/core`, `tests/space`,
+`tests/time`, `tests/data`, `tests/behaviour`, `tests/scenarios`, `tests/batch`, `tests/viz`),
+`tests/native` for the compiled loops against their Python twins, and `tests/examples` for the
+bundled models.
 
 ```bash
-pytest tests/                                    # everything
-pytest tests/test_model.py tests/test_agent.py   # one or two modules while iterating
-pytest tests/ -Werror                            # what CI runs (warnings are errors)
+pytest tests/                                             # everything
+pytest tests/core/test_model.py tests/core/test_agent.py  # one or two modules while iterating
+pytest tests/space                                        # one domain
+pytest tests/ -Werror                                     # what CI runs (warnings are errors)
+MODELLY_PURE_PYTHON=1 pytest tests/                       # the same suite on the pure-Python twins
 ```
 
 Guidelines:
@@ -131,38 +147,47 @@ documentation and as the benchmark inputs.
 
 ## Repository layout
 
+One package per domain (pelloux-guidelines.md §11.1). Each domain package's `__init__.py`
+re-exports its public names in `__all__`; inside `modelly/`, import from the defining module.
+
 ```text
 modelly/                      # the package
-├── agent.py                  # Agent, create_agents, from_dataframe
-├── columns.py                # Column: agent attributes stored in model-owned numpy arrays
-├── migrate.py                # python -m modelly.migrate: Mesa to Modelly codemod
+├── __init__.py               # top-level names: Agent, Model, DataCollector, Column, CohortTable, ...
 ├── py.typed                  # annotations are part of the API
-├── agentset/                 # ordered agent sets
-│   ├── abstract.py           #   the shared interface and algorithms
-│   ├── selection.py          #   select, select_random
-│   ├── weak.py               #   AgentSet: weak-reference views
-│   ├── strong.py             #   the model's strong-reference registry
-│   └── groupby.py            #   GroupBy
-├── model.py                  # Model: state, seed, time, events
-├── datacollection.py         # DataCollector: reporters -> pandas
-├── reporters.py              # reporter normalisation and fast row collection
+├── core/                     # agents, the model, agent sets, columns, the random source
+│   ├── agent.py              #   Agent, create_agents, from_dataframe
+│   ├── model.py              #   Model: state, seed, time, events
+│   ├── registry.py           #   model.agents and model.agents_by_type
+│   ├── columns.py            #   Column: attributes in model-owned numpy arrays
+│   ├── column_access.py      #   fast per-agent access to Column attributes
+│   ├── rng.py                #   FastRandom
+│   ├── exceptions.py         #   the exception hierarchy
+│   └── agentset/             #   AgentSet (weak views), the strong registry, select, get/set/agg, groupby
+├── space/                    # discrete and continuous space
+│   ├── base.py               #   DiscreteSpace
+│   ├── cells/                #   Cell, neighbourhoods, CellCollection, cell agents, CellIndex, occupancy
+│   ├── grid/                 #   orthogonal and hex grids, the empty-cell index, property layers
+│   ├── network.py            #   Network
+│   ├── voronoi.py            #   VoronoiGrid (on delaunay.py)
+│   └── continuous/           #   ContinuousSpace, its agents and neighbour queries
+├── time/                     # Schedule (schedule.py), events/ (Event, EventList, EventGenerator), signals/
+├── data/                     # DataCollector (collector.py), reporters, tables, frames, recorders/
+├── behaviour/                # actions/, states/ (ContinuousState, Threshold), meta_agents/
+├── scenarios/                # Scenario, sampling, run_scenarios, result stores
+├── batch/                    # run_batch and run_grid (runs.py), CohortTable (cohorts.py)
+├── viz/                      # solara/, render/, mpl/, altair/, console/
+├── _native/                  # fastrng.c, fastloop.c and loops.py (the Python twins and dispatch)
+├── lint/                     # python -m modelly.lint
+├── migrate.py                # python -m modelly.migrate: Mesa to Modelly codemod
 ├── log.py                    # module loggers and method tracing
-├── discrete_space/           # cells, grids, networks, Voronoi
-│   ├── cell.py               #   Cell with a per-cell neighbourhood cache
-│   ├── base_grid.py          #   Grid: cell creation, empty-cell index, pickling
-│   ├── grid.py               #   Moore, Von Neumann and hex grids
-│   └── property_layer.py     #   numpy layers exposed on cells
-├── time/                     # events, generators, schedules
-├── experimental/             # scenarios, continuous space, signals, data records, actions, states
-├── examples/                 # the models in the table above
-└── visualization/            # Solara components, matplotlib, altair
+└── examples/                 # basic/, advanced/, experimental/: the bundled models
 docs/                         # notebooks, guides, API docs, performance audit
-example.py                    # the 30-second model above, runnable
+example.py                    # the 30-second model from the README, runnable
 CHANGELOG.md                  # release notes
 benchmarks/                   # timing harnesses for the example models
-scripts/                      # local CI gate and the Pelloux audit
-tests/                        # the test suite
-tools/branding/               # generator for the animated SVGs on this page
+scripts/                      # local CI gate, the Pelloux audit, build-native.sh
+tests/                        # mirrors modelly/: core, space, time, data, behaviour, scenarios, batch, viz, native, examples
+tools/branding/               # generator for the animated SVGs in the README
 ```
 
 ## Brand assets

@@ -25,8 +25,7 @@ A membership manager (`model.meta_agents`) tracks who belongs to which alliance,
 
 ## Further Reading
 
-The full tutorial describing how the model is built can be found at:
-https://modelly.readthedocs.io/en/latest/tutorials/intro_tutorial.html
+The meta-agent API this model uses lives in `modelly.behaviour.meta_agents`.
 
 An example of the bilateral shapley value in another model:
 [Techno-Social Energy Infrastructure Siting: Sustainable Energy Modeling Programming (SEMPro)](https://www.jasss.org/16/3/6.html)
@@ -36,7 +35,7 @@ An example of the bilateral shapley value in another model:
 
 Install Modelly with recommended dependencies:
 
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 
 Then run the example:
 
