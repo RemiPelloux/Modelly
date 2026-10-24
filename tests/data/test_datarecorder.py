@@ -468,7 +468,7 @@ def test_json_recorder_numpy_types():
         recorder.save_to_json()
 
         # Verify JSON files exist and are valid
-        with open(Path(temp_dir) / "numpy_data.json") as f:
+        with open(Path(temp_dir) / "numpy_data.json", encoding="utf-8") as f:
             data = json.load(f)
             assert isinstance(data, list)
 

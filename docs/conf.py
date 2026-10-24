@@ -350,16 +350,16 @@ intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 def write_example_md_file(
     agent_filename, model_filename, readme_filename, app_filename, md_filepath, template
 ):
-    with open(agent_filename) as content_file:
+    with open(agent_filename, encoding="utf-8") as content_file:
         agent_file = content_file.read()
-    with open(model_filename) as content_file:
+    with open(model_filename, encoding="utf-8") as content_file:
         model_file = content_file.read()
-    with open(readme_filename) as content_file:
+    with open(readme_filename, encoding="utf-8") as content_file:
         readme_file = content_file.read()
-    with open(app_filename) as content_file:
+    with open(app_filename, encoding="utf-8") as content_file:
         app_file = content_file.read()
 
-    with open(md_filepath, "w") as fh:
+    with open(md_filepath, "w", encoding="utf-8") as fh:
         content = template.substitute(
             dict(
                 agent_file=agent_file,
@@ -383,7 +383,7 @@ def setup_examples_pages():
         if f.is_dir() and not f.name.startswith("__")
     ]
 
-    with open(os.path.join(HERE, "example_template.txt")) as fh:
+    with open(os.path.join(HERE, "example_template.txt"), encoding="utf-8") as fh:
         template = string.Template(fh.read())
 
     root_folder = pathlib.Path(os.path.join(HERE, "examples"))
@@ -414,17 +414,19 @@ def setup_examples_pages():
         )
 
     # create overview of examples.md
-    with open(os.path.join(HERE, "examples_overview_template.txt")) as fh:
+    with open(
+        os.path.join(HERE, "examples_overview_template.txt"), encoding="utf-8"
+    ) as fh:
         template = string.Template(fh.read())
 
-    with open(os.path.join(examples_folder, "README.md")) as fh:
+    with open(os.path.join(examples_folder, "README.md"), encoding="utf-8") as fh:
         readme_md = fh.read()
     # The README links are relative to modelly/examples/ (right on GitHub); on the
     # docs page the example pages live under examples/.
     for kind in kinds:
         readme_md = readme_md.replace(f"]({kind}/", f"](examples/{kind}/")
 
-    with open(os.path.join(HERE, "examples.md"), "w") as fh:
+    with open(os.path.join(HERE, "examples.md"), "w", encoding="utf-8") as fh:
         content = template.substitute(
             dict(
                 readme=readme_md,

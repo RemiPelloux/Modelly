@@ -14,7 +14,7 @@ _TAG_CONF = Path(os.environ["MODELLY_TAG_CONF"]).resolve()
 _TAG_DOCS = _TAG_CONF.parent
 
 __file__ = str(_TAG_CONF)  # the tag's conf.py resolves its folder from __file__
-exec(compile(_TAG_CONF.read_text(), __file__, "exec"))  # noqa: S102
+exec(compile(_TAG_CONF.read_text(encoding="utf-8"), __file__, "exec"))  # noqa: S102
 
 templates_path = [str(_TAG_DOCS / p) for p in globals().get("templates_path", [])]
 html_static_path = [str(_TAG_DOCS / p) for p in globals().get("html_static_path", [])]

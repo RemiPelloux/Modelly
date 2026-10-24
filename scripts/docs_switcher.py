@@ -58,7 +58,7 @@ def main(argv: list[str]) -> int:
         sys.stdout.write(f"{minors[0] if minors else ''}\n")
         return 0
     text = json.dumps(switcher_entries(site), indent=JSON_INDENT)
-    (site / "switcher.json").write_text(f"{text}\n")
+    (site / "switcher.json").write_text(f"{text}\n", encoding="utf-8")
     return 0
 
 

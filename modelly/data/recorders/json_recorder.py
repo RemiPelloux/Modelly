@@ -121,5 +121,5 @@ class JSONDataRecorder(BaseDataRecorder):
         """Save all data to JSON files."""
         for name, snapshots in self.data.items():
             filepath = self.output_dir / f"{name}.json"
-            with open(filepath, "w") as f:
+            with open(filepath, "w", encoding="utf-8") as f:
                 json.dump(snapshots, f, indent=2, cls=NumpyJSONEncoder)

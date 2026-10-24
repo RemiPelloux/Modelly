@@ -60,7 +60,9 @@ STEPS = "3"
 @pytest.fixture
 def models(tmp_path, monkeypatch):
     """The test models, importable as ``sized_models``."""
-    (tmp_path / "sized_models.py").write_text(textwrap.dedent(MODEL_SOURCE))
+    (tmp_path / "sized_models.py").write_text(
+        textwrap.dedent(MODEL_SOURCE), encoding="utf-8"
+    )
     monkeypatch.syspath_prepend(str(tmp_path))
     import sized_models  # noqa: PLC0415 (written by the fixture)
 

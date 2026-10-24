@@ -18,7 +18,7 @@ DOCS = Path(__file__).parents[1] / "docs" / "lint.md"
 @pytest.fixture
 def project(tmp_path, monkeypatch):
     """A folder with a model file, used as the working directory."""
-    (tmp_path / "model.py").write_text(TWO_RULES)
+    (tmp_path / "model.py").write_text(TWO_RULES, encoding="utf-8")
     monkeypatch.chdir(tmp_path)
     return tmp_path
 
@@ -26,7 +26,7 @@ def project(tmp_path, monkeypatch):
 def configure(project: Path, table: str) -> None:
     """Write a pyproject.toml with ``table`` under [tool.modelly.lint]."""
     body = "[tool.modelly.lint]\n" + textwrap.dedent(table)
-    (project / "pyproject.toml").write_text(body)
+    (project / "pyproject.toml").write_text(body, encoding="utf-8")
 
 
 def test_noqa_allows_a_comment_after_the_codes():
@@ -53,7 +53,7 @@ def test_config_per_file_ignores(project):
     configure(project, 'per-file-ignores = { "model.py" = ["MDL0"] }\n')
     assert main(["model.py"]) == EXIT_CLEAN
     (project / "sub").mkdir()
-    (project / "sub" / "agents.py").write_text(TWO_RULES)
+    (project / "sub" / "agents.py").write_text(TWO_RULES, encoding="utf-8")
     configure(project, 'per-file-ignores = { "sub/*" = ["MDL001", "MDL003"] }\n')
     assert main(["sub"]) == EXIT_CLEAN
     assert main(["model.py"]) == EXIT_FINDINGS
@@ -72,7 +72,7 @@ def test_bad_config_is_a_usage_error(project, capsys):
     with pytest.raises(ConfigError):
         load_config()
     assert main(["model.py"]) == EXIT_USAGE
-    (project / "pyproject.toml").write_text("[tool.modelly.lint\n")
+    (project / "pyproject.toml").write_text("[tool.modelly.lint\n", encoding="utf-8")
     assert main(["model.py"]) == EXIT_USAGE
     assert "modelly.lint" in capsys.readouterr().err
 
@@ -95,7 +95,7 @@ def test_quiet_prints_only_locations(project, capsys):
 
 def test_statistics_counts_per_code(project, capsys):
     """--statistics prints one count per code and the summary."""
-    (project / "other.py").write_text(TWO_RULES)
+    (project / "other.py").write_text(TWO_RULES, encoding="utf-8")
     main(["--statistics", "."])
     out = capsys.readouterr().out.splitlines()
     assert out[0].split()[:2] == ["2", "MDL001"]

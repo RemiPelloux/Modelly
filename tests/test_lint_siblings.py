@@ -39,7 +39,9 @@ class Pasture(Model):
 def write_model(folder, imports, agent="Sheep", name="model.py"):
     """A model file in ``folder`` whose step loop writes ``energy`` one agent at a time."""
     path = folder / name
-    path.write_text(textwrap.dedent(MODEL.format(imports=imports, agent=agent)))
+    path.write_text(
+        textwrap.dedent(MODEL.format(imports=imports, agent=agent)), encoding="utf-8"
+    )
     return path
 
 
@@ -47,8 +49,8 @@ def package(tmp_path, name="pkg"):
     """A package holding the agents module, with an empty ``__init__``."""
     folder = tmp_path / name
     folder.mkdir()
-    (folder / "__init__.py").write_text("")
-    (folder / "agents.py").write_text(textwrap.dedent(AGENTS))
+    (folder / "__init__.py").write_text("", encoding="utf-8")
+    (folder / "agents.py").write_text(textwrap.dedent(AGENTS), encoding="utf-8")
     return folder
 
 
@@ -94,7 +96,7 @@ def test_imports_outside_the_lint_root_are_not_read(tmp_path):
 def test_lint_source_without_siblings_sees_only_its_own_file(tmp_path):
     """The single-source API keeps its behaviour: no imported columns."""
     model = write_model(package(tmp_path), "from .agents import Sheep")
-    assert lint_source(model.read_text(), str(model)) == []
+    assert lint_source(model.read_text(encoding="utf-8"), str(model)) == []
 
 
 def test_each_imported_module_is_parsed_once(tmp_path):
@@ -103,16 +105,22 @@ def test_each_imported_module_is_parsed_once(tmp_path):
     first = write_model(folder, "from .agents import Sheep")
     second = write_model(folder, "from .agents import Sheep", name="other.py")
     siblings = SiblingColumns([tmp_path])
-    assert siblings.imported(ast.parse(first.read_text()), first) == {"energy"}
-    (folder / "agents.py").write_text("")
-    assert siblings.imported(ast.parse(second.read_text()), second) == {"energy"}
+    assert siblings.imported(ast.parse(first.read_text(encoding="utf-8")), first) == {
+        "energy"
+    }
+    (folder / "agents.py").write_text("", encoding="utf-8")
+    assert siblings.imported(ast.parse(second.read_text(encoding="utf-8")), second) == {
+        "energy"
+    }
     assert list(siblings.parsed) == [(folder / "agents.py").resolve()]
 
 
 def test_unparsable_sibling_adds_no_columns(tmp_path):
     """A sibling with a syntax error is skipped by the resolver."""
     folder = package(tmp_path)
-    (folder / "agents.py").write_text("class Sheep(:\n")
+    (folder / "agents.py").write_text("class Sheep(:\n", encoding="utf-8")
     model = write_model(folder, "from .agents import Sheep")
     siblings = SiblingColumns([tmp_path])
-    assert siblings.imported(ast.parse(model.read_text()), model) == set()
+    assert (
+        siblings.imported(ast.parse(model.read_text(encoding="utf-8")), model) == set()
+    )

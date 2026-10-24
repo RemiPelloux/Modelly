@@ -43,7 +43,7 @@ WOLF_SHEEP = "modelly.examples.advanced.wolf_sheep.model:WolfSheep"
 def model_file(tmp_path):
     """The test models, written to a file outside the package."""
     path = tmp_path / "crowd_model.py"
-    path.write_text(textwrap.dedent(MODEL_SOURCE))
+    path.write_text(textwrap.dedent(MODEL_SOURCE), encoding="utf-8")
     return path
 
 

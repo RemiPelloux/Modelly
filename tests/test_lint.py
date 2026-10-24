@@ -195,7 +195,7 @@ def test_shipped_examples_are_clean():
 def write(tmp_path: Path, body: str) -> Path:
     """Write a model file and return its path."""
     path = tmp_path / "model.py"
-    path.write_text(HEADER + textwrap.dedent(body))
+    path.write_text(HEADER + textwrap.dedent(body), encoding="utf-8")
     return path
 
 
@@ -232,6 +232,6 @@ def test_cli_clean_file_and_list_rules(tmp_path, capsys):
 def test_cli_syntax_error_exits_2(tmp_path, capsys):
     """A file that does not parse is a usage error, not a finding."""
     path = tmp_path / "broken.py"
-    path.write_text("def (:\n")
+    path.write_text("def (:\n", encoding="utf-8")
     assert main([str(path)]) == 2
     assert "modelly.lint" in capsys.readouterr().err

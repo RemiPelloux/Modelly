@@ -28,7 +28,7 @@ def test_version(capsys):
 def test_forwards_to_the_command(tmp_path, capsys):
     """``modelly lint PATH`` is ``python -m modelly.lint PATH``."""
     path = tmp_path / "model.py"
-    path.write_text("import random\nx = random.random()\n")
+    path.write_text("import random\nx = random.random()\n", encoding="utf-8")
     assert main(["lint", str(path)]) == 1
     assert "MDL001" in capsys.readouterr().out
     assert main(["lint", "--list-rules"]) == 0

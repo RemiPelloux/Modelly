@@ -214,7 +214,7 @@ class SpaceRenderer:
             self.property_layer_portrayal
         )
 
-        number_of_props = sum([1 for layer in property_layers if layer != "empty"])
+        number_of_props = sum(1 for layer in property_layers if layer != "empty")
         if number_of_props < 1:
             raise Exception("No property layers were found on the space.")
 

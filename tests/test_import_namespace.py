@@ -25,7 +25,7 @@ def test_simulator_classes_removed():
     import modelly  # noqa: PLC0415
 
     with pytest.raises(ModuleNotFoundError):
-        import modelly.experimental.devs  # noqa: PLC0415
+        import modelly.experimental.devs  # noqa: F401, PLC0415
 
     with pytest.raises(ModuleNotFoundError):
         from modelly.experimental.devs.simulator import (  # noqa: F401, PLC0415

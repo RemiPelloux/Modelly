@@ -224,7 +224,11 @@ def parse(argv: list[str]) -> argparse.Namespace:
 def write_readme(rounds: int, core: int | None) -> None:
     """results/README.md from every stored result, so a partial run keeps the others."""
     sections = [
-        render(name, spec, json.loads((RESULTS / f"{name}.json").read_text()))
+        render(
+            name,
+            spec,
+            json.loads((RESULTS / f"{name}.json").read_text(encoding="utf-8")),
+        )
         for name, spec in PLAYBOOKS.items()
         if (RESULTS / f"{name}.json").exists()
     ]
@@ -234,7 +238,7 @@ def write_readme(rounds: int, core: int | None) -> None:
         + ("pinned to one core" if core is not None else "not pinned")
         + ". See ../README.md for the method.\n\n"
     )
-    (RESULTS / "README.md").write_text(header + "\n".join(sections))
+    (RESULTS / "README.md").write_text(header + "\n".join(sections), encoding="utf-8")
 
 
 def main(argv: list[str]) -> int:
@@ -256,7 +260,9 @@ def main(argv: list[str]) -> int:
                 name, variants, max(options.seeds, 2), options.core
             ),
         }
-        (RESULTS / f"{name}.json").write_text(json.dumps(report, indent=2))
+        (RESULTS / f"{name}.json").write_text(
+            json.dumps(report, indent=2), encoding="utf-8"
+        )
     write_readme(options.rounds, options.core)
     sys.stdout.write(f"wrote {RESULTS.relative_to(ROOT)}/README.md\n")
     return 0

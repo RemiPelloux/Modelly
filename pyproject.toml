@@ -171,6 +171,9 @@ target-version = "py312"
 extend-exclude = ["build", "benchmarks/notebooks/*.ipynb", "benchmarks/mesaVSmodelly"]  # generated notebooks; local-only harness
 
 [tool.ruff.lint]
+# Preview only for the rules selected by code below (PLW1514), not whole groups.
+preview = true
+explicit-preview-rules = true
 select = [
   # "ANN", # annotations TODO
   "B",   # bugbear
@@ -187,6 +190,7 @@ select = [
   "PLE", # pylint error
   # "PLR", # pylint refactor TODO
   "PLW", # pylint warning
+  "PLW1514", # open() without encoding= (preview): Windows defaults to a legacy code page
   "Q",   # quotes
   "RUF", # Ruff
   "S",   # security

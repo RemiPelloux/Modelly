@@ -102,7 +102,9 @@ def run_notebook(notebook: Path) -> dict:
         "total_seconds": round(total, 2),
         "cells": timings,
     }
-    (HERE / "full_run_summary.json").write_text(json.dumps(summary, indent=2))
+    (HERE / "full_run_summary.json").write_text(
+        json.dumps(summary, indent=2), encoding="utf-8"
+    )
     print(f"\nall cells executed in {total / 60:.1f} min", flush=True)
     return summary
 
