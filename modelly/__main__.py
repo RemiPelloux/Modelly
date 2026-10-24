@@ -19,24 +19,14 @@ EXIT_USAGE = 2
 # (name, module with main(argv, prog) -> int, one-line summary)
 COMMANDS = (
     (
-        "calibrate",
-        "modelly.calibrate.__main__",
-        "fit parameters to observed data (ABC-SMC, ABC, moments, Bayesian opt.)",
+        "new",
+        "modelly.new.__main__",
+        "write a new model project from a template, seeded, tested and linted",
     ),
     (
-        "experiment",
-        "modelly.experiments.__main__",
-        "run a parameter sweep from a TOML spec; resumable, on any executor",
-    ),
-    (
-        "bench",
-        "modelly.bench.__main__",
-        "run the benchmark playbooks, keep a history and report regressions",
-    ),
-    (
-        "lint",
-        "modelly.lint.__main__",
-        "find reproducibility bugs and O(N^2) patterns in a model",
+        "zoo",
+        "modelly.zoo.__main__",
+        "list, describe and copy the validated reference models",
     ),
     (
         "migrate",
@@ -44,9 +34,19 @@ COMMANDS = (
         "rewrite a Mesa model for Modelly and report what is left",
     ),
     (
-        "new",
-        "modelly.new.__main__",
-        "write a new model project from a template, seeded, tested and linted",
+        "lint",
+        "modelly.lint.__main__",
+        "find reproducibility bugs and O(N^2) patterns in a model",
+    ),
+    (
+        "studio",
+        "modelly.studio.__main__",
+        "open a model in Modelly Studio, a browser app to run and inspect it",
+    ),
+    (
+        "run",
+        "modelly.provenance.commands.run",
+        "run a model once; write its outputs and a provenance manifest",
     ),
     (
         "profile",
@@ -54,9 +54,24 @@ COMMANDS = (
         "time a model's steps by agent class, data collection and events",
     ),
     (
-        "run",
-        "modelly.provenance.commands.run",
-        "run a model once; write its outputs and a provenance manifest",
+        "experiment",
+        "modelly.experiments.__main__",
+        "run a parameter sweep from a TOML spec; resumable, on any executor",
+    ),
+    (
+        "calibrate",
+        "modelly.calibrate.__main__",
+        "fit parameters to observed data (ABC-SMC, ABC, moments, Bayesian opt.)",
+    ),
+    (
+        "sensitivity",
+        "modelly.sensitivity.__main__",
+        "rank parameters by influence (OAT, Morris, Sobol, PAWN)",
+    ),
+    (
+        "bench",
+        "modelly.bench.__main__",
+        "run the benchmark playbooks, keep a history and report regressions",
     ),
     (
         "verify",
@@ -73,21 +88,6 @@ COMMANDS = (
         "modelly.provenance.commands.odd",
         "write an ODD protocol skeleton of a model",
     ),
-    (
-        "zoo",
-        "modelly.zoo.__main__",
-        "list, describe and copy the validated reference models",
-    ),
-    (
-        "sensitivity",
-        "modelly.sensitivity.__main__",
-        "rank parameters by influence (OAT, Morris, Sobol, PAWN)",
-    ),
-    (
-        "studio",
-        "modelly.studio.__main__",
-        "open a model in Modelly Studio, a browser app to run and inspect it",
-    ),
 )
 
 DESCRIPTION = "Command-line tools for Modelly models."
@@ -97,22 +97,22 @@ commands:
 {commands}
 
 examples:
-  modelly calibrate sir.toml            fit priors to data, print the posterior
-  modelly experiment run study.toml     run a sweep (resumes where it stopped)
-  modelly lint src/                    check a model (same as python -m modelly.lint src/)
-  modelly lint --explain MDL101         why a rule matters, with a fix
-  modelly migrate my_mesa_model/        dry run of the Mesa codemod
   modelly new my-model --template grid  a new project, tested and linted
-  modelly profile model.py:MyModel      where each step's time goes
+  modelly zoo copy age_seir my_model/   start a project from a zoo model
+  modelly migrate my_mesa_model/        dry run of the Mesa codemod
+  modelly lint src/                     check a model (same as python -m modelly.lint src/)
+  modelly lint --explain MDL101         why a rule matters, with a fix
+  modelly studio model.py:MyModel       run, scrub and inspect it in the browser
   modelly run model.py:MyModel --steps 100 --seed 1 --out runs/
                                         outputs and runs/manifest.json
+  modelly profile model.py:MyModel      where each step's time goes
+  modelly experiment run study.toml     run a sweep (resumes where it stopped)
+  modelly calibrate sir.toml            fit priors to data, print the posterior
+  modelly sensitivity sir.toml          which parameters matter most
+  modelly bench --label v1.3.0          time the playbooks, append to the history
   modelly verify runs/manifest.json     rerun and compare the outputs
   modelly bundle runs/ --out study.zip  code, lock file, seeds and outputs
   modelly odd model.py:MyModel > ODD.md ODD protocol skeleton
-  modelly bench --label v1.3.0          time the playbooks, append to the history
-  modelly zoo copy age_seir my_model/   start a project from a zoo model
-  modelly sensitivity sir.toml          which parameters matter most
-  modelly studio model.py:MyModel       run, scrub and inspect it in the browser
   modelly COMMAND --help                every option of one command
 
 exit status:
