@@ -7,6 +7,7 @@ Core Objects: Agent.
 from __future__ import annotations
 
 import itertools
+from collections.abc import Iterator
 from random import Random
 from typing import TYPE_CHECKING, ClassVar
 
@@ -183,18 +184,7 @@ class Agent[M: Model]:
                 agents.append(cls(model))
             return AgentSet(agents, random=model.random)
 
-        # Prepare positional argument iterators. A sequence must have length n
-        # (assigned per agent); a length mismatch raises. Anything else is broadcast.
-        arg_iters = [_resolve_per_agent_values(arg, n) for arg in args]
-
-        # Prepare keyword argument iterators
-        kw_keys = list(kwargs.keys())
-        kw_val_iters = [_resolve_per_agent_values(v, n) for v in kwargs.values()]
-
-        # If arg_iters is empty, zip(*[]) returns nothing, so we use repeat(())
-        pos_iter = zip(*arg_iters) if arg_iters else itertools.repeat(())
-
-        kw_iter = zip(*kw_val_iters) if kw_val_iters else itertools.repeat(())
+        pos_iter, kw_keys, kw_iter = _per_agent_iters(args, kwargs, n)
 
         # We rely on range(n) to drive the loop length
         if kwargs:
@@ -280,3 +270,20 @@ class Agent[M: Model]:
     def scenario(self):
         """Return the scenario associated with the model."""
         return self.model.scenario
+
+
+def _per_agent_iters(
+    args: tuple, kwargs: dict, n: int
+) -> tuple[Iterator, list, Iterator]:
+    """Return the positional iterator, keyword names and keyword iterator of ``create_agents``.
+
+    A sequence must have length n (assigned per agent); a length mismatch
+    raises. Anything else is broadcast.
+    """
+    arg_iters = [_resolve_per_agent_values(arg, n) for arg in args]
+    kw_keys = list(kwargs.keys())
+    kw_val_iters = [_resolve_per_agent_values(v, n) for v in kwargs.values()]
+    # If arg_iters is empty, zip(*[]) returns nothing, so we use repeat(())
+    pos_iter = zip(*arg_iters) if arg_iters else itertools.repeat(())
+    kw_iter = zip(*kw_val_iters) if kw_val_iters else itertools.repeat(())
+    return pos_iter, kw_keys, kw_iter

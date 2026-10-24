@@ -120,22 +120,32 @@ class PyFastRandom(random.Random):
         n = len(population)
         if not 0 <= k <= n:
             raise ValueError("Sample larger than population or is negative")
-        getrandbits = self.getrandbits
-        result = [None] * k
         setsize = SMALL_SET_SIZE
         if k > SAMPLE_SET_THRESHOLD:
             setsize += 4 ** ceil(log(k * 3, 4))
         if n <= setsize:
-            pool = list(population)
-            for i in range(k):
-                m = n - i
-                kb = _BITS[m] if m < BITS_TABLE_SIZE else m.bit_length()
+            return self._sample_from_pool(population, n, k)
+        return self._sample_by_rejection(population, n, k)
+
+    def _sample_from_pool(self, population: Sequence[Any], n: int, k: int) -> list:
+        """``sample`` for a small population: draw from a shrinking copy."""
+        getrandbits = self.getrandbits
+        result = [None] * k
+        pool = list(population)
+        for i in range(k):
+            m = n - i
+            kb = _BITS[m] if m < BITS_TABLE_SIZE else m.bit_length()
+            j = getrandbits(kb)
+            while j >= m:
                 j = getrandbits(kb)
-                while j >= m:
-                    j = getrandbits(kb)
-                result[i] = pool[j]
-                pool[j] = pool[m - 1]
-            return result
+            result[i] = pool[j]
+            pool[j] = pool[m - 1]
+        return result
+
+    def _sample_by_rejection(self, population: Sequence[Any], n: int, k: int) -> list:
+        """``sample`` for a large population: redraw indices already selected."""
+        getrandbits = self.getrandbits
+        result = [None] * k
         selected: set[int] = set()
         kb = _BITS[n] if n < BITS_TABLE_SIZE else n.bit_length()
         for i in range(k):
