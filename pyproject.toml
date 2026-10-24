@@ -61,6 +61,17 @@ all = ["modelly-abm[network,viz,dev,examples,docs]"]
 network = [
   "networkx",
 ]
+# Geospatial space (modelly.space.geo): wheels on Windows, macOS and Linux, no system GDAL
+geo = [
+  "geopandas",
+  "shapely",
+  "pyproj",
+  "rasterio",
+]
+# Road networks downloaded from OpenStreetMap (modelly.space.geo.download_osm)
+osm = [
+  "osmnx",
+]
 viz = [
   "matplotlib",
   "solara",
@@ -84,7 +95,7 @@ ray = [
 ]
 # Dev and CI stuff
 dev = [
-  "modelly-abm[rec]",
+  "modelly-abm[rec,geo]",
   "ruff",
   "pytest",
   "pytest-cov",
@@ -103,7 +114,7 @@ examples = [
   "scipy",
 ]
 docs = [
-  "modelly-abm[rec]",
+  "modelly-abm[rec,geo]",
   "sphinx",
   "ipython",
   "pydata_sphinx_theme",
