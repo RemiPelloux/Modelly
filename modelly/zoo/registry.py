@@ -130,6 +130,15 @@ MODELS: tuple[ZooModel, ...] = (
         "consensus for a wide confidence bound, about 1/(2 eps) clusters for a narrow one",
     ),
     ZooModel(
+        "hegselmann_krause",
+        "Hegselmann-Krause bounded-confidence opinion dynamics",
+        "sociology",
+        "HegselmannKrause",
+        "HKScenario",
+        "Every agent moves to the mean opinion of those within its confidence bound.",
+        "cluster count falls to consensus as the confidence bound grows",
+    ),
+    ZooModel(
         "nagel_schreckenberg",
         "Nagel-Schreckenberg traffic",
         "transport",
