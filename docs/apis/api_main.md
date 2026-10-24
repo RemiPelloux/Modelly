@@ -6,6 +6,7 @@ One page per domain package of `modelly`: `core`, `space`, `time`, `data`, `beha
 `scenarios`, `batch`, `viz` and `timetravel`, plus the `log`, `migrate`, `lint` and `profile` modules.
 One page per domain package of `modelly`: `core`, `space` (with `space.geo` and
 `space.networks`), `time`, `data`, `behaviour`,
+`scenarios`, `batch` and `viz`, plus the `log`, `migrate`, `lint` and `profile` modules and the `llm` package.
 
 ```{toctree}
 :maxdepth: 3
@@ -27,4 +28,5 @@ migrate
 lint
 profile
 provenance
+llm
 ```

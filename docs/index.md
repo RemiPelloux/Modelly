@@ -183,6 +183,7 @@ Best practices <best-practices>
 Checking a model <lint>
 Profiling a model <profile>
 Experiments and sweeps <experiments>
+Language-model agents <llm_agents>
 Checkpoints <checkpoints>
 Reproducible studies <provenance>
 Time travel <timetravel>
