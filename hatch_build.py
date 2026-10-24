@@ -22,7 +22,11 @@ except ImportError:  # scripts/build-native.sh only needs compile_extension
     BuildHookInterface = object  # type: ignore[assignment,misc]
 
 NATIVE_DIR = Path("modelly") / "_native"
-SOURCES = (NATIVE_DIR / "fastrng.c", NATIVE_DIR / "fastloop.c")
+SOURCES = (
+    NATIVE_DIR / "fastrng.c",
+    NATIVE_DIR / "fastloop.c",
+    NATIVE_DIR / "fastcell.c",
+)
 OPTIMISE = ["-O3", "-fPIC", "-fno-strict-aliasing"]
 
 

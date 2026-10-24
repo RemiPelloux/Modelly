@@ -78,8 +78,8 @@ jobs:
 
   pure-python:
     # The suite once more with the compiled modules switched off, so the pure-Python
-    # twins of modelly/_native (FastRandom, the agent-set loops, the neighbourhood walk)
-    # stay tested.
+    # twins of modelly/_native (FastRandom, the agent-set loops, the neighbourhood walk,
+    # the cell move) stay tested.
     runs-on: ubuntu-latest
     env:
       MODELLY_PURE_PYTHON: "1"

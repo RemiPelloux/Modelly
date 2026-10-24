@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   wheels:
-    # Platform wheels with the compiled modules (modelly/_native/fastrng.c, fastloop.c).
+    # Platform wheels with the compiled modules (modelly/_native/fastrng.c, fastloop.c, fastcell.c).
     name: Wheels (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -29,7 +29,7 @@ jobs:
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_ENVIRONMENT: "MODELLY_REQUIRE_NATIVE=1"
           CIBW_TEST_COMMAND: >-
-            python -c "import modelly.core.rng as r, modelly._native.loops as l; assert r.NATIVE and l.NATIVE, 'compiled modules not active'"
+            python -c "import modelly.core.rng as r, modelly._native.loops as l, modelly._native.cells as c; assert r.NATIVE and l.NATIVE and c.NATIVE, 'compiled modules not active'"
       - uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ matrix.os }}

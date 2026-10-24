@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Protocol
 
+from modelly._native.cells import set_cell
 from modelly.core.agent import Agent
 
 if TYPE_CHECKING:
@@ -32,26 +33,12 @@ class HasCell:
 
     _modelly_cell: Cell | None = None
 
-    @property
-    def cell(self) -> Cell | None:  # noqa: D102
+    def _get_cell(self) -> Cell | None:
         return self._modelly_cell
 
-    @cell.setter
-    def cell(self, cell: Cell | None) -> None:
-        old_cell = self._modelly_cell
-
-        # No-op if assigning to same cell
-        if cell is old_cell:
-            return
-
-        # Attempt to add first
-        if cell is not None:
-            cell.add_agent(self)
-
-        if old_cell is not None:
-            old_cell.remove_agent(self)
-
-        self._modelly_cell = cell
+    # The setter adds to the new cell first, then removes from the old one; it is
+    # compiled when modelly._native.fastcell is built (see set_cell).
+    cell = property(_get_cell, set_cell, doc="The cell the agent is in.")
 
 
 class BasicMovement:

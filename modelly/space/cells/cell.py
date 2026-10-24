@@ -18,6 +18,7 @@ from random import Random
 
 import numpy as np
 
+from modelly._native import cells as native_cells
 from modelly.core.exceptions import (
     AgentMissingException,
     CellFullException,
@@ -218,3 +219,7 @@ class Cell(CellNeighborhood):
         slots["_neighborhood_cache"] = {}
         slots["_empties_index"] = None
         return state
+
+
+# set_cell runs these two methods inline for cells that do not override them.
+native_cells.bind(Cell)
