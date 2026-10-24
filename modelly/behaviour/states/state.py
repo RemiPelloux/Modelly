@@ -7,14 +7,11 @@ the standard Modelly event queue.
 
 from __future__ import annotations
 
-import contextlib
-import math
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
-import numpy as np
-
 import modelly.time.signals.core as core
+from modelly.behaviour.states.threshold import Threshold
 from modelly.time.signals import Observable, ObservableSignals
 from modelly.time.signals.core import (
     BaseObservable,
@@ -23,8 +20,18 @@ from modelly.time.signals.core import (
 )
 
 if TYPE_CHECKING:
-    from modelly.core.agent import Agent
     from modelly.time.signals import HasEmitters
+
+
+def _bind_thresholds(instance: HasEmitters) -> None:
+    """Bind every declarative Threshold on the instance's class hierarchy."""
+    cls = instance.__class__
+    for klass in cls.__mro__:
+        if "_continuous_thresholds" in klass.__dict__:
+            for t_name in klass.__dict__["_continuous_thresholds"]:
+                thresh = getattr(cls, t_name, None)
+                if thresh is not None and hasattr(thresh, "bind"):
+                    thresh.bind(instance)
 
 
 class ContinuousState(BaseObservable):
@@ -83,55 +90,56 @@ class ContinuousState(BaseObservable):
     def _get_state(self, instance: HasEmitters) -> dict[str, Any]:
         """Retrieve or initialize the internal state tracking dictionary."""
         if not hasattr(instance, self.private_state_name):
-            # Automatically bind any declarative Thresholds the first time
-            # a continuous state initializes, entirely bypassing the need for a scheduler.
-            if not getattr(instance, "_thresholds_bound", False):
-                instance._thresholds_bound = True
-                cls = instance.__class__
-                for klass in cls.__mro__:
-                    if "_continuous_thresholds" in klass.__dict__:
-                        for t_name in klass.__dict__["_continuous_thresholds"]:
-                            thresh = getattr(cls, t_name, None)
-                            if thresh is not None and hasattr(thresh, "bind"):
-                                thresh.bind(instance)
-
-            time = instance.model.peek("time", 0.0)
-
-            state: dict[str, Any] = {
-                "base_value": self.fallback_value,
-                "last_time": time,
-                "rate_computed": None,
-                "current_rate": 0.0,
-                # Rate-of-the-rate, captured when current_rate's source is
-                # itself a ContinuousState. 0.0 when the rate is constant.
-                "second_order_rate": 0.0,
-                # Strong reference so Modelly's weakref GC doesn't silently drop the handler.
-                "_rate_handler": None,
-            }
-            setattr(instance, self.private_state_name, state)
-
-            if callable(self._rate_input):
-
-                def compute_rate(agent):
-                    return self._rate_input(agent)
-
-                rate_computed = ComputedState(instance, self.rate_name, compute_rate)
-                state["rate_computed"] = rate_computed
-
-                # Defer the first rate evaluation: the rate lambda may access other
-                # Observable attributes whose private backing stores don't exist yet because
-                # we are still inside Agent.__init__ -> register_agent -> bind().
-                def on_rate_change(message: Any) -> None:
-                    self._snapshot_trajectory(instance)
-
-                state["_rate_handler"] = on_rate_change
-                instance.observe(
-                    self.rate_name, ObservableSignals.CHANGED, state["_rate_handler"]
-                )
-            else:
-                state["current_rate"] = float(self._rate_input)
-
+            self._init_state(instance)
         return getattr(instance, self.private_state_name)
+
+    def _init_state(self, instance: HasEmitters) -> None:
+        """Create the tracking dictionary, binding Thresholds and the rate first."""
+        # Automatically bind any declarative Thresholds the first time
+        # a continuous state initializes, entirely bypassing the need for a scheduler.
+        if not getattr(instance, "_thresholds_bound", False):
+            instance._thresholds_bound = True
+            _bind_thresholds(instance)
+
+        time = instance.model.peek("time", 0.0)
+
+        state: dict[str, Any] = {
+            "base_value": self.fallback_value,
+            "last_time": time,
+            "rate_computed": None,
+            "current_rate": 0.0,
+            # Rate-of-the-rate, captured when current_rate's source is
+            # itself a ContinuousState. 0.0 when the rate is constant.
+            "second_order_rate": 0.0,
+            # Strong reference so Modelly's weakref GC doesn't silently drop the handler.
+            "_rate_handler": None,
+        }
+        setattr(instance, self.private_state_name, state)
+
+        if callable(self._rate_input):
+            self._wire_rate(instance, state)
+        else:
+            state["current_rate"] = float(self._rate_input)
+
+    def _wire_rate(self, instance: HasEmitters, state: dict[str, Any]) -> None:
+        """Track a callable rate reactively and snapshot the trajectory on change."""
+
+        def compute_rate(agent):
+            return self._rate_input(agent)
+
+        rate_computed = ComputedState(instance, self.rate_name, compute_rate)
+        state["rate_computed"] = rate_computed
+
+        # Defer the first rate evaluation: the rate lambda may access other
+        # Observable attributes whose private backing stores don't exist yet because
+        # we are still inside Agent.__init__ -> register_agent -> bind().
+        def on_rate_change(message: Any) -> None:
+            self._snapshot_trajectory(instance)
+
+        state["_rate_handler"] = on_rate_change
+        instance.observe(
+            self.rate_name, ObservableSignals.CHANGED, state["_rate_handler"]
+        )
 
     def _find_chained_rate(
         self, comp_state: ComputedState, instance: HasEmitters
@@ -271,15 +279,12 @@ class ContinuousState(BaseObservable):
 
         state = self._get_state(instance)
         current_time = instance.model.peek("time", 0.0)
-
         has_subscribers = instance._has_subscribers(
             self.public_name, ObservableSignals.CHANGED
         )
         old_value = self.__get__(instance) if has_subscribers else None
-
         state["base_value"] = float(value)
         state["last_time"] = current_time
-
         if has_subscribers:
             instance.notify(
                 self.public_name,
@@ -292,201 +297,4 @@ class ContinuousState(BaseObservable):
             )
 
 
-class Threshold:
-    """Class-level descriptor that fires a callback when a ContinuousState crosses a limit.
-
-    The limit may be a fixed float or an Observable attribute on the agent.
-    When the limit is an Observable, the threshold recalculates automatically
-    whenever the limit changes -- no imperative re-arming calls needed.
-    """
-
-    def __init__(
-        self,
-        state: ContinuousState,
-        limit: float | Observable,
-        callback: str,
-        direction: str = "crossing",
-    ) -> None:
-        """Initialize the Threshold descriptor.
-
-        Args:
-            state: The ContinuousState descriptor to monitor.
-            limit: The crossing value, either a fixed float or an Observable
-                on the agent. When an Observable, the projected crossing time
-                updates automatically whenever the limit changes.
-            callback: Name of the agent method to call when the limit is crossed.
-            direction: The boundary direction constraint ("rising", "falling", or "crossing").
-        """
-        self.state = state
-        self.limit = limit
-        self.callback = callback
-        self.direction = direction
-
-    def __set_name__(self, owner: type, name: str) -> None:
-        """Bind the descriptor and register it to the class blueprint."""
-        self.public_name = name
-        self.time_attr = f"_{name}_projected_time"
-        self.event_attr = f"_{name}_event"
-
-        if "_continuous_thresholds" not in owner.__dict__:
-            owner._continuous_thresholds = []
-        if name not in owner._continuous_thresholds:
-            owner._continuous_thresholds.append(name)
-
-    def _resolve_limit(self, instance: Agent) -> float:
-        """Return the current limit value for this instance.
-
-        If the limit is an Observable descriptor, reads its current value
-        from the instance. Otherwise returns the fixed float.
-        """
-        if isinstance(self.limit, BaseObservable):
-            return self.limit.__get__(instance, type(instance))
-        return self.limit
-
-    def bind(self, instance: Agent) -> None:
-        """Wire up this threshold for the instance via the signal bus.
-
-        Subscribes to CHANGED signals from both the watched ContinuousState
-        and, when the limit is an Observable, from the limit itself -- so
-        the projected crossing time updates automatically whenever either changes.
-
-        Args:
-            instance (Agent): The instance to bind to.
-        """
-        if hasattr(instance, f"_{self.public_name}_recalc"):
-            return
-
-        setattr(instance, self.time_attr, math.inf)
-        setattr(instance, self.event_attr, None)
-
-        def _recalc(message: Any = None, _inst: Agent = instance) -> None:
-            self.recalculate(_inst)
-
-        def _trigger(_inst: Agent = instance) -> None:
-            self.execute(_inst)
-
-        # Strong references to prevent weakref event queue from silently dropping them
-        setattr(instance, f"_{self.public_name}_recalc", _recalc)
-        setattr(instance, f"_{self.public_name}_trigger", _trigger)
-
-        instance.observe(self.state.public_name, ObservableSignals.CHANGED, _recalc)
-
-        if isinstance(self.limit, BaseObservable):
-            instance.observe(self.limit.public_name, ObservableSignals.CHANGED, _recalc)
-
-        self.recalculate(instance)
-
-    def __get__(self, instance: Agent, owner: type | None = None) -> Any:
-        """Retrieve the projected crossing time."""
-        if instance is None:
-            return self
-        return getattr(instance, self.time_attr, math.inf)
-
-    def recalculate(self, instance: Agent) -> None:
-        """Compute and cache the exact crossing time using quadratic extrapolation.
-
-        Solves the intersection root using 0.5*a*t^2 + v*t + (x0 - limit) = 0.
-        """
-        state_dict = self.state._get_state(instance)
-        self.state._refresh_rate_if_dirty(state_dict, instance)
-        v = state_dict["current_rate"]
-        a = state_dict["second_order_rate"]
-
-        current_value = self.state.__get__(instance)
-        limit = self._resolve_limit(instance)
-
-        valid_times = []
-
-        if a == 0.0:
-            # Pure Linear Case
-            if v != 0.0:
-                t = (limit - current_value) / v
-                if t >= 0.0:
-                    valid_times.append((t, v))
-        else:
-            # Quadratic Case
-            qa = 0.5 * a
-            qb = v
-            qc = current_value - limit
-            discriminant = qb**2 - 4 * qa * qc
-
-            # Allow microscopic negative discriminants due to float inaccuracies near tangent touches
-            if discriminant >= -np.finfo(float).eps:
-                disc = max(0.0, discriminant)
-                sqrt_disc = math.sqrt(disc)
-
-                t1 = (-qb - sqrt_disc) / (2 * qa)
-                t2 = (-qb + sqrt_disc) / (2 * qa)
-
-                for t in (t1, t2):
-                    if t >= -np.finfo(float).eps:
-                        t_clean = max(0.0, t)
-                        # Calculate exact velocity at the moment of intersection: v(t) = v0 + a*t
-                        v_cross = qb + a * t_clean
-                        valid_times.append((t_clean, v_cross))
-
-        future_crossings = []
-        for t, v_cross in valid_times:
-            if self.direction == "rising" and v_cross <= 0:
-                continue
-            if self.direction == "falling" and v_cross >= 0:
-                continue
-            if self.direction == "crossing" and v_cross == 0:
-                # Tangent touches bounce away rather than crossing the boundary.
-                continue
-
-            # Reject a zero-time root where the state is already sitting exactly
-            # at the limit. This occurs mid-callback when the callback changes
-            # the rate (e.g. brake() sets acceleration=-3.0 while position==limit),
-            # causing recalculate() to find t=0 as a valid root. Scheduling an
-            # event at model.time+0 would immediately re-fire the same threshold.
-            if t == 0.0 and math.isclose(
-                current_value,
-                limit,
-                rel_tol=0,
-                abs_tol=np.finfo(float).eps * abs(limit or 1.0),
-            ):
-                continue
-
-            future_crossings.append(t)
-
-        if not future_crossings:
-            self._never_crosses(instance)
-        else:
-            time_to_cross = min(future_crossings)
-            projected_time = instance.model.time + time_to_cross
-            setattr(instance, self.time_attr, projected_time)
-
-            # Cancel any previously tracked native event for this threshold
-            old_event = getattr(instance, self.event_attr, None)
-            if old_event is not None:
-                with contextlib.suppress(Exception):
-                    old_event.cancel()
-
-            # Retrieve the trigger
-            trigger_func = getattr(instance, f"_{self.public_name}_trigger")
-            new_event = instance.model.schedule_event(trigger_func, at=projected_time)
-            setattr(instance, self.event_attr, new_event)
-
-    def _never_crosses(self, instance: Agent) -> None:
-        """Mark this threshold as having no future crossing and stop tracking it."""
-        setattr(instance, self.time_attr, math.inf)
-
-        old_event = getattr(instance, self.event_attr, None)
-        if old_event is not None:
-            with contextlib.suppress(Exception):
-                old_event.cancel()
-
-        setattr(instance, self.event_attr, None)
-
-    def execute(self, instance: Agent) -> None:
-        """Fire the callback when a crossing is reached.
-
-        Args:
-            instance (Agent): The instance whose threshold was triggered.
-        """
-        setattr(instance, self.time_attr, math.inf)
-        setattr(instance, self.event_attr, None)
-
-        callback_method = getattr(instance, self.callback)
-        callback_method()
+__all__ = ["ContinuousState", "Threshold"]
