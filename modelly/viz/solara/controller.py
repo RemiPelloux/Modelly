@@ -214,7 +214,11 @@ def ModelController(
         render_interval: Controls how often the plots are updated during simulation steps.Higher value reduce update frequency.
         use_threads: Flag for indicating whether to utilize multi-threading for model execution.
     """
-    settings = _RunSettings(play_interval, render_interval, use_threads)
+    settings = _RunSettings(
+        solara.use_reactive(play_interval),
+        solara.use_reactive(render_interval),
+        solara.use_reactive(use_threads),
+    )
     ctl = _use_controller_state(model, renderer, model_parameters, settings)
     do_step, do_reset, do_play_pause = _make_handlers(ctl)
 

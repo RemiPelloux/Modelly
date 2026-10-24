@@ -333,3 +333,14 @@ def test_render_buttons_shows_error_message(message):
         alerts.assert_empty()
     else:
         assert message in str(alerts.widget.children)
+
+
+def test_model_controller_works_with_its_default_arguments():
+    """Model controller accepts plain (non-reactive) default settings."""
+    model = solara.reactive(CountingModel(limit=100))
+    first = model.value
+    _, rc = solara.render(ModelController(model), handle_error=False)
+    _button(rc, "Step").click()
+    assert first.count == 1
+    _button(rc, "Reset").click()
+    assert model.value is not first
