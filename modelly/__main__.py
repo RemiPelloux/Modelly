@@ -38,6 +38,26 @@ COMMANDS = (
         "modelly.profile.__main__",
         "time a model's steps by agent class, data collection and events",
     ),
+    (
+        "run",
+        "modelly.provenance.commands.run",
+        "run a model once; write its outputs and a provenance manifest",
+    ),
+    (
+        "verify",
+        "modelly.provenance.commands.verify",
+        "rerun a manifest and report the first output that differs",
+    ),
+    (
+        "bundle",
+        "modelly.provenance.commands.bundle",
+        "pack a run into a deterministic zip for archiving (Zenodo)",
+    ),
+    (
+        "odd",
+        "modelly.provenance.commands.odd",
+        "write an ODD protocol skeleton of a model",
+    ),
 )
 
 DESCRIPTION = "Command-line tools for Modelly models."
@@ -52,6 +72,11 @@ examples:
   modelly lint --explain MDL101         why a rule matters, with a fix
   modelly migrate my_mesa_model/        dry run of the Mesa codemod
   modelly profile model.py:MyModel      where each step's time goes
+  modelly run model.py:MyModel --steps 100 --seed 1 --out runs/
+                                        outputs and runs/manifest.json
+  modelly verify runs/manifest.json     rerun and compare the outputs
+  modelly bundle runs/ --out study.zip  code, lock file, seeds and outputs
+  modelly odd model.py:MyModel > ODD.md ODD protocol skeleton
   modelly COMMAND --help                every option of one command
 
 exit status:
