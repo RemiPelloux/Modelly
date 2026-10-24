@@ -59,13 +59,13 @@ class RunSettings:
     options: dict[str, Any] = field(default_factory=dict)
 
 
-def _relative(path: str, base: Path) -> str:
+def relative_path(path: str, base: Path) -> str:
     """``path`` resolved against the spec's folder unless absolute."""
     candidate = Path(path)
     return str(candidate if candidate.is_absolute() else (base / candidate).resolve())
 
 
-def _model(target: str, base: Path) -> str:
+def model_reference(target: str, base: Path) -> str:
     """The model reference, a ``.py`` source made relative to the spec's folder."""
     source, sep, name = target.rpartition(REFERENCE)
     if not sep:
@@ -73,7 +73,7 @@ def _model(target: str, base: Path) -> str:
             f"model must be path/model.py:Class or module:Class, got {target!r}"
         )
     if source.endswith(".py"):
-        source = _relative(source, base)
+        source = relative_path(source, base)
     return f"{source}{REFERENCE}{name}"
 
 
@@ -106,30 +106,45 @@ def _design(table: Mapping[str, Any]) -> Design:
     return DESIGNS[kind](table[argument]) if argument in table else DESIGNS[kind]()
 
 
-def load_spec(path: str | Path) -> tuple[Experiment, RunSettings]:
-    """The Experiment a TOML file describes, and its ``[run]`` settings."""
+def read_document(path: str | Path) -> tuple[dict[str, Any], Path]:
+    """The parsed TOML file and the folder its relative paths start from."""
     path = Path(path)
     with path.open("rb") as handle:
         document = tomllib.load(handle)
-    base = path.resolve().parent
-    table = document.get("experiment", {})
-    if "model" not in table:
-        raise SpecError(f"{path}: [experiment] needs model = 'path/model.py:Class'")
-    space = ScenarioSpace(
+    return document, path.resolve().parent
+
+
+def read_space(document: Mapping[str, Any]) -> ScenarioSpace:
+    """The ``[space]`` table as a ScenarioSpace."""
+    return ScenarioSpace(
         {
             name: _dimension(name, value)
             for name, value in document.get("space", {}).items()
         }
     )
-    settings = {key: table[key] for key in EXPERIMENT_KEYS if key in table}
-    experiment = Experiment(
-        model=_model(table["model"], base),
-        space=space,
-        design=_design(document.get("design", {})),
-        store=_relative(table.get("store", DEFAULT_STORE), base),
-        **settings,
-    )
+
+
+def read_run(
+    document: Mapping[str, Any], executor: str = DEFAULT_EXECUTOR
+) -> RunSettings:
+    """The ``[run]`` table; ``executor`` when it names none."""
     run = document.get("run", {})
     options = dict(run.get("options", {}))
-    executor = run.get("executor", DEFAULT_EXECUTOR)
-    return experiment, RunSettings(executor, run.get("max_parallel"), options)
+    return RunSettings(run.get("executor", executor), run.get("max_parallel"), options)
+
+
+def load_spec(path: str | Path) -> tuple[Experiment, RunSettings]:
+    """The Experiment a TOML file describes, and its ``[run]`` settings."""
+    document, base = read_document(path)
+    table = document.get("experiment", {})
+    if "model" not in table:
+        raise SpecError(f"{path}: [experiment] needs model = 'path/model.py:Class'")
+    settings = {key: table[key] for key in EXPERIMENT_KEYS if key in table}
+    experiment = Experiment(
+        model=model_reference(table["model"], base),
+        space=read_space(document),
+        design=_design(document.get("design", {})),
+        store=relative_path(table.get("store", DEFAULT_STORE), base),
+        **settings,
+    )
+    return experiment, read_run(document)
