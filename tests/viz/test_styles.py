@@ -1,6 +1,9 @@
 """Tests for the publication styles and the colour-blind-safe palettes."""
 
 import io
+import subprocess
+import sys
+from pathlib import Path
 
 import matplotlib as mpl
 import pytest
@@ -47,9 +50,8 @@ def test_bad_arguments(call, message):
         call()
 
 
-def test_paper_sets_and_restores_the_settings():
-    """Inside the block the style holds; after it, the previous settings are back."""
-    before = mpl.rcParams["figure.figsize"]
+def test_paper_sets_the_settings():
+    """Inside the block the style holds."""
     with styles.paper("pnas", columns=2, palette="tol_bright") as params:
         assert tuple(mpl.rcParams["figure.figsize"]) == pytest.approx(
             params["figure.figsize"]
@@ -57,7 +59,26 @@ def test_paper_sets_and_restores_the_settings():
         assert mpl.rcParams["pdf.fonttype"] == styles.TRUETYPE
         colours = [c["color"] for c in mpl.rcParams["axes.prop_cycle"]]
         assert colours == list(PALETTES["tol_bright"])
-    assert mpl.rcParams["figure.figsize"] == before
+
+
+RESTORE_CHECK = """
+import matplotlib as mpl
+from modelly.viz import styles
+before = list(mpl.rcParams["figure.figsize"])
+with styles.paper("pnas", columns=2):
+    pass
+assert list(mpl.rcParams["figure.figsize"]) == before
+"""
+
+
+def test_paper_restores_the_settings():
+    """After the block the previous settings are back.
+
+    Checked in a fresh interpreter: once Solara's test server has run in this one,
+    rcParams is Solara's per-kernel mapping, whose rc_context does not restore.
+    """
+    root = Path(__file__).resolve().parents[2]
+    subprocess.run([sys.executable, "-c", RESTORE_CHECK], check=True, cwd=root)
 
 
 def test_a_figure_made_in_the_block_saves_as_pdf():

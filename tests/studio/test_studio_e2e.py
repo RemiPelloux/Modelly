@@ -8,6 +8,7 @@ import os
 import socket
 import subprocess
 import sys
+import threading
 import time
 import urllib.request
 from pathlib import Path
@@ -63,17 +64,13 @@ def studio_url():
         process.wait(timeout=START_TIMEOUT_S)
 
 
-def test_the_page_runs_the_model(studio_url):
+def drive(url: str, requests: list[str]) -> None:
     """Load the page, step and run the model, open the profiler tab."""
-    requests = []
     with sync_api.sync_playwright() as playwright:
-        try:
-            browser = playwright.chromium.launch()
-        except sync_api.Error as error:
-            pytest.skip(f"no Chromium for playwright: {error}")
+        browser = playwright.chromium.launch()
         page = browser.new_page()
         page.on("request", lambda request: requests.append(request.url))
-        page.goto(studio_url)
+        page.goto(url)
         page.get_by_text("Timeline").wait_for(timeout=PAGE_TIMEOUT_MS)
         page.get_by_role("button", name="Step").click()
         page.get_by_text("step 1", exact=True).wait_for(timeout=PAGE_TIMEOUT_MS)
@@ -82,4 +79,25 @@ def test_the_page_runs_the_model(studio_url):
         page.get_by_role("tab", name="Profiler").click()
         page.get_by_text("11 step(s) profiled").wait_for(timeout=PAGE_TIMEOUT_MS)
         browser.close()
+
+
+def test_the_page_runs_the_model(studio_url):
+    """Drive Studio in Chromium; the browser asks for nothing beyond localhost."""
+    requests, errors = [], []
+
+    def run() -> None:
+        # Its own thread: the sync API refuses to run where pytest-playwright's
+        # asyncio loop already runs.
+        try:
+            drive(studio_url, requests)
+        except Exception as error:  # re-raised in the test's thread
+            errors.append(error)
+
+    thread = threading.Thread(target=run)
+    thread.start()
+    thread.join()
+    if errors and "Executable doesn't exist" in str(errors[0]):
+        pytest.skip(f"no Chromium for playwright: {errors[0]}")
+    if errors:
+        raise errors[0]
     assert [url for url in requests if not url.startswith(LOCAL_PREFIXES)] == []
