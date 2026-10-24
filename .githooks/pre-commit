@@ -1,0 +1,11 @@
+#!/bin/sh
+# Modelly pre-commit hook: refuse a commit that makes a core operation slower than the last
+# release (python -m modelly.dev perf --staged; docs/performance.md). Installed with
+# python -m modelly.dev install-hooks. Skip once with git commit --no-verify.
+root="$(git rev-parse --show-toplevel)"
+for python in "$root/.venv/bin/python" "$root/.venv/Scripts/python.exe" python3 python; do
+  if command -v "$python" >/dev/null 2>&1 || [ -x "$python" ]; then
+    exec "$python" -m modelly.dev perf --staged
+  fi
+done
+echo "modelly pre-commit: no Python found; skipping the performance guard" >&2
