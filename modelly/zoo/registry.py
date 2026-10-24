@@ -139,6 +139,15 @@ MODELS: tuple[ZooModel, ...] = (
         "cluster count falls to consensus as the confidence bound grows",
     ),
     ZooModel(
+        "axelrod",
+        "Axelrod culture dissemination",
+        "political science",
+        "Axelrod",
+        "AxelrodScenario",
+        "Neighbours on a grid copy cultural traits with a probability set by similarity.",
+        "monoculture for few traits, many cultural regions for many traits",
+    ),
+    ZooModel(
         "nagel_schreckenberg",
         "Nagel-Schreckenberg traffic",
         "transport",
