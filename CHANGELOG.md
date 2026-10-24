@@ -3,6 +3,116 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.3.0 - 2026-10-24
+
+The research release: calibrate, explain, scale and publish a model, on Windows, macOS and
+Linux. Everything from 1.2 keeps working; what 2.0 will change now warns (see
+`docs/deprecations.md`). The plan behind it is in `docs/roadmap/1.3.0.md`.
+
+### Answers
+
+- `modelly.experiments`: a study as one object. `ScenarioSpace` (ranges, log and integer
+  ranges, choices, fixed values, checked against the model's `Scenario`), designs (full
+  factorial, Latin hypercube, Sobol, Halton, custom), replicates with one seed per run, a
+  Parquet results store with a DuckDB view that resumes after a crash, and executors:
+  serial, threads, processes, Dask, Ray, SLURM and PBS job arrays (pluggable through the
+  `modelly.executors` entry points). The same experiment gives the same results on every
+  executor. `modelly experiment run|status spec.toml`.
+- `modelly.calibrate`: `ABCRejection`, `ABCSMC` (adaptive tolerances, resumable),
+  `SimulatedMoments` and a basic `BayesOpt`; priors, targets and distances; a `Posterior`
+  with summaries, HDIs, posterior predictive runs and plots. Verified by recovering the
+  parameters of SIR and predator-prey models from synthetic data. `modelly calibrate`.
+- `modelly.sensitivity`: one-at-a-time, Morris, Sobol (Saltelli sampling, bootstrap intervals;
+  matches the Ishigami indices) and PAWN, on a model, a function or a Gaussian-process
+  emulator. `modelly sensitivity`.
+- `DataCollector.to_parquet`, `to_arrow` and `query` (DuckDB).
+
+### Trust
+
+- Provenance: `modelly run` writes the outputs and a manifest (code hash, versions, compiled
+  or pure build, platform, scenario, seeds, input and output hashes); `modelly verify` reruns
+  it and names the first differing output; `modelly bundle` packs a byte-identical zip for
+  Zenodo; `modelly odd` writes an ODD protocol skeleton from the code.
+- `modelly.timetravel`: `Recorder` keeps checkpoints within a memory or disk budget;
+  `at(step)` rewinds, a replay is bit-identical with a straight run, `branch` forks futures,
+  and `diff` finds the first step, agent and attribute where two runs part.
+- A determinism suite: every example, compiled and pure-Python, straight and resumed from a
+  checkpoint, against stored digests that every platform must reproduce
+  (`python -m modelly.dev golden`). Property-based tests for columns, cohorts, cell spaces,
+  checkpoints and designs.
+
+### Reach
+
+- `modelly.space.geo` (extra `geo`): `GeoSpace` with a coordinate reference system, regions,
+  contiguity and distance queries in metres, GeoParquet and GeoJSON export; `RasterLayer`
+  (GeoTIFF); `RoadNetwork` with routing and travel times; synthetic populations by
+  iterative proportional fitting.
+- `modelly.space.networks`: temporal networks (O(changed edges) updates), multilayer networks,
+  contact matrices, network collectors; NetworkX, igraph and CSV import.
+- `modelly.llm`: language-model agents with a provider-agnostic client (Anthropic,
+  OpenAI-compatible and local endpoints, a fake provider), a deterministic SQLite response
+  cache with offline replay, token and cost budgets, retries, structured decisions with
+  schema validation, and `LLMAgent`. API keys never reach caches, checkpoints or logs.
+- `modelly.zoo`: twelve validated reference models (age-structured SEIR, Nagel-Schreckenberg
+  traffic, Bass diffusion, Deffuant and Hegselmann-Krause opinions, Axelrod culture, kinetic
+  and Bouchaud-Mezard wealth, a double-auction order book, forest fire, an energy-budget
+  population, vector-borne transmission), each with a validation test against an analytic or
+  known result. `modelly zoo list|info|copy`, `modelly new --from-zoo`.
+- New examples: a commuting city and a three-layer epidemic (spatial), persona agents
+  deciding through `modelly.llm`.
+
+### Experience
+
+- Modelly Studio: `modelly studio model.py:Model` opens a browser app with a parameter panel
+  built from the scenario, run controls, space and time-series views, an agent table, a
+  timeline scrubber on time travel with replay from any step, profiler and lint panels, and
+  exports (figures, data, checkpoints, GIF).
+- `modelly new` with grid, network, continuous and cohort templates (seeded, tested, linted).
+- `modelly lint --fix` and `--diff` for MDL001, MDL002, MDL003 and MDL009; new rules MDL010
+  (a lambda or closure sent to spawned workers, which fails on Windows and macOS) and MDL012
+  (a network or LLM call that bypasses `modelly.llm`).
+- `python -m modelly.dev gate`: the local gate in Python, for contributors without bash.
+- Jupyter: `%load_ext modelly.ipython` for `%modelly lint` and `%modelly profile`, and a rich
+  display of a `Model`.
+- Publication figures (`modelly.viz.styles.paper()`, journal widths, colour-blind-safe
+  palettes) and GIF or MP4 export of any space view (extra `video`).
+- Plugins: entry-point groups for spaces, executors, samplers, collectors, Studio views and
+  lint rules (`modelly.plugins`).
+- `modelly` lists its fourteen commands by task: start, run and explore, publish.
+- Docs: six domain tutorials, an eight-session course pack, a gallery, guides for every new
+  module, and the roadmap for 1.3 to 2.0.
+
+### Performance and platforms
+
+- `fastset.c`: `AgentSet` type filtering, `select`, attribute reads in `agg` and weak-set
+  listing in C (0.45 to 0.95 of the Python time on 20,000 agents), with Python twins.
+- The four compiled modules run on free-threaded CPython with the GIL off; free-threaded
+  wheels are built, as are Windows ARM64 wheels on a native runner.
+- `modelly bench`: the playbooks in alternating rounds, CPU pinning where the OS allows it, a
+  JSON-lines history and a regression check (exit 1).
+- Memory baseline per agent recorded in `docs/performance.md`.
+- Every text file is opened as UTF-8 (ruff `PLW1514`), checkpoints are written atomically, and
+  hashed text outputs use LF line endings, so results and hashes match on every OS.
+
+### Changed
+
+- Reading or writing a `Column` on a removed agent raises `ColumnMissingError` (an
+  `AttributeError`) instead of reading a stale row. Errors for a full cell, a missing agent
+  and a removed agent name the agent and the model time.
+- Deprecations raise `ModellyDeprecationWarning`, both a `DeprecationWarning` and a
+  `FutureWarning`, naming the replacement and the removal in 2.0.
+- A checkpoint loads only into the Modelly minor version that wrote it: 1.2 checkpoints do not
+  load in 1.3.
+- Every public name has a stability level (`docs/api_stability.toml`): what 1.2 had is stable,
+  what 1.3 adds is provisional.
+
+### Fixed
+
+- The Epstein example's scenario declared `rng: int = 42`, overriding any seed; the virus
+  network example built a different network in each process. Both are seeded from the model.
+- The Epstein, prisoner's dilemma and Sugarscape examples can be checkpointed.
+- Browser tests bind free ports, so two test runs can share a machine.
+
 ## 1.2.0 - 2026-10-24
 
 ### Added

@@ -119,7 +119,7 @@ To depend on Modelly from your own project, add it to `pyproject.toml` (the dist
 `modelly-abm`, the import is `modelly`):
 
 ```toml
-dependencies = ["modelly-abm>=1.2"]
+dependencies = ["modelly-abm>=1.3"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is
