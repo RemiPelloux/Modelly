@@ -200,6 +200,7 @@ Plugins <plugins>
 Studio <studio>
 Figures and animations <figures>
 Vectorised step phases <vectorised_phases>
+Deprecations <deprecations>
 Roadmap <roadmap/index>
 ```
 

@@ -1,11 +1,11 @@
 """Altair based solara components for visualization modelly spaces."""
 
-import warnings
 from collections.abc import Callable
 
 import altair as alt
 import solara
 
+from modelly._deprecation import deprecated
 from modelly.viz.altair.property_layers import chart_property_layers
 from modelly.viz.altair.space_chart import _draw_grid
 from modelly.viz.utils import update_counter
@@ -24,11 +24,7 @@ _PLOT_HEIGHT = 350
 
 
 def make_space_altair(*args, **kwargs):  # noqa: D103
-    warnings.warn(
-        "make_space_altair has been renamed to make_altair_space",
-        FutureWarning,
-        stacklevel=2,
-    )
+    deprecated("make_space_altair()", "make_altair_space()")
     return make_altair_space(*args, **kwargs)
 
 

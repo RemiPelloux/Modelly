@@ -14,11 +14,11 @@ share: the style classes, their defaults, the conversion of legacy portrayal dic
 ``ClassColours``, the default portrayal that colours agents by class.
 """
 
-import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass, fields
 from typing import Any
 
+from modelly._deprecation import deprecated
 from modelly.viz.palettes import OKABE_ITO
 
 ColorLike = str | tuple | int | float
@@ -116,13 +116,9 @@ def style_defaults() -> dict[str, Any]:
 
 def warn_dict_portrayal(stacklevel: int = CALLER_STACKLEVEL) -> None:
     """Warn that returning a dict from agent_portrayal is deprecated."""
-    warnings.warn(
-        (
-            "Returning a dict from agent_portrayal is deprecated and will be removed in a future release. "
-            "Please return an AgentPortrayalStyle instance instead. "
-            "For more information, refer to the migration guide: "
-        ),
-        FutureWarning,
+    deprecated(
+        "Returning a dict from agent_portrayal",
+        "an AgentPortrayalStyle",
         stacklevel=stacklevel,
     )
 
@@ -239,13 +235,9 @@ def property_layer_dict_to_callable(portrayal_dict: dict[str, dict[str, Any]]):
 
 def _warn_dict_layer_portrayal():
     """Warn that the property_layer_portrayal dict is deprecated."""
-    warnings.warn(
-        (
-            "The property_layer_portrayal dict is deprecated and will be removed in a future release. "
-            "Please use a callable that returns a PropertyLayerStyle instance instead. "
-            "For more information, refer to the migration guide: "
-        ),
-        FutureWarning,
+    deprecated(
+        "The property_layer_portrayal dict",
+        "a callable returning a PropertyLayerStyle",
         stacklevel=3,  # the caller of the style callable
     )
 

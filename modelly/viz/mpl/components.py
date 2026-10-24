@@ -2,23 +2,19 @@
 
 from __future__ import annotations
 
-import warnings
 from collections.abc import Callable
 
 import matplotlib.pyplot as plt
 import solara
 from matplotlib.figure import Figure
 
+from modelly._deprecation import deprecated
 from modelly.viz.mpl.space import draw_space
 from modelly.viz.utils import update_counter
 
 
 def make_space_matplotlib(*args, **kwargs):  # noqa: D103
-    warnings.warn(
-        "make_space_matplotlib has been renamed to make_mpl_space_component",
-        FutureWarning,
-        stacklevel=2,
-    )
+    deprecated("make_space_matplotlib()", "make_mpl_space_component()")
     return make_mpl_space_component(*args, **kwargs)
 
 
@@ -96,11 +92,7 @@ def SpaceMatplotlib(
 
 
 def make_plot_measure(*args, **kwargs):  # noqa: D103
-    warnings.warn(
-        "make_plot_measure has been renamed to make_plot_component",
-        FutureWarning,
-        stacklevel=2,
-    )
+    deprecated("make_plot_measure()", "make_mpl_plot_component()")
     return make_mpl_plot_component(*args, **kwargs)
 
 
