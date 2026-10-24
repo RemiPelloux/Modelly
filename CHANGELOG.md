@@ -3,6 +3,28 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.3.1 - 2026-10-24
+
+No score is slower than 1.2.0 any more: benchmarked against the 1.2.0 wheel with identical
+dependencies (core operations, the playbooks and a research notebook, in paired alternating
+runs; `docs/performance.md`, "No regression from release to release").
+
+### Performance
+
+- Reading a `Column` attribute costs what it did in 1.2.0 again. 1.3.0's getter kept the
+  column's name for the error of a removed agent, which cost about 2.5% per read; it now looks
+  the name up only when the error is raised. The error is unchanged.
+- On regular (GIL) builds, the neighbourhood walk (`Cell.get_neighborhood`) and the cell move
+  are 1.2.0's code again, without the free-threading safety 1.3.0 added to every call (a
+  reference count per neighbour, a cache-generation check per move). Free-threaded builds
+  keep their safe paths.
+- `FixedAgent.remove` reads its cell once.
+
+### Fixed
+
+- A timing test of `modelly profile --sizes` compares populations 16 times apart, so it no
+  longer fails on a slow runner.
+
 ## 1.3.0 - 2026-10-24
 
 The research release: calibrate, explain, scale and publish a model, on Windows, macOS and
