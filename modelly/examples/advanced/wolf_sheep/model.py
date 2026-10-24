@@ -48,6 +48,24 @@ class WolfSheepScenario(Scenario):
     sheep_gain_from_food: float = 4.0
 
 
+# Module-level reporters rather than lambdas, so the model can be checkpointed.
+def count_wolves(m):
+    """Number of wolves."""
+    return len(m.agents_by_type[Wolf])
+
+
+def count_sheep(m):
+    """Number of sheep."""
+    return len(m.agents_by_type[Sheep])
+
+
+def count_grown_grass(m):
+    """Number of fully grown grass patches."""
+    # Count directly: building a selection view of every patch just to
+    # take its length costs more than the rest of the step.
+    return sum(1 for patch in m.agents_by_type[GrassPatch] if patch.fully_grown)
+
+
 class WolfSheep(Model):
     """Wolf-Sheep Predation Model.
 
@@ -80,16 +98,9 @@ class WolfSheep(Model):
         )
 
         # Set up data collection
-        model_reporters = {
-            "Wolves": lambda m: len(m.agents_by_type[Wolf]),
-            "Sheep": lambda m: len(m.agents_by_type[Sheep]),
-        }
+        model_reporters = {"Wolves": count_wolves, "Sheep": count_sheep}
         if self.grass:
-            # Count directly: building a selection view of every patch just to
-            # take its length costs more than the rest of the step.
-            model_reporters["Grass"] = lambda m: sum(
-                1 for patch in m.agents_by_type[GrassPatch] if patch.fully_grown
-            )
+            model_reporters["Grass"] = count_grown_grass
 
         self.datacollector = DataCollector(model_reporters)
 

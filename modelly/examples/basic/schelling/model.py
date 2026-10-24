@@ -26,6 +26,26 @@ class SchellingScenario(Scenario):
     radius: int = 1
 
 
+# Module-level reporters rather than lambdas, so the model can be checkpointed.
+def pct_happy(m):
+    """Percentage of agents that are happy."""
+    return (m.happy / len(m.agents)) * 100 if len(m.agents) > 0 else 0
+
+
+def population(m):
+    """Number of agents."""
+    return len(m.agents)
+
+
+def minority_pct(m):
+    """Percentage of agents in the minority group."""
+    return (
+        sum(1 for agent in m.agents if agent.type == 1) / len(m.agents) * 100
+        if len(m.agents) > 0
+        else 0
+    )
+
+
 class Schelling(Model):
     """Model class for the Schelling segregation model."""
 
@@ -53,17 +73,9 @@ class Schelling(Model):
         self.datacollector = DataCollector(
             model_reporters={
                 "happy": "happy",
-                "pct_happy": lambda m: (
-                    (m.happy / len(m.agents)) * 100 if len(m.agents) > 0 else 0
-                ),
-                "population": lambda m: len(m.agents),
-                "minority_pct": lambda m: (
-                    sum(1 for agent in m.agents if agent.type == 1)
-                    / len(m.agents)
-                    * 100
-                    if len(m.agents) > 0
-                    else 0
-                ),
+                "pct_happy": pct_happy,
+                "population": population,
+                "minority_pct": minority_pct,
             },
             agent_reporters={"agent_type": "type"},
         )
