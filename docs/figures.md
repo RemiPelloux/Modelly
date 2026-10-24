@@ -46,7 +46,9 @@ submitting.
 ```python
 styles.figure_size("ieee", columns=2)  # (7.16, 4.43): width, height in inches
 styles.figure_size("ieee", columns=2, aspect=1)  # square
-params = styles.rc_params("pnas", columns=1, palette="tol_bright")  # the settings as a dict
+params = styles.rc_params(
+    "pnas", columns=1, palette="tol_bright"
+)  # the settings as a dict
 
 with styles.paper("science"), plt.rc_context({"font.size": 6}):
     ...  # adjust one setting on top of a style
@@ -97,7 +99,9 @@ portrayal = ClassColours(palette=PALETTES["tol_bright"], size=20)
 from modelly.viz.mpl.figure import space_figure
 
 with styles.paper("nature", columns=1):
-    fig = space_figure(model, agent_portrayal=None, figsize=styles.figure_size("nature"))
+    fig = space_figure(
+        model, agent_portrayal=None, figsize=styles.figure_size("nature")
+    )
     fig.savefig("space.pdf")
 ```
 
