@@ -22,12 +22,12 @@ name = "epidemic"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-  "modelly-abm>=1.0",
+  "modelly-abm>=2.0",
   "pandas",
 ]
 
 [project.optional-dependencies]
-viz = ["modelly-abm[viz]>=1.0"]
+viz = ["modelly-abm[viz]>=2.0"]
 ```
 
 Then `pip install -e .` (or `pip install -e ".[viz]"` for the browser UI).

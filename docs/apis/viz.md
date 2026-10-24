@@ -1,5 +1,16 @@
-# Visualization
+# Viz
 
+`modelly.viz` draws models in the browser and in notebooks. The names most models need are
+exported by the package itself: `from modelly.viz import SolaraViz, SpaceRenderer`.
+
+| Module | Contents |
+|---|---|
+| `modelly.viz.solara` | `SolaraViz`, the model controller, parameter inputs and `Slider` |
+| `modelly.viz.components` | `make_space_component`, `make_plot_component` |
+| `modelly.viz.render` | `SpaceRenderer`, the portrayal styles, backends and space drawers |
+| `modelly.viz.mpl` | matplotlib backend, `draw_space` and plot components |
+| `modelly.viz.altair` | Altair backend and plot components |
+| `modelly.viz.console` | `CommandConsole` |
 
 ⚠️ **Important note for SolaraViz users**
 
@@ -25,7 +36,6 @@ class MyModel(Model):
     def __init__(self, *, width, height, rng=None): ...
 ```
 
-
 For detailed tutorials, please refer to:
 
 - [Basic Visualization](../tutorials/6_visualization_basic)
@@ -33,23 +43,23 @@ For detailed tutorials, please refer to:
 - [Custom Visualization Components](../tutorials/10_visualization_custom)
 
 
-## Jupyter Visualization
+## Solara app
 
 ```{eval-rst}
 .. automodule:: modelly.viz.solara.app
-   :members:
+   :members: SolaraViz, JupyterViz, ModelController, ModelCreator, UserInputs, ShowSteps, ComponentsView, SpaceRendererComponent, create_space_component, copy_renderer, make_initial_grid_layout, split_model_params, check_param_is_fixed
    :undoc-members:
    :show-inheritance:
 ```
 
 ```{eval-rst}
-.. automodule:: modelly.viz.components.__init__
-   :members:
+.. automodule:: modelly.viz.components
+   :members: make_space_component, make_plot_component
    :undoc-members:
    :show-inheritance:
 ```
 
-## User Parameters
+## User parameters
 
 ```{eval-rst}
 .. automodule:: modelly.viz.solara.params
@@ -57,7 +67,6 @@ For detailed tutorials, please refer to:
    :undoc-members:
    :show-inheritance:
 ```
-
 
 ## Matplotlib-based visualizations
 
@@ -75,7 +84,6 @@ For detailed tutorials, please refer to:
    :show-inheritance:
 ```
 
-
 ## Altair-based visualizations
 
 ```{eval-rst}
@@ -85,8 +93,7 @@ For detailed tutorials, please refer to:
    :show-inheritance:
 ```
 
-
-## Command Console
+## Command console
 
 ```{eval-rst}
 .. automodule:: modelly.viz.console.console
@@ -95,8 +102,8 @@ For detailed tutorials, please refer to:
    :show-inheritance:
 ```
 
+## Portrayal components
 
-## Portrayal Components
 ```{eval-rst}
 .. automodule:: modelly.viz.render.portrayal
    :members:
@@ -104,15 +111,7 @@ For detailed tutorials, please refer to:
    :show-inheritance:
 ```
 
-
 ## Backends
-
-```{eval-rst}
-.. automodule:: modelly.viz.render.__init__
-   :members:
-   :undoc-members:
-   :show-inheritance:
-```
 
 ```{eval-rst}
 .. automodule:: modelly.viz.render.backend
@@ -135,8 +134,7 @@ For detailed tutorials, please refer to:
    :show-inheritance:
 ```
 
-
-## Space Renderer
+## Space renderer
 
 ```{eval-rst}
 .. automodule:: modelly.viz.render.renderer
@@ -145,11 +143,45 @@ For detailed tutorials, please refer to:
    :show-inheritance:
 ```
 
-
-## Space Drawers
+## Space drawers
 
 ```{eval-rst}
-.. automodule:: modelly.viz.render.drawers
+.. automodule:: modelly.viz.render.drawers.base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+```{eval-rst}
+.. automodule:: modelly.viz.render.drawers.orthogonal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+```{eval-rst}
+.. automodule:: modelly.viz.render.drawers.hexagonal
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+```{eval-rst}
+.. automodule:: modelly.viz.render.drawers.network
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+```{eval-rst}
+.. automodule:: modelly.viz.render.drawers.continuous
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+```{eval-rst}
+.. automodule:: modelly.viz.render.drawers.voronoi
    :members:
    :undoc-members:
    :show-inheritance:
