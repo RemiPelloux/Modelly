@@ -3,6 +3,11 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.0.1 - 2026-10-24
+
+The 1.0.0 code, published to PyPI under a new number: PyPI does not accept a second upload of
+1.0.0, and its `modelly-abm 1.0.0` predates the domain package layout.
+
 ## 1.0.0 - 2026-10-24
 
 First release.
