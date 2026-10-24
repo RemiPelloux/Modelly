@@ -6,6 +6,7 @@ from collections.abc import Callable, Iterable, Iterator
 from random import Random
 from typing import TYPE_CHECKING, Any
 
+from modelly._native.loops import call_each
 from modelly.core.agentset._utils import _resolve_random
 from modelly.core.agentset.abstract import AbstractAgentSet
 from modelly.core.agentset.weak import AgentSet
@@ -115,34 +116,21 @@ class _HardKeyAgentSet[A: Agent](dict, AbstractAgentSet[A]):
         return (_HardKeyAgentSet, (self.to_list(), self.random))
 
     def do(self, method: str | Callable, *args, **kwargs) -> _HardKeyAgentSet[A]:
-        """Invoke a method on each agent."""
-        # Snapshot keys to avoid RuntimeError if agents are removed during iteration,
-        # and skip agents that an earlier call removed from the set.
-        if isinstance(method, str):
-            for agent in list(dict.keys(self)):
-                if agent in self:
-                    getattr(agent, method)(*args, **kwargs)
-        else:
-            for agent in list(dict.keys(self)):
-                if agent in self:
-                    method(agent, *args, **kwargs)
+        """Invoke a method on each agent.
+
+        Walks a snapshot of the keys, so agents may be added or removed during
+        the loop; an agent removed by an earlier call is skipped.
+        """
+        call_each(list(dict.keys(self)), self, method, args, kwargs or None)
         return self
 
     def shuffle_do(
         self, method: str | Callable, *args, **kwargs
     ) -> _HardKeyAgentSet[A]:
-        """Shuffle and invoke a method on each agent."""
+        """Shuffle and invoke a method on each agent (see ``do``)."""
         order = list(dict.keys(self))
         self.random.shuffle(order)
-
-        if isinstance(method, str):
-            for agent in order:
-                if agent in self:
-                    getattr(agent, method)(*args, **kwargs)
-        else:
-            for agent in order:
-                if agent in self:
-                    method(agent, *args, **kwargs)
+        call_each(order, self, method, args, kwargs or None)
         return self
 
     def map(self, method: str | Callable, *args, **kwargs) -> list[Any]:

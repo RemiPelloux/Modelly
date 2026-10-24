@@ -5,6 +5,7 @@ from __future__ import annotations
 from random import Random
 from typing import TYPE_CHECKING
 
+from modelly._native.loops import neighborhood
 from modelly.space.cells.collection import CellCollection
 
 if TYPE_CHECKING:
@@ -100,31 +101,10 @@ class CellNeighborhood:
     def _bfs_neighborhood(self, radius: int) -> dict[Cell, list[Agent]]:
         """Collect every cell within ``radius`` hops (excluding self) by BFS.
 
-        The result dict doubles as the visited set: self is seeded into it so it
-        is never re-entered, then dropped at the end. Cells land in the dict in
-        BFS discovery order, which callers rely on for reproducible draws.
+        Cells land in the dict in BFS discovery order, which callers rely on
+        for reproducible draws (see ``modelly._native.loops.neighborhood``).
         """
-        reached: dict[Cell, list[Agent]] = {self: self._agents}
-        frontier: list[Cell] = []
-        for neighbor in self.connections.values():
-            if neighbor not in reached:
-                reached[neighbor] = neighbor._agents
-                frontier.append(neighbor)
-
-        for _ in range(radius - 1):
-            if not frontier:
-                break
-            next_frontier: list[Cell] = []
-            grow = next_frontier.append
-            for cell in frontier:
-                for neighbor in cell.connections.values():
-                    if neighbor not in reached:
-                        reached[neighbor] = neighbor._agents
-                        grow(neighbor)
-            frontier = next_frontier
-
-        del reached[self]
-        return reached
+        return neighborhood(self, radius)
 
     def _clear_cache(self):
         """Drop this cell's cached neighborhoods."""
