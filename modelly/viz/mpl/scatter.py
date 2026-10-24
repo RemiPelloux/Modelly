@@ -136,7 +136,7 @@ def _scatter(ax: Axes, arguments, **kwargs):
     validate_edge_arguments(arguments, kwargs)
 
     ax.get_figure().canvas.draw()
-    for mark in set(marker):
+    for mark in dict.fromkeys(marker):  # first-seen order, stable z-order
         if is_image_marker(mark):
             _scatter_image(ax, mark, data)
         else:

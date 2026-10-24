@@ -238,7 +238,7 @@ def _split_markers(marker):
     """Separate the image markers from the regular ones."""
     image_markers = set()
     regular_markers = set()
-    for mark in set(marker):
+    for mark in dict.fromkeys(marker):  # first-seen order, stable z-order
         if is_image_marker(mark):
             image_markers.add(mark)
         else:
