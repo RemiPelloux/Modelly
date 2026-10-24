@@ -201,7 +201,7 @@ Mersenne Twister state the base class uses, so `random()`, `gauss`, `getrandbits
 reproduced draw for draw. Anything outside the fast paths (ranges of 2³² or more, non-int
 arguments, sequences that are not lists or tuples, `counts=`) goes to the standard library's
 own code, which reads the same state. At import a self-test compares a mixed sequence of draws
-with `random.Random`; on any mismatch, on free-threaded builds, without a compiler, or with
+with `random.Random`; on any mismatch, without a compiler, or with
 `MODELLY_PURE_PYTHON=1`, `FastRandom` is the pure-Python `PyFastRandom` above. Per call:
 
 | Draw | `random.Random` | `PyFastRandom` | compiled `FastRandom` |
@@ -212,8 +212,8 @@ with `random.Random`; on any mismatch, on free-threaded builds, without a compil
 
 Assembly would not beat this: generating a word is 2 to 3 ns of C that compilers already turn
 into near-optimal code, and the rest is the interpreter's call, which no language can avoid.
-Platform wheels carry the compiled module (Linux x86-64 and ARM, macOS, Windows x86-64);
-other platforms install the pure wheel.
+Platform wheels carry the compiled modules (Linux x86-64 and ARM, macOS, Windows x86-64 and
+ARM64, the GIL and the free-threaded interpreters); other platforms install the pure wheel.
 
 A second compiled module, `modelly/_native/fastloop.c`, runs `do` and `shuffle_do` on the
 model's agent registries and the breadth-first walk behind `Cell.get_neighborhood`. Each loop
@@ -246,6 +246,110 @@ results checked every round:
 
 At the large size the gain is 7 to 9%: the rest of a step (the neighbourhood lookup, the
 random draw, the column writes, the property-layer `empty` setter) is unchanged.
+
+### Compiled `select` and `agg`
+
+A fourth module, `modelly/_native/fastset.c`, runs the loops behind `AgentSet.select`, `get`
+and `agg`, and the two loops every weak `AgentSet` view is made of. Each function ports one
+function of `modelly/_native/sets.py`, which is the reference and the fallback, and
+`tests/native/test_sets.py` runs the pairs side by side (order, calls, exceptions, dotted
+attribute names, dead references, reference counts):
+
+| Function | Python twin | Used by |
+|---|---|---|
+| `keep_type` | `[a for a in agents if isinstance(a, agent_type)]` | `select(agent_type=...)` |
+| `keep_if` | `[a for a in agents if filter_func(a)]` | `select(filter_func)` |
+| `attr_values` | `list(map(operator.attrgetter(name), agents))` | `get(name)`, `agg` |
+| `live_agents` | `[a for r in list(refs) if (a := r()) is not None]` | `AgentSet.to_list` and everything built on it |
+| `make_refs` | `dict.fromkeys([weakref.ref(a, callback) for a in agents])` | every view `select`, `shuffle`, `sort` and `groupby` return |
+
+Paired micro-benchmark, 20,000 agents, compiled and Python alternating in one process for
+41 rounds, `time.thread_time`, one pinned core (`nice taskset -c 3`) of a shared 16-core laptop
+at load 2 to 6, Python 3.15:
+
+| Function | Python | compiled | compiled / Python, median (IQR) |
+|---|---|---|---|
+| `keep_type` | 0.274 ms | 0.148 ms | 0.54 (0.53 to 0.55) |
+| `keep_if` (a Python lambda) | 0.555 ms | 0.524 ms | 0.95 (0.93 to 0.97) |
+| `attr_values` | 0.251 ms | 0.220 ms | 0.89 (0.87 to 0.91) |
+| `live_agents` | 0.402 ms | 0.181 ms | 0.45 (0.44 to 0.46) |
+| `make_refs` | 1.353 ms | 0.929 ms | 0.69 (0.65 to 0.72) |
+
+`keep_if` gains least: the cost is the call of the filter, and Python 3.15 calls a Python
+function from its own bytecode about as cheaply as C can. The playbooks barely use `select`
+or `agg` (they are written with column phases), so they show no change: every Modelly variant,
+size `large`, `main` and this branch alternating in fresh pinned interpreters for 6 rounds,
+had a median ratio between 0.89 and 1.02 with every interquartile range containing 1.0, and
+the same results bit for bit on three seeds, compiled and pure.
+
+### Free-threaded CPython
+
+All four modules load on free-threaded CPython (3.13t and later) and declare
+`Py_MOD_GIL_NOT_USED`, so importing Modelly leaves the GIL off; before 1.3 they refused to load
+and the pure twins ran instead. What each one does to be safe:
+
+- `fastrng`: every draw holds the generator's per-object critical section, the lock
+  `_random.Random`'s own methods take, so a draw from C and a `random()` from the standard
+  library never interleave on one state. A list being shuffled, sampled or chosen from is
+  locked with it. Draws from one generator shared by threads are atomic (tested: the threads
+  together draw exactly the serial sequence, in some order), but which thread gets which number
+  depends on scheduling: give each thread its own model, or its own generator.
+- `fastloop`: list items are read as new references; a cell's `connections` dict is walked
+  inside its critical section.
+- `fastcell`: the per-type layout cache is per thread; `bind()` and its readers share one
+  `PyMutex`; slots are read through `getattr` and `list.remove` runs itself, since both take
+  the object's lock.
+- `fastset`: list items are read as new references; weak-reference keys are snapshotted with
+  `PyDict_Keys`, which locks the dict.
+
+GIL builds compile the same code with the locks as empty blocks (`modelly/_native/ftcompat.h`);
+paired micro-benchmarks of `shuffle`, `randint`, `choice`, `sample`, the cell move, `do` and the
+neighbourhood walk against `main` were within noise (medians 0.92 to 0.98). On CPython 3.15t
+(Linux x86-64) the whole suite passes with the compiled modules, and
+`tests/native/test_threads.py` (four threads; shared draws, independent replicates on threads
+equal to serial runs, agents moved across a shared grid, `select` and `agg` while another
+thread adds and removes agents) passed 25 repeated runs at ten times its default rounds.
+ThreadSanitizer was not run: it needs an instrumented interpreter.
+
+### Memory per agent
+
+Measured with `tracemalloc` on Python 3.15 (Linux x86-64), after `gc.collect()`, as the bytes
+traced while 100,000 agents are created, minus the list that holds them. This is the
+framework's own share; an agent's model attributes come on top.
+
+| What | Bytes per agent | Where it goes |
+|---|---|---|
+| `Agent(model)` | 225 | the object with its inline attribute values (88), `unique_id` (an int above 256, 32), and one entry in each of the two registries (`model.agents` and the per-type set, about 50 each at this size including the dicts' spare room) |
+| `CellAgent` placed in a cell | 265 | the above, the `_modelly_cell` attribute and the entry in the cell's agent list |
+| an entry of a weak `AgentSet` view | 132 | a `weakref.ref` with its callback and the dict entry; only while the view lives |
+
+Per playbook, `large`, bytes traced by the whole model divided by its population, after
+building and after the run (the grid, the property layers, the columns and the data collector
+dominate; this is the baseline the 1.3 memory work is measured against):
+
+| Playbook / variant | agents built | bytes per agent, built | population at the end | bytes per agent, end |
+|---|---|---|---|---|
+| `grid_epidemic` / `modelly-cells` | 20,000 | 1,704 | 20,000 | 3,103 |
+| `grid_epidemic` / `modelly` | 20,000 | 1,656 | 20,000 | 2,232 |
+| `predator_prey` / `modelly-cells` | 1,600 | 21,360 | 5,455 | 12,876 |
+| `predator_prey` / `modelly` | 1,600 | 21,320 | 5,343 | 8,948 |
+| `flocking` / `modelly` | 4,000 | 314 | 4,000 | 4,179 |
+| `network_contagion` / `modelly` | 30,000 | 2,542 | 30,000 | 2,595 |
+| `insect_cohorts` / `modelly` | 500 | 253 | 26,466 | 413 |
+| `insect_cohorts` / `modelly-cohorts` | 0 (cohort rows) | - | 26,660 | 2 |
+| `schelling` / `modelly-cells` | 32,022 | 1,388 | 32,022 | 1,792 |
+| `schelling` / `modelly` | 32,022 | 1,332 | 32,022 | 1,708 |
+| `boltzmann_wealth` / `modelly` | 10,000 | 265 | 10,000 | 11,190 |
+| `sugarscape` / `modelly-cells` | 1,600 | 4,587 | 714 | 47,405 |
+| `sugarscape` / `modelly` | 1,600 | 9,514 | 713 | 21,127 |
+
+No reduction was kept in 1.3 so far. `__slots__` for the framework attributes (`model`,
+`unique_id`) was measured and gives nothing on Python 3.13 and later: an instance without
+slots already stores its attributes inline at 8 bytes each, exactly what a slot costs (88 bytes
+for a two-attribute object either way, 112 with three more attributes in a subclass), while it
+would forbid a subclass from relying on `Agent.__dict__` semantics. The two registry entries
+are the next target; a more compact registry must keep iteration order, membership in C and
+the removal semantics, so it is a design change rather than a patch.
 
 ### How we evaluate against other frameworks
 
@@ -464,8 +568,9 @@ These are the changes with the largest remaining upside. Each is a project, not 
    full model; a shared column store would let a sweep over one large model fan out without
    copying it.
 3. **Compiled hot loops.** The neighbourhood lookup and `do` / `shuffle_do` on the model's
-   registries now run in `modelly/_native/fastloop.c`, and the cell move in
-   `modelly/_native/fastcell.c` (7 to 14% on the cell-list playbooks). What remains per agent
+   registries now run in `modelly/_native/fastloop.c`, the cell move in
+   `modelly/_native/fastcell.c` (7 to 14% on the cell-list playbooks), and `select`, `agg`
+   and the weak views in `modelly/_native/fastset.c`. What remains per agent
    is the random-neighbour lookup around the draw and the property-layer `empty` setter.
 
 ## How to re-run
@@ -475,3 +580,24 @@ python benchmarks/global_benchmark.py        # the four reference models, saves 
 python benchmarks/compare_timings.py a.pickle b.pickle
 python benchmarks/playbooks/compare.py --core 5   # the eight playbooks against Mesa 2.3
 ```
+
+`modelly bench` runs the Modelly variants of the playbooks on every operating system without
+shell tools, keeps a history and reports regressions. Run it from the repository root (or
+point `--playbooks` at the directory):
+
+```bash
+modelly bench --label v1.2.0                       # record a named baseline (size large, 3 rounds)
+modelly bench --baseline v1.2.0                    # compare; exit 1 on a regression above 10%
+modelly bench --size small --rounds 5 --only grid_epidemic --only schelling:modelly
+modelly bench --history ~/bench/modelly.jsonl --core 3 --threshold 0.05
+MESA_PYTHON=.venv-mesa2/bin/python modelly bench   # the Mesa variants too
+```
+
+Each variant runs in a fresh interpreter; the order of the variants alternates from one round
+to the next. Runs are pinned to one core through `psutil` (`pip install modelly-abm[bench]`)
+on Linux and Windows; macOS has no CPU affinity API, and the report says the runs were not
+pinned. Every invocation appends one JSON line to the history file
+(`.modelly-bench/history.jsonl` by default): the Modelly version, which compiled modules were
+active, Python, platform, pinning, and every round's CPU seconds per variant. The baseline is
+the entry named by `--baseline` (a `--label`, or an index such as `0` or `-2`), else the latest
+entry at the same size.
