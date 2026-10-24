@@ -11,8 +11,10 @@ The setting throughout: a step phase in which every agent `i` draws its own
 randomness and updates its own state from a snapshot of the model taken at the
 start of the phase (synchronous update). Random-activation models whose agents
 read state that other agents wrote earlier in the same phase are a different
-model, and the playbooks are written synchronously on both frameworks for that
-reason.
+model, and most playbooks are written synchronously on both frameworks for that
+reason. Sections 7 to 9 are the exceptions: three sequential, randomly ordered
+phases (Schelling moves, Boltzmann giving, Sugarscape foraging) whose law an
+array program still reproduces exactly.
 
 ## 1. Independent draws commute with order (the Bernoulli phase)
 
@@ -154,6 +156,68 @@ turn with a scan of all positions costs `O(n²)`. The two return the same
 neighbour relation (points at distance exactly `r` aside), as the
 `flocking` playbook shows: both implementations compute identical headings to
 machine precision from the same initial state.
+
+## 7. Moves to random empty cells, one at a time
+
+**Claim.** Let `m` movers, in a uniformly random order, each move to a uniformly
+random empty cell of a space with capacity one, the cell it leaves becoming
+empty. Put the `E` cells empty at the start in a pool, give every mover an
+independent uniform slot in `0 … E-1`, and process the movers in their order:
+a mover takes the cell in its slot and leaves its old cell there. This has the
+same law, and it vectorises: sort the movers by slot, keeping their order
+within a slot; the first in each slot takes the pool's cell, every later one
+takes the old cell of the mover before it in that slot.
+
+**Why.** Each move takes one empty cell and frees one, so the number of empty
+cells is `E` at every turn, and the pool, slot for slot, is exactly the set of
+cells empty at that turn (a mover's own cell is occupied by itself until it
+leaves, so it is never in the pool when it draws). A uniform slot is therefore
+a uniform empty cell, independently of the past, which is the sequential rule.
+Because the pool size never changes, the slots can all be drawn up front.
+`SingleGrid.move_to_empty` in Mesa and `select_random_empty_cell` (the
+empty-cell index) in Modelly draw uniformly among the empty cells too. Used by:
+`schelling`, variant `modelly`.
+
+## 8. Giving in a random order (the Boltzmann exchange)
+
+**Claim.** Agents act once each in a uniformly random order; an agent holding a
+coin at its turn gives one to a uniformly random agent. Draw the order `turn`
+and every agent's partner up front. Agent `i` gives if and only if it starts
+with a coin or some giver `k` with `turn[k] < turn[i]` chose it as partner.
+The set of givers is the least fixed point of
+`G ↦ rich ∪ {i : some k ∈ G with turn[k] < turn[i] has partner[k] = i}`,
+reached by iterating from `G = rich`; the new wealth is
+`w - [i ∈ G] + #{k ∈ G : partner[k] = i}`.
+
+**Why.** An agent's wealth at its turn is its starting wealth plus the coins it
+received from earlier givers; it cannot have given yet. So whether `i` gives
+depends only on the givers before it, and induction over the turns shows the
+sequential givers satisfy the fixed-point equation and are contained in every
+set that does, which is the least fixed point. Drawing a partner for an agent
+that does not give changes nothing, since that draw is never used. The map is
+monotone, so the iteration only adds givers and stops after a few rounds
+(a chain of agents that start empty and pass a coin on in increasing turn
+order). Used by: `boltzmann_wealth`.
+
+## 9. Foraging in a random order with fixed sugar
+
+**Claim.** In the Sugarscape movement rule, foragers act in a uniformly random
+order; each moves to the free visible cell with the most sugar if it holds
+more than its own (nearest first, then uniformly at random), eats all the
+sugar of its cell and starves when its store reaches zero. Rank, for every
+forager and from the start-of-step sugar, the visible cells richer than its
+own by (sugar, distance, an independent uniform key); walk the foragers in a
+random order, each taking the first free cell of its ranking; then eat, burn
+and starve as column operations. This has the same law.
+
+**Why.** During the phase, sugar changes only where a forager eats: at a cell
+it occupies, which no other forager can choose, so every forager sees the
+start-of-step sugar of every free cell. A forager that starves frees a cell
+holding no sugar, which is never richer than another forager's own cell, so
+deferring the deaths changes no choice. What remains sequential is occupancy
+(who took or freed which cell before this turn), which the loop tracks; the
+random key picks uniformly among the free cells tied on sugar and distance.
+Used by: `sugarscape`, variant `modelly`.
 
 ## How the playbooks check the claims
 

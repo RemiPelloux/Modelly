@@ -339,15 +339,15 @@ and is 3x slower); a cheaper `Model` construction (it is 18 µs; 576 of them are
 ### The playbooks: same model, each framework's own idiom
 
 The port above answers "what does identical code cost". The second question is what each
-framework lets a modeller write. `benchmarks/playbooks/` holds five models implemented twice,
-for Mesa 2.3 with per-agent methods on `MultiGrid`, `ContinuousSpace` and `NetworkGrid`, and
-for Modelly with `Column` state, `CellIndex` (integer rows for the cells of any discrete space
-plus their sparse adjacency), `Occupancy` / `claim`, `pairs_within` / `move_all` and
-`ColumnTable.thin`. The rules for a fair comparison, enforced by the runner:
+framework lets a modeller write. `benchmarks/playbooks/` holds eight models implemented twice,
+for Mesa 2.3 with per-agent methods on `MultiGrid`, `SingleGrid`, `ContinuousSpace` and
+`NetworkGrid`, and for Modelly with `Column` state, `CellIndex` (integer rows for the cells of
+any discrete space plus their sparse adjacency), `Occupancy` / `claim`, `pairs_within` /
+`move_all`, `ColumnTable.thin` and the `DataCollector` column reporters. The rules for a fair comparison, enforced by the runner:
 
-1. Same model: same rules, same synchronous phase order, same parameters, same graph and
-   initial positions where seeds can be shared; the Mesa side uses numpy where a Mesa modeller
-   would.
+1. Same model: same rules, same phase order (synchronous, or one agent at a time in a random
+   order), same parameters, same graph and initial positions where seeds can be shared; the
+   Mesa side uses numpy where a Mesa modeller would.
 2. Agreement in distribution, checked: every implementation runs the same seeds and each
    summary statistic is compared with the Mesa reference by Welch's t-test (flagged below
    0.01). The implementations draw their random numbers in different orders, so the outputs
@@ -369,6 +369,9 @@ Median CPU seconds of the steps at the large size on this machine:
 | Virus on a network, 100 steps | 30,000 | 8.70 s | | 0.20 s | 44x |
 | Insect population, individuals, 120 days | ~26,000 | 2.83 s | | 0.65 s | 4.3x |
 | Insect population, `CohortTable` | ~26,000 | 2.83 s | | 0.013 s | 213x |
+| Schelling segregation, 40 steps | ~32,000 | 3.23 s | 0.22 s | 0.12 s | 27x |
+| Boltzmann wealth with a `DataCollector`, 100 steps | 10,000 | 1.51 s | | 0.20 s | 7.4x |
+| Sugarscape, constant growback, 100 steps | 1,600 to ~680 | 6.68 s | 1.17 s | 0.57 s | 12x |
 
 The "cell lists" column is the same model with Mesa's data structure, every cell holding the
 list of its agents, so movement and predation stay per-agent loops: 1.4 to 1.9x, consistent
@@ -377,7 +380,24 @@ with the port. The gap opens when the cell becomes a column of rows: the random 
 predation a vectorised matching with the law of the shuffled sequential rule. Construction is
 reported separately (a 180x180 Moore grid builds in 0.11 s, a 30,000-node network in 0.4 s,
 against milliseconds for Mesa's lazy structures); the build+run speed-ups in the results are
-correspondingly lower (26x, 6.7x, 38x, 10.5x, 4.3x, 191x).
+correspondingly lower (26x, 6.7x, 38x, 10.5x, 4.3x, 191x, 9.2x, 6.9x, 11x).
+
+The last three playbooks have phases that are sequential by nature, and each still has an
+exact array form (`vectorised_phases.md`, §7 to §9). Schelling's unhappy residents move one at
+a time to random empty cells; since every move takes one empty cell and frees one, the pool of
+empty cells keeps its size, and all the moves become one sort over slots drawn up front. In the
+Boltzmann exchange, who gives in the random order is the least fixed point of a monotone map
+over the drawn order and partners, reached in a few array passes; the `DataCollector` slices
+the wealth column instead of visiting agents. In Sugarscape the foragers' choices depend on the
+cells taken before their turn, so the walk to the first free cell stays a loop, but everything
+it reads (the visible cells, their sugar, each forager's ranking) is one array pass, and eating
+and starving move after the loop without changing the law. The "cell lists" variants of these
+two are far ahead of Mesa (15x and 5.7x), unlike the 1.4 to 1.9x above: Schelling's happiness
+count is an array pass even there, the empty-cell index answers each move in O(1) where Mesa's
+`move_to_empty` draws until it hits an empty cell, and the Sugarscape scan reads cached
+neighbourhoods where Mesa's `select_cells` builds whole-grid masks for every forager. These
+three were measured in a later session on another core (core 11, under the load of a shared
+machine), so compare their ratios rather than their seconds with the rows above.
 
 The insect playbook is a stage-structured population under sterile releases, an original
 model with the dynamics of the medfly workload (thousands of eggs a day, stage-specific
@@ -447,5 +467,5 @@ These are the changes with the largest remaining upside. Each is a project, not 
 ```bash
 python benchmarks/global_benchmark.py        # the four reference models, saves timings_N.pickle
 python benchmarks/compare_timings.py a.pickle b.pickle
-python benchmarks/playbooks/compare.py --core 5   # the five playbooks against Mesa 2.3
+python benchmarks/playbooks/compare.py --core 5   # the eight playbooks against Mesa 2.3
 ```

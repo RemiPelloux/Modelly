@@ -475,7 +475,7 @@ pure-Python `FastRandom` it is 1.3 to 3.8% faster, and 1.5 to 2% behind with the
 library's generator. The method and every round are in
 [docs/performance.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/performance.md).
 
-**Same model, each framework's own idiom.** `benchmarks/playbooks/` holds five models written
+**Same model, each framework's own idiom.** `benchmarks/playbooks/` holds eight models written
 twice: for Mesa 2.3 the way its API intends, and for Modelly with columns, vectorised phases,
 `CellIndex` and one KD-tree per step. The runner executes both in their own environments,
 pinned to one core, alternating rounds, checks that the implementations agree in distribution
@@ -490,9 +490,14 @@ of the steps at the large size, median of three rounds, this machine:
 | Virus on a random network | 30,000 | 8.70 s | 0.20 s | 44x |
 | Stage-structured insect population, individuals | ~26,000 | 2.83 s | 0.65 s | 4.3x |
 | Same population as a `CohortTable` (binomial thinning) | ~26,000 | 2.83 s | 0.013 s | 213x |
+| Schelling segregation (moves to random empty cells) | ~32,000 | 3.23 s | 0.12 s | 27x |
+| Boltzmann wealth exchange, Gini by a `DataCollector` | 10,000 | 1.51 s | 0.20 s | 7.4x |
+| Sugarscape, constant growback (vision, best sugar in sight) | 1,600 to ~680 | 6.68 s | 0.57 s | 12x |
 
 Where Modelly keeps Mesa's data structure (agents held in cell lists, `modelly-cells` in the
-results) the gap closes to 1.4 to 1.9x: the layout is where the time is, not the interpreter.
+results) the gap closes to 1.4 to 1.9x on the epidemic and predator-prey models: the layout is
+where the time is, not the interpreter. (Schelling and Sugarscape with cell lists stay 15x and
+5.7x ahead, from the O(1) empty-cell index and cached neighbourhoods.)
 Every vectorised phase rests on a stated equivalence argument, in
 [docs/vectorised_phases.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/vectorised_phases.md); the full tables with the agreement
 checks are in [benchmarks/playbooks/results/README.md](https://github.com/RemiPelloux/Modelly/blob/main/benchmarks/playbooks/results/README.md).
