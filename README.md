@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://codecov.io/gh/RemiPelloux/Modelly"><img src="https://codecov.io/gh/RemiPelloux/Modelly/branch/main/graph/badge.svg" alt="coverage"></a>
-  <a href="https://github.com/RemiPelloux/Modelly/releases/latest"><img src="https://img.shields.io/github/v/release/RemiPelloux/Modelly?color=0F766E&label=release" alt="latest release"></a>
+  <a href="https://pypi.org/project/modelly-abm/"><img src="https://img.shields.io/pypi/v/modelly-abm?color=0F766E&label=pypi" alt="PyPI version"></a>
   <img src="https://img.shields.io/badge/python-3.12%2B-3B82F6" alt="python 3.12+">
   <img src="https://img.shields.io/badge/ruff-linted-261230" alt="ruff">
   <a href="pelloux-guidelines.md"><img src="https://img.shields.io/badge/code%20discipline-Pelloux-0F766E" alt="Pelloux guidelines"></a>
@@ -38,7 +38,7 @@ say so in their docstrings. The current version is `modelly.__version__`, and wh
 release is in [CHANGELOG.md](CHANGELOG.md).
 
 ```bash
-pip install git+https://github.com/RemiPelloux/Modelly.git  # not on PyPI yet: installs from GitHub
+pip install modelly-abm
 python -c "import modelly; print(modelly.__version__)"   # the import name is modelly
 ```
 
@@ -119,7 +119,7 @@ To depend on Modelly from your own project, add it to `pyproject.toml` (the dist
 `modelly-abm`, the import is `modelly`):
 
 ```toml
-dependencies = ["modelly-abm @ git+https://github.com/RemiPelloux/Modelly.git"]
+dependencies = ["modelly-abm>=1.0"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is

@@ -11,10 +11,10 @@ Modelly needs Python 3.12 or newer. From an empty project folder:
 ```bash
 mkdir epidemic && cd epidemic
 python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\activate
-pip install "modelly-abm @ git+https://github.com/RemiPelloux/Modelly.git@main"
+pip install modelly-abm
 ```
 
-Pin the tag you tested against. To declare it in your own `pyproject.toml` instead:
+The distribution is `modelly-abm` and the import is `modelly`. Pin the version you tested against (`modelly-abm==1.0.0`), or declare it in your own `pyproject.toml`:
 
 ```toml
 [project]
@@ -22,19 +22,20 @@ name = "epidemic"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-  "modelly @ git+https://github.com/RemiPelloux/Modelly.git@v1.0.0",
+  "modelly-abm>=1.0",
   "pandas",
 ]
 
 [project.optional-dependencies]
-viz = ["modelly[viz] @ git+https://github.com/RemiPelloux/Modelly.git@v1.0.0"]
+viz = ["modelly-abm[viz]>=1.0"]
 ```
 
 Then `pip install -e .` (or `pip install -e ".[viz]"` for the browser UI).
 
-Installing from git (or from the source distribution) compiles Modelly's random core when a C
-compiler is available, and falls back to pure Python otherwise; the platform wheels for Linux
-and macOS ship it compiled. Check which one you have:
+On Linux and macOS, `pip install modelly-abm` installs a wheel with Modelly's random core
+compiled in. Elsewhere (Windows, free-threaded Python, other platforms) it installs the pure
+Python package, and building from the source distribution compiles the core when a C compiler
+is available. Check which one you have:
 
 ```python
 import modelly.rng
