@@ -82,6 +82,18 @@ EXPLANATIONS = {
         "self.model.agents.discard(self)",
         "self.remove()",
     ),
+    "MDL012": Explanation(
+        "A reply from a web service or a language model differs from one call to the next "
+        "and the service may change or vanish. Called through requests, httpx, urllib, or "
+        "the openai and anthropic SDKs, nothing records it, so the run cannot be replayed, "
+        "audited or budgeted. modelly.llm caches every reply under a key of the call, "
+        "replays offline and stops at a budget.",
+        "class Voter(Agent):\n    def step(self):\n"
+        "        r = client.messages.create(model=M, messages=[...])\n"
+        "        self.vote = r.content[0].text",
+        "class Voter(LLMAgent, Agent):\n    def step(self):\n"
+        '        self.vote = self.decide(prompt, {"enum": ["yes", "no"]})',
+    ),
     "MDL101": Explanation(
         "A loop, comprehension, select, agg, groupby, sort or map over the whole population "
         "inside an agent method visits every agent once per agent: N^2 per step.",

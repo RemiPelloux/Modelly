@@ -83,6 +83,13 @@ BAD = {
         "class A(Agent):\n    def die(self):\n        self.model.agents.discard(self)",
         "class M(Model):\n    def setup(self):\n        self.agents_by_type[A].add(a)",
     ],
+    "MDL012": [
+        "import requests\nclass A(Agent):\n    def step(self):\n        r = requests.post(URL, json={})",
+        "from urllib.request import urlopen\nclass M(Model):\n    def step(self):\n        urlopen(URL)",
+        "import openai\nclass A(Agent):\n    def step(self):\n        c = openai.OpenAI()",
+        "class A(Agent):\n    def step(self):\n        r = self.client.chat.completions.create(model=M)",
+        "class A(Agent):\n    def step(self):\n        r = CLIENT.messages.create(model=M, messages=[])",
+    ],
     "MDL101": [
         "class A(Agent):\n    def step(self):\n        for a in self.model.agents:\n            pass",
         "class A(Agent):\n    def step(self):\n        r = [a for a in self.model.agents_by_type[A]]",
@@ -147,6 +154,9 @@ GOOD = [
     "class A(Agent):\n    wealth = Column(int)\nclass M(Model):\n    def step(self):\n        for a in self.agents:\n            a.wealth += self.random.random()",
     "class A(Agent):\n    wealth = Column(int)\nclass M(Model):\n    def step(self):\n        for a in self.agents:\n            a.wealth += 1\n            a.move()",
     "class M(Model):\n    def step(self):\n        for a in self.agents:\n            a.plain += 1",
+    "import requests\ndef fetch_data():\n    return requests.get(URL)",
+    "class A(Agent):\n    def step(self):\n        self.vote = self.decide(prompt, schema)",
+    "class M(Model):\n    def step(self):\n        r = self.llm.complete('hi')",
 ]
 
 

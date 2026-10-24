@@ -4,7 +4,13 @@ from __future__ import annotations
 
 import ast
 
-from modelly.lint.rules import NUMPY_SEEDED, dotted
+from modelly.lint.rules import (
+    NETWORK_CALLS,
+    NETWORK_MODULES,
+    NUMPY_SEEDED,
+    SDK_CALL_CHAINS,
+    dotted,
+)
 
 
 def unseeded(call: ast.Call) -> bool:
@@ -28,6 +34,14 @@ def is_global_random(name: str, call: ast.Call) -> bool:
     if attr == "default_rng" or (attr in NUMPY_SEEDED and attr != "Generator"):
         return unseeded(call)
     return attr != "Generator"
+
+
+def is_network_call(name: str, func: ast.AST) -> bool:
+    """MDL012: an HTTP or provider SDK call, by resolved ``name`` or by method chain."""
+    if name in NETWORK_CALLS or name.split(".", maxsplit=1)[0] in NETWORK_MODULES:
+        return True
+    chain = tuple(dotted(func))
+    return any(chain[-len(tail) :] == tail for tail in SDK_CALL_CHAINS)
 
 
 def sorts_by_id(call: ast.Call) -> bool:

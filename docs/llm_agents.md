@@ -186,4 +186,10 @@ what an agent should remember into its prompt.
   use generated text, especially when personas describe real groups or prompts include data
   about real people.
 
+## Checking a model
+
+Lint rule [MDL012](mdl012) flags a call to `requests`, `httpx`, `urllib.request.urlopen` or
+the `openai` and `anthropic` SDKs inside model or agent code: such a call bypasses the cache,
+so the run cannot be replayed.
+
 The API is on the [`modelly.llm` page](apis/llm).

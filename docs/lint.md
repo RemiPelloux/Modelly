@@ -190,6 +190,28 @@ self.model.agents.discard(self)  # MDL009
 self.remove()
 ```
 
+(mdl012)=
+### MDL012: network or language-model call outside `modelly.llm`
+
+A reply from a web service or a language model differs from one call to the next, and the
+service may change or disappear. Inside a model or an agent, a call through `requests`, `httpx`,
+`urllib.request.urlopen`, or the `openai` and `anthropic` SDKs (including a client kept in an
+attribute: `....chat.completions.create`, `....messages.create`) is recorded nowhere, so the run
+cannot be replayed, audited or held to a budget. Call through [`modelly.llm`](llm_agents): it
+caches every reply under a key of the call, replays offline and stops before a budget is passed.
+
+```python
+class Voter(Agent):
+    def step(self):
+        reply = client.messages.create(model=MODEL, messages=[...])  # MDL012
+        self.vote = reply.content[0].text
+
+
+class Voter(LLMAgent, Agent):
+    def step(self):
+        self.vote = self.decide(prompt, {"enum": ["yes", "no"]})
+```
+
 ## Warnings
 
 (mdl101)=

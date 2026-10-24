@@ -40,6 +40,16 @@ ENTROPY_MODULES = frozenset({"secrets"})
 FRAME_BUILDERS = frozenset({"pandas.DataFrame", "pandas.concat"})
 # AgentSet methods that change its membership.
 MUTATORS = frozenset({"add", "discard", "remove", "clear"})
+# HTTP and provider SDK modules whose calls reach the network outside modelly.llm.
+NETWORK_MODULES = frozenset({"requests", "httpx", "openai", "anthropic"})
+NETWORK_CALLS = frozenset({"urllib.request.urlopen"})
+# Method chains of provider SDK clients, caught even on a client held in an attribute.
+SDK_CALL_CHAINS = (
+    ("chat", "completions", "create"),
+    ("completions", "create"),
+    ("messages", "create"),
+    ("responses", "create"),
+)
 
 
 @dataclass(frozen=True)
@@ -108,6 +118,12 @@ RULES = {
             "error",
             "the model's agent set is changed directly: its bookkeeping is skipped",
             "create agents with Agent(model) / create_agents, and remove them with agent.remove()",
+        ),
+        Rule(
+            "MDL012",
+            "error",
+            "network or language-model call outside modelly.llm: the run cannot be replayed",
+            "call through modelly.llm (self.decide / self.model.llm), which caches every reply",
         ),
         Rule(
             "MDL101",
