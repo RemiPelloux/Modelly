@@ -23,7 +23,7 @@ from modelly.examples.advanced.wolf_sheep.model import WolfSheepScenario
 from modelly.examples.basic.boid_flockers.model import BoidsScenario
 from modelly.examples.basic.boltzmann_wealth_model.model import BoltzmannScenario
 from modelly.examples.basic.schelling.model import SchellingScenario
-from modelly.examples.experimental.tram_model.model import TramScenario
+from modelly.examples.behaviour.tram_model.model import TramScenario
 
 
 def test_boltzmann_model():  # noqa: D103
@@ -259,7 +259,7 @@ def test_tram_model_reaches_every_stop_across_parameters():
 
 
 def test_tram_model():  # noqa: D103
-    from modelly.examples.experimental.tram_model import app  # noqa: PLC0415
+    from modelly.examples.behaviour.tram_model import app  # noqa: PLC0415
 
     app.page  # noqa: B018
 

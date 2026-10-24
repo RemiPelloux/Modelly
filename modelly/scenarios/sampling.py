@@ -13,26 +13,14 @@ def rescale_samples(
 ) -> np.ndarray:
     """Rescale samples from the unit interval [0, 1] to parameter ranges.
 
-    Parameters
-    ----------
-    samples : ndarray (n, d)
-        Samples drawn from the unit interval.
-    ranges : ndarray (d, 2)
-        Parameter ranges given as [[min, max], ...].
-    inplace : bool, optional
-        If True, the input ``samples`` array is modified in place.
-        If False (default), a new array containing the rescaled samples
-        is returned.
+    Args:
+        samples: Array of shape (n, d) drawn from the unit interval.
+        ranges: Array of shape (d, 2) giving ``[[min, max], ...]`` per parameter.
+        inplace: If True, ``samples`` is overwritten with the result; if False
+            (default), a new array is returned.
 
     Returns:
-    -------
-    ndarray (n, d)
-        Rescaled samples.
-
-    Notes:
-    -----
-    The rescaling is performed using NumPy broadcasting. If ``inplace=True``,
-    the original ``samples`` array is overwritten.
+        The rescaled samples, shape (n, d).
     """
     samples = np.asarray(samples)
     ranges = np.asarray(ranges)

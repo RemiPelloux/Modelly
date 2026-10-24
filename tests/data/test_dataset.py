@@ -1,4 +1,4 @@
-"""Tests for experimental datasets."""
+"""Tests for the dataset recorders."""
 
 import numpy as np
 import pytest

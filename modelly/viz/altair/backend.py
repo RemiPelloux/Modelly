@@ -49,7 +49,7 @@ class AltairBackend(AbstractRenderer):
 
         Args:
             **kwargs: Additional arguments passed to the space drawer.
-            Checkout respective `SpaceDrawer` class on details how to pass **kwargs.
+            Checkout respective `SpaceDrawer` class on details on how to pass ``**kwargs``.
 
         Returns:
             alt.Chart: The Altair chart representing the space structure.
@@ -135,7 +135,7 @@ class AltairBackend(AbstractRenderer):
             chart_width: Width of the chart.
             chart_height: Height of the chart.
             **kwargs: Additional keyword arguments for customization.
-            Checkout respective `SpaceDrawer` class on details how to pass **kwargs.
+            Checkout respective `SpaceDrawer` class on details on how to pass ``**kwargs``.
 
         Returns:
             alt.Chart: The Altair chart representing the agents, or None if no agents.

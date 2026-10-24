@@ -8,7 +8,7 @@ from modelly.examples.basic.boltzmann_wealth_model.model import BoltzmannWealth
 from modelly.examples.basic.conways_game_of_life.model import ConwaysGameOfLife
 from modelly.examples.basic.schelling.model import Schelling
 from modelly.examples.basic.virus_on_network.model import VirusOnNetwork
-from modelly.examples.experimental.tram_model.model import TransitSystem
+from modelly.examples.behaviour.tram_model.model import TransitSystem
 
 __all__ = [
     "BoidFlockers",

@@ -99,7 +99,7 @@ class SpaceRenderer:
             **kwargs: Additional keyword arguments for the setup function. For ContinuousSpace,
                 you may pass ``viz_dims=(i, j)`` to select which two dimensions are projected
                 to x/y.
-            Checkout respective `SpaceDrawer` class on details how to pass **kwargs.
+            Checkout respective `SpaceDrawer` class on details on how to pass ``**kwargs``.
 
         Returns:
             SpaceRenderer: The current instance for method chaining.
@@ -115,7 +115,7 @@ class SpaceRenderer:
         Args:
             agent_portrayal (Callable): Function that takes an agent and returns AgentPortrayalStyle.
             **kwargs: Additional keyword arguments for the setup function.
-            Checkout respective `SpaceDrawer` class on details how to pass **kwargs.
+            Checkout respective `SpaceDrawer` class on details on how to pass ``**kwargs``.
 
         Returns:
             SpaceRenderer: The current instance for method chaining.

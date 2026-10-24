@@ -10,7 +10,7 @@ check whether a threshold has been crossed.
 from modelly import Model
 from modelly.data.collector import DataCollector
 from modelly.data.recorders import DataRecorder
-from modelly.examples.experimental.tram_model.agents import Tram
+from modelly.examples.behaviour.tram_model.agents import Tram
 from modelly.scenarios import Scenario
 
 

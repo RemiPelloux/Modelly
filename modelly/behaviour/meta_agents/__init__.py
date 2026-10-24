@@ -1,4 +1,4 @@
-"""Meta-agents: agents composed of other agents (experimental)."""
+"""Meta-agents: agents composed of other agents."""
 
 from modelly.behaviour.meta_agents.api import MembershipEdge, MembershipView, MetaAgents
 

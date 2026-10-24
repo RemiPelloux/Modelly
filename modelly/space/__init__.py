@@ -10,8 +10,7 @@ Key components:
 - Spaces: Different cell organization patterns (grids, networks, etc.)
 
 This is particularly useful for models where the environment plays an active role,
-like resource growth, pollution diffusion, or infrastructure networks. The cell
-space system is experimental and under active development.
+like resource growth, pollution diffusion, or infrastructure networks.
 """
 
 from modelly.space.base import DiscreteSpace

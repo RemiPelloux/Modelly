@@ -28,7 +28,7 @@ PARENT_REPLICATION_ID = -1
 class Scenario:
     """A Scenario class for defining model parameters and experiments.
 
-    Supports both simple instantiation and type-hinted subclassing:
+    Supports both simple instantiation and type-hinted subclassing::
 
         # Simple usage
         scenario = Scenario(rng=42, density=0.8, minority_pc=0.5)

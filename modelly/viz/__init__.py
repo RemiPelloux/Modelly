@@ -1,9 +1,4 @@
-"""Solara based visualization for Modelly models.
-
-.. note::
-    SolaraViz is experimental and under active development. While we attempt to minimize them, there might be API breaking changes in minor releases.
-
-"""
+"""Solara based visualization for Modelly models."""
 
 from modelly.viz.altair.components import make_space_altair
 from modelly.viz.components import make_plot_component, make_space_component

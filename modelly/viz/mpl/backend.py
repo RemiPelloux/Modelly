@@ -79,7 +79,7 @@ class MatplotlibBackend(AbstractRenderer):
 
         Args:
             **kwargs: Additional arguments passed to the space drawer.
-            Checkout respective `SpaceDrawer` class on details how to pass **kwargs.
+            Checkout respective `SpaceDrawer` class on details on how to pass ``**kwargs``.
 
         Returns:
             The matplotlib axes with the drawn structure.
@@ -130,7 +130,7 @@ class MatplotlibBackend(AbstractRenderer):
         Args:
             arguments: Dictionary containing agent data arrays.
             **kwargs: Additional keyword arguments for customization.
-            Checkout respective `SpaceDrawer` class on details how to pass **kwargs.
+            Checkout respective `SpaceDrawer` class on details on how to pass ``**kwargs``.
 
         Returns:
             matplotlib.axes.Axes: The Matplotlib Axes with the agents drawn upon it.

@@ -50,5 +50,5 @@ These examples use `modelly.behaviour` (meta-agents, continuous states and thres
 ### [Alliance Formation Model](advanced/alliance_formation)
 Demonstrates `modelly.behaviour.meta_agents`: agents form alliances through a game-theoretic process, and the resulting alliances become meta-agents that can themselves form higher-level alliances.
 
-### [Tram Route Model](experimental/tram_model)
+### [Tram Route Model](behaviour/tram_model)
 Demonstrates continuous states and thresholds: a tram accelerates, coasts, brakes and dwells its way along a route, with every transition solved for analytically and scheduled on the event queue rather than polled for on each tick.

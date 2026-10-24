@@ -376,7 +376,7 @@ def setup_examples_pages():
     # create md files for all examples
     # check what examples exist
     examples_folder = osp.abspath(osp.join(HERE, "..", "modelly", "examples"))
-    kinds = ("basic", "advanced", "experimental")
+    kinds = ("basic", "advanced", "behaviour")
     examples = [
         (kind, f.path)
         for kind in kinds
@@ -420,6 +420,10 @@ def setup_examples_pages():
 
     with open(os.path.join(examples_folder, "README.md")) as fh:
         readme_md = fh.read()
+    # The README links are relative to modelly/examples/ (right on GitHub); on the
+    # docs page the example pages live under examples/.
+    for kind in kinds:
+        readme_md = readme_md.replace(f"]({kind}/", f"](examples/{kind}/")
 
     with open(os.path.join(HERE, "examples.md"), "w") as fh:
         content = template.substitute(

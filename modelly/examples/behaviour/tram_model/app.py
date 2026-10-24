@@ -1,8 +1,8 @@
 import solara
 from matplotlib.figure import Figure
 
-from modelly.examples.experimental.tram_model.model import TramScenario, TransitSystem
-from modelly.examples.experimental.tram_model.utils import (
+from modelly.examples.behaviour.tram_model.model import TramScenario, TransitSystem
+from modelly.examples.behaviour.tram_model.utils import (
     POSITION_COLOR,
     SCALE,
     SPEED_COLOR,

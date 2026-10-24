@@ -180,7 +180,7 @@ modelly/                      # the package
 ├── lint/                     # python -m modelly.lint
 ├── migrate.py                # python -m modelly.migrate: Mesa to Modelly codemod
 ├── log.py                    # module loggers and method tracing
-└── examples/                 # basic/, advanced/, experimental/: the bundled models
+└── examples/                 # basic/, advanced/, behaviour/: the bundled models
 docs/                         # notebooks, guides, API docs, performance audit
 example.py                    # the 30-second model from the README, runnable
 CHANGELOG.md                  # release notes
