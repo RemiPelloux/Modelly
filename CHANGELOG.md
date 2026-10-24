@@ -3,54 +3,26 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
-## 2.0.0 - 2026-10-24
-
-A new package layout: every module lives in a domain package, `experimental` is gone and its
-features are part of the core. Results are bit-identical to 1.0.0 for the same seed.
-
-### Breaking: new import paths
-
-The old paths no longer import. The top-level names (`modelly.Agent`, `modelly.Model`,
-`modelly.DataCollector`, `modelly.Column`, `modelly.CohortTable`, `modelly.FastRandom`,
-`modelly.run_batch`, `modelly.run_grid`) are unchanged.
-
-| 1.0.0 | 2.0.0 |
-|---|---|
-| `modelly.agent`, `modelly.model`, `modelly.agentset`, `modelly.columns`, `modelly.rng`, `modelly.exceptions` | `modelly.core` (`modelly.core.agent`, `.model`, `.agentset`, `.columns`, `.rng`, `.exceptions`) |
-| `modelly.discrete_space` | `modelly.space` |
-| `modelly.experimental.continuous_space` | `modelly.space.continuous` |
-| `modelly.scheduling` | `modelly.time.schedule` |
-| `modelly.experimental.signals` | `modelly.time.signals` |
-| `modelly.datacollection`, `modelly.reporters` | `modelly.data.collector`, `modelly.data.reporters` |
-| `modelly.experimental.data_collection` | `modelly.data.recorders` |
-| `modelly.experimental.actions`, `.states`, `.meta_agents` | `modelly.behaviour.actions`, `.states`, `.meta_agents` |
-| `modelly.experimental.scenarios` | `modelly.scenarios` |
-| `modelly.batch`, `modelly.cohorts` | `modelly.batch` (`modelly.batch.runs`, `.cohorts`) |
-| `modelly.visualization` | `modelly.viz` (`solara`, `console`, `render`, `altair`, `mpl`) |
-
-`python -m modelly.migrate` writes the new paths when porting a Mesa model.
-
-### Performance
-
-- `do` and `shuffle_do` on the model's agent registries, and the breadth-first walk behind
-  `Cell.get_neighborhood`, run in a second compiled module (`modelly/_native/fastloop.c`),
-  with an identical pure-Python twin used when it is not built (`MODELLY_PURE_PYTHON=1`).
-- Faster neighbourhood construction, `CellCollection.select` (one pass, stops at `at_most`)
-  and the torus difference vector of continuous space (one `np.where`).
-- Measured as paired CPU time on the example models: equal or faster on every model, the
-  largest gains on Schelling and Sugarscape; same results for every seed.
-
-### Internals
-
-- Every module is at most 300 lines and every function body at most 25 lines, except the
-  per-agent render loop of the Altair backend, kept inline on purpose.
-- Tests mirror the package layout; `tests/native` runs the compiled loops against their twins.
-- Pickles of `Event` and `EventGenerator` made with 1.0.0 do not load in 2.0.0 (the classes
-  moved module).
-
 ## 1.0.0 - 2026-10-24
 
 First release.
+
+### Package layout
+
+Every module lives in a domain package; the top-level names (`modelly.Agent`, `modelly.Model`,
+`modelly.DataCollector`, `modelly.Column`, `modelly.CohortTable`, `modelly.FastRandom`,
+`modelly.run_batch`, `modelly.run_grid`) are the short way in.
+
+| Package | Contents |
+|---|---|
+| `modelly.core` | `agent`, `model`, `agentset`, `columns`, `rng`, `exceptions` |
+| `modelly.space` | discrete spaces; `modelly.space.continuous` |
+| `modelly.time` | `schedule`, `signals` |
+| `modelly.data` | `collector`, `reporters`, `recorders` |
+| `modelly.behaviour` | `actions`, `states`, `meta_agents` |
+| `modelly.scenarios` | scenarios |
+| `modelly.batch` | `runs`, `cohorts` |
+| `modelly.viz` | `solara`, `console`, `render`, `altair`, `mpl` |
 
 ### Core
 
@@ -73,6 +45,9 @@ First release.
   and `_randbelow` in C on CPython's own Mersenne Twister state (`randint` 59 ns against 193 ns,
   `shuffle` 38 ns against 206 ns per element), verified against `random.Random` at import; the
   pure-Python `PyFastRandom` is the fallback.
+- `do` and `shuffle_do` on the model's agent registries, and the breadth-first walk behind
+  `Cell.get_neighborhood`, run in a second compiled module (`modelly/_native/fastloop.c`),
+  with an identical pure-Python twin used when it is not built (`MODELLY_PURE_PYTHON=1`).
 
 ### Space and time
 
@@ -108,3 +83,9 @@ First release.
   4.3 to 213 times faster.
 - Platform wheels for Linux and macOS with the compiled core, a pure wheel and the sdist for
   every other platform.
+
+### Internals
+
+- Every module is at most 300 lines and every function body at most 25 lines, except the
+  per-agent render loop of the Altair backend, kept inline on purpose.
+- Tests mirror the package layout; `tests/native` runs the compiled loops against their twins.

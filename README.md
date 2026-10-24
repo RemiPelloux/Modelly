@@ -34,9 +34,7 @@ time, pandas data collection, browser visualization. Fast by construction, repro
 
 **Status:** stable, Python 3.12+. Every public package (`core`, `space`, `time`, `data`,
 `behaviour`, `scenarios`, `batch`, `viz`) follows semantic versioning; there is no experimental
-area. Version 2.0.0 moved every module into a domain package, and the old import paths no longer
-import: the old-to-new table is in [CHANGELOG.md](CHANGELOG.md). The current version is
-`modelly.__version__`.
+area. The current version is `modelly.__version__`.
 
 ```bash
 pip install modelly-abm
@@ -120,7 +118,7 @@ To depend on Modelly from your own project, add it to `pyproject.toml` (the dist
 `modelly-abm`, the import is `modelly`):
 
 ```toml
-dependencies = ["modelly-abm>=2.0"]
+dependencies = ["modelly-abm>=1.0"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is
@@ -378,7 +376,7 @@ python -m modelly.migrate path/to/your/model/          # dry run: diff plus repo
 python -m modelly.migrate path/to/your/model/ --write  # apply the rewrites
 ```
 
-It rewrites imports to the 2.0.0 paths (`modelly.space`, `modelly.time`, `modelly.data`,
+It rewrites imports to the domain-package paths (`modelly.space`, `modelly.time`, `modelly.data`,
 `modelly.batch`, `modelly.viz`), agent constructors and scheduler attributes, and flags scheduler classes,
 legacy grid calls, `batch_run`, simulators and `seed=` for you to decide. The construct-by-construct
 map, for Mesa 2.x and 3.x, is [docs/migrating_from_mesa.md](docs/migrating_from_mesa.md).
