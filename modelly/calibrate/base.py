@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import os
 import pickle
-import tempfile
 import uuid
 from collections.abc import Mapping, Sequence
 from pathlib import Path
@@ -24,6 +23,7 @@ from modelly.calibrate.priors import Prior
 from modelly.calibrate.simulator import Batch, Execution, Simulator
 from modelly.calibrate.targets import Target, total_distance
 from modelly.experiments.experiment import scenario_class
+from modelly.experiments.scratch import scratch_folder
 from modelly.experiments.space import Fixed, ScenarioSpace
 from modelly.experiments.store import RESERVED
 from modelly.experiments.tasks import reference, resolve
@@ -78,7 +78,7 @@ class Calibration:
         self.fixed = {name: _plain(value) for name, value in (fixed or {}).items()}
         self.store = None if store is None else Path(store).resolve()
         self._validate()
-        self._temporary: tempfile.TemporaryDirectory | None = None
+        self._temporary: Path | None = None
 
     def _validate(self) -> None:
         """Reject an empty or inconsistent definition before anything runs."""
@@ -108,8 +108,8 @@ class Calibration:
     def simulator(self) -> Simulator:
         """The runs' simulator, writing to the store (or a temporary folder)."""
         if self.store is None and self._temporary is None:
-            self._temporary = tempfile.TemporaryDirectory(prefix="modelly-calibrate-")
-        root = self.store or Path(self._temporary.name)
+            self._temporary = scratch_folder(self, "modelly-calibrate-")
+        root = self.store or self._temporary
         outputs = {target.name: target.spec for target in self.targets}
         return Simulator(
             self.model, outputs, self.steps, self.replicates, self.seed, root

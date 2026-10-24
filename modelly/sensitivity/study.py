@@ -16,7 +16,6 @@ each:
 from __future__ import annotations
 
 import inspect
-import tempfile
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -33,6 +32,7 @@ from modelly.calibrate.simulator import (
     generator,
 )
 from modelly.core.model import Model
+from modelly.experiments.scratch import scratch_folder
 from modelly.experiments.space import ScenarioSpace
 from modelly.experiments.tasks import reference
 
@@ -97,7 +97,7 @@ class Study:
         space = getattr(self.model, "space", None)
         if space is not None and space != self.space:
             raise ValueError("the emulator was fitted over another space")
-        self._temporary: tempfile.TemporaryDirectory | None = None
+        self._temporary: Path | None = None
 
     @property
     def names(self) -> list[str]:
@@ -121,8 +121,8 @@ class Study:
     def _simulate(self, points: list[dict[str, Any]], key: int) -> np.ndarray:
         """Run the model at ``points``; the replicate mean of the statistic."""
         if self.store is None and self._temporary is None:
-            self._temporary = tempfile.TemporaryDirectory(prefix="modelly-sensitivity-")
-        root = Path(self.store).resolve() if self.store else Path(self._temporary.name)
+            self._temporary = scratch_folder(self, "modelly-sensitivity-")
+        root = Path(self.store).resolve() if self.store else self._temporary
         model = self.model if isinstance(self.model, str) else reference(self.model)
         output = self.output if isinstance(self.output, str) else reference(self.output)
         simulator = Simulator(
