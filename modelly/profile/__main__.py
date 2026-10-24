@@ -6,6 +6,7 @@ import argparse
 import json
 import sys
 import traceback
+from typing import TYPE_CHECKING
 
 from modelly.profile.loader import (
     SIZE_PARAMS,
@@ -22,6 +23,9 @@ from modelly.profile.sizes import (
     SizeComparison,
     compare_sizes,
 )
+
+if TYPE_CHECKING:
+    from modelly.core.model import Model
 
 EXIT_OK, EXIT_MODEL_ERROR, EXIT_USAGE = 0, 1, 2
 GUIDE = "https://remipelloux.github.io/Modelly/profile.html"
@@ -165,10 +169,16 @@ def render(prof: Profiler | SizeComparison, args: argparse.Namespace) -> str:
     return prof.report(top=args.top)
 
 
-def profile(args: argparse.Namespace) -> Profiler | SizeComparison:
-    """Build the model and profile it, once per size with --sizes."""
+def profile(
+    args: argparse.Namespace, cls: type[Model] | None = None
+) -> Profiler | SizeComparison:
+    """Build the model and profile it, once per size with --sizes.
+
+    ``cls`` is the model class when the caller already has it (a class defined in a
+    notebook); otherwise ``args.target`` names it.
+    """
     params = dict(parse_param(text) for text in args.param)
-    cls = load_class(args.target)
+    cls = cls or load_class(args.target)
     if args.sizes:
         name = size_param(cls, args.size_param)
         return compare_sizes(
@@ -183,11 +193,16 @@ def profile(args: argparse.Namespace) -> Profiler | SizeComparison:
     return prof
 
 
-def main(argv: list[str] | None = None, prog: str = PROG) -> int:
-    """Build the model, run it under the profiler and write the report; the exit status."""
+def main(
+    argv: list[str] | None = None, prog: str = PROG, cls: type[Model] | None = None
+) -> int:
+    """Build the model, run it under the profiler and write the report; the exit status.
+
+    ``cls``, when given, is the model class to profile instead of loading the target.
+    """
     args = parse_args(argv, prog)
     try:
-        prof = profile(args)
+        prof = profile(args, cls)
     except TargetError as error:
         sys.stderr.write(f"modelly.profile: {error}\n")
         return EXIT_USAGE

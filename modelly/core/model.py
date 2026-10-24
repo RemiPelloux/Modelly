@@ -15,6 +15,7 @@ import numpy as np
 from modelly.core.agent import Agent
 from modelly.core.checkpoint import CheckpointWriter, load_model, save_model
 from modelly.core.columns import ColumnStore
+from modelly.core.display import model_html, model_markdown
 from modelly.core.exceptions import CheckpointError
 from modelly.core.registry import AgentRegistry
 from modelly.core.rng import FastRandom
@@ -182,6 +183,10 @@ class Model[A: Agent, S: Scenario](AgentRegistry[A], HasSchedule, HasEmitters):
 
     def step(self) -> None:
         """A single step. Fill in here."""
+
+    # Jupyter shows a model as its class, scenario, time and population by class.
+    _repr_html_ = model_html
+    _repr_markdown_ = model_markdown
 
     def save(self, path: str | Path, *, compress: bool = False) -> None:
         """Save the whole model to one checkpoint file.
