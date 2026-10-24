@@ -17,6 +17,7 @@ Measured on CPython 3.15, one access inside a step:
 
 from __future__ import annotations
 
+import weakref
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -44,13 +45,12 @@ def fast_view(array: np.ndarray) -> Any:
 def column_property(name: str, position: int, column: Column) -> property:
     """The property installed for column ``name``, at ``position`` in the class's specs."""
 
-    # The try blocks cost nothing until they catch: an agent without a row (removed, or
-    # never added to a model) has no _column_table, and the error then names the agent.
+    # The getter is the read alone, as fast as it can be. A removed agent's table is a
+    # _RemovedTable, whose read raises ColumnMissingError naming the agent. The setter's try
+    # costs nothing until it catches: an agent never added to a model has no table, and
+    # its first write (in __init__) then says what is missing.
     def get(agent):
-        try:
-            return agent._column_table._views[position][agent._column_row]
-        except AttributeError:
-            raise ColumnMissingError(agent, name) from None
+        return agent._column_table._views[position][agent._column_row]
 
     def set_(agent, value):
         try:
@@ -61,6 +61,39 @@ def column_property(name: str, position: int, column: Column) -> property:
             raise ColumnMissingError(agent, name) from None
 
     return property(get, set_, doc=repr(column))
+
+
+class _RaisingColumn:
+    """One column of a removed agent: any read or write raises ColumnMissingError."""
+
+    __slots__ = ("_agent", "_name")
+
+    def __init__(self, agent: Any, name: str) -> None:
+        """Stand in for column ``name`` of the removed ``agent``."""
+        self._agent, self._name = agent, name
+
+    def __getitem__(self, row: int) -> Any:
+        """Refuse the read, naming the agent and the column."""
+        raise ColumnMissingError(self._agent(), self._name)
+
+    def __setitem__(self, row: int, value: Any) -> None:
+        """Refuse the write, naming the agent and the column."""
+        raise ColumnMissingError(self._agent(), self._name)
+
+
+class _RemovedTable:
+    """The column table of a removed agent: every column raises ColumnMissingError.
+
+    Set on removal instead of deleting the table, so the getter needs no try block and
+    live agents pay nothing for the clear error.
+    """
+
+    def __init__(self, agent: Any) -> None:
+        """Stand in for the table ``agent`` had before it was removed."""
+        agent_ref = weakref.ref(agent)
+        names = list(type(agent)._column_specs)
+        self._views = [_RaisingColumn(agent_ref, name) for name in names]
+        self._data = dict(zip(names, self._views, strict=True))
 
 
 def collect_column_specs(cls: type) -> dict[str, Column]:
