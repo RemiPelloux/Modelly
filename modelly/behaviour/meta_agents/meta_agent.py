@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterable
 from types import MethodType
-from typing import Any
+from typing import Any, cast
 
 from modelly.core.agent import Agent
 
@@ -69,7 +69,7 @@ def _find_existing_meta_agent(
     agents: Iterable[Any],
     new_agent_class: str,
     membership_api: Any,
-) -> Any | None:
+) -> MetaAgent | None:
     """Find a compatible existing meta-agent among an agent's current groups."""
     existing_meta_agents = []
     for agent in agents:
@@ -90,23 +90,40 @@ def _find_existing_meta_agent(
 def _build_meta_agent_class(
     new_agent_class: str,
     modelly_agent_type: tuple[type[Agent], ...],
-) -> type[Agent]:
+) -> type[MetaAgent]:
     """Create a dynamic meta-agent class with the requested Modelly base types."""
-    return type(
+    agent_class = type(
         new_agent_class,
         (MetaAgent, *modelly_agent_type),
         {
             "unique_id": None,
         },
     )
+    return cast("type[MetaAgent]", agent_class)
+
+
+def _resolve_meta_agent_class(
+    model: Any,
+    new_agent_class: str,
+    agent_bases: tuple[type[Agent], ...],
+) -> type[MetaAgent]:
+    """Return the model's class named ``new_agent_class``, or build a new one.
+
+    A class found by name is only constructible here if it is a ``MetaAgent``
+    subclass (other classes reject ``_membership_api``), hence the cast.
+    """
+    existing_class = extract_class(model.agents_by_type, new_agent_class)
+    if existing_class is None:
+        return _build_meta_agent_class(new_agent_class, agent_bases)
+    return cast("type[MetaAgent]", existing_class)
 
 
 def _reuse_meta_agent(
-    meta_agent: Any,
+    meta_agent: MetaAgent,
     membership_api: Any,
     meta_attributes: dict[str, Any] | None,
     meta_methods: dict[str, Callable] | None,
-) -> Any:
+) -> MetaAgent:
     """Rebind an existing meta-agent to the manager and apply attributes and methods."""
     existing_api = getattr(meta_agent, "_membership_api", None)
     if existing_api not in (None, membership_api):
@@ -117,8 +134,6 @@ def _reuse_meta_agent(
     return meta_agent
 
 
-# TODO(typing): Replace the dynamic creation path's Any return with a
-# statically checkable MetaAgent or protocol type.
 def _create_meta_agent_instance(
     model: Any,
     new_agent_class: str,
@@ -127,7 +142,7 @@ def _create_meta_agent_instance(
     meta_attributes: dict[str, Any] | None = None,
     meta_methods: dict[str, Callable] | None = None,
     _membership_api: Any | None = None,
-) -> Any:
+) -> MetaAgent:
     """Create or reuse a meta-agent instance without recording backend edges."""
     if _membership_api is None:
         raise RuntimeError("Use model.meta_agents.create() to create a meta-agent")
@@ -141,9 +156,7 @@ def _create_meta_agent_instance(
             meta_agent, _membership_api, meta_attributes, meta_methods
         )
 
-    agent_class = extract_class(model.agents_by_type, new_agent_class)
-    if agent_class is None:
-        agent_class = _build_meta_agent_class(new_agent_class, agent_bases)
+    agent_class = _resolve_meta_agent_class(model, new_agent_class, agent_bases)
 
     meta_agent = agent_class(
         model,

@@ -11,6 +11,7 @@ from modelly.behaviour.meta_agents.combinations import (
     find_combinations,
 )
 from modelly.behaviour.meta_agents.meta_agent import (
+    MetaAgent,
     _create_meta_agent_instance,
     _deduplicate_preserving_order,
 )
@@ -79,7 +80,7 @@ class MetaAgents(MembershipQueries):
         meta_methods: dict[str, Callable] | None = None,
         relation: RelationKey = "member",
         memberships: Iterable[tuple[Any, RelationKey]] | None = None,
-    ) -> Any:
+    ) -> MetaAgent:
         """Create a meta-agent group and record its memberships.
 
         A group is identified by its class name, ``new_agent_class``. When at
