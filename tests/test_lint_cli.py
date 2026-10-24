@@ -132,3 +132,9 @@ def test_help_documents_examples_and_exit_codes(capsys):
     assert stop.value.code == 0
     out = capsys.readouterr().out
     assert "examples:" in out and "exit status:" in out and "[tool.modelly.lint]" in out
+
+
+def test_docs_cover_every_rule():
+    """docs/lint.md has a section for each rule."""
+    text = DOCS.read_text(encoding="utf-8")
+    assert all(f"### {code}" in text for code in RULES)

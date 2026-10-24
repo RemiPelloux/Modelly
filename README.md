@@ -384,14 +384,16 @@ map, for Mesa 2.x and 3.x, is [docs/migrating_from_mesa.md](https://github.com/R
 ## Checking a model
 
 A static check finds the bugs that break reproducibility (random draws outside the model's
-generators, a missing `super().__init__`, loops over sets) and the loops that make a step
-O(N²) (an agent scanning `self.model.agents`, nested population loops):
+generators, wall-clock values, a missing `super().__init__`, loops over sets) and the loops that
+make a step O(N²) (an agent scanning `self.model.agents`, nested population loops):
 
 ```bash
 python -m modelly.lint path/to/your/model/   # exits 1 on findings, so it works in CI
+python -m modelly.lint --explain MDL101      # why a rule matters, with a fix
 ```
 
-Every rule, with the fix, is in [docs/lint.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/lint.md).
+Every tool is also one command: `python -m modelly --help` (or `modelly --help` once installed)
+lists them, and `modelly lint src/` is `python -m modelly.lint src/`. Every rule, with the fix, is in [docs/lint.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/lint.md).
 
 ## Architecture
 
