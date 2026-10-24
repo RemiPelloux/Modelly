@@ -21,4 +21,4 @@ understand it. You will get an acknowledgement within a week, and a fix or a dec
 
 Modelly executes the model code you write and loads data you provide. Bugs in your own model, or
 in notebooks you run, are not vulnerabilities in Modelly. Problems in the framework itself, in its
-visualization server, in the `python -m modelly.migrate` codemod, or in the release pipeline are.
+compiled modules (`modelly/_native`), in its visualization server, in the `python -m modelly.migrate` codemod, or in the release pipeline are.
