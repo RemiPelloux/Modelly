@@ -15,6 +15,11 @@ Available Backends:
 """
 
 import importlib
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:  # names for type checkers and linters; imported lazily at run time
+    from modelly.viz.altair.backend import AltairBackend
+    from modelly.viz.mpl.backend import MatplotlibBackend
 
 # Imported on first use, so that the backends can import modelly.viz.render.portrayal.
 _LAZY = {
