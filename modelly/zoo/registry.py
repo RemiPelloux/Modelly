@@ -75,6 +75,15 @@ MODELS: tuple[ZooModel, ...] = (
         "Cars on a ring road accelerate, brake to the gap ahead and dawdle at random.",
         "fundamental diagram: exact min(rho v, 1 - rho) without dawdling, rise then fall",
     ),
+    ZooModel(
+        "bass_diffusion",
+        "Bass diffusion of innovation on a network",
+        "energy",
+        "BassDiffusion",
+        "BassScenario",
+        "Households adopt from advertising and from adopting neighbours.",
+        "adoption curve within Euler error + 5 sd of the Bass ODE; slower when sparse",
+    ),
 )
 
 
