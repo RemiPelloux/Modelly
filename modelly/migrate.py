@@ -231,7 +231,7 @@ def migrate(paths: list[Path], write: bool = False) -> list[FileResult]:
     for path in python_files(paths):
         result = migrate_source(path, path.read_text(encoding="utf-8"))
         if write and result.changed:
-            path.write_text(result.migrated, encoding="utf-8")
+            path.write_text(result.migrated, encoding="utf-8", newline="\n")
         results.append(result)
     return results
 

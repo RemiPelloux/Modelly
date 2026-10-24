@@ -70,3 +70,10 @@ def test_text_writes_are_atomic(tmp_path):
     write_text_atomic(target, '{"x": 1}')
     assert target.read_text(encoding="utf-8") == '{"x": 1}'
     assert [p.name for p in target.parent.iterdir()] == ["b.json"]
+
+
+def test_text_writes_keep_lf_line_endings(tmp_path):
+    """Stored text has LF endings on every platform, so its bytes hash the same."""
+    target = tmp_path / "meta.json"
+    write_text_atomic(target, "{\n}\n")
+    assert target.read_bytes() == b"{\n}\n"

@@ -165,7 +165,7 @@ def render(prof: Profiler | SizeComparison, args: argparse.Namespace) -> str:
     if args.format == "json":
         return json.dumps(prof.to_dict(), indent=2)
     if args.format == "csv":
-        return prof.to_dataframe().to_csv(index=False).rstrip("\n")
+        return prof.to_dataframe().to_csv(index=False, lineterminator="\n").rstrip("\n")
     return prof.report(top=args.top)
 
 

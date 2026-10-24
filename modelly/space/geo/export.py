@@ -48,7 +48,7 @@ def write_frame(frame: gpd.GeoDataFrame, path: Path) -> Path:
         frame.to_parquet(path)
     elif suffix in GEOJSON_SUFFIXES:
         text = frame.to_json(to_wgs84=frame.crs is not None)
-        path.write_text(text, encoding="utf-8")
+        path.write_text(text, encoding="utf-8", newline="\n")
     else:
         raise ValueError(
             f"Unknown suffix {path.suffix!r}: use one of "

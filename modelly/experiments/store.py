@@ -46,7 +46,7 @@ def write_text_atomic(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_name(f".{path.name}.{uuid.uuid4().hex}{TEMP_SUFFIX}")
     try:
-        temp.write_text(text, encoding="utf-8")
+        temp.write_text(text, encoding="utf-8", newline="\n")
         os.replace(temp, path)
     finally:
         temp.unlink(missing_ok=True)

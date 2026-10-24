@@ -279,3 +279,16 @@ def test_checkpoint_every_writes_resumable_files(tmp_path):
     assert len(list(tmp_path.iterdir())) == 2
     with pytest.raises(ValueError, match="interval"):
         model.checkpoint_every(0, "never")
+
+
+def test_save_is_atomic_and_leaves_no_temporary(tmp_path):
+    """A save replaces the old file whole; a refused save keeps it and leaves no temp."""
+    path = tmp_path / "run.ckpt"
+    model = Model(rng=1)
+    model.save(path)
+    first = path.read_bytes()
+    model.keep = lambda: None
+    with pytest.raises(CheckpointError):
+        model.save(path)
+    assert path.read_bytes() == first
+    assert [p.name for p in tmp_path.iterdir()] == ["run.ckpt"]

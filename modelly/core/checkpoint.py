@@ -20,6 +20,7 @@ import gzip
 import io
 import itertools
 import json
+import os
 import pickle
 import sys
 import types
@@ -42,6 +43,7 @@ PICKLE_PROTOCOL = pickle.HIGHEST_PROTOCOL
 # Version components that must match: Modelly major.minor, Python major.minor.
 VERSION_PARTS = 2
 GZIP = "gzip"
+TEMP_SUFFIX = ".tmp"  # sibling file written first, then moved into place
 
 
 def _release(version: str) -> str:
@@ -168,8 +170,15 @@ def checkpoint_bytes(model: Model, *, compress: bool = False) -> bytes:
 
 
 def save_model(model: Model, path: str | Path, *, compress: bool = False) -> None:
-    """Write ``model`` to ``path`` as a checkpoint (see :meth:`Model.save`)."""
-    Path(path).write_bytes(checkpoint_bytes(model, compress=compress))
+    """Write ``model`` to ``path`` as a checkpoint (see :meth:`Model.save`).
+
+    The bytes go to a sibling temporary file first and ``os.replace`` moves it into
+    place (atomic on every platform), so a reader never sees half a checkpoint.
+    """
+    target = Path(path)
+    temporary = target.with_name(f".{target.name}{TEMP_SUFFIX}")
+    temporary.write_bytes(checkpoint_bytes(model, compress=compress))
+    os.replace(temporary, target)
 
 
 def _read_header(file: BinaryIO, path: str | Path) -> dict[str, Any]:
