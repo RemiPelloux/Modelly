@@ -1,18 +1,18 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/images/branding/banner-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="docs/images/branding/banner-light.svg">
-    <img src="docs/images/branding/banner-light.svg" alt="Modelly: agent-based modeling in Python" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RemiPelloux/Modelly/main/docs/images/branding/banner-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/RemiPelloux/Modelly/main/docs/images/branding/banner-light.svg">
+    <img src="https://raw.githubusercontent.com/RemiPelloux/Modelly/main/docs/images/branding/banner-light.svg" alt="Modelly: agent-based modeling in Python" width="100%">
   </picture>
 </p>
 
 <p align="center">
-  <a href="#development"><img src="docs/images/badges/coverage.svg" alt="coverage"></a>
+  <a href="#development"><img src="https://raw.githubusercontent.com/RemiPelloux/Modelly/main/docs/images/badges/coverage.svg" alt="coverage"></a>
   <a href="https://pypi.org/project/modelly-abm/"><img src="https://img.shields.io/pypi/v/modelly-abm?color=0F766E&label=pypi" alt="PyPI version"></a>
   <img src="https://img.shields.io/badge/python-3.12%2B-3B82F6" alt="python 3.12+">
   <img src="https://img.shields.io/badge/ruff-linted-261230" alt="ruff">
-  <a href="pelloux-guidelines.md"><img src="https://img.shields.io/badge/code%20discipline-Pelloux-0F766E" alt="Pelloux guidelines"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-4C9A2A" alt="license: Apache-2.0"></a>
+  <a href="https://github.com/RemiPelloux/Modelly/blob/main/pelloux-guidelines.md"><img src="https://img.shields.io/badge/code%20discipline-Pelloux-0F766E" alt="Pelloux guidelines"></a>
+  <a href="https://github.com/RemiPelloux/Modelly/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-4C9A2A" alt="license: Apache-2.0"></a>
 </p>
 
 <h1 align="center">Modelly: agent-based modeling in Python</h1>
@@ -27,7 +27,7 @@ time, pandas data collection, browser visualization. Fast by construction, repro
   <a href="https://remipelloux.github.io/Modelly/getting_started.html">Tutorials</a> ·
   <a href="#built-in-examples">Examples</a> ·
   <a href="#coming-from-mesa">Coming from Mesa</a> ·
-  <a href="CHANGELOG.md">Changelog</a>
+  <a href="https://github.com/RemiPelloux/Modelly/blob/main/CHANGELOG.md">Changelog</a>
 </p>
 
 ---
@@ -41,8 +41,8 @@ pip install modelly-abm
 python -c "import modelly; print(modelly.__version__)"   # the import name is modelly
 ```
 
-Or, from a clone, `pip install -e ".[all]"` then `python example.py`: a wealth-exchange model that
-prints its Gini coefficient.
+Then run the [wealth-exchange example](https://github.com/RemiPelloux/Modelly/blob/main/example.py),
+which prints its Gini coefficient.
 
 ## Vision
 
@@ -59,7 +59,7 @@ describe and hard to keep correct, reproducible and fast. Modelly exists to remo
   per agent-step stays flat as models grow. Performance is a feature with a test, not a hope.
 - **Small, readable modules.** A researcher should be able to open any file and understand it in
   one sitting. Files stay under 300 lines, functions under 25, and the rule is enforced by a script,
-  not by goodwill. The [Pelloux guidelines](pelloux-guidelines.md) are the contract.
+  not by goodwill. The [Pelloux guidelines](https://github.com/RemiPelloux/Modelly/blob/main/pelloux-guidelines.md) are the contract.
 - **One mental model from notebook to cluster.** The same scenario object drives a quick look in a
   notebook, a browser visualization, a parameter sweep and a batch of replications.
 
@@ -67,7 +67,7 @@ describe and hard to keep correct, reproducible and fast. Modelly exists to remo
 easy to write, and moves the heavy lifting into arrays: `Column` attributes give the model a numpy
 view of every agent, continuous space answers neighbour queries for the whole population with one
 KD-tree, and the roadmap adds vectorised step phases and parallel replications out of the box.
-The [performance audit](docs/performance.md) records what has been done and what is next.
+The [performance audit](https://github.com/RemiPelloux/Modelly/blob/main/docs/performance.md) records what has been done and what is next.
 
 ## Why Modelly
 
@@ -88,31 +88,31 @@ No global state, no hidden step order, no bespoke loops: reproducibility is the 
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/images/branding/simulation-loop-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="docs/images/branding/simulation-loop-light.svg">
-    <img src="docs/images/branding/simulation-loop-light.svg" alt="The Modelly loop: a scenario configures the model once; every tick the agents act, data is recorded and time advances; after the run the data is a DataFrame to visualize and analyze" width="860">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RemiPelloux/Modelly/main/docs/images/branding/simulation-loop-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/RemiPelloux/Modelly/main/docs/images/branding/simulation-loop-light.svg">
+    <img src="https://raw.githubusercontent.com/RemiPelloux/Modelly/main/docs/images/branding/simulation-loop-light.svg" alt="The Modelly loop: a scenario configures the model once; every tick the agents act, data is recorded and time advances; after the run the data is a DataFrame to visualize and analyze" width="860">
   </picture>
 </p>
 
 ## Install
 
-Modelly requires **Python 3.12+**.
+Modelly requires **Python 3.12+** and is published on PyPI as
+[`modelly-abm`](https://pypi.org/project/modelly-abm/).
 
 ```bash
-git clone https://github.com/RemiPelloux/Modelly.git
-cd Modelly
-
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[all]"          # core + network + visualization + examples + docs
+pip install modelly-abm
 ```
 
-Pick only what you need if `all` is too much:
+Add extras for what you need:
 
 ```bash
-pip install -e .                 # core: numpy, pandas, scipy, tqdm
-pip install -e ".[viz]"          # + solara, matplotlib, altair
-pip install -e ".[network]"      # + networkx
+pip install "modelly-abm[viz]"       # + solara, matplotlib, altair
+pip install "modelly-abm[network]"   # + networkx
+pip install "modelly-abm[rec]"       # network + viz: what the bundled examples need
 ```
+
+To work on Modelly itself, install from a clone instead: see [Development](#development).
 
 To depend on Modelly from your own project, add it to `pyproject.toml` (the distribution is
 `modelly-abm`, the import is `modelly`):
@@ -122,7 +122,7 @@ dependencies = ["modelly-abm>=1.0.1"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is
-[docs/using_modelly_in_your_project.md](docs/using_modelly_in_your_project.md).
+[docs/using_modelly_in_your_project.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/using_modelly_in_your_project.md).
 
 ## A model in 30 seconds
 
@@ -379,7 +379,7 @@ python -m modelly.migrate path/to/your/model/ --write  # apply the rewrites
 It rewrites imports to the domain-package paths (`modelly.space`, `modelly.time`, `modelly.data`,
 `modelly.batch`, `modelly.viz`), agent constructors and scheduler attributes, and flags scheduler classes,
 legacy grid calls, `batch_run`, simulators and `seed=` for you to decide. The construct-by-construct
-map, for Mesa 2.x and 3.x, is [docs/migrating_from_mesa.md](docs/migrating_from_mesa.md).
+map, for Mesa 2.x and 3.x, is [docs/migrating_from_mesa.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/migrating_from_mesa.md).
 
 ## Checking a model
 
@@ -391,15 +391,15 @@ O(N²) (an agent scanning `self.model.agents`, nested population loops):
 python -m modelly.lint path/to/your/model/   # exits 1 on findings, so it works in CI
 ```
 
-Every rule, with the fix, is in [docs/lint.md](docs/lint.md).
+Every rule, with the fix, is in [docs/lint.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/lint.md).
 
 ## Architecture
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/images/branding/architecture-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="docs/images/branding/architecture-light.svg">
-    <img src="docs/images/branding/architecture-light.svg" alt="Modelly architecture" width="860">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/RemiPelloux/Modelly/main/docs/images/branding/architecture-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/RemiPelloux/Modelly/main/docs/images/branding/architecture-light.svg">
+    <img src="https://raw.githubusercontent.com/RemiPelloux/Modelly/main/docs/images/branding/architecture-light.svg" alt="Modelly architecture" width="860">
   </picture>
 </p>
 
@@ -436,7 +436,7 @@ The top-level names (`modelly.Agent`, `modelly.Model`, `modelly.DataCollector`, 
 ## How the engine stays fast
 
 The data structures are chosen for the operations a simulation actually performs, and each choice
-is backed by a measurement in [docs/performance.md](docs/performance.md).
+is backed by a measurement in [docs/performance.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/performance.md).
 
 | Structure | Backed by | Why |
 |---|---|---|
@@ -459,7 +459,7 @@ pinned and alternating: with its compiled random core Modelly is 12% faster than
 (paired runs at 0.877 to 0.884 of Mesa's time, identical output in every chunk). With the
 pure-Python `FastRandom` it is 1.3 to 3.8% faster, and 1.5 to 2% behind with the standard
 library's generator. The method and every round are in
-[docs/performance.md](docs/performance.md).
+[docs/performance.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/performance.md).
 
 **Same model, each framework's own idiom.** `benchmarks/playbooks/` holds five models written
 twice: for Mesa 2.3 the way its API intends, and for Modelly with columns, vectorised phases,
@@ -480,8 +480,8 @@ of the steps at the large size, median of three rounds, this machine:
 Where Modelly keeps Mesa's data structure (agents held in cell lists, `modelly-cells` in the
 results) the gap closes to 1.4 to 1.9x: the layout is where the time is, not the interpreter.
 Every vectorised phase rests on a stated equivalence argument, in
-[docs/vectorised_phases.md](docs/vectorised_phases.md); the full tables with the agreement
-checks are in [benchmarks/playbooks/results/README.md](benchmarks/playbooks/results/README.md).
+[docs/vectorised_phases.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/vectorised_phases.md); the full tables with the agreement
+checks are in [benchmarks/playbooks/results/README.md](https://github.com/RemiPelloux/Modelly/blob/main/benchmarks/playbooks/results/README.md).
 
 ## Future roadmap
 
@@ -546,6 +546,7 @@ each notebook).
 ## Development
 
 ```bash
+git clone https://github.com/RemiPelloux/Modelly.git && cd Modelly
 pip install -e ".[dev]"
 bash scripts/ci-local.sh          # lint, format, tests, size audit: the same gate as CI
 bash scripts/ci-local.sh --list   # stage names, run a subset with: ci-local.sh lint test
@@ -555,11 +556,11 @@ bash scripts/build-native.sh      # compile modelly/_native in place; MODELLY_PU
 The coverage badge at the top of this page is produced by that gate: the test stage measures
 coverage and rewrites `docs/images/badges/coverage.svg`, so commit the badge with your change.
 
-Code discipline is written down in [pelloux-guidelines.md](pelloux-guidelines.md): small files,
+Code discipline is written down in [pelloux-guidelines.md](https://github.com/RemiPelloux/Modelly/blob/main/pelloux-guidelines.md): small files,
 short functions, surgical changes, conventional commits. `scripts/audit-pelloux.sh` enforces the
 size limits against `pelloux-baseline.json`; legacy oversized files are listed there and may shrink
 but never grow. The repository layout and how the brand assets are generated are in
-[CONTRIBUTING.md](CONTRIBUTING.md).
+[CONTRIBUTING.md](https://github.com/RemiPelloux/Modelly/blob/main/CONTRIBUTING.md).
 
 ## Contributing
 
@@ -567,18 +568,18 @@ Issues, ideas and pull requests are welcome on the
 [issue tracker](https://github.com/RemiPelloux/Modelly/issues). If you are adding a feature, opening
 a ticket first is the fastest route: it keeps the patch small and reviewable.
 
-Everything you need is in [CONTRIBUTING.md](CONTRIBUTING.md): local setup, tests, the lint and
+Everything you need is in [CONTRIBUTING.md](https://github.com/RemiPelloux/Modelly/blob/main/CONTRIBUTING.md): local setup, tests, the lint and
 format commands CI runs, docs, and how a pull request is reviewed. By taking part you agree to
-our [Code of Conduct](CODE_OF_CONDUCT.md).
+our [Code of Conduct](https://github.com/RemiPelloux/Modelly/blob/main/CODE_OF_CONDUCT.md).
 
 ## Citing
 
-If Modelly contributes to a publication, cite it with the metadata in [CITATION.cff](CITATION.cff)
+If Modelly contributes to a publication, cite it with the metadata in [CITATION.cff](https://github.com/RemiPelloux/Modelly/blob/main/CITATION.cff)
 (GitHub shows a "Cite this repository" button that formats it for you).
 
 ## License
 
-Modelly is released under the [Apache License 2.0](LICENSE). Third-party attribution is recorded in
-[NOTICE](NOTICE).
+Modelly is released under the [Apache License 2.0](https://github.com/RemiPelloux/Modelly/blob/main/LICENSE). Third-party attribution is recorded in
+[NOTICE](https://github.com/RemiPelloux/Modelly/blob/main/NOTICE).
 
 <p align="center"><sub>Modelly: build the system, run the world, watch what emerges.</sub></p>
