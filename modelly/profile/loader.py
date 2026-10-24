@@ -14,6 +14,9 @@ from modelly.core.model import Model
 from modelly.scenarios import Scenario
 
 TARGET_MODULE = "_modelly_profile_target"
+# Parameter names tried, in order, for the population when --size-param is not given.
+SIZE_PARAMS = ("n", "N", "num_agents", "population")
+VARIADIC = (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
 
 
 class TargetError(ValueError):
@@ -88,3 +91,26 @@ def build_model(cls: type[Model], params: dict[str, Any], seed: int | None) -> M
     if rest:
         raise TargetError(f"{cls.__name__} takes no parameter(s) {sorted(rest)}")
     return cls(**kwargs)
+
+
+def parameter_names(cls: type[Model]) -> set[str]:
+    """The parameters ``cls`` takes by name, and those its Scenario class declares."""
+    parameters = dict(inspect.signature(cls).parameters)
+    own = {k for k, p in parameters.items() if p.kind not in VARIADIC}
+    scenario = _scenario_class(parameters)
+    declared = set(scenario._scenario_defaults) if scenario is not None else set()
+    return (own | declared) - {"scenario", "rng"}
+
+
+def size_param(cls: type[Model], name: str | None = None) -> str:
+    """The parameter that sets the population: ``name``, else the first of SIZE_PARAMS taken."""
+    if name is not None:
+        return name
+    known = parameter_names(cls)
+    for candidate in SIZE_PARAMS:
+        if candidate in known:
+            return candidate
+    raise TargetError(
+        f"{cls.__name__} takes none of {', '.join(SIZE_PARAMS)}: name the parameter that "
+        f"sets the population with --size-param (it takes {', '.join(sorted(known)) or 'none'})"
+    )

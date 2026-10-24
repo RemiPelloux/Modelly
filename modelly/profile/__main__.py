@@ -7,10 +7,22 @@ import json
 import sys
 import traceback
 
-from modelly.profile.loader import TargetError, build_model, load_class, parse_param
+from modelly.profile.loader import (
+    SIZE_PARAMS,
+    TargetError,
+    build_model,
+    load_class,
+    parse_param,
+    size_param,
+)
 from modelly.profile.profiler import DEFAULT_TOP, Profiler
+from modelly.profile.sizes import (
+    DEFAULT_STEPS,
+    MIN_SIZES,
+    SizeComparison,
+    compare_sizes,
+)
 
-DEFAULT_STEPS = 100
 EXIT_OK, EXIT_MODEL_ERROR, EXIT_USAGE = 0, 1, 2
 GUIDE = "https://remipelloux.github.io/Modelly/profile.html"
 PROG = "python -m modelly.profile"
@@ -25,6 +37,10 @@ evident the report ends with hints pointing at `python -m modelly.lint` codes.
 The model is built with its parameters: those its constructor takes by name
 go to it, the others to its Scenario (the class its `scenario` argument
 defaults to). --seed goes to that Scenario, or to `rng` when there is none.
+
+With --sizes the model is built and profiled once per size and the report
+compares microseconds per agent side by side: when they grow with N, each
+agent probably scans the population (MDL101 / MDL102).
 """
 
 EPILOG = f"""\
@@ -35,11 +51,14 @@ examples:
       --seed 42 --top 5
   python -m modelly.profile my_model.py:MyModel --format csv > profile.csv
   python -m modelly.profile my_model.py:MyModel --sample-every 10 --steps 1000
+  python -m modelly.profile my_model.py:MyModel --sizes 1000,4000 --steps 20
+  python -m modelly.profile my_model.py:MyModel --sizes 500,2000 --size-param initial_sheep
 
 output formats:
   text  the table of the costliest operations, then the hints (default)
   json  totals per operation, per-step totals and hints
   csv   one row per step and per operation within it (Profiler.to_dataframe)
+  with --sizes: json and csv hold us per agent by operation and size
 
 exit codes:
   0  the model ran and the report was written
@@ -56,6 +75,16 @@ def positive(text: str) -> int:
     if value < 1:
         raise argparse.ArgumentTypeError(f"expected a positive integer, got {text}")
     return value
+
+
+def size_list(text: str) -> list[int]:
+    """At least two different positive integers, comma-separated, for --sizes."""
+    values = sorted({positive(part) for part in text.split(",") if part.strip()})
+    if len(values) < MIN_SIZES:
+        raise argparse.ArgumentTypeError(
+            f"expected at least {MIN_SIZES} different sizes, got {text}"
+        )
+    return values
 
 
 OPTIONS = (
@@ -96,6 +125,21 @@ OPTIONS = (
             "help": "profile one step in N (default: 1)",
         },
     ),
+    (
+        ("--sizes",),
+        {
+            "type": size_list,
+            "metavar": "N1,N2,...",
+            "help": "build and profile the model at each population size and compare",
+        },
+    ),
+    (
+        ("--size-param",),
+        {
+            "metavar": "NAME",
+            "help": f"the parameter --sizes sets (default: the first of {', '.join(SIZE_PARAMS)} taken)",
+        },
+    ),
 )
 
 
@@ -112,7 +156,7 @@ def parse_args(argv: list[str] | None, prog: str = PROG) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def render(prof: Profiler, args: argparse.Namespace) -> str:
+def render(prof: Profiler | SizeComparison, args: argparse.Namespace) -> str:
     """The report in the requested format."""
     if args.format == "json":
         return json.dumps(prof.to_dict(), indent=2)
@@ -121,14 +165,29 @@ def render(prof: Profiler, args: argparse.Namespace) -> str:
     return prof.report(top=args.top)
 
 
+def profile(args: argparse.Namespace) -> Profiler | SizeComparison:
+    """Build the model and profile it, once per size with --sizes."""
+    params = dict(parse_param(text) for text in args.param)
+    cls = load_class(args.target)
+    if args.sizes:
+        name = size_param(cls, args.size_param)
+        return compare_sizes(
+            lambda size: build_model(cls, {**params, name: size}, args.seed),
+            args.sizes,
+            args.steps,
+            args.sample_every,
+        )
+    model = build_model(cls, params, args.seed)
+    with Profiler(model, sample_every=args.sample_every) as prof:
+        model.run_for(args.steps)
+    return prof
+
+
 def main(argv: list[str] | None = None, prog: str = PROG) -> int:
     """Build the model, run it under the profiler and write the report; the exit status."""
     args = parse_args(argv, prog)
     try:
-        params = dict(parse_param(text) for text in args.param)
-        model = build_model(load_class(args.target), params, args.seed)
-        with Profiler(model, sample_every=args.sample_every) as prof:
-            model.run_for(args.steps)
+        prof = profile(args)
     except TargetError as error:
         sys.stderr.write(f"modelly.profile: {error}\n")
         return EXIT_USAGE

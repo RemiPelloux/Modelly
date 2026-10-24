@@ -45,6 +45,8 @@ scenario, or the model's `rng` when it has none.
 | `--format text\|json\|csv` | the table and hints; the same as a JSON document; one CSV row per step and per operation |
 | `--top N` | rows in the text table (default 15) |
 | `--sample-every N` | profile one step in N |
+| `--sizes N1,N2,...` | build and profile the model at each population size and compare (see below) |
+| `--size-param NAME` | the parameter `--sizes` sets (default: the first of `n`, `N`, `num_agents`, `population` the model or its scenario takes) |
 
 The exit status is 0 when the model ran, 1 when it raised while being built or run (the
 traceback goes to stderr) and 2 on a bad command line or a target that cannot be loaded.
@@ -66,6 +68,54 @@ data = prof.to_dict()  # totals per operation, per-step totals, hints
 
 `Profiler(model, sample_every=10)` times steps 1, 11, 21, ... and lets the others run untimed,
 for long runs. `prof.records` holds one `StepRecord` per profiled step.
+
+## Comparing population sizes
+
+A scan of the population only shows in one run when the population changes during it. For a
+model whose population is fixed, `--sizes` builds it once per size, profiles each run for
+`--steps` steps and puts the microseconds per agent side by side:
+
+```bash
+python -m modelly.profile crowd.py:Crowd --sizes 100,400 --steps 5
+```
+
+```text
+Crowd profiled at N = 100, 400; 5 step(s) each
+
+N=100 us/agent  N=400 us/agent    growth  operation
+          5.07           17.85     3.52x  whole step
+          4.84           17.76     3.67x  Scanner.step (shuffle_do)
+
+hints:
+  - Scanner.step (shuffle_do): us per agent grows 3.7x from N=100 to N=400 (about N^0.9):
+    each agent probably scans the population. Run `python -m modelly.lint` and look for
+    MDL101 / MDL102
+```
+
+`whole step` is the model's step time divided by its agents, so it also covers loops written by
+hand; the other rows are the `AgentSet` loops that visit agents. `growth` is the cost per agent
+at the largest size over the smallest. When it grows roughly linearly with N (the slope of log
+cost per agent against log N is above 0.5) for a loop that takes at least a tenth of the time,
+the MDL101 / MDL102 hint is printed; an O(1)-per-agent step stays near 1x.
+
+The size goes to the parameter `--size-param` names, or to the first of `n`, `N`, `num_agents`
+and `population` among the constructor's parameters and its scenario's fields; when there is
+none the command stops with exit status 2 and lists the parameters the model takes
+(`--size-param initial_sheep` for the wolf-sheep example). The other options apply to every
+size: `--param`, `--seed`, `--sample-every`, `--top`. With `--format json` the report holds
+the sizes, each operation's us per agent, growth and slope, and the hints; with `--format csv`,
+one row per operation and size.
+
+From Python, `compare_sizes` takes a function that builds the model at a size:
+
+```python
+from modelly.profile import compare_sizes
+
+comparison = compare_sizes(lambda n: MyModel(n=n, rng=42), [1000, 4000], steps=20)
+print(comparison.report())
+comparison.hints()  # the MDL101 / MDL102 hints, if any
+frame = comparison.to_dataframe()  # operation, size, us_per_agent
+```
 
 ## What is measured
 
@@ -91,8 +141,8 @@ The report ends with hints when a pattern is evident:
 - **MDL101 / MDL102**: one loop takes more than half the time and its cost per agent grows with
   the population (the slope of log cost per agent against log population, over steps where the
   population varied by at least 1.5x, is above 0.5). An agent that scans every other agent is
-  O(N) per agent and O(N²) per step. When the population does not change during a run, profile
-  it again at two sizes (`--param n=...`) and compare `us/agent`.
+  O(N) per agent and O(N²) per step. When the population does not change during a run, compare
+  two sizes with `--sizes` (see [Comparing population sizes](#comparing-population-sizes)).
 - **MDL103**: less than a tenth of the step runs inside `AgentSet` loops while the model has
   agents, which is what a hand-written `for agent in ...` activation loop looks like.
 - **Data collection**: `collect` takes more than 30% of the time.

@@ -12,9 +12,12 @@ births and deaths per step::
     print(prof.report())
 
 From a shell: ``python -m modelly.profile path/to/model.py:MyModel --steps 100``.
+``compare_sizes`` builds the model at several population sizes and compares the
+cost per agent (``--sizes 1000,4000`` on the command line).
 Nothing is patched outside the ``with`` block. The guide is ``docs/profile.md``.
 """
 
 from modelly.profile.profiler import Profiler, StepRecord
+from modelly.profile.sizes import SizeComparison, compare_sizes
 
-__all__ = ["Profiler", "StepRecord"]
+__all__ = ["Profiler", "SizeComparison", "StepRecord", "compare_sizes"]
