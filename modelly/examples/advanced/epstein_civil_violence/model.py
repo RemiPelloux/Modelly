@@ -26,7 +26,6 @@ class EpsteinScenario(Scenario):
     max_iters: int = 1000
     activation_order: Literal["Random", "Sequential"] = "Random"
     grid_type: Literal["Von Neumann", "Moore"] = "Von Neumann"
-    rng: int = 42
 
 
 class EpsteinCivilViolence(modelly.Model):
