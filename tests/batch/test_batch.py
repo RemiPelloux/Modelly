@@ -30,6 +30,8 @@ def boom(x):
     return x
 
 
+# The multi-threaded fork() DeprecationWarning must not leak out of run_batch.
+@pytest.mark.filterwarnings("error::DeprecationWarning")
 def test_closures_and_lambdas_fork_on_linux_and_are_refused_elsewhere():
     """Forked workers inherit a closure; without fork the error says what to do."""
     offset = 7

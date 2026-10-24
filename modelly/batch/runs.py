@@ -10,9 +10,10 @@ returns a DataFrame.
 A function defined at module level in an importable file runs in workers that
 start clean (``forkserver``, or ``spawn``). A function defined in a notebook, a
 lambda or a closure cannot be imported by a fresh process; on Linux its workers
-are forked instead and inherit it. Python warns that forking a process with
-threads (numpy's BLAS pool, for one) can deadlock the child; it is rare in
-practice, and an importable function avoids it. As with any multiprocessing
+are forked instead and inherit it. Forking a process with threads (numpy's BLAS
+pool, for one) can deadlock the child; it is rare in practice, so the warning
+Python raises for it is silenced for these forks, and an importable function
+avoids it. As with any multiprocessing
 code on macOS and Windows, a script that calls ``run_batch`` needs the usual
 ``if __name__ == "__main__":`` guard, because the workers re-import it.
 """
@@ -23,6 +24,7 @@ import multiprocessing as mp
 import os
 import pickle
 import sys
+import warnings
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from itertools import product
 from typing import Any
@@ -36,6 +38,10 @@ DEFAULT_MAX_WORKERS = 8
 _CAN_FORK = sys.platform.startswith("linux") and "fork" in mp.get_all_start_methods()
 # Importable functions go to workers that start clean (no inherited threads).
 _SAFE_START = "forkserver" if "forkserver" in mp.get_all_start_methods() else "spawn"
+# The DeprecationWarning os.fork() raises when the parent has threads (3.12+).
+_FORK_WARNING = (
+    r"This process .*is multi-threaded, use of fork\(\) may lead to deadlocks"
+)
 
 # The function of the batch being run, inherited by forked workers.
 _CURRENT: Callable[[Any], Any] | None = None
@@ -83,7 +89,12 @@ def run_batch(
         )
     _CURRENT, _TASKS = run, tasks
     try:
-        with mp.get_context("fork").Pool(workers) as pool:
+        with warnings.catch_warnings():
+            # Forking is the documented trade-off for closures (see the module
+            # docstring), so silence CPython's fork warning for these forks only.
+            warnings.filterwarnings("ignore", _FORK_WARNING, DeprecationWarning)
+            pool = mp.get_context("fork").Pool(workers)
+        with pool:
             return pool.map(_call_by_index, range(len(tasks)), chunksize=1)
     finally:
         _CURRENT, _TASKS = None, []
