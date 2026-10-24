@@ -36,11 +36,29 @@ _SEQUENCE_TYPES = frozenset((list, tuple, range))
 SEGMENTED_SHUFFLE_MIN = 64
 
 
+def _rebuild(state: tuple) -> random.Random:
+    """A ``FastRandom`` at ``state``: compiled or pure, whichever this process runs."""
+    rng = FastRandom()
+    rng.setstate(state)
+    return rng
+
+
+def _reduce(rng: random.Random) -> tuple:
+    """Pickle either ``FastRandom`` as the other can load it; subclasses as usual."""
+    if type(rng) in (FastRandom, PyFastRandom):
+        return _rebuild, (rng.getstate(),)
+    return random.Random.__reduce__(rng)
+
+
 class PyFastRandom(random.Random):
     """``random.Random`` with the hot draws inlined in Python; identical streams.
 
     The fallback for ``FastRandom`` where the compiled core is unavailable.
+    Both versions pickle to the same state, so a pickle written with one loads
+    into the other and continues the same stream.
     """
+
+    __reduce__ = _reduce
 
     def randint(self, a: int, b: int) -> int:
         """Return a random integer in [a, b], like ``random.randint``."""
@@ -206,6 +224,8 @@ if _fastrng is not None:
         ``randint``, ``choice``, ``shuffle``, ``sample`` and ``_randbelow`` run in
         C on the same Mersenne Twister state as the rest of ``random.Random``.
         """
+
+        __reduce__ = _reduce
 
     if not _matches_stdlib(FastRandom):
         FastRandom = PyFastRandom  # type: ignore[misc]
