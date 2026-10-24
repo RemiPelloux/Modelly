@@ -12,6 +12,7 @@ same objects as `modelly.core.Model`, `modelly.core.Agent` and so on.
 | `modelly.core.agentset` | `AgentSet`, `AbstractAgentSet`, `GroupBy` |
 | `modelly.core.columns`, `modelly.core.column_access` | `Column` and the column tables |
 | `modelly.core.rng` | `FastRandom`, `PyFastRandom` |
+| `modelly.core.checkpoint` | the checkpoint file format behind `Model.save` and `Model.load` |
 | `modelly.core.exceptions` | the exceptions raised by Modelly |
 
 ## Model
@@ -87,6 +88,16 @@ which one is in use, and `MODELLY_PURE_PYTHON=1` forces the Python one.
 ```{eval-rst}
 .. automodule:: modelly.core.rng
    :members: FastRandom, PyFastRandom, NATIVE
+```
+
+## Checkpoints
+
+`Model.save`, `Model.load` and `Model.checkpoint_every` (listed under `Model`) write and read
+this format; see [Checkpoints](../checkpoints.md).
+
+```{eval-rst}
+.. automodule:: modelly.core.checkpoint
+   :members: save_model, load_model, CheckpointWriter
 ```
 
 ## Exceptions

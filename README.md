@@ -406,6 +406,20 @@ python -m modelly.profile path/to/model.py:MyModel --steps 100 --param n=5000
 From Python, `with modelly.profile.Profiler(model) as prof: model.run_for(100)`, then
 `prof.report()` or `prof.to_dataframe()`. See [docs/profile.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/profile.md).
 
+## Checkpoints
+
+A long run can be saved and resumed bit for bit, in the same process or a new one:
+
+```python
+model.run_for(50)
+model.save("run.ckpt")  # agents, spaces, events, data, both generators
+model = WolfSheep.load("run.ckpt")  # only load files you trust: it is a pickle
+model.run_for(50)  # identical to running 100 steps in one go
+model.checkpoint_every(100, "run-{time:05.0f}.ckpt")
+```
+
+See [docs/checkpoints.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/checkpoints.md).
+
 ## Architecture
 
 <p align="center">
@@ -557,6 +571,7 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 | **Best practices** | `docs/best-practices.md` |
 | **Checking a model** | `docs/lint.md`: the `python -m modelly.lint` rules and their fixes |
 | **Profiling a model** | `docs/profile.md`: `python -m modelly.profile`, the report and its hints |
+| **Checkpoints** | `docs/checkpoints.md`: save a run, resume it bit for bit |
 | **API reference** | `docs/apis/`: agents, agent sets, columns, model, space, time, data, migrate |
 | **Changelog** | `CHANGELOG.md`: what each release added, changed and fixed |
 
