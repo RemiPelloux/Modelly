@@ -2,29 +2,11 @@
 
 import pytest
 
-from modelly.experiments import Experiment, ScenarioSpace, designs
 from modelly.experiments.executors.local import ProcessExecutor, ThreadExecutor
-from tests.experiments.models import Walk, first_position
+from tests.experiments.executors.shared import MAX_PARALLEL, experiment
 
 pytest.importorskip("pyarrow")
 pytest.importorskip("duckdb")
-
-MAX_PARALLEL = 2
-
-
-def experiment(store, outputs=None):
-    """The experiment every executor runs."""
-    return Experiment(
-        Walk,
-        ScenarioSpace(drift=(0.0, 1.0), policy=["a", "b"], n=6),
-        design=designs.sobol(4),
-        replicates=2,
-        steps=5,
-        outputs=outputs
-        or {"mean": "mean", "spread": "spread", "first": first_position},
-        store=store,
-        seed=21,
-    )
 
 
 @pytest.fixture(scope="module")
