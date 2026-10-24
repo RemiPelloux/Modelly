@@ -26,12 +26,8 @@ from typing import TypeVar
 import numpy as np
 
 from modelly.space.cells.cell import Cell
-from modelly.space.grid.base import (
-    GRID_2D,
-    Grid,
-    pickle_gridcell,
-    unpickle_gridcell,
-)
+from modelly.space.grid.base import GRID_2D, Grid
+from modelly.space.grid.cell_class import pickle_gridcell, unpickle_gridcell
 
 __all__ = [
     "Grid",
