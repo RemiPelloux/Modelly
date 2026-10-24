@@ -83,6 +83,32 @@ python scripts/pelloux_audit.py audit    # size audit alone
 `python -m modelly.dev gate` runs every stage with the interpreter that starts it (`python -m
 ruff`, `python -m pytest`), so run it from the environment where you installed `.[dev]`.
 
+### No commit makes Modelly slower
+
+A pre-commit hook refuses a commit that makes a core operation slower than the last release.
+Turn it on once per clone:
+
+```bash
+python -m modelly.dev install-hooks      # git runs .githooks/pre-commit before every commit
+python -m modelly.dev perf               # the same check by hand
+python -m modelly.dev perf --against 1.2.0
+```
+
+When the staged changes touch Modelly's code (`.py`, `.c` or `.h` under `modelly/`), the hook
+times 17 core operations (`benchmarks/micro/ops.py`: agent sets, Column reads and writes,
+agent removal, cell moves, neighbourhood walks, data collection, events, random draws) in two
+interpreters: the last release, built from its tag in this repository with your compiler, and
+your working tree. Commits that only touch docs, tests or benchmarks are not timed. The two
+run on one core, in alternating bursts; an operation is refused when its median is more than
+3% slower and even its fastest quarter is slower, and a first-session suspect is timed again
+in fresh processes before anything is refused, so one noisy run cannot block a commit. A run
+takes about ten seconds; the first one after a release also builds that release (a few
+minutes, cached in `.modelly-bench/`). Smaller differences are caught before each release by
+the full benchmark (`docs/performance.md`, "No regression from release to release").
+
+`git commit --no-verify` (or `MODELLY_SKIP_PERF=1`) skips the hook: say why in the commit
+message.
+
 Files that were already over the size limit are listed in `pelloux-baseline.json`; they may
 shrink but never grow. Only re-seed the baseline (`bash scripts/seed-pelloux-baseline.sh`) when a
 split or removal legitimately changes a recorded ceiling, and say so in the pull request.

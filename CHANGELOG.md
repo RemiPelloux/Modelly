@@ -3,6 +3,16 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Added
+
+- A performance guard for contributors: `python -m modelly.dev perf` times 17 core operations
+  of the working tree against the last release (built from its tag, same compiler), in paired
+  alternating bursts on one core, and fails when one is significantly slower; suspects are
+  re-timed before failing. `python -m modelly.dev install-hooks` makes git run it before every
+  commit that touches `modelly/` (`.githooks/pre-commit`; about ten seconds).
+
 ## 1.3.1 - 2026-10-24
 
 No score is slower than 1.2.0 any more: benchmarked against the 1.2.0 wheel with identical

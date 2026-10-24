@@ -381,6 +381,10 @@ in paired, alternating runs so that load and frequency drift hit both versions a
 | Playbooks: the other twelve variants | 0.98 to 1.00 | identical |
 | TIS notebook at 1/30, 576 seasons | 1.00 (17.92 s and 17.92 s) | identical |
 
+Between releases, a pre-commit hook (`python -m modelly.dev install-hooks`) refuses any
+commit that makes one of 17 core operations more than 3% slower than the last release, in
+about ten seconds; CONTRIBUTING.md describes it.
+
 1.3.0 had two small regressions that this check found after its release: a Column read
 was about 2.5% slower (the getter kept the column's name for a clearer error) and, on
 regular builds, the neighbourhood walk and the cell move paid for free-threading safety
