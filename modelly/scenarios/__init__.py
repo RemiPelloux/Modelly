@@ -8,7 +8,8 @@ from modelly.scenarios.exceptions import (
     ScenarioNotReadyException,
 )
 from modelly.scenarios.runner import RunConfiguration, run_scenarios
-from modelly.scenarios.scenario import Scenario, rescale_samples
+from modelly.scenarios.sampling import rescale_samples
+from modelly.scenarios.scenario import Scenario
 from modelly.scenarios.store import RunId, RunRecord, Store
 
 __all__ = [

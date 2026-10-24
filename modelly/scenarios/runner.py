@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import traceback
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from concurrent.futures import BrokenExecutor, ProcessPoolExecutor, as_completed
+from functools import partial
 from typing import TYPE_CHECKING, Any
 
 import pandas as pd
@@ -212,69 +213,80 @@ def run_scenarios(
             )
     if store is None:
         store = InMemoryStore()
-
     scenarios = list(scenarios)
     writer = store.writer()
     store.write_scenarios(scenarios)
-
-    def _bar(iterable):
-        if not progress:
-            return iterable
-        try:
-            from tqdm.auto import tqdm  # noqa: PLC0415
-
-            return tqdm(iterable, total=len(scenarios), desc="Running scenarios")
-        except ImportError:
-            return iterable
-
-    def _record(
-        scenario: Scenario, result: tuple[Reference, None] | tuple[None, FailureInfo]
-    ):
-        ref, failure = result
-        if failure is None:
-            store.mark_succeeded(ref)
-        else:
-            run_id = RunId(scenario.scenario_id, scenario.replication_id)
-            store.mark_failed(run_id, failure)
-
+    bar = partial(_progress_bar, progress=progress, total=len(scenarios))
     if executor is None:
         # Sequential: run in the loop so the bar advances per scenario.
-        for scenario in _bar(scenarios):
-            _record(scenario, _safe_call(config, scenario, writer))
-    else:
-        futures = {
-            executor.submit(_safe_call, config, scenario, writer): scenario
-            for scenario in scenarios
-        }
-        try:
-            for future in _bar(as_completed(futures)):
-                scenario = futures[future]
-                try:
-                    result = future.result()
-                except BrokenExecutor:
-                    raise
-                except Exception as e:
-                    # pickling failure or CancelledError on the return trip; record as failed and continue
-                    result = (
-                        None,
-                        FailureInfo(
-                            origin=FailureOrigin.WRITING,
-                            exception_type=type(e).__name__,
-                            message=str(e),
-                            traceback="".join(traceback.format_exception(e)),
-                        ),
-                    )
-                _record(scenario, result)
-        except BrokenExecutor as e:
-            cause = e.__cause__ or e
-            for entry in list(store.pending()):
-                store.mark_aborted(
-                    entry,
-                    FailureInfo(
-                        origin=FailureOrigin.ABORTED,
-                        exception_type=type(cause).__name__,
-                        message=str(cause),
-                        traceback="".join(traceback.format_exception(e)),
-                    ),
-                )
+        for scenario in bar(scenarios):
+            _record(store, scenario, _safe_call(config, scenario, writer))
+        return store
+    futures = {
+        executor.submit(_safe_call, config, scenario, writer): scenario
+        for scenario in scenarios
+    }
+    try:
+        _collect_futures(futures, store, bar)
+    except BrokenExecutor as e:
+        _abort_pending(store, e)
     return store
+
+
+def _progress_bar(iterable: Iterable, progress: bool, total: int) -> Iterable:
+    """Wrap iterable in a tqdm progress bar when progress is on and tqdm is installed."""
+    if not progress:
+        return iterable
+    try:
+        from tqdm.auto import tqdm  # noqa: PLC0415
+
+        return tqdm(iterable, total=total, desc="Running scenarios")
+    except ImportError:
+        return iterable
+
+
+def _record(
+    store: Store,
+    scenario: Scenario,
+    result: tuple[Reference, None] | tuple[None, FailureInfo],
+) -> None:
+    """Mark the run of scenario as succeeded or failed in store."""
+    ref, failure = result
+    if failure is None:
+        store.mark_succeeded(ref)
+    else:
+        run_id = RunId(scenario.scenario_id, scenario.replication_id)
+        store.mark_failed(run_id, failure)
+
+
+def _failure_info(
+    origin: FailureOrigin, cause: BaseException, exc: BaseException
+) -> FailureInfo:
+    """Describe a failure from its cause, with the traceback of exc."""
+    return FailureInfo(
+        origin=origin,
+        exception_type=type(cause).__name__,
+        message=str(cause),
+        traceback="".join(traceback.format_exception(exc)),
+    )
+
+
+def _collect_futures(futures: dict, store: Store, bar: Callable) -> None:
+    """Record each future's result as it completes; a broken executor propagates."""
+    for future in bar(as_completed(futures)):
+        scenario = futures[future]
+        try:
+            result = future.result()
+        except BrokenExecutor:
+            raise
+        except Exception as e:
+            # pickling failure or CancelledError on the return trip; record as failed and continue
+            result = (None, _failure_info(FailureOrigin.WRITING, e, e))
+        _record(store, scenario, result)
+
+
+def _abort_pending(store: Store, error: BrokenExecutor) -> None:
+    """Mark every run still pending in store as aborted by a broken executor."""
+    cause = error.__cause__ or error
+    for entry in list(store.pending()):
+        store.mark_aborted(entry, _failure_info(FailureOrigin.ABORTED, cause, error))
