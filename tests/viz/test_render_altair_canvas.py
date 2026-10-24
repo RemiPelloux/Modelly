@@ -2,7 +2,6 @@
 
 import altair as alt
 import pandas as pd
-import pytest
 
 from modelly.viz.render.altair_canvas import (
     EMPTY_CHART_HEIGHT,
@@ -67,10 +66,6 @@ def test_colorbar_is_stacked_below_spatial_chart():
     )
 
 
-@pytest.mark.xfail(
-    reason="_with_colorbar calls configure_view(grid=False); ViewConfig has no 'grid'",
-    raises=alt.utils.schemapi.SchemaValidationError,
-)
 def test_colorbar_alone():
     """Colorbar alone."""
     spec = compose_altair_canvas(None, None, None, _chart("cbar")).to_dict()

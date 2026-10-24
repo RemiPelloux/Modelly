@@ -56,5 +56,5 @@ def _with_colorbar(main_spatial, prop_cbar):
     if main_spatial:  # Only main_spatial, no prop_cbar
         return main_spatial
     if prop_cbar:  # Only prop_cbar, no main_spatial
-        return prop_cbar.configure_view(grid=False)
+        return prop_cbar
     return None
