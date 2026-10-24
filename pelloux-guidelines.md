@@ -143,3 +143,87 @@ shape and hygiene only.
 
 - Remove unused imports, methods, and variables your change created.
 - Mention pre-existing issues; do not silently "fix" unrelated debt.
+
+## 11. Python Rules for Modelly
+
+These rules hold for every file under `modelly/` (examples excepted where noted).
+The audit checks sizes; ruff checks style; the rules below are checked in review
+and, where a test can pin them, by tests.
+
+### 11.1 Layout and imports
+
+- One domain per package: `core`, `space`, `time`, `data`, `behaviour`,
+  `scenarios`, `batch`, `viz`, plus `_native`, `lint`. A new feature goes into
+  the package of its domain; there is no `experimental` area.
+- A domain package's `__init__.py` re-exports its public names and declares
+  `__all__`. Inner sub-packages keep a docstring-only `__init__.py`.
+- Inside `modelly/`, import from the **defining module**
+  (`from modelly.space.cells.cell import Cell`), never from your own package's
+  `__init__` and never `from modelly import X`: both depend on import order and
+  break as soon as imports are re-sorted.
+- Absolute imports only; no relative imports.
+- Heavy or optional dependencies (`scipy`, `networkx`, `solara`, `matplotlib`,
+  `altair`, `pyarrow`) are imported inside the function that needs them, with
+  `# noqa: PLC0415` and the reason. `import modelly` must not load scipy
+  (pinned by `tests/test_import_namespace.py`).
+- Tests mirror the package layout: `tests/<domain>/test_<module>.py`.
+
+### 11.2 Public API
+
+- Public names have no leading underscore and a Google-style docstring
+  (ruff `D`, convention `google`). Everything else is private.
+- Public signatures change only in a major release. More than four parameters
+  means a dataclass or a `Scenario` field, not another argument.
+- Raise the specific exceptions of `modelly.core.exceptions` (or a subclass
+  next to the feature). No bare `except:`; catch the narrowest exception.
+
+### 11.3 Hot paths
+
+Hot paths run once per agent or per cell per step: agent creation and removal,
+agent-set loops (`do`, `shuffle_do`, `map`), cell moves, neighbourhood lookups,
+event execution, signal emission, `DataCollector.collect`.
+
+- No extra Python call inside the per-item loop. Validation, setup and rare
+  branches go into helpers; the loop body stays inline. A hot function may
+  exceed the 25-line body limit only when splitting it would add a per-item
+  call; say so in a comment above it.
+- Objects created per agent or per cell use `__slots__`.
+- Prefer C-level operations (`dict`/`list` methods, comprehensions,
+  `itertools`, numpy) over Python loops; never call through a subscripted
+  generic (`CellCollection[Cell](...)`) on a hot path.
+- No `contextlib.suppress` or `try/finally` wrappers per item: use
+  `try/except` around the narrowest statement.
+
+### 11.4 Determinism
+
+- All randomness comes from the model: `model.random` (stdlib stream) or
+  `model.rng` (numpy Generator). Never the global `random` or `np.random`.
+- A performance change must not change the number, order or arguments of
+  random draws, the iteration order of agent sets and cell collections, or the
+  order of emitted signals and scheduled events. Results are bit-identical
+  before and after, checked on every example model with several seeds.
+
+### 11.5 Native code (`modelly/_native`)
+
+- Every C function has a pure-Python twin with identical results, selected at
+  import (`MODELLY_PURE_PYTHON=1` forces Python). The twin is the reference;
+  the C version is a port of it.
+- `tests/native/` runs both versions side by side on the same inputs,
+  including edge cases (empty input, numpy integer arguments, mutation during
+  the loop, exceptions) and checks reference counts after repeated calls.
+- C code accepts what the Python twin accepts: use `PyNumber_AsSsize_t` (the
+  `__index__` protocol, like `range()`), not `PyLong_AsSsize_t`.
+- Every new `.c` file is listed in `SOURCES` in `hatch_build.py`.
+- Move code to C only when a paired benchmark shows a gain at model level,
+  not just in a micro-benchmark.
+
+### 11.6 Measuring performance
+
+- First check results are identical, then measure speed.
+- Pair the measurements: alternate old and new in the same process (or in
+  alternating processes on one pinned core) and compare CPU time
+  (`time.thread_time`), not wall-clock on a busy machine.
+- Report the median ratio with its spread and keep every round; a change
+  inside the spread is noise, not a gain.
+- Claims in docs and changelogs cite the workload, the machine load and the
+  method.
