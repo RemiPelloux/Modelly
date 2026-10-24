@@ -1,5 +1,6 @@
 [build-system]
-requires = ["hatchling"]
+# setuptools only drives MSVC for the compiled modules on Windows (hatch_build.py).
+requires = ["hatchling", "setuptools>=70 ; sys_platform == 'win32'"]
 build-backend = "hatchling.build"
 
 [project]

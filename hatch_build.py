@@ -4,6 +4,8 @@ Every module is optional and has a pure-Python fallback with identical results.
 Without a C compiler (or with MODELLY_PURE_PYTHON=1) the wheel is pure Python;
 MODELLY_REQUIRE_NATIVE=1 turns a failed compile into a build error (release
 wheels). Editable installs compile the modules in place, next to their sources.
+On Windows the modules are compiled by setuptools' build_ext, which finds MSVC
+and links against the interpreter's import library.
 """
 
 from __future__ import annotations
@@ -30,11 +32,36 @@ SOURCES = (
 OPTIMISE = ["-O3", "-fPIC", "-fno-strict-aliasing"]
 
 
+def compile_with_setuptools(root: Path, out_dir: Path, source: Path) -> Path | None:
+    """Compile one C module with setuptools' build_ext (MSVC on Windows); None on failure."""
+    try:
+        from setuptools import Distribution, Extension  # noqa: PLC0415 - Windows only
+        from setuptools.command.build_ext import build_ext  # noqa: PLC0415
+        from setuptools.errors import BaseError, CCompilerError  # noqa: PLC0415
+    except ImportError:
+        sys.stderr.write("modelly: setuptools is needed to compile on Windows\n")
+        return None
+    extension = Extension(source.stem, [str(root / source)])
+    command = build_ext(Distribution({"ext_modules": [extension]}))
+    command.build_lib = str(out_dir)
+    command.build_temp = tempfile.mkdtemp(prefix="modelly-obj-")
+    try:
+        command.ensure_finalized()
+        command.run()
+    # No MSVC found (BaseError), a compile or link error (CCompilerError), a file error.
+    except (BaseError, CCompilerError, OSError) as error:
+        sys.stderr.write(f"modelly: {source.name} not built:\n{error}\n")
+        return None
+    return Path(command.get_ext_fullpath(source.stem))
+
+
 def compile_extension(root: Path, out_dir: Path, source: Path) -> Path | None:
-    """Compile one C module with the interpreter's own linker command; None on failure."""
+    """Compile one C module with the interpreter's linker (setuptools on Windows); None on failure."""
+    if os.name == "nt":
+        return compile_with_setuptools(root, out_dir, source)
     ldshared = sysconfig.get_config_var("LDSHARED")
     suffix = sysconfig.get_config_var("EXT_SUFFIX")
-    if not ldshared or not suffix or os.name == "nt":
+    if not ldshared or not suffix:
         return None
     out = out_dir / f"{source.stem}{suffix}"
     cmd = [

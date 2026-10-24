@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v7
       - name: Build wheels
@@ -27,6 +27,9 @@ jobs:
           # Free-threaded builds use the pure-Python FastRandom (see fastrng.c).
           CIBW_SKIP: "cp3??t-* *-*linux_i686"
           CIBW_ARCHS_MACOS: "x86_64 arm64"
+          # AMD64 only: an ARM64 wheel cross-compiled on this x64 runner would be tagged
+          # and linked for the host interpreter by the build hook, and could not be tested.
+          CIBW_ARCHS_WINDOWS: "AMD64"
           CIBW_ENVIRONMENT: "MODELLY_REQUIRE_NATIVE=1"
           CIBW_TEST_COMMAND: >-
             python -c "import modelly.core.rng as r, modelly._native.loops as l, modelly._native.cells as c; assert r.NATIVE and l.NATIVE and c.NATIVE, 'compiled modules not active'"
@@ -36,7 +39,7 @@ jobs:
           path: wheelhouse/*.whl
 
   pure:
-    # The sdist and a py3-none-any wheel: every other platform (Windows, free-threaded
+    # The sdist and a py3-none-any wheel: every other platform (Windows on ARM, free-threaded
     # CPython, PyPy) installs this and uses the pure-Python twins of the compiled modules.
     name: Sdist and pure wheel
     runs-on: ubuntu-latest

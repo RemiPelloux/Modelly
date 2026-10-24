@@ -19,6 +19,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <intrin.h> /* _BitScanReverse: MSVC has no __builtin_clz */
+#endif
 
 #define MT_N 624
 #define MT_M 397
@@ -70,13 +73,26 @@ genrand_uint32(RandomObject *self)
     return y;
 }
 
+/* n.bit_length() for n > 0. */
+static inline int
+bit_length32(uint32_t n)
+{
+#ifdef _MSC_VER
+    unsigned long top;
+    _BitScanReverse(&top, n);
+    return (int)top + 1;
+#else
+    return 32 - __builtin_clz(n);
+#endif
+}
+
 /* _randbelow_with_getrandbits for 0 < n < 2**32: k = n.bit_length(),
  * then getrandbits(k) until below n; getrandbits(k <= 32) is the top k bits
  * of one word. */
 static inline uint32_t
 below32(RandomObject *self, uint32_t n)
 {
-    int k = 32 - __builtin_clz(n);
+    int k = bit_length32(n);
     uint32_t r = genrand_uint32(self) >> (32 - k);
     while (r >= n)
         r = genrand_uint32(self) >> (32 - k);
