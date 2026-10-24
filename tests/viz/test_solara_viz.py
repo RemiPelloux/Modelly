@@ -20,9 +20,11 @@ from modelly.viz.solara.app import (
     Slider,
     SolaraViz,
     UserInputs,
+    _validate_model_params,
+)
+from modelly.viz.solara.model_kwargs import (
     _build_model_init_kwargs,
     _check_model_params,
-    _validate_model_params,
 )
 
 

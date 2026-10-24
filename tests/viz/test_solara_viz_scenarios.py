@@ -9,7 +9,8 @@ from modelly.examples.basic.boltzmann_wealth_model.model import (
     BoltzmannWealth,
 )
 from modelly.scenarios import Scenario
-from modelly.viz.solara.app import Slider, SolaraViz, _build_model_init_kwargs
+from modelly.viz.solara.app import Slider, SolaraViz
+from modelly.viz.solara.model_kwargs import _build_model_init_kwargs
 
 
 class MyScenario(Scenario):
