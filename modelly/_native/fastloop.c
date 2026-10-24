@@ -124,6 +124,7 @@ reach(PyObject *reached, PyObject *frontier, PyObject *cell)
     return PyList_Append(frontier, cell);
 }
 
+#ifdef Py_GIL_DISABLED
 /* Reach every neighbor of the dict ``links`` not yet in ``reached``; -1 on error. */
 static int
 visit(PyObject *reached, PyObject *links, PyObject *next)
@@ -159,6 +160,34 @@ expand(PyObject *reached, PyObject *layer, PyObject *next)
     }
     return 0;
 }
+#else /* with the GIL: 1.2.0's loop, borrowed references, as fast as before */
+/* Visit the connections of every cell in ``layer``; new cells go to ``next``. */
+static int
+expand(PyObject *reached, PyObject *layer, PyObject *next)
+{
+    for (Py_ssize_t i = 0; i < PyList_GET_SIZE(layer); i++) {
+        PyObject *links = PyObject_GetAttr(PyList_GET_ITEM(layer, i), str_connections);
+        if (links == NULL)
+            return -1;
+        if (!PyDict_Check(links)) {
+            Py_DECREF(links);
+            PyErr_SetString(PyExc_TypeError, "cell.connections must be a dict");
+            return -1;
+        }
+        Py_ssize_t pos = 0;
+        PyObject *key, *neighbor;
+        while (PyDict_Next(links, &pos, &key, &neighbor)) {
+            int seen = PyDict_Contains(reached, neighbor);
+            if (seen < 0 || (!seen && reach(reached, next, neighbor) < 0)) {
+                Py_DECREF(links);
+                return -1;
+            }
+        }
+        Py_DECREF(links);
+    }
+    return 0;
+}
+#endif
 
 /*
  * neighborhood(cell, radius) -> dict
