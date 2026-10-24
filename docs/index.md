@@ -190,6 +190,11 @@ Reproducible studies <provenance>
 Time travel <timetravel>
 Geospatial models <geospatial>
 Networks <networks>
+Model zoo <zoo/index>
+Gallery <gallery>
+Domain tutorials <tutorials/domains/index>
+Course <course/index>
+Plugins <plugins>
 Vectorised step phases <vectorised_phases>
 Roadmap <roadmap/index>
 ```
