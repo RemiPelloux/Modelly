@@ -67,6 +67,15 @@ MODELS: tuple[ZooModel, ...] = (
         "attack rate against the final-size relation, within the CLT bound",
     ),
     ZooModel(
+        "kinetic_wealth",
+        "Boltzmann wealth exchange",
+        "economics",
+        "KineticWealth",
+        "KineticScenario",
+        "Random pairs pass one unit of money: the Boltzmann-Gibbs distribution emerges.",
+        "stationary distribution and Gini against the exact uniform-configuration law",
+    ),
+    ZooModel(
         "nagel_schreckenberg",
         "Nagel-Schreckenberg traffic",
         "transport",
