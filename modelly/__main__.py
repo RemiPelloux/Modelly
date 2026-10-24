@@ -24,6 +24,11 @@ COMMANDS = (
         "run a parameter sweep from a TOML spec; resumable, on any executor",
     ),
     (
+        "bench",
+        "modelly.bench.__main__",
+        "run the benchmark playbooks, keep a history and report regressions",
+    ),
+    (
         "lint",
         "modelly.lint.__main__",
         "find reproducibility bugs and O(N^2) patterns in a model",
@@ -83,6 +88,7 @@ examples:
   modelly verify runs/manifest.json     rerun and compare the outputs
   modelly bundle runs/ --out study.zip  code, lock file, seeds and outputs
   modelly odd model.py:MyModel > ODD.md ODD protocol skeleton
+  modelly bench --label v1.3.0          time the playbooks, append to the history
   modelly COMMAND --help                every option of one command
 
 exit status:

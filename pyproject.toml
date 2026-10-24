@@ -72,6 +72,10 @@ geo = [
 osm = [
   "osmnx",
 ]
+# modelly bench pins its runs to one core with psutil (Linux, Windows)
+bench = [
+  "psutil",
+]
 viz = [
   "matplotlib",
   "solara",
@@ -95,7 +99,7 @@ ray = [
 ]
 # Dev and CI stuff
 dev = [
-  "modelly-abm[rec,geo]",
+  "modelly-abm[rec,geo,bench]",
   "ruff",
   "pytest",
   "pytest-cov",
