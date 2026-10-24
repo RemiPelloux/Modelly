@@ -26,8 +26,8 @@ from modelly.timetravel.recorder import reseed_model
 from modelly.viz.render.portrayal import ClassColours
 
 if TYPE_CHECKING:
+    import modelly.lint
     from modelly.core.model import Model
-    from modelly.lint import Finding
     from modelly.studio.config import StudioConfig
 
 LOG_LINES = 200
@@ -203,7 +203,7 @@ class StudioSession:
         found = inspect.getsourcefile(self.model_class)
         return Path(found) if found else None
 
-    def lint(self) -> list[Finding]:
+    def lint(self) -> list[modelly.lint.Finding]:
         """The ``modelly lint`` findings of the model's file."""
         path = self.source_file()
         if path is None:
