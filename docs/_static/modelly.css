@@ -76,12 +76,9 @@ html {
   font-family: var(--pst-font-family-heading); font-weight: 800; font-size: 1.3rem;
   letter-spacing: -0.03em; color: var(--pst-color-heading);
 }
-.ml-version {
-  font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 999px;
-  color: var(--pst-color-text-muted) !important; background: var(--pst-color-surface);
-  border: 1px solid var(--pst-color-border); text-decoration: none !important; white-space: nowrap;
+.bd-header .version-switcher__button {
+  font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 999px; white-space: nowrap;
 }
-.ml-version:hover { color: var(--pst-color-heading) !important; border-color: var(--pst-color-primary); }
 
 .bd-header ul.navbar-nav { gap: 0.15rem; flex-wrap: nowrap; }
 .bd-header ul.navbar-nav > li.nav-item > .nav-link,
@@ -221,7 +218,6 @@ div.highlight:hover button.copybtn { opacity: 1; }
   .search-button-field .search-button__kbd-shortcut { display: none; }
 }
 @media (max-width: 1099px) {
-  .bd-header .ml-version { display: none; }
   .bd-header ul.navbar-nav > li.nav-item > .nav-link,
   .bd-header .nav-item.dropdown > .dropdown-toggle { padding: 0.35rem 0.4rem !important; }
 }

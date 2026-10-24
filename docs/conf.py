@@ -27,7 +27,7 @@ HERE = osp.abspath(osp.dirname(__file__))
 # Modelly is imported from the installed package (pip install -e ".[docs]"), never from a
 # relative path: a relative entry depends on the working directory of sphinx-build.
 sys.path.insert(0, HERE)
-
+from versioning import SITE_URL, apply_versioning  # docs/versioning.py
 
 # -- General configuration ------------------------------------------------
 
@@ -64,7 +64,6 @@ master_doc = "index"
 project = "Modelly"
 copyright = f"{date.today().year}, Rémi Pelloux and Modelly contributors"
 author = "Rémi Pelloux and Modelly contributors"
-SITE_URL = "https://remipelloux.github.io/Modelly/"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -136,11 +135,9 @@ html_theme = "pydata_sphinx_theme"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-# One version is published, so the navbar shows it as a pill instead of a switcher;
-# switcher.json lists that one version; add entries only when versioned docs are deployed.
+# navbar_start, the version switcher and the old-version banner come from versioning.py.
 html_theme_options = {
     "logo": {"text": "Modelly", "alt_text": "Modelly home"},
-    "navbar_start": ["navbar-logo", "version-pill"],
     "navbar_center": ["navbar-nav"],
     "navbar_end": ["theme-switcher", "navbar-icon-links"],
     "navbar_persistent": ["search-button-field"],
@@ -169,6 +166,7 @@ html_context = {
     "default_mode": "auto",
 }
 html_show_sourcelink = False
+apply_versioning(globals())
 
 # Canonical URL and <title>: what search engines index and show.
 html_baseurl = SITE_URL
