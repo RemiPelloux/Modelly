@@ -101,6 +101,22 @@ def _build_meta_agent_class(
     )
 
 
+def _reuse_meta_agent(
+    meta_agent: Any,
+    membership_api: Any,
+    meta_attributes: dict[str, Any] | None,
+    meta_methods: dict[str, Callable] | None,
+) -> Any:
+    """Rebind an existing meta-agent to the manager and apply attributes and methods."""
+    existing_api = getattr(meta_agent, "_membership_api", None)
+    if existing_api not in (None, membership_api):
+        raise RuntimeError("Meta-agent is bound to a different membership manager")
+    meta_agent._membership_api = membership_api
+    _apply_meta_attributes(meta_agent, meta_attributes)
+    _apply_meta_methods(meta_agent, meta_methods)
+    return meta_agent
+
+
 # TODO(typing): Replace the dynamic creation path's Any return with a
 # statically checkable MetaAgent or protocol type.
 def _create_meta_agent_instance(
@@ -121,13 +137,9 @@ def _create_meta_agent_instance(
 
     meta_agent = _find_existing_meta_agent(agents, new_agent_class, _membership_api)
     if meta_agent is not None:
-        existing_api = getattr(meta_agent, "_membership_api", None)
-        if existing_api not in (None, _membership_api):
-            raise RuntimeError("Meta-agent is bound to a different membership manager")
-        meta_agent._membership_api = _membership_api
-        _apply_meta_attributes(meta_agent, meta_attributes)
-        _apply_meta_methods(meta_agent, meta_methods)
-        return meta_agent
+        return _reuse_meta_agent(
+            meta_agent, _membership_api, meta_attributes, meta_methods
+        )
 
     agent_class = extract_class(model.agents_by_type, new_agent_class)
     if agent_class is None:

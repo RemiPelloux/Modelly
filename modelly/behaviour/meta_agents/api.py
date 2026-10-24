@@ -2,71 +2,40 @@
 
 from __future__ import annotations
 
-import itertools
-from collections import deque
 from collections.abc import Callable, Hashable, Iterable
-from dataclasses import dataclass
 from typing import Any
 
-from modelly.behaviour.meta_agents.backend import (
-    MembershipBackend,
-    RelationKey,
-    Triplet,
+from modelly.behaviour.meta_agents.backend import MembershipBackend, RelationKey
+from modelly.behaviour.meta_agents.combinations import (
+    evaluate_combination,
+    find_combinations,
 )
 from modelly.behaviour.meta_agents.meta_agent import (
     _create_meta_agent_instance,
     _deduplicate_preserving_order,
 )
-from modelly.core.agent import Agent, AgentSet
+from modelly.behaviour.meta_agents.queries import MembershipQueries
+from modelly.behaviour.meta_agents.views import MembershipEdge, MembershipView
+from modelly.core.agent import Agent
 from modelly.time.signals import ModelSignals
 from modelly.time.signals.util import Message
 
 
-@dataclass(frozen=True, slots=True)
-class MembershipEdge:
-    """A membership edge with live agent and group objects."""
-
-    agent: Any
-    group: Any
-    relation: RelationKey
-
-
-@dataclass(frozen=True, slots=True)
-class MembershipView:
-    """Read-only snapshot of memberships for one entity."""
-
-    subject: Any
-    memberships: tuple[MembershipEdge, ...]
-
-    def __iter__(self):
-        """Iterate over the resolved memberships."""
-        return iter(self.memberships)
-
-    def __len__(self) -> int:
-        """Return the number of resolved memberships."""
-        return len(self.memberships)
-
-    def as_triplets(self) -> set[tuple[Any, Any, RelationKey]]:
-        """Return the memberships as live-object triplets."""
-        return {(edge.agent, edge.group, edge.relation) for edge in self.memberships}
-
-    @property
-    def agents(self) -> set[Any]:
-        """Return all unique agents referenced by the view."""
-        return {edge.agent for edge in self.memberships}
-
-    @property
-    def groups(self) -> set[Any]:
-        """Return all unique groups referenced by the view."""
-        return {edge.group for edge in self.memberships}
-
-    @property
-    def relations(self) -> set[RelationKey]:
-        """Return all unique relation labels referenced by the view."""
-        return {edge.relation for edge in self.memberships}
+def _member_relations(
+    agents: Iterable[Any],
+    relation: RelationKey,
+    memberships: Iterable[tuple[Any, RelationKey]] | None,
+) -> tuple[list[Any], list[tuple[Any, RelationKey]]]:
+    """Return the deduplicated members and their (member, relation) pairs."""
+    if memberships is not None:
+        member_relations = list(memberships)
+        agents = _deduplicate_preserving_order(member for member, _ in member_relations)
+        return agents, member_relations
+    agents = _deduplicate_preserving_order(agents)
+    return agents, [(agent, relation) for agent in agents]
 
 
-class MetaAgents:
+class MetaAgents(MembershipQueries):
     """Membership manager for agents composed of other agents.
 
     Tracks who belongs to which group. Change memberships with ``create``,
@@ -93,51 +62,6 @@ class MetaAgents:
             agent = signal
         if agent is not None:
             self.deactivate(agent)
-
-    def _resolve_group(self, group: Hashable) -> Any:
-        """Resolve a group from a live object or group name."""
-        if group in self.model.agents:
-            return group
-        # Try string name resolution.
-        if isinstance(group, str):
-            matches = list(
-                dict.fromkeys(
-                    entity
-                    for entity in self.model.agents
-                    if getattr(entity, "name", None) == group
-                    or entity.__class__.__name__ == group
-                )
-            )
-            if len(matches) == 1:
-                return matches[0]
-            if not matches:
-                raise ValueError(f"No group named {group!r}")
-            raise ValueError(f"Ambiguous group name {group!r}")
-        return group
-
-    def _resolve_view(self, entity: Any, triplets: Iterable[Triplet]) -> MembershipView:
-        """Convert backend triplets into a user-facing snapshot."""
-        resolved_edges: list[MembershipEdge] = []
-        for agent, group, relation in sorted(
-            triplets,
-            key=lambda triplet: (
-                str(triplet[0]),
-                str(triplet[1]),
-                repr(triplet[2]),
-            ),
-        ):
-            resolved_edges.append(
-                MembershipEdge(
-                    agent=agent,
-                    group=group,
-                    relation=relation,
-                )
-            )
-
-        return MembershipView(
-            subject=entity,
-            memberships=tuple(resolved_edges),
-        )
 
     def _detach_entity(self, entity: Hashable) -> MembershipView:
         """Remove all incident memberships for one entity."""
@@ -225,14 +149,7 @@ class MetaAgents:
             >>> team_a = model.meta_agents.create("Team_2026_A", [...])
             >>> team_b = model.meta_agents.create("Team_2026_B", [...])
         """
-        member_relations = list(memberships) if memberships is not None else None
-        if member_relations is not None:
-            agents = _deduplicate_preserving_order(
-                member for member, _ in member_relations
-            )
-        else:
-            agents = _deduplicate_preserving_order(agents)
-
+        agents, member_relations = _member_relations(agents, relation, memberships)
         meta_agent = _create_meta_agent_instance(
             self.model,
             new_agent_class,
@@ -242,14 +159,9 @@ class MetaAgents:
             meta_methods=meta_methods,
             _membership_api=self,
         )
-
-        if member_relations is None:
-            member_relations = [(agent, relation) for agent in agents]
-
         self.backend.bulk_add(
             [(member, meta_agent, rel) for member, rel in member_relations]
         )
-
         return meta_agent
 
     def add_member(
@@ -279,33 +191,6 @@ class MetaAgents:
         self.backend.remove_membership(member, group, relation)
         return self.query_memberships(member)
 
-    def members_of(
-        self, group: Hashable, relation: RelationKey | None = None
-    ) -> AgentSet:
-        """Return the live members of one group as an AgentSet."""
-        group = self._resolve_group(group)
-        members = sorted(self.backend.agents_of(group, relation=relation), key=str)
-        return AgentSet(members, random=self.model.random)
-
-    def groups_of(
-        self, agent: Hashable, relation: RelationKey | None = None
-    ) -> AgentSet:
-        """Return the live groups that contain one agent as an AgentSet."""
-        groups = sorted(self.backend.groups_of(agent, relation=relation), key=str)
-        return AgentSet(groups, random=self.model.random)
-
-    def query_memberships(
-        self, entity: Hashable, relation: RelationKey | None = None
-    ) -> MembershipView:
-        """Return a resolved, read-only snapshot of one entity's memberships."""
-        triplets = (
-            triplet
-            for triplet in self.backend.as_triplets()
-            if (triplet[0] == entity or triplet[1] == entity)
-            and (relation is None or triplet[2] == relation)
-        )
-        return self._resolve_view(entity, triplets)
-
     def dissolve(self, entity: Hashable) -> MembershipView:
         """Remove an entity's memberships and delete it from the model when possible."""
         snapshot = self._detach_entity(entity)
@@ -319,140 +204,11 @@ class MetaAgents:
         """Remove an entity from all memberships without deleting the object."""
         return self._detach_entity(entity)
 
-    def at_level(
-        self,
-        level: int,
-        *,
-        root: Hashable,
-        relation: RelationKey | None = "member",
-    ) -> AgentSet:
-        """Return agents at a containment depth below ``root``.
-
-        Levels are structural shortest-path distances through membership edges,
-        not a persistent ``agent.level`` property. ``root`` is level ``0``; its
-        direct members are level ``1``. When an agent is reachable by more than
-        one path, it appears only at its shallowest depth from ``root``.
-
-        Parameters
-        ----------
-        level : int
-            Non-negative containment depth relative to ``root``.
-        root : Hashable
-            Hierarchy root (live agent or unique id). Must be registered on
-            this model's membership manager.
-        relation : RelationKey or None, default ``"member"``
-            Membership relation to traverse. ``None`` includes all relations.
-
-        Returns:
-        -------
-        AgentSet
-            Live agents at the requested level (empty if none).
-
-        Raises:
-        ------
-        ValueError
-            If ``level`` is negative or ``root`` is not in the model.
-
-        Examples:
-        --------
-        >>> model.meta_agents.at_level(4, root=world)
-        """
-        if level < 0:
-            raise ValueError(f"level must be non-negative, got {level}")
-
-        if root not in self.model.agents:
-            raise ValueError(f"root {root!r} is not registered in the model")
-
-        if level == 0:
-            return AgentSet([root], random=self.model.random)
-
-        # BFS downward: group -> members. First visit is nearest depth.
-        visited: set[Hashable] = {root}
-        queue: deque[tuple[Hashable, int]] = deque([(root, 0)])
-        at_depth: list[Any] = []
-
-        while queue:
-            group, depth = queue.popleft()
-            if depth >= level:
-                continue
-            members = sorted(
-                self.backend.agents_of(group, relation=relation),
-                key=str,
-            )
-            for member in members:
-                if member in visited:
-                    continue
-                visited.add(member)
-                next_depth = depth + 1
-                if next_depth == level:
-                    at_depth.append(member)
-                elif next_depth < level:
-                    queue.append((member, next_depth))
-
-        return AgentSet(at_depth, random=self.model.random)
-
     # TODO(perf): Add a cache_build staticmethod so models that constantly
     # reference the same sets of meta-agents can cache them instead of
     # constantly rebuilding the lookup. More involved, so a future iteration.
-    @staticmethod
-    def evaluate_combination(
-        candidate_group: tuple[Agent, ...],
-        evaluation_func: Callable[[tuple[Agent, ...]], float] | None,
-    ) -> tuple[tuple[Agent, ...], float] | None:
-        """Evaluate a candidate meta-agent group with a user-supplied function."""
-        if evaluation_func is None:
-            return None
-        return candidate_group, evaluation_func(candidate_group)
-
-    @staticmethod
-    def find_combinations(
-        group: Iterable,
-        size: int | tuple[int, int] = (2, 5),
-        evaluation_func: Callable[[tuple[Agent, ...]], float] | None = None,
-        filter_func: Callable[
-            [list[tuple[tuple[Agent, ...], float]]],
-            list[tuple[tuple[Agent, ...], float]],
-        ]
-        | None = None,
-    ) -> list[tuple[tuple[Agent, ...], float]]:
-        """Find candidate agent groups and score them with ``evaluation_func``.
-
-        The helper discovers potential meta-agents before creating them. It
-        deliberately does not mutate model or membership state.
-
-        Args:
-            group: The set of agents to find combinations in.
-            size: The size or range of sizes for combinations. Defaults to (2, 5).
-            evaluation_func: The function to evaluate combinations. Defaults to None.
-            filter_func: Allows the user to specify how agents are filtered to form groups.
-              Defaults to None.
-
-        Returns:
-            List: The list of valuable combinations, in a tuple first agentset of valuable combination  and then the value of
-            the combination.
-        """
-        if isinstance(size, int):
-            size_range = range(size, size + 1)
-        else:
-            min_size, max_size = size
-            size_range = range(min_size, max_size + 1)
-
-        combinations = []
-        for candidate_group in itertools.chain.from_iterable(
-            itertools.combinations(group, combination_size)
-            for combination_size in size_range
-        ):
-            evaluation_result = MetaAgents.evaluate_combination(
-                candidate_group, evaluation_func
-            )
-            if evaluation_result is not None:
-                _evaluated_group, result = evaluation_result
-                if result is not None:
-                    combinations.append(evaluation_result)
-
-        if combinations and filter_func is not None:
-            return filter_func(combinations)
-        return combinations
+    evaluate_combination = staticmethod(evaluate_combination)
+    find_combinations = staticmethod(find_combinations)
 
 
 __all__ = [
