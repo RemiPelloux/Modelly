@@ -163,7 +163,7 @@ class Cell(CellNeighborhood):
         occupants = self._agents
         limit = self.capacity
         if limit is not None and len(occupants) >= limit:
-            raise CellFullException(self.coordinate)
+            raise CellFullException(self.coordinate, agent)
 
         occupants.append(agent)
         # ``empty`` may be backed by a property layer; only write it on a transition.

@@ -21,6 +21,8 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
+from modelly.core.exceptions import ColumnMissingError
+
 if TYPE_CHECKING:
     from modelly.core.columns import Column
 
@@ -42,14 +44,21 @@ def fast_view(array: np.ndarray) -> Any:
 def column_property(name: str, position: int, column: Column) -> property:
     """The property installed for column ``name``, at ``position`` in the class's specs."""
 
+    # The try blocks cost nothing until they catch: an agent without a row (removed, or
+    # never added to a model) has no _column_table, and the error then names the agent.
     def get(agent):
-        return agent._column_table._views[position][agent._column_row]
+        try:
+            return agent._column_table._views[position][agent._column_row]
+        except AttributeError:
+            raise ColumnMissingError(agent, name) from None
 
     def set_(agent, value):
         try:
             agent._column_table._views[position][agent._column_row] = value
         except _FALLBACK_ERRORS:
             agent._column_table._data[name][agent._column_row] = value
+        except AttributeError:
+            raise ColumnMissingError(agent, name) from None
 
     return property(get, set_, doc=repr(column))
 

@@ -134,6 +134,7 @@ class Agent[M: Model]:
         if self._extra_hooks:
             if self._column_specs and self._column_row >= 0:
                 model.columns.unregister(self)
+                del self._column_table  # its Column attributes now name the agent
             # ensures models are also removed from datasets
             for dataset in self._datasets:
                 model.data_registry[dataset].remove_agent(self)

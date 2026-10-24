@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING, ClassVar, Protocol
 
 from modelly._native.cells import set_cell
 from modelly.core.agent import Agent
+from modelly.core.exceptions import AgentRemovedError
 
 if TYPE_CHECKING:
     from modelly.space.cells.cell import Cell
@@ -99,9 +100,16 @@ class FixedAgent(Agent, FixedCell):
     """A patch in a 2D grid."""
 
     def remove(self):
-        """Remove the agent from the model."""
-        super().remove()
+        """Remove the agent from the model.
 
+        Raises:
+            AgentRemovedError: when the agent has no cell: removed already, or never placed.
+        """
+        super().remove()
+        if self._modelly_cell is None:
+            raise AgentRemovedError(
+                self, "it is in no cell (removed already, or never placed)"
+            )
         self.cell.remove_agent(self)
         self._modelly_cell = None
 

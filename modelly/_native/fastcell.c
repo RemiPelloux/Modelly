@@ -95,12 +95,13 @@ at_capacity(PyObject *occupants, PyObject *limit)
     return full;
 }
 
-/* ``raise CellFullException(cell.coordinate)`` */
+/* ``raise CellFullException(cell.coordinate, agent)`` */
 static int
-raise_full(PyObject *cell)
+raise_full(PyObject *cell, PyObject *agent)
 {
     PyObject *coordinate = PyObject_GetAttr(cell, str_coordinate);
-    PyObject *exc = coordinate == NULL ? NULL : PyObject_CallOneArg(exc_full, coordinate);
+    PyObject *args[] = {coordinate, agent};
+    PyObject *exc = coordinate == NULL ? NULL : PyObject_Vectorcall(exc_full, args, 2, NULL);
     Py_XDECREF(coordinate);
     if (exc != NULL)
         PyErr_SetObject((PyObject *)Py_TYPE(exc), exc);
@@ -118,7 +119,7 @@ check_and_append(PyObject *cell, const layout_t *layout, PyObject *occupants, Py
     int full = at_capacity(occupants, limit);
     Py_DECREF(limit);
     if (full != 0)
-        return full < 0 ? -1 : raise_full(cell);
+        return full < 0 ? -1 : raise_full(cell, agent);
     if (PyList_CheckExact(occupants))
         return PyList_Append(occupants, agent);
     return call_method(occupants, str_append, agent);

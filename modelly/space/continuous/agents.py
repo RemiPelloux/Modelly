@@ -8,6 +8,7 @@ from typing import Protocol
 import numpy as np
 
 from modelly.core.agent import Agent
+from modelly.core.exceptions import AgentRemovedError
 from modelly.space.continuous.space import ContinuousSpace
 
 
@@ -57,7 +58,13 @@ class ContinuousSpaceAgent(Agent):
         # self.position[:] = np.nan
 
     def remove(self) -> None:
-        """Remove and delete the agent from the model and continuous space."""
+        """Remove and delete the agent from the model and continuous space.
+
+        Raises:
+            AgentRemovedError: when the agent was already removed.
+        """
+        if self.space is None:
+            raise AgentRemovedError(self)
         super().remove()
         self.space._remove_agent(self)
         self._modelly_index = None
