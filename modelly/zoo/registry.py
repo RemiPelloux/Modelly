@@ -67,6 +67,15 @@ MODELS: tuple[ZooModel, ...] = (
         "attack rate against the final-size relation, within the CLT bound",
     ),
     ZooModel(
+        "vector_borne",
+        "Vector-borne transmission on a landscape",
+        "epidemiology",
+        "VectorBorne",
+        "VectorScenario",
+        "Ross-Macdonald transmission between moving hosts and mosquito cohorts per cell.",
+        "outbreak size ordered like the Ross-Macdonald R0 as vector density grows",
+    ),
+    ZooModel(
         "energy_budget",
         "Individual-based population with energy budgets",
         "ecology",
