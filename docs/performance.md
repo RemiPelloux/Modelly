@@ -215,6 +215,11 @@ into near-optimal code, and the rest is the interpreter's call, which no languag
 Platform wheels carry the compiled module (Linux x86-64 and ARM, macOS); other platforms
 install the pure wheel.
 
+A second compiled module, `modelly/_native/fastloop.c`, runs `do` and `shuffle_do` on the
+model's agent registries and the breadth-first walk behind `Cell.get_neighborhood`. Each loop
+has an identical pure-Python twin in `modelly/_native/loops.py`, used when the module is not
+built or `MODELLY_PURE_PYTHON=1` is set; `tests/native` checks the two against each other.
+
 ### How we evaluate against other frameworks
 
 Micro-benchmarks say where time goes; whether a framework is faster for a researcher is
@@ -405,9 +410,10 @@ These are the changes with the largest remaining upside. Each is a project, not 
 2. **Shared-memory replications.** `workers=` runs replications in processes that each hold a
    full model; a shared column store would let a sweep over one large model fan out without
    copying it.
-3. **Compiled hot loops.** The remaining per-agent cost is Python call overhead on the cell move
-   and the neighbourhood lookup; an optional compiled path for those two would be the last
-   large win before a different authoring model.
+3. **Compiled hot loops.** The neighbourhood lookup and `do` / `shuffle_do` on the model's
+   registries now run in `modelly/_native/fastloop.c`. The remaining per-agent cost is Python
+   call overhead on the cell move; a compiled path for it would be the last large win before a
+   different authoring model.
 
 ## How to re-run
 

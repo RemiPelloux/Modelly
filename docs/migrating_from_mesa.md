@@ -24,6 +24,7 @@ a Mesa 2 model needs the scheduler and grid sections.
 |---|---|
 | `import mesa` | `import modelly` |
 | `from mesa import Agent, Model, DataCollector` | `from modelly import Agent, Model, DataCollector` |
+| `mesa.agent`, `mesa.model` | `modelly.core.agent`, `modelly.core.model` |
 | `mesa.datacollection` | `modelly.data.collector` |
 | `mesa.discrete_space` (3.2+), `mesa.experimental.cell_space` (3.0, 3.1) | `modelly.space` |
 | `mesa.space` (`MultiGrid`, `SingleGrid`, `NetworkGrid`, `ContinuousSpace`) | `modelly.space`, see [Grids](#grids-and-positions) |
@@ -163,6 +164,8 @@ with ProcessPoolExecutor() as pool:
 
 Each replication has its own seed derived from the base scenario, so the sweep is reproducible.
 For a quick loop, `for scenario in base.spawn_replications(n): model = MyModel(scenario)`.
+For a plain list of runs or a factorial grid with one seed per run, `modelly.run_batch` and
+`modelly.run_grid` (in `modelly.batch`) run them over processes; see [Batch](apis/batch.md).
 
 ## Events and simulators
 

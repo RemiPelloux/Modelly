@@ -1,4 +1,4 @@
-## Overview of the MODELLY library
+# Overview of the MODELLY library
 
 Modelly is modular, meaning that its modeling, analysis and visualization components are kept separate but intended to work together. The modules are grouped into three categories:
 
@@ -6,14 +6,14 @@ Modelly is modular, meaning that its modeling, analysis and visualization compon
 2. **Analysis:** Tools to collect data generated from your model, or to run it multiple times with different parameter values.
 3. **Visualization:** Classes to create and launch an interactive model visualization, using a browser-based interface.
 
-### Modeling modules
+## Modeling modules
 
 Most models consist of one class to represent the model itself and one or more classes for agents. Modelly provides built-in support for managing agents and their interactions. These are implemented in Modelly's modeling modules:
 
-- [modelly.core.model](apis/model)
-- [modelly.core.agent](apis/agent)
-- [modelly.core.agentset](apis/agentset)
-- [modelly.space](apis/discrete_space)
+- [modelly.core](apis/core): the model, agents, agent sets, columns and the random source
+- [modelly.space](apis/space): cell spaces (grids, networks, Voronoi meshes), property layers and continuous space
+- [modelly.time](apis/time): events, scheduling on the model and signals
+- [modelly.behaviour](apis/behaviour): timed actions, continuous states and meta-agents
 
 The skeleton of a model might look like this:
 
@@ -52,11 +52,11 @@ model = MyModel(n_agents=5)
 model.run_for(1)
 ```
 
-### Spaces in Modelly
+## Spaces in Modelly
 
 Modelly provides several types of spaces where agents can exist and interact:
 
-#### Discrete Spaces
+### Discrete Spaces
 Modelly implements discrete spaces through the `modelly.space` module, using a doubly-linked structure where each cell maintains connections to its neighbors. Available variants include:
 
 1. **Grid-based Spaces:**
@@ -80,10 +80,10 @@ Modelly implements discrete spaces through the `modelly.space` module, using a d
 3. **Voronoi Space:**
    ```python
    # Create an irregular tessellation
-   mesh = modelly.space.VoronoiMesh(points)
+   mesh = modelly.space.VoronoiGrid(points)
    ```
 
-#### Property Layers
+### Property Layers
 Discrete spaces support PropertyLayers - efficient numpy-based arrays for storing cell-level property_layers:
 
 ```python
@@ -92,7 +92,7 @@ grid.create_property_layer("elevation", default_value=10)
 high_ground = grid.property_layers["elevation"] > 50
 ```
 
-#### Continuous Space
+### Continuous Space
 For models requiring continuous movement:
 
 ```python
@@ -106,13 +106,13 @@ agent = ContinuousSpaceAgent(space, model)
 agent.position = (new_x, new_y)
 ```
 
-> **Note:** The legacy `modelly.space` module (including `MultiGrid`, `SingleGrid`, `ContinuousSpace`, etc.) has been removed. Use `modelly.space` and `modelly.space.continuous` instead.
+> **Note:** There are no `MultiGrid` or `SingleGrid` classes. Use the cell spaces of `modelly.space` and the continuous space of `modelly.space.continuous`.
 
-### Time Advancement and Agent Activation
+## Time Advancement and Agent Activation
 
 Modelly supports multiple approaches to advancing time and activating agents.
 
-#### Running the model
+### Running the model
 Use the time advancement methods on `Model` to run your simulation:
 
 ```python
@@ -122,7 +122,7 @@ model.run_until(50.0)  # Run until absolute time 50
 ```
 By default, the model's `step()` method is scheduled to run every 1.0 time units, so `model.run_for(10)` executes 10 steps.
 
-#### Agent Activation Patterns
+### Agent Activation Patterns
 Modelly provides flexible agent activation through the AgentSet API:
 
 ```python
@@ -141,7 +141,7 @@ for klass in model.agent_types:
     model.agents_by_type[klass].do("step")
 ```
 
-#### Event Scheduling
+### Event Scheduling
 Modelly supports event-based time progression directly on the `Model`:
 
 ```python
@@ -173,10 +173,10 @@ model.run_until(100.0)
 
 This enables pure event-driven models, hybrid approaches combining agent-based steps with scheduled events, and everything in between.
 
-### AgentSet and model.agents
+## AgentSet and model.agents
 `model.agents` and the AgentSet class are central in managing and activating agents.
 
-#### model.agents
+### model.agents
 `model.agents` is an AgentSet containing all agents in the model. It's automatically updated when agents are added or removed:
 
 ```python
@@ -188,7 +188,7 @@ for agent in model.agents:
     print(agent.unique_id)
 ```
 
-#### AgentSet Features
+### AgentSet Features
 AgentSet offers several methods for efficient agent management:
 
 1. **Selecting**: Filter agents based on criteria.
@@ -220,13 +220,15 @@ AgentSet offers several methods for efficient agent management:
    ```
 `model.agents` can also be accessed within a model instance using `self.agents`.
 
-These are just some examples of using the AgentSet, there are many more possibilities, see the [AgentSet API docs](apis/agentset).
+These are just some examples of using the AgentSet, there are many more possibilities, see the [AgentSet API docs](apis/core).
 
-### Analysis modules
+## Analysis modules
 
 If you're using modeling for research, you'll want a way to collect the data each model run generates. You'll probably also want to run the model multiple times, to see how some output changes with different parameters. Data collection is implemented in the appropriately-named analysis modules:
 
-- [modelly.data.collector](apis/datacollection)
+- [modelly.data](apis/data): the `DataCollector` and the dataset recorders
+- [modelly.batch](apis/batch): `run_batch`, `run_grid` and `CohortTable`
+- [modelly.scenarios](apis/scenarios): typed parameters, sweeps and their results
 
 
 You'd add a data collector to the model like this:
@@ -261,10 +263,9 @@ model_df = model.datacollector.get_model_vars_dataframe()
 agent_df = model.datacollector.get_agent_vars_dataframe()
 ```
 
-### Visualization
+## Visualization
 Modelly uses a browser-based visualization system called SolaraViz. This allows for interactive, customizable visualizations of your models.
 
-Note: SolaraViz is under active development. While we attempt to minimize them, there might be API breaking changes in minor releases.
 > **Note:** SolaraViz instantiates new models using `**model_parameters.value`, so all model inputs must be keyword arguments.
 
 Ensure your model's `__init__` method accepts keyword arguments matching the `model_params` keys.
@@ -275,7 +276,7 @@ class MyModel(Model):
         super().__init__()
         # Initialize the model with N agents
 ```
-The core components for building your own visualizations reside in the [`modelly.viz`](apis/visualization) namespace.
+The core components for building your own visualizations reside in the [`modelly.viz`](apis/viz) namespace.
 
 Here's a basic example of how to set up a visualization:
 
@@ -314,7 +315,6 @@ This will create an interactive visualization of your model, including:
 :hidden: true
 :maxdepth: 7
 
-Overview <overview>
 Creating Your First Model <tutorials/0_first_model>
 AgentSet <tutorials/1_agentset>
 Agent Activation <tutorials/2_agent_activation>

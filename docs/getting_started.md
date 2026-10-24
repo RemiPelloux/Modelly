@@ -35,7 +35,7 @@ To further explore Modelly and its features, we have the following resources ava
 - [Modelly best practices](best-practices): an overview of tips and guidelines for using MODELLY.
 
 ### API documentation
-- [Modelly API reference](apis/api_main.md): Detailed documentation of Modelly's classes and functions.
+- [Modelly API reference](apis/api_main.md): Detailed documentation of Modelly's classes and functions, one page per package (`modelly.core`, `modelly.space`, `modelly.time`, `modelly.data`, `modelly.behaviour`, `modelly.scenarios`, `modelly.batch`, `modelly.viz`).
 
 ### Source Code and development
 - [Modelly GitHub repository](https://github.com/RemiPelloux/Modelly): Access the full source code of Modelly, contribute to its development, or report issues.
