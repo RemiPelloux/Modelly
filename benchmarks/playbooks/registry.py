@@ -106,4 +106,11 @@ PLAYBOOKS = {
         "sizes": {"small": {"side": 40}, "large": {"side": 200}},
         "params": {"density": 0.8, "minority": 0.3, "homophily": 3},
     },
+    "boltzmann_wealth": {
+        "title": "Boltzmann wealth exchange with random partners, Gini by a DataCollector",
+        "variants": {"mesa": "mesa_model", "modelly": "modelly_model"},
+        "steps": 100,
+        "sizes": {"small": {"n": 500}, "large": {"n": 10000}},
+        "params": {"initial_wealth": 1},
+    },
 }
