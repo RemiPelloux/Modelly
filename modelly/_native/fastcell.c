@@ -10,9 +10,12 @@
  * The type check is cached per type and revalidated on its version tag (CPython
  * bumps it when the type or a base changes); ``_agents`` and ``capacity`` are
  * then read at their slot offsets, as the interpreter's specialised loads do.
+ * Public C API only (PyUnstable_ is its unstable tier): see typelookup.h.
  */
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+
+#include "typelookup.h" /* mro_lookup, slot_offset */
 
 #define LIST_REMOVE_MISSING "list.remove(x): x not in list" /* list.remove's own */
 
@@ -33,17 +36,6 @@ typedef struct {
 
 static layout_t cached = {NULL, 0, 0, 0, 0, 0};
 
-/* Offset of the plain object slot ``name`` on ``type``, else 0. */
-static Py_ssize_t
-slot_offset(PyTypeObject *type, PyObject *name)
-{
-    PyObject *descr = _PyType_Lookup(type, name); /* borrowed */
-    if (descr == NULL || !Py_IS_TYPE(descr, &PyMemberDescr_Type))
-        return 0;
-    PyMemberDef *member = ((PyMemberDescrObject *)descr)->d_member;
-    return member->type == Py_T_OBJECT_EX ? member->offset : 0;
-}
-
 /* Fill ``out`` for ``type``. Inline only for dict-less, generically accessed types. */
 static void
 learn(PyTypeObject *type, layout_t *out)
@@ -52,9 +44,9 @@ learn(PyTypeObject *type, layout_t *out)
                 && type->tp_getattro == PyObject_GenericGetAttr;
     out->type = type;
     out->version = PyUnstable_Type_AssignVersionTag(type) ? type->tp_version_tag : 0;
-    out->inline_add = plain && ref_add != NULL && _PyType_Lookup(type, str_add_agent) == ref_add;
+    out->inline_add = plain && ref_add != NULL && mro_lookup(type, str_add_agent) == ref_add;
     out->inline_remove = plain && ref_remove != NULL
-                         && _PyType_Lookup(type, str_remove_agent) == ref_remove;
+                         && mro_lookup(type, str_remove_agent) == ref_remove;
     out->agents_at = plain ? slot_offset(type, str_agents) : 0;
     out->capacity_at = plain ? slot_offset(type, str_capacity) : 0;
 }

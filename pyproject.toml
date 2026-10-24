@@ -127,7 +127,7 @@ _site-packages-to-flat-layout-mapping = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["modelly"]
-exclude = ["modelly/_native/*.c"]
+exclude = ["modelly/_native/*.c", "modelly/_native/*.h"]
 
 # Compiles the modelly/_native C modules into platform wheels (optional, see hatch_build.py).
 [tool.hatch.build.targets.wheel.hooks.custom]
