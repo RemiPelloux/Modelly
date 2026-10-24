@@ -1,3 +1,20 @@
+# Versioned docs on GitHub Pages.
+#
+#   /Modelly/       the newest minor release (a copy of its X.Y folder, so old links work)
+#   /Modelly/dev/   main
+#   /Modelly/X.Y/   each minor release, at its latest patch
+#
+# A Pages deploy replaces the whole site, so every run uploads the whole site. Older
+# versions are not rebuilt (their tutorials would execute again): the built HTML of
+# every version lives on the orphan branch docs-site. A run builds one version, puts it
+# into a checkout of docs-site with scripts/assemble-docs-site.sh (which also rewrites
+# switcher.json), stores the result back as a single commit (force-pushed, so the
+# branch never accumulates history) and deploys that tree.
+#
+# Builds run only on a push to main that touches the docs or the package (-> /dev/) and
+# on a release tag vX.Y.Z (-> /X.Y/, and the root when X.Y is the newest minor). There
+# are no pull-request or scheduled builds. One-time setup: docs/README.md, "Versions".
+
 name: docs
 
 on:
@@ -8,36 +25,70 @@ on:
       - "docs/**"
       - "modelly/**"
       - "pyproject.toml"
+      - "scripts/build-docs-version.sh"
+      - "scripts/assemble-docs-site.sh"
+      - "scripts/docs_switcher.py"
       - ".github/workflows/docs.yml"
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write # push the built site to docs-site
   pages: write
   id-token: write
 
+# Queue rather than cancel: a cancelled run would drop its version from docs-site.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
+
+env:
+  SITE_BRANCH: docs-site
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - name: Pick the version this run publishes
+        id: version
+        run: |
+          case "$GITHUB_REF" in
+            refs/heads/main) ref=dev; folder=dev ;;
+            refs/tags/v*) ref="$GITHUB_REF_NAME"; folder="$(echo "${ref#v}" | cut -d. -f1,2)" ;;
+            *) echo "::error::docs publish from main or a vX.Y.Z tag, not $GITHUB_REF"; exit 1 ;;
+          esac
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "folder=$folder" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
       - name: Install Modelly with the docs extras
         run: pip install -e ".[docs]"
-      - name: Build the site
-        run: sphinx-build -b html docs docs/_build/html
-      - name: Keep Sphinx's underscore folders on Pages
-        run: touch docs/_build/html/.nojekyll
+      - name: Build the version
+        run: bash scripts/build-docs-version.sh "${{ steps.version.outputs.ref }}" _build/version
+        env:
+          PYTHON: python
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.SITE_BRANCH }}
+          path: _build/site
+      - name: Assemble the site
+        run: bash scripts/assemble-docs-site.sh _build/site _build/version "${{ steps.version.outputs.folder }}"
+      - name: Store the site on docs-site
+        working-directory: _build/site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --quiet --orphan next
+          git add .
+          git commit --quiet -m "docs(site): ${{ steps.version.outputs.ref }} at ${GITHUB_SHA::7}"
+          git push --quiet --force origin "next:$SITE_BRANCH"
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: docs/_build/html
+          path: _build/site
 
   deploy:
     needs: build
