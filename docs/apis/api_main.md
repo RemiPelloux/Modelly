@@ -1,21 +1,20 @@
 # APIs
 
+One page per domain package of `modelly`: `core`, `space`, `time`, `data`, `behaviour`,
+`scenarios`, `batch` and `viz`, plus the `log`, `migrate` and `lint` modules.
+
 ```{toctree}
 :maxdepth: 3
 
-model
-agent
-agentset
-columns
-cohorts
-rng
-batch
-migrate
+core
+space
 time
-discrete_space
-datacollection
-visualization
+data
+behaviour
+scenarios
+batch
+viz
 log
-meta_agents
-experimental
+migrate
+lint
 ```

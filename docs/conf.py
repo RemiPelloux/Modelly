@@ -86,7 +86,7 @@ version = release.rsplit(".", 1)[0]  # The short X.Y version.
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ["_build"]
+exclude_patterns = ["_build", "README.md"]  # README.md is the folder guide on GitHub
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -104,6 +104,11 @@ autodoc_member_order = "bysource"
 
 # Show both the class-level docstring and the constructor docstring
 autoclass_content = "both"
+# Render "Attributes:" sections as fields, so a documented attribute that is also a
+# property or dataclass field is not described twice.
+napoleon_use_ivar = True
+# Anchors for headings, so `[text](#a-heading)` links resolve.
+myst_heading_anchors = 3
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.

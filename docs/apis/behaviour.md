@@ -1,4 +1,50 @@
-# Meta-agents
+# Behaviour
+
+`modelly.behaviour` holds building blocks for what agents do: timed actions, continuous states
+with thresholds, and meta-agents (agents made of other agents).
+
+| Module | Contents |
+|---|---|
+| `modelly.behaviour.actions` | `Action`, `ActionState`, `HasActions` |
+| `modelly.behaviour.states` | `ContinuousState`, `Threshold` |
+| `modelly.behaviour.meta_agents` | `MetaAgents`, `MembershipView`, `MembershipEdge` |
+
+## Actions
+
+An action takes time, can be interrupted and resumed, and runs on the model's event list.
+`Action` takes its progress properties and hooks (`progress`, `remaining_time`, `on_start`,
+`on_complete`, ...) from `modelly.behaviour.actions.lifecycle`; they are listed under `Action`.
+
+```{eval-rst}
+.. automodule:: modelly.behaviour.actions.action
+   :members:
+   :inherited-members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.behaviour.actions.lifecycle
+   :members: ActionState
+```
+
+```{eval-rst}
+.. automodule:: modelly.behaviour.actions.actions
+   :members:
+```
+
+## States
+
+```{eval-rst}
+.. automodule:: modelly.behaviour.states.state
+   :members:
+   :show-inheritance:
+```
+
+```{eval-rst}
+.. automodule:: modelly.behaviour.states.threshold
+   :members:
+```
+
+## Meta-agents
 
 Meta-agents are agents composed of other agents, allowing you to build models
 with emergent, multi-level complexity. A built-in membership manager tracks the
@@ -52,7 +98,7 @@ model.meta_agents.find_combinations(
 )  # candidate groups
 ```
 
-## Group creation and reuse
+### Group creation and reuse
 
 Groups are identified by their class name. `create` reuses an existing group
 only when at least one of the given agents already belongs to a group with
@@ -84,8 +130,28 @@ team_a = model.meta_agents.create("Team_2026_A", [alice])
 team_b = model.meta_agents.create("Team_2026_B", [dave])
 ```
 
+### Reference
+
+`MetaAgents` takes its lookups (`members_of`, `groups_of`, `query_memberships`, `at_level`) from
+`modelly.behaviour.meta_agents.queries`; they are listed under `MetaAgents`.
+
 ```{eval-rst}
-.. automodule:: modelly.behaviour.meta_agents
+.. automodule:: modelly.behaviour.meta_agents.api
    :members:
-   :imported-members:
+   :inherited-members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.behaviour.meta_agents.views
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.behaviour.meta_agents.meta_agent
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.behaviour.meta_agents.combinations
+   :members:
 ```
