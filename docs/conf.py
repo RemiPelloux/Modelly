@@ -359,7 +359,9 @@ def write_example_md_file(
     agent_filename, model_filename, readme_filename, app_filename, md_filepath, template
 ):
     app_file = read_optional(app_filename)
-    app_section = f"## App\n\n```python\n{app_file}\n```" if app_file is not None else ""
+    app_section = (
+        f"## App\n\n```python\n{app_file}\n```" if app_file is not None else ""
+    )
     with open(md_filepath, "w", encoding="utf-8") as fh:
         content = template.substitute(
             dict(
