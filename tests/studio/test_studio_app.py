@@ -24,6 +24,9 @@ def file_target(name: str) -> str:
     return f"{ROOT.joinpath(*relative).with_suffix('.py')}:{name}"
 
 
+TOGGLE_TIMEOUT_S = 10  # generous: a busy Windows runner schedules threads late
+
+
 def render(session: StudioSession):
     """Render the Studio app inside an AppLayout, as the server does."""
 
@@ -105,12 +108,25 @@ def test_a_changed_value_restarts_the_run():
 
 
 def test_play_and_pause_toggle():
-    """Play flips to Pause and back."""
+    """Play flips to Pause and back.
+
+    The play loop steps on a thread, so each button may appear a moment after the click
+    (later on slower runners): wait for it instead of asserting at once. Pause in the end
+    in any case, so a failure cannot leave the loop running and the test session hanging.
+    """
     session = app.new_session(StudioConfig(target=file_target("BoltzmannWealth")))
     rc = render(session)
     click(rc, "Play")
-    click(rc, "Pause")
-    rc.find(v.Btn, children=["Play"]).assert_single()
+    try:
+        pause = rc.find(v.Btn, children=["Pause"]).wait_for(timeout=TOGGLE_TIMEOUT_S)
+        pause.widget.click()
+        rc.find(v.Btn, children=["Play"]).wait_for(
+            timeout=TOGGLE_TIMEOUT_S
+        ).assert_single()
+    finally:
+        still_playing = rc.find(v.Btn, children=["Pause"])
+        if len(still_playing):
+            still_playing.widget.click()
 
 
 def test_a_model_error_is_shown_not_raised(monkeypatch):
