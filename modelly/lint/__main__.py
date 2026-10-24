@@ -14,6 +14,7 @@ from modelly.lint.report import FORMATS, list_rules, render, statistics
 EXIT_CLEAN = 0
 EXIT_FINDINGS = 1
 EXIT_USAGE = 2
+PROG = "python -m modelly.lint"
 
 DESCRIPTION = """\
 Find reproducibility bugs and O(N^2) patterns in Modelly models.
@@ -55,10 +56,10 @@ exit status:
 rules, examples and fixes: {GUIDE}"""  # noqa: S608 (help text, not SQL)
 
 
-def build_parser() -> argparse.ArgumentParser:
+def build_parser(prog: str = PROG) -> argparse.ArgumentParser:
     """The argument parser, with the examples and exit codes in its help."""
     parser = argparse.ArgumentParser(
-        prog="python -m modelly.lint",
+        prog=prog,
         description=DESCRIPTION,
         epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -128,9 +129,9 @@ def print_explanation(code: str) -> int:
     return EXIT_CLEAN
 
 
-def main(argv: list[str] | None = None) -> int:
-    """Run the checks and return the exit status."""
-    args = build_parser().parse_args(argv)
+def main(argv: list[str] | None = None, prog: str = PROG) -> int:
+    """Run the checks and return the exit status; ``prog`` names the command in --help."""
+    args = build_parser(prog).parse_args(argv)
     if args.list_rules:
         sys.stdout.write(list_rules() + "\n")
         return EXIT_CLEAN

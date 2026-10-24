@@ -13,6 +13,7 @@ from modelly.profile.profiler import DEFAULT_TOP, Profiler
 DEFAULT_STEPS = 100
 EXIT_OK, EXIT_MODEL_ERROR, EXIT_USAGE = 0, 1, 2
 GUIDE = "https://remipelloux.github.io/Modelly/profile.html"
+PROG = "python -m modelly.profile"
 
 DESCRIPTION = """\
 Run a Modelly model for a number of steps and report where each step's time
@@ -98,10 +99,10 @@ OPTIONS = (
 )
 
 
-def parse_args(argv: list[str] | None) -> argparse.Namespace:
-    """Read the command line."""
+def parse_args(argv: list[str] | None, prog: str = PROG) -> argparse.Namespace:
+    """Read the command line; ``prog`` names the command in --help."""
     parser = argparse.ArgumentParser(
-        prog="python -m modelly.profile",
+        prog=prog,
         description=DESCRIPTION,
         epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -120,9 +121,9 @@ def render(prof: Profiler, args: argparse.Namespace) -> str:
     return prof.report(top=args.top)
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None, prog: str = PROG) -> int:
     """Build the model, run it under the profiler and write the report; the exit status."""
-    args = parse_args(argv)
+    args = parse_args(argv, prog)
     try:
         params = dict(parse_param(text) for text in args.param)
         model = build_model(load_class(args.target), params, args.seed)

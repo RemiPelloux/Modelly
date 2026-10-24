@@ -236,8 +236,8 @@ def migrate(paths: list[Path], write: bool = False) -> list[FileResult]:
     return results
 
 
-EXIT_OK = 0
-EXIT_USAGE = 2
+EXIT_OK, EXIT_USAGE = 0, 2
+PROG = "python -m modelly.migrate"
 
 DESCRIPTION = """\
 Rewrite the mechanical parts of a Mesa model for Modelly and report the rest.
@@ -260,10 +260,10 @@ exit status:
 guide: {GUIDE}"""
 
 
-def build_parser() -> argparse.ArgumentParser:
+def build_parser(prog: str = PROG) -> argparse.ArgumentParser:
     """The argument parser, with examples and exit codes in its help."""
     parser = argparse.ArgumentParser(
-        prog="python -m modelly.migrate",
+        prog=prog,
         description=DESCRIPTION,
         epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -277,9 +277,9 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
-    """Command-line entry point."""
-    args = build_parser().parse_args(argv)
+def main(argv: list[str] | None = None, prog: str = PROG) -> int:
+    """Command-line entry point; ``prog`` names the command in --help."""
+    args = build_parser(prog).parse_args(argv)
     try:
         results = migrate(args.paths, write=args.write)
     except OSError as error:

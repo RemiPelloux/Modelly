@@ -2,7 +2,8 @@
 
 ``modelly lint src/`` runs ``python -m modelly.lint src/``; each command keeps its own
 ``--help`` and exit status. A new tool is one line in ``COMMANDS``: its name, the module
-whose ``main(argv) -> int`` runs it, and a one-line summary.
+whose ``main(argv, prog) -> int`` runs it, and a one-line summary. ``prog`` is
+``modelly NAME``, so the command's --help names it the way it was run.
 """
 
 from __future__ import annotations
@@ -15,7 +16,7 @@ import modelly
 
 EXIT_USAGE = 2
 
-# (name, module with main(argv) -> int, one-line summary)
+# (name, module with main(argv, prog) -> int, one-line summary)
 COMMANDS = (
     (
         "lint",
@@ -78,7 +79,8 @@ def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     modules = {name: module for name, module, _ in COMMANDS}
     if argv and argv[0] in modules:
-        return importlib.import_module(modules[argv[0]]).main(argv[1:])
+        command = importlib.import_module(modules[argv[0]])
+        return command.main(argv[1:], prog=f"modelly {argv[0]}")
     # Prints the help or the version and exits, or rejects the command (exit 2).
     build_parser().parse_args(argv)
     return EXIT_USAGE

@@ -47,3 +47,28 @@ def test_every_command_module_has_main():
     """Each registry entry points at a module with a main function."""
     for _, module, _ in COMMANDS:
         assert callable(importlib.import_module(module).main)
+
+
+@pytest.mark.parametrize("name", [name for name, _, _ in COMMANDS])
+def test_command_help_names_the_umbrella(name, capsys):
+    """``modelly NAME --help`` shows ``modelly NAME`` as the program."""
+    with pytest.raises(SystemExit) as stop:
+        main([name, "--help"])
+    assert stop.value.code == 0
+    assert capsys.readouterr().out.startswith(f"usage: modelly {name} ")
+
+
+@pytest.mark.parametrize(("name", "module"), [(n, m) for n, m, _ in COMMANDS])
+def test_command_run_directly_keeps_its_module_name(name, module, capsys):
+    """``python -m modelly.NAME --help`` (main without prog) still names the module."""
+    with pytest.raises(SystemExit):
+        importlib.import_module(module).main(["--help"])
+    assert capsys.readouterr().out.startswith(f"usage: python -m modelly.{name} ")
+
+
+def test_command_errors_name_the_umbrella(capsys):
+    """A bad option through the umbrella reports ``modelly lint`` in its usage error."""
+    with pytest.raises(SystemExit) as stop:
+        main(["lint", "--no-such-option"])
+    assert stop.value.code == EXIT_USAGE
+    assert "usage: modelly lint " in capsys.readouterr().err
