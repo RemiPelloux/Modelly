@@ -2,7 +2,9 @@
 
 Run as ``python -m modelly.lint PATH [PATH ...]``. Nothing is imported or executed: the source
 is parsed and walked. A finding on a line ending in ``# noqa`` (or ``# noqa: MDL101``) is
-skipped. The rules, with examples, are in ``docs/lint.md``.
+skipped, and ``[tool.modelly.lint]`` in pyproject.toml selects and ignores rules (see
+``modelly.lint.config``). The rules, with examples, are in ``docs/lint.md``; ``--explain
+CODE`` prints one of them.
 """
 
 from __future__ import annotations
@@ -18,7 +20,11 @@ from modelly.lint.rules import GUIDE, RULES, Rule
 
 __all__ = ["GUIDE", "RULES", "Finding", "Rule", "lint_paths", "lint_source"]
 
-NOQA = re.compile(r"#\s*noqa\b(?::\s*(?P<codes>[A-Z0-9,\s]+))?", re.IGNORECASE)
+# A noqa comment, bare or followed by `: CODE[, CODE ...]`; text after the codes is free.
+CODE = r"[A-Z]+[0-9]+"
+NOQA = re.compile(
+    rf"#\s*noqa\b(?::\s*(?P<codes>{CODE}(?:[,\s]+{CODE})*))?", re.IGNORECASE
+)
 
 
 @dataclass(frozen=True)
@@ -30,10 +36,13 @@ class Finding:
     column: int
     rule: Rule
 
+    def location(self) -> str:
+        """``path:line:col: CODE message``, the format editors jump to."""
+        return f"{self.path}:{self.line}:{self.column}: {self.rule.code} {self.rule.message}"
+
     def __str__(self) -> str:
-        """``path:line:col: CODE message`` then the hint, the format editors jump to."""
-        head = f"{self.path}:{self.line}:{self.column}: {self.rule.code} {self.rule.message}"
-        return f"{head}\n    hint: {self.rule.hint}"
+        """The location line, then the hint."""
+        return f"{self.location()}\n    hint: {self.rule.hint}"
 
 
 def suppressed(line: str, code: str) -> bool:
@@ -42,7 +51,7 @@ def suppressed(line: str, code: str) -> bool:
     if not match:
         return False
     codes = match.group("codes")
-    return codes is None or code in {c.strip().upper() for c in codes.split(",")}
+    return codes is None or code in re.findall(CODE, codes.upper())
 
 
 def lint_source(source: str, path: str = "<string>") -> list[Finding]:
