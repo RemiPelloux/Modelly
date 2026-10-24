@@ -18,6 +18,7 @@ from pathlib import Path
 from modelly.lint.checker import Checker
 from modelly.lint.rules import GUIDE, RULES, Rule
 from modelly.lint.siblings import SiblingColumns
+from modelly.lint.spawn import spawn_hits
 
 __all__ = ["GUIDE", "RULES", "Finding", "Rule", "lint_paths", "lint_source"]
 
@@ -73,7 +74,7 @@ def lint_source(
     lines = source.splitlines()
     return [
         Finding(path, line, column, RULES[code])
-        for line, column, code in sorted(checker.hits)
+        for line, column, code in sorted(checker.hits | spawn_hits(tree))
         if not suppressed(lines[line - 1] if line <= len(lines) else "", code)
     ]
 

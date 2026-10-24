@@ -82,6 +82,15 @@ EXPLANATIONS = {
         "self.model.agents.discard(self)",
         "self.remove()",
     ),
+    "MDL010": Explanation(
+        "Windows and macOS start process-pool workers with spawn: a fresh interpreter that "
+        "imports what it runs by module and qualified name. A lambda, or a function or class "
+        "defined inside another function, has no importable name, so a batch that works on "
+        "Linux (where workers are forked) fails there.",
+        "def main():\n    def run(task):\n        return Sheep(task).run()\n    run_batch(run, tasks)",
+        "def run(task):   # module level: importable by every worker\n    return Sheep(task).run()\n\n"
+        "def main():\n    run_batch(run, tasks)",
+    ),
     "MDL012": Explanation(
         "A reply from a web service or a language model differs from one call to the next "
         "and the service may change or vanish. Called through requests, httpx, urllib, or "

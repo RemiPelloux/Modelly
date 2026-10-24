@@ -83,6 +83,15 @@ BAD = {
         "class A(Agent):\n    def die(self):\n        self.model.agents.discard(self)",
         "class M(Model):\n    def setup(self):\n        self.agents_by_type[A].add(a)",
     ],
+    "MDL010": [
+        "from modelly import run_batch\nrun_batch(lambda t: t, [1, 2])",
+        "def main():\n    def run(t):\n        return t\n    run_batch(run, tasks)",
+        "def main():\n    class M(Model):\n        pass\n    RunConfiguration(M, until=3)",
+        "def main():\n    def run(t):\n        return t\n    run_grid(functools.partial(run, 1), grid)",
+        "Experiment(model_factory=lambda s: M(s), reporters={'n': lambda m: len(m.agents)})",
+        "run_batch(go, tasks, workers=[lambda: 1])",
+        "sweep(model_factory=lambda s: M(s))",
+    ],
     "MDL012": [
         "import requests\nclass A(Agent):\n    def step(self):\n        r = requests.post(URL, json={})",
         "from urllib.request import urlopen\nclass M(Model):\n    def step(self):\n        urlopen(URL)",
@@ -120,6 +129,12 @@ BAD = {
 }
 
 GOOD = [
+    "def run(t):\n    return t\nrun_batch(run, [1, 2])",
+    "run_batch(lambda t: t, [1, 2], workers=1)",
+    "def main():\n    run_grid(functools.partial(run, 1), grid)",
+    "class M(Model):\n    pass\ndef main():\n    RunConfiguration(M, until=3)",
+    "p = self.model.agents.select(lambda a: a.x)",
+    "def main():\n    def key(a):\n        return a.x\n    agents.sort(key=key)",
     "x = self.random.random()",
     "g = np.random.default_rng(42)",
     "r = random.Random(42)",

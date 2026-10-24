@@ -190,6 +190,33 @@ self.model.agents.discard(self)  # MDL009
 self.remove()
 ```
 
+(mdl010)=
+### MDL010: a lambda or nested function is sent to worker processes
+
+Windows and macOS start process-pool workers with `spawn`: each worker is a fresh interpreter
+that imports the function or class it runs by its module and qualified name. A lambda, or a
+function or class defined inside another function (a closure), has no such name. Linux forks
+its workers, so the same batch works there and fails on the other two.
+
+The rule looks at every argument of `run_batch`, `run_grid`, `run_scenarios`,
+`RunConfiguration` and `Experiment`, and at keyword arguments of any call named `run`,
+`model_class`, `model_cls` or ending in `factory` (`model_factory=`). Lists, tuples, dict
+values and `functools.partial(f, ...)` are looked into. A call with `workers=1` runs every
+task in this process and is not reported.
+
+```python
+def main():
+    def run(task):  # nested: a spawned worker cannot import it
+        return Sheep(task).run()
+
+    run_batch(run, tasks)  # MDL010
+    run_batch(lambda t: t, tasks)  # MDL010
+
+
+def run(task):  # module level: importable by every worker
+    return Sheep(task).run()
+```
+
 (mdl012)=
 ### MDL012: network or language-model call outside `modelly.llm`
 

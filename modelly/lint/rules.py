@@ -120,6 +120,12 @@ RULES = {
             "create agents with Agent(model) / create_agents, and remove them with agent.remove()",
         ),
         Rule(
+            "MDL010",
+            "error",
+            "a lambda or nested function is sent to worker processes: spawn cannot import it",
+            "define the function or class at module level in an importable file (Windows and macOS start workers with spawn)",
+        ),
+        Rule(
             "MDL012",
             "error",
             "network or language-model call outside modelly.llm: the run cannot be replayed",
