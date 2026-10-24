@@ -9,6 +9,7 @@ SQL).
 |---|---|
 | `modelly.data.collector` | `DataCollector` |
 | `modelly.data.reporters` | reporter normalisation and the row-collection paths |
+| `modelly.data.io` | Arrow and Parquet export, DuckDB queries |
 | `modelly.data.recorders` | `DataRegistry`, the datasets and the recorders |
 
 ## DataCollector
@@ -20,6 +21,16 @@ methods from `modelly.data.frames`; they are listed under `DataCollector`.
 .. automodule:: modelly.data.collector
    :members:
    :inherited-members:
+```
+
+## Arrow, Parquet and DuckDB
+
+`DataCollector.to_arrow` and `DataCollector.to_parquet` call these functions; `query` runs SQL
+over Arrow tables, DataFrames and Parquet files. They need `pip install "modelly-abm[experiments]"`.
+
+```{eval-rst}
+.. automodule:: modelly.data.io
+   :members: to_arrow, to_parquet, write_parquet_atomic, query, tables_of
 ```
 
 ## Reporters
