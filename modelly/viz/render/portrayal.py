@@ -57,6 +57,8 @@ class AgentPortrayalStyle:
     edgecolors: str | tuple | None = None
     linewidths: float | int | None = 1.0
     tooltip: dict | None = None
+    # Hollow markers when False; honoured by the Altair backend only.
+    filled: bool = True
 
     def update(self, *updates_fields: tuple[str, Any]):
         """Updates attributes from variable (field_name, new_value) tuple arguments.

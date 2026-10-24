@@ -23,18 +23,6 @@ MARKER_TO_SHAPE = {
     "4": "triangle-right",
 }
 
-AGENT_DATA_KEYS = (
-    "loc",
-    "size",
-    "color",
-    "shape",
-    "order",  # z-order
-    "opacity",
-    "stroke",  # Stroke color
-    "strokeWidth",
-    "filled",
-    "tooltip",
-)
 _FLOAT_KEYS = ("x", "y", "size", "order", "opacity", "strokeWidth")
 _DICT_STYLE_KEYS = (
     "size",
@@ -46,9 +34,10 @@ _DICT_STYLE_KEYS = (
     "linewidths",
 )
 
-# The helpers below warn on behalf of ``AltairBackend.collect_agent_data``; this
-# stacklevel attributes the warning to that method's caller.
-_CALLER_STACKLEVEL = 3
+# The helpers below warn on behalf of ``AltairBackend.collect_agent_data`` through
+# one helper frame (``_portrayal_styles`` or ``style_columns``); this stacklevel
+# attributes the warning to that method's caller.
+_CALLER_STACKLEVEL = 4
 
 
 def style_defaults() -> dict:
@@ -100,6 +89,34 @@ def unsupported_marker(raw_marker) -> str:
         stacklevel=_CALLER_STACKLEVEL,
     )
     return "circle"
+
+
+def style_columns(styles: list, style_fields: dict, fallback_size) -> dict:
+    """Return the per-agent plotting columns, unset style fields taking defaults."""
+
+    def column(attr: str, default) -> list:
+        return [default if (v := getattr(aps, attr)) is None else v for aps in styles]
+
+    shapes = []
+    for aps in styles:
+        # Map marker to Altair shape if defined, else use raw marker
+        raw_marker = aps.marker if aps.marker is not None else style_fields["marker"]
+        shape_value = MARKER_TO_SHAPE.get(raw_marker, raw_marker)
+        if shape_value is None:
+            shape_value = unsupported_marker(raw_marker)
+        shapes.append(shape_value)
+    return {
+        "loc": [(aps.x, aps.y) for aps in styles],
+        "size": column("size", fallback_size),
+        "color": column("color", style_fields["color"]),
+        "shape": shapes,
+        "order": column("zorder", style_fields["zorder"]),  # z-order
+        "opacity": column("alpha", style_fields["alpha"]),
+        "stroke": [aps.edgecolors for aps in styles],  # Stroke color
+        "strokeWidth": column("linewidths", style_fields["linewidths"]),
+        "filled": column("filled", style_fields["filled"]),
+        "tooltip": [aps.tooltip for aps in styles],
+    }
 
 
 def to_arrays(arguments: dict) -> dict:

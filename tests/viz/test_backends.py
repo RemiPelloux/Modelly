@@ -298,6 +298,52 @@ def test_altair_backend_collects_agent_data_marker_mapping():
     assert data["shape"][0] == "square"
 
 
+def test_altair_backend_filled_comes_from_portrayal():
+    """Filled defaults to True and a hollow portrayal is drawn without fill."""
+    ab = AltairBackend(space_drawer=MagicMock())
+    ab.space_drawer.get_viz_limits = MagicMock(return_value=(0, 10, 0, 10))
+
+    class DummySpace:
+        agents: ClassVar[list] = [object(), object()]
+
+    styles = iter(
+        [AgentPortrayalStyle(x=0, y=0), AgentPortrayalStyle(x=1, y=1, filled=False)]
+    )
+    data = ab.collect_agent_data(DummySpace(), lambda agent: next(styles))
+    assert data["filled"].tolist() == [True, False]
+
+    fills = ab.draw_agents(data).data["viz_fill_color"]
+    assert fills.isna().tolist() == [False, True]
+
+
+def test_altair_backend_dict_portrayal_warning_points_at_caller():
+    """The deprecation warning is attributed to collect_agent_data's caller."""
+    ab = AltairBackend(space_drawer=MagicMock())
+
+    class DummySpace:
+        agents: ClassVar[list] = [types.SimpleNamespace(position=(0, 0))]
+
+    with pytest.warns(FutureWarning) as record:
+        ab.collect_agent_data(DummySpace(), lambda agent: {"size": 5})
+    assert record[0].filename == __file__
+
+
+def test_altair_backend_draw_agents_passes_mark_kwargs():
+    """Keywords the backend does not consume become point-mark properties."""
+    ab = AltairBackend(space_drawer=MagicMock())
+    ab.space_drawer.get_viz_limits = MagicMock(return_value=(0, 10, 0, 10))
+
+    class DummySpace:
+        agents: ClassVar[list] = [object()]
+
+    data = ab.collect_agent_data(
+        DummySpace(), lambda agent: AgentPortrayalStyle(x=0, y=0)
+    )
+    chart = ab.draw_agents(data, title="agents", strokeDash=[2, 2])
+    assert chart.to_dict()["mark"]["strokeDash"] == [2, 2]
+    assert chart.title == "agents"
+
+
 def test_altair_backend_draw_agents():
     """Test draw_agents."""
     # Test with empty data
