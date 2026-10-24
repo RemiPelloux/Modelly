@@ -1,0 +1,40 @@
+"""{title}: traders on a grid exchange wealth, and inequality emerges."""
+
+import numpy as np
+from modelly import DataCollector, Model
+from modelly.space import OrthogonalMooreGrid
+
+from {package}.agents import Trader
+from {package}.scenario import {scenario_class}
+
+
+class {model_class}(Model):
+    """Traders on a torus grid; each step moves every trader once."""
+
+    def __init__(
+        self,
+        scenario: {scenario_class} = {scenario_class},
+    ):
+        """Create the model from ``scenario``: an instance or the class itself."""
+        super().__init__(scenario=scenario)
+        params = self.scenario
+        self.grid = OrthogonalMooreGrid(
+            (params.width, params.height), torus=True, random=self.random
+        )
+        cells = self.random.choices(self.grid.all_cells.cells, k=params.n)
+        Trader.create_agents(self, params.n, cells)
+        self.datacollector = DataCollector(model_reporters={"gini": "gini"})
+        self.datacollector.collect(self)
+
+    @property
+    def gini(self) -> float:
+        """Wealth inequality: 0 when all have the same, towards 1 when one has all."""
+        wealth = np.sort(self.columns[Trader].wealth)
+        n = len(wealth)
+        ranks = np.arange(1, n + 1)
+        return float(np.sum((2 * ranks - n - 1) * wealth) / (n * wealth.sum()))
+
+    def step(self):
+        """Every trader acts once, in a new random order; then the data is recorded."""
+        self.agents.shuffle_do("step")
+        self.datacollector.collect(self)

@@ -1,0 +1,27 @@
+"""The agents of {title}."""
+
+from modelly import Column
+from modelly.space import CellAgent
+
+
+class Trader(CellAgent):
+    """Walks to a random neighbouring cell and gives one unit of wealth to a cellmate.
+
+    ``wealth`` is a Column: ``model.columns[Trader].wealth`` is a numpy view of every
+    trader's wealth at once.
+    """
+
+    wealth = Column(int, default=1)
+
+    def __init__(self, model, cell):
+        """Create a trader on ``cell``."""
+        super().__init__(model)
+        self.cell = cell
+
+    def step(self):
+        """Move, then trade with someone on the new cell."""
+        self.cell = self.cell.neighborhood.select_random_cell()
+        cellmates = [agent for agent in self.cell.agents if agent is not self]
+        if self.wealth > 0 and cellmates:
+            self.random.choice(cellmates).wealth += 1
+            self.wealth -= 1

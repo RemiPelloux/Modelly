@@ -1,0 +1,35 @@
+"""The run is a function of its scenario: the same seed gives the same data."""
+
+import pandas as pd
+
+from {package} import {model_class}, {scenario_class}
+
+STEPS = 20
+
+
+def collected(model: {model_class}) -> pd.DataFrame:
+    """Run ``model`` for STEPS steps; return what its DataCollector recorded."""
+    for _ in range(STEPS):
+        model.step()
+    return model.datacollector.get_model_vars_dataframe()
+
+
+def run(seed: int) -> pd.DataFrame:
+    """Return the data of a run from ``seed``."""
+    return collected({model_class}({scenario_class}(rng=seed)))
+
+
+def test_same_seed_same_data():
+    """Two runs from one seed agree on every collected value."""
+    pd.testing.assert_frame_equal(run(42), run(42))
+
+
+def test_different_seed_different_data():
+    """The seed is used: another seed gives another run."""
+    assert not run(1).equals(run(2))
+
+
+def test_default_scenario_is_seeded():
+    """Without a seed the scenario uses SEED, so the default run reproduces too."""
+    first, second = {model_class}(), {model_class}()
+    pd.testing.assert_frame_equal(collected(first), collected(second))

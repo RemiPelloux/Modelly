@@ -1,0 +1,33 @@
+"""The agents of {title}."""
+
+import numpy as np
+from modelly import Agent, CohortTable
+
+
+class Colony(Agent):
+    """A colony counted by age class: one row per age, not one object per individual.
+
+    Each draw is binomial over a whole age class, so the counts have exactly the law
+    of the independent per-individual draws.
+    """
+
+    def __init__(self, model, founders):
+        """Create a colony of ``founders`` newborns."""
+        super().__init__(model)
+        self.cohorts = CohortTable(model.rng, age=np.int16)
+        self.cohorts.add(founders, age=0)
+
+    @property
+    def size(self) -> int:
+        """Individuals in the colony."""
+        return self.cohorts.total()
+
+    def step(self):
+        """Adults breed, everyone survives or not, survivors age by one class."""
+        params = self.model.scenario
+        adults = self.cohorts["age"] >= params.maturity
+        births = int(self.cohorts.draw(params.fecundity, where=adults).sum())
+        self.cohorts.thin(params.survival)
+        self.cohorts["age"] = np.minimum(self.cohorts["age"] + 1, params.max_age)
+        self.cohorts.add(births, age=0)
+        self.cohorts.merge()

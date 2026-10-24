@@ -1,0 +1,20 @@
+"""The parameters of one {title} run, and the seed that fixes every draw."""
+
+from modelly.scenarios import Scenario
+
+SEED = 42  # the default seed: pass rng=... for another, reproducible, run
+
+
+class {scenario_class}(Scenario):
+    """Parameters and their defaults; pass ``rng=`` or any of them to override."""
+
+    colonies: int = 10
+    founders: int = 1_000  # individuals per colony at the start
+    survival: float = 0.8  # chance per step that an individual survives
+    fecundity: float = 0.3  # offspring per adult per step, on average
+    maturity: int = 2  # age at which an individual starts to breed
+    max_age: int = 10  # older individuals are counted in this age class
+
+    def __init__(self, *, rng=None, **kwargs):
+        """Seed with ``SEED`` unless ``rng`` is given, so every run reproduces."""
+        super().__init__(rng=SEED if rng is None else rng, **kwargs)

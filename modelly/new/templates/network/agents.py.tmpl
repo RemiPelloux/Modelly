@@ -1,0 +1,33 @@
+"""The agents of {title}."""
+
+from modelly import Column
+from modelly.space import CellAgent
+
+SUSCEPTIBLE, INFECTED, RECOVERED = 0, 1, 2
+
+
+class Person(CellAgent):
+    """A node of the contact network: susceptible, infected or recovered.
+
+    ``state`` is a Column: ``model.columns[Person].state`` is a numpy view of every
+    person's state at once.
+    """
+
+    state = Column(int, default=SUSCEPTIBLE)
+
+    def __init__(self, model, cell):
+        """Create a susceptible person on the network node ``cell``."""
+        super().__init__(model)
+        self.cell = cell
+
+    def step(self):
+        """Infect susceptible contacts when infected, then maybe recover."""
+        if self.state != INFECTED:
+            return
+        params = self.model.scenario
+        for contact in self.cell.neighborhood.agents:
+            exposed = contact.state == SUSCEPTIBLE
+            if exposed and self.random.random() < params.transmission:
+                contact.state = INFECTED
+        if self.random.random() < params.recovery:
+            self.state = RECOVERED

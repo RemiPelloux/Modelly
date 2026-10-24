@@ -1,0 +1,23 @@
+"""The agents of {title}."""
+
+import math
+
+import numpy as np
+from modelly.space.continuous import ContinuousSpaceAgent
+
+
+class Walker(ContinuousSpaceAgent):
+    """A correlated random walker: keeps its heading, turning a little each step."""
+
+    def __init__(self, model, space, position, heading):
+        """Create a walker at ``position`` facing ``heading`` (radians)."""
+        super().__init__(space, model)
+        self.position = position
+        self.heading = heading
+
+    def step(self):
+        """Turn by a small random angle, then move forward; the space wraps around."""
+        params = self.model.scenario
+        self.heading += self.random.gauss(0.0, params.turning)
+        move = params.speed * np.array([math.cos(self.heading), math.sin(self.heading)])
+        self.position = self.space.torus_correct(self.position + move)

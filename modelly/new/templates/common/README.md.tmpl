@@ -1,0 +1,85 @@
+# {title}
+
+{description}
+
+Made with `modelly new --template {template}`. The model is in `{package}/`: the parameters
+and their seed in `scenario.py`, the agents in `agents.py`, the model in `model.py`.
+
+## Set up
+
+Create a virtual environment and install the project with its test tools.
+
+```bash
+# Linux and macOS
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e ".[dev]"
+```
+
+```powershell
+# Windows (PowerShell)
+py -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
+```
+
+## Run, test, lint, profile
+
+The commands are the same on every operating system once the environment is active.
+
+```bash
+python -c "from {package} import {model_class}; m = {model_class}(); [m.step() for _ in range(10)]; print(m.datacollector.get_model_vars_dataframe())"
+python -m pytest                                   # the determinism test: same seed, same data
+python -m modelly lint {package}                   # reproducibility bugs and O(N^2) loops
+python -m modelly profile {package}.model:{model_class} --steps 50   # where each step's time goes
+```
+
+A run is a function of its scenario: `{model_class}({scenario_class}(rng=7, ...))` changes the
+seed or any parameter, and `{scenario_class}()` uses the default seed `SEED` from
+`scenario.py`.
+
+## Model description (ODD protocol)
+
+The ODD protocol (Overview, Design concepts, Details) is the standard way to describe an
+agent-based model. Fill in each section as the model grows.
+
+### 1. Purpose and patterns
+
+- What question does the model answer?
+- Which observed patterns must it reproduce to be credible?
+
+### 2. Entities, state variables and scales
+
+- Agents and their state variables (see `{package}/agents.py`).
+- The space, its size and what one cell or unit of distance stands for.
+- What one time step stands for, and how long a run lasts.
+
+### 3. Process overview and scheduling
+
+- What happens in one step, and in which order (see `step` in `{package}/model.py`).
+
+### 4. Design concepts
+
+- Basic principles
+- Emergence
+- Adaptation
+- Objectives
+- Learning
+- Prediction
+- Sensing
+- Interaction
+- Stochasticity: every draw comes from the model's seeded generators (`self.random`, `self.rng`).
+- Collectives
+- Observation: what the `DataCollector` records.
+
+### 5. Initialization
+
+- The initial state, and the parameter values of `{scenario_class}`.
+
+### 6. Input data
+
+- External data the model reads, if any.
+
+### 7. Submodels
+
+- Each process of the schedule, with its equations and parameters.

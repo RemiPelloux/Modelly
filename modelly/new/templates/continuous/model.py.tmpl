@@ -1,0 +1,44 @@
+"""{title}: walkers moving through a continuous, wrapping space."""
+
+import math
+
+import numpy as np
+from modelly import DataCollector, Model
+from modelly.space.continuous import ContinuousSpace
+
+from {package}.agents import Walker
+from {package}.scenario import {scenario_class}
+
+
+class {model_class}(Model):
+    """Walkers in a wrapping space; each step moves every walker once."""
+
+    def __init__(
+        self,
+        scenario: {scenario_class} = {scenario_class},
+    ):
+        """Create the model from ``scenario``: an instance or the class itself."""
+        super().__init__(scenario=scenario)
+        params = self.scenario
+        self.space = ContinuousSpace(
+            [[0, params.width], [0, params.height]],
+            torus=True,
+            random=self.random,
+            n_agents=params.n,
+        )
+        positions = self.rng.random(size=(params.n, 2)) * self.space.size
+        headings = self.rng.uniform(0, 2 * math.pi, size=params.n)
+        Walker.create_agents(self, params.n, self.space, positions, headings)
+        self.datacollector = DataCollector(model_reporters={"alignment": "alignment"})
+        self.datacollector.collect(self)
+
+    @property
+    def alignment(self) -> float:
+        """How much the walkers head the same way: 1 all aligned, near 0 at random."""
+        headings = np.array([walker.heading for walker in self.agents])
+        return float(np.hypot(np.cos(headings).mean(), np.sin(headings).mean()))
+
+    def step(self):
+        """Every walker moves once, in a new random order; then the data is recorded."""
+        self.agents.shuffle_do("step")
+        self.datacollector.collect(self)

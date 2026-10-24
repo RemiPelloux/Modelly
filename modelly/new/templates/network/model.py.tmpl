@@ -1,0 +1,60 @@
+"""{title}: an infection spreading over a random contact network."""
+
+import networkx as nx
+import numpy as np
+from modelly import DataCollector, Model
+from modelly.space import Network
+
+from {package}.agents import INFECTED, RECOVERED, SUSCEPTIBLE, Person
+from {package}.scenario import {scenario_class}
+
+# networkx takes an int seed: the model draws one below this bound from its rng.
+GRAPH_SEED_BOUND = 2**31
+
+
+class {model_class}(Model):
+    """People on a random contact network; each step lets every person act."""
+
+    def __init__(
+        self,
+        scenario: {scenario_class} = {scenario_class},
+    ):
+        """Create the model from ``scenario``: an instance or the class itself."""
+        super().__init__(scenario=scenario)
+        params = self.scenario
+        graph = nx.gnp_random_graph(
+            params.n,
+            params.mean_degree / params.n,
+            seed=int(self.rng.integers(GRAPH_SEED_BOUND)),
+        )
+        self.network = Network(graph, capacity=1, random=self.random)
+        people = Person.create_agents(self, params.n, list(self.network.all_cells))
+        for person in self.random.sample(list(people), params.initially_infected):
+            person.state = INFECTED
+        reporters = {name: name for name in ("susceptible", "infected", "recovered")}
+        self.datacollector = DataCollector(model_reporters=reporters)
+        self.datacollector.collect(self)
+
+    def count(self, state: int) -> int:
+        """How many people are in ``state``."""
+        return int(np.count_nonzero(self.columns[Person].state == state))
+
+    @property
+    def susceptible(self) -> int:
+        """People who can still be infected."""
+        return self.count(SUSCEPTIBLE)
+
+    @property
+    def infected(self) -> int:
+        """People infected now."""
+        return self.count(INFECTED)
+
+    @property
+    def recovered(self) -> int:
+        """People who recovered and are immune."""
+        return self.count(RECOVERED)
+
+    def step(self):
+        """Every person acts once, in a new random order; then the data is recorded."""
+        self.agents.shuffle_do("step")
+        self.datacollector.collect(self)

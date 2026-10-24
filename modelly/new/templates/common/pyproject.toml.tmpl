@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "{project}"
+version = "0.1.0"
+description = "{description}"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["{requirement}"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["{package}"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+# `modelly lint` reads this table: every rule, the O(N^2) warnings included.
+[tool.modelly.lint]
+select = ["MDL"]
+ignore = []
+per-file-ignores = { "tests/*" = ["MDL1"] }

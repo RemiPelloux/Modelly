@@ -34,6 +34,11 @@ COMMANDS = (
         "rewrite a Mesa model for Modelly and report what is left",
     ),
     (
+        "new",
+        "modelly.new.__main__",
+        "write a new model project from a template, seeded, tested and linted",
+    ),
+    (
         "profile",
         "modelly.profile.__main__",
         "time a model's steps by agent class, data collection and events",
@@ -71,6 +76,7 @@ examples:
   modelly lint src/                    check a model (same as python -m modelly.lint src/)
   modelly lint --explain MDL101         why a rule matters, with a fix
   modelly migrate my_mesa_model/        dry run of the Mesa codemod
+  modelly new my-model --template grid  a new project, tested and linted
   modelly profile model.py:MyModel      where each step's time goes
   modelly run model.py:MyModel --steps 100 --seed 1 --out runs/
                                         outputs and runs/manifest.json

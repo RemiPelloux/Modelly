@@ -1,0 +1,31 @@
+"""{title}: colonies whose individuals are counted by age class."""
+
+from modelly import DataCollector, Model
+
+from {package}.agents import Colony
+from {package}.scenario import {scenario_class}
+
+
+class {model_class}(Model):
+    """Colonies of counted individuals; each step every colony breeds and ages."""
+
+    def __init__(
+        self,
+        scenario: {scenario_class} = {scenario_class},
+    ):
+        """Create the model from ``scenario``: an instance or the class itself."""
+        super().__init__(scenario=scenario)
+        params = self.scenario
+        Colony.create_agents(self, params.colonies, params.founders)
+        self.datacollector = DataCollector(model_reporters={"population": "population"})
+        self.datacollector.collect(self)
+
+    @property
+    def population(self) -> int:
+        """Individuals in every colony together."""
+        return sum(colony.size for colony in self.agents)
+
+    def step(self):
+        """Every colony acts once, in a fixed order; then the data is recorded."""
+        self.agents.do("step")
+        self.datacollector.collect(self)
