@@ -45,8 +45,7 @@ jobs:
               { label: "ci", test: (filename) => filename.startsWith(".github/workflows/") || filename.includes("ci") || filename.includes("build") },
               { label: "packaging", test: (filename) => ["pyproject.toml", "setup.py", "setup.cfg", "MANIFEST.in"].includes(filename) },
               { label: "example", test: (filename) => filename.startsWith("modelly/examples/") },
-              { label: "experimental", test: (filename) => filename.startsWith("modelly/experimental/") },
-              { label: "visualization", test: (filename) => filename.startsWith("modelly/visualization/") },
+              { label: "visualization", test: (filename) => filename.startsWith("modelly/viz/") },
             ];
 
             // These labels are fully managed by pathRules: they're a deterministic
