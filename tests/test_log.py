@@ -66,3 +66,23 @@ def test_caplog_capture_after_teardown(caplog):
     logger.setLevel(logging.INFO)
     logger.info("testing caplog propagation")
     assert "testing caplog propagation" in caplog.text
+
+
+def test_create_module_logger_defaults_to_caller_module():
+    """Without a name, the logger is named after the calling module."""
+    logger = log.create_module_logger()
+    assert logger.name == f"{log.LOGGER_NAME}.{__name__}"
+    assert log.get_module_logger(__name__) is logger
+
+
+def test_method_logger_names_the_enclosing_class(caplog):
+    """method_logger picks up the class it is applied in."""
+
+    class Greeter:
+        @log.method_logger(__name__)
+        def greet(self, who):
+            return f"hi {who}"
+
+    with caplog.at_level(logging.DEBUG, logger=log.LOGGER_NAME):
+        assert Greeter().greet("you") == "hi you"
+    assert "calling Greeter.greet with ('you',) and {}" in caplog.text

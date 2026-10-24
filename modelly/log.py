@@ -5,8 +5,8 @@ It is modeled on the default `logging approach that comes with Python <https://d
 
 """
 
-import inspect
 import logging
+import sys
 from functools import wraps
 from logging import DEBUG, INFO
 from typing import ClassVar
@@ -34,9 +34,8 @@ def create_module_logger(name: str | None = None):
 
     """
     if name is None:
-        frm = inspect.stack()[1]
-        mod = inspect.getmodule(frm[0])
-        name = mod.__name__
+        # The caller's module globals; inspect.stack() reads source files and is slow.
+        name = sys._getframe(1).f_globals["__name__"]
     logger = logging.getLogger(f"{LOGGER_NAME}.{name}")
 
     _module_loggers[name] = logger
@@ -99,7 +98,8 @@ def method_logger(name: str):
 
     """
     logger = get_module_logger(name)
-    classname = inspect.getouterframes(inspect.currentframe())[1][3]
+    # Applied in a class body, so the calling frame is named after the class.
+    classname = sys._getframe(1).f_code.co_name
 
     def real_decorator(func):
         @wraps(func)
