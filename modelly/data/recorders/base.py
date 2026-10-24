@@ -23,101 +23,16 @@ from __future__ import annotations
 
 import copy
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
+from modelly.data.recorders.config import DatasetConfig
 from modelly.time.signals import ModelSignals, ObservableSignals
 
 if TYPE_CHECKING:
     from modelly.core.model import Model
     from modelly.data.recorders.datasets import DataRegistry, DataSet
-
-
-@dataclass
-class DatasetConfig:
-    """Configuration for dataset collection behavior.
-
-    Attributes:
-        interval: Collection frequency in time units
-        start_time: First time to begin collection
-        end_time: Last time to collect (None = collect forever)
-        window_size: Max snapshots to keep (None = keep all, N = sliding window)
-        enabled: Whether collection is active
-        _next_collection: Next scheduled collection time (internal)
-
-    Examples:
-        # Collect every step from 0 to infinity
-        DatasetConfig(interval=1, start_time=0)
-
-        # Collect every 5 steps from 100 to 500
-        DatasetConfig(interval=5, start_time=100, end_time=500)
-
-        # Collect every step, keep only last 1000 snapshots
-        DatasetConfig(interval=1, start_time=0, window_size=1000)
-
-        # Warmup phase: skip first 100 steps, collect 100-200
-        DatasetConfig(interval=1, start_time=100, end_time=200)
-    """
-
-    interval: int | float = 1
-    start_time: int | float = 0
-    end_time: int | float | None = None
-    window_size: int | None = None
-    enabled: bool = True
-    _next_collection: int | float = 0
-    _last_collection: int | float = -1
-
-    def __post_init__(self):
-        """Validate configuration."""
-        if self.interval <= 0:
-            raise ValueError(f"interval must be > 0, got {self.interval}")
-        if self.start_time < 0:
-            raise ValueError(f"start_time must be >= 0, got {self.start_time}")
-        if self.end_time is not None and self.end_time <= self.start_time:
-            raise ValueError(
-                f"end_time ({self.end_time}) must be > start_time ({self.start_time})"
-            )
-        if self.window_size is not None and self.window_size <= 0:
-            raise ValueError(f"window_size must be > 0 or None, got {self.window_size}")
-
-        self._next_collection = self.start_time
-
-    def should_collect(self, current_time: float) -> bool:
-        """Check if we should collect at this time.
-
-        Args:
-            current_time: The current simulation time
-
-        Returns:
-            True if collection should happen, False otherwise
-        """
-        if not self.enabled:
-            return False
-
-        # Before start time
-        if current_time < self.start_time:
-            return False
-
-        # After end time
-        if self.end_time is not None and current_time > self.end_time:
-            return False
-
-        # Not at scheduled time
-        return not current_time < self._next_collection
-
-    def update_next_collection(self, current_time: float) -> None:
-        """Update the next collection time.
-
-        Args:
-            current_time: The current simulation time
-        """
-        self._next_collection = current_time + self.interval
-
-        # Auto-disable if we've passed end_time
-        if self.end_time is not None and self._next_collection > self.end_time:
-            self.enabled = False
 
 
 class BaseDataRecorder(ABC):
@@ -144,29 +59,9 @@ class BaseDataRecorder(ABC):
         if config is None:
             config = {}
 
-        # Parse configuration
-        self.configs: dict[str, DatasetConfig] = {}
-
-        # # Load defaults from registry
-        # for name in self.registry.datasets:
-        #     self.configs[name] = DatasetConfig()
-
-        # Override with user config
-        if config:
-            for name, user_cfg in config.items():
-                if isinstance(user_cfg, DatasetConfig):
-                    # Copy to ensure unique state
-                    self.configs[name] = copy.copy(user_cfg)
-                    # Note: __post_init__ was already called when user created the object
-                else:
-                    # Update default dataclass fields from dict
-                    configuration = DatasetConfig(**user_cfg)
-                    self.configs[name] = configuration
-                    # for key, value in user_cfg.items():
-                    #     if hasattr(current, key):
-                    #         setattr(current, key, value)
-                    # Re-validate
-                    # current.__post_init__()
+        self.configs: dict[str, DatasetConfig] = (
+            self._parse_configs(config) if config else {}
+        )
 
         # Initialize storage for each dataset
         for name in config:
@@ -174,6 +69,20 @@ class BaseDataRecorder(ABC):
             self._initialize_dataset_storage(name, dataset)
 
         self._subscribe_to_model()
+
+    @staticmethod
+    def _parse_configs(
+        config: dict[str, DatasetConfig | dict[str, Any]],
+    ) -> dict[str, DatasetConfig]:
+        """Return a private DatasetConfig per dataset name from the user's config."""
+        configs: dict[str, DatasetConfig] = {}
+        for name, user_cfg in config.items():
+            if isinstance(user_cfg, DatasetConfig):
+                # Copy to ensure unique state; __post_init__ already ran
+                configs[name] = copy.copy(user_cfg)
+            else:
+                configs[name] = DatasetConfig(**user_cfg)
+        return configs
 
     def _subscribe_to_model(self) -> None:
         """Subscribe to model.time for automatic collection."""
@@ -295,8 +204,3 @@ class BaseDataRecorder(ABC):
     @abstractmethod
     def summary(self) -> dict[str, Any]:
         """Get collection status summary."""
-
-    # def __del__(self):
-    #     """Cleanup when recorder is destroyed."""
-    #     with contextlib.suppress(ValueError, KeyError):
-    #         self.model.unobserve("time", ObservableSignals.CHANGE, self._on_time_change)
