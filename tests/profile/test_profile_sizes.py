@@ -53,7 +53,7 @@ class Sized(Model):
         self.agents.do("step")
 """
 
-SMALL, LARGE = 50, 400
+SMALL, LARGE = 100, 1600  # 16x apart: the O(N) scan dominates the per-agent overhead
 STEPS = "3"
 
 
@@ -79,7 +79,7 @@ def test_scan_grows_with_n_and_gets_the_hint(models):
     assert STEP_LABEL in by_label
     hints = comparison.hints()
     assert len(hints) == 1 and "MDL101 / MDL102" in hints[0]
-    assert "N=50 us/agent" in comparison.report()
+    assert f"N={SMALL} us/agent" in comparison.report()
 
 
 def test_constant_cost_per_agent_gives_no_hint(models):
