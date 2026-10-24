@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+import pytest
+
 from modelly import migrate
 
 MESA2_MODEL = """import mesa
@@ -137,3 +139,13 @@ def test_report_mentions_guide_sections(capsys, tmp_path):
     assert "Migration report: 1 file(s), 1 rewritten" in out
     assert f"see {migrate.GUIDE}#activation-and-schedulers" in out
     assert "+import modelly" in out  # the diff is printed on a dry run
+
+
+def test_help_and_missing_path(capsys):
+    """--help shows examples and exit codes; a missing file is a usage error."""
+    with pytest.raises(SystemExit):
+        migrate.main(["--help"])
+    out = capsys.readouterr().out
+    assert "examples:" in out and "exit status:" in out
+    assert migrate.main(["does_not_exist.py"]) == migrate.EXIT_USAGE
+    assert "modelly.migrate" in capsys.readouterr().err

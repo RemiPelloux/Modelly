@@ -236,19 +236,55 @@ def migrate(paths: list[Path], write: bool = False) -> list[FileResult]:
     return results
 
 
-def main(argv: list[str] | None = None) -> int:
-    """Command-line entry point."""
+EXIT_OK = 0
+EXIT_USAGE = 2
+
+DESCRIPTION = """\
+Rewrite the mechanical parts of a Mesa model for Modelly and report the rest.
+
+Imports, agent constructors and a few model attributes are rewritten; what needs a
+decision (schedulers, legacy grids, batch runs, simulators) is listed with the guide
+section to read. Without --write nothing changes: the diff and report are printed."""
+
+EPILOG = f"""\
+examples:
+  python -m modelly.migrate my_model/            dry run: unified diff plus report
+  python -m modelly.migrate model.py agents.py   just these files
+  python -m modelly.migrate my_model/ --write    apply the rewrites in place
+  python -m modelly.lint my_model/               then check the result
+
+exit status:
+  {EXIT_OK}  done (lines left to review are reported, not an error)
+  {EXIT_USAGE}  usage error: bad arguments or an unreadable path
+
+guide: {GUIDE}"""
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """The argument parser, with examples and exit codes in its help."""
     parser = argparse.ArgumentParser(
         prog="python -m modelly.migrate",
-        description="Rewrite the mechanical parts of a Mesa model for Modelly and report the rest.",
+        description=DESCRIPTION,
+        epilog=EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("paths", nargs="+", type=Path, help="files or directories")
+    parser.add_argument(
+        "paths", nargs="+", type=Path, help="files or directories (searched for *.py)"
+    )
     parser.add_argument(
         "--write", action="store_true", help="apply the rewrites in place"
     )
-    args = parser.parse_args(argv)
+    return parser
 
-    results = migrate(args.paths, write=args.write)
+
+def main(argv: list[str] | None = None) -> int:
+    """Command-line entry point."""
+    args = build_parser().parse_args(argv)
+    try:
+        results = migrate(args.paths, write=args.write)
+    except OSError as error:
+        sys.stderr.write(f"modelly.migrate: {error}\n")
+        return EXIT_USAGE
     for result in results:
         if result.changed and not args.write:
             sys.stdout.write(render_diff(result))
@@ -257,7 +293,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.write(
             f"Wrote {sum(result.changed for result in results)} file(s).\n"
         )
-    return 0
+    return EXIT_OK
 
 
 if __name__ == "__main__":
