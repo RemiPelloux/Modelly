@@ -112,7 +112,7 @@ def _resolve_random(random: Random | None, first_agent: Agent | None) -> Random:
         UserWarning,
         stacklevel=3,
     )
-    return Random()
+    return Random()  # noqa: MDL001 (an empty set given no rng has no model to seed from)
 
 
 def _validate_at_most(at_most: int | float, size: int) -> int | float:

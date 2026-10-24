@@ -33,6 +33,16 @@ T = TypeVar("T", bound="Cell")
 RAISES = object()
 
 
+def _derived_random(cells: Mapping[Cell, list[CellAgent]]) -> Random | None:
+    """The generator of the first cell that has one, else the first agent's model's."""
+    for cell, agents in cells.items():
+        if cell.random is not None:
+            return cell.random
+        if agents:
+            return agents[0].model.random
+    return None
+
+
 class CellCollection[T: Cell]:
     """An immutable collection of cells.
 
@@ -42,9 +52,9 @@ class CellCollection[T: Cell]:
         random (Random) : The random number generator
 
     Notes:
-        A `UserWarning` is issued if `random=None`. You can resolve this warning by explicitly
-        passing a random number generator. In most cases, this will be the seeded random number
-        generator in the model. So, you would do `random=self.random` in a `Model` or `Agent` instance.
+        With `random=None` the collection takes the generator of its first cell that has one,
+        else the model generator of its first agent. A `UserWarning` is issued only when there
+        is neither; pass `random=self.random` from a `Model` or `Agent` to avoid it.
 
 
     """
@@ -58,7 +68,8 @@ class CellCollection[T: Cell]:
 
         Args:
             cells: cells to add to the collection
-            random: a seeded random number generator.
+            random: a seeded random number generator; None takes the cells' or their
+                agents' model generator.
         """
         if isinstance(cells, dict):
             self._cells = cells
@@ -71,12 +82,14 @@ class CellCollection[T: Cell]:
         )
 
         if random is None:
+            random = _derived_random(self._cells)
+        if random is None:
             warnings.warn(
                 "Random number generator not specified, this can make models non-reproducible. Please pass a random number generator explicitly",
                 UserWarning,
                 stacklevel=2,
             )
-            random = Random()
+            random = Random()  # noqa: MDL001 (no cell or agent has a seeded generator)
         self.random = random
 
     def __iter__(self):  # noqa

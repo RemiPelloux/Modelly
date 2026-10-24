@@ -92,7 +92,7 @@ class DiscreteSpace[T: Cell](ABC):
                 UserWarning,
                 stacklevel=2,
             )
-            random = Random()
+            random = Random()  # noqa: MDL001 (a space takes no model: only the rng passed in seeds it)
         self.random = random
         self.cell_klass = cell_klass
         self._empties = _EmptiesIndex()

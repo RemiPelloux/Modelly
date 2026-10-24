@@ -76,7 +76,7 @@ class ContinuousSpace[A: ContinuousSpaceAgent](NeighborQueriesMixin):
                 UserWarning,
                 stacklevel=2,
             )
-            random = Random()
+            random = Random()  # noqa: MDL001 (a space takes no model: only the rng passed in seeds it)
         self.random = random
 
         self.dimensions: np.array = np.asanyarray(dimensions)

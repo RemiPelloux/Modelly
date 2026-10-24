@@ -188,6 +188,8 @@ extend-ignore = [
   "ISC001", # ruff format asks to disable this feature
   "S311",   # Standard pseudo-random generators are not suitable for cryptographic purposes
 ]
+# `# noqa: MDL001` comments are for `python -m modelly.lint`, not ruff.
+external = ["MDL"]
 # Ignore all docstring errors in examples and tutorials
 per-file-ignores = {"modelly/examples/*"= ["D"], "benchmarks/playbooks/*" = ["D102", "D107", "E741"], "example.py" = ["D"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
 
