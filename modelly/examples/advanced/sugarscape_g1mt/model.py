@@ -27,6 +27,21 @@ def geometric_mean(list_of_prices):
     return np.exp(np.log(list_of_prices).mean())
 
 
+def trader_count(model):
+    """Number of traders alive."""
+    return len(model.agents)
+
+
+def trade_volume(model):
+    """Number of trades made this step, counted once per partner."""
+    return sum(len(a.trade_partners) for a in model.agents)
+
+
+def trade_price(model):
+    """Geometric mean of the prices of every trade this step."""
+    return geometric_mean(flatten([a.prices for a in model.agents]))
+
+
 class SugarScapeScenario(Scenario):
     """Sugarscape scenario class."""
 
@@ -62,11 +77,9 @@ class SugarscapeG1mt(modelly.Model):
         # initiate datacollector
         self.datacollector = modelly.DataCollector(
             model_reporters={
-                "#Traders": lambda m: len(m.agents),
-                "Trade Volume": lambda m: sum(len(a.trade_partners) for a in m.agents),
-                "Price": lambda m: geometric_mean(
-                    flatten([a.prices for a in m.agents])
-                ),
+                "#Traders": trader_count,
+                "Trade Volume": trade_volume,
+                "Price": trade_price,
             },
             agent_reporters={"Trade Network": "trade_partners"},
         )

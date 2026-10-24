@@ -7,6 +7,11 @@ from modelly.scenarios import Scenario
 from modelly.space import OrthogonalMooreGrid
 
 
+def cooperating_agents(model):
+    """Number of agents whose current move is to cooperate."""
+    return len([a for a in model.agents if a.move == "C"])
+
+
 class PrisonersDilemmaScenario(Scenario):
     """Scenario for Prisoner's Dilemma model."""
 
@@ -63,11 +68,7 @@ class PdGrid(modelly.Model):
         )
 
         self.datacollector = modelly.DataCollector(
-            {
-                "Cooperating_Agents": lambda m: len(
-                    [a for a in m.agents if a.move == "C"]
-                )
-            }
+            {"Cooperating_Agents": cooperating_agents}
         )
 
         self.running = True

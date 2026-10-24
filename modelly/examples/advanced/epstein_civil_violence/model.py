@@ -10,6 +10,16 @@ from modelly.scenarios import Scenario
 from modelly.space import OrthogonalMooreGrid, OrthogonalVonNeumannGrid
 
 
+def jail_sentence(agent):
+    """An agent's remaining jail term, or None for agents that are never jailed."""
+    return getattr(agent, "jail_sentence", None)
+
+
+def arrest_probability(agent):
+    """A citizen's estimated arrest probability, or None for cops."""
+    return getattr(agent, "arrest_probability", None)
+
+
 # Define a typed scenario subclass with defaults
 class EpsteinScenario(Scenario):
     """Scenario parameters for Epstein Civil Violence model."""
@@ -69,8 +79,8 @@ class EpsteinCivilViolence(modelly.Model):
             "arrested": CitizenState.ARRESTED.name,
         }
         agent_reporters = {
-            "jail_sentence": lambda a: getattr(a, "jail_sentence", None),
-            "arrest_probability": lambda a: getattr(a, "arrest_probability", None),
+            "jail_sentence": jail_sentence,
+            "arrest_probability": arrest_probability,
         }
         self.datacollector = modelly.DataCollector(
             model_reporters=model_reporters, agent_reporters=agent_reporters

@@ -16,7 +16,7 @@ class EpsteinAgent(modelly.space.CellAgent):
         Look around and see who my neighbors are
         """
         self.neighborhood = self.cell.get_neighborhood(radius=self.scenario.cop_vision)
-        self.neighbors = self.neighborhood.agents
+        self.neighbors = list(self.neighborhood.agents)
         self.empty_neighbors = self.neighborhood.empties.cells
 
     def move(self):
