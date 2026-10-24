@@ -121,6 +121,15 @@ MODELS: tuple[ZooModel, ...] = (
         "Gini against the inverse-gamma law, rising with the noise-to-exchange ratio",
     ),
     ZooModel(
+        "deffuant",
+        "Deffuant bounded-confidence opinion dynamics",
+        "sociology",
+        "Deffuant",
+        "DeffuantScenario",
+        "Random pairs of agents compromise when their opinions are close enough.",
+        "consensus for a wide confidence bound, about 1/(2 eps) clusters for a narrow one",
+    ),
+    ZooModel(
         "nagel_schreckenberg",
         "Nagel-Schreckenberg traffic",
         "transport",
