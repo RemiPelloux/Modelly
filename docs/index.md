@@ -48,7 +48,7 @@ myst:
 <div class="ml-proof">
 <p><strong>Same answers</strong>Every variant runs the same seeds. No summary statistic differs from Mesa's under Welch's t-test at p&nbsp;&lt;&nbsp;0.01.</p>
 <p><strong>Same seed, same run</strong>The first seed runs twice per implementation and must reproduce exactly.</p>
-<p><strong>Same code, too</strong>A research model ported line for line from Mesa 2.3, with nothing vectorised, runs 12% faster on Modelly 1.5.2 with bit-identical output, from the compiled random core alone.</p>
+<p><strong>Same code, too</strong>A research model ported line for line from Mesa 2.3, with nothing vectorised, runs 12% faster on Modelly with bit-identical output, from the compiled random core alone.</p>
 <p><strong>Re-run it yourself</strong>The playbooks and the runner are in <a href="https://github.com/RemiPelloux/Modelly/tree/main/benchmarks/playbooks">benchmarks/playbooks</a>; the method is on the <a href="performance.html">performance page</a>.</p>
 </div>
 </div>
