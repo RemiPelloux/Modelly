@@ -1,21 +1,10 @@
 name: Release
+# Wheels only on a release tag (which also publishes) or a manual run (build only).
 on:
   push:
     tags:
     - '*'
-    branches:
-    - main
-    - release**
-    paths-ignore:
-      - '**.md'
-      - '**.rst'
-  pull_request:
-    paths-ignore:
-      - '**.md'
-      - '**.rst'
   workflow_dispatch:
-  schedule:
-    - cron: '0 6 * * 1'
 
 permissions:
   contents: read
