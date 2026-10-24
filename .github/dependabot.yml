@@ -4,5 +4,10 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      # Check for updates to GitHub Actions every week
-      interval: "weekly"
+      # Check for updates to GitHub Actions every month
+      interval: "monthly"
+    groups:
+      # Bundle every action bump into a single pull request
+      github-actions:
+        patterns:
+          - "*"
