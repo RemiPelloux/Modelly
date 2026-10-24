@@ -104,14 +104,21 @@ def compile_model_reporter(name: str, reporter: Any) -> Callable[[Any], Any]:
         return reporter
     if isinstance(reporter, str):
         return partial(getattr_or_none, name=reporter)
+    # Partials of module functions rather than closures, so models pickle.
     if isinstance(reporter, list):
+        return partial(_call_list, name=name, reporter=reporter)
+    return partial(_call_without_model, reporter=reporter)  # e.g. a bound method
 
-        def call_list(model):
-            check_list_reporter(name, reporter)
-            return reporter[0](*reporter[1])
 
-        return call_list
-    return lambda model: reporter()  # a bound method or other callable
+def _call_list(model: Any, name: str, reporter: list) -> Any:
+    """Call a ``[function, [params]]`` model reporter."""
+    check_list_reporter(name, reporter)
+    return reporter[0](*reporter[1])
+
+
+def _call_without_model(model: Any, reporter: Callable[[], Any]) -> Any:
+    """Call a reporter that takes no model argument, such as a bound method."""
+    return reporter()
 
 
 def getattr_or_none(model: Any, name: str) -> Any:
@@ -144,31 +151,34 @@ def make_agent_reporter(name: str, reporter: Any) -> Callable[[Any], Any]:
     the C fast path. ``[function, [params]]`` lists are bound. Anything else is
     already a suitable callable and is returned as is.
     """
+    # Partials of module functions rather than closures, so models pickle.
     if isinstance(reporter, str):
-        attribute = reporter
-
-        def attr_reporter(agent):
-            try:
-                return getattr(agent, attribute)
-            except AttributeError as e:
-                raise AttributeError(
-                    f"Agent {agent.unique_id} of type {type(agent).__name__} "
-                    f"has no attribute '{attribute}' (reporter: '{name}')"
-                ) from e
-
-        attr_reporter._modelly_attribute = attribute
+        attr_reporter = partial(_agent_attribute, attribute=reporter, name=name)
+        attr_reporter._modelly_attribute = reporter
         return attr_reporter
 
     if isinstance(reporter, list):
         check_list_reporter(name, reporter)
         func, params = reporter
-
-        def func_with_params(agent):
-            return func(agent, *params)
-
-        return func_with_params
+        return partial(_call_with_params, func=func, params=params)
 
     return reporter
+
+
+def _agent_attribute(agent: Any, attribute: str, name: str) -> Any:
+    """Read an agent attribute, naming the reporter when it is missing."""
+    try:
+        return getattr(agent, attribute)
+    except AttributeError as e:
+        raise AttributeError(
+            f"Agent {agent.unique_id} of type {type(agent).__name__} "
+            f"has no attribute '{attribute}' (reporter: '{name}')"
+        ) from e
+
+
+def _call_with_params(agent: Any, func: Callable[..., Any], params: list) -> Any:
+    """Call a ``[function, [params]]`` agent reporter."""
+    return func(agent, *params)
 
 
 def collect_agent_rows(
