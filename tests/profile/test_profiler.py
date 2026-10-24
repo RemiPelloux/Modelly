@@ -227,13 +227,29 @@ def test_report_without_steps():
 
 
 def test_growing_scan_points_at_mdl101():
-    """A per-agent cost growing with N points at MDL101."""
+    """A dominant loop whose per-agent cost grows with N points at MDL101.
+
+    The hint is fed synthetic timings: a real run's slope depends on the machine's
+    load, which made this test flaky on shared CI runners.
+    """
+    key = ("do", "Scanner", "step")
+    records = []
+    for n in (50, 100, 200, 400, 800):
+        record = StepRecord(len(records) + 1, float(len(records) + 1), n)
+        record.ops[key] = [1, n, n * n * 1e-8, 0.0]  # O(N) per agent
+        record.wall = record.ops[key][2]
+        records.append(record)
+    found = hints(records, rows(records), profiled_wall(records))
+    assert any("MDL101" in hint and "Scanner.step (do)" in hint for hint in found)
+
+
+def test_growing_population_is_profiled_per_loop():
+    """A run whose population grows reports its loop with agents per call."""
     model = Crowd(rng=0)
     with Profiler(model) as prof:
         model.run_for(8)
-    text = prof.report()
-    assert "MDL101" in text
-    assert "Scanner.step (do)" in text
+    assert "Scanner.step (do)" in prof.report()
+    assert {record.agents for record in prof.records} != {50}
 
 
 def test_hand_written_loop_points_at_mdl103():
