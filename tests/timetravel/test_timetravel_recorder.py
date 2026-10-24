@@ -9,6 +9,7 @@ import pytest
 from timetravel_support import EXAMPLES, Drift, DriftScenario, fingerprint
 
 from modelly import Model
+from modelly.core.checkpoint import checkpoint_bytes
 from modelly.timetravel import Recorder
 
 REPO = Path(__file__).resolve().parents[2]
@@ -96,7 +97,8 @@ def test_budget_evicts_the_oldest_but_keeps_the_first():
     assert rec.steps[0] == 0
     assert rec.steps[-1] == 40
     assert len(rec.steps) <= 3
-    assert rec.nbytes <= 3 * one * 1.2
+    # The budget may be passed by the newest checkpoint only, which is always kept.
+    assert rec.nbytes <= 3 * one + len(checkpoint_bytes(model))
     assert fingerprint(rec.at(12)) == straight("boltzmann", 12)
 
 
