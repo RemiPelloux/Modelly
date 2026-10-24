@@ -157,16 +157,19 @@ def _dump_payload(model: Model) -> bytes:
     return buffer.getvalue()
 
 
-def save_model(model: Model, path: str | Path, *, compress: bool = False) -> None:
-    """Write ``model`` to ``path`` as a checkpoint (see :meth:`Model.save`)."""
+def checkpoint_bytes(model: Model, *, compress: bool = False) -> bytes:
+    """``model`` as the bytes of a checkpoint file: header, then the pickle."""
     payload = _dump_payload(model)
     compression = GZIP if compress else None
     if compress:
         payload = gzip.compress(payload)
-    with Path(path).open("wb") as file:
-        file.write(MAGIC)
-        file.write(json.dumps(_header(compression)).encode() + b"\n")
-        file.write(payload)
+    header = json.dumps(_header(compression)).encode() + b"\n"
+    return MAGIC + header + payload
+
+
+def save_model(model: Model, path: str | Path, *, compress: bool = False) -> None:
+    """Write ``model`` to ``path`` as a checkpoint (see :meth:`Model.save`)."""
+    Path(path).write_bytes(checkpoint_bytes(model, compress=compress))
 
 
 def _read_header(file: BinaryIO, path: str | Path) -> dict[str, Any]:
@@ -204,9 +207,19 @@ def _restore_event_ids(next_event_id: int) -> None:
 def load_model(path: str | Path) -> Model:
     """Read a checkpoint written by :func:`save_model` (see :meth:`Model.load`)."""
     with Path(path).open("rb") as file:
-        header = _read_header(file, path)
-        _check_compatible(header, path)
-        payload = file.read()
+        return _load(file, path)
+
+
+def model_from_bytes(data: bytes, source: str = "checkpoint") -> Model:
+    """The model held by checkpoint bytes from :func:`checkpoint_bytes`."""
+    return _load(io.BytesIO(data), source)
+
+
+def _load(file: BinaryIO, path: str | Path) -> Model:
+    """Check the header of an open checkpoint, then unpickle the model."""
+    header = _read_header(file, path)
+    _check_compatible(header, path)
+    payload = file.read()
     if header.get("compression") == GZIP:
         payload = gzip.decompress(payload)
     state = pickle.loads(payload)  # noqa: S301 - documented: trusted files only
