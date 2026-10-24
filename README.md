@@ -586,6 +586,7 @@ git clone https://github.com/RemiPelloux/Modelly.git && cd Modelly
 pip install -e ".[dev]"
 bash scripts/ci-local.sh          # lint, format, tests, size audit: the same gate as CI
 bash scripts/ci-local.sh --list   # stage names, run a subset with: ci-local.sh lint test
+python -m modelly.dev gate        # the same gate without bash: Windows, macOS and Linux
 bash scripts/build-native.sh      # compile modelly/_native in place; MODELLY_PURE_PYTHON=1 forces the Python twins
 ```
 

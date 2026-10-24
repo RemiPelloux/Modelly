@@ -60,14 +60,28 @@ commits without attribution trailers. Read it once before your first pull reques
 the Python rules for code under `modelly/` (layout and imports, public API, hot paths,
 determinism, native code, measuring performance).
 
-The whole gate runs locally and is what CI runs:
+The whole gate runs locally and is what CI runs. It has two front ends with the same stages
+(lint, format, test, audit), the same skips when the optional `solara` extra is missing, and the
+same coverage badge refresh:
 
 ```bash
+# Linux and macOS (bash)
 bash scripts/ci-local.sh                 # lint, format, tests, size audit
 bash scripts/ci-local.sh --list          # stage names
 bash scripts/ci-local.sh lint test       # a subset while iterating
 bash scripts/audit-pelloux.sh            # size audit alone
 ```
+
+```powershell
+# Any operating system, Windows included: no bash or WSL needed
+python -m modelly.dev gate               # lint, format, tests, size audit
+python -m modelly.dev gate --list        # stage names
+python -m modelly.dev gate lint test     # a subset while iterating
+python scripts/pelloux_audit.py audit    # size audit alone
+```
+
+`python -m modelly.dev gate` runs every stage with the interpreter that starts it (`python -m
+ruff`, `python -m pytest`), so run it from the environment where you installed `.[dev]`.
 
 Files that were already over the size limit are listed in `pelloux-baseline.json`; they may
 shrink but never grow. Only re-seed the baseline (`bash scripts/seed-pelloux-baseline.sh`) when a
@@ -216,8 +230,9 @@ Edit `tools/branding/generate_assets.py` and commit both the generator and the r
    the changelog. Use the description to explain *why*, not *what* — the diff already shows what.
 5. Fill in the [pull request template](.github/pull_request_template.md) and link the issue it
    closes (`Closes #123`).
-6. Make sure `bash scripts/ci-local.sh` passes locally before asking for review. It runs the same
-   lint, format, test and size-audit stages as CI.
+6. Make sure `bash scripts/ci-local.sh` (or `python -m modelly.dev gate`, on any operating
+   system) passes locally before asking for review. It runs the same lint, format, test and
+   size-audit stages as CI.
 
 `main` only moves through pull requests: it cannot be force-pushed or deleted, history stays
 linear, and the branch is deleted automatically after the merge.

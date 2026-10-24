@@ -10,6 +10,8 @@
 # are skipped when it is missing; the hosted build workflow always runs them.
 # The test stage rewrites docs/images/badges/coverage.svg: commit it with the
 # change.
+# python -m modelly.dev gate runs the same stages without bash (any OS);
+# keep the two in step (tests/test_dev_gate.py checks the stage list).
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
