@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import ast
 
-from modelly.lint.rules import NUMPY_SEEDED
+from modelly.lint.rules import NUMPY_SEEDED, dotted
 
 
 def unseeded(call: ast.Call) -> bool:
@@ -55,6 +55,20 @@ def removed_in_loop(loop: ast.For) -> ast.Call | None:
         if not (isinstance(receiver, ast.Name) and receiver.id in own):
             return node
     return None
+
+
+def declared_shared(statement: ast.stmt) -> bool:
+    """MDL004 exemptions: ``__slots__``, or an annotation that says ``ClassVar``."""
+    if isinstance(statement, ast.AnnAssign):
+        annotation = statement.annotation
+        if isinstance(annotation, ast.Subscript):
+            annotation = annotation.value
+        if dotted(annotation)[-1:] == ["ClassVar"]:
+            return True
+        targets = [statement.target]
+    else:
+        targets = getattr(statement, "targets", [])
+    return any(isinstance(t, ast.Name) and t.id == "__slots__" for t in targets)
 
 
 def column_names(tree: ast.AST) -> set[str]:

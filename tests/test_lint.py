@@ -131,6 +131,8 @@ GOOD = [
     "from numpy.random import Generator, PCG64",
     "class A(Agent):\n    def step(self):\n        self.g = self.random.random()",
     "start = time.time()",
+    "class A(Agent):\n    __slots__ = ['x', 'y']",
+    "from typing import ClassVar\nclass A(Agent):\n    MAP: ClassVar[dict] = {}",
     "class A(Agent):\n    def step(self):\n        t0 = time.perf_counter()",
     "class A(Agent):\n    def __hash__(self):\n        return hash(self.unique_id)",
     "order = sorted(agents, key=lambda a: a.unique_id)",

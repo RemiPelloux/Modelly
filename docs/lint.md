@@ -101,7 +101,8 @@ for a in sorted(set(neighbours), key=lambda a: a.unique_id):
 ### MDL004: mutable class attribute on an agent
 
 A list, dict or set in the class body is created once, with the class, and shared by every
-agent: one agent's append shows up in all of them.
+agent: one agent's append shows up in all of them. `__slots__` and attributes annotated
+`ClassVar[...]` are shared on purpose and not reported.
 
 ```python
 class Trader(Agent):

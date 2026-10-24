@@ -7,6 +7,7 @@ import ast
 from modelly.lint.imports import Imports
 from modelly.lint.patterns import (
     column_names,
+    declared_shared,
     is_global_random,
     removed_in_loop,
     sorts_by_id,
@@ -95,14 +96,17 @@ class Checker(ast.NodeVisitor):
         return None
 
     def check_class_attributes(self, node: ast.ClassDef) -> None:
-        """MDL004: a list, dict or set in an agent's class body is one object for all agents."""
+        """MDL004: a list, dict or set in an agent's class body is one object for all agents.
+
+        ``__slots__`` and attributes annotated ``ClassVar`` are shared on purpose.
+        """
         for statement in node.body:
             value = (
                 statement.value
                 if isinstance(statement, ast.Assign | ast.AnnAssign)
                 else None
             )
-            if is_mutable_literal(value):
+            if is_mutable_literal(value) and not declared_shared(statement):
                 self.hit(statement, "MDL004")
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # noqa: D102
