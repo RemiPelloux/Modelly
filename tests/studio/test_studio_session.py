@@ -10,7 +10,6 @@ pytest.importorskip("solara")
 from modelly.core.model import Model
 from modelly.examples import (
     BoltzmannWealth,
-    EpsteinCivilViolence,
     WolfSheep,
 )
 from modelly.examples.advanced.wolf_sheep.model import WolfSheepScenario
@@ -18,7 +17,7 @@ from modelly.studio import data
 from modelly.studio.config import StudioConfig
 from modelly.studio.session import StudioSession
 from modelly.studio.timeline import GuardedRecorder, ReplayTimeline
-from modelly.timetravel.snapshot import agent_state, model_state
+from modelly.timetravel.snapshot import model_state
 
 WOLF_SHEEP = "modelly.examples.advanced.wolf_sheep.model:WolfSheep"
 SEED = 7
@@ -114,25 +113,33 @@ def test_replay_with_a_new_seed_reseeds():
     assert model_state(session.model) != model_state(straight(6))
 
 
+class Unpicklable(Model):
+    """Holds a lambda, so no checkpoint of it can be written."""
+
+    def __init__(self, rng=None):
+        """A counter driven by the model's generator, and a lambda pickle cannot save."""
+        super().__init__(rng=rng)
+        self.draw = lambda: self.random.random()  # noqa: PLW0108 - the lambda is the point
+        self.total = 0.0
+
+    def step(self):
+        """Add one draw."""
+        self.total += self.draw()
+
+
+UNPICKLABLE = "tests.studio.test_studio_session:Unpicklable"
+
+
 def test_a_model_that_cannot_be_checkpointed_replays():
-    """Epstein holds a lambda: the scrubber replays the run from its start instead."""
-    target = (
-        "modelly.examples.advanced.epstein_civil_violence.model:EpsteinCivilViolence"
-    )
-    session = session_for(EpsteinCivilViolence, target)
+    """A model holding a lambda: the scrubber replays the run from its start instead."""
+    session = session_for(Unpicklable, UNPICKLABLE)
     assert isinstance(session.timeline, ReplayTimeline)
     assert session.replaying
     session.step(6)
     session.scrub(3)
-    again = EpsteinCivilViolence(
-        scenario=type(session.model.scenario)(rng=SEED, **session.values)
-    )
+    again = Unpicklable(rng=SEED)
     again.run_for(3)
-    # Epstein's scenario declares an int ``rng`` field, so model.rng is not a Generator
-    # and model_state cannot digest it: compare the agents and the collected data.
-    shown = {a.unique_id: agent_state(a) for a in session.shown.agents}
-    assert shown == {a.unique_id: agent_state(a) for a in again.agents}
-    assert session.shown.datacollector.model_vars == again.datacollector.model_vars
+    assert session.shown.total == again.total
     assert any("no checkpoints" in line for line in session.log)
 
 
