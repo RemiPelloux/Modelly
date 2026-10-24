@@ -186,3 +186,29 @@ For detailed tutorials, please refer to:
    :undoc-members:
    :show-inheritance:
 ```
+
+## Publication styles and palettes
+
+How to use them is in [Figures and animations](../figures.md).
+
+```{eval-rst}
+.. automodule:: modelly.viz.styles
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.viz.palettes
+   :members:
+```
+
+## Headless figures and animations
+
+```{eval-rst}
+.. automodule:: modelly.viz.mpl.figure
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.viz.animation
+   :members:
+```

@@ -197,6 +197,8 @@ Gallery <gallery>
 Domain tutorials <tutorials/domains/index>
 Course <course/index>
 Plugins <plugins>
+Studio <studio>
+Figures and animations <figures>
 Vectorised step phases <vectorised_phases>
 Roadmap <roadmap/index>
 ```
