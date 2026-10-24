@@ -95,4 +95,15 @@ PLAYBOOKS = {
             "sterile_ratio": 1.0,
         },
     },
+    "schelling": {
+        "title": "Schelling segregation: unhappy residents move to random empty cells",
+        "variants": {
+            "mesa": "mesa_model",
+            "modelly-cells": "modelly_cells",
+            "modelly": "modelly_model",
+        },
+        "steps": 40,
+        "sizes": {"small": {"side": 40}, "large": {"side": 200}},
+        "params": {"density": 0.8, "minority": 0.3, "homophily": 3},
+    },
 }
