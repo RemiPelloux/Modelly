@@ -67,6 +67,15 @@ MODELS: tuple[ZooModel, ...] = (
         "attack rate against the final-size relation, within the CLT bound",
     ),
     ZooModel(
+        "forest_fire",
+        "Forest fire and succession on a raster",
+        "ecology",
+        "ForestFire",
+        "ForestScenario",
+        "Fire spreading through a tree raster, with optional regrowth and lightning.",
+        "burnt share jumps at the site-percolation threshold",
+    ),
+    ZooModel(
         "order_book",
         "Continuous double auction (zero-intelligence order book)",
         "economics",
