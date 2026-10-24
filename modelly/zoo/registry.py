@@ -67,6 +67,15 @@ MODELS: tuple[ZooModel, ...] = (
         "attack rate against the final-size relation, within the CLT bound",
     ),
     ZooModel(
+        "energy_budget",
+        "Individual-based population with energy budgets",
+        "ecology",
+        "EnergyBudget",
+        "EnergyScenario",
+        "Foragers that eat, pay a metabolic cost, reproduce and starve on a resource grid.",
+        "mean density against the carrying capacity from the energy balance",
+    ),
+    ZooModel(
         "forest_fire",
         "Forest fire and succession on a raster",
         "ecology",
