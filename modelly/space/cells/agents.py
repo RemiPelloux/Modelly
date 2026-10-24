@@ -106,11 +106,12 @@ class FixedAgent(Agent, FixedCell):
             AgentRemovedError: when the agent has no cell: removed already, or never placed.
         """
         super().remove()
-        if self._modelly_cell is None:
+        cell = self._modelly_cell  # read once: the check costs nothing over self.cell
+        if cell is None:
             raise AgentRemovedError(
                 self, "it is in no cell (removed already, or never placed)"
             )
-        self.cell.remove_agent(self)
+        cell.remove_agent(self)
         self._modelly_cell = None
 
 
