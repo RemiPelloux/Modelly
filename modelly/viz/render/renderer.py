@@ -6,36 +6,27 @@ backends, supporting various space types and visualization components.
 
 from __future__ import annotations
 
-import warnings
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
     from modelly.viz.components import PropertyLayerStyle
 
-import altair as alt
-import pandas as pd
-
 import modelly
-from modelly.space import (
-    OrthogonalMooreGrid,
-    OrthogonalVonNeumannGrid,
-    VoronoiGrid,
+from modelly.viz.render.altair_canvas import redraw_altair_canvas
+from modelly.viz.render.drawers.base import Network
+from modelly.viz.render.legacy_args import (
+    apply_deprecated_agent_args,
+    apply_deprecated_layer_portrayal,
+    apply_deprecated_render_args,
+    apply_deprecated_structure_args,
 )
-from modelly.space.continuous import ContinuousSpace
-from modelly.viz.altair.backend import AltairBackend
-from modelly.viz.mpl.backend import MatplotlibBackend
-from modelly.viz.render.drawers import (
-    ContinuousSpaceDrawer,
-    HexSpaceDrawer,
-    NetworkSpaceDrawer,
-    OrthogonalSpaceDrawer,
-    VoronoiSpaceDrawer,
+from modelly.viz.render.portrayal import as_property_layer_callable
+from modelly.viz.render.space_setup import (
+    make_backend,
+    make_space_drawer,
+    map_coordinates,
 )
-
-OrthogonalGrid = OrthogonalMooreGrid | OrthogonalVonNeumannGrid
-HexGrid = modelly.space.HexGrid
-Network = modelly.space.Network
 
 
 class SpaceRenderer:
@@ -76,18 +67,7 @@ class SpaceRenderer:
         self._post_process_applied = False
 
         self.backend = backend
-
-        if backend == "matplotlib":
-            self.backend_renderer = MatplotlibBackend(
-                self.space_drawer,
-            )
-        elif backend == "altair":
-            self.backend_renderer = AltairBackend(
-                self.space_drawer,
-            )
-        else:
-            raise ValueError(f"Unsupported backend: {backend}")
-
+        self.backend_renderer = make_backend(backend, self.space_drawer)
         self.backend_renderer.initialize_canvas()
 
     def _get_space_drawer(self):
@@ -99,23 +79,7 @@ class SpaceRenderer:
         Raises:
             ValueError: If the space type is not supported.
         """
-        if isinstance(self.space, HexGrid):
-            return HexSpaceDrawer(self.space)
-        elif isinstance(self.space, OrthogonalGrid):
-            return OrthogonalSpaceDrawer(self.space)
-        elif isinstance(
-            self.space,
-            modelly.space.continuous.ContinuousSpace,
-        ):
-            return ContinuousSpaceDrawer(self.space)
-        elif isinstance(self.space, VoronoiGrid):
-            return VoronoiSpaceDrawer(self.space)
-        elif isinstance(self.space, Network):
-            return NetworkSpaceDrawer(self.space)
-        raise ValueError(
-            f"Unsupported space type: {type(self.space).__name__}. "
-            "Supported types are OrthogonalGrid, HexGrid, ContinuousSpace, VoronoiGrid, and Network."
-        )
+        return make_space_drawer(self.space)
 
     def _map_coordinates(self, arguments):
         """Map agent coordinates to appropriate space coordinates.
@@ -126,26 +90,7 @@ class SpaceRenderer:
         Returns:
             dict: Dictionary with mapped coordinates appropriate for the space type.
         """
-        mapped_arguments = arguments.copy()
-
-        if isinstance(
-            self.space, OrthogonalGrid | VoronoiGrid | ContinuousSpace | Network
-        ):
-            # Use the coordinates directly for Orthogonal grids, Voronoi grids and Continuous spaces
-            mapped_arguments["loc"] = arguments["loc"].astype(float)
-
-        elif isinstance(self.space, HexGrid):
-            # Map rectangular coordinates to hexagonal grid coordinates
-            loc = arguments["loc"].astype(float)
-            if loc.size > 0:
-                # Calculate hexagon centers
-                loc[:, 0] = loc[:, 0] * self.space_drawer.x_spacing + (
-                    (loc[:, 1] - 1) % 2
-                ) * (self.space_drawer.x_spacing / 2)
-                loc[:, 1] = loc[:, 1] * self.space_drawer.y_spacing
-            mapped_arguments["loc"] = loc
-
-        return mapped_arguments
+        return map_coordinates(self.space, self.space_drawer, arguments)
 
     def setup_structure(self, **kwargs) -> SpaceRenderer:
         """Setup the space structure without drawing.
@@ -208,14 +153,7 @@ class SpaceRenderer:
         Returns:
             The visual representation of the space structure.
         """
-        if kwargs:
-            warnings.warn(
-                "Passing kwargs to draw_structure() is deprecated. "
-                "Use setup_structure(**kwargs) before calling draw_structure().",
-                PendingDeprecationWarning,
-                stacklevel=2,
-            )
-            self.draw_space_kwargs.update(kwargs)
+        apply_deprecated_structure_args(self, kwargs)
 
         # Network-specific: the space instance is replaced on every model reset.
         # If the drawer still references the old space its layout positions belong
@@ -242,22 +180,7 @@ class SpaceRenderer:
         Returns:
             The visual representation of the agents.
         """
-        if agent_portrayal is not None:
-            warnings.warn(
-                "Passing agent_portrayal to draw_agents() is deprecated and will be removed in a future release. "
-                "Use setup_agents(agent_portrayal, **kwargs) before calling draw_agents().",
-                FutureWarning,
-                stacklevel=2,
-            )
-            self.agent_portrayal = agent_portrayal
-        if kwargs:
-            warnings.warn(
-                "Passing kwargs to draw_agents() is deprecated. "
-                "Use setup_agents(**kwargs) before calling draw_agents().",
-                PendingDeprecationWarning,
-                stacklevel=2,
-            )
-            self.draw_agent_kwargs.update(kwargs)
+        apply_deprecated_agent_args(self, agent_portrayal, kwargs)
 
         # Prepare data for agent plotting
         arguments = self.backend_renderer.collect_agent_data(
@@ -284,68 +207,12 @@ class SpaceRenderer:
         Raises:
             Exception: If no property layers are found on the space.
         """
-        if property_layer_portrayal is not None:
-            warnings.warn(
-                "Passing property_layer_portrayal to draw_property_layer() is deprecated and will be removed in a future release. "
-                "Use setup_property_layer(property_layer_portrayal) before calling draw_property_layer().",
-                FutureWarning,
-                stacklevel=2,
-            )
-            self.property_layer_portrayal = property_layer_portrayal
-
-        # Import here to avoid circular imports
-        from modelly.viz.components import PropertyLayerStyle  # noqa: PLC0415
-
-        def _dict_to_callable(portrayal_dict):
-            """Convert legacy dict portrayal to callable.
-
-            Args:
-                portrayal_dict (dict): Dictionary with portrayal parameters.
-
-            Returns:
-                Callable: Function that returns PropertyLayerStyle.
-            """
-
-            def style_callable(layer_object):
-                layer_name = layer_object
-                params = portrayal_dict.get(layer_name)
-
-                warnings.warn(
-                    (
-                        "The property_layer_portrayal dict is deprecated and will be removed in a future release. "
-                        "Please use a callable that returns a PropertyLayerStyle instance instead. "
-                        "For more information, refer to the migration guide: "
-                    ),
-                    FutureWarning,
-                    stacklevel=2,
-                )
-
-                if params is None:
-                    return None
-
-                return PropertyLayerStyle(
-                    color=params.get("color"),
-                    colormap=params.get("colormap"),
-                    alpha=params.get("alpha", PropertyLayerStyle.alpha),
-                    vmin=params.get("vmin"),
-                    vmax=params.get("vmax"),
-                    colorbar=params.get("colorbar", PropertyLayerStyle.colorbar),
-                )
-
-            return style_callable
+        apply_deprecated_layer_portrayal(self, property_layer_portrayal)
 
         property_layers = self.space.property_layers
-
-        # Convert portrayal to callable if needed
-        if isinstance(self.property_layer_portrayal, dict):
-            self.property_layer_portrayal = _dict_to_callable(
-                self.property_layer_portrayal
-            )
-        elif isinstance(self.property_layer_portrayal, PropertyLayerStyle):
-            # Capture the style instance to avoid circular reference
-            style = self.property_layer_portrayal
-            self.property_layer_portrayal = lambda _: style
-        # else: already a callable, use as-is
+        self.property_layer_portrayal = as_property_layer_callable(
+            self.property_layer_portrayal
+        )
 
         number_of_props = sum([1 for layer in property_layers if layer != "empty"])
         if number_of_props < 1:
@@ -369,29 +236,9 @@ class SpaceRenderer:
             or property_layer_portrayal is not None
             or kwargs
         ):
-            warnings.warn(
-                "Passing parameters to render() is deprecated. "
-                "Use setup_structure(), setup_agents(), and setup_property_layer() before calling render().",
-                PendingDeprecationWarning,
-                stacklevel=2,
+            apply_deprecated_render_args(
+                self, agent_portrayal, property_layer_portrayal, kwargs
             )
-            if agent_portrayal is not None:
-                self.agent_portrayal = agent_portrayal
-            if property_layer_portrayal is not None:
-                self.property_layer_portrayal = property_layer_portrayal
-
-            deprecated_kwargs_map = {
-                "space_kwargs": self.draw_space_kwargs,
-                "agent_kwargs": self.draw_agent_kwargs,
-            }
-            for key, target_dict in deprecated_kwargs_map.items():
-                if key in kwargs:
-                    value = kwargs.pop(key)
-                    if isinstance(value, dict):
-                        target_dict.update(value)
-
-            # Update with any remaining kwargs (now that the dangerous ones are removed)
-            self.draw_space_kwargs.update(kwargs)
 
         if self.space_mesh is None:
             self.draw_structure()
@@ -419,52 +266,7 @@ class SpaceRenderer:
             return ax
 
         elif self.backend == "altair":
-            structure = self.space_mesh if self.space_mesh else None
-            agents = self.agent_mesh if self.agent_mesh else None
-            prop_base, prop_cbar = self.property_layer_mesh or (None, None)
-
-            if self.space_mesh:
-                structure = self.draw_structure()
-            if self.agent_mesh:
-                agents = self.draw_agents()
-            if self.property_layer_mesh:
-                prop_base, prop_cbar = self.draw_property_layer()
-
-            spatial_charts_list = [
-                chart for chart in [structure, prop_base, agents] if chart
-            ]
-
-            main_spatial = None
-            if spatial_charts_list:
-                main_spatial = (
-                    spatial_charts_list[0]
-                    if len(spatial_charts_list) == 1
-                    else alt.layer(*spatial_charts_list)
-                )
-
-            # Determine final chart by combining with color bar if present
-            final_chart = None
-            if main_spatial and prop_cbar:
-                final_chart = alt.vconcat(main_spatial, prop_cbar).configure_view(
-                    stroke=None
-                )
-            elif main_spatial:  # Only main_spatial, no prop_cbar
-                final_chart = main_spatial
-            elif prop_cbar:  # Only prop_cbar, no main_spatial
-                final_chart = prop_cbar
-                final_chart = final_chart.configure_view(grid=False)
-
-            if final_chart is None:
-                # If no charts are available, return an empty chart
-                final_chart = (
-                    alt.Chart(pd.DataFrame())
-                    .mark_point()
-                    .properties(width=450, height=350)
-                )
-
-            final_chart = final_chart.configure_view(stroke="black", strokeWidth=1.5)
-
-            return final_chart
+            return redraw_altair_canvas(self)
 
     @property
     def post_process(self):

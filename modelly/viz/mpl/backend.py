@@ -1,15 +1,9 @@
 # noqa: D100
-import os
 import warnings
-from dataclasses import fields
 
 import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib.cm import ScalarMappable
-from matplotlib.collections import PolyCollection
-from matplotlib.colors import LinearSegmentedColormap, Normalize, to_rgba
 from matplotlib.figure import Figure
-from matplotlib.offsetbox import AnnotationBbox, OffsetImage
+from matplotlib.offsetbox import OffsetImage
 from PIL import Image
 
 import modelly
@@ -18,7 +12,27 @@ from modelly.space import (
     OrthogonalVonNeumannGrid,
 )
 from modelly.space.base import DiscreteSpace, space_agents
-from modelly.viz.mpl.space import _to_numpy_argument_array
+from modelly.viz.mpl.agent_data import (
+    portrayal_style_defaults,
+    rows_to_arguments,
+    snapshot_style,
+    style_from_dict,
+    warn_dict_portrayal,
+)
+from modelly.viz.mpl.layers import (
+    add_layer_colorbar,
+    draw_hex_layer,
+    draw_orthogonal_layer,
+    layer_style,
+)
+from modelly.viz.mpl.scatter import (
+    ScatterData,
+    add_image_artists,
+    is_image_marker,
+    scatter_by_zorder,
+    validate_edge_arguments,
+    zoom_factor,
+)
 from modelly.viz.render.backend import AbstractRenderer
 
 OrthogonalGrid = OrthogonalMooreGrid | OrthogonalVonNeumannGrid
@@ -26,6 +40,7 @@ HexGrid = modelly.space.HexGrid
 
 
 CORRECTION_FACTOR_MARKER_ZOOM = 0.01
+_IGNORED_MSG = "The following keys were ignored: "
 
 
 class MatplotlibBackend(AbstractRenderer):
@@ -82,130 +97,32 @@ class MatplotlibBackend(AbstractRenderer):
         Returns:
             dict: Dictionary containing agent plotting data arrays.
         """
-        # Initialize data collection arrays
-        arguments = {
-            "loc": [],
-            "s": [],
-            "c": [],
-            "marker": [],
-            "zorder": [],
-            "alpha": [],
-            "edgecolors": [],
-            "linewidths": [],
-        }
-        # Import here to prevent circular imports
-        from modelly.viz.components import (  # noqa: PLC0415
-            AgentPortrayalStyle,
-        )
-
-        # Get default values from AgentPortrayalStyle
-        style_fields = {f.name: f.default for f in fields(AgentPortrayalStyle)}
-        class_default_size = style_fields.get("size")
-
-        # Warn only once per call instead of once per agent
-        dict_portrayal_warned = False
-
-        # Iterate the live agents directly: space.agents would build a weak
-        # AgentSet of the whole population for every frame.
-        agents = (
-            space_agents(space) if isinstance(space, DiscreteSpace) else space.agents
-        )
-        for agent in agents:
+        style_fields = portrayal_style_defaults()
+        fallback_size = default_size or style_fields.get("size")
+        dict_portrayal_warned = False  # warn once per call, not once per agent
+        rows = []
+        for agent in _live_agents(space):
             portray_input = agent_portrayal(agent)
-
             if isinstance(portray_input, dict):
                 if not dict_portrayal_warned:
-                    warnings.warn(
-                        (
-                            "Returning a dict from agent_portrayal is deprecated and will be removed in a future release. "
-                            "Please return an AgentPortrayalStyle instance instead. "
-                            "For more information, refer to the migration guide: "
-                        ),
-                        FutureWarning,
-                        stacklevel=2,
-                    )
+                    warn_dict_portrayal()
                     dict_portrayal_warned = True
-                # Handle legacy dict input
-                dict_data = portray_input.copy()
-                agent_x, agent_y = self._get_agent_pos(agent, space)
-
-                # Extract values with defaults
-                aps = AgentPortrayalStyle(
-                    x=agent_x,
-                    y=agent_y,
-                    size=dict_data.pop("size", style_fields.get("size")),
-                    color=dict_data.pop("color", style_fields.get("color")),
-                    marker=dict_data.pop("marker", style_fields.get("marker")),
-                    zorder=dict_data.pop("zorder", style_fields.get("zorder")),
-                    alpha=dict_data.pop("alpha", style_fields.get("alpha")),
-                    edgecolors=dict_data.pop("edgecolors", None),
-                    linewidths=dict_data.pop(
-                        "linewidths", style_fields.get("linewidths")
-                    ),
+                position = self._get_agent_pos(agent, space)
+                aps = style_from_dict(
+                    portray_input, position, style_fields, _IGNORED_MSG
                 )
-
-                # Warn about unused keys
-                if dict_data:
-                    ignored_keys = list(dict_data.keys())
-                    warnings.warn(
-                        f"The following keys were ignored: {', '.join(ignored_keys)}",
-                        UserWarning,
-                        stacklevel=2,
-                    )
             else:
                 aps = portray_input
-                # Set defaults if not provided
-                if aps.x is None and aps.y is None:
+                if aps.x is None and aps.y is None:  # Set defaults if not provided
                     aps.x, aps.y = self._get_agent_pos(agent, space)
                 if aps.tooltip is not None:
-                    warnings.warn(
-                        "The 'tooltip' attribute in AgentPortrayalStyle is "
-                        "only supported by the Altair backend. "
-                        "Tooltips will be ignored when using the Matplotlib backend.",
-                        UserWarning,
-                        stacklevel=2,
-                    )
-
-            # Collect agent data
-            arguments["loc"].append((aps.x, aps.y))
-
-            # Determine final size
-            size_to_collect = aps.size or default_size or class_default_size
-            arguments["s"].append(size_to_collect)
-            arguments["c"].append(aps.color)
-            arguments["marker"].append(aps.marker)
-            arguments["zorder"].append(aps.zorder)
-            arguments["alpha"].append(aps.alpha)
-            arguments["edgecolors"].append(aps.edgecolors)
-            arguments["linewidths"].append(aps.linewidths)
-
-        return {
-            key: _to_numpy_argument_array(key, value)
-            for key, value in arguments.items()
-        }
+                    _warn_tooltip_ignored()
+            rows.append((aps.size or fallback_size, *snapshot_style(aps)))
+        return rows_to_arguments(rows)
 
     def _get_zoom_factor(self, ax, img):
         """Calculate zoom factor only once and cache the result."""
-        ax.get_figure().canvas.draw()
-
-        bbox = ax.get_window_extent().transformed(
-            ax.get_figure().dpi_scale_trans.inverted()
-        )
-        width, height = (
-            bbox.width * ax.get_figure().dpi,
-            bbox.height * ax.get_figure().dpi,
-        )
-
-        xr = ax.get_xlim()
-        yr = ax.get_ylim()
-
-        x_pixel_per_data = width / (xr[1] - xr[0])
-        y_pixel_per_data = height / (yr[1] - yr[0])
-
-        zoom_x = (x_pixel_per_data / img.width) * CORRECTION_FACTOR_MARKER_ZOOM
-        zoom_y = (y_pixel_per_data / img.height) * CORRECTION_FACTOR_MARKER_ZOOM
-
-        return min(zoom_x, zoom_y)
+        return zoom_factor(ax, img, CORRECTION_FACTOR_MARKER_ZOOM)
 
     def draw_agents(self, arguments, **kwargs):
         """Draw agents on the backend's axes - optimized version.
@@ -221,108 +138,30 @@ class MatplotlibBackend(AbstractRenderer):
         if arguments["loc"].size == 0:
             return None
 
-        loc = arguments.pop("loc")
-        loc_x, loc_y = loc[:, 0], loc[:, 1]
-        marker = arguments.pop("marker")
-        zorder = arguments.pop("zorder")
-        malpha = arguments["alpha"]
-        msize = arguments["s"]
-
-        # Validate edge arguments
-        for entry in ["edgecolors", "linewidths"]:
-            if len(arguments[entry]) == 0:
-                arguments.pop(entry)
-            elif entry in kwargs:
-                raise ValueError(
-                    f"{entry} is specified in agent portrayal and via plotting kwargs, "
-                    "you can only use one or the other"
-                )
-
-        # Cache for loaded images and their zoom factors
-        image_cache = {}
-
-        # Separate image and non-image markers
-        unique_markers = set(marker)
-        image_markers = set()
-        regular_markers = set()
-
-        for mark in unique_markers:
-            if isinstance(mark, str | os.PathLike) and os.path.isfile(mark):
-                image_markers.add(mark)
-            else:
-                regular_markers.add(mark)
+        data = _scatter_data(arguments, kwargs)
+        validate_edge_arguments(arguments, kwargs)
+        image_markers, regular_markers = _split_markers(data.marker)
 
         self.ax.get_figure().canvas.draw()
 
         for mark in image_markers:
-            if mark not in image_cache:
-                image = Image.open(mark)
-                base_zoom = self._get_zoom_factor(self.ax, image)
-                image_cache[mark] = {
-                    "image": image,
-                    "base_zoom": base_zoom,
-                    "offset_images": {},
-                }
-
-            cache_entry = image_cache[mark]
-            mask_marker = marker == mark
-
-            unique_sizes = np.unique(msize[mask_marker])
-
-            for m_size in unique_sizes:
-                if m_size not in cache_entry["offset_images"]:
-                    im = OffsetImage(
-                        cache_entry["image"],
-                        zoom=cache_entry["base_zoom"] * m_size,
-                    )
-                    im.image.axes = self.ax
-                    cache_entry["offset_images"][m_size] = im
-
-                im = cache_entry["offset_images"][m_size]
-
-                size_marker_mask = mask_marker & (msize == m_size)
-
-                unique_zorders = np.unique(zorder[size_marker_mask])
-                unique_alphas = np.unique(malpha[size_marker_mask])
-
-                for z_order in unique_zorders:
-                    for m_alpha in unique_alphas:
-                        final_mask = (
-                            (zorder == z_order) & (malpha == m_alpha) & size_marker_mask
-                        )
-                        positions = loc[final_mask]
-
-                        for x, y in positions:
-                            ab = AnnotationBbox(
-                                im,
-                                (x, y),
-                                frameon=False,
-                                pad=0.0,
-                                zorder=z_order,
-                                **kwargs,
-                            )
-                            self.ax.add_artist(ab)
-
+            self._draw_image_marker(mark, data)
         for mark in regular_markers:
-            mask_marker = marker == mark
-
-            unique_zorders = np.unique(zorder[mask_marker])
-
-            for z_order in unique_zorders:
-                zorder_mask = (zorder == z_order) & mask_marker
-
-                scatter_args = {k: v[zorder_mask] for k, v in arguments.items()}
-
-                self.ax.scatter(
-                    loc_x[zorder_mask],
-                    loc_y[zorder_mask],
-                    marker=mark,
-                    zorder=z_order,
-                    **scatter_args,
-                    **kwargs,
-                )
+            scatter_by_zorder(self.ax, mark, data.marker == mark, data)
 
         return self.ax
+
+    def _draw_image_marker(self, mark, data: ScatterData):
+        """Draw the agents whose marker is this image, one image per marker size."""
+        image = Image.open(mark)
+        base_zoom = self._get_zoom_factor(self.ax, image)
+        mask_marker = data.marker == mark
+
+        for m_size in np.unique(data.size[mask_marker]):
+            im = OffsetImage(image, zoom=base_zoom * m_size)
+            im.image.axes = self.ax
+            size_marker_mask = mask_marker & (data.size == m_size)
+            add_image_artists(self.ax, im, size_marker_mask, data)
 
     def draw_property_layer(self, space, property_layers, property_layer_portrayal):
         """Draw property layers using matplotlib backend.
@@ -347,84 +186,97 @@ class MatplotlibBackend(AbstractRenderer):
 
             data = layer.astype(float) if layer.dtype == bool else layer
 
-            # Check dimensions
-            if (space.width, space.height) != data.shape:
-                warnings.warn(
-                    f"Layer {layer_name} dimensions ({data.shape}) "
-                    f"don't match space dimensions ({space.width}, {space.height})",
-                    UserWarning,
-                    stacklevel=2,
-                )
+            if not _layer_shape_matches(space, layer_name, data):
                 continue
 
-            # Get portrayal parameters
-            color = portrayal.color
-            colormap = portrayal.colormap
-            alpha = portrayal.alpha
-            vmin = portrayal.vmin if portrayal.vmin is not None else np.min(data)
-            vmax = portrayal.vmax if portrayal.vmax is not None else np.max(data)
-
-            # Set up colormap
-            if color:
-                rgba_color = to_rgba(color)
-                cmap = LinearSegmentedColormap.from_list(
-                    layer_name, [(0, 0, 0, 0), (*rgba_color[:3], alpha)]
-                )
-            elif colormap:
-                cmap = colormap
-                if isinstance(cmap, list):
-                    cmap = LinearSegmentedColormap.from_list(layer_name, cmap)
-                elif isinstance(cmap, str):
-                    cmap = plt.get_cmap(cmap)
-            else:
-                raise ValueError(
-                    f"Property Layer {layer_name} must include 'color' or 'colormap'"
-                )
-
-            # Draw based on space type
-            if isinstance(space, OrthogonalGrid):
-                if color:
-                    data = data.T
-                    normalized_data = (data - vmin) / (vmax - vmin)
-                    rgba_data = np.full((*data.shape, 4), rgba_color)
-                    rgba_data[..., 3] *= normalized_data * alpha
-                    rgba_data = np.clip(rgba_data, 0, 1)
-                    self.ax.imshow(rgba_data, origin="lower")
-                else:
-                    self.ax.imshow(
-                        data.T,
-                        cmap=cmap,
-                        alpha=alpha,
-                        vmin=vmin,
-                        vmax=vmax,
-                        origin="lower",
-                    )
-            elif isinstance(space, HexGrid):
-                hexagons = self.space_drawer.hexagons
-                norm = Normalize(vmin=vmin, vmax=vmax)
-                colors = data.T.ravel()
-
-                if color:
-                    normalized_colors = np.clip(norm(colors), 0, 1)
-                    rgba_colors = np.full((len(colors), 4), rgba_color)
-                    rgba_colors[:, 3] = normalized_colors * alpha
-                else:
-                    rgba_colors = cmap(norm(colors))
-                    rgba_colors[..., 3] *= alpha
-
-                collection = PolyCollection(hexagons, facecolors=rgba_colors, zorder=-1)
-                self.ax.add_collection(collection)
-            else:
-                raise NotImplementedError(
-                    f"Property Layer visualization not implemented for {type(space)}"
-                )
+            style = _backend_layer_style(layer_name, portrayal, data)
+            self._draw_layer(space, data, style)
 
             # Add colorbar if requested
             cbar = None
             if portrayal.colorbar:
-                norm = Normalize(vmin=vmin, vmax=vmax)
-                sm = ScalarMappable(norm=norm, cmap=cmap)
-                sm.set_array([])
-                cbar = plt.colorbar(sm, ax=self.ax, label=layer_name)
+                cbar = add_layer_colorbar(self.ax, style)
                 self._active_colorbars.append(cbar)
         return self.ax, cbar
+
+    def _draw_layer(self, space, data, style):
+        """Draw one property layer of an orthogonal or hex grid."""
+        if isinstance(space, OrthogonalGrid):
+            draw_orthogonal_layer(self.ax, data, style)
+        elif isinstance(space, HexGrid):
+            hexagons = self.space_drawer.hexagons
+            draw_hex_layer(self.ax, hexagons, data.T.ravel(), style)
+        else:
+            raise NotImplementedError(
+                f"Property Layer visualization not implemented for {type(space)}"
+            )
+
+
+def _live_agents(space):
+    """Return the agents of the space without building an AgentSet."""
+    # Iterate the live agents directly: space.agents would build a weak
+    # AgentSet of the whole population for every frame.
+    return space_agents(space) if isinstance(space, DiscreteSpace) else space.agents
+
+
+def _scatter_data(arguments, kwargs):
+    """Pop loc, marker and zorder from the agent data; alpha and s stay as arguments."""
+    loc = arguments.pop("loc")
+    return ScatterData(
+        loc_x=loc[:, 0],
+        loc_y=loc[:, 1],
+        marker=arguments.pop("marker"),
+        zorder=arguments.pop("zorder"),
+        alpha=arguments["alpha"],
+        size=arguments["s"],
+        scatter_args=arguments,
+        kwargs=kwargs,
+    )
+
+
+def _split_markers(marker):
+    """Separate the image markers from the regular ones."""
+    image_markers = set()
+    regular_markers = set()
+    for mark in set(marker):
+        if is_image_marker(mark):
+            image_markers.add(mark)
+        else:
+            regular_markers.add(mark)
+    return image_markers, regular_markers
+
+
+def _warn_tooltip_ignored():
+    """Warn that tooltips only work with the Altair backend."""
+    warnings.warn(
+        "The 'tooltip' attribute in AgentPortrayalStyle is "
+        "only supported by the Altair backend. "
+        "Tooltips will be ignored when using the Matplotlib backend.",
+        UserWarning,
+        stacklevel=3,  # the caller of collect_agent_data()
+    )
+
+
+def _layer_shape_matches(space, layer_name, data):
+    """Return whether the layer matches the space; warn when it does not."""
+    if (space.width, space.height) != data.shape:
+        warnings.warn(
+            f"Layer {layer_name} dimensions ({data.shape}) "
+            f"don't match space dimensions ({space.width}, {space.height})",
+            UserWarning,
+            stacklevel=3,  # the caller of draw_property_layer()
+        )
+        return False
+    return True
+
+
+def _backend_layer_style(layer_name, portrayal, data):
+    """Resolve the style; unset vmin/vmax fall back to the data range."""
+    vmin = portrayal.vmin if portrayal.vmin is not None else np.min(data)
+    vmax = portrayal.vmax if portrayal.vmax is not None else np.max(data)
+    return layer_style(
+        layer_name,
+        portrayal,
+        (vmin, vmax),
+        f"Property Layer {layer_name} must include 'color' or 'colormap'",
+    )

@@ -17,6 +17,20 @@ OrthogonalGrid = OrthogonalMooreGrid | OrthogonalVonNeumannGrid
 HexGrid = modelly.space.HexGrid
 Network = modelly.space.Network
 
+_TOO_FEW_DIMENSIONS = "Continuous space visualization requires at least 2 dimensions"
+_PROJECTION_OUT_OF_RANGE = (
+    "Agent position does not have enough dimensions for the selected "
+    "visualization projection"
+)
+
+
+def _row_placed_cell(agent, space):
+    """Return the cell of an agent placed by a row column (CellIndex.track)."""
+    index = space._cell_index
+    if index is None:
+        raise ValueError(f"{type(agent).__name__} has no cell in this space")
+    return index.cell_of(agent)
+
 
 class AbstractRenderer(ABC):
     """Abstract base class for visualization backends.
@@ -38,25 +52,18 @@ class AbstractRenderer(ABC):
     def _get_agent_pos(self, agent, space):
         """Get agent position based on space type."""
         if isinstance(space, DiscreteSpace):
-            # Avoid Cell.position: it allocates a numpy array per call, and this
-            # runs once per agent per frame. The coordinate tuple plots the same.
+            # Avoid Cell.position: it allocates a numpy array per call (hot path).
             cell = getattr(agent, "cell", None)
             if cell is None:  # placed by a row column (CellIndex.track)
-                index = space._cell_index
-                if index is None:
-                    raise ValueError(
-                        f"{type(agent).__name__} has no cell in this space"
-                    )
-                cell = index.cell_of(agent)
+                cell = _row_placed_cell(agent, space)
             position = cell._position
             return cell.coordinate if position is None else position
 
         pos = agent.position
         if len(pos) < 2:
-            raise ValueError(
-                "Continuous space visualization requires at least 2 dimensions"
-            )
+            raise ValueError(_TOO_FEW_DIMENSIONS)
 
+        i, j = (0, 1)
         viz_dims = getattr(self.space_drawer, "viz_dims", None)
         if (
             isinstance(viz_dims, tuple)
@@ -64,16 +71,11 @@ class AbstractRenderer(ABC):
             and all(isinstance(dim, int) for dim in viz_dims)
         ):
             i, j = viz_dims
-        else:
-            i, j = (0, 1)
 
         try:
             return pos[i], pos[j]
         except IndexError as err:
-            raise ValueError(
-                "Agent position does not have enough dimensions for the selected "
-                "visualization projection"
-            ) from err
+            raise ValueError(_PROJECTION_OUT_OF_RANGE) from err
 
     @abstractmethod
     def initialize_canvas(self):

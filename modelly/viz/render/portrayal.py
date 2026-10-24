@@ -10,6 +10,7 @@ Classes:
 These components are designed to be passed into Modelly visualizations to customize and standardize how data is presented.
 """
 
+import warnings
 from dataclasses import dataclass
 from typing import Any
 
@@ -121,3 +122,63 @@ class PropertyLayerStyle:
             raise ValueError("Specify either 'color' or 'colormap', not both.")
         if self.color is None and self.colormap is None:
             raise ValueError("Specify one of 'color' or 'colormap'")
+
+
+def property_layer_dict_to_callable(portrayal_dict: dict[str, dict[str, Any]]):
+    """Convert a legacy property_layer_portrayal dict to a PropertyLayerStyle callable.
+
+    Args:
+        portrayal_dict (dict): Dictionary with portrayal parameters per layer name.
+
+    Returns:
+        Callable: Function that returns a PropertyLayerStyle, or None for a layer
+        missing from the dict.
+    """
+
+    def style_callable(layer_object: Any):
+        layer_name = layer_object
+        params = portrayal_dict.get(layer_name)
+
+        _warn_dict_layer_portrayal()
+
+        if params is None:
+            return None  # Layer not specified in the dict, so skip.
+
+        return PropertyLayerStyle(
+            color=params.get("color"),
+            colormap=params.get("colormap"),
+            alpha=params.get("alpha", PropertyLayerStyle.alpha),
+            vmin=params.get("vmin"),
+            vmax=params.get("vmax"),
+            colorbar=params.get("colorbar", PropertyLayerStyle.colorbar),
+        )
+
+    return style_callable
+
+
+def _warn_dict_layer_portrayal():
+    """Warn that the property_layer_portrayal dict is deprecated."""
+    warnings.warn(
+        (
+            "The property_layer_portrayal dict is deprecated and will be removed in a future release. "
+            "Please use a callable that returns a PropertyLayerStyle instance instead. "
+            "For more information, refer to the migration guide: "
+        ),
+        FutureWarning,
+        stacklevel=3,  # the caller of the style callable
+    )
+
+
+def as_property_layer_callable(portrayal):
+    """Return a property layer portrayal as a callable returning PropertyLayerStyle.
+
+    A legacy dict is converted, a PropertyLayerStyle is wrapped in a callable that
+    always returns it, and anything else (already a callable) is returned as-is.
+    """
+    if isinstance(portrayal, dict):
+        return property_layer_dict_to_callable(portrayal)
+    if isinstance(portrayal, PropertyLayerStyle):
+        # Capture the style instance to avoid circular reference
+        style = portrayal
+        return lambda _: style
+    return portrayal
