@@ -76,6 +76,15 @@ MODELS: tuple[ZooModel, ...] = (
         "stationary distribution and Gini against the exact uniform-configuration law",
     ),
     ZooModel(
+        "bouchaud_mezard",
+        "Bouchaud-Mezard wealth condensation",
+        "economics",
+        "BouchaudMezard",
+        "BouchaudMezardScenario",
+        "Multiplicative returns plus exchange: an inverse-gamma wealth distribution.",
+        "Gini against the inverse-gamma law, rising with the noise-to-exchange ratio",
+    ),
+    ZooModel(
         "nagel_schreckenberg",
         "Nagel-Schreckenberg traffic",
         "transport",
