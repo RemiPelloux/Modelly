@@ -56,8 +56,14 @@ Demonstrates continuous states and thresholds: a tram accelerates, coasts, brake
 ## Spatial Examples
 These examples use the geospatial space (`modelly.space.geo`, the `geo` extra) and the dynamic and multilayer networks (`modelly.space.networks`). Their data are generated, so they run offline.
 
-### [Commuting City](https://github.com/RemiPelloux/Modelly/tree/main/modelly/examples/spatial/commuting_city)
+### [Commuting City](spatial/commuting_city)
 Residents from a synthetic population commute across city zones on a street network, choosing workplaces by a gravity rule and routing around congestion.
 
-### [Layered Epidemic](https://github.com/RemiPelloux/Modelly/tree/main/modelly/examples/spatial/layered_epidemic)
+### [Layered Epidemic](spatial/layered_epidemic)
 An age-structured SIR epidemic on household, school and work layers, with school closure as a change of one layer's weight.
+
+## Language-Model Agent Examples
+This example uses `modelly.llm`. It runs offline with a fake provider and replays from a bundled response cache, so it needs no API key.
+
+### [Opinions of Persona Agents](llm/llm_opinions)
+Two hundred citizens with personas debate a protected bike lane on a small network; each decision goes through the reproducible `modelly.llm` client.

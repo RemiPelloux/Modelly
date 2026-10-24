@@ -347,25 +347,26 @@ texinfo_documents = [
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 
 
+def read_optional(filename):
+    """The file's text, or None when the example has no such file."""
+    if not os.path.exists(filename):
+        return None
+    with open(filename, encoding="utf-8") as content_file:
+        return content_file.read()
+
+
 def write_example_md_file(
     agent_filename, model_filename, readme_filename, app_filename, md_filepath, template
 ):
-    with open(agent_filename, encoding="utf-8") as content_file:
-        agent_file = content_file.read()
-    with open(model_filename, encoding="utf-8") as content_file:
-        model_file = content_file.read()
-    with open(readme_filename, encoding="utf-8") as content_file:
-        readme_file = content_file.read()
-    with open(app_filename, encoding="utf-8") as content_file:
-        app_file = content_file.read()
-
+    app_file = read_optional(app_filename)
+    app_section = f"## App\n\n```python\n{app_file}\n```" if app_file is not None else ""
     with open(md_filepath, "w", encoding="utf-8") as fh:
         content = template.substitute(
             dict(
-                agent_file=agent_file,
-                model_file=model_file,
-                readme_file=readme_file,
-                app_file=app_file,
+                agent_file=read_optional(agent_filename) or "",
+                model_file=read_optional(model_filename) or "",
+                readme_file=read_optional(readme_filename) or "",
+                app_section=app_section,
             )
         )
         fh.write(content)
@@ -375,7 +376,7 @@ def setup_examples_pages():
     # create md files for all examples
     # check what examples exist
     examples_folder = osp.abspath(osp.join(HERE, "..", "modelly", "examples"))
-    kinds = ("basic", "advanced", "behaviour")
+    kinds = ("basic", "advanced", "behaviour", "spatial", "llm")
     examples = [
         (kind, f.path)
         for kind in kinds
