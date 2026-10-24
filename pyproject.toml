@@ -67,6 +67,21 @@ viz = [
   "altair",
   "starlette<1.0",
 ]
+# Experiments: Parquet results store and SQL queries (modelly.experiments, modelly.data.io)
+experiments = [
+  "pyarrow",
+  "duckdb",
+]
+# Experiment executors
+dask = [
+  "modelly-abm[experiments]",
+  "dask",
+  "distributed",
+]
+ray = [
+  "modelly-abm[experiments]",
+  "ray",
+]
 # Dev and CI stuff
 dev = [
   "modelly-abm[rec]",
@@ -80,6 +95,7 @@ dev = [
   "playwright",
   "ipython>=9.2.0",
   "pyarrow",
+  "modelly-abm[experiments]",
 ]
 examples = [
   "modelly-abm[rec]",
