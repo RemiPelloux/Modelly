@@ -56,6 +56,8 @@ class AltairBackend(AbstractRenderer):
         """
         return self.space_drawer.draw_altair(**kwargs)
 
+    # Over the 25-line body limit on purpose (guidelines §11.3): the loop runs once
+    # per agent on every render; splitting it would add a call per agent.
     def collect_agent_data(
         self, space, agent_portrayal: Callable, default_size: float | None = None
     ):
