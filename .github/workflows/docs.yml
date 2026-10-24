@@ -8,8 +8,8 @@
 # versions are not rebuilt (their tutorials would execute again): the built HTML of
 # every version lives on the orphan branch docs-site. A run builds one version, puts it
 # into a checkout of docs-site with scripts/assemble-docs-site.sh (which also rewrites
-# switcher.json), stores the result back as a single commit (force-pushed, so the
-# branch never accumulates history) and deploys that tree.
+# switcher.json) and stores the result back as a single commit (force-pushed, so the
+# branch never accumulates history). Pages is set to serve the docs-site branch.
 #
 # Builds run only on a push to main that touches the docs or the package (-> /dev/) and
 # on a release tag vX.Y.Z (-> /X.Y/, and the root when X.Y is the newest minor). There
@@ -35,8 +35,7 @@ on:
 
 permissions:
   contents: write # push the built site to docs-site
-  pages: write
-  id-token: write
+  pages: write # request a Pages build of docs-site
 
 # Queue rather than cancel: a cancelled run would drop its version from docs-site.
 concurrency:
@@ -86,16 +85,10 @@ jobs:
           git add .
           git commit --quiet -m "docs(site): ${{ steps.version.outputs.ref }} at ${GITHUB_SHA::7}"
           git push --quiet --force origin "next:$SITE_BRANCH"
-      - uses: actions/upload-pages-artifact@v5
-        with:
-          path: _build/site
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v5
+      - name: Ask Pages to publish docs-site
+        # Pages serves the docs-site branch; each run stores a new commit there, so a
+        # release tag on the same commit as main still publishes (an Actions deploy would
+        # reuse that commit's build version and be skipped).
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" --silent
+        env:
+          GH_TOKEN: ${{ github.token }}

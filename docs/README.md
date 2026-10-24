@@ -64,10 +64,9 @@ git -C ../modelly-docs-site commit -m "docs(site): 1.0 and 1.1"
 git push origin docs-site
 ```
 
-Then, in the repository settings: under Environments, `github-pages`, allow deployments
-from tags matching `v*` as well as `main`; keep Pages on the "GitHub Actions" source; and
-exempt `docs-site` from any ruleset that blocks force pushes, since the workflow
-force-pushes it as a single commit.
+Then, in the repository settings: set Pages to "Deploy from a branch", branch `docs-site`,
+folder `/` (root); and exempt `docs-site` from any ruleset that blocks force pushes, since
+the workflow force-pushes it as a single commit.
 
 ## Writing docs
 
