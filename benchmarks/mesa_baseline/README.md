@@ -147,7 +147,8 @@ This is the concrete gap Modelly closes:
 
 - `Model.agents` is a stored `AgentSet`, not a property that rebuilds;
 - membership is an O(1) dict lookup, not a rebuilt weak-key table;
-- `AgentSet.select` / `shuffle` / `groupby` run at C level over a snapshot.
+- `do` and `shuffle_do` on the model's agent registries run in compiled code
+  (`modelly/_native/fastloop.c`), with an identical pure-Python twin.
 
 So when you compare, compare **season time**, not step count — a cherry season
 should stop scaling with the square of the agent population.

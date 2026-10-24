@@ -2,7 +2,7 @@
 
 The `/benchmarks` directory contains tools for benchmarking the Modelly library performance on the included example models. This allows to track and compare model initialisation time and runtime between different Modelly versions.
 
-MODELLY uses several example base models for benchmarking performance (BoltzmannWealth, Schelling, BoidFlockers, WolfSheep, and MultiLevelAlliance) by calculating the initialization time and run time for each of these models. These example models can be found in the `/modelly/examples` directory.
+Modelly uses several example models for benchmarking performance (BoltzmannWealth, Schelling, BoidFlockers, WolfSheep, SugarscapeG1mt and MultiLevelAlliance) by calculating the initialization time and run time for each of these models. These example models can be found in the `modelly/examples` directory.
 
 ## Available Files
 
@@ -21,10 +21,10 @@ The `configurations.py` file defines which models to benchmark and their paramet
 
 - `small` and `large` configurations for testing different scales
 - Parameters for:
-  - `seeds`: Number of different random seeds to use
-  - `replications`: Number of times to repeat the benchmark for each seed
+  - `replications`: Number of different random seeds to use
+  - `iterations`: Number of times to repeat the benchmark for each seed
   - `steps`: Number of model steps to run
-  - `parameters`: Model-specific parameters
+  - `scenario`: The model's `Scenario` instance with its parameters
 
 ### 2. Running Benchmarks
 
@@ -40,9 +40,6 @@ This will:
 - Measure initialization time and run time for each model
 - Save results to a pickle file named `timings_X.pickle` (where X is an incremental number)
 - Display a summary of results in the terminal
-
-For meta-agents branch comparisons, run the benchmark once on the `meta-agents` baseline branch, switch to your feature branch, and run it again before comparing the two pickle files.
-
 
 >**Noteworthy :** the pickle file created by the benchmark is not under git control. So you can run the benchmark on the master branch first, switch to your development branch, and run the benchmarks again.
 
