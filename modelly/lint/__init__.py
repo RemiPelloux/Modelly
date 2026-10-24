@@ -17,6 +17,7 @@ from pathlib import Path
 
 from modelly.lint.checker import Checker
 from modelly.lint.rules import GUIDE, RULES, Rule
+from modelly.lint.siblings import SiblingColumns
 
 __all__ = ["GUIDE", "RULES", "Finding", "Rule", "lint_paths", "lint_source"]
 
@@ -54,14 +55,21 @@ def suppressed(line: str, code: str) -> bool:
     return codes is None or code in re.findall(CODE, codes.upper())
 
 
-def lint_source(source: str, path: str = "<string>") -> list[Finding]:
+def lint_source(
+    source: str, path: str = "<string>", siblings: SiblingColumns | None = None
+) -> list[Finding]:
     """Return the findings for one module's source, sorted by position.
+
+    ``siblings`` resolves the agent classes the module imports from other files of the
+    project, so MDL107 knows their Column attributes; without it only this source counts.
 
     Raises:
         SyntaxError: when ``source`` is not valid Python.
     """
-    checker = Checker()
-    checker.visit(ast.parse(source, filename=path))
+    tree = ast.parse(source, filename=path)
+    imported = siblings.imported(tree, path) if siblings else set()
+    checker = Checker(frozenset(imported))
+    checker.visit(tree)
     lines = source.splitlines()
     return [
         Finding(path, line, column, RULES[code])
@@ -85,7 +93,10 @@ def lint_paths(paths: Iterable[str | Path]) -> list[Finding]:
     Raises:
         SyntaxError: when a file is not valid Python.
     """
+    paths = list(paths)
+    siblings = SiblingColumns(paths)  # one parse per imported file for the whole run
     findings: list[Finding] = []
     for path in python_files(paths):
-        findings.extend(lint_source(path.read_text(encoding="utf-8"), str(path)))
+        source = path.read_text(encoding="utf-8")
+        findings.extend(lint_source(source, str(path), siblings))
     return findings

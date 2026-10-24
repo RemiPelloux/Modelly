@@ -75,17 +75,23 @@ def column_names(tree: ast.AST) -> set[str]:
     """The attributes declared as ``name = Column(...)`` in any class of the module."""
     names: set[str] = set()
     for node in ast.walk(tree):
-        if not isinstance(node, ast.ClassDef):
-            continue
-        for statement in node.body:
-            value = getattr(statement, "value", None)
-            target = getattr(statement, "target", None) or next(
-                iter(getattr(statement, "targets", [])), None
-            )
-            func = value.func if isinstance(value, ast.Call) else None
-            called = getattr(func, "id", None) or getattr(func, "attr", None)
-            if called == "Column" and isinstance(target, ast.Name):
-                names.add(target.id)
+        if isinstance(node, ast.ClassDef):
+            names |= class_columns(node)
+    return names
+
+
+def class_columns(node: ast.ClassDef) -> set[str]:
+    """The attributes declared as ``name = Column(...)`` in the body of one class."""
+    names: set[str] = set()
+    for statement in node.body:
+        value = getattr(statement, "value", None)
+        target = getattr(statement, "target", None) or next(
+            iter(getattr(statement, "targets", [])), None
+        )
+        func = value.func if isinstance(value, ast.Call) else None
+        called = getattr(func, "id", None) or getattr(func, "attr", None)
+        if called == "Column" and isinstance(target, ast.Name):
+            names.add(target.id)
     return names
 
 

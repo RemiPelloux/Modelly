@@ -35,8 +35,12 @@ Hit = tuple[int, int, str]
 class Checker(ast.NodeVisitor):
     """Collect rule hits for one module."""
 
-    def __init__(self) -> None:
-        """Start with no imports seen, outside any class, function or loop."""
+    def __init__(self, imported_columns: frozenset[str] = frozenset()) -> None:
+        """Start with no imports seen, outside any class, function or loop.
+
+        ``imported_columns`` are the Column attributes of agent classes the module
+        imports from other files (see ``modelly.lint.siblings``).
+        """
         self.hits: set[Hit] = set()
         self.kinds: dict[
             str, str
@@ -45,7 +49,8 @@ class Checker(ast.NodeVisitor):
         self.function: str | None = None
         self.population_depth = 0
         self.imports = Imports()
-        self.columns: set[str] = set()  # attributes declared as Column in this module
+        self.imported_columns = imported_columns
+        self.columns: set[str] = set()  # Column attributes declared here or imported
 
     def hit(self, node: ast.AST, code: str) -> None:
         """Record ``code`` at ``node``."""
@@ -54,7 +59,7 @@ class Checker(ast.NodeVisitor):
     # The module, imports and globals.
 
     def visit_Module(self, node: ast.Module) -> None:  # noqa: D102
-        self.columns = column_names(node)
+        self.columns = column_names(node) | self.imported_columns
         self.generic_visit(node)
 
     def visit_Import(self, node: ast.Import) -> None:  # noqa: D102

@@ -278,8 +278,11 @@ def step(self):
 ### MDL107: per-agent loop that only writes `Column` attributes
 
 In a model method, a loop over the population whose body only assigns attributes declared as
-`Column` in the same module (plain `=`/`+=`, or an `if` made of those, with no calls) is a
-whole-column update written one agent at a time. The column's numpy array does it in C. Loops
+`Column` (plain `=`/`+=`, or an `if` made of those, with no calls) is a whole-column update
+written one agent at a time. The columns are those declared in the same module and those of the
+agent classes it imports from another file of the linted tree (`from .agents import Sheep`, or
+`from pkg.agents import Sheep` under a path given to the linter); that file is parsed once per
+run, never imported. The column's numpy array does it in C. Loops
 that call anything (a draw, a method) are not reported: vectorising them changes the order of
 draws or needs a decision.
 
