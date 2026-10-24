@@ -1,0 +1,96 @@
+name: Release
+on:
+  push:
+    tags:
+    - '*'
+    branches:
+    - main
+    - release**
+    paths-ignore:
+      - '**.md'
+      - '**.rst'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '**.rst'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  wheels:
+    # Platform wheels with the compiled modules (modelly/_native/fastrng.c, fastloop.c).
+    name: Wheels (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v4.3.4
+        env:
+          CIBW_BUILD: "cp312-* cp313-* cp314-* cp315-*"
+          # Free-threaded builds use the pure-Python FastRandom (see fastrng.c).
+          CIBW_SKIP: "cp3??t-* *-*linux_i686"
+          CIBW_ARCHS_MACOS: "x86_64 arm64"
+          CIBW_ENVIRONMENT: "MODELLY_REQUIRE_NATIVE=1"
+          CIBW_TEST_COMMAND: >-
+            python -c "import modelly.core.rng as r, modelly._native.loops as l; assert r.NATIVE and l.NATIVE, 'compiled modules not active'"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wheels-${{ matrix.os }}
+          path: wheelhouse/*.whl
+
+  pure:
+    # The sdist and a py3-none-any wheel: every other platform (Windows, free-threaded
+    # CPython, PyPy) installs this and uses the pure-Python twins of the compiled modules.
+    name: Sdist and pure wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: 'pip'
+      - name: Install dependencies
+        run: pip install -U pip hatch
+      - name: Build distributions
+        env:
+          MODELLY_PURE_PYTHON: "1"
+        run: hatch build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pure
+          path: dist/
+
+  release:
+    name: Deploy release to PyPI
+    needs: [wheels, pure]
+    runs-on: ubuntu-latest
+    # The PyPI trusted publisher is bound to this environment (Settings > Environments).
+    environment:
+      name: pypi
+      url: https://pypi.org/project/modelly-abm/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+      - name: List distributions
+        run: ls -l dist
+      - name: Upload package as artifact to GitHub
+        if: github.repository == 'RemiPelloux/Modelly' && startsWith(github.ref, 'refs/tags')
+        uses: actions/upload-artifact@v7
+        with:
+          name: package
+          path: dist/
+      - name: Publish package to PyPI
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@release/v1
