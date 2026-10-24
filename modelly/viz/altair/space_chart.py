@@ -61,11 +61,18 @@ def _get_agent_data_continuous_space(space: ContinuousSpace, agent_portrayal):
     Returns:
         list of dicts
     """
+    # Spaces without ``agents`` are legacy ones that key their agents by index.
+    agents = getattr(space, "agents", None)
+    if agents is None:
+        agents = space._agent_to_index
     all_agent_data = []
-    for agent in space._agent_to_index:
+    for agent in agents:
         agent_data = _portrayal_to_dict(agent_portrayal(agent), agent)
-        agent_data["x"] = agent.pos[0]
-        agent_data["y"] = agent.pos[1]
+        position = getattr(agent, "position", None)
+        if position is None:  # legacy agents expose ``pos``
+            position = agent.pos
+        agent_data["x"] = float(position[0])
+        agent_data["y"] = float(position[1])
         all_agent_data.append(agent_data)
     return all_agent_data
 
@@ -95,16 +102,25 @@ def _tooltips(first_agent: dict) -> list:
     ]
 
 
+def _position_encoding(space) -> dict:
+    """Return the x and y channels: grid cells are ordinal, continuous axes span the space."""
+    if not isinstance(space, ContinuousSpace):
+        return {
+            "x": alt.X("x", axis=None, type="ordinal"),
+            "y": alt.Y("y", axis=None, type="ordinal"),
+        }
+    x_scale = alt.Scale(domain=[space.x_min, space.x_max])
+    y_scale = alt.Scale(domain=[space.y_min, space.y_max])
+    return {
+        "x": alt.X("x", axis=None, type="quantitative", scale=x_scale),
+        "y": alt.Y("y", axis=None, type="quantitative", scale=y_scale),
+    }
+
+
 def _agent_encoding(space, all_agent_data: list[dict]) -> dict:
     """Return the encoding channels of the agent chart."""
     first_agent = all_agent_data[0] if all_agent_data else {}
-    x_y_type = "ordinal" if not isinstance(space, ContinuousSpace) else "nominal"
-
-    encoding_dict = {
-        "x": alt.X("x", axis=None, type=x_y_type),
-        "y": alt.Y("y", axis=None, type=x_y_type),
-        "tooltip": _tooltips(first_agent),
-    }
+    encoding_dict = {**_position_encoding(space), "tooltip": _tooltips(first_agent)}
 
     if "color" in first_agent:
         unique_colors = list({agent_data["color"] for agent_data in all_agent_data})

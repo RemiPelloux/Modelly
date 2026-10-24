@@ -8,7 +8,7 @@ import pytest
 
 from modelly import Model
 from modelly.space import CellAgent, OrthogonalMooreGrid
-from modelly.space.continuous import ContinuousSpace
+from modelly.space.continuous import ContinuousSpace, ContinuousSpaceAgent
 from modelly.viz.altair.property_layers import (
     _gradient_endpoints,
     _Layer,
@@ -191,6 +191,22 @@ def test_get_agent_data_continuous_uses_agent_positions():
     assert data == [{"id": 1, "color": "k", "x": 0.5, "y": 1.5}]
 
 
+def test_draw_grid_continuous_space_places_agents_by_position():
+    """The legacy Altair chart draws ContinuousSpace agents at their positions."""
+    model = Model(rng=1)
+    space = ContinuousSpace([[0, 10], [0, 5]], random=model.random)
+    for position in ([1.0, 2.0], [7.5, 3.25]):
+        ContinuousSpaceAgent(space, model).position = position
+    spec = _draw_grid(space, lambda a: {"color": "red"}, None).to_dict()
+    assert sorted((d["x"], d["y"]) for d in spec["data"]["values"]) == [
+        (1.0, 2.0),
+        (7.5, 3.25),
+    ]
+    assert spec["encoding"]["x"]["type"] == "quantitative"
+    assert spec["encoding"]["x"]["scale"]["domain"] == [0, 10]
+    assert spec["encoding"]["y"]["scale"]["domain"] == [0, 5]
+
+
 def test_get_agent_data_unsupported_space():
     """Get agent data unsupported space."""
     with pytest.raises(NotImplementedError, match="not supported through altair"):
@@ -218,7 +234,7 @@ def test_agent_encoding_channels():
     assert encoding["size"].to_dict() == {"field": "size", "type": "quantitative"}
     continuous = ContinuousSpace([[0, 1], [0, 1]], random=Model(rng=1).random)
     encoding = _agent_encoding(continuous, [])
-    assert encoding["x"].to_dict()["type"] == "nominal"
+    assert encoding["x"].to_dict()["type"] == "quantitative"
     assert "color" not in encoding
     assert encoding["tooltip"] == []
 
