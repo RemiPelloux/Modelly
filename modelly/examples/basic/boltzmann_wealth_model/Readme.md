@@ -2,7 +2,7 @@
 
 ## Summary
 
-A simple model of agents exchanging wealth. All agents start with the same amount of money. Every step, each agent with one unit of money or more gives one unit of wealth to another random agent. Modelly's [Getting Started](https://modelly.readthedocs.io/latest/getting_started.html) section walks through the Boltzmann Wealth Model in a series of short introductory tutorials, starting with[Creating your First Model](https://modelly.readthedocs.io/latest/tutorials/0_first_model.html).
+A simple model of agents exchanging wealth. All agents start with the same amount of money. Every step, each agent with one unit of money or more gives one unit of wealth to another random agent. Modelly's [Getting Started](https://remipelloux.github.io/Modelly/getting_started.html) section walks through the Boltzmann Wealth Model in a series of short introductory tutorials, starting with[Creating your First Model](https://remipelloux.github.io/Modelly/tutorials/0_first_model.html).
 
 As the model runs, the distribution of wealth among agents goes from being perfectly uniform (all agents have the same starting wealth), to highly skewed -- a small number have high wealth, more have none at all.
 
@@ -10,7 +10,7 @@ As the model runs, the distribution of wealth among agents goes from being perfe
 
 Install Modelly with recommended dependencies:
 
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 
 Then run the example:
 
@@ -28,7 +28,7 @@ Open the displayed local URL in your browser.
 
 This example follows Modelly's standard separation of concerns:
 
-- `agents.py`: Defines individual agent behavior (WealthAgent with its step method for giving money to other agents)
+- `agents.py`: Defines individual agent behavior (MoneyAgent with its step method for giving money to other agents)
 - `model.py`: Manages the simulation environment, instantiates agents, handles the grid/space, and collects data
 - `app.py`: Sets up the visualization components to display the model in a web interface
 - `st_app.py`: (Optional) Alternative Streamlit-based visualization

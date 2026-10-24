@@ -37,7 +37,7 @@ The result is a model with an empty agent step. `TransitSystem.step` only sample
 Install Modelly with recommended dependencies:
 
 ```
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 ```
 
 Then run the example:
@@ -63,5 +63,5 @@ python model.py
 
 ## Further Reading
 
-The continuous state and threshold API used here lives in `modelly.behaviour.states`, and builds on the reactive observables in `modelly.time.signals`. Both are experimental and carry no semver guarantees.
+The continuous state and threshold API used here lives in `modelly.behaviour.states`, and builds on the reactive observables in `modelly.time.signals`. Both follow semantic versioning like the rest of Modelly.
 

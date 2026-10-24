@@ -11,7 +11,7 @@ The "game" is a zero-player game, meaning that its evolution is determined by it
 
 Install Modelly with recommended dependencies:
 
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 
 Then run the example:
 

@@ -7,18 +7,17 @@ A simple ecological model, consisting of three agent types: wolves, sheep, and g
 If wolves and sheep have enough energy, they reproduce, creating a new wolf or sheep (in this simplified model, only one parent is needed for reproduction). The grass on each cell regrows at a constant rate. If any wolves and sheep run out of energy, they die.
 
 The model is tests and demonstrates several Modelly concepts and features:
- - MultiGrid
+ - OrthogonalVonNeumannGrid
  - Multiple agent types (wolves, sheep, grass)
- - Overlay arbitrary text (wolf's energy) on agent's shapes while drawing on CanvasGrid
  - Agents inheriting a behavior (random movement) from an abstract parent
  - Writing a model composed of multiple files.
- - Dynamically adding and removing agents from the schedule
+ - Dynamically adding and removing agents from the model
 
 ## How to Run
 
 Install Modelly with recommended dependencies:
 
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 
 Then run the example:
 
@@ -28,13 +27,9 @@ Open the displayed local URL in your browser.
 
 ## Files
 
-* ``wolf_sheep/random_walk.py``: This defines the ``RandomWalker`` agent, which implements the behavior of moving randomly across a grid, one cell at a time. Both the Wolf and Sheep agents will inherit from it.
-* ``wolf_sheep/test_random_walk.py``: Defines a simple model and a text-only visualization intended to make sure the RandomWalk class was working as expected. This doesn't actually model anything, but serves as an ad-hoc unit test. To run it, ``cd`` into the ``wolf_sheep`` directory and run ``python test_random_walk.py``. You'll see a series of ASCII grids, one per model step, with each cell showing a count of the number of agents in it.
-* ``wolf_sheep/agents.py``: Defines the Wolf, Sheep, and GrassPatch agent classes.
-* ``wolf_sheep/scheduler.py``: Defines a custom variant on the RandomActivationByType scheduler, where we can define filters for the `get_type_count` function.
-* ``wolf_sheep/model.py``: Defines the Wolf-Sheep Predation model itself
-* ``wolf_sheep/server.py``: Sets up the interactive visualization server
-* ``run.py``: Launches a model visualization server.
+* ``agents.py``: Defines the ``Animal`` base class, which moves randomly across the grid one cell at a time, and the Wolf, Sheep and GrassPatch agent classes.
+* ``model.py``: Defines the Wolf-Sheep Predation model itself and its scenario.
+* ``app.py``: Sets up the interactive Solara visualization.
 
 ## Further Reading
 

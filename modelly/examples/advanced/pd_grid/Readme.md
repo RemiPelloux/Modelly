@@ -19,7 +19,7 @@ The Demographic Prisoner's Dilemma demonstrates how simple rules can lead to the
 
 Install Modelly with recommended dependencies:
 
-pip install "modelly[rec]"
+pip install "modelly-abm[rec]"
 
 Then run the example:
 
@@ -32,7 +32,7 @@ Open the displayed local URL in your browser.
 * ``agents.py``: contains the agent class.
 * ``model.py``: contains the model class; the model takes a ``activation_order`` string as an argument, which determines in which order agents are activated: Sequential, Random or Simultaneous.
 * ``app.py``: contains the interactive visualization server.
-* ``Demographic Prisoner's Dilemma Activation Schedule.ipynb``: Jupyter Notebook for running the scheduling experiment. This runs the model three times, one for each activation type, and demonstrates how the activation regime drives the model to different outcomes.
+* ``analysis.ipynb``: Jupyter Notebook for running the scheduling experiment. This runs the model three times, one for each activation type, and demonstrates how the activation regime drives the model to different outcomes.
 
 ## Further Reading
 
