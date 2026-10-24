@@ -433,9 +433,9 @@ Two questions, two methods, both in the repository.
 
 **Same code on both frameworks.** A research notebook written for Mesa 2.3, ported with the
 codemod and nothing else changed, identical seeds, outputs checked bit-identical, CPU time
-pinned and alternating: with 1.5.2's compiled random core Modelly is 12% faster than Mesa 2.3
-(paired runs at 0.877 to 0.884 of Mesa's time, identical output in every chunk). In 1.5.0, with
-the pure-Python `FastRandom`, it was 1.3 to 3.8% faster, and 1.5 to 2% behind with the standard
+pinned and alternating: with its compiled random core Modelly is 12% faster than Mesa 2.3
+(paired runs at 0.877 to 0.884 of Mesa's time, identical output in every chunk). With the
+pure-Python `FastRandom` it is 1.3 to 3.8% faster, and 1.5 to 2% behind with the standard
 library's generator. The method and every round are in
 [docs/performance.md](docs/performance.md).
 

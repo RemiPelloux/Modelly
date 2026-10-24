@@ -72,6 +72,10 @@ jobs:
     name: Deploy release to PyPI
     needs: [wheels, pure]
     runs-on: ubuntu-latest
+    # The PyPI trusted publisher is bound to this environment (Settings > Environments).
+    environment:
+      name: pypi
+      url: https://pypi.org/project/modelly-abm/
     permissions:
       id-token: write
     steps:
