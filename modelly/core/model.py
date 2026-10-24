@@ -7,12 +7,15 @@ Core Objects: Model
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any
+from pathlib import Path
+from typing import Any, Self
 
 import numpy as np
 
 from modelly.core.agent import Agent
+from modelly.core.checkpoint import CheckpointWriter, load_model, save_model
 from modelly.core.columns import ColumnStore
+from modelly.core.exceptions import CheckpointError
 from modelly.core.registry import AgentRegistry
 from modelly.core.rng import FastRandom
 from modelly.data.recorders.datasets import DataRegistry
@@ -179,6 +182,64 @@ class Model[A: Agent, S: Scenario](AgentRegistry[A], HasSchedule, HasEmitters):
 
     def step(self) -> None:
         """A single step. Fill in here."""
+
+    def save(self, path: str | Path, *, compress: bool = False) -> None:
+        """Save the whole model to one checkpoint file.
+
+        The file holds the agents, spaces, columns, scheduled events, data
+        collected so far and the exact state of ``random`` and ``rng``, so
+        ``Model.load`` resumes the run draw for draw.
+
+        Args:
+            path: The file to write.
+            compress: Gzip the payload (smaller, slower).
+
+        Raises:
+            CheckpointError: If a callback the model holds, such as an event
+                callback or a reporter, is a lambda or nested function.
+        """
+        save_model(self, path, compress=compress)
+
+    @classmethod
+    def load(cls, path: str | Path) -> Self:
+        """Load a model saved with ``save``.
+
+        Warning:
+            A checkpoint is a pickle: loading one runs code chosen by whoever
+            wrote it. Only load files you created or otherwise trust.
+
+        Args:
+            path: The checkpoint file.
+
+        Returns:
+            The saved model, an instance of the class it was saved from.
+
+        Raises:
+            CheckpointError: If the file is not a checkpoint, was written by
+                another Modelly or Python release, or holds no ``cls``.
+        """
+        model = load_model(path)
+        if not isinstance(model, cls):
+            raise CheckpointError(
+                f"{path} holds a {type(model).__name__}, not a {cls.__name__}."
+            )
+        return model
+
+    def checkpoint_every(
+        self, interval: float, path_pattern: str, *, compress: bool = False
+    ) -> CheckpointWriter:
+        """Save a checkpoint every ``interval`` time units.
+
+        Args:
+            interval: Time between checkpoints; the first is ``interval`` from now.
+            path_pattern: The file name, formatted with ``time``, e.g.
+                ``"run-{time:04.0f}.ckpt"``.
+            compress: Gzip each checkpoint.
+
+        Returns:
+            The writer; call its ``stop()`` to end the checkpoints.
+        """
+        return CheckpointWriter(self, interval, path_pattern, compress)
 
     def remove_all_agents(self):
         """Remove all agents from the model.

@@ -90,3 +90,7 @@ class DimensionException(ModellyException, ValueError):  # noqa: N818
             message: The error message describing the dimension mismatch.
         """
         super().__init__(message)
+
+
+class CheckpointError(ModellyException):
+    """Raised when a model cannot be saved to, or loaded from, a checkpoint."""
