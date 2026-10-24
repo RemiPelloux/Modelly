@@ -184,6 +184,7 @@ Checking a model <lint>
 Profiling a model <profile>
 Experiments and sweeps <experiments>
 Checkpoints <checkpoints>
+Reproducible studies <provenance>
 Vectorised step phases <vectorised_phases>
 Roadmap <roadmap/index>
 ```

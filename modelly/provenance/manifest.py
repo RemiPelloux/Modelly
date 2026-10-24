@@ -5,21 +5,21 @@ accepts any manifest of the same major version and refuses others, so fields can
 added without breaking old readers. Paths are relative to the manifest's folder and
 written with forward slashes; hashes are ``sha256:<hex>`` over bytes.
 
-Top-level fields (all present in version 1):
+Top-level fields (all present in version 1)::
 
-``format``       the schema name and version
-``target``       ``{"kind": "file" | "module", "source", "class"}``; a file source is
-                 relative to ``code.root``
-``code``         ``{"root", "files": {path: hash}, "hash", "git": {"commit", "dirty",
-                 "diff_hash"} | null}``
-``environment``  ``{"modelly": {"version", "build", "native"}, "python", "platform",
-                 "dependencies": {name: version}, "packages": {name: version}}``
-``scenario``     ``{"file", "hash", "parameters", "resolved"}``
-``run``          ``{"steps", "seed"}``
-``seeds``        ``{"seed", "entropy", "spawn_key", "stdlib_seed"}``
-``inputs``       ``[{"path", "hash"}]``
-``outputs``      ``[{"table", "path", "format", "hash", "rows", "columns"}]``
-``timing``       ``{"wall_seconds", "cpu_seconds"}``
+    format       the schema name and version
+    target       {"kind": "file" | "module", "source", "class"}; a file source is
+                 relative to code.root
+    code         {"root", "files": {path: hash}, "hash", "git": {"commit", "dirty",
+                 "diff_hash"} | null}
+    environment  {"modelly": {"version", "build", "native"}, "python", "platform",
+                 "dependencies": {name: version}, "packages": {name: version}}
+    scenario     {"file", "hash", "parameters", "resolved"}
+    run          {"steps", "seed"}
+    seeds        {"seed", "entropy", "spawn_key", "stdlib_seed"}
+    inputs       [{"path", "hash"}]
+    outputs      [{"table", "path", "format", "hash", "rows", "columns"}]
+    timing       {"wall_seconds", "cpu_seconds"}
 """
 
 from __future__ import annotations
