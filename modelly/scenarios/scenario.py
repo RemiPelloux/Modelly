@@ -12,59 +12,17 @@ from typing import Any, ClassVar
 import numpy as np
 import pandas as pd
 
+from modelly.scenarios.sampling import rescale_samples  # noqa: F401 (re-export)
+
 SeedLike = int | np.integer | Sequence[int] | np.random.SeedSequence
 RNGLike = np.random.Generator | np.random.BitGenerator
 
-# Reserved replication_id for a source/parent scenario: one that has not been
-# derived from spawn_replications (its rng is the original seed, not a
-# spawned child). Kept as an int so RunID only uses ints for unique keys. In turn,
-# this makes any Store implementation cleaner as well. See e.g., InMemoryStore.status().
-# Safe as a sentinel because spawned replications are always 0..n-1, so -1
-# never collides with a real replication_id.
+# Reserved replication_id for a source/parent scenario: one not derived from
+# spawn_replications (its rng is the original seed, not a spawned child). Kept as
+# an int so RunID only uses ints for unique keys, which keeps Store implementations
+# clean (see e.g. InMemoryStore.status()). Safe as a sentinel because spawned
+# replications are always 0..n-1, so -1 never collides with a real replication_id.
 PARENT_REPLICATION_ID = -1
-
-
-def rescale_samples(
-    samples: np.ndarray,
-    ranges: np.ndarray,
-    *,
-    inplace: bool = False,
-) -> np.ndarray:
-    """Rescale samples from the unit interval [0, 1] to parameter ranges.
-
-    Parameters
-    ----------
-    samples : ndarray (n, d)
-        Samples drawn from the unit interval.
-    ranges : ndarray (d, 2)
-        Parameter ranges given as [[min, max], ...].
-    inplace : bool, optional
-        If True, the input ``samples`` array is modified in place.
-        If False (default), a new array containing the rescaled samples
-        is returned.
-
-    Returns:
-    -------
-    ndarray (n, d)
-        Rescaled samples.
-
-    Notes:
-    -----
-    The rescaling is performed using NumPy broadcasting. If ``inplace=True``,
-    the original ``samples`` array is overwritten.
-    """
-    samples = np.asarray(samples)
-    ranges = np.asarray(ranges)
-
-    mins = ranges[:, 0]
-    scale = ranges[:, 1] - mins
-
-    if inplace:
-        samples *= scale
-        samples += mins
-        return samples
-
-    return samples * scale + mins
 
 
 class Scenario:
@@ -298,15 +256,12 @@ class Scenario:
 
         """
         scenarios = []
-
         for i, entry in enumerate(experiments.to_dict(orient="records")):
             scenario = cls(rng=rng, scenario_id=i, **entry)
             if replications is None:
                 scenarios.append(scenario)
             else:
-                for replication in scenario.spawn_replications(replications):
-                    scenarios.append(replication)
-
+                scenarios.extend(scenario.spawn_replications(replications))
         return scenarios
 
     @classmethod
