@@ -3,7 +3,7 @@
 A checkpoint is a short text header followed by a pickle of the model::
 
     MODELLY-CHECKPOINT
-    {"format": 1, "modelly": "1.2.0", "python": "3.13", "compression": "gzip"}
+    {"format": 2, "modelly": "1.3.0", "python": "3.13", "compression": "gzip"}
     <pickle, compressed or not>
 
 The header is read without unpickling anything, so a file from another format,
@@ -30,6 +30,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, BinaryIO
 
 import modelly
+from modelly.core._flatpickle import ShellPickler, dump_flat, load_flat
 from modelly.core.exceptions import CheckpointError
 from modelly.time.events.event import Event, Priority
 from modelly.time.events.generator import EventGenerator
@@ -38,7 +39,7 @@ if TYPE_CHECKING:
     from modelly.core.model import Model
 
 MAGIC = b"MODELLY-CHECKPOINT\n"
-FORMAT_VERSION = 1
+FORMAT_VERSION = 2  # 2: agents written flat (modelly.core._flatpickle)
 PICKLE_PROTOCOL = pickle.HIGHEST_PROTOCOL
 # Version components that must match: Modelly major.minor, Python major.minor.
 VERSION_PARTS = 2
@@ -126,11 +127,14 @@ def _check_event(event: Event | EventGenerator) -> None:
     )
 
 
-class _Pickler(pickle.Pickler):
+class _Pickler(ShellPickler):
     """Pickle with weak references kept weak and unpicklable callbacks named."""
 
     def reducer_override(self, obj: Any) -> Any:
         """Reduce weak references; refuse lambdas with a clear error."""
+        shell = self.shell(obj)
+        if shell is not NotImplemented:
+            return shell
         kind = type(obj)
         if kind is weakref.WeakMethod:
             return _rebuild_weak_method, (obj(),)
@@ -153,9 +157,8 @@ def _next_event_id() -> int:
 def _dump_payload(model: Model) -> bytes:
     """Pickle the model and the event-id counter its ordering depends on."""
     buffer = io.BytesIO()
-    _Pickler(buffer, PICKLE_PROTOCOL).dump(
-        {"model": model, "next_event_id": _next_event_id()}
-    )
+    payload = {"model": model, "next_event_id": _next_event_id()}
+    dump_flat(_Pickler(buffer, PICKLE_PROTOCOL), model, payload)
     return buffer.getvalue()
 
 
@@ -231,7 +234,7 @@ def _load(file: BinaryIO, path: str | Path) -> Model:
     payload = file.read()
     if header.get("compression") == GZIP:
         payload = gzip.decompress(payload)
-    state = pickle.loads(payload)  # noqa: S301 - documented: trusted files only
+    state = load_flat(io.BytesIO(payload))
     _restore_event_ids(state["next_event_id"])
     return state["model"]
 
