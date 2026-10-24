@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from modelly.lint import Finding
+    from modelly import lint
 
 KEYS = frozenset({"select", "ignore", "per-file-ignores"})
 
@@ -52,7 +52,7 @@ class Config:
     per_file_ignores: tuple[tuple[str, tuple[str, ...]], ...] = ()
     root: Path = Path()
 
-    def keeps(self, finding: Finding) -> bool:
+    def keeps(self, finding: lint.Finding) -> bool:
         """Whether ``finding`` survives select, ignore and its file's ignores."""
         code = finding.rule.code
         if self.select and not matches(code, self.select):
