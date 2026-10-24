@@ -18,11 +18,7 @@ if TYPE_CHECKING:
     from modelly.core.model import Model
 
 from modelly.core.agentset import AgentSet, _resolve_per_agent_values
-from modelly.core.column_access import (
-    _RemovedTable,
-    collect_column_specs,
-    install_column_properties,
-)
+from modelly.core.column_access import collect_column_specs, install_column_properties
 from modelly.core.columns import Column
 
 
@@ -138,7 +134,7 @@ class Agent[M: Model]:
         if self._extra_hooks:
             if self._column_specs and self._column_row >= 0:
                 model.columns.unregister(self)
-                self._column_table = _RemovedTable(self)  # its columns now name it
+                del self._column_table  # its Column attributes now name the agent
             # ensures models are also removed from datasets
             for dataset in self._datasets:
                 model.data_registry[dataset].remove_agent(self)
