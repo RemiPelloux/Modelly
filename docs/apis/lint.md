@@ -12,3 +12,8 @@ The static checks behind `python -m modelly.lint`. The rules, with examples, are
 .. automodule:: modelly.lint.rules
    :members:
 ```
+
+```{eval-rst}
+.. automodule:: modelly.lint.config
+   :members:
+```
