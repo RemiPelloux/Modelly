@@ -175,15 +175,19 @@ class CellCollection[T: Cell]:
             ValueError: If at_most is a negative integer, or a float not in the range (0.0, 1.0].
 
         """
-        if filter_func is None and at_most == _INF:
-            return self
+        if at_most == _INF:
+            if filter_func is None:
+                return self
+            # One pass straight into the new collection's mapping.
+            kept = {cell: cell._agents for cell in self._cells if filter_func(cell)}
+            return CellCollection(kept, random=self.random)
 
-        at_most = _validate_at_most(at_most, len(self))
-        cells = (
-            self.cells if filter_func is None else [c for c in self if filter_func(c)]
+        limit = _validate_at_most(at_most, len(self._cells))
+        matches = (
+            iter(self._cells)
+            if filter_func is None
+            else (cell for cell in self._cells if filter_func(cell))
         )
-        if at_most != _INF:
-            cells = cells[:at_most]
-        return CellCollection(
-            {cell: cell._agents for cell in cells}, random=self.random
-        )
+        # Stop filtering as soon as ``limit`` cells matched.
+        kept = {cell: cell._agents for cell in itertools.islice(matches, limit)}
+        return CellCollection(kept, random=self.random)

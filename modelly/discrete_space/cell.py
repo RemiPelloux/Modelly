@@ -160,13 +160,14 @@ class Cell:
             agent (CellAgent): agent to add to this Cell
 
         """
-        agents = self._agents
-        if self.capacity is not None and len(agents) >= self.capacity:
+        occupants = self._agents
+        limit = self.capacity
+        if limit is not None and len(occupants) >= limit:
             raise CellFullException(self.coordinate)
 
-        agents.append(agent)
+        occupants.append(agent)
         # ``empty`` may be backed by a property layer; only write it on a transition.
-        if len(agents) == 1:
+        if len(occupants) == 1:
             self.empty = False
 
     def remove_agent(self, agent: CellAgent) -> None:
@@ -187,14 +188,13 @@ class Cell:
     @property
     def is_empty(self) -> bool:
         """Returns a bool of the contents of a cell."""
-        return len(self._agents) == 0
+        return not self._agents
 
     @property
     def is_full(self) -> bool:
         """Returns a bool of the contents of a cell."""
-        if self.capacity is None:
-            return False
-        return len(self._agents) >= self.capacity
+        limit = self.capacity
+        return limit is not None and len(self._agents) >= limit
 
     @property
     def agents(self) -> list[CellAgent]:
@@ -235,7 +235,9 @@ class Cell:
             return cache[key]
         except KeyError:
             pass
-        collection = CellCollection[Cell](
+        # Plain CellCollection(...): calling the subscripted alias CellCollection[Cell]
+        # goes through typing's __call__ and costs more than building the collection.
+        collection = CellCollection(
             self._neighborhood(radius=radius, include_center=include_center),
             random=self.random,
         )
@@ -272,29 +274,33 @@ class Cell:
         return neighborhood
 
     def _bfs_neighborhood(self, radius: int) -> dict[Cell, list[Agent]]:
-        """Collect every cell within ``radius`` hops (excluding self) by BFS."""
-        visited: set[Cell] = {self}
-        current_layer: list[Cell] = list(self.connections.values())
-        neighborhood: dict[Cell, list[Agent]] = {}
+        """Collect every cell within ``radius`` hops (excluding self) by BFS.
 
-        for neighbor in current_layer:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                neighborhood[neighbor] = neighbor._agents
+        The result dict doubles as the visited set: self is seeded into it so it
+        is never re-entered, then dropped at the end. Cells land in the dict in
+        BFS discovery order, which callers rely on for reproducible draws.
+        """
+        reached: dict[Cell, list[Agent]] = {self: self._agents}
+        frontier: list[Cell] = []
+        for neighbor in self.connections.values():
+            if neighbor not in reached:
+                reached[neighbor] = neighbor._agents
+                frontier.append(neighbor)
 
         for _ in range(radius - 1):
-            next_layer: list[Cell] = []
-            for cell in current_layer:
+            if not frontier:
+                break
+            next_frontier: list[Cell] = []
+            grow = next_frontier.append
+            for cell in frontier:
                 for neighbor in cell.connections.values():
-                    if neighbor not in visited:
-                        visited.add(neighbor)
-                        next_layer.append(neighbor)
-                        neighborhood[neighbor] = neighbor._agents
-            current_layer = next_layer
-            if not current_layer:
-                break  # No more cells to explore
+                    if neighbor not in reached:
+                        reached[neighbor] = neighbor._agents
+                        grow(neighbor)
+            frontier = next_frontier
 
-        return neighborhood
+        del reached[self]
+        return reached
 
     def __getstate__(self):
         """Return state of the Cell.

@@ -189,21 +189,14 @@ class ContinuousSpace[A: ContinuousSpaceAgent]:
             else self._agent_positions[[a._modelly_index for a in agents]]
         )
 
-        delta = positions - point
+        offset = positions - point
+        if not self.torus:
+            return offset
 
-        if self.torus:
-            inverse_delta = delta - np.sign(delta) * self.size
-
-            # we need to use the lowest absolute value from delta and inverse delta
-            logical = np.abs(delta) < np.abs(inverse_delta)
-
-            out = np.zeros(delta.shape)
-            out[logical] = delta[logical]
-            out[~logical] = inverse_delta[~logical]
-
-            delta = out
-
-        return delta
+        # Across the wrap the same pair is ``size`` closer or farther; keep, per
+        # component, whichever of the two has the smaller magnitude.
+        wrapped = offset - np.sign(offset) * self.size
+        return np.where(np.abs(offset) < np.abs(wrapped), offset, wrapped)
 
     def calculate_distances(
         self, point: ArrayLike, agents: Iterable[Agent] | None = None, **kwargs
