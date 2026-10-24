@@ -11,6 +11,8 @@ from __future__ import annotations
 import importlib
 import importlib.util
 import json
+import platform
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -30,6 +32,12 @@ JSON_INDENT = 2
 LIBM_DIGITS = 10
 DYNAMIC_CLASSES = "meta-agent classes are created at run time and cannot be pickled"
 RATE_CLOSURES = "ContinuousState rates and Threshold callbacks are closures"
+GEO_LIBRARIES = (
+    "projections and geometry come from the PROJ and GEOS builds inside the pyproj and\n"
+    "shapely wheels, which differ between platforms"
+).replace("\n", " ")
+# Where a golden file was written; machine_only examples are compared there only.
+PLATFORM = f"{sys.platform}-{platform.machine().lower()}"
 _PACKAGE = "modelly.examples."
 
 
@@ -45,6 +53,7 @@ class Example:
         float_digits: significant digits of floats in the golden digest, or None (exact).
         requires: optional modules the example needs; it is skipped without them.
         no_checkpoint: why the example cannot be checkpointed yet, or None.
+        machine_only: why the golden digest holds on the recording platform only, or None.
     """
 
     name: str
@@ -54,6 +63,7 @@ class Example:
     float_digits: int | None = None
     requires: tuple[str, ...] = ()
     no_checkpoint: str | None = None
+    machine_only: str | None = None
 
     def available(self) -> bool:
         """Whether every optional module the example needs is installed."""
@@ -83,6 +93,7 @@ EXAMPLES = (
         "alliance_formation",
         "advanced.alliance_formation.model:MultiLevelAllianceModel",
         "advanced.alliance_formation.model:AllianceScenario",
+        float_digits=LIBM_DIGITS,
         requires=("networkx",),
         no_checkpoint=DYNAMIC_CLASSES,
     ),
@@ -145,6 +156,7 @@ EXAMPLES = (
         "spatial.commuting_city.model:CommutingScenario",
         float_digits=LIBM_DIGITS,
         requires=("geopandas",),
+        machine_only=GEO_LIBRARIES,
     ),
     Example(
         "layered_epidemic",
@@ -166,8 +178,10 @@ def current_digests(*, exact: bool = False) -> dict[str, str]:
     return {e.name: golden_digest(e, exact=exact) for e in EXAMPLES if e.available()}
 
 
-def golden_record(digests: dict[str, str]) -> dict[str, Any]:
-    """The golden file contents for ``digests``."""
+def golden_record(
+    digests: dict[str, str], recorded_on: str = PLATFORM
+) -> dict[str, Any]:
+    """The golden file contents for ``digests``, written on ``recorded_on``."""
     examples = {
         name: {
             "steps": EXAMPLES_BY_NAME[name].steps,
@@ -176,13 +190,23 @@ def golden_record(digests: dict[str, str]) -> dict[str, Any]:
         }
         for name in sorted(digests)
     }
-    return {"format": FORMAT, "seed": SEED, "examples": examples}
+    return {
+        "format": FORMAT,
+        "seed": SEED,
+        "recorded_on": recorded_on,
+        "examples": examples,
+    }
 
 
 def read_golden(path: Path) -> dict[str, str]:
     """The recorded digests in the golden file at ``path``, by example name."""
     record = json.loads(path.read_text(encoding=ENCODING))
     return {name: entry["sha256"] for name, entry in record["examples"].items()}
+
+
+def recorded_platform(path: Path) -> str:
+    """The platform the golden file at ``path`` was written on."""
+    return json.loads(path.read_text(encoding=ENCODING))["recorded_on"]
 
 
 def write_golden(path: Path, digests: dict[str, str]) -> None:

@@ -49,11 +49,17 @@ them are compared at **10 significant digits** in the golden check (`float_digit
 
 | Example | Why |
 |---|---|
+| `alliance_formation` | initial power and position from normal draws (the sampler's tails use `log` and `exp`) |
 | `boid_flockers` | headings from `arctan2`, distances from `linalg.norm` |
 | `epstein_civil_violence` | arrest probability from `exp` |
 | `sugarscape_g1mt` | welfare from `pow`, trade price from `exp` and `log` |
 | `commuting_city` | destination choice from `exp`, congestion from `pow` |
 | `layered_epidemic` | infection probability from `exp` |
+
+`commuting_city` is also compared on the platform that wrote `golden.json` only: its projections
+and geometry come from the PROJ and GEOS libraries bundled inside the pyproj and shapely wheels,
+and those builds differ between platforms by more than the last digits. On every other
+platform its golden check is skipped with that reason; checks 1 and 2 still run everywhere.
 
 Every other example is compared bit for bit. Checks 1 and 2 are always exact: they run on one
 machine, where the maths library is the same. A last-bit difference can only change a

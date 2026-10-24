@@ -15,10 +15,12 @@ from modelly.dev.golden import (
     EXAMPLES_BY_NAME,
     GOLDEN,
     JSON_INDENT,
+    PLATFORM,
     SEED,
     golden_digest,
     golden_record,
     read_golden,
+    recorded_platform,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -39,7 +41,8 @@ def test_golden_file_records_every_example_as_written():
     assert b"\r" not in data
     recorded = read_golden(GOLDEN_PATH)
     assert set(recorded) == set(EXAMPLES_BY_NAME)
-    expected = json.dumps(golden_record(recorded), indent=JSON_INDENT, sort_keys=True)
+    record = golden_record(recorded, recorded_platform(GOLDEN_PATH))
+    expected = json.dumps(record, indent=JSON_INDENT, sort_keys=True)
     assert data.decode("utf-8") == expected + "\n"
 
 
@@ -48,6 +51,8 @@ def test_golden_digest(example):
     """The example, run from the golden seed, gives the recorded digest."""
     if not example.available():
         pytest.skip(f"{example.name} needs {', '.join(example.requires)}")
+    if example.machine_only and recorded_platform(GOLDEN_PATH) != PLATFORM:
+        pytest.skip(f"{example.name}: {example.machine_only}")
     assert golden_digest(example) == read_golden(GOLDEN_PATH)[example.name]
 
 
