@@ -243,9 +243,13 @@ class DiscreteSpace[T: Cell](ABC):
             ) from e
 
     def __setstate__(self, state):
-        """Set the state of the discrete space and rebuild the connections."""
+        """Set the state of the discrete space and rebuild the connections.
+
+        The empties index is kept, not rebuilt: the order of its cells decides
+        which empty cell a draw picks, so a restored space draws as the original.
+        """
         self.__dict__ = state
-        self._empties = _EmptiesIndex()
+        empties = self._empties
 
         if self._cells:
             self.cell_klass = type(next(iter(self._cells.values())))
@@ -254,3 +258,5 @@ class DiscreteSpace[T: Cell](ABC):
             cell.connections = {
                 key: self._cells[coord] for key, coord in cell.connections.items()
             }
+            if empties.enabled:
+                cell._empties_index = empties

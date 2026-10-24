@@ -176,6 +176,22 @@ class ContinuousSpace[A: ContinuousSpaceAgent](NeighborQueriesMixin):
         self._n_agents -= 1
         self.agent_positions = self._agent_positions[0 : self._n_agents]
 
+    def __getstate__(self) -> dict:
+        """Drop the view of the filled rows and the neighbour cache.
+
+        Pickled on its own the view would become a copy, and agent positions
+        written through it would no longer reach ``_agent_positions``.
+        """
+        state = self.__dict__.copy()
+        del state["agent_positions"]
+        state["_neighbors_cache"] = None
+        return state
+
+    def __setstate__(self, state: dict) -> None:
+        """Restore state and make ``agent_positions`` a view again."""
+        self.__dict__.update(state)
+        self.agent_positions = self._agent_positions[0 : self._n_agents]
+
     def calculate_difference_vector(self, point: np.ndarray, agents=None) -> np.ndarray:
         """Calculate the difference vector between the point and all agenents.
 
