@@ -191,7 +191,7 @@ Every change makes the same `getrandbits` calls in the same order; a test shuffl
 length from 0 to 139 and lengths around each power of two and compares with the standard
 library element for element, and then compares the next draw.
 
-**The compiled core (1.5.2).** Pure Python had nothing left to remove: what remained of a draw
+**The compiled core.** Pure Python had nothing left to remove: what remained of a draw
 was the Python function call around a C call. `modelly/_native/fastrng.c` implements
 `randint`, `choice`, `shuffle`, `sample` and `_randbelow` in C as "fastcall" methods (the
 cheapest call CPython has). The type extends `_random.Random` and generates words from the same
@@ -291,10 +291,10 @@ collector). The win depends on Modelly's generator: with the port's seeding line
 timing. Using `FastRandom` there is fair in the sense this page uses: it is `model.random`'s
 own type, and it reproduces the identical stream, so every output is bit-identical.
 
-With the compiled core (1.5.2) the same paired instrument puts Modelly 12% ahead of Mesa 2.3
+With the compiled core the same paired instrument puts Modelly 12% ahead of Mesa 2.3
 on this notebook, same model code and same CSV in every chunk:
 
-| Paired run | Mesa 2.3 | Modelly 1.5.2 | Modelly / Mesa | median chunk |
+| Paired run | Mesa 2.3 | Modelly | Modelly / Mesa | median chunk |
 |---|---|---|---|---|
 | 1 | 12.97 s | 11.47 s | 0.884 | 0.829 |
 | 2 | 11.37 s | 10.03 s | 0.882 | 0.842 |
