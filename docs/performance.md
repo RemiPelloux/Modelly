@@ -220,6 +220,33 @@ model's agent registries and the breadth-first walk behind `Cell.get_neighborhoo
 has an identical pure-Python twin in `modelly/_native/loops.py`, used when the module is not
 built or `MODELLY_PURE_PYTHON=1` is set; `tests/native` checks the two against each other.
 
+A third, `modelly/_native/fastcell.c`, is the setter of `CellAgent.cell`: add to the new cell
+(capacity check, `CellFullException`), remove from the old one (`AgentMissingException` chained
+from the `ValueError`), and write `empty` only on a transition, through the normal attribute
+protocol so a grid's property-layer `empty` still updates. It runs `Cell.add_agent` and
+`remove_agent` inline only when the cell's type resolves them to `Cell`'s own (checked per type,
+revalidated on CPython's type version tag, so an override or a later patch is called instead),
+and reads the `_agents` and `capacity` slots at their offsets. Its twin is `py_set_cell` in
+`modelly/_native/cells.py`. A first version that used plain attribute lookups was no faster than
+Python 3.15's specialised bytecode; the slot reads are what made the difference.
+
+Measured on Python 3.15, one pinned core (`nice taskset -c 5`) of a shared 16-core laptop at
+load 3 to 4, CPU time, base (`main`) and new alternating in separate processes, identical
+results checked every round:
+
+| Workload | base | new | new / base, median (IQR) |
+|---|---|---|---|
+| one move, no `empty` transition | 205 ns | 107 ns | 0.52 |
+| one move, two property-layer `empty` transitions | 315 ns | 200 ns | 0.63 |
+| one move to a random neighbour (`cell.neighborhood.select_random_cell()`) | 677 ns | 450 to 550 ns | 0.66 to 0.81 |
+| `grid_epidemic`, `modelly-cells`, small, 20 rounds | 0.121 s | 0.102 s | 0.86 (0.79 to 0.96) |
+| `predator_prey`, `modelly-cells`, small, 20 rounds | 0.212 s | 0.185 s | 0.89 (0.83 to 0.95) |
+| `grid_epidemic`, `modelly-cells`, large, 10 rounds | 2.62 s | 2.39 s | 0.91 (0.91 to 0.96) |
+| `predator_prey`, `modelly-cells`, large, 10 rounds | 2.11 s | 1.96 s | 0.93 (0.89 to 0.95) |
+
+At the large size the gain is 7 to 9%: the rest of a step (the neighbourhood lookup, the
+random draw, the column writes, the property-layer `empty` setter) is unchanged.
+
 ### How we evaluate against other frameworks
 
 Micro-benchmarks say where time goes; whether a framework is faster for a researcher is
@@ -411,9 +438,9 @@ These are the changes with the largest remaining upside. Each is a project, not 
    full model; a shared column store would let a sweep over one large model fan out without
    copying it.
 3. **Compiled hot loops.** The neighbourhood lookup and `do` / `shuffle_do` on the model's
-   registries now run in `modelly/_native/fastloop.c`. The remaining per-agent cost is Python
-   call overhead on the cell move; a compiled path for it would be the last large win before a
-   different authoring model.
+   registries now run in `modelly/_native/fastloop.c`, and the cell move in
+   `modelly/_native/fastcell.c` (7 to 14% on the cell-list playbooks). What remains per agent
+   is the random-neighbour lookup around the draw and the property-layer `empty` setter.
 
 ## How to re-run
 
