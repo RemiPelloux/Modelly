@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Migrating from Mesa &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=1f29e9d3"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'migrating_from_mesa';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.3';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/migrating_from_mesa.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Performance audit" href="performance.html" />
+    <link rel="prev" title="Opinions of persona agents (modelly.llm)" href="examples/llm/llm_opinions.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Migrating from Mesa</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="migrating-from-mesa">
+<h1>Migrating from Mesa<a class="headerlink" href="#migrating-from-mesa" title="Link to this heading">#</a></h1>
+<p>Modelly’s authoring model will feel familiar if you have written a Mesa model: a <code class="docutils literal notranslate"><span class="pre">Model</span></code>
+subclass owns the world, <code class="docutils literal notranslate"><span class="pre">Agent</span></code> subclasses hold behaviour, a <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> records. The
+differences are where Mesa accumulated several generations of API (schedulers, two grid systems,
+<code class="docutils literal notranslate"><span class="pre">batch_run</span></code>) and Modelly keeps one. This page maps every Mesa construct to its Modelly
+equivalent, for Mesa 2.x and Mesa 3.x code alike.</p>
+<p>Start with the codemod. It rewrites the mechanical parts (imports, agent constructors, a few
+model attributes) and prints a report of every line that needs a decision, each pointing to a
+section below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>modelly.migrate<span class="w"> </span>path/to/your/model/<span class="w">          </span><span class="c1"># dry run: shows the diff and the report</span>
+python<span class="w"> </span>-m<span class="w"> </span>modelly.migrate<span class="w"> </span>path/to/your/model/<span class="w"> </span>--write<span class="w">  </span><span class="c1"># applies the rewrites</span>
+</pre></div>
+</div>
+<p>Then work through the report top to bottom. A typical Mesa 3 model is done after the imports;
+a Mesa 2 model needs the scheduler and grid sections.</p>
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mesa</p></th>
+<th class="head"><p>Modelly</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">mesa</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">modelly</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">mesa</span> <span class="pre">import</span> <span class="pre">Agent,</span> <span class="pre">Model,</span> <span class="pre">DataCollector</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">modelly</span> <span class="pre">import</span> <span class="pre">Agent,</span> <span class="pre">Model,</span> <span class="pre">DataCollector</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mesa.agent</span></code>, <code class="docutils literal notranslate"><span class="pre">mesa.model</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modelly.core.agent</span></code>, <code class="docutils literal notranslate"><span class="pre">modelly.core.model</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mesa.datacollection</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modelly.data.collector</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mesa.discrete_space</span></code> (3.2+), <code class="docutils literal notranslate"><span class="pre">mesa.experimental.cell_space</span></code> (3.0, 3.1)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modelly.space</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mesa.space</span></code> (<code class="docutils literal notranslate"><span class="pre">MultiGrid</span></code>, <code class="docutils literal notranslate"><span class="pre">SingleGrid</span></code>, <code class="docutils literal notranslate"><span class="pre">NetworkGrid</span></code>, <code class="docutils literal notranslate"><span class="pre">ContinuousSpace</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modelly.space</span></code>, see <a class="reference internal" href="#grids-and-positions">Grids</a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mesa.time</span></code> (schedulers)</p></td>
+<td><p>nothing to import, see <a class="reference internal" href="#activation-and-schedulers">Activation</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mesa.batchrunner.batch_run</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modelly.scenarios</span></code>, see <a class="reference internal" href="#batch-runs">Batch runs</a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mesa.visualization</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modelly.viz</span></code> (same component names)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mesa.experimental.devs</span></code> (<code class="docutils literal notranslate"><span class="pre">ABMSimulator</span></code>, <code class="docutils literal notranslate"><span class="pre">DEVSimulator</span></code>)</p></td>
+<td><p>methods on <code class="docutils literal notranslate"><span class="pre">Model</span></code>, see <a class="reference internal" href="#events-and-simulators">Events</a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mesa.experimental.continuous_space</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modelly.space.continuous</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mesa.experimental.signals</span></code>, <code class="docutils literal notranslate"><span class="pre">mesa.experimental.meta_agents</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">modelly.time.signals</span></code>, <code class="docutils literal notranslate"><span class="pre">modelly.behaviour.meta_agents</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The codemod does all of these.</p>
+</section>
+<section id="agents">
+<h2>Agents<a class="headerlink" href="#agents" title="Link to this heading">#</a></h2>
+<p><strong>Constructor.</strong> Mesa 2 agents took an id; Modelly assigns <code class="docutils literal notranslate"><span class="pre">unique_id</span></code> itself, starting at 1:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mesa 2</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Sheep</span><span class="p">(</span><span class="n">mesa</span><span class="o">.</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">energy</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+
+
+<span class="c1"># Modelly (and Mesa 3)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Sheep</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">energy</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">model.next_id()</span></code> no longer exists; delete those calls. The codemod rewrites the <code class="docutils literal notranslate"><span class="pre">super()</span></code> call
+and flags the constructor signature so you remove the parameter from the callers too.</p>
+<p><strong>Random numbers.</strong> <code class="docutils literal notranslate"><span class="pre">self.random</span></code> and <code class="docutils literal notranslate"><span class="pre">self.model.random</span></code> work as in Mesa, and <code class="docutils literal notranslate"><span class="pre">self.rng</span></code> is a
+seeded numpy <code class="docutils literal notranslate"><span class="pre">Generator</span></code>. Never use the <code class="docutils literal notranslate"><span class="pre">random</span></code> module or <code class="docutils literal notranslate"><span class="pre">np.random</span></code> directly.</p>
+<p><strong>Creating many agents.</strong> <code class="docutils literal notranslate"><span class="pre">Sheep.create_agents(model,</span> <span class="pre">n,</span> <span class="pre">energy=energies)</span></code> creates <code class="docutils literal notranslate"><span class="pre">n</span></code> agents in
+one call; a sequence of length <code class="docutils literal notranslate"><span class="pre">n</span></code> gives one value per agent, anything else is broadcast.</p>
+</section>
+<section id="activation-and-schedulers">
+<h2>Activation and schedulers<a class="headerlink" href="#activation-and-schedulers" title="Link to this heading">#</a></h2>
+<p>Mesa 2 schedulers are gone (Mesa 3 removed them as well). Activation is a method call on an
+<code class="docutils literal notranslate"><span class="pre">AgentSet</span></code>, and <code class="docutils literal notranslate"><span class="pre">model.agents</span></code> is always up to date, so there is no <code class="docutils literal notranslate"><span class="pre">schedule.add</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mesa 2</p></th>
+<th class="head"><p>Modelly</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">self.schedule</span> <span class="pre">=</span> <span class="pre">RandomActivation(self)</span></code></p></td>
+<td><p>delete</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">self.schedule.add(agent)</span></code></p></td>
+<td><p>delete; agents register themselves</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">self.schedule.step()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.agents.shuffle_do(&quot;step&quot;)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BaseScheduler</span></code> (insertion order)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.agents.do(&quot;step&quot;)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SimultaneousActivation</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.agents.do(&quot;step&quot;);</span> <span class="pre">self.agents.do(&quot;advance&quot;)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">StagedActivation(stage_list=[&quot;a&quot;,</span> <span class="pre">&quot;b&quot;])</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.agents.do(&quot;a&quot;);</span> <span class="pre">self.agents.do(&quot;b&quot;)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">RandomActivationByType</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.agents_by_type[Sheep].shuffle_do(&quot;step&quot;)</span></code>, one line per type</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">self.schedule.steps</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.time</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">self.schedule.get_agent_count()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">len(self.agents)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">self.schedule.agents</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.agents</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">self.schedule.remove(agent)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">agent.remove()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Mesa 3’s <code class="docutils literal notranslate"><span class="pre">self.agents.shuffle_do(&quot;step&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">groupby</span></code>, <code class="docutils literal notranslate"><span class="pre">agg</span></code>, <code class="docutils literal notranslate"><span class="pre">get</span></code> and <code class="docutils literal notranslate"><span class="pre">set</span></code> exist with
+the same signatures.</p>
+</section>
+<section id="grids-and-positions">
+<h2>Grids and positions<a class="headerlink" href="#grids-and-positions" title="Link to this heading">#</a></h2>
+<p>Modelly has one grid system, the cell space (<code class="docutils literal notranslate"><span class="pre">modelly.space</span></code>), which Mesa 3 ships as
+<code class="docutils literal notranslate"><span class="pre">mesa.discrete_space</span></code>. Mesa 2’s <code class="docutils literal notranslate"><span class="pre">mesa.space.MultiGrid</span></code> and <code class="docutils literal notranslate"><span class="pre">SingleGrid</span></code> translate as follows. An
+agent that lives on a grid subclasses <code class="docutils literal notranslate"><span class="pre">CellAgent</span></code> and has a <code class="docutils literal notranslate"><span class="pre">cell</span></code> instead of a <code class="docutils literal notranslate"><span class="pre">pos</span></code>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mesa 2 (<code class="docutils literal notranslate"><span class="pre">mesa.space</span></code>)</p></th>
+<th class="head"><p>Modelly</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MultiGrid(width,</span> <span class="pre">height,</span> <span class="pre">torus)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OrthogonalMooreGrid((width,</span> <span class="pre">height),</span> <span class="pre">torus=torus,</span> <span class="pre">random=self.random)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SingleGrid(width,</span> <span class="pre">height,</span> <span class="pre">torus)</span></code></p></td>
+<td><p>same, with <code class="docutils literal notranslate"><span class="pre">capacity=1</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Von Neumann neighbourhoods (<code class="docutils literal notranslate"><span class="pre">moore=False</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OrthogonalVonNeumannGrid(...)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">HexGrid</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">HexGrid((width,</span> <span class="pre">height),</span> <span class="pre">...)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NetworkGrid(G)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Network(G,</span> <span class="pre">random=self.random)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid.place_agent(agent,</span> <span class="pre">pos)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">agent.cell</span> <span class="pre">=</span> <span class="pre">grid[pos]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grid.move_agent(agent,</span> <span class="pre">pos)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">agent.cell</span> <span class="pre">=</span> <span class="pre">grid[pos]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid.move_to_empty(agent)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">agent.cell</span> <span class="pre">=</span> <span class="pre">grid.select_random_empty_cell()</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grid.remove_agent(agent)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">agent.cell</span> <span class="pre">=</span> <span class="pre">None</span></code> (or <code class="docutils literal notranslate"><span class="pre">agent.remove()</span></code> to leave the model)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">agent.pos</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">agent.cell.coordinate</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grid.get_neighbors(pos,</span> <span class="pre">moore=True,</span> <span class="pre">include_center=False,</span> <span class="pre">radius=1)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">agent.cell.neighborhood.agents</span></code> (radius 1) or <code class="docutils literal notranslate"><span class="pre">agent.cell.get_neighborhood(radius=r,</span> <span class="pre">include_center=...).agents</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid.get_neighborhood(pos,</span> <span class="pre">...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">agent.cell.get_neighborhood(radius=r)</span></code> (cells)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grid.get_cell_list_contents([pos])</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">grid[pos].agents</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid.is_cell_empty(pos)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">grid[pos].is_empty</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grid.empties</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">grid.empties</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid.coord_iter()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">cell</span> <span class="pre">in</span> <span class="pre">grid.all_cells:</span> <span class="pre">cell.coordinate,</span> <span class="pre">cell.agents</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grid.out_of_bounds(pos)</span></code></p></td>
+<td><p>not needed: <code class="docutils literal notranslate"><span class="pre">grid[pos]</span></code> raises for a missing cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid.width</span></code>, <code class="docutils literal notranslate"><span class="pre">grid.height</span></code></p></td>
+<td><p>same</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PropertyLayer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">grid.create_property_layer(&quot;sugar&quot;,</span> <span class="pre">default_value=0.0)</span></code>; then <code class="docutils literal notranslate"><span class="pre">cell.sugar</span></code> and <code class="docutils literal notranslate"><span class="pre">grid.sugar</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Moving along the grid: <code class="docutils literal notranslate"><span class="pre">agent.move_relative((dx,</span> <span class="pre">dy))</span></code>, or <code class="docutils literal notranslate"><span class="pre">Grid2DMovingAgent</span></code> with
+<code class="docutils literal notranslate"><span class="pre">agent.move(&quot;north&quot;)</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ContinuousSpace</span></code> lives under <code class="docutils literal notranslate"><span class="pre">modelly.space.continuous</span></code>; agents subclass
+<code class="docutils literal notranslate"><span class="pre">ContinuousSpaceAgent</span></code>, keep their position in a shared numpy array, and query with
+<code class="docutils literal notranslate"><span class="pre">get_neighbors_in_radius</span></code> and <code class="docutils literal notranslate"><span class="pre">get_nearest_neighbors</span></code>.</p>
+</section>
+<section id="model">
+<h2>Model<a class="headerlink" href="#model" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mesa</p></th>
+<th class="head"><p>Modelly</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Model(seed=42)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Model(rng=42)</span></code>, or a <code class="docutils literal notranslate"><span class="pre">Scenario(rng=42)</span></code> passed as <code class="docutils literal notranslate"><span class="pre">scenario=</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">self.running</span></code></p></td>
+<td><p>same</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">model.step()</span></code>, <code class="docutils literal notranslate"><span class="pre">model.run_model()</span></code></p></td>
+<td><p>same; <code class="docutils literal notranslate"><span class="pre">run_for(duration)</span></code> and <code class="docutils literal notranslate"><span class="pre">run_until(t)</span></code> added</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">self.steps</span></code> (Mesa 3)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.time</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">self.agents</span></code>, <code class="docutils literal notranslate"><span class="pre">self.agents_by_type</span></code> (Mesa 3)</p></td>
+<td><p>same</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Parameters belong in a <code class="docutils literal notranslate"><span class="pre">Scenario</span></code> subclass (typed defaults plus the seed) rather than in the
+model’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> signature; see <a class="reference internal" href="using_modelly_in_your_project.html"><span class="std std-doc">Using Modelly in your project</span></a>.</p>
+</section>
+<section id="data-collection">
+<h2>Data collection<a class="headerlink" href="#data-collection" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> keeps Mesa’s API: <code class="docutils literal notranslate"><span class="pre">model_reporters</span></code>, <code class="docutils literal notranslate"><span class="pre">agent_reporters</span></code>, <code class="docutils literal notranslate"><span class="pre">agenttype_reporters</span></code>,
+<code class="docutils literal notranslate"><span class="pre">tables</span></code>, <code class="docutils literal notranslate"><span class="pre">collect(model)</span></code>, <code class="docutils literal notranslate"><span class="pre">get_model_vars_dataframe()</span></code>, <code class="docutils literal notranslate"><span class="pre">get_agent_vars_dataframe()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">get_agenttype_vars_dataframe(type)</span></code>, <code class="docutils literal notranslate"><span class="pre">get_table_dataframe(name)</span></code>. Attribute-name reporters
+(<code class="docutils literal notranslate"><span class="pre">{&quot;energy&quot;:</span> <span class="pre">&quot;energy&quot;}</span></code>) are the fast path. Declaring an attribute as a <code class="docutils literal notranslate"><span class="pre">Column</span></code> makes
+<code class="docutils literal notranslate"><span class="pre">model.columns[Sheep].energy</span></code> a numpy view, which is the Modelly way to write a vectorised
+model reporter.</p>
+</section>
+<section id="batch-runs">
+<h2>Batch runs<a class="headerlink" href="#batch-runs" title="Link to this heading">#</a></h2>
+<p>Mesa’s <code class="docutils literal notranslate"><span class="pre">batch_run(Model,</span> <span class="pre">parameters,</span> <span class="pre">iterations,</span> <span class="pre">max_steps,</span> <span class="pre">...)</span></code> becomes scenarios and a runner:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">concurrent.futures</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProcessPoolExecutor</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.scenarios</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunConfiguration</span><span class="p">,</span> <span class="n">run_scenarios</span>
+
+<span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">s</span>
+    <span class="k">for</span> <span class="n">density</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">MyScenario</span><span class="p">(</span><span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">spawn_replications</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">RunConfiguration</span><span class="p">(</span><span class="n">MyModel</span><span class="p">,</span> <span class="n">until</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">ProcessPoolExecutor</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+    <span class="n">store</span> <span class="o">=</span> <span class="n">run_scenarios</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">pool</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Each replication has its own seed derived from the base scenario, so the sweep is reproducible.
+For a quick loop, <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">scenario</span> <span class="pre">in</span> <span class="pre">base.spawn_replications(n):</span> <span class="pre">model</span> <span class="pre">=</span> <span class="pre">MyModel(scenario)</span></code>.
+For a plain list of runs or a factorial grid with one seed per run, <code class="docutils literal notranslate"><span class="pre">modelly.run_batch</span></code> and
+<code class="docutils literal notranslate"><span class="pre">modelly.run_grid</span></code> (in <code class="docutils literal notranslate"><span class="pre">modelly.batch</span></code>) run them over processes; see <a class="reference internal" href="apis/batch.html"><span class="std std-doc">Batch</span></a>.</p>
+</section>
+<section id="events-and-simulators">
+<h2>Events and simulators<a class="headerlink" href="#events-and-simulators" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ABMSimulator</span></code>, <code class="docutils literal notranslate"><span class="pre">DEVSimulator</span></code> and <code class="docutils literal notranslate"><span class="pre">mesa.experimental.devs</span></code> do not exist. The model schedules
+directly: <code class="docutils literal notranslate"><span class="pre">self.schedule_event(fn,</span> <span class="pre">at=t)</span></code> or <code class="docutils literal notranslate"><span class="pre">after=dt</span></code>, <code class="docutils literal notranslate"><span class="pre">self.schedule_recurring(fn,</span> <span class="pre">Schedule(interval=2.0))</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">run_for</span></code> / <code class="docutils literal notranslate"><span class="pre">run_until</span></code> advance time through the same event list that drives <code class="docutils literal notranslate"><span class="pre">step</span></code>.</p>
+</section>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">SolaraViz</span></code>, <code class="docutils literal notranslate"><span class="pre">SpaceRenderer</span></code>, <code class="docutils literal notranslate"><span class="pre">make_space_component</span></code>, <code class="docutils literal notranslate"><span class="pre">make_plot_component</span></code>, <code class="docutils literal notranslate"><span class="pre">Slider</span></code> and the
+portrayal style classes keep their Mesa 3 names and signatures under <code class="docutils literal notranslate"><span class="pre">modelly.viz</span></code>.
+Mesa 2’s <code class="docutils literal notranslate"><span class="pre">ModularServer</span></code> and the JavaScript modules have no equivalent; rewrite those
+visualisations with <code class="docutils literal notranslate"><span class="pre">SolaraViz</span></code> (tutorial 6).</p>
+</section>
+<section id="checklist">
+<h2>Checklist<a class="headerlink" href="#checklist" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Run the codemod, read the report.</p></li>
+<li><p>Replace schedulers with <code class="docutils literal notranslate"><span class="pre">AgentSet</span></code> calls; delete <code class="docutils literal notranslate"><span class="pre">schedule.add</span></code>.</p></li>
+<li><p>Move grid code to cells: <code class="docutils literal notranslate"><span class="pre">agent.cell</span></code>, <code class="docutils literal notranslate"><span class="pre">cell.neighborhood</span></code>, <code class="docutils literal notranslate"><span class="pre">grid.select_random_empty_cell()</span></code>.</p></li>
+<li><p>Move parameters into a <code class="docutils literal notranslate"><span class="pre">Scenario</span></code>; pass <code class="docutils literal notranslate"><span class="pre">rng</span></code> instead of <code class="docutils literal notranslate"><span class="pre">seed</span></code>.</p></li>
+<li><p>Run your tests with <code class="docutils literal notranslate"><span class="pre">-W</span> <span class="pre">error</span></code>; Modelly raises instead of warning for removed APIs.</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="examples/llm/llm_opinions.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Opinions of persona agents (<code class="docutils literal notranslate"><span class="pre">modelly.llm</span></code>)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="performance.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Performance audit</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#imports">Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#agents">Agents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#activation-and-schedulers">Activation and schedulers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grids-and-positions">Grids and positions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-collection">Data collection</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#batch-runs">Batch runs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#events-and-simulators">Events and simulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checklist">Checklist</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/migrating_from_mesa.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

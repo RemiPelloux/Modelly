@@ -1,0 +1,2238 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Hybrid ABM-DEVS Models with Modelly &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=92ce3cff" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=292eb321"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/12_hybrid_abm_devs';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/tutorials/12_hybrid_abm_devs.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Best Practices" href="../best-practices.html" />
+    <link rel="prev" title="Discrete Event Simulation with Modelly" href="11_discrete_event_simulation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.0" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="0_first_model.html">Creating Your First Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_agentset.html">AgentSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_agent_activation.html">Agent Activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_event_scheduling.html">Event Scheduling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_adding_space.html">Adding Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_collecting_data.html">Collecting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_visualization_basic.html">Basic Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_visualization_dynamic_agents.html">Dynamic Agent Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8_visualization_rendering_with_space_renderer.html">Visualisation using SpaceRenderer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9_visualization_property_layer_visualization.html">Property Layer Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_visualization_custom.html">Custom Visualization Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_discrete_event_simulation.html">Discrete Event Simulation</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Hybrid ABM-DEVS Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best-practices.html">Best Practices</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../overview.html" class="nav-link">Overview of the MODELLY library</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Hybrid ABM-DEVS Models with Modelly</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="hybrid-abm-devs-models-with-modelly">
+<h1>Hybrid ABM-DEVS Models with Modelly<a class="headerlink" href="#hybrid-abm-devs-models-with-modelly" title="Link to this heading">#</a></h1>
+<section id="tutorial-description">
+<h2>Tutorial Description<a class="headerlink" href="#tutorial-description" title="Link to this heading">#</a></h2>
+<p>This tutorial teaches you how to combine traditional tick-based agent-based modeling with discrete event simulation in a single Modelly model. You’ll learn when and how to use hybrid models: a <code class="docutils literal notranslate"><span class="pre">step()</span></code> method for the behavior that happens every time unit, plus scheduled events for everything that happens at specific moments.</p>
+<p><strong>Learning Objectives:</strong></p>
+<ul class="simple">
+<li><p>Understand when to use hybrid models vs pure step-based or pure event-driven models</p></li>
+<li><p>Combine <code class="docutils literal notranslate"><span class="pre">step()</span></code> with <code class="docutils literal notranslate"><span class="pre">Model.schedule_event()</span></code></p></li>
+<li><p>Combine spatial agent movement with event scheduling</p></li>
+<li><p>Implement an epidemic model with event-based recovery</p></li>
+<li><p>Benchmark tick-based vs event-based recovery (and learn when events actually pay off)</p></li>
+<li><p>Apply advanced event patterns (cancellation, chaining, dynamic scheduling)</p></li>
+</ul>
+<p><strong>Prerequisites:</strong></p>
+<ul class="simple">
+<li><p>Complete Tutorial 3 (Event Scheduling &amp; Time) - REQUIRED</p></li>
+<li><p>Complete Tutorial 11 (Discrete Event Simulation) - recommended</p></li>
+<li><p>Complete Tutorial 4 (Adding Space) and Tutorial 5 (Collecting Data)</p></li>
+<li><p>Understanding of spatial models and agent movement</p></li>
+</ul>
+<p><strong>What You’ll Build:</strong>
+A spatial SIR epidemic model where agents move on a grid each tick (ABM), but recoveries are handled as discrete events (DEVS), with performance comparisons and visualization.</p>
+<p><strong>Important:</strong></p>
+<ul class="simple">
+<li><p>If you are just exploring Modelly and want the fastest way to execute the code we recommend executing this tutorial online in a Colab notebook. <a class="reference external" href="https://colab.research.google.com/github/RemiPelloux/Modelly/blob/main/docs/tutorials/12_hybrid_abm_devs.ipynb"><img alt="Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p></li>
+<li><p>If you do not have a Google account you can use <a class="reference external" href="https://mybinder.org/v2/gh/RemiPelloux/Modelly/main?labpath=docs%2Ftutorials%2F12_hybrid_abm_devs.ipynb"><img alt="Binder" src="https://mybinder.org/badge_logo.svg" /></a></p></li>
+<li><p>If you are running locally, please ensure you have the latest Modelly version installed.</p></li>
+</ul>
+<section id="tutorial-setup">
+<h3>Tutorial Setup<a class="headerlink" href="#tutorial-setup" title="Link to this heading">#</a></h3>
+<p>If running locally, ensure Modelly is installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"modelly-abm[rec]"</span>
+</pre></div>
+</div>
+<p>For this tutorial, we’ll also use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>pandas<span class="w"> </span>matplotlib
+</pre></div>
+</div>
+</section>
+</section>
+<section id="recap-pure-event-driven-vs-hybrid-models">
+<h2>Recap: Pure Event-Driven vs Hybrid Models<a class="headerlink" href="#recap-pure-event-driven-vs-hybrid-models" title="Link to this heading">#</a></h2>
+<p>In Tutorial 11, we built a <em>pure</em> discrete event simulation:</p>
+<ul class="simple">
+<li><p>Float-based continuous time (0.0, 1.3, 2.7, 5.2, …)</p></li>
+<li><p>Only scheduled events execute (we never overrode <code class="docutils literal notranslate"><span class="pre">step()</span></code>)</p></li>
+<li><p>Perfect for queuing systems, arrivals, service processes</p></li>
+</ul>
+<p><strong>Limitation</strong>: Nothing happens unless some event schedules it. There is no automatic
+activation of all agents.</p>
+<section id="when-do-we-need-hybrid-models">
+<h3>When Do We Need Hybrid Models?<a class="headerlink" href="#when-do-we-need-hybrid-models" title="Link to this heading">#</a></h3>
+<p>Sometimes we need both approaches:</p>
+<ul class="simple">
+<li><p>Agents move/interact every tick (spatial dynamics)</p></li>
+<li><p>But certain state changes happen at specific times (events)</p></li>
+</ul>
+<p><strong>Example</strong>: Epidemic spread</p>
+<ul class="simple">
+<li><p>Movement: Every tick (agents walk around)</p></li>
+<li><p>Recovery: Scheduled event (after random duration)</p></li>
+</ul>
+<p>This is where combining <code class="docutils literal notranslate"><span class="pre">step()</span></code> with <code class="docutils literal notranslate"><span class="pre">schedule_event()</span></code> shines!</p>
+</section>
+<section id="one-model-both-styles">
+<h3>One Model, Both Styles<a class="headerlink" href="#one-model-both-styles" title="Link to this heading">#</a></h3>
+<p>In Modelly there is a single <code class="docutils literal notranslate"><span class="pre">Model</span></code> class. Its <code class="docutils literal notranslate"><span class="pre">step()</span></code> method is simply a recurring event that
+fires once per time unit, so <em>hybrid</em> models need no special machinery:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Pure event-driven</p></th>
+<th class="head"><p>Hybrid (<code class="docutils literal notranslate"><span class="pre">step()</span></code> + events)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">model.step()</span></code></strong></p></td>
+<td><p>Not overridden (does nothing)</p></td>
+<td><p>Runs automatically every tick</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Time advance</strong></p></td>
+<td><p>Jumps from event to event</p></td>
+<td><p>Ticks of 1.0, plus events at any time</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Use case</strong></p></td>
+<td><p>Queuing, arrivals</p></td>
+<td><p>Spatial ABM + events</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Best for</strong></p></td>
+<td><p>Sparse, irregular processes</p></td>
+<td><p>Regular behavior + occasional state changes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Key Difference</strong>: with a <code class="docutils literal notranslate"><span class="pre">step()</span></code> method, Modelly calls it every tick <em>and</em> executes any
+scheduled events in between.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HybridModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tick_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Schedule an event at tick 5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scheduled_event</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This runs EVERY tick automatically</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tick_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Tick </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tick_count</span><span class="si">}</span><span class="s2"> at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">scheduled_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This runs at scheduled time</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Event executed at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="c1"># Create and run for 10 ticks</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">HybridModel</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tick 1 at time 1.0
+Tick 2 at time 2.0
+Tick 3 at time 3.0
+Tick 4 at time 4.0
+Tick 5 at time 5.0
+  Event executed at time 5
+Tick 6 at time 6.0
+Tick 7 at time 7.0
+Tick 8 at time 8.0
+Tick 9 at time 9.0
+Tick 10 at time 10.0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="scheduling-relative-to-the-current-tick">
+<h3>Scheduling Relative to the Current Tick<a class="headerlink" href="#scheduling-relative-to-the-current-tick" title="Link to this heading">#</a></h3>
+<p>Because <code class="docutils literal notranslate"><span class="pre">step()</span></code> is a recurring event with <code class="docutils literal notranslate"><span class="pre">Priority.HIGH</span></code>, you don’t need a special “next tick”
+method. To do something one tick from now, just use <code class="docutils literal notranslate"><span class="pre">after=</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">do_something</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice in the example above that the event scheduled for time 5 ran <em>after</em> <code class="docutils literal notranslate"><span class="pre">step()</span></code> for tick 5:
+events are ordered by time first and priority second, and a <code class="docutils literal notranslate"><span class="pre">Priority.DEFAULT</span></code> event comes
+after the <code class="docutils literal notranslate"><span class="pre">Priority.HIGH</span></code> step.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import required libraries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">time_module</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Modelly imports</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellAgent</span><span class="p">,</span> <span class="n">OrthogonalMooreGrid</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="mathematical-foundations-the-sir-epidemic-model">
+<h2>Mathematical Foundations: The SIR Epidemic Model<a class="headerlink" href="#mathematical-foundations-the-sir-epidemic-model" title="Link to this heading">#</a></h2>
+<p>Before building our hybrid model, let’s understand the mathematics behind the SIR epidemic dynamics.</p>
+<section id="the-sir-model">
+<h3>The SIR Model<a class="headerlink" href="#the-sir-model" title="Link to this heading">#</a></h3>
+<p>Divides population into three compartments:</p>
+<ul class="simple">
+<li><p><strong>S</strong> (Susceptible): Can be infected</p></li>
+<li><p><strong>I</strong> (Infected): Currently sick, can infect others</p></li>
+<li><p><strong>R</strong> (Recovered): Immune, cannot be infected again</p></li>
+</ul>
+</section>
+<section id="state-transitions">
+<h3>State Transitions<a class="headerlink" href="#state-transitions" title="Link to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>S → I → R
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>S to I</strong>: Contact with infected agent + transmission probability</p></li>
+<li><p><strong>I to R</strong>: After recovery time duration</p></li>
+</ul>
+</section>
+<section id="key-parameters">
+<h3>Key Parameters<a class="headerlink" href="#key-parameters" title="Link to this heading">#</a></h3>
+<p><strong>Transmission Rate (β)</strong>: Probability of infection per contact</p>
+<ul class="simple">
+<li><p>Example: β = 0.1 means 10% chance per contact</p></li>
+</ul>
+<p><strong>Recovery Time</strong>: Duration of infection</p>
+<ul class="simple">
+<li><p>Example: Uniform(10, 20) means recovery takes 10-20 ticks</p></li>
+</ul>
+<p><strong>Basic Reproduction Number (R₀)</strong>:
+$$R_0 = \beta \times \text{contacts per tick} \times \text{avg recovery time}$$</p>
+<ul class="simple">
+<li><p>R₀ &gt; 1: Epidemic spreads</p></li>
+<li><p>R₀ &lt; 1: Epidemic dies out</p></li>
+<li><p>R₀ = 1: Equilibrium</p></li>
+</ul>
+<p><strong>Our Model</strong>: On a 20x20 grid, agents move randomly, β=0.1, recovery_time ~ Uniform(10,20). An infected agent can infect susceptible agents in its own cell and in the 8 surrounding cells.</p>
+</section>
+<section id="why-hybrid-abm-devs-for-epidemics">
+<h3>Why Hybrid ABM-DEVS for Epidemics?<a class="headerlink" href="#why-hybrid-abm-devs-for-epidemics" title="Link to this heading">#</a></h3>
+<p><strong>Tick-Based Approach</strong> (Traditional):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">infected</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovery_countdown</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recovery_countdown</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recover</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Check EVERY infected agent EVERY tick</p></li>
+<li><p>Computational cost: O(N x T) where N=agents, T=ticks</p></li>
+</ul>
+<p><strong>Event-Based Approach</strong> (DEVS):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">infect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">recovery_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">recover</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">recovery_time</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Schedule recovery once, execute automatically</p></li>
+<li><p>Computational cost: O(E log E) where E=events</p></li>
+</ul>
+<p><strong>Savings</strong>: On 100-agent model with 10-tick recoveries over 200 ticks:</p>
+<ul class="simple">
+<li><p>Tick-based: ~20,000 checks (100 agents x 200 ticks)</p></li>
+<li><p>Event-based: ~100 events (one recovery per infection)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_sir_reproduction_number</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">avg_contacts_per_tick</span><span class="p">,</span> <span class="n">avg_recovery_time</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Calculate R₀ for SIR model.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    - beta: Transmission probability per contact</span>
+<span class="sd">    - avg_contacts_per_tick: Average neighbors contacted per tick</span>
+<span class="sd">    - avg_recovery_time: Average duration of infection</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    - R₀: Basic reproduction number</span>
+<span class="sd">    """</span>
+    <span class="c1"># Expected infections = transmission rate x contacts x infection duration</span>
+    <span class="n">R0</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">avg_contacts_per_tick</span> <span class="o">*</span> <span class="n">avg_recovery_time</span>
+    <span class="k">return</span> <span class="n">R0</span>
+
+
+<span class="c1"># Example calculation for our model</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">n_agents</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span>
+<span class="c1"># An infected agent can infect agents in its own cell and in the 8 surrounding</span>
+<span class="c1"># cells (9 cells in total). If agents are spread randomly over the grid, the</span>
+<span class="c1"># expected number of other agents in those 9 cells is:</span>
+<span class="n">avg_contacts</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_agents</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">/</span> <span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span>
+<span class="n">avg_recovery</span> <span class="o">=</span> <span class="mi">15</span>  <span class="c1"># Uniform(10, 20) mean</span>
+
+<span class="n">R0</span> <span class="o">=</span> <span class="n">calculate_sir_reproduction_number</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">avg_contacts</span><span class="p">,</span> <span class="n">avg_recovery</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average contacts per tick: </span><span class="si">{</span><span class="n">avg_contacts</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Basic Reproduction Number R₀: </span><span class="si">{</span><span class="n">R0</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">R0</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Epidemic will spread (each infected person infects </span><span class="si">{</span><span class="n">R0</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> others on average)"</span>
+    <span class="p">)</span>
+<span class="k">elif</span> <span class="n">R0</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Epidemic will die out"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Epidemic at equilibrium"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Average contacts per tick: 2.23
+Basic Reproduction Number R₀: 3.34
+Epidemic will spread (each infected person infects 3.34 others on average)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="spatial-dynamics-on-grid">
+<h3>Spatial Dynamics on Grid<a class="headerlink" href="#spatial-dynamics-on-grid" title="Link to this heading">#</a></h3>
+<p>Our model adds <strong>spatial structure</strong>:</p>
+<ul class="simple">
+<li><p>Agents move randomly on 20x20 grid each tick</p></li>
+<li><p>Infection requires <strong>spatial proximity</strong> (same cell or an adjacent cell)</p></li>
+<li><p>Movement spreads disease spatially</p></li>
+</ul>
+<p><strong>Grid neighborhoods</strong>:</p>
+<ul class="simple">
+<li><p>Moore neighborhood: 8 adjacent cells (including diagonals)</p></li>
+<li><p>Transmission happens when a susceptible agent is in the same cell as, or next to, an infected agent</p></li>
+</ul>
+<p>This creates <strong>realistic epidemic spread patterns</strong>:</p>
+<ul class="simple">
+<li><p>Clusters of infection</p></li>
+<li><p>Wave-like propagation</p></li>
+<li><p>Spatial heterogeneity</p></li>
+</ul>
+</section>
+</section>
+<section id="implementation-event-based-epidemic-model">
+<h2>Implementation: Event-Based Epidemic Model<a class="headerlink" href="#implementation-event-based-epidemic-model" title="Link to this heading">#</a></h2>
+<p>We’ll build the model in stages:</p>
+<ol class="arabic simple">
+<li><p>Person agent with S/I/R states</p></li>
+<li><p>Movement (tick-based)</p></li>
+<li><p>Infection (tick-based) and recovery (event-based)</p></li>
+<li><p>Model class that combines <code class="docutils literal notranslate"><span class="pre">step()</span></code> and <code class="docutils literal notranslate"><span class="pre">schedule_event()</span></code></p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">(</span><span class="n">CellAgent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A person agent with SIR disease states."""</span>
+
+    <span class="c1"># State constants</span>
+    <span class="n">SUSCEPTIBLE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">INFECTED</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">RECOVERED</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovery_event</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Track scheduled recovery</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infection_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovery_time</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">susceptible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">Person</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">Person</span><span class="o">.</span><span class="n">INFECTED</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">recovered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">Person</span><span class="o">.</span><span class="n">RECOVERED</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Move to random neighboring cell (tick-based)."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">select_random_cell</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">infect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Infect this agent and schedule recovery event."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">Person</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># Already infected or recovered</span>
+
+        <span class="c1"># Change state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">INFECTED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infection_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span>
+
+        <span class="c1"># Schedule recovery event</span>
+        <span class="n">recovery_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovery_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recover</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">recovery_delay</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">recover</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Recover from infection (called by scheduled event)."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">RECOVERED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovery_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovery_event</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="person-agent-explained">
+<h3>Person Agent Explained<a class="headerlink" href="#person-agent-explained" title="Link to this heading">#</a></h3>
+<p><strong>Key Design Decisions</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>States as constants</strong>: <code class="docutils literal notranslate"><span class="pre">SUSCEPTIBLE</span></code>, <code class="docutils literal notranslate"><span class="pre">INFECTED</span></code>, <code class="docutils literal notranslate"><span class="pre">RECOVERED</span></code></p>
+<ul class="simple">
+<li><p>More readable than magic numbers</p></li>
+<li><p>Easy to add states (e.g., EXPOSED for SEIR)</p></li>
+</ul>
+</li>
+<li><p><strong>recovery_event tracking</strong>: Store the event reference</p>
+<ul class="simple">
+<li><p>Allows cancellation if needed (e.g., agent dies)</p></li>
+<li><p>Can check if recovery is scheduled</p></li>
+</ul>
+</li>
+<li><p><strong>infect() checks state</strong>: Prevents double-infection</p>
+<ul class="simple">
+<li><p>Idempotent: safe to call multiple times</p></li>
+</ul>
+</li>
+<li><p><strong>recovery_delay randomness</strong>: Uniform(10, 20)</p>
+<ul class="simple">
+<li><p>Realistic: recovery time varies by individual</p></li>
+<li><p>Could use other distributions (exponential, normal)</p></li>
+</ul>
+</li>
+<li><p><strong>Timestamps</strong>: Track infection_time and recovery_time</p>
+<ul class="simple">
+<li><p>Enables analysis of disease duration</p></li>
+<li><p>Can compute statistics later</p></li>
+</ul>
+</li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">EpidemicModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Spatial SIR epidemic with hybrid tick-based movement and event-based recovery."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_agents</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">initial_infected</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">transmission_prob</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">collect_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_agents</span> <span class="o">=</span> <span class="n">n_agents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transmission_prob</span> <span class="o">=</span> <span class="n">transmission_prob</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collect_data</span> <span class="o">=</span> <span class="n">collect_data</span>
+
+        <span class="c1"># Create grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalMooreGrid</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">torus</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+
+        <span class="c1"># Create agents in random cells</span>
+        <span class="n">Person</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">n_agents</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="o">.</span><span class="n">cells</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">n_agents</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Data collector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">DataCollector</span><span class="p">(</span>
+            <span class="n">model_reporters</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"Susceptible"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">count_state</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span><span class="p">),</span>
+                <span class="s2">"Infected"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">count_state</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">INFECTED</span><span class="p">),</span>
+                <span class="s2">"Recovered"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">count_state</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">RECOVERED</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Infect the initial agents. Each infection schedules its own recovery</span>
+        <span class="c1"># event right away, so no extra setup step is needed.</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">),</span> <span class="n">initial_infected</span><span class="p">):</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">infect</span><span class="p">()</span>
+
+        <span class="c1"># Collect initial state</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Count agents in given state."""</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span> <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">state</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Execute one tick: movement and infection checks."""</span>
+        <span class="c1"># Move all agents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"move"</span><span class="p">)</span>
+
+        <span class="c1"># Check for new infections (select() gives us a snapshot, so agents</span>
+        <span class="c1"># infected during this tick start infecting others next tick)</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">infected</span><span class="p">):</span>
+            <span class="c1"># Agents in the same cell and in the 8 surrounding cells</span>
+            <span class="n">contacts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">contacts</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">susceptible</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission_prob</span><span class="p">:</span>
+                    <span class="n">other</span><span class="o">.</span><span class="n">infect</span><span class="p">()</span>  <span class="c1"># Schedules recovery event</span>
+
+        <span class="c1"># Collect data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="epidemic-model-explained">
+<h3>Epidemic Model Explained<a class="headerlink" href="#epidemic-model-explained" title="Link to this heading">#</a></h3>
+<p><strong>Hybrid Architecture</strong>:</p>
+<p><strong>Tick-Based (in step())</strong>:</p>
+<ul class="simple">
+<li><p>Agent movement: happens every tick</p></li>
+<li><p>Infection transmission: checked every tick</p></li>
+<li><p>Data collection: every tick</p></li>
+</ul>
+<p><strong>Event-Based (scheduled)</strong>:</p>
+<ul class="simple">
+<li><p>Recovery: scheduled once per infection</p></li>
+<li><p>Automatic execution at the specified time</p></li>
+<li><p>No manual tracking needed</p></li>
+<li><p>Recovery events run <em>after</em> the <code class="docutils literal notranslate"><span class="pre">step()</span></code> of the same tick (<code class="docutils literal notranslate"><span class="pre">step()</span></code> has <code class="docutils literal notranslate"><span class="pre">Priority.HIGH</span></code>)</p></li>
+</ul>
+<p><strong>Why This Works</strong>:</p>
+<ul class="simple">
+<li><p>Movement needs to happen regularly (spatial dynamics)</p></li>
+<li><p>Recovery is sparse (once per infection, 10-20 ticks apart)</p></li>
+<li><p>Events make recovery efficient</p></li>
+</ul>
+<p><strong>Data Collection</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> works seamlessly with scheduled events</p></li>
+<li><p>Called every tick in <code class="docutils literal notranslate"><span class="pre">step()</span></code></p></li>
+<li><p>Tracks S/I/R compartment sizes over time</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ListedColormap</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">visualize_epidemic_state</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Visualize the current state of the epidemic on the grid."""</span>
+    <span class="c1"># -1 marks empty cells</span>
+    <span class="n">grid_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Draw infected agents last so they stay visible when sharing a cell</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">infected</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">coordinate</span>
+        <span class="n">grid_state</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">state</span>
+
+    <span class="c1"># Create heatmap</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">ListedColormap</span><span class="p">([</span><span class="s2">"white"</span><span class="p">,</span> <span class="s2">"lightblue"</span><span class="p">,</span> <span class="s2">"red"</span><span class="p">,</span> <span class="s2">"lightgreen"</span><span class="p">])</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+        <span class="n">grid_state</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+        <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">vmax</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">interpolation</span><span class="o">=</span><span class="s2">"nearest"</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">"State"</span><span class="p">)</span>
+    <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s2">"Empty"</span><span class="p">,</span> <span class="s2">"Susceptible"</span><span class="p">,</span> <span class="s2">"Infected"</span><span class="p">,</span> <span class="s2">"Recovered"</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epidemic State at Tick </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"X"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Y"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="running-the-epidemic-simulation">
+<h3>Running the Epidemic Simulation<a class="headerlink" href="#running-the-epidemic-simulation" title="Link to this heading">#</a></h3>
+<p>Let’s run the model and watch the epidemic spread!</p>
+<p><strong>Parameters</strong>:</p>
+<ul class="simple">
+<li><p>100 agents on 20x20 grid</p></li>
+<li><p>3 initially infected</p></li>
+<li><p>Transmission probability: 10% per contact</p></li>
+<li><p>Recovery time: Uniform(10, 20) ticks</p></li>
+<li><p>Run for 200 ticks</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create and run the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">EpidemicModel</span><span class="p">(</span>
+    <span class="n">n_agents</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">transmission_prob</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Run simulation</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Running epidemic simulation..."</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Simulation complete!"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final state at tick </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Susceptible: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">count_state</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Infected: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">count_state</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">INFECTED</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Recovered: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">count_state</span><span class="p">(</span><span class="n">Person</span><span class="o">.</span><span class="n">RECOVERED</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running epidemic simulation...
+
+Simulation complete!
+Final state at tick 200:
+  Susceptible: 7
+  Infected: 0
+  Recovered: 93
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show final grid state</span>
+<span class="n">visualize_epidemic_state</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/643186265d989fd68bd6915351bb54ca677f6169d0500808445c88a697c254af.png" src="../_images/643186265d989fd68bd6915351bb54ca677f6169d0500808445c88a697c254af.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get data from datacollector</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">get_model_vars_dataframe</span><span class="p">()</span>
+
+<span class="c1"># Plot SIR curves</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Susceptible"</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Susceptible"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Infected"</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Infected"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Recovered"</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Recovered"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"green"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Tick"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Number of Agents"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"SIR Epidemic Dynamics Over Time"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Print peak statistics</span>
+<span class="n">peak_infected_idx</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Infected"</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+<span class="n">peak_infected</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">peak_infected_idx</span><span class="p">,</span> <span class="s2">"Infected"</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Peak infected: </span><span class="si">{</span><span class="n">peak_infected</span><span class="si">}</span><span class="s2"> agents at tick </span><span class="si">{</span><span class="n">peak_infected_idx</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/67facf16850a5e31f9ad1f68d134bf49245f9844c5cc48c1da07feed702de668.png" src="../_images/67facf16850a5e31f9ad1f68d134bf49245f9844c5cc48c1da07feed702de668.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Peak infected: 39 agents at tick 32
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="interpreting-the-results">
+<h3>Interpreting the Results<a class="headerlink" href="#interpreting-the-results" title="Link to this heading">#</a></h3>
+<p><strong>Typical SIR Curve Shape</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Susceptible (blue)</strong>: Starts high, decreases as epidemic spreads</p></li>
+<li><p><strong>Infected (red)</strong>: Rises to peak, then declines</p></li>
+<li><p><strong>Recovered (green)</strong>: Starts at zero, gradually increases</p></li>
+</ol>
+<p><strong>Key Observations</strong>:</p>
+<ul class="simple">
+<li><p>Peak infection occurs when infection rate = recovery rate</p></li>
+<li><p>Final epidemic size: Total recovered at end</p></li>
+<li><p>Some susceptible agents may never get infected (lucky!)</p></li>
+</ul>
+<p><strong>Spatial Patterns</strong>:</p>
+<ul class="simple">
+<li><p>Epidemic spreads in waves from initial infections</p></li>
+<li><p>Clusters form due to spatial proximity</p></li>
+<li><p>Random movement helps spread throughout grid</p></li>
+</ul>
+</section>
+</section>
+<section id="performance-analysis-tick-based-vs-event-based">
+<h2>Performance Analysis: Tick-Based vs Event-Based<a class="headerlink" href="#performance-analysis-tick-based-vs-event-based" title="Link to this heading">#</a></h2>
+<p>Now let’s compare the <strong>computational efficiency</strong> of event-based recovery versus a purely
+tick-based approach.</p>
+<p><strong>Two Implementations</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Tick-Based</strong>: Check every agent every tick for recovery</p></li>
+<li><p><strong>Event-Based (our hybrid)</strong>: Schedule recovery once, execute automatically</p></li>
+</ol>
+<p><strong>Hypothesis</strong>: Event-based should be a little faster, because it skips a per-agent check on every tick.
+But keep in mind that <em>movement and infection checks happen every tick in both models</em>, so they
+dominate the run time. Let’s measure rather than guess.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PersonTickBased</span><span class="p">(</span><span class="n">CellAgent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Person agent with tick-based recovery countdown."""</span>
+
+    <span class="n">SUSCEPTIBLE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">INFECTED</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">RECOVERED</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">PersonTickBased</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovery_countdown</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">susceptible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">PersonTickBased</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">PersonTickBased</span><span class="o">.</span><span class="n">INFECTED</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">recovered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">PersonTickBased</span><span class="o">.</span><span class="n">RECOVERED</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">select_random_cell</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">infect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">PersonTickBased</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">PersonTickBased</span><span class="o">.</span><span class="n">INFECTED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovery_countdown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">tick_recovery</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Check and update recovery countdown (called every tick)."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">infected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recovery_countdown</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recovery_countdown</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">PersonTickBased</span><span class="o">.</span><span class="n">RECOVERED</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EpidemicModelTickBased</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Traditional tick-based epidemic model."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_agents</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">initial_infected</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">transmission_prob</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_agents</span> <span class="o">=</span> <span class="n">n_agents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transmission_prob</span> <span class="o">=</span> <span class="n">transmission_prob</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalMooreGrid</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">torus</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+
+        <span class="n">PersonTickBased</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">n_agents</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="o">.</span><span class="n">cells</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">n_agents</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">),</span> <span class="n">initial_infected</span><span class="p">):</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">infect</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Move all agents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"move"</span><span class="p">)</span>
+
+        <span class="c1"># Check recoveries (EVERY agent EVERY tick!)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="s2">"tick_recovery"</span><span class="p">)</span>
+
+        <span class="c1"># Check for infections</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">infected</span><span class="p">):</span>
+            <span class="n">contacts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">contacts</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">susceptible</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission_prob</span><span class="p">:</span>
+                    <span class="n">other</span><span class="o">.</span><span class="n">infect</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">benchmark_model</span><span class="p">(</span>
+    <span class="n">model_class</span><span class="p">,</span> <span class="n">n_agents</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_ticks</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_runs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Benchmark a model over multiple runs (same seeds for every model class)."""</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_runs</span><span class="p">):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model_class</span><span class="p">(</span>
+            <span class="n">n_agents</span><span class="o">=</span><span class="n">n_agents</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">grid_size</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">grid_size</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time_module</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="n">n_ticks</span><span class="p">)</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time_module</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+
+        <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elapsed</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">times</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+
+
+<span class="c1"># Run benchmarks. Data collection is switched off in the event-based model</span>
+<span class="c1"># because the tick-based model does not collect data either.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Benchmarking (5 runs each, 200 ticks)..."</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="n">tick_mean</span><span class="p">,</span> <span class="n">tick_std</span> <span class="o">=</span> <span class="n">benchmark_model</span><span class="p">(</span><span class="n">EpidemicModelTickBased</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Tick-Based Model:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Mean time: </span><span class="si">{</span><span class="n">tick_mean</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s (±</span><span class="si">{</span><span class="n">tick_std</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s)"</span><span class="p">)</span>
+
+<span class="n">event_mean</span><span class="p">,</span> <span class="n">event_std</span> <span class="o">=</span> <span class="n">benchmark_model</span><span class="p">(</span><span class="n">EpidemicModel</span><span class="p">,</span> <span class="n">collect_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Event-Based Model (Hybrid):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Mean time: </span><span class="si">{</span><span class="n">event_mean</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s (±</span><span class="si">{</span><span class="n">event_std</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s)"</span><span class="p">)</span>
+
+<span class="n">speedup</span> <span class="o">=</span> <span class="n">tick_mean</span> <span class="o">/</span> <span class="n">event_mean</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Speedup: </span><span class="si">{</span><span class="n">speedup</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x </span><span class="si">{</span><span class="s1">'faster'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">speedup</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'slower'</span><span class="si">}</span><span class="s2"> with event-based approach"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Benchmarking (5 runs each, 200 ticks)...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tick-Based Model:
+  Mean time: 0.052s (±0.003s)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Event-Based Model (Hybrid):
+  Mean time: 0.048s (±0.002s)
+
+Speedup: 1.08x faster with event-based approach
+</pre></div>
+</div>
+</div>
+</div>
+<section id="performance-insights">
+<h3>Performance Insights<a class="headerlink" href="#performance-insights" title="Link to this heading">#</a></h3>
+<p><strong>Why Event-Based Can Be More Efficient</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Sparse Events</strong>: Recovery events are rare compared to every-tick checks</p></li>
+<li><p><strong>No Redundant Checks</strong>: Don’t check susceptible/recovered agents</p></li>
+<li><p><strong>Event Queue Efficiency</strong>: O(log E) insertions vs O(N) checks every tick</p></li>
+</ol>
+<p><strong>Why the difference is small here</strong>:</p>
+<ul class="simple">
+<li><p>Movement and infection checks happen every tick in <em>both</em> models, and they cost much more
+than the one cheap <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">self.infected</span></code> check that events let us skip</p></li>
+<li><p>A smarter tick-based model would only loop over the infected agents, narrowing the gap even further</p></li>
+<li><p>Event scheduling has its own overhead (creating <code class="docutils literal notranslate"><span class="pre">Event</span></code> objects, heap operations)</p></li>
+</ul>
+<p><strong>When Event-Based Wins Bigger</strong>: the work you replace with an event must be a large part of the
+per-tick cost, for example when you would otherwise poll thousands of dormant agents every tick,
+when waiting times are long, or when the polled check is expensive.</p>
+<p><strong>Takeaway</strong>: Choose events when they make the model <em>clearer</em> (a recovery is naturally “something
+that happens at a time”) and measure before claiming a speedup.</p>
+</section>
+</section>
+<section id="advanced-devs-patterns">
+<h2>Advanced DEVS Patterns<a class="headerlink" href="#advanced-devs-patterns" title="Link to this heading">#</a></h2>
+<p>Let’s explore advanced event scheduling patterns useful in real models.</p>
+<section id="pattern-1-event-cancellation">
+<h3>Pattern 1: Event Cancellation<a class="headerlink" href="#pattern-1-event-cancellation" title="Link to this heading">#</a></h3>
+<p>Sometimes you need to cancel a scheduled event (e.g., an agent dies before recovering).</p>
+<p><strong>Implementation</strong>: Store the <code class="docutils literal notranslate"><span class="pre">Event</span></code> that <code class="docutils literal notranslate"><span class="pre">schedule_event</span></code> returns and call <code class="docutils literal notranslate"><span class="pre">event.cancel()</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PersonWithMortality</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Person who can die, canceling their recovery event."""</span>
+
+    <span class="n">DEAD</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># New state</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">die</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Agent dies, canceling any scheduled recovery."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recovery_event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Cancel the recovery event</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recovery_event</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recovery_event</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">PersonWithMortality</span><span class="o">.</span><span class="n">DEAD</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Agent </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2"> died at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MortalityDemo</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A tiny model with one patient who dies before recovering."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalMooreGrid</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">torus</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">patient</span> <span class="o">=</span> <span class="n">PersonWithMortality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">patient</span><span class="o">.</span><span class="n">infect</span><span class="p">()</span>  <span class="c1"># Schedules recovery</span>
+
+        <span class="c1"># Before recovery happens (10-20 ticks), the agent dies after 5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">patient</span><span class="o">.</span><span class="n">die</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+
+<span class="n">model_demo</span> <span class="o">=</span> <span class="n">MortalityDemo</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">model_demo</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Agent state: </span><span class="si">{</span><span class="n">model_demo</span><span class="o">.</span><span class="n">patient</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2"> (3 = DEAD)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Recovery event: </span><span class="si">{</span><span class="n">model_demo</span><span class="o">.</span><span class="n">patient</span><span class="o">.</span><span class="n">recovery_event</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Agent 1 died at time 5.0
+Agent state: 3 (3 = DEAD)
+Recovery event: None
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="pattern-2-event-chaining">
+<h3>Pattern 2: Event Chaining<a class="headerlink" href="#pattern-2-event-chaining" title="Link to this heading">#</a></h3>
+<p>Schedule follow-up events from within an event handler.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MultiStageProcess</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Agent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Agent with multi-stage process (e.g., Exposed → Infected → Recovered)."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_exposure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Stage 1: Exposed."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">: Agent exposed"</span><span class="p">)</span>
+
+        <span class="c1"># Chain to infection after incubation period</span>
+        <span class="n">incubation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">become_infected</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">incubation</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">become_infected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Stage 2: Infected."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">: Agent infected"</span><span class="p">)</span>
+
+        <span class="c1"># Chain to recovery</span>
+        <span class="n">illness_duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">recover</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">illness_duration</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">recover</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Stage 3: Recovered."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">: Agent recovered"</span><span class="p">)</span>
+
+
+<span class="c1"># Demo</span>
+<span class="n">model_chain</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">agent_chain</span> <span class="o">=</span> <span class="n">MultiStageProcess</span><span class="p">(</span><span class="n">model_chain</span><span class="p">)</span>
+<span class="n">agent_chain</span><span class="o">.</span><span class="n">start_exposure</span><span class="p">()</span>
+<span class="n">model_chain</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 0.0: Agent exposed
+Time 5.0: Agent infected
+Time 18.0: Agent recovered
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="pattern-3-dynamic-event-scheduling">
+<h3>Pattern 3: Dynamic Event Scheduling<a class="headerlink" href="#pattern-3-dynamic-event-scheduling" title="Link to this heading">#</a></h3>
+<p>Schedule events based on runtime conditions. For a <em>fixed</em> period, use
+<code class="docutils literal notranslate"><span class="pre">schedule_recurring(function,</span> <span class="pre">Schedule(interval=...))</span></code> (see Tutorial 3) instead. Here the delay
+until the next event depends on what just happened, so each event schedules its successor.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AdaptiveAgent</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Agent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Agent that adapts behavior based on conditions."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stress_level</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Periodically check environment and adapt."""</span>
+        <span class="c1"># Simulate environmental check</span>
+        <span class="n">danger_detected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.3</span>
+
+        <span class="k">if</span> <span class="n">danger_detected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stress_level</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">: Danger! Stress = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stress_level</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+            <span class="c1"># Check again sooner when stressed</span>
+            <span class="n">next_check</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stress_level</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stress_level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">: Safe. Stress = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stress_level</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+            <span class="c1"># Check again later when calm</span>
+            <span class="n">next_check</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># Schedule next check dynamically</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_environment</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">next_check</span><span class="p">)</span>
+
+
+<span class="c1"># Demo</span>
+<span class="n">model_adaptive</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">agent_adaptive</span> <span class="o">=</span> <span class="n">AdaptiveAgent</span><span class="p">(</span><span class="n">model_adaptive</span><span class="p">)</span>
+<span class="n">agent_adaptive</span><span class="o">.</span><span class="n">check_environment</span><span class="p">()</span>
+<span class="n">model_adaptive</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 0.0: Safe. Stress = 0
+Time 8.0: Danger! Stress = 1
+Time 10.0: Safe. Stress = 0
+Time 17.0: Danger! Stress = 1
+Time 19.0: Danger! Stress = 2
+Time 21.0: Safe. Stress = 1
+Time 27.0: Safe. Stress = 0
+Time 32.0: Danger! Stress = 1
+Time 34.0: Danger! Stress = 2
+Time 36.0: Safe. Stress = 1
+Time 45.0: Safe. Stress = 0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="real-world-extensions">
+<h2>Real-World Extensions<a class="headerlink" href="#real-world-extensions" title="Link to this heading">#</a></h2>
+<p>Here are ideas to extend this tutorial for real research:</p>
+<section id="extension-1-seir-model">
+<h3>Extension 1: SEIR Model<a class="headerlink" href="#extension-1-seir-model" title="Link to this heading">#</a></h3>
+<p>Add an <strong>Exposed</strong> state between Susceptible and Infected:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">expose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">EXPOSED</span>
+    <span class="n">incubation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">become_infected</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">incubation</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">become_infected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">INFECTED</span>
+    <span class="c1"># Schedule recovery as before</span>
+</pre></div>
+</div>
+<p><strong>Research Value</strong>: Models diseases with incubation periods (COVID-19, influenza).</p>
+</section>
+<section id="extension-2-intervention-strategies">
+<h3>Extension 2: Intervention Strategies<a class="headerlink" href="#extension-2-intervention-strategies" title="Link to this heading">#</a></h3>
+<p>Model public health interventions:</p>
+<p><strong>Vaccination</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">vaccinate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="n">RECOVERED</span>  <span class="c1"># Immune</span>
+</pre></div>
+</div>
+<p><strong>Lockdown</strong> (reduce movement):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">lockdown</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.2</span><span class="p">:</span>  <span class="c1"># 20% mobility</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"move"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"move"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Contact Tracing</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">recover</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Trace and quarantine contacts</span>
+    <span class="k">for</span> <span class="n">contact</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">recent_contacts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">contact</span><span class="o">.</span><span class="n">exposed</span><span class="p">:</span>
+            <span class="n">contact</span><span class="o">.</span><span class="n">quarantine</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="extension-3-heterogeneous-populations">
+<h3>Extension 3: Heterogeneous Populations<a class="headerlink" href="#extension-3-heterogeneous-populations" title="Link to this heading">#</a></h3>
+<p>Model different risk groups:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">age_group</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age_group</span> <span class="o">=</span> <span class="n">age_group</span>
+        
+        <span class="c1"># Age-specific parameters</span>
+        <span class="k">if</span> <span class="n">age_group</span> <span class="o">==</span> <span class="s2">"elderly"</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transmission_prob</span> <span class="o">=</span> <span class="mf">0.15</span>  <span class="c1"># More susceptible</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recovery_time</span> <span class="o">=</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>  <span class="c1"># Longer recovery</span>
+        <span class="k">elif</span> <span class="n">age_group</span> <span class="o">==</span> <span class="s2">"adult"</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transmission_prob</span> <span class="o">=</span> <span class="mf">0.10</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recovery_time</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># child</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transmission_prob</span> <span class="o">=</span> <span class="mf">0.08</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recovery_time</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="extension-4-network-based-transmission">
+<h3>Extension 4: Network-Based Transmission<a class="headerlink" href="#extension-4-network-based-transmission" title="Link to this heading">#</a></h3>
+<p>Use a <code class="docutils literal notranslate"><span class="pre">Network</span></code> space instead of a grid:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellAgent</span><span class="p">,</span> <span class="n">Network</span>
+
+<span class="c1"># Create social network</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">watts_strogatz_graph</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">Network</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+
+<span class="c1"># Transmission over network edges (agents live on cells = nodes)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">infected</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="n">agent</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">neighbor</span><span class="o">.</span><span class="n">susceptible</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission_prob</span><span class="p">:</span>
+                <span class="n">neighbor</span><span class="o">.</span><span class="n">infect</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Research Value</strong>: Models social network effects on disease spread.</p>
+</section>
+<section id="extension-5-data-driven-calibration">
+<h3>Extension 5: Data-Driven Calibration<a class="headerlink" href="#extension-5-data-driven-calibration" title="Link to this heading">#</a></h3>
+<p>Calibrate model to real epidemic data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">simulate_with_params</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">recovery_mean</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Run simulation with given parameters."""</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">EpidemicModel</span><span class="p">(</span><span class="n">transmission_prob</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">get_model_vars_dataframe</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Minimize difference between simulation and real data."""</span>
+    <span class="n">beta</span><span class="p">,</span> <span class="n">recovery_mean</span> <span class="o">=</span> <span class="n">params</span>
+    <span class="n">sim_data</span> <span class="o">=</span> <span class="n">simulate_with_params</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">recovery_mean</span><span class="p">)</span>
+
+    <span class="c1"># Compare to real_data</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">sim_data</span><span class="p">[</span><span class="s1">'Infected'</span><span class="p">]</span> <span class="o">-</span> <span class="n">real_data</span><span class="p">[</span><span class="s1">'Infected'</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">error</span>
+
+<span class="c1"># Optimize</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">30</span><span class="p">)])</span>
+<span class="n">best_beta</span><span class="p">,</span> <span class="n">best_recovery</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="detailed-performance-analysis">
+<h2>Detailed Performance Analysis<a class="headerlink" href="#detailed-performance-analysis" title="Link to this heading">#</a></h2>
+<p>Now let’s run a more detailed benchmark, first on the small grid we used above and then on a larger model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">benchmark_detailed</span><span class="p">(</span><span class="n">n_agents</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_ticks</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_runs</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Detailed benchmark comparing both approaches."""</span>
+
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Benchmarking: </span><span class="si">{</span><span class="n">n_agents</span><span class="si">}</span><span class="s2"> agents, </span><span class="si">{</span><span class="n">grid_size</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">grid_size</span><span class="si">}</span><span class="s2"> grid, </span><span class="si">{</span><span class="n">n_ticks</span><span class="si">}</span><span class="s2"> ticks, </span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2"> runs"</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+
+    <span class="n">tick_mean</span><span class="p">,</span> <span class="n">tick_std</span> <span class="o">=</span> <span class="n">benchmark_model</span><span class="p">(</span>
+        <span class="n">EpidemicModelTickBased</span><span class="p">,</span>
+        <span class="n">n_agents</span><span class="o">=</span><span class="n">n_agents</span><span class="p">,</span>
+        <span class="n">grid_size</span><span class="o">=</span><span class="n">grid_size</span><span class="p">,</span>
+        <span class="n">n_ticks</span><span class="o">=</span><span class="n">n_ticks</span><span class="p">,</span>
+        <span class="n">n_runs</span><span class="o">=</span><span class="n">n_runs</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">event_mean</span><span class="p">,</span> <span class="n">event_std</span> <span class="o">=</span> <span class="n">benchmark_model</span><span class="p">(</span>
+        <span class="n">EpidemicModel</span><span class="p">,</span>
+        <span class="n">n_agents</span><span class="o">=</span><span class="n">n_agents</span><span class="p">,</span>
+        <span class="n">grid_size</span><span class="o">=</span><span class="n">grid_size</span><span class="p">,</span>
+        <span class="n">n_ticks</span><span class="o">=</span><span class="n">n_ticks</span><span class="p">,</span>
+        <span class="n">n_runs</span><span class="o">=</span><span class="n">n_runs</span><span class="p">,</span>
+        <span class="n">collect_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Tick-Based: </span><span class="si">{</span><span class="n">tick_mean</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s (±</span><span class="si">{</span><span class="n">tick_std</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s)"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Event-Based: </span><span class="si">{</span><span class="n">event_mean</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s (±</span><span class="si">{</span><span class="n">event_std</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s)"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Speedup: </span><span class="si">{</span><span class="n">tick_mean</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">event_mean</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tick_mean</span><span class="p">,</span> <span class="n">event_mean</span>
+
+
+<span class="c1"># Small grid</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">### SMALL GRID ###"</span><span class="p">)</span>
+<span class="n">small_tick</span><span class="p">,</span> <span class="n">small_event</span> <span class="o">=</span> <span class="n">benchmark_detailed</span><span class="p">(</span><span class="n">n_agents</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_ticks</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>### SMALL GRID ###
+Benchmarking: 100 agents, 20x20 grid, 200 ticks, 5 runs
+======================================================================
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tick-Based: 0.052s (±0.002s)
+Event-Based: 0.045s (±0.003s)
+Speedup: 1.17x
+</pre></div>
+</div>
+</div>
+</div>
+<section id="larger-model-comparison">
+<h3>Larger Model Comparison<a class="headerlink" href="#larger-model-comparison" title="Link to this heading">#</a></h3>
+<p>Does the picture change with a larger model? Let’s test with:</p>
+<ul class="simple">
+<li><p><strong>500 agents</strong> (5x more)</p></li>
+<li><p><strong>50x50 grid</strong> (6.25x larger)</p></li>
+<li><p><strong>200 ticks</strong></p></li>
+</ul>
+<p>Run it and compare with the small grid. Results depend on your machine and on how many agents are
+infected at any time, so use the numbers as a rough guide only.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Large grid benchmark</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">### LARGE GRID ###"</span><span class="p">)</span>
+<span class="n">large_tick</span><span class="p">,</span> <span class="n">large_event</span> <span class="o">=</span> <span class="n">benchmark_detailed</span><span class="p">(</span>
+    <span class="n">n_agents</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">n_ticks</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_runs</span><span class="o">=</span><span class="mi">3</span>
+<span class="p">)</span>
+
+<span class="c1"># Comparison</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"="</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SUMMARY"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Small grid speedup: </span><span class="si">{</span><span class="n">small_tick</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">small_event</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Large grid speedup: </span><span class="si">{</span><span class="n">large_tick</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">large_event</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>### LARGE GRID ###
+Benchmarking: 500 agents, 50x50 grid, 200 ticks, 3 runs
+======================================================================
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tick-Based: 0.202s (±0.041s)
+Event-Based: 0.153s (±0.004s)
+Speedup: 1.32x
+
+
+======================================================================
+SUMMARY
+======================================================================
+Small grid speedup: 1.17x
+Large grid speedup: 1.32x
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="profiling-with-cprofile">
+<h3>Profiling with cProfile<a class="headerlink" href="#profiling-with-cprofile" title="Link to this heading">#</a></h3>
+<p>For deeper performance analysis, we can use Python’s built-in profiler.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cProfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pstats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">profile_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">"event"</span><span class="p">,</span> <span class="n">n_agents</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">n_ticks</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Profile a model run."""</span>
+    <span class="n">profiler</span> <span class="o">=</span> <span class="n">cProfile</span><span class="o">.</span><span class="n">Profile</span><span class="p">()</span>
+
+    <span class="n">profiler</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">"event"</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">EpidemicModel</span><span class="p">(</span>
+            <span class="n">n_agents</span><span class="o">=</span><span class="n">n_agents</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="n">grid_size</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">grid_size</span><span class="p">,</span>
+            <span class="n">collect_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">rng</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">EpidemicModelTickBased</span><span class="p">(</span>
+            <span class="n">n_agents</span><span class="o">=</span><span class="n">n_agents</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">grid_size</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">grid_size</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="n">n_ticks</span><span class="p">)</span>
+
+    <span class="n">profiler</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+
+    <span class="c1"># Print stats</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">pstats</span><span class="o">.</span><span class="n">Stats</span><span class="p">(</span><span class="n">profiler</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">strip_dirs</span><span class="p">()</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">sort_stats</span><span class="p">(</span><span class="s2">"cumulative"</span><span class="p">)</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">print_stats</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># Top 10 functions</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="s1">'='</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">70</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">model_type</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> MODEL PROFILING"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'='</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">70</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+
+
+<span class="c1"># Profile both</span>
+<span class="n">profile_model</span><span class="p">(</span><span class="s2">"tick"</span><span class="p">)</span>
+<span class="n">profile_model</span><span class="p">(</span><span class="s2">"event"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======================================================================
+TICK MODEL PROFILING
+======================================================================
+         530277 function calls (530275 primitive calls) in 0.251 seconds
+
+   Ordered by: cumulative time
+   List reduced from 168 to 10 due to restriction &lt;10&gt;
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      2/1    0.000    0.000    0.246    0.246 emitters.py:256(wrapper)
+        1    0.000    0.000    0.246    0.246 schedule.py:128(run_for)
+      100    0.000    0.000    0.245    0.002 event.py:115(execute)
+      100    0.001    0.000    0.244    0.002 generator.py:128(_execute_and_reschedule)
+      100    0.009    0.000    0.241    0.002 699530092.py:69(step)
+      200    0.024    0.000    0.196    0.001 loops.py:17(py_call_each)
+      100    0.000    0.000    0.186    0.002 strong.py:127(shuffle_do)
+    20000    0.026    0.000    0.157    0.000 699530092.py:26(move)
+    20200    0.016    0.000    0.068    0.000 agents.py:39(cell)
+        1    0.000    0.000    0.055    0.055 schedule.py:31(_advance_time)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======================================================================
+EVENT MODEL PROFILING
+======================================================================
+         477355 function calls (477349 primitive calls) in 0.225 seconds
+
+   Ordered by: cumulative time
+   List reduced from 268 to 10 due to restriction &lt;10&gt;
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+  238/237    0.000    0.000    0.216    0.001 event.py:115(execute)
+  101/100    0.000    0.000    0.215    0.002 generator.py:128(_execute_and_reschedule)
+      100    0.009    0.000    0.213    0.002 615830908.py:51(step)
+      100    0.000    0.000    0.178    0.002 strong.py:127(shuffle_do)
+      100    0.013    0.000    0.166    0.002 loops.py:17(py_call_each)
+    20000    0.025    0.000    0.150    0.000 1638937359.py:29(move)
+    20200    0.015    0.000    0.064    0.000 agents.py:39(cell)
+    20000    0.010    0.000    0.039    0.000 collection.py:115(select_random_cell)
+    20200    0.018    0.000    0.029    0.000 cell.py:155(add_agent)
+    20000    0.019    0.000    0.028    0.000 rng.py:63(choice)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="challenging-exercises">
+<h2>Challenging Exercises<a class="headerlink" href="#challenging-exercises" title="Link to this heading">#</a></h2>
+<p>Now that you’ve mastered hybrid ABM-DEVS modeling, try these advanced exercises!</p>
+<section id="exercise-1-seir-model">
+<h3>Exercise 1: SEIR Model<a class="headerlink" href="#exercise-1-seir-model" title="Link to this heading">#</a></h3>
+<p>Extend the SIR model to SEIR by adding an Exposed state.</p>
+<p><strong>Requirements</strong>:</p>
+<ol class="arabic simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">EXPOSED</span></code> state (between Susceptible and Infected)</p></li>
+<li><p>When exposed, schedule infection after incubation period (3-7 ticks)</p></li>
+<li><p>Exposed agents are NOT contagious</p></li>
+<li><p>Update visualization to show 4 states</p></li>
+<li><p>Track epidemic curve for all 4 compartments</p></li>
+</ol>
+<p><strong>Starter Code</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PersonSEIR</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+    <span class="n">EXPOSED</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># new state (0-2 are used by Person)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">expose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">Person</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">PersonSEIR</span><span class="o">.</span><span class="n">EXPOSED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span>
+        
+        <span class="c1"># TODO: Schedule infection after incubation</span>
+        <span class="n">incubation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+        <span class="c1"># YOUR CODE HERE</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">become_infected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO: Transition from EXPOSED to INFECTED</span>
+        <span class="c1"># YOUR CODE HERE</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="exercise-2-vaccination-campaign">
+<h3>Exercise 2: Vaccination Campaign<a class="headerlink" href="#exercise-2-vaccination-campaign" title="Link to this heading">#</a></h3>
+<p>Implement a vaccination campaign starting at tick 50.</p>
+<p><strong>Requirements</strong>:</p>
+<ol class="arabic simple">
+<li><p>20% of susceptible agents get vaccinated each tick</p></li>
+<li><p>Vaccinated agents go directly to <code class="docutils literal notranslate"><span class="pre">RECOVERED</span></code> (immune)</p></li>
+<li><p>Stop vaccination when 70% are immune (recovered + vaccinated)</p></li>
+<li><p>Compare epidemic curves: with vs without vaccination</p></li>
+<li><p>Measure “lives saved” (infections prevented)</p></li>
+</ol>
+<p><strong>Hints</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">vaccinate_population</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">&gt;=</span> <span class="mi">50</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">vaccination_end</span><span class="p">:</span>
+        <span class="n">susceptible</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">susceptible</span><span class="p">]</span>
+        <span class="n">to_vaccinate</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">susceptible</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span><span class="p">)</span>
+        <span class="c1"># YOUR CODE HERE</span>
+</pre></div>
+</div>
+<p><strong>Challenge</strong>: Find the optimal vaccination rate to minimize total infections while vaccinating fewest people.</p>
+</section>
+<section id="exercise-3-dynamic-behavioral-response">
+<h3>Exercise 3: Dynamic Behavioral Response<a class="headerlink" href="#exercise-3-dynamic-behavioral-response" title="Link to this heading">#</a></h3>
+<p>Agents adapt their behavior based on local epidemic severity.</p>
+<p><strong>Requirements</strong>:</p>
+<ol class="arabic simple">
+<li><p>Agents track infected neighbors in Moore neighborhood</p></li>
+<li><p>If &gt;3 infected neighbors: reduce movement (move with 30% probability)</p></li>
+<li><p>If &gt;5 infected neighbors: “self-isolate” (don’t move at all)</p></li>
+<li><p>Isolation lasts for 10 ticks, then re-evaluate</p></li>
+<li><p>Compare: adaptive vs non-adaptive populations</p></li>
+</ol>
+<p><strong>Key Concepts</strong>:</p>
+<ul class="simple">
+<li><p>Dynamic event scheduling (reschedule checks every N ticks)</p></li>
+<li><p>Behavioral change based on local information</p></li>
+<li><p>Feedback loops in epidemic dynamics</p></li>
+</ul>
+<p><strong>Starter Code</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">assess_risk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">neighbors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">moore</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_center</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="n">infected_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">neighbors</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">infected</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">infected_count</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isolating</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># Schedule re-assessment in 10 ticks</span>
+    <span class="k">elif</span> <span class="n">infected_count</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cautious</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1"># YOUR CODE HERE</span>
+</pre></div>
+</div>
+</section>
+<section id="exercise-4-healthcare-capacity-modeling">
+<h3>Exercise 4: Healthcare Capacity Modeling<a class="headerlink" href="#exercise-4-healthcare-capacity-modeling" title="Link to this heading">#</a></h3>
+<p>Model <strong>hospital capacity</strong> and differential outcomes.</p>
+<p><strong>Requirements</strong>:</p>
+<ol class="arabic simple">
+<li><p>Hospital has limited beds (20% of population)</p></li>
+<li><p>Infected agents “request” hospital bed</p></li>
+<li><p>Agents WITH beds: faster recovery (10-15 ticks)</p></li>
+<li><p>Agents WITHOUT beds: slower recovery (15-25 ticks) + mortality risk</p></li>
+<li><p>Mortality rate: 5% for untreated, 0.5% for treated</p></li>
+<li><p>Track bed occupancy over time</p></li>
+<li><p>Implement “flatten the curve” interventions</p></li>
+</ol>
+<p><strong>Advanced Challenges</strong>:</p>
+<ul class="simple">
+<li><p>Beds freed when agents recover/die</p></li>
+<li><p>Priority queue (sickest patients first)</p></li>
+<li><p>Multiple hospitals with geographic constraints</p></li>
+</ul>
+<p><strong>This exercise combines</strong>:</p>
+<ul class="simple">
+<li><p>Resource management</p></li>
+<li><p>Multiple event types</p></li>
+<li><p>Agent mortality (event cancellation)</p></li>
+<li><p>Spatial resource allocation</p></li>
+</ul>
+</section>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>In this tutorial, you learned:</p>
+<section id="key-concepts">
+<h3>Key Concepts<a class="headerlink" href="#key-concepts" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Hybrid ABM-DEVS</strong>: Combining tick-based (<code class="docutils literal notranslate"><span class="pre">step()</span></code>) and event-based (<code class="docutils literal notranslate"><span class="pre">schedule_event()</span></code>) behavior in one model</p></li>
+<li><p><strong>One Model class</strong>: <code class="docutils literal notranslate"><span class="pre">step()</span></code> is just a recurring event; scheduled events run between and alongside steps</p></li>
+<li><p><strong>Event Scheduling</strong>: Absolute (<code class="docutils literal notranslate"><span class="pre">at=</span></code>) and relative (<code class="docutils literal notranslate"><span class="pre">after=</span></code>) scheduling, plus <code class="docutils literal notranslate"><span class="pre">event.cancel()</span></code></p></li>
+<li><p><strong>Performance</strong>: Event-based recovery vs tick-based countdown, and why the gain can be small</p></li>
+<li><p><strong>Advanced Patterns</strong>: Cancellation, chaining, dynamic scheduling</p></li>
+</ul>
+</section>
+<section id="practical-skills">
+<h3>Practical Skills<a class="headerlink" href="#practical-skills" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Built a spatial SIR epidemic model</p></li>
+<li><p>Compared performance of different approaches</p></li>
+<li><p>Visualized epidemic dynamics</p></li>
+<li><p>Applied event scheduling to real-world modeling scenarios</p></li>
+</ul>
+</section>
+<section id="when-to-use-hybrid-abm-devs">
+<h3>When to Use Hybrid ABM-DEVS<a class="headerlink" href="#when-to-use-hybrid-abm-devs" title="Link to this heading">#</a></h3>
+<p><strong>Use Hybrid Models When:</strong></p>
+<ul class="simple">
+<li><p>Regular tick-based behavior (movement, sensing)</p></li>
+<li><p>Plus sparse events (arrivals, state changes, completions)</p></li>
+<li><p>Events occur at irregular intervals</p></li>
+<li><p>The event formulation makes the model clearer, or replaces expensive polling</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul class="simple">
+<li><p>Epidemics (movement + recovery events)</p></li>
+<li><p>Traffic (regular flow + incidents)</p></li>
+<li><p>Wildlife (movement + reproduction/death events)</p></li>
+<li><p>Economics (market activity + policy interventions)</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h3>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h3>
+<p><strong>Explore More Modelly Features:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Batch Runs</strong>: Compare intervention strategies with <code class="docutils literal notranslate"><span class="pre">modelly.run_batch</span></code></p></li>
+<li><p><strong>Visualization</strong>: Interactive Solara visualizations (Tutorials 6-10)</p></li>
+<li><p><strong>Network Models</strong>: Use a <code class="docutils literal notranslate"><span class="pre">Network</span></code> space for social networks</p></li>
+<li><p><strong>Continuous Space</strong>: Use continuous space for finer movement</p></li>
+</ol>
+<p><strong>Deepen Your Event Knowledge:</strong></p>
+<ul class="simple">
+<li><p>Read the <code class="docutils literal notranslate"><span class="pre">modelly.time</span></code> module source (<code class="docutils literal notranslate"><span class="pre">modelly/time/events.py</span></code>)</p></li>
+<li><p>Read about Priority Queues and Event Lists</p></li>
+<li><p>Explore classical DEVS literature</p></li>
+</ul>
+<p><strong>Build Your Own Models:</strong></p>
+<ul class="simple">
+<li><p>Implement SEIR/SEIRD epidemic variants</p></li>
+<li><p>Model intervention strategies (vaccination, lockdowns)</p></li>
+<li><p>Calibrate to real-world data</p></li>
+<li><p>Publish your research!</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="11_discrete_event_simulation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Discrete Event Simulation with Modelly</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../best-practices.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Best Practices</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-description">Tutorial Description</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-setup">Tutorial Setup</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recap-pure-event-driven-vs-hybrid-models">Recap: Pure Event-Driven vs Hybrid Models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-do-we-need-hybrid-models">When Do We Need Hybrid Models?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-model-both-styles">One Model, Both Styles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduling-relative-to-the-current-tick">Scheduling Relative to the Current Tick</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-foundations-the-sir-epidemic-model">Mathematical Foundations: The SIR Epidemic Model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sir-model">The SIR Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-transitions">State Transitions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-parameters">Key Parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-hybrid-abm-devs-for-epidemics">Why Hybrid ABM-DEVS for Epidemics?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spatial-dynamics-on-grid">Spatial Dynamics on Grid</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-event-based-epidemic-model">Implementation: Event-Based Epidemic Model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#person-agent-explained">Person Agent Explained</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#epidemic-model-explained">Epidemic Model Explained</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-epidemic-simulation">Running the Epidemic Simulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpreting-the-results">Interpreting the Results</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-analysis-tick-based-vs-event-based">Performance Analysis: Tick-Based vs Event-Based</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-insights">Performance Insights</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-devs-patterns">Advanced DEVS Patterns</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pattern-1-event-cancellation">Pattern 1: Event Cancellation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pattern-2-event-chaining">Pattern 2: Event Chaining</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pattern-3-dynamic-event-scheduling">Pattern 3: Dynamic Event Scheduling</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#real-world-extensions">Real-World Extensions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extension-1-seir-model">Extension 1: SEIR Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extension-2-intervention-strategies">Extension 2: Intervention Strategies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extension-3-heterogeneous-populations">Extension 3: Heterogeneous Populations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extension-4-network-based-transmission">Extension 4: Network-Based Transmission</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extension-5-data-driven-calibration">Extension 5: Data-Driven Calibration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#detailed-performance-analysis">Detailed Performance Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#larger-model-comparison">Larger Model Comparison</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#profiling-with-cprofile">Profiling with cProfile</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#challenging-exercises">Challenging Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1-seir-model">Exercise 1: SEIR Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2-vaccination-campaign">Exercise 2: Vaccination Campaign</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-3-dynamic-behavioral-response">Exercise 3: Dynamic Behavioral Response</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-4-healthcare-capacity-modeling">Exercise 4: Healthcare Capacity Modeling</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-concepts">Key Concepts</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-skills">Practical Skills</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-hybrid-abm-devs">When to Use Hybrid ABM-DEVS</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/tutorials/12_hybrid_abm_devs.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

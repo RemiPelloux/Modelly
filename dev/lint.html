@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Checking a model &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'lint';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/lint.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Profiling a model" href="profile.html" />
+    <link rel="prev" title="Best Practices" href="best-practices.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#" aria-current="page">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Checking a model</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="checking-a-model">
+<h1>Checking a model<a class="headerlink" href="#checking-a-model" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">modelly.lint</span></code> reads your model’s source and reports two kinds of problems:</p>
+<ul class="simple">
+<li><p><strong>Errors</strong> (<code class="docutils literal notranslate"><span class="pre">MDL0xx</span></code>): the model runs, but its result is wrong or cannot be reproduced from
+its seed.</p></li>
+<li><p><strong>Warnings</strong> (<code class="docutils literal notranslate"><span class="pre">MDL1xx</span></code>): the model is right, but its cost grows faster than it needs to,
+usually O(N²) per step where O(N) is possible.</p></li>
+</ul>
+<p>Nothing is imported or executed: the files are parsed and walked, so the check takes
+milliseconds and is safe to run on any code.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>modelly.lint<span class="w"> </span>my_model/<span class="w">            </span><span class="c1"># a folder, recursively</span>
+python<span class="w"> </span>-m<span class="w"> </span>modelly.lint<span class="w"> </span>model.py<span class="w"> </span>agents.py<span class="w">   </span><span class="c1"># or files</span>
+python<span class="w"> </span>-m<span class="w"> </span>modelly.lint<span class="w"> </span>--list-rules<span class="w">         </span><span class="c1"># one line per rule</span>
+python<span class="w"> </span>-m<span class="w"> </span>modelly.lint<span class="w"> </span>--explain<span class="w"> </span>MDL101<span class="w">     </span><span class="c1"># one rule in detail: why, bad and good example</span>
+python<span class="w"> </span>-m<span class="w"> </span>modelly<span class="w"> </span>lint<span class="w"> </span>my_model/<span class="w">            </span><span class="c1"># the same, through the umbrella command</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>model.py:14:12: MDL001 random draw outside the model's generators
+    hint: use self.random (stdlib API) or self.rng (numpy Generator) so the seed reproduces the run
+model.py:17:19: MDL101 an agent scans the whole population: O(N) per agent, O(N^2) per step
+    hint: look at neighbours through self.cell.neighborhood or a space query, or move the phase to the model as columns
+2 finding(s): 1 error(s), 1 warning(s)
+</pre></div>
+</div>
+<p>Each finding is <code class="docutils literal notranslate"><span class="pre">path:line:col:</span> <span class="pre">CODE</span> <span class="pre">message</span></code>, the form editors and CI logs link to, followed by
+a hint.</p>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Effect</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--select</span> <span class="pre">CODES</span></code></p></td>
+<td><p>keep only these comma-separated codes or prefixes (<code class="docutils literal notranslate"><span class="pre">MDL0</span></code> is every error)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--ignore</span> <span class="pre">CODES</span></code></p></td>
+<td><p>drop these codes or prefixes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">text</span></code></p></td>
+<td><p>the default: findings, hints and a summary line</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">json</span></code></p></td>
+<td><p>a JSON list of findings, for other tools</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">github</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">::error</span> <span class="pre">file=...,line=...,col=...,title=MDL001::...</span></code> annotations for GitHub Actions</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--statistics</span></code></p></td>
+<td><p>one line per rule with its count, most frequent first</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-q</span></code>, <code class="docutils literal notranslate"><span class="pre">--quiet</span></code></p></td>
+<td><p>only the <code class="docutils literal notranslate"><span class="pre">path:line:col:</span> <span class="pre">CODE</span> <span class="pre">message</span></code> lines: no hints, no summary</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--fix</span></code></p></td>
+<td><p>apply the <a class="reference internal" href="#fixing-findings">safe fixes</a>, then report what is left</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--diff</span></code></p></td>
+<td><p>print the safe fixes as a unified diff; nothing is written</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--exit-zero</span></code></p></td>
+<td><p>report, but exit 0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--explain</span> <span class="pre">CODE</span></code></p></td>
+<td><p>print why a rule matters, a bad and a good example, and exit</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--list-rules</span></code></p></td>
+<td><p>print every rule and exit</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Exit status: <strong>0</strong> no findings (or <code class="docutils literal notranslate"><span class="pre">--exit-zero</span></code>), <strong>1</strong> at least one finding (with <code class="docutils literal notranslate"><span class="pre">--diff</span></code>:
+at least one fix to apply), <strong>2</strong> a usage error
+(a path that cannot be read, a file that does not parse, a bad configuration or an unknown rule
+for <code class="docutils literal notranslate"><span class="pre">--explain</span></code>).</p>
+</section>
+<section id="errors">
+<h2>Errors<a class="headerlink" href="#errors" title="Link to this heading">#</a></h2>
+<section id="mdl001-random-draw-outside-the-model-s-generators">
+<span id="mdl001"></span><h3>MDL001: random draw outside the model’s generators<a class="headerlink" href="#mdl001-random-draw-outside-the-model-s-generators" title="Link to this heading">#</a></h3>
+<p>The seed fixes a run only when every draw comes from the model. The global <code class="docutils literal notranslate"><span class="pre">random</span></code> and
+<code class="docutils literal notranslate"><span class="pre">np.random</span></code> streams, an unseeded <code class="docutils literal notranslate"><span class="pre">random.Random()</span></code>, <code class="docutils literal notranslate"><span class="pre">np.random.default_rng()</span></code> or
+<code class="docutils literal notranslate"><span class="pre">default_rng(None)</span></code>, a bit generator built without a seed (<code class="docutils literal notranslate"><span class="pre">PCG64()</span></code>) and <code class="docutils literal notranslate"><span class="pre">SystemRandom</span></code> are
+not owned by the model, so two runs with the same seed differ. Calls are read through the
+module’s imports, so <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">numpy.random</span> <span class="pre">as</span> <span class="pre">npr</span></code> and <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">random</span> <span class="pre">import</span> <span class="pre">choice</span></code> are caught;
+<code class="docutils literal notranslate"><span class="pre">random.Random(42)</span></code>, <code class="docutils literal notranslate"><span class="pre">default_rng(seed=7)</span></code> and <code class="docutils literal notranslate"><span class="pre">Generator(PCG64(7))</span></code> are not reported.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">:</span>                 <span class="c1"># MDL001</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>             <span class="c1"># MDL001</span>
+<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">:</span>            <span class="c1"># the model's stdlib-style generator</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>              <span class="c1"># the model's numpy Generator</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl002-init-does-not-call-super-init">
+<span id="mdl002"></span><h3>MDL002: <code class="docutils literal notranslate"><span class="pre">__init__</span></code> does not call <code class="docutils literal notranslate"><span class="pre">super().__init__</span></code><a class="headerlink" href="#mdl002-init-does-not-call-super-init" title="Link to this heading">#</a></h3>
+<p>An agent whose <code class="docutils literal notranslate"><span class="pre">__init__</span></code> skips <code class="docutils literal notranslate"><span class="pre">super().__init__(model)</span></code> is never registered: it is not in
+<code class="docutils literal notranslate"><span class="pre">model.agents</span></code>, is never activated and has no <code class="docutils literal notranslate"><span class="pre">unique_id</span></code>. A model that skips it has no
+generators or registry. Nothing raises at once; the failure comes later, far from the cause.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Sheep</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># MDL002</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Sheep</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>  <span class="c1"># registered, with a unique_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl003-loop-over-a-set">
+<span id="mdl003"></span><h3>MDL003: loop over a set<a class="headerlink" href="#mdl003-loop-over-a-set" title="Link to this heading">#</a></h3>
+<p>A set of agents iterates in an order that follows memory addresses, which change from run to
+run, so every draw or update that depends on the order changes too.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">neighbours</span><span class="p">):</span>                             <span class="c1"># MDL003</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">neighbours</span><span class="p">:</span>                                  <span class="c1"># an AgentSet or a list keeps its order</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">neighbours</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">unique_id</span><span class="p">):</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl004-mutable-class-attribute-on-an-agent">
+<span id="mdl004"></span><h3>MDL004: mutable class attribute on an agent<a class="headerlink" href="#mdl004-mutable-class-attribute-on-an-agent" title="Link to this heading">#</a></h3>
+<p>A list, dict or set in the class body is created once, with the class, and shared by every
+agent: one agent’s append shows up in all of them. <code class="docutils literal notranslate"><span class="pre">__slots__</span></code> and attributes annotated
+<code class="docutils literal notranslate"><span class="pre">ClassVar[...]</span></code> are shared on purpose and not reported.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Trader</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="n">partners</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># MDL004: one list, shared by every Trader</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partners</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># one list per agent</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl005-wall-clock-or-os-entropy-in-model-code">
+<span id="mdl005"></span><h3>MDL005: wall clock or OS entropy in model code<a class="headerlink" href="#mdl005-wall-clock-or-os-entropy-in-model-code" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">time.time()</span></code>, <code class="docutils literal notranslate"><span class="pre">time.time_ns()</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.now()</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.utcnow()</span></code>, <code class="docutils literal notranslate"><span class="pre">date.today()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">uuid.uuid1()</span></code>, <code class="docutils literal notranslate"><span class="pre">uuid.uuid4()</span></code>, <code class="docutils literal notranslate"><span class="pre">os.urandom()</span></code> and anything from <code class="docutils literal notranslate"><span class="pre">secrets</span></code> return a new value on
+every run. Inside a model or agent class they make the outcome depend on the machine and the
+moment instead of the seed. Timing code outside the classes, and <code class="docutils literal notranslate"><span class="pre">time.perf_counter()</span></code> for
+profiling, are not reported.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Sheep</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">born</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>  <span class="c1"># MDL005</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>  <span class="c1"># MDL005</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">born</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span>  <span class="c1"># the model's clock</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span>  <span class="c1"># already unique and reproducible</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl006-hash-or-id-decides-an-outcome">
+<span id="mdl006"></span><h3>MDL006: <code class="docutils literal notranslate"><span class="pre">hash()</span></code> or <code class="docutils literal notranslate"><span class="pre">id()</span></code> decides an outcome<a class="headerlink" href="#mdl006-hash-or-id-decides-an-outcome" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">id()</span></code> is a memory address, and <code class="docutils literal notranslate"><span class="pre">hash()</span></code> of a <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">bytes</span></code> is salted per process
+(<code class="docutils literal notranslate"><span class="pre">PYTHONHASHSEED</span></code>). Ordering by them (<code class="docutils literal notranslate"><span class="pre">key=id</span></code>, <code class="docutils literal notranslate"><span class="pre">key=lambda</span> <span class="pre">a:</span> <span class="pre">id(a)</span></code>) anywhere, or calling
+<code class="docutils literal notranslate"><span class="pre">hash()</span></code> in a model or agent method other than <code class="docutils literal notranslate"><span class="pre">__hash__</span></code>, gives a different result each run.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">queue</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>  <span class="c1"># MDL006</span>
+<span class="n">group</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span>  <span class="c1"># MDL006</span>
+<span class="n">queue</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
+<span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="o">%</span> <span class="mi">4</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl007-a-loop-over-the-population-removes-agents">
+<span id="mdl007"></span><h3>MDL007: a loop over the population removes agents<a class="headerlink" href="#mdl007-a-loop-over-the-population-removes-agents" title="Link to this heading">#</a></h3>
+<p>Iterating an <code class="docutils literal notranslate"><span class="pre">AgentSet</span></code> walks a snapshot taken when the loop starts. An agent removed by an
+earlier iteration (<code class="docutils literal notranslate"><span class="pre">other.remove()</span></code>) is therefore still visited and acts after its death.
+<code class="docutils literal notranslate"><span class="pre">agents.do(...)</span></code> and <code class="docutils literal notranslate"><span class="pre">agents.shuffle_do(...)</span></code> check membership and skip it. Removing the loop’s
+own agent (<code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">a</span> <span class="pre">in</span> <span class="pre">...:</span> <span class="pre">a.remove()</span></code>) is fine and not reported.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">wolf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents_by_type</span><span class="p">[</span><span class="n">Wolf</span><span class="p">]:</span>
+    <span class="n">wolf</span><span class="o">.</span><span class="n">prey</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>  <span class="c1"># MDL007: that prey may come up later</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">agents_by_type</span><span class="p">[</span><span class="n">Wolf</span><span class="p">]</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"hunt"</span><span class="p">)</span>  <span class="c1"># hunt() calls self.prey.remove()</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl008-global-statement-in-a-model-or-agent-method">
+<span id="mdl008"></span><h3>MDL008: <code class="docutils literal notranslate"><span class="pre">global</span></code> statement in a model or agent method<a class="headerlink" href="#mdl008-global-statement-in-a-model-or-agent-method" title="Link to this heading">#</a></h3>
+<p>A module-level variable outlives the model. Two models in one process (a batch run, a test
+suite, a notebook re-run) share it and keep mutating it, so a run depends on what ran before.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">BORN</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Sheep</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">BORN</span>  <span class="c1"># MDL008</span>
+        <span class="n">BORN</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">born</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># state on the model: each run starts fresh</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl009-the-model-s-agent-set-is-changed-directly">
+<span id="mdl009"></span><h3>MDL009: the model’s agent set is changed directly<a class="headerlink" href="#mdl009-the-model-s-agent-set-is-changed-directly" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">model.agents</span></code> and <code class="docutils literal notranslate"><span class="pre">model.agents_by_type[...]</span></code> are the registry itself. <code class="docutils literal notranslate"><span class="pre">add</span></code>, <code class="docutils literal notranslate"><span class="pre">discard</span></code>,
+<code class="docutils literal notranslate"><span class="pre">remove</span></code> or <code class="docutils literal notranslate"><span class="pre">clear</span></code> on them skips the per-type sets, the column tables and the data
+collectors, which then disagree with each other. Creating an agent registers it; <code class="docutils literal notranslate"><span class="pre">agent.remove()</span></code>
+deregisters it everywhere.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># MDL009</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl010-a-lambda-or-nested-function-is-sent-to-worker-processes">
+<span id="mdl010"></span><h3>MDL010: a lambda or nested function is sent to worker processes<a class="headerlink" href="#mdl010-a-lambda-or-nested-function-is-sent-to-worker-processes" title="Link to this heading">#</a></h3>
+<p>Windows and macOS start process-pool workers with <code class="docutils literal notranslate"><span class="pre">spawn</span></code>: each worker is a fresh interpreter
+that imports the function or class it runs by its module and qualified name. A lambda, or a
+function or class defined inside another function (a closure), has no such name. Linux forks
+its workers, so the same batch works there and fails on the other two.</p>
+<p>The rule looks at every argument of <code class="docutils literal notranslate"><span class="pre">run_batch</span></code>, <code class="docutils literal notranslate"><span class="pre">run_grid</span></code>, <code class="docutils literal notranslate"><span class="pre">run_scenarios</span></code>,
+<code class="docutils literal notranslate"><span class="pre">RunConfiguration</span></code> and <code class="docutils literal notranslate"><span class="pre">Experiment</span></code>, and at keyword arguments of any call named <code class="docutils literal notranslate"><span class="pre">run</span></code>,
+<code class="docutils literal notranslate"><span class="pre">model_class</span></code>, <code class="docutils literal notranslate"><span class="pre">model_cls</span></code> or ending in <code class="docutils literal notranslate"><span class="pre">factory</span></code> (<code class="docutils literal notranslate"><span class="pre">model_factory=</span></code>). Lists, tuples, dict
+values and <code class="docutils literal notranslate"><span class="pre">functools.partial(f,</span> <span class="pre">...)</span></code> are looked into. A call with <code class="docutils literal notranslate"><span class="pre">workers=1</span></code> runs every
+task in this process and is not reported.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>  <span class="c1"># nested: a spawned worker cannot import it</span>
+        <span class="k">return</span> <span class="n">Sheep</span><span class="p">(</span><span class="n">task</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="n">run_batch</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span>  <span class="c1"># MDL010</span>
+    <span class="n">run_batch</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span>  <span class="c1"># MDL010</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>  <span class="c1"># module level: importable by every worker</span>
+    <span class="k">return</span> <span class="n">Sheep</span><span class="p">(</span><span class="n">task</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl012-network-or-language-model-call-outside-modelly-llm">
+<span id="mdl012"></span><h3>MDL012: network or language-model call outside <code class="docutils literal notranslate"><span class="pre">modelly.llm</span></code><a class="headerlink" href="#mdl012-network-or-language-model-call-outside-modelly-llm" title="Link to this heading">#</a></h3>
+<p>A reply from a web service or a language model differs from one call to the next, and the
+service may change or disappear. Inside a model or an agent, a call through <code class="docutils literal notranslate"><span class="pre">requests</span></code>, <code class="docutils literal notranslate"><span class="pre">httpx</span></code>,
+<code class="docutils literal notranslate"><span class="pre">urllib.request.urlopen</span></code>, or the <code class="docutils literal notranslate"><span class="pre">openai</span></code> and <code class="docutils literal notranslate"><span class="pre">anthropic</span></code> SDKs (including a client kept in an
+attribute: <code class="docutils literal notranslate"><span class="pre">....chat.completions.create</span></code>, <code class="docutils literal notranslate"><span class="pre">....messages.create</span></code>) is recorded nowhere, so the run
+cannot be replayed, audited or held to a budget. Call through <a class="reference internal" href="llm_agents.html"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">modelly.llm</span></code></span></a>: it
+caches every reply under a key of the call, replays offline and stops before a budget is passed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Voter</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">reply</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">MODEL</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>  <span class="c1"># MDL012</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vote</span> <span class="o">=</span> <span class="n">reply</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Voter</span><span class="p">(</span><span class="n">LLMAgent</span><span class="p">,</span> <span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vote</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decide</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="p">{</span><span class="s2">"enum"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"no"</span><span class="p">]})</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="warnings">
+<h2>Warnings<a class="headerlink" href="#warnings" title="Link to this heading">#</a></h2>
+<section id="mdl101-an-agent-scans-the-whole-population">
+<span id="mdl101"></span><h3>MDL101: an agent scans the whole population<a class="headerlink" href="#mdl101-an-agent-scans-the-whole-population" title="Link to this heading">#</a></h3>
+<p>A loop, comprehension, <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">agg</span></code>, <code class="docutils literal notranslate"><span class="pre">groupby</span></code>, <code class="docutils literal notranslate"><span class="pre">sort</span></code> or <code class="docutils literal notranslate"><span class="pre">map</span></code> over <code class="docutils literal notranslate"><span class="pre">self.model.agents</span></code>
+(or <code class="docutils literal notranslate"><span class="pre">agents_by_type[...]</span></code>) inside an agent method visits every agent once per agent: N² visits
+per step. Look at neighbours through the space instead (<code class="docutils literal notranslate"><span class="pre">self.cell.neighborhood</span></code>, a
+continuous-space query), or write the phase once at the model level over columns; see
+<a class="reference internal" href="vectorised_phases.html"><span class="doc std std-doc">vectorised step phases</span></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">near</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="p">]</span>  <span class="c1"># MDL101</span>
+<span class="n">near</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">agents</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl102-nested-loops-over-the-population">
+<span id="mdl102"></span><h3>MDL102: nested loops over the population<a class="headerlink" href="#mdl102-nested-loops-over-the-population" title="Link to this heading">#</a></h3>
+<p>Two nested loops over the population compare every pair of agents, N² per step, even when only
+neighbours can interact. Pair agents through the space (cells, <code class="docutils literal notranslate"><span class="pre">pairs_within</span></code>) or group them
+first with <code class="docutils literal notranslate"><span class="pre">agents.groupby</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>  <span class="c1"># MDL102</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">meet</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">meet</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl103-hand-written-activation-loop">
+<span id="mdl103"></span><h3>MDL103: hand-written activation loop<a class="headerlink" href="#mdl103-hand-written-activation-loop" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">a</span> <span class="pre">in</span> <span class="pre">self.agents:</span> <span class="pre">a.step()</span></code> is <code class="docutils literal notranslate"><span class="pre">self.agents.do(&quot;step&quot;)</span></code>, a fixed order, and unlike <code class="docutils literal notranslate"><span class="pre">do</span></code>
+it still visits agents removed earlier in the loop. Most models mean
+<code class="docutils literal notranslate"><span class="pre">self.agents.shuffle_do(&quot;step&quot;)</span></code>, a new random order each step.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>  <span class="c1"># MDL103</span>
+    <span class="n">agent</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl104-deepcopy-inside-step">
+<span id="mdl104"></span><h3>MDL104: <code class="docutils literal notranslate"><span class="pre">deepcopy</span></code> inside <code class="docutils literal notranslate"><span class="pre">step</span></code><a class="headerlink" href="#mdl104-deepcopy-inside-step" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">deepcopy</span></code> walks the whole object graph, which for an agent includes the model, the space and
+every other agent. Done every step, it costs more than the step itself. Copy the fields you
+need, or keep the previous value in a column.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">previous</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># MDL104</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">previous_energy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl105-step-has-more-than-12-branches">
+<span id="mdl105"></span><h3>MDL105: <code class="docutils literal notranslate"><span class="pre">step</span></code> has more than 12 branches<a class="headerlink" href="#mdl105-step-has-more-than-12-branches" title="Link to this heading">#</a></h3>
+<p>A long <code class="docutils literal notranslate"><span class="pre">step</span></code> hides its phase order. Split it into named phases (<code class="docutils literal notranslate"><span class="pre">move</span></code>, <code class="docutils literal notranslate"><span class="pre">interact</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code>)
+and call them in order, which is also the first move towards <a class="reference internal" href="vectorised_phases.html"><span class="doc std std-doc">vectorising</span></a>
+them.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">eat</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">reproduce</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl106-pandas-dataframe-built-inside-step">
+<span id="mdl106"></span><h3>MDL106: pandas DataFrame built inside <code class="docutils literal notranslate"><span class="pre">step</span></code><a class="headerlink" href="#mdl106-pandas-dataframe-built-inside-step" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">pd.DataFrame(...)</span></code> and <code class="docutils literal notranslate"><span class="pre">pd.concat(...)</span></code> copy every row each time, so growing a table step by
+step is quadratic in the number of steps. Record with a <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code>, or append rows to a
+list and build the frame once after the run.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">row</span><span class="p">])])</span>  <span class="c1"># MDL106</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>  <span class="c1"># pd.DataFrame(self.rows) at the end</span>
+</pre></div>
+</div>
+</section>
+<section id="mdl107-per-agent-loop-that-only-writes-column-attributes">
+<span id="mdl107"></span><h3>MDL107: per-agent loop that only writes <code class="docutils literal notranslate"><span class="pre">Column</span></code> attributes<a class="headerlink" href="#mdl107-per-agent-loop-that-only-writes-column-attributes" title="Link to this heading">#</a></h3>
+<p>In a model method, a loop over the population whose body only assigns attributes declared as
+<code class="docutils literal notranslate"><span class="pre">Column</span></code> (plain <code class="docutils literal notranslate"><span class="pre">=</span></code>/<code class="docutils literal notranslate"><span class="pre">+=</span></code>, or an <code class="docutils literal notranslate"><span class="pre">if</span></code> made of those, with no calls) is a whole-column update
+written one agent at a time. The columns are those declared in the same module and those of the
+agent classes it imports from another file of the linted tree (<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">.agents</span> <span class="pre">import</span> <span class="pre">Sheep</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pkg.agents</span> <span class="pre">import</span> <span class="pre">Sheep</span></code> under a path given to the linter); that file is parsed once per
+run, never imported. The column’s numpy array does it in C. Loops
+that call anything (a draw, a method) are not reported: vectorising them changes the order of
+draws or needs a decision.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Sheep</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Pasture</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">sheep</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents_by_type</span><span class="p">[</span><span class="n">Sheep</span><span class="p">]:</span>  <span class="c1"># MDL107</span>
+            <span class="n">sheep</span><span class="o">.</span><span class="n">energy</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">Sheep</span><span class="p">]</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">energy</span> <span class="o">-=</span> <span class="mi">1</span>  <span class="c1"># one numpy operation</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="fixing-findings">
+<span id="id1"></span><h2>Fixing findings<a class="headerlink" href="#fixing-findings" title="Link to this heading">#</a></h2>
+<p>Four rules have a fix that is safe to apply without reading the code around it.
+<code class="docutils literal notranslate"><span class="pre">--diff</span></code> shows what it would change; <code class="docutils literal notranslate"><span class="pre">--fix</span></code> writes it and then reports the findings that
+are left for you.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>modelly.lint<span class="w"> </span>--diff<span class="w"> </span>my_model/<span class="w">   </span><span class="c1"># review</span>
+python<span class="w"> </span>-m<span class="w"> </span>modelly.lint<span class="w"> </span>--fix<span class="w"> </span>my_model/<span class="w">    </span><span class="c1"># apply</span>
+</pre></div>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Rule</p></th>
+<th class="head"><p>Before</p></th>
+<th class="head"><p>After</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MDL001</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">random.choice(xs)</span></code> in an agent or model method</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.random.choice(xs)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>MDL001</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">np.random.normal(0,</span> <span class="pre">1)</span></code> in an agent or model method</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.rng.normal(0,</span> <span class="pre">1)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>MDL002</p></td>
+<td><p>an agent <code class="docutils literal notranslate"><span class="pre">__init__(self,</span> <span class="pre">model,</span> <span class="pre">...)</span></code> without the call</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">super().__init__(model)</span></code> inserted first</p></td>
+</tr>
+<tr class="row-odd"><td><p>MDL002</p></td>
+<td><p>a model <code class="docutils literal notranslate"><span class="pre">__init__(self,</span> <span class="pre">scenario=...)</span></code> without the call</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">super().__init__(scenario=scenario)</span></code> inserted first</p></td>
+</tr>
+<tr class="row-even"><td><p>MDL003</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">x</span> <span class="pre">in</span> <span class="pre">set(names):</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">x</span> <span class="pre">in</span> <span class="pre">sorted(set(names)):</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>MDL003</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">a</span> <span class="pre">in</span> <span class="pre">set(self.cell.agents):</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sorted(...,</span> <span class="pre">key=lambda</span> <span class="pre">a:</span> <span class="pre">a.unique_id)</span></code>: agents do not compare</p></td>
+</tr>
+<tr class="row-even"><td><p>MDL009</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.model.agents.discard(self)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.remove()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>MDL009</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.agents_by_type[Sheep].clear()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.agents_by_type[Sheep].do(&quot;remove&quot;)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Only the expression the finding points at is rewritten: formatting, comments and line endings
+around it are kept. A finding is left alone when the right rewrite is a guess: a draw outside a
+method (there is no <code class="docutils literal notranslate"><span class="pre">self</span></code>), a numpy function whose <code class="docutils literal notranslate"><span class="pre">Generator</span></code> method takes other arguments
+(<code class="docutils literal notranslate"><span class="pre">randint</span></code>, <code class="docutils literal notranslate"><span class="pre">rand</span></code>), a base class whose <code class="docutils literal notranslate"><span class="pre">__init__</span></code> signature is unknown, a model <code class="docutils literal notranslate"><span class="pre">__init__</span></code> that
+takes both <code class="docutils literal notranslate"><span class="pre">rng</span></code> and <code class="docutils literal notranslate"><span class="pre">scenario</span></code>, or <code class="docutils literal notranslate"><span class="pre">agents.add(...)</span></code> (an agent registers itself when it is
+created). Every fix removes its own finding, so a second <code class="docutils literal notranslate"><span class="pre">--fix</span></code> changes nothing. A finding
+silenced by <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">noqa</span></code>, or dropped by <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">ignore</span></code> or <code class="docutils literal notranslate"><span class="pre">per-file-ignores</span></code>, is not fixed.</p>
+<p>An imported name keeps its import (<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">random</span> <span class="pre">import</span> <span class="pre">choice</span></code> stays when <code class="docutils literal notranslate"><span class="pre">choice(xs)</span></code> becomes
+<code class="docutils literal notranslate"><span class="pre">self.random.choice(xs)</span></code>); remove it with your formatter or <code class="docutils literal notranslate"><span class="pre">ruff</span> <span class="pre">check</span> <span class="pre">--fix</span></code>.</p>
+</section>
+<section id="silencing-a-finding">
+<h2>Silencing a finding<a class="headerlink" href="#silencing-a-finding" title="Link to this heading">#</a></h2>
+<p>End the line the finding points at with <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">noqa:</span> <span class="pre">MDL101</span></code> to skip that rule there, <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">noqa:</span> <span class="pre">MDL101,</span> <span class="pre">MDL104</span></code> for several, or a bare <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">noqa</span></code> to skip every rule on the line. Text after the
+codes is free, so the comment can say why. For a loop or a multi-line call, the line is the
+first one (<code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">...:</span></code> or the line the call starts on).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>  <span class="c1"># noqa: MDL101 runs once, at set-up</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>The checks are heuristics on the source: a loop over <code class="docutils literal notranslate"><span class="pre">self.model.agents</span></code> that runs once at
+set-up is fine, and the comment is the place to say so.</p>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">[tool.modelly.lint]</span></code> in the nearest <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, searched from the working directory
+upwards, sets the defaults:</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.modelly.lint]</span>
+<span class="n">select</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"MDL0"</span><span class="p">,</span><span class="w"> </span><span class="s2">"MDL101"</span><span class="p">]</span><span class="w">      </span><span class="c1"># only these codes or prefixes (default: every rule)</span>
+<span class="n">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"MDL105"</span><span class="p">]</span><span class="w">              </span><span class="c1"># drop these codes or prefixes</span>
+<span class="n">per-file-ignores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"tests/*"</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"MDL001"</span><span class="p">],</span><span class="w"> </span><span class="s2">"scripts/*.py"</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"MDL1"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Per-file patterns are globs on the path relative to the <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> folder, or on the bare
+file name. <code class="docutils literal notranslate"><span class="pre">--select</span></code> and <code class="docutils literal notranslate"><span class="pre">--ignore</span></code> on the command line replace the file’s <code class="docutils literal notranslate"><span class="pre">select</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ignore</span></code>; <code class="docutils literal notranslate"><span class="pre">per-file-ignores</span></code> always applies. An unknown key is an error (exit 2), so a typo does
+not silently disable the configuration.</p>
+</section>
+<section id="in-ci">
+<h2>In CI<a class="headerlink" href="#in-ci" title="Link to this heading">#</a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install modelly-abm</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python -m modelly.lint --format github src/</span>
+</pre></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">github</span></code>, each finding shows as an annotation on the changed line of the pull
+request.</p>
+</section>
+<section id="in-a-notebook">
+<h2>In a notebook<a class="headerlink" href="#in-a-notebook" title="Link to this heading">#</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>%load_ext modelly.ipython
+%modelly lint model.py agents.py
+%modelly lint --diff model.py
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">%modelly</span> <span class="pre">lint</span></code> takes the options of the command line and prints the same report. A project
+made with <a class="reference internal" href="new_project.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">new</span></code></span></a> has its <code class="docutils literal notranslate"><span class="pre">[tool.modelly.lint]</span></code> settings and passes every
+rule from the start.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="best-practices.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Best Practices</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="profile.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Profiling a model</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#options">Options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#errors">Errors</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl001-random-draw-outside-the-model-s-generators">MDL001: random draw outside the model’s generators</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl002-init-does-not-call-super-init">MDL002: <code class="docutils literal notranslate"><span class="pre">__init__</span></code> does not call <code class="docutils literal notranslate"><span class="pre">super().__init__</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl003-loop-over-a-set">MDL003: loop over a set</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl004-mutable-class-attribute-on-an-agent">MDL004: mutable class attribute on an agent</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl005-wall-clock-or-os-entropy-in-model-code">MDL005: wall clock or OS entropy in model code</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl006-hash-or-id-decides-an-outcome">MDL006: <code class="docutils literal notranslate"><span class="pre">hash()</span></code> or <code class="docutils literal notranslate"><span class="pre">id()</span></code> decides an outcome</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl007-a-loop-over-the-population-removes-agents">MDL007: a loop over the population removes agents</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl008-global-statement-in-a-model-or-agent-method">MDL008: <code class="docutils literal notranslate"><span class="pre">global</span></code> statement in a model or agent method</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl009-the-model-s-agent-set-is-changed-directly">MDL009: the model’s agent set is changed directly</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl010-a-lambda-or-nested-function-is-sent-to-worker-processes">MDL010: a lambda or nested function is sent to worker processes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl012-network-or-language-model-call-outside-modelly-llm">MDL012: network or language-model call outside <code class="docutils literal notranslate"><span class="pre">modelly.llm</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#warnings">Warnings</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl101-an-agent-scans-the-whole-population">MDL101: an agent scans the whole population</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl102-nested-loops-over-the-population">MDL102: nested loops over the population</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl103-hand-written-activation-loop">MDL103: hand-written activation loop</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl104-deepcopy-inside-step">MDL104: <code class="docutils literal notranslate"><span class="pre">deepcopy</span></code> inside <code class="docutils literal notranslate"><span class="pre">step</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl105-step-has-more-than-12-branches">MDL105: <code class="docutils literal notranslate"><span class="pre">step</span></code> has more than 12 branches</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl106-pandas-dataframe-built-inside-step">MDL106: pandas DataFrame built inside <code class="docutils literal notranslate"><span class="pre">step</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mdl107-per-agent-loop-that-only-writes-column-attributes">MDL107: per-agent loop that only writes <code class="docutils literal notranslate"><span class="pre">Column</span></code> attributes</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixing-findings">Fixing findings</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#silencing-a-finding">Silencing a finding</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#in-ci">In CI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#in-a-notebook">In a notebook</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/lint.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

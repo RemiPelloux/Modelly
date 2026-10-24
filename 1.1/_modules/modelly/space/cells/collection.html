@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>modelly.space.cells.collection &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/modelly.css?v=92ce3cff" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../../../_static/documentation_options.js?v=fc837d61"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/modelly/space/cells/collection';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../../../../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../../../../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/_modules/modelly/space/cells/collection.html" />
+    <link rel="icon" href="../../../../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.1" />
+  
+    
+    <script src="../../../../_static/searchtools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script src="../../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../../../../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">modelly.space.cells.collection</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for modelly.space.cells.collection</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Collection class for managing and querying groups of cells.</span>
+
+<span class="sd">The CellCollection class provides a consistent interface for operating on multiple</span>
+<span class="sd">cells, supporting:</span>
+<span class="sd">- Filtering and selecting cells based on conditions</span>
+<span class="sd">- Random cell and agent selection</span>
+<span class="sd">- Access to contained agents</span>
+<span class="sd">- Group operations</span>
+
+<span class="sd">This is useful for implementing area effects, zones, or any operation that needs</span>
+<span class="sd">to work with multiple cells as a unit. The collection handles efficient iteration</span>
+<span class="sd">and agent access across cells. The class is used throughout the cell space</span>
+<span class="sd">implementation to represent neighborhoods, selections, and other cell groupings.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">Random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">TypeVar</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.agentset._utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_INF</span><span class="p">,</span> <span class="n">_validate_at_most</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space.cells.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellAgent</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space.cells.cell</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cell</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"T"</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">"Cell"</span><span class="p">)</span>
+
+<span class="n">RAISES</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="CellCollection">
+<a class="viewcode-back" href="../../../../apis/space.html#modelly.space.cells.collection.CellCollection">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CellCollection</span><span class="p">[</span><span class="n">T</span><span class="p">:</span> <span class="n">Cell</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""An immutable collection of cells.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        cells (List[Cell]): The list of cells this collection represents</span>
+<span class="sd">        agents (List[CellAgent]) : List of agents occupying the cells in this collection</span>
+<span class="sd">        random (Random) : The random number generator</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        A `UserWarning` is issued if `random=None`. You can resolve this warning by explicitly</span>
+<span class="sd">        passing a random number generator. In most cases, this will be the seeded random number</span>
+<span class="sd">        generator in the model. So, you would do `random=self.random` in a `Model` or `Agent` instance.</span>
+
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cells</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">CellAgent</span><span class="p">]]</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
+        <span class="n">random</span><span class="p">:</span> <span class="n">Random</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Initialize a CellCollection.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cells: cells to add to the collection</span>
+<span class="sd">            random: a seeded random number generator.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span> <span class="o">=</span> <span class="n">cells</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span> <span class="o">=</span> <span class="p">{</span><span class="n">cell</span><span class="p">:</span> <span class="n">cell</span><span class="o">.</span><span class="n">_agents</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">}</span>
+
+        <span class="c1"># Get capacity from first cell if collection is not empty</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span><span class="o">.</span><span class="n">capacity</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">random</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">"Random number generator not specified, this can make models non-reproducible. Please pass a random number generator explicitly"</span><span class="p">,</span>
+                <span class="ne">UserWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">random</span> <span class="o">=</span> <span class="n">Random</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random</span> <span class="o">=</span> <span class="n">random</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># noqa</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">CellAgent</span><span class="p">]:</span>  <span class="c1"># noqa</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="c1"># @cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>  <span class="c1"># noqa</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># noqa</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"CellCollection(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="si">}</span><span class="s2">)"</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cells</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>  <span class="c1"># noqa</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">agents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">CellAgent</span><span class="p">]:</span>  <span class="c1"># noqa</span>
+        <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">empties</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CellCollection</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""The cells of this collection that hold no agent, as a new collection.</span>
+
+<span class="sd">        Reads the live occupancy lists directly, so it costs one truth test per</span>
+<span class="sd">        cell rather than a property call per cell.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">CellCollection</span><span class="p">(</span>
+            <span class="p">{</span><span class="n">cell</span><span class="p">:</span> <span class="n">agents</span> <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">agents</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">agents</span><span class="p">},</span>
+            <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="CellCollection.select_random_cell">
+<a class="viewcode-back" href="../../../../apis/space.html#modelly.space.cells.collection.CellCollection.select_random_cell">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_random_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">RAISES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Select a random cell from the collection.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            default: Value to return if the collection is empty.</span>
+<span class="sd">                     If not provided, raises LookupError.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            T: A random cell, or the default value if provided and collection is empty.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            LookupError: If collection is empty and no default is provided.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="n">RAISES</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="s2">"Cannot select random cell from empty collection"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">default</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CellCollection.select_random_agent">
+<a class="viewcode-back" href="../../../../apis/space.html#modelly.space.cells.collection.CellCollection.select_random_agent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_random_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">RAISES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CellAgent</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Select a random agent from the collection.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            default: Value to return if the collection is empty.</span>
+<span class="sd">                     If not provided, raises LookupError.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CellAgent: A random agent, or the default value if provided and collection is empty.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            LookupError: If collection is empty and no default is provided.</span>
+<span class="sd">        """</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">agents</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="n">RAISES</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="s2">"Cannot select random agent from empty collection"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">default</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">agents</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CellCollection.select">
+<a class="viewcode-back" href="../../../../apis/space.html#modelly.space.cells.collection.CellCollection.select">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filter_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">at_most</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">),</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Select cells based on filter function.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filter_func: filter function</span>
+<span class="sd">            at_most: The maximum amount of cells to select. Defaults to infinity.</span>
+<span class="sd">              - If an integer, at most the first number of matching cells is selected.</span>
+<span class="sd">              - If a float between 0 and 1, at most that fraction of original number of cells</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CellCollection</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: If at_most is not an integer or float, or is a boolean.</span>
+<span class="sd">            ValueError: If at_most is a negative integer, or a float not in the range (0.0, 1.0].</span>
+
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">at_most</span> <span class="o">==</span> <span class="n">_INF</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">filter_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span>
+            <span class="c1"># One pass straight into the new collection's mapping.</span>
+            <span class="n">kept</span> <span class="o">=</span> <span class="p">{</span><span class="n">cell</span><span class="p">:</span> <span class="n">cell</span><span class="o">.</span><span class="n">_agents</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span> <span class="k">if</span> <span class="n">filter_func</span><span class="p">(</span><span class="n">cell</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="n">CellCollection</span><span class="p">(</span><span class="n">kept</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+
+        <span class="n">limit</span> <span class="o">=</span> <span class="n">_validate_at_most</span><span class="p">(</span><span class="n">at_most</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">))</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">filter_func</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="p">(</span><span class="n">cell</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span> <span class="k">if</span> <span class="n">filter_func</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="c1"># Stop filtering as soon as ``limit`` cells matched.</span>
+        <span class="n">kept</span> <span class="o">=</span> <span class="p">{</span><span class="n">cell</span><span class="p">:</span> <span class="n">cell</span><span class="o">.</span><span class="n">_agents</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="n">limit</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="n">CellCollection</span><span class="p">(</span><span class="n">kept</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

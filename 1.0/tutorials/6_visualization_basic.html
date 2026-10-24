@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Visualization - Basic Dashboard &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=92ce3cff" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=292eb321"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script type="application/vnd.jupyter.widget-state+json">{"state": {"42867f8a05cc45e4995517cfe394f846": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "5bc7b9ad9e234ebf9812ab0ffdbfe591": {"model_name": "ForceLoadModel", "model_module": "jupyter-vue", "model_module_version": "3.1.1", "state": {"_dom_classes": [], "_model_module": "jupyter-vue", "_model_module_version": "3.1.1", "_model_name": "ForceLoadModel", "_view_count": null, "_view_module": null, "_view_module_version": "", "_view_name": null, "layout": "IPY_MODEL_42867f8a05cc45e4995517cfe394f846", "tabbable": null, "tooltip": null}}, "36cc6f1e504e408e8266e4821a3d516b": {"model_name": "ThemeModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "ThemeModel", "_view_count": null, "_view_module": null, "_view_module_version": "3.1.0", "_view_name": null, "dark": null, "dark_effective": null}}, "e87a3b571e384b609244ce56c3213579": {"model_name": "ThemeColorsModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "ThemeColorsModel", "_theme_name": "light", "_view_count": null, "_view_module": null, "_view_module_version": "3.1.0", "_view_name": null, "background": "#FFFFFF", "custom_theme_colors": {}, "error": "#B00020", "info": "#2196F3", "on_surface_variant": "#EEEEEE", "primary": "#6200EE", "primary_darken_1": "#3700B3", "secondary": "#03DAC6", "secondary_darken_1": "#018786", "success": "#4CAF50", "surface": "#FFFFFF", "surface_bright": "#FFFFFF", "surface_variant": "#424242", "warning": "#FB8C00"}}, "46aa89444b034725bfab2ef73c447f27": {"model_name": "ThemeColorsModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "ThemeColorsModel", "_theme_name": "dark", "_view_count": null, "_view_module": null, "_view_module_version": "3.1.0", "_view_name": null, "background": "#121212", "custom_theme_colors": {}, "error": "#CF6679", "info": "#2196F3", "on_surface_variant": "#424242", "primary": "#BB86FC", "primary_darken_1": "#3700B3", "secondary": "#03DAC5", "secondary_darken_1": "#03DAC5", "success": "#4CAF50", "surface": "#212121", "surface_bright": "#ccbfd6", "surface_variant": "#a3a3a3", "warning": "#FB8C00"}}, "8c612e35940d495da2c7ab7ee696ed23": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "d897948650cb4e32a48c442d7b6e56a5": {"model_name": "VBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "VBoxModel", "_view_count": 0, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "VBoxView", "box_style": "", "children": ["IPY_MODEL_d0802e0d68f94471b849b8d7f7d00e7f"], "layout": "IPY_MODEL_8c612e35940d495da2c7ab7ee696ed23", "tabbable": null, "tooltip": null}}, "7b2262ac4d4a43d88918ff521dfe4d85": {"model_name": "HtmlModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "HtmlModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": [], "class_": "", "layout": null, "slot": null, "style_": "display; none", "tabbable": null, "tag": "div", "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "3bee073a14da44e8b0e4fd47cd4174b0": {"model_name": "HtmlModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "HtmlModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": [], "class_": "", "layout": null, "slot": null, "style_": "display; none", "tabbable": null, "tag": "div", "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "291b0722349448a68fd7c11b5ad183ee": {"model_name": "TabModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "TabModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "active_color": null, "append_icon": null, "attributes": {}, "base_color": null, "border": null, "children": ["Page 0"], "class_": null, "color": null, "density": null, "direction": null, "disabled": null, "elevation": null, "exact": null, "fixed": null, "height": null, "hide_slider": null, "href": null, "icon": null, "inset": null, "layout": null, "loading": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "prepend_icon": null, "readonly": null, "replace": null, "ripple": null, "rounded": null, "selected_class": null, "size": null, "slider_color": null, "slider_transition": null, "slider_transition_duration": null, "slim": null, "slot": null, "spaced": null, "stacked": null, "style_": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null, "variant": null, "width": null}}, "658541f91d2f42c4920bdff3903fc175": {"model_name": "TabModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "TabModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "active_color": null, "append_icon": null, "attributes": {}, "base_color": null, "border": null, "children": ["Page 1"], "class_": null, "color": null, "density": null, "direction": null, "disabled": null, "elevation": null, "exact": null, "fixed": null, "height": null, "hide_slider": null, "href": null, "icon": null, "inset": null, "layout": null, "loading": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "prepend_icon": null, "readonly": null, "replace": null, "ripple": null, "rounded": null, "selected_class": null, "size": null, "slider_color": null, "slider_transition": null, "slider_transition_duration": null, "slim": null, "slot": null, "spaced": null, "stacked": null, "style_": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null, "variant": null, "width": null}}, "fdb466b1368944918c82995af05b8e4e": {"model_name": "TabsModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "TabsModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "align_tabs": null, "attributes": {}, "bg_color": null, "center_active": null, "children": ["IPY_MODEL_291b0722349448a68fd7c11b5ad183ee", "IPY_MODEL_658541f91d2f42c4920bdff3903fc175"], "class_": null, "color": null, "content_class": null, "density": null, "direction": null, "disabled": null, "fixed_tabs": null, "grow": null, "height": null, "hide_slider": null, "inset": null, "inset_padding": null, "inset_radius": null, "items": null, "layout": null, "mandatory": null, "max": null, "mobile": null, "mobile_breakpoint": null, "model_value": null, "multiple": null, "next_icon": null, "prev_icon": null, "scroll_to_active": null, "selected_class": null, "show_arrows": null, "slider_color": null, "slider_transition": null, "slider_transition_duration": null, "slot": null, "spaced": null, "stacked": null, "style_": null, "symbol": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": 0, "v_on": null, "v_slots": []}}, "83152d1c10ac42a68571becd1de6869a": {"model_name": "WindowItemModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "WindowItemModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": [], "class_": null, "disabled": null, "eager": null, "layout": null, "reverse_transition": null, "selected_class": null, "slot": null, "style_": null, "tabbable": null, "tooltip": null, "transition": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null}}, "cf3de539c32f472a8b06d60d7a44dc5d": {"model_name": "WindowItemModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "WindowItemModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": [], "class_": null, "disabled": null, "eager": null, "layout": null, "reverse_transition": null, "selected_class": null, "slot": null, "style_": null, "tabbable": null, "tooltip": null, "transition": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null}}, "1de304333cdf4785bcfea69be302db72": {"model_name": "WindowModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "WindowModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["IPY_MODEL_83152d1c10ac42a68571becd1de6869a", "IPY_MODEL_cf3de539c32f472a8b06d60d7a44dc5d"], "class_": null, "continuous": null, "crossfade": null, "direction": null, "disabled": null, "layout": null, "mandatory": null, "model_value": null, "next_icon": null, "prev_icon": null, "reverse": null, "selected_class": null, "show_arrows": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "theme": null, "tooltip": null, "touch": null, "transition_duration": null, "v_bind": null, "v_model": 0, "v_on": null, "v_slots": [], "vertical_arrows": null}}, "5398a0cbcaab4316929028dddb90ef54": {"model_name": "SheetModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SheetModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "border": null, "children": ["IPY_MODEL_fdb466b1368944918c82995af05b8e4e", "IPY_MODEL_1de304333cdf4785bcfea69be302db72"], "class_": "d-flex ma-0", "color": null, "elevation": 0.0, "height": null, "layout": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "rounded": null, "slot": null, "style_": "flex-direction: column; align-items: stretch; row-gap: 12px;;", "tabbable": null, "tag": null, "theme": null, "tile": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "width": null}}, "ba61d0584eaf4bc99461de5b728d8d29": {"model_name": "SheetModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SheetModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "border": null, "children": ["IPY_MODEL_7b2262ac4d4a43d88918ff521dfe4d85", "IPY_MODEL_3bee073a14da44e8b0e4fd47cd4174b0", "IPY_MODEL_5398a0cbcaab4316929028dddb90ef54"], "class_": "d-flex ma-0", "color": null, "elevation": 0.0, "height": null, "layout": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "rounded": null, "slot": null, "style_": "flex-direction: column; align-items: stretch; row-gap: 12px;;", "tabbable": null, "tag": null, "theme": null, "tile": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "width": null}}, "a662e5b7ea524a9198ccb20d2d31dc6d": {"model_name": "ColModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "ColModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "align_self": null, "attributes": {}, "children": ["IPY_MODEL_ba61d0584eaf4bc99461de5b728d8d29"], "class_": null, "cols": 12.0, "layout": null, "lg": null, "md": null, "offset": null, "offset_lg": null, "offset_md": null, "offset_sm": null, "offset_xl": null, "offset_xxl": null, "order": null, "order_lg": null, "order_md": null, "order_sm": null, "order_xl": null, "order_xxl": null, "slot": null, "sm": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "xl": null, "xxl": null}}, "10b36c2d3fd448c59e4d0377f90ce862": {"model_name": "RowModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "RowModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "align": null, "align_content": null, "align_content_lg": null, "align_content_md": null, "align_content_sm": null, "align_content_xl": null, "align_content_xxl": null, "align_lg": null, "align_md": null, "align_sm": null, "align_xl": null, "align_xxl": null, "attributes": {}, "children": ["IPY_MODEL_a662e5b7ea524a9198ccb20d2d31dc6d"], "class_": "solara-content-main", "dense": null, "justify": null, "justify_lg": null, "justify_md": null, "justify_sm": null, "justify_xl": null, "justify_xxl": null, "layout": null, "no_gutters": false, "slot": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "d0802e0d68f94471b849b8d7f7d00e7f": {"model_name": "HtmlModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "HtmlModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["IPY_MODEL_d74b8dd16fec42e487d3138d41c34d79", "IPY_MODEL_078ed8bc0011456fb408fcfeb9ca2817"], "class_": null, "layout": null, "slot": null, "style_": null, "tabbable": null, "tag": "div", "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "cd64f9f5c52447838b936e8b9ca5db4d": {"model_name": "ThemeModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "ThemeModel", "_view_count": null, "_view_module": null, "_view_module_version": "3.1.0", "_view_name": null, "dark": null, "dark_effective": null}}, "7bb43053ff504b52a98c8e0f892ace69": {"model_name": "ThemeColorsModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "ThemeColorsModel", "_theme_name": "light", "_view_count": null, "_view_module": null, "_view_module_version": "3.1.0", "_view_name": null, "background": "#FFFFFF", "custom_theme_colors": {}, "error": "#B00020", "info": "#2196F3", "on_surface_variant": "#EEEEEE", "primary": "#6200EE", "primary_darken_1": "#3700B3", "secondary": "#03DAC6", "secondary_darken_1": "#018786", "success": "#4CAF50", "surface": "#FFFFFF", "surface_bright": "#FFFFFF", "surface_variant": "#424242", "warning": "#FB8C00"}}, "723cf46014264b4395d2e6e1b91a3cb5": {"model_name": "ThemeColorsModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "ThemeColorsModel", "_theme_name": "dark", "_view_count": null, "_view_module": null, "_view_module_version": "3.1.0", "_view_name": null, "background": "#121212", "custom_theme_colors": {}, "error": "#CF6679", "info": "#2196F3", "on_surface_variant": "#424242", "primary": "#BB86FC", "primary_darken_1": "#3700B3", "secondary": "#03DAC5", "secondary_darken_1": "#03DAC5", "success": "#4CAF50", "surface": "#212121", "surface_bright": "#ccbfd6", "surface_variant": "#a3a3a3", "warning": "#FB8C00"}}, "01db0b4a902f4936973cf7259eab39d5": {"model_name": "AppBarNavIconModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": ["click"], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "AppBarNavIconModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "active": null, "active_color": null, "append_icon": null, "attributes": {}, "base_color": null, "block": null, "border": null, "children": [], "class_": null, "color": null, "density": null, "disabled": null, "elevation": null, "exact": null, "flat": null, "height": null, "href": null, "icon": null, "layout": null, "loading": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "prepend_icon": null, "readonly": null, "replace": null, "ripple": null, "rounded": null, "selected_class": null, "size": null, "slim": null, "slot": null, "stacked": null, "style_": null, "symbol": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": "x.on", "v_slots": [], "value": null, "variant": null, "width": null}}, "2516a63bcfec43a58e6497b68593af68": {"model_name": "CardTitleModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "CardTitleModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["Controls"], "class_": null, "layout": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "630bc280ec0e40aa89dc413b5f41f485": {"model_name": "SliderModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SliderModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "append_icon": null, "attributes": {}, "base_color": null, "center_affix": null, "children": [], "class_": null, "color": null, "density": "default", "direction": null, "disabled": false, "elevation": null, "error": null, "error_messages": null, "focused": null, "glow": null, "hide_details": true, "hide_spin_buttons": null, "hint": null, "icon_color": null, "id": null, "label": "Play Interval (ms)", "layout": null, "max": 500.0, "max_errors": null, "max_width": null, "messages": null, "min": 1.0, "min_width": null, "model_value": null, "name": null, "no_keyboard": null, "persistent_hint": null, "prepend_icon": null, "readonly": null, "reverse": null, "ripple": null, "rounded": null, "rules": null, "show_ticks": false, "slot": null, "step": 10.0, "style_": null, "tabbable": null, "theme": null, "thumb_color": null, "thumb_label": true, "thumb_size": null, "tick_size": null, "ticks": [], "tile": null, "tooltip": null, "track_color": null, "track_fill_color": null, "track_size": null, "v_bind": null, "v_model": 100, "v_on": null, "v_slots": [], "validate_on": null, "validation_value": null, "width": null}}, "c847909616a849569cc7ddf8dc861cb4": {"model_name": "SliderModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SliderModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "append_icon": null, "attributes": {}, "base_color": null, "center_affix": null, "children": [], "class_": null, "color": null, "density": "default", "direction": null, "disabled": false, "elevation": null, "error": null, "error_messages": null, "focused": null, "glow": null, "hide_details": true, "hide_spin_buttons": null, "hint": null, "icon_color": null, "id": null, "label": "Render Interval (steps)", "layout": null, "max": 100.0, "max_errors": null, "max_width": null, "messages": null, "min": 1.0, "min_width": null, "model_value": null, "name": null, "no_keyboard": null, "persistent_hint": null, "prepend_icon": null, "readonly": null, "reverse": null, "ripple": null, "rounded": null, "rules": null, "show_ticks": false, "slot": null, "step": 2.0, "style_": null, "tabbable": null, "theme": null, "thumb_color": null, "thumb_label": true, "thumb_size": null, "tick_size": null, "ticks": [], "tile": null, "tooltip": null, "track_color": null, "track_fill_color": null, "track_size": null, "v_bind": null, "v_model": 1, "v_on": null, "v_slots": [], "validate_on": null, "validation_value": null, "width": null}}, "b36206bee5604e8b8a92bd483b8423bf": {"model_name": "CheckboxModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "CheckboxModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "append_icon": null, "attributes": {}, "base_color": null, "center_affix": null, "children": [], "class_": null, "color": null, "defaults_target": null, "density": null, "disabled": false, "error": null, "error_messages": null, "false_icon": null, "false_value": null, "focused": null, "glow": null, "hide_details": null, "hide_spin_buttons": null, "hint": null, "icon_color": null, "id": null, "indeterminate": null, "indeterminate_icon": null, "label": "Use Threads", "layout": null, "max_errors": null, "max_width": null, "messages": null, "min_width": null, "model_value": null, "multiple": null, "name": null, "persistent_hint": null, "prepend_icon": null, "readonly": null, "ripple": null, "rules": null, "slot": null, "style_": null, "tabbable": null, "theme": null, "tooltip": null, "true_icon": null, "true_value": null, "type": null, "v_bind": null, "v_model": false, "v_on": null, "v_slots": [], "validate_on": null, "validation_value": null, "value": null, "value_comparator": null, "width": null}}, "a09d2797cd5c4872920a7e85d6a9bcab": {"model_name": "BtnModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": ["click"], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "BtnModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "active": null, "active_color": null, "append_icon": null, "attributes": {}, "base_color": null, "block": null, "border": null, "children": ["Reset"], "class_": "", "color": "primary", "density": null, "disabled": false, "elevation": null, "exact": null, "flat": null, "height": null, "href": null, "icon": null, "layout": null, "loading": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "prepend_icon": null, "readonly": null, "replace": null, "ripple": null, "rounded": null, "selected_class": null, "size": null, "slim": null, "slot": null, "spaced": null, "stacked": null, "style_": "", "symbol": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null, "variant": "elevated", "width": null}}, "83d42aee98cf4c0fb58221b13156cbb4": {"model_name": "BtnModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": ["click"], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "BtnModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "active": null, "active_color": null, "append_icon": null, "attributes": {}, "base_color": null, "block": null, "border": null, "children": ["\u25b6"], "class_": "", "color": "primary", "density": null, "disabled": false, "elevation": null, "exact": null, "flat": null, "height": null, "href": null, "icon": null, "layout": null, "loading": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "prepend_icon": null, "readonly": null, "replace": null, "ripple": null, "rounded": null, "selected_class": null, "size": null, "slim": null, "slot": null, "spaced": null, "stacked": null, "style_": "", "symbol": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null, "variant": "elevated", "width": null}}, "95a886bb90db436586d472cfeb40eeba": {"model_name": "BtnModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": ["click"], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "BtnModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "active": null, "active_color": null, "append_icon": null, "attributes": {}, "base_color": null, "block": null, "border": null, "children": ["Step"], "class_": "", "color": "primary", "density": null, "disabled": false, "elevation": null, "exact": null, "flat": null, "height": null, "href": null, "icon": null, "layout": null, "loading": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "prepend_icon": null, "readonly": null, "replace": null, "ripple": null, "rounded": null, "selected_class": null, "size": null, "slim": null, "slot": null, "spaced": null, "stacked": null, "style_": "", "symbol": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null, "variant": "elevated", "width": null}}, "6931a43ff140412fa57375bf018166f3": {"model_name": "SheetModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SheetModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "border": null, "children": ["IPY_MODEL_a09d2797cd5c4872920a7e85d6a9bcab", "IPY_MODEL_83d42aee98cf4c0fb58221b13156cbb4", "IPY_MODEL_95a886bb90db436586d472cfeb40eeba"], "class_": "d-flex ma-0", "color": null, "elevation": 0.0, "height": null, "layout": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "rounded": null, "slot": null, "style_": "flex-direction: row; align-items: stretch; justify-content: space-between; column-gap: 12px;;", "tabbable": null, "tag": null, "theme": null, "tile": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "width": null}}, "7e27851f6d174fe79de6d9ea036d5bf9": {"model_name": "CardTextModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "CardTextModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["IPY_MODEL_630bc280ec0e40aa89dc413b5f41f485", "IPY_MODEL_c847909616a849569cc7ddf8dc861cb4", "IPY_MODEL_b36206bee5604e8b8a92bd483b8423bf", "IPY_MODEL_6931a43ff140412fa57375bf018166f3"], "class_": null, "layout": null, "opacity": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "e309b0a5de4349198d86ddc4fcca0713": {"model_name": "CardModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "CardModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "append_avatar": null, "append_icon": null, "attributes": {}, "border": null, "children": ["IPY_MODEL_2516a63bcfec43a58e6497b68593af68", "IPY_MODEL_7e27851f6d174fe79de6d9ea036d5bf9"], "class_": "ma-2", "color": null, "density": null, "disabled": null, "elevation": 2.0, "exact": null, "flat": null, "height": null, "hover": null, "href": null, "image": null, "layout": null, "link": null, "loading": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "prepend_avatar": null, "prepend_icon": null, "replace": null, "ripple": null, "rounded": null, "slot": null, "style_": "", "subtitle": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "title": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "variant": null, "width": null}}, "5244ea7bd48b4b0d9949ef9e627f366e": {"model_name": "CardTitleModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "CardTitleModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["Model Parameters"], "class_": null, "layout": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "1d0e132e48a448efb9eca9b59b2d232d": {"model_name": "SliderModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SliderModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "append_icon": null, "attributes": {}, "base_color": null, "center_affix": null, "children": [], "class_": null, "color": null, "density": "default", "direction": null, "disabled": false, "elevation": null, "error": null, "error_messages": null, "focused": null, "glow": null, "hide_details": true, "hide_spin_buttons": null, "hint": null, "icon_color": null, "id": null, "label": "Number of agents:", "layout": null, "max": 100.0, "max_errors": null, "max_width": null, "messages": null, "min": 10.0, "min_width": null, "model_value": null, "name": null, "no_keyboard": null, "persistent_hint": null, "prepend_icon": null, "readonly": null, "reverse": null, "ripple": null, "rounded": null, "rules": null, "show_ticks": false, "slot": null, "step": 1.0, "style_": null, "tabbable": null, "theme": null, "thumb_color": null, "thumb_label": true, "thumb_size": null, "tick_size": null, "ticks": [], "tile": null, "tooltip": null, "track_color": null, "track_fill_color": null, "track_size": null, "v_bind": null, "v_model": 50, "v_on": null, "v_slots": [], "validate_on": null, "validation_value": null, "width": null}}, "5297f8a3e53f4c6692740404ff9ba0e9": {"model_name": "CardTextModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "CardTextModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["IPY_MODEL_1d0e132e48a448efb9eca9b59b2d232d"], "class_": null, "layout": null, "opacity": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "5fb4c966108747b5a14c9653c544c510": {"model_name": "CardModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "CardModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "append_avatar": null, "append_icon": null, "attributes": {}, "border": null, "children": ["IPY_MODEL_5244ea7bd48b4b0d9949ef9e627f366e", "IPY_MODEL_5297f8a3e53f4c6692740404ff9ba0e9"], "class_": "ma-2", "color": null, "density": null, "disabled": null, "elevation": 2.0, "exact": null, "flat": null, "height": null, "hover": null, "href": null, "image": null, "layout": null, "link": null, "loading": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "prepend_avatar": null, "prepend_icon": null, "replace": null, "ripple": null, "rounded": null, "slot": null, "style_": "", "subtitle": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "title": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "variant": null, "width": null}}, "dc09e86b97cd4839af998dadc0a90990": {"model_name": "CardTitleModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "CardTitleModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["Information"], "class_": null, "layout": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "4ad3571cd624420688f69854f238619c": {"model_name": "HtmlModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "HtmlModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["Time: 0.0"], "class_": "", "layout": null, "slot": null, "style_": "", "tabbable": null, "tag": "span", "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "7426e378e8f54354806d073f60864602": {"model_name": "CardTextModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "CardTextModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["IPY_MODEL_4ad3571cd624420688f69854f238619c"], "class_": null, "layout": null, "opacity": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "0a06b6ebcbb242b79eb995951303759d": {"model_name": "CardModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "CardModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "append_avatar": null, "append_icon": null, "attributes": {}, "border": null, "children": ["IPY_MODEL_dc09e86b97cd4839af998dadc0a90990", "IPY_MODEL_7426e378e8f54354806d073f60864602"], "class_": "ma-2", "color": null, "density": null, "disabled": null, "elevation": 2.0, "exact": null, "flat": null, "height": null, "hover": null, "href": null, "image": null, "layout": null, "link": null, "loading": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "prepend_avatar": null, "prepend_icon": null, "replace": null, "ripple": null, "rounded": null, "slot": null, "style_": "", "subtitle": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "title": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "variant": null, "width": null}}, "9ffc5498762c41e8a938d13c0cac48e5": {"model_name": "SheetModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SheetModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "border": null, "children": ["IPY_MODEL_e309b0a5de4349198d86ddc4fcca0713", "IPY_MODEL_5fb4c966108747b5a14c9653c544c510", "IPY_MODEL_0a06b6ebcbb242b79eb995951303759d"], "class_": "d-flex ma-0", "color": null, "elevation": 0.0, "height": null, "layout": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "rounded": null, "slot": null, "style_": "flex-direction: column; align-items: stretch; row-gap: 12px;;", "tabbable": null, "tag": null, "theme": null, "tile": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "width": null}}, "bf4d2107f39d4dcebcc4bf667bf8480d": {"model_name": "SheetModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SheetModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "border": null, "children": ["IPY_MODEL_9ffc5498762c41e8a938d13c0cac48e5"], "class_": null, "color": null, "elevation": null, "height": null, "layout": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "rounded": null, "slot": null, "style_": "padding: 12px; min-width: 400px", "tabbable": null, "tag": null, "theme": null, "tile": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "width": null}}, "ffb575e240f04e1188c6bea43e8922d7": {"model_name": "MenuModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "MenuModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "activator": null, "activator_props": null, "attach": null, "attributes": {}, "capture_focus": null, "children": ["IPY_MODEL_bf4d2107f39d4dcebcc4bf667bf8480d"], "class_": null, "close_delay": null, "close_on_back": null, "close_on_content_click": false, "contained": null, "content_class": null, "content_props": null, "disable_initial_focus": null, "disabled": null, "eager": null, "height": null, "id": null, "layout": null, "location": "bottom end", "location_strategy": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "model_value": null, "no_click_animation": null, "offset": "8", "opacity": null, "open_delay": null, "open_on_click": null, "open_on_focus": null, "open_on_hover": null, "origin": null, "persistent": null, "retain_focus": null, "scrim": null, "scroll_strategy": null, "slot": null, "stick_to_target": null, "style_": null, "submenu": null, "tabbable": null, "target": null, "theme": null, "tooltip": null, "transition": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [{"name": "activator", "variable": "x", "children": ["IPY_MODEL_01db0b4a902f4936973cf7259eab39d5"]}], "viewport_margin": null, "width": null, "z_index": null}}, "710c1522de424444aeb7410cff1cc2a8": {"model_name": "SpacerModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SpacerModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": [], "class_": null, "layout": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "e454baf9a4c8466a92b3a28495e61fa4": {"model_name": "HtmlModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "HtmlModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": [], "class_": "", "layout": null, "slot": null, "style_": "display; none", "tabbable": null, "tag": "div", "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "021df052962c498699c64c6b04563014": {"model_name": "TemplateModel", "model_module": "jupyter-vue", "model_module_version": "3.1.1", "state": {"_model_module": "jupyter-vue", "_model_module_version": "3.1.1", "_model_name": "TemplateModel", "_view_count": null, "_view_module": null, "_view_module_version": "", "_view_name": null, "esm_export": null, "esm_module": null, "source_url": "theming.vue", "template": "<template>\n    <v-btn\n        icon\n        @click=\"countClicks\"\n        >\n        <v-icon>\n            {{ this.clicks === 1 ? this.on_icon : this.clicks === 2 ? this.off_icon : this.auto_icon }}\n        </v-icon>\n    </v-btn>\n</template>\n<script>\nmodule.exports = {\n    mounted() {\n        if (window.solara) {\n            if (localStorage.getItem(':solara:theme.variant')) {\n                this.theme_dark = this.initTheme();\n            }\n        }\n\n        if ( this.theme_dark === false ) {\n            this.clicks = 2;\n        } else if ( this.theme_dark === null ) {\n            this.clicks = 3;\n        }\n        this.lim = this.enable_auto ? 3 : 2;\n    },\n    methods: {\n        countClicks() {\n            if ( this.clicks < this.lim ) {\n                this.clicks++;\n            } else {\n                this.clicks = 1;\n            }\n            this.theme_dark = this.get_theme_bool( this.clicks );\n        },\n        get_theme_bool( clicks ) {\n            if ( clicks === 3 ) {\n                return null;\n            } else if ( clicks === 2 ) {\n                return false;\n            } else {\n                return true;\n            }\n        },\n        stringifyTheme() {\n            return this.theme_dark === true ? 'dark' : this.theme_dark === false ? 'light' : 'auto';\n        },\n        initTheme() {\n            const storedTheme = JSON.parse(localStorage.getItem(':solara:theme.variant'));\n            return storedTheme === 'dark' ? true : storedTheme === 'light' ? false : null;\n        },\n        setTheme() {\n            const dark = window.solara && this.theme_dark === null ? this.prefersDarkScheme() : this.theme_dark;\n            const vuetifyTheme = this.$vuetify.theme;\n            if (vuetifyTheme.global) {\n                if (vuetifyTheme.global.name && typeof vuetifyTheme.global.name === 'object') {\n                    vuetifyTheme.global.name.value = dark ? 'dark' : 'light';\n                } else {\n                    vuetifyTheme.global.name = dark ? 'dark' : 'light';\n                }\n            } else {\n                vuetifyTheme.dark = dark;\n            }\n        },\n        prefersDarkScheme() {\n            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches\n        },\n    },\n    watch: {\n        clicks (val) {\n            if ( window.solara ) {theme.variant = this.stringifyTheme();}\n            this.setTheme();\n            if ( window.solara ) {localStorage.setItem(':solara:theme.variant', JSON.stringify(theme.variant));}\n            this.sync_themes(this.theme_dark);\n        },\n    }\n}\n<\/script>\n"}}, "527d5b3631484ec0b8870d55ee958145": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "c34d13386b4c48a9bc6f2c2dfca34e2c": {"model_name": "VuetifyTemplateModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_component_instances": [], "_dom_classes": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "VuetifyTemplateModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "auto_icon": "mdi-brightness-auto", "clicks": 1, "components": null, "enable_auto": true, "events": ["event_sync_themes", "sync_themes"], "layout": "IPY_MODEL_527d5b3631484ec0b8870d55ee958145", "off_icon": "mdi-weather-sunny", "on_icon": "mdi-weather-night", "tabbable": null, "template": "IPY_MODEL_021df052962c498699c64c6b04563014", "theme_dark": null, "tooltip": null}}, "f06967b8c7d84f5a910c90363a3cb76e": {"model_name": "IconModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "IconModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["mdi-fullscreen"], "class_": null, "color": null, "disabled": null, "end": null, "icon": null, "layout": null, "opacity": null, "size": null, "slot": null, "start": false, "style_": null, "tabbable": null, "tag": null, "theme": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "c6d5e419c86b49ca854a8c9996066625": {"model_name": "BtnModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "BtnModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "active": null, "active_color": null, "append_icon": null, "attributes": {}, "base_color": null, "block": null, "border": null, "children": ["IPY_MODEL_f06967b8c7d84f5a910c90363a3cb76e"], "class_": "", "color": null, "density": null, "disabled": false, "elevation": null, "exact": null, "flat": null, "height": null, "href": null, "icon": true, "layout": null, "loading": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "prepend_icon": null, "readonly": null, "replace": null, "ripple": null, "rounded": null, "selected_class": null, "size": null, "slim": null, "slot": null, "spaced": null, "stacked": null, "style_": "", "symbol": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null, "variant": "elevated", "width": null}}, "d74b8dd16fec42e487d3138d41c34d79": {"model_name": "AppBarModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "AppBarModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "absolute": null, "attributes": {}, "border": null, "children": ["IPY_MODEL_ffb575e240f04e1188c6bea43e8922d7", "IPY_MODEL_b14635aa358a4a99a5dca85f1361949e", "IPY_MODEL_eb2cac8749ba42b3bf1f01907c109057", "IPY_MODEL_e454baf9a4c8466a92b3a28495e61fa4", "IPY_MODEL_c34d13386b4c48a9bc6f2c2dfca34e2c", "IPY_MODEL_7661a758f15b4395b8b969ffc0dda2c8"], "class_": null, "collapse": null, "collapse_position": null, "color": "primary", "density": null, "elevation": null, "extended": null, "extension_height": null, "flat": null, "floating": null, "height": null, "image": null, "layout": null, "location": null, "model_value": null, "name": null, "order": null, "rounded": null, "scroll_behavior": null, "scroll_target": null, "scroll_threshold": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "theme": "dark", "tile": null, "title": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "2bf71ec9f7484cc69409ab1ae112392e": {"model_name": "HtmlModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "HtmlModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": [], "class_": "", "layout": null, "slot": null, "style_": "display; none", "tabbable": null, "tag": "div", "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "46e7d7bb98684aeeb351b8e907330838": {"model_name": "HtmlModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "HtmlModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": [], "class_": "", "layout": null, "slot": null, "style_": "display; none", "tabbable": null, "tag": "div", "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "7cef4ea2e0444024bf5dd08ba30a0306": {"model_name": "TabModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "TabModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "active_color": null, "append_icon": null, "attributes": {}, "base_color": null, "border": null, "children": ["Page 0"], "class_": null, "color": null, "density": null, "direction": null, "disabled": null, "elevation": null, "exact": null, "fixed": null, "height": null, "hide_slider": null, "href": null, "icon": null, "inset": null, "layout": null, "loading": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "prepend_icon": null, "readonly": null, "replace": null, "ripple": null, "rounded": null, "selected_class": null, "size": null, "slider_color": null, "slider_transition": null, "slider_transition_duration": null, "slim": null, "slot": null, "spaced": null, "stacked": null, "style_": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null, "variant": null, "width": null}}, "bb0b8b8ea6764f2f91e2496950f8a77f": {"model_name": "TabModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "TabModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "active_color": null, "append_icon": null, "attributes": {}, "base_color": null, "border": null, "children": ["Page 1"], "class_": null, "color": null, "density": null, "direction": null, "disabled": null, "elevation": null, "exact": null, "fixed": null, "height": null, "hide_slider": null, "href": null, "icon": null, "inset": null, "layout": null, "loading": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "prepend_icon": null, "readonly": null, "replace": null, "ripple": null, "rounded": null, "selected_class": null, "size": null, "slider_color": null, "slider_transition": null, "slider_transition_duration": null, "slim": null, "slot": null, "spaced": null, "stacked": null, "style_": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null, "variant": null, "width": null}}, "9e42f32b16a9472a9fb968d5014f7ccf": {"model_name": "TabsModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "TabsModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "align_tabs": null, "attributes": {}, "bg_color": null, "center_active": null, "children": ["IPY_MODEL_7cef4ea2e0444024bf5dd08ba30a0306", "IPY_MODEL_bb0b8b8ea6764f2f91e2496950f8a77f"], "class_": null, "color": null, "content_class": null, "density": null, "direction": null, "disabled": null, "fixed_tabs": null, "grow": null, "height": null, "hide_slider": null, "inset": null, "inset_padding": null, "inset_radius": null, "items": null, "layout": null, "mandatory": null, "max": null, "mobile": null, "mobile_breakpoint": null, "model_value": null, "multiple": null, "next_icon": null, "prev_icon": null, "scroll_to_active": null, "selected_class": null, "show_arrows": null, "slider_color": null, "slider_transition": null, "slider_transition_duration": null, "slot": null, "spaced": null, "stacked": null, "style_": null, "symbol": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": 0, "v_on": null, "v_slots": []}}, "d145342d3f514c0db12a0b9e1257cf7c": {"model_name": "WindowItemModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "WindowItemModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["IPY_MODEL_815e0a9885f64c548ec6e51c65aa54a5"], "class_": null, "disabled": null, "eager": null, "layout": null, "reverse_transition": null, "selected_class": null, "slot": null, "style_": null, "tabbable": null, "tooltip": null, "transition": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null}}, "76c5847898324b7c86b5b51a11d67180": {"model_name": "WindowItemModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "WindowItemModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": [], "class_": null, "disabled": null, "eager": null, "layout": null, "reverse_transition": null, "selected_class": null, "slot": null, "style_": null, "tabbable": null, "tooltip": null, "transition": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null}}, "5432caae8be24abc9a4c2ac8e18c88f1": {"model_name": "WindowModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "WindowModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["IPY_MODEL_d145342d3f514c0db12a0b9e1257cf7c", "IPY_MODEL_76c5847898324b7c86b5b51a11d67180"], "class_": null, "continuous": null, "crossfade": null, "direction": null, "disabled": null, "layout": null, "mandatory": null, "model_value": null, "next_icon": null, "prev_icon": null, "reverse": null, "selected_class": null, "show_arrows": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "theme": null, "tooltip": null, "touch": null, "transition_duration": null, "v_bind": null, "v_model": 0, "v_on": null, "v_slots": [], "vertical_arrows": null}}, "f97bc9606eb248f989f9e2d52cb6115f": {"model_name": "SheetModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SheetModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "border": null, "children": ["IPY_MODEL_9e42f32b16a9472a9fb968d5014f7ccf", "IPY_MODEL_5432caae8be24abc9a4c2ac8e18c88f1"], "class_": "d-flex ma-0", "color": null, "elevation": 0.0, "height": null, "layout": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "rounded": null, "slot": null, "style_": "flex-direction: column; align-items: stretch; row-gap: 12px;;", "tabbable": null, "tag": null, "theme": null, "tile": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "width": null}}, "8699aa14c992464ba2ad1b73b2b6f1d2": {"model_name": "SheetModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SheetModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "border": null, "children": ["IPY_MODEL_2bf71ec9f7484cc69409ab1ae112392e", "IPY_MODEL_46e7d7bb98684aeeb351b8e907330838", "IPY_MODEL_f97bc9606eb248f989f9e2d52cb6115f"], "class_": "d-flex ma-0", "color": null, "elevation": 0.0, "height": null, "layout": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "rounded": null, "slot": null, "style_": "flex-direction: column; align-items: stretch; row-gap: 12px;;", "tabbable": null, "tag": null, "theme": null, "tile": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "width": null}}, "5604cc30c46943118a90912d027a27e3": {"model_name": "ColModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "ColModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "align_self": null, "attributes": {}, "children": ["IPY_MODEL_8699aa14c992464ba2ad1b73b2b6f1d2"], "class_": null, "cols": 12.0, "layout": null, "lg": null, "md": null, "offset": null, "offset_lg": null, "offset_md": null, "offset_sm": null, "offset_xl": null, "offset_xxl": null, "order": null, "order_lg": null, "order_md": null, "order_sm": null, "order_xl": null, "order_xxl": null, "slot": null, "sm": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "xl": null, "xxl": null}}, "078ed8bc0011456fb408fcfeb9ca2817": {"model_name": "RowModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "RowModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "align": null, "align_content": null, "align_content_lg": null, "align_content_md": null, "align_content_sm": null, "align_content_xl": null, "align_content_xxl": null, "align_lg": null, "align_md": null, "align_sm": null, "align_xl": null, "align_xxl": null, "attributes": {}, "children": ["IPY_MODEL_5604cc30c46943118a90912d027a27e3"], "class_": "solara-content-main", "dense": null, "justify": null, "justify_lg": null, "justify_md": null, "justify_sm": null, "justify_xl": null, "justify_xxl": null, "layout": null, "no_gutters": false, "slot": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "b14635aa358a4a99a5dca85f1361949e": {"model_name": "ToolbarTitleModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "ToolbarTitleModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["B", "o", "l", "t", "z", "m", "a", "n", "n", " ", "W", "e", "a", "l", "t", "h", " ", "M", "o", "d", "e", "l"], "class_": null, "layout": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "text": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "eb2cac8749ba42b3bf1f01907c109057": {"model_name": "SpacerModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "SpacerModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": [], "class_": null, "layout": null, "slot": null, "style_": null, "tabbable": null, "tag": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "a5837d38df2147bc804b31f05f84f38e": {"model_name": "IconModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "IconModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "attributes": {}, "children": ["mdi-fullscreen"], "class_": null, "color": null, "disabled": null, "end": null, "icon": null, "layout": null, "opacity": null, "size": null, "slot": null, "start": false, "style_": null, "tabbable": null, "tag": null, "theme": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": []}}, "7661a758f15b4395b8b969ffc0dda2c8": {"model_name": "BtnModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_dom_classes": [], "_events": ["click"], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_metadata": null, "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "BtnModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "active": null, "active_color": null, "append_icon": null, "attributes": {}, "base_color": null, "block": null, "border": null, "children": ["IPY_MODEL_a5837d38df2147bc804b31f05f84f38e"], "class_": "", "color": null, "density": null, "disabled": false, "elevation": null, "exact": null, "flat": null, "height": null, "href": null, "icon": true, "layout": null, "loading": null, "location": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "position": null, "prepend_icon": null, "readonly": null, "replace": null, "ripple": null, "rounded": null, "selected_class": null, "size": null, "slim": null, "slot": null, "spaced": null, "stacked": null, "style_": "", "symbol": null, "tabbable": null, "tag": null, "text": null, "theme": null, "tile": null, "to": null, "tooltip": null, "v_bind": null, "v_model": "!!disabled!!", "v_on": null, "v_slots": [], "value": null, "variant": "elevated", "width": null}}, "b2002a00ef254c25b83f1e0b3050ea91": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "01d12d6b8f804304816e9bf822ec236e": {"model_name": "ImageModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ImageModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ImageView", "format": "png", "height": "", "layout": "IPY_MODEL_b2002a00ef254c25b83f1e0b3050ea91", "tabbable": null, "tooltip": null, "width": ""}, "buffers": [{"data": "iVBORw0KGgoAAAANSUhEUgAAAosAAAHrCAYAAACn9tfQAAAAOnRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjExLjIsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmcvgI3uAAAAAAlwSFlzAAAPYQAAD2EBqD+naQAAnhJJREFUeJzsvXmYFMd9uP/uwX0jECAJWbYuH7IkH5Jjx4llO5aP+LZ8xFcUH7Ed55vESZzEyS+OYjuRE9vxfRUGDAaMAIEAIQ4jQAgBAiOEAIF2V2hhxfTc970zU78/mm6xkmBnBd09bH3e59mHZbd2qt5PV9d8pru6qk1rrREEQRAEQRCE56E96AYIgiAIgiAIrYski4IgCIIgCMIZkWRREARBEARBOCOSLAqCIAiCIAhnRJJFQRAEQRAE4YxIsigIgiAIgiCcEUkWBUEQBEEQhDPS6XeFjUaDUCjEhAkTaGtr87t6QRAEQRAEAdBak8vluOSSS2hvP/P1Q9+TxVAoxOzZs/2uVhAEQRAEQXge+vr6uOyyy874e9+TxQkTJgCwZ88err32WgDi8TgjRoxg0qRJ1Go14vE4U6ZMYdSoUeTzeQqFAjNmzAAgkUjQ0dHB5MmTqdfrxGIxJk+ezOjRoykUCuRyOWbOnAlAMpmkra2NKVOm0Gg0iEajTJo0iTFjxlAsFslms8yYMYO2tjaSySQAU6dORWtNJBJh4sSJjB07llKpRCaT4eKLL6a9vZ1UKoXWmqlTpwIQDoeZMGEC48aNo1wuk06nmT59Oh0dHaTTacrlMv39/cyYMYNUKsW4ceMYP348lUqFVCrFtGnT6OzsJJPJ0N/fz7Rp0wCIRqOMGTOGCRMmUK1WSSaTXHTRRYwYMYJsNkulUmH69OkAxGIxRo0axcSJE+nv7yeRSDB16lRGjhxJLpejVCpx8cUX+xbvcrnM0aNHefGLX8ykSZPcGDrxfr4YNhvvSCTC+PHjGTdunBtDJ96ZTIZarcZFF13kxnDs2LGMHz/ejaET72w2S7VadeMdi8UYPXo0EyZMcGPoxDuXy1Eul914x+NxRo4cycSJE90YOu3r7e1l3LhxXHrppW4MOzs7mTRpkhtDJ96FQoF8Pu/Gu5k++3zxdvqsU/Zc+2y9XndjGIlEztpni8UitVqNGTNmkE6nL9g+O5QxolKpcOTIEa644gomT57sa7yDGiPGjRtHOp12z6XzHe9WHSMKhYLbvzOZzDmPESNHjiSfz1MsFt14t9oYUa1Wefzxx93+faH22aGMEWPHjiWTyTBhwgTK5XLL5RFexTscDnPTTTe5udmZaPN7u79sNsukSZN44oknuOaaa/ysOjAsy0IpxV/+5V8ya9asoJvjCyY6g5ne4izOwxkTvcXZDGeArq4urr32WjKZDBMnTjxjucCSRecTggnUajXS6TSTJ0+ms9P3i7mBYKIzmOktzuI8nDHRW5zNcAbcK40tmywO1jBBEARBEATBO5rNyQJbOiebzQZVte9ks1k2btwozgZgorc4m4GJzmCmtzibQ7O+gSWL1Wo1qKp9p1Kp8OSTT1KpVIJuim+Y6AxmeouzGZjoDGZ6i7M5NJuLyW1oQRAEQRAEA2n529CCIAiCIAhC6xNYshiLxYKq2nei0Sg/+MEPiEajQTfFN0x0BjO9xdkMTHQGM73F2RyazcUCSxZHjx4dVNW+M2bMGK6//nrGjBkTdFN8w0RnMNNbnM3ARGcw01uczaHZXEzmLAqCIAiCIBhIy89Z7O/vD6pq3+nv78eyLHE2ABO9xdkMTHQGM73F2Rya9Q0sWUwkEkFV7TvxeBylFPF4POim+IaJzmCmtzibgYnOYKa3OJtDs7lYYLeh4/G4uyn2cKe/v594PM60adMYMWJE0M3xBROdwUxvcRbn4YyJ3uJshjPYyeK0adNkuz9BEARBEAThubT8nMVcLhdU1b6Ty+XYsmWLOBuAid7ibAYmOoOZ3uJsDs36BpYslstlfyrKheGB/4WfvwG+fx3MfTs88huoFv2pHyiVSjz22GOUSiXf6gwaE50hAO+nHgT1ZvjmdPjPqfDtK2DD16R/e4zvzo06dG2EJR+FH1wPP34NrPtHiB7xp34COs6Rw3Dv38OPX217//bPoPt30Gj41gTfvQtx2PF9+MUb7fesOW+FvXOh4l8SI+e0D2gNfXth5RfghzfCD2+AFZ+F47vs3/lEs7nY8L4NfeReWPEX0KiBPjW4tLXb30+8FD69BqZd5W0bBMErVnwWDq14/t91jILPb4GZ1/nbJuH8U87YSeKJXdDWAbpu/7y90x7bbvlXuOWfg23j+UZr2PpfsP070N5hJ8vwjP8Vfwx/tgRGTQi2neebnvvhrk9CrfzMexZtgIZx0+FTq2DmK4NsoXA+qNdg7d/Co4ueOY/hme+vuw0+8Avo8H7uZMvfhvacvj2w/NNQ7z/tpOOZ73NhWPBuKKUDaZ4gnBOb/v3MiSJAvQK/eouvVxgFD9DaTh769pz6f/2Z3zlvMNv+277yNJx4+Bd2ogjPJIrwjP/xh2D57b43y1PCh+C3H4P+8sD3LE5dzykmYcF7IRcJpHnCeeR3X4dHF9vfO+fx6d8fuhvW/5P/7ToLgSWLnj+e/sD/nDrHznDhVNfthNE5YB4Si8X42c9+ZtQWhyY6g0/ejYb9ZjoYtYqdSHiMicfaN+cTu+Gp7QOTxOdj2532B2MP8c25VoFt3z57GV2Hns1wcp+3bcFH7x3fP5UknuEWu67bV5l/P8/bdiDntKfkY7Dnl5wxNwH7d/t+DZmT3raF5nOxwJLFkSNHevfiWcu+nD/YAAu+nHijRo3iyiuvZNSoUZ7X1SqY6Aw+eT/2W6hXmyu73/sPQyYea9+c9//GvjU1GIWYnTx5iG/OXRugnB68XHsnPLLQ27bgk3c5A4+vGniV6fnQdXnP8gjfnA8ue9aV4zPRBgeWeNsWms/FmhiFvMHT+YqZpzl71u6gIdPnXTtOMXHiRN7+9rd7Xk8rYaIz+ORtHWy+bCXrXTtOYeKx9s05eWzwBALsudip4542xTfn1PGBczPPRKMGqV7Pm+OLdy4y8Hb72ShE7avIHs5nk3PaQ9z+PUjC2NYG6ROeN6fZXCywK4u1WhMD4AtlRHMbYwP2gwAeU6vViMfj3jq3GCY6g0/eo8Y3X7atw7t2nMLEY+2b88hx2A84DIJuDG3cewH45jxiTPNXXkaM9bYt+OTdOYT3obaO5q42nwNyTnvIiNE0dzEL6BzjaVOg+VxseM5ZnP4yGD9j8HLtnXDNO7xrxylisRg//elPjZv/YZoz+OT9qk81X/aSGz1rhoOJx9o356ve1mTBNrjyLZ42xTfnK99C03eGrvoTb9uCT96TL4epL2HQDwZtHXDVW+2rTh4i57SHXPUnzd0taNR86d/N5mKBLZ0Ti8WYNm2adxVt/6699MJgn1A/uxlm3+RdO4BqtUo4HGbmzJneztVsIUx0Bh+9f3ITxLsGL/eZjXD5H3jXDsw81r45l9Lwfy+1n5A9UwLV1gFX3wofX+pdO/D5OP/mA3DsgbPcim6DkWPhH7qGdqX9BeCb9545cN9XGTRR/uTdnicRck576Ky1PX4nj525f7d1wMRL4G8fg3Zvr+nF43GmT59u8HZ/tQos+iAc33nmhPFN/wJv/pp3bRAEr0gdh5+89uwPutzwcfjAz/1rk+ANR9fBXZ8C9HPHsrYOmDADPrcFJs4KpHmekHnaXoy6GHvuXL62dvvK2seWwjW3BtM+L6jX4K5P2Iuvnylh/IO/grf/t+dXFgWPCR+Eee+A/tJzE8a2Dntawu3r4NJXe96Ull9nMZ/Pe1tB5yj4xN3whr957sKtk18E7/uZb4liPp/nwQcf9N65hTDRGXz0nvIi+Ovfw/SXPvd3HaPgj/7Bt0TRxGPtq/NL/xQ+vRoufc3An7d3witvg89v8yVR9NV50mXwl1vh5R+wF+U+nctugj9f51ui6Jt3Ryd8dBG86Z9h9OSBv5t4Cbzru74linJOe8zMV8Lnt566Qnz68WyDl7wZPrfZl0QRms/FAnsaulj0YbHgEaPhbf8Jt/yLfYWxkrNPuktf6/ml3dMpFArs3r2ba665hvHjvb1l0iqY6Aw+e095EXz5YUj32Uvk9Odh1g3wig9J//YY351f/Ef2G0j0CMS77SdhL7sJxnk4ledZ+O488RK4bS7kvw0nf28/ATz9WvvLR3z17hhhX8T4o7+337PKGRh/Mcx+3XOTZg+Rc9oH5+nXwCeW2eO3dcD+2cxX2uO6jzSbiw3f29CCIAiCIAjCGWn529CCIAiCIAhC6xNYsphIJIKq2nfi8Thz5szxfovDFsJEZzDTW5zNwERnMNNbnM2h2VwssGSxszOw6ZK+M2LECGbOnMmIEd6tuN9qmOgMZnqLsxmY6AxmeouzOTSbi8mcRUEQBEEQBANp+TmL9XqT+2AOA+r1OtlsVpwNwERvcTYDE53BTG9xNodmfQNLFk3aRigajfL973+faDQadFN8w0RnMNNbnM3ARGcw01uczaHZXCyw29DRaJTp06f7WXVgVCoV+vr6mD17NqNGDWHD+AsYE53BTG9xFufhjIne4myGM9jJ4sUXX2zwdn+CIAiCIAjCGWn5OYuFQiGoqn2nUCjw8MMPi7MBmOgtzmZgojOY6S3O5tCs7/DdG7qFyOVy3H///eRyuaCb4hsmOoOZ3uJsBiY6g5ne4mwOzeZichtaEARBEATBQFr+NrQgCIIgCILQ+gSWLCaTyaCq9p1EIsGvf/1ro7Y4NNEZzPQWZzMw0RnM9BZnc2g2FwssWWxrawuqat9pb29n4sSJtLebcyHXRGcw01uczcBEZzDTW5zNodlcLLCo9Pf3u9/HYjEymQwAtVoNy7KoVCqAPfkyHA67ZePxOOl0GrBXHrcsi3K5DNhP9ViW5ZZNJBKkUikAGo0GlmVRKpUAKBaLWJaFM2UzmUy6GbbWGsuyKBaLAJRKJSzLotFoAJBKpQZ8+rAsy32iqFwuY1mWuyp6Op2mXq/zwQ9+kClTphAOh90JpZVKBcuyqNVqAGQymQELZEYiEXeybbVaxbIsN27ZbHbA4qHRaJRsNuvG1rIsqtUqYE/cjUQivsZ70qRJvP71r2f06NEDYujEO5VKDfhEM5R4h8NhN95ODJ14ZzKZARvBRyIRN95ODJ14Z7PZAfGORqNuvJ0YOvHO5XID4h2Lxdx4OzGsVqtMmTKFW2+91Y29E0Mn3k4MnXgXCoUB8W6mzzokk0m3rNNnnbLn2mdPj+FgfbZWq7n9+0Lus0MZIyZPnszrX/96dz02P+Md1BgxduxYPvjBDzJixAhP4t2qY8Tp/ft8jBFg99nT491qY8SUKVN4/etfz8iRI4ELt88OZYwYM2YMH/zgBxk5cmRL5hFexdv5u8EILFlctmyZ+/2KFSvYuXMnYDdeKeUerAMHDrBgwQK37OrVq9m+fTtgHyilFCdOnADg8OHDzJ071y27bt06tmzZAtgdTSnFsWPHAOjq6kIp5R7kjRs3snHjRsA+yEopurq6ADh27BhKKTfAW7ZsYd26dW49c+fO5fDhwwCcOHECpZTbQbZv384999xDqVSi0WiwYMECDhw4ANidQynlngw7d+5kxYoV7usuXryYffv2AfaJoJRyO+KePXtYunTpgHju3r0bsDuhUso9kfbv38+iRYvcsitXrmTHjh2AfRIppTh58iQABw8eZP78+W7ZNWvWsG3bNsDuwEopjh8/DsCRI0eYM2eOW3b9+vVs3rwZsDulUoru7m4Auru7UUq5nX/Tpk1s2LDB/VulFEePHgWgt7cXpZR7om/dupW1a9e6ZefNm8ehQ4cA6OvrQynlnmTbt29n1apVbtmFCxeyf/9+wD7BlFLuILFr1y6WL1/ull2yZAl79+4F7MFEKeWeoHv37mXJkiVu2eXLl7Nr1y7APpGVUoTDYRqNBnv37mXhwoVu2VWrVrl9tlAooJSir68PgEOHDjFv3jy37Nq1a9m6dStgDwJKKXp7ewE4evQoSim37IYNG9i0aRNgD3inx7unpwellDsQbN68mfXr17t/O2fOHI4cOQLA8ePHUUq5b/Dbtm1jzZo1btn58+dz8OBBAE6ePIlSyh2oduzYwcqVK93+vWjRIjfekUgEpZQ70O7evXvAeb906VL27NkD2IOsUsod5Pbt28fixYvdsq02RjjxfuKJJ4BzHyNWr17tlm3VMaKvr49SqcRjjz12XsaIWq2GUoqenh6gdceIZcuWuf37fIwRTrxbeYxoNBrMmTOHxx9/HDg/Y4RDq44Rx48fp1QqcejQoZbMI7waI+6++26aQvtMJpPRgN69e7f7s2g0qtPptNZa6/7+fh0KhXS5XNZaa53L5bRlWW7ZWCymU6mU1lrrWq2mQ6GQLpVKWmut8/m8DoVCbtl4PK6TyaTWWut6va5DoZAuFotaa60LhYIOhUK60WhorbVOJBI6kUhorbVuNBo6FArpQqGgtda6WCzqUCik6/W61lrrZDKp4/G4W08oFNL5fF5rrXWpVNKhUEjXajWttdapVEo//vjj+o477tChUEhblqVzuZzWWutyuaxDoZDu7+/XWmudTqd1NBp1XzccDutsNqu11rpSqehQKKSr1aobx0gk4paNRCI6k8lorbWuVqs6FArpSqWitdY6m83qcDjsa7yffvppfccdd+hjx44NiKET72Qy6cbbiWGz8bYsy423E0Mn3ul0WsdisQExdOLtxNCJdyaTGRDvSCTixtuJoRPvbDY7IN7RaNSNtxND5/XvuOMOffDgwQExdOLtxNCJdz6fHxDvZvqsQyKRcMs6fdYpe6599vQYDtZnDx8+7PbvC7nPDmWMOHny5PP2bz/iHdQY0dvbq++44w7d09PjSbxbdYw4vX+fjzFCa7vPnh7vVhsjnHHsySef1FpfuH12KGOE07+ffPLJlswjvIr37t27NeDG+UwEtnROOBxmxowZflYdGKVSid7eXq644grGjBkTdHN8wURnMNNbnMV5OGOitzib4Qz21d2ZM2fKdn+CIAiCIAjCc2n5dRade/EmUCwWeeSRR8TZAEz0FmczMNEZzPQWZ3No1jewZNGZjGkCmUyGtWvXuk9qmYCJzmCmtzibgYnOYKa3OJtDs7mY3IYWBEEQBEEwkJa/DS0IgiAIgiC0PrLdnw8kk0mWLFkizgZgorc4m4GJzmCmtzibg2z310K0tbXR0dEhzgZgorc4m4GJzmCmtzibQ7O+MmdREARBEATBQFp+zqLPOWqgaK2p1WribAAmeouzGZjoDGZ6i7M5NOsbWLJ4+gbgw51wOMx//dd/DdjIfLhjojOY6S3OZmCiM5jpLc7m0GwuJtv9+UCpVKK7u5urr77amG2ETHQGM73FWZyHMyZ6i7MZziDb/QmCIAiCIAhnoeXnLJZKpaCq9p1SqcTBgwfF2QBM9BZnMzDRGcz0FmdzaNY3sGTRpC110uk0K1euJJ1O+1ux1lDJQb3mb70E6BwwJnqLsxmY6AxmeouzOTSbi72g29DJZJJoNMqsWbOYNGnSkP7WueSZSqWYPHnyUKu+IGk0GtRqNTo7O2lv9yE/Tz4FD/8S9v8Gqnloa4Or3gav+yJc9Vbv6ycA5xbBRG9xFufhjIne4myGM9hJ8pQpU87vbWjLsnjzm9/M5Zdfzvvf/35mzZrFe97znqY3oh5QsUEHo729nZEjR/rj3LsDfv4G2KPsRBHsK4w998OiD8L93/C+Dfjs3EKY6C3OZmCiM5jpLc7m0KzvkKLyj//4j8TjcU6ePMnRo0c5duwY+/fv5xvfGHoCkkqlhvw3FyqpVIrly5d775wLw+KPQK0Muj7wd87/H/weHLjL23bgo3OLYaK3OJuBic5gprc4m0OzvkNKFk+ePMlNN93k3nqeOXMm119/PSdPnhxyA01a+LLRaFCpVGg0Gt5WtG8B1Eqgz1ZPG+z4P/tqo4f45tximOgtzmZgojOY6S3O5tBsLjakOYv33Xcft99+O//zP//Dy1/+ch5++GG+9a1vce+993LzzTc39RqydI6H/PAGSPU2V/ZLu2DGyz1tjiAIgiAIrUuzOVnnUF70zW9+Mx/60If467/+ay699FKefvppvvKVr/Ca17zmjH9TqVSoVCoDGiZ4RCHefNniEMoKgiAIgmAsQ7oN/alPfYp9+/bx9NNP09XVxZNPPsmyZcv4+7//+zP+zZ133smkSZPcr9mzZwMYtaWOZVl84xvfwLIsbysaM7n5sqOHUPYF4Jtzi2GitzibgYnOYKa3OJtDs7lY08livV5n9erVfO5zn2PKlCkAzJo1i09+8pOsWLHijH/3ta99jUwm43719fUBMGHChGarvuCZOHEi73rXu7y/7f7KD0NbxyCF2mDKFTDjOk+b4ptzi2GitzibgYnOYKa3OJtDs7nYkOYsTps2jb/927/l3//9392f/dVf/RUPPvggBw8ebOo1ZM6ih6RPwI9fA/V+4CyH9U+/Bzd9zrdmCYIgCILQeniy3d8XvvAFvvvd7/LLX/6SXbt28f3vf5+5c+fyhS98YcgNLJfLQ/6bC5VyucwTTzzhvfPky+HDC6C9A9qfNR217dShfvWfw2s/62078NG5xTDRW5zNwERnMNNbnM2hWd8hJYvf/OY3+dGPfsT69ev5+7//ex566CGWLFnCX//1Xw+5gSZtqZNKpVi6dKk/6ze99F3w+S3w8vfbSaPDzOvhg3PgPT+0d3TxGF+dWwgTvcXZDEx0BjO9xdkcms3FXtB2f+eCc8kzmUy6cx+HO/V6nXK5zOjRo+noGGxO4Xmkkrefeh4xDsZP969eAnQOGBO9xVmchzMmeouzGc5gJ8lTp04d9DZ0YMmizFkUBEEQBEEIDk/mLJ5PTLoNnU6nueeee8TZAEz0FmczMNEZzPQWZ3No1jewZLFerw9eaJhQq9VIJpPUarWgm+IbJjqDmd7ibAYmOoOZ3uJsDs3mYnIbWhAEQRAEwUBa/ja0IAiCIAiC0PoElixGIpGgqvadcDjMnXfeadQWhyY6g5ne4mwGJjqDmd7ibA7N5mKBJYvjxo0LqmrfGT9+PLfccgvjx48Puim+YaIzmOktzmZgojOY6S3O5tBsLiZzFgVBEARBEAyk5ecsViqVoKr2nUqlwrFjx8TZAEz0FmczMNEZzPQWZ3No1jewZNGkLXWSySS/+c1vSCaTQTfFN0x0BjO9xdkMTHQGM73F2RyazcUCuw2dSCSYOnWqn1UHRq1WI5/PM378eDo7O4Nuji+Y6AxmeouzOA9nTPQWZzOcwU6SL7roItnuTxAEQRAEQXguLT9nMZPJBFW172QyGdatWyfOBmCitzibgYnOYKa3OJtDs76BJYv9/f1BVe071WqVp59+mmq1GnRTfMNEZzDTW5zNwERnMNNbnM2h2VxMbkMLgiAIgiAYSMvfho5Go+73sVjMvRRaq9WwLMt9nDufzw9YUT0ej5NOpwF7A2zLsiiXywAUCgUsy3LLJhIJ90mfRqOBZVmUSiUAisUilmXh5MrJZNJ9CkprjWVZFItFAEqlEpZl0Wg0APvpoUQi4dZjWRaFQgGAcrmMZVnu5tzpdJp4PO6WDYfD5PN5wH5k3bIsd+PyTCZDLBZzy0YiEXK5HGB/6rEsy/0UkM1mB8QwGo2SzWYB+5OCZVnuJ6RcLjdglfYg4u3E0Il3KpUa8NTZUOIdDofdeDsxdOKdyWQGxDsSibjxdmLoxDubzQ6IdzQadePtxNCJdy6Xe06fdeLtxNCJdz6fHxDveDzuxtuJoRPvQqEwIN7N9FmHZDLplnX67LPjLX1WxogLJd4yRsgYcaH12eEwRpxe9mwEliwuXbrU/X7FihXs3LkTsBuvlHIP1oEDB1iwYIFbdvXq1Wzfvh2wD5RSihMnTgBw+PBh5s6d65Zdt24dW7ZsAeyOppTi2LFjAHR1daGUcg/yxo0b2bhxI2AfZKUUXV1dABw7dgyllBvgLVu2sG7dOreeuXPncvjwYQBOnDiBUsrtINu3b2fFihV873vfIxKJsGDBAg4cOADYnUMp5Z4MO3fuZMWKFe7rLl68mH379gH2iaCUcjvinj17BsRw2bJl7N69G7A7oVLKPZH279/PokWL3LIrV65kx44dgH0SKaU4efIkAAcPHmT+/Plu2TVr1rBt2zbA7sBKKY4fPw7AkSNHmDNnjlt2/fr1bN68GYBQKIRSym1/d3c3Sim382/atIkNGza4f6uU4ujRowD09vailHJP9K1bt7J27Vq37Lx58zh06BAAfX19KKXck2z79u2sWrXKLbtw4UL2798P2CeYUsodJHbt2sXy5cvdskuWLGHv3r2APZgopdwTdO/evSxZssQtu3z5cnbt2gXYJ7JSinA4TCQS4cc//jG//vWv3bKrVq1y+2yhUEApRV9fHwCHDh1i3rx5btm1a9eydetWwB4ElFL09vYCcPToUZRSbtkNGzawadMmwB7wlFJ0d3cD0NPTg1LKHUA2b97M+vXr3b+dM2cOR44cAeD48eMopdzBctu2baxZs8YtO3/+fA4ePAjAyZMnUUq5A9WOHTtYtmyZ278XLVrkxjsSiaCUcgfa3bt3s2zZMvd1ly5dyp49ewB7kFVKuQPXvn37WLx4sVu21cYIpy85/eVcx4jVq1e7ZVt1jDh06BDf+9732Llz53kZI2q1Gkopenp6gNYdI37729+6/ft8jBFOvBcuXOiWbbUxwjl3nfPzXMeIlStXumVbdYx47LHH+N73vsfu3btbMo/waow4Pd5nRftMJpPRgH700Ufdn0WjUZ1Op7XWWvf39+tQKKTL5bLWWutcLqcty3LLxmIxnUqltNZa12o1HQqFdKlU0lprnc/ndSgUcsvG43GdTCa11lrX63UdCoV0sVjUWmtdKBR0KBTSjUZDa611IpHQiURCa611o9HQoVBIFwoFrbXWxWJRh0IhXa/XtdZaJ5NJHY/H3XpCoZDO5/Naa61LpZIOhUK6VqtprbVOpVK6t7dXP/DAAzqbzWrLsnQul9Naa10ul3UoFNL9/f1aa63T6bSORqPu64bDYZ3NZrXWWlcqFR0KhXS1WnXjGIlE3LKRSERnMhmttdbValWHQiFdqVS01lpns1kdDod9jXc6ndb33nuv20Ynhk68k8mkG28nhs3G27IsN95ODJ14p9NpHYvFBsTQibcTQyfemUxmQLwjkYgbbyeGTryz2eyAeEejUTfeTgwrlYrOZrN606ZN+sknnxwQQyfeTgydeOfz+QHxbqbPOiQSCbes02edsufaZ0+P4WB99qmnnnL794XcZ4cyRmQymeft337EO6gxIhaL6QceeEBbluVJvFt1jDi9f5+PMUJru8+eHu9WGyOy2ay+99573TZeqH12KGOE07/D4XBL5hFexfvAgQMacON8JmTOoiAIgiAIgoG0/JxFk544qlar9PX1ibMBmOgtzmZgojOY6S3O5tCsb2DJoklb6iQSCebNmzdgMutwx0RnMNNbnM3ARGcw01uczaHZXCyw29DxeJyLLrrIz6oDo7+/n1QqxZQpUxgxYkTQzfEFE53BTG9xFufhjIne4myGM9hJ8rRp02S7P0EQBEEQBOG5tPycRecxbxPIZrNs2rRJnA3ARG9xNgMTncFMb3E2h2Z9A0sWnfWxTKBcLtPV1eWuUWUCJjqDmd7ibAYmOoOZ3uJsDs3mYnIbWhAEQRAEwUBa/ja0IAiCIAiC0PoEliw2ux/hcCAajfKjH/1owJ6Xwx0TncFMb3E2AxOdwUxvcTaHlt8betSoUUFV7TujR4/m5S9/OaNHjw66Kb5hojOY6S3OZmCiM5jpLc7m0GwuJnMWBUEQBEEQDKTl5yz29/cHVbXv9Pf3E4lExNkATPQWZzMw0RnM9BZnc2jWN7Bk0aQtdeLxOL/4xS+Ix+NBN8U3THQGM73F2QxMdAYzvcXZHJrNxQK7DR2LxZg2bZqfVQdGtVolFosxffp0Ro4c6V/FyacgG4KR42DGddDR6VvVgTkXkxDvgrZ2mH4tjJ7kX90E5F2rQuQg1CowaTZMnu1PvacI7FgHiDib4Qxmeouzj86p49Bzv/39S26Bi17iX93YSfL06dNluz8j6d4MD/wPPL3nmZ+Nnwmv+wK84f9BxzDc9zJ5DLbeCYdXQqNm/6xjFNzwMbjlazBxVrDt84L+Ejz4f7B3DpRSz/z8JbfAm/4FXvT6wJomCIIgnIWn98LKL0DyyYE/n3IFvP/n8KI3+NKMlp+zmMvlgqrad3K5HNu2bfPHed+vYfGH4OTvB/48H4b7vwG//TOoez8nw1fnyOOgboFDdz+TKALUK7B/Eag32Z/efMA372oRFrwHHvzuwEQR4KkH4dd/Co+v8bYNp/D1WLcI4mwOJnqLs8ccewB+9bbnJooAqV6Y/y7o2uR9O2g+FwssWSyVSkFV7TvFYpFHHnmEYrHobUWxLrj37+zvdeN5Cmjo2Qw7f+xtO/DRudGApR+HSh50/bm/13UoxuHuz3rbjlP45r3lW3By3/MfZ123f373ZyEX9rYd+OjcQoizOZjoLc4e0mjAko8AZ7upq+Guj9tlPabZXExuQw8n7vsn+P2voPE8SdPpjJ8BX3nc1zmMntGzGRZ9qLmyX9gOs27wtj1+UC3Ad66C/kEGtbZ2uOVf4U1f9addgiAIwtl55Dew5q+bK/v2/4bXf9nT5rT8bWjBAx5fPXiiCJCPQPiA9+3xg6P3QXsTSW9bh112OND70OCJIthXF4+s9r49giAIQnM8srD5sgd+6107hkhgyaJJj6fHYjF+/vOfe7/FYbXgTdkXgK/OzVwcb2uHat7btuCTd3UIc2rK3s+/8e1YtxDibA4meouzhwzlvbff++l6zeZigSWLI0YMwydyz8DIkSO54oorvH8cfyhP/E681Lt24KfzJdDWNng5XffcGXzybtajrR0mX+ZdO07h27FuIcTZHEz0FmcPGcr79PgZ3rXjFM3mYjJncTix8yew6f/jrBNn29rhklfB57f41ixPiXXBT28avFx7B/z9URh/sfdt8ppGA350I6SbeML7Awpu+KjnTRIEQRCa4Ol98Ku3NFf202vgJW/ytDktP2exVqsNXmiYUKvVSCaT3ju/6hMw9iJ7ft6Z0A3443/yth346Dz9GnjZe87u3NYOr/5zXxJFX7zb2+FN/zxImQ6Y/CJ4+fu8a8cpfDvWLYQ4m4OJ3uLsIZe9BqZeOXi5SZd5nihC87mYzFn0gVgsxo9//GPv50KMmQKfXm3/++xbs+0dQBu867tw7Tu8bQc+OgO8/xdw+akFqE9PGp3vr30XvON/vG8HPnq/6hPw5n+zvx/wgE+b/TXhErsvjBjtbTvw+Vi3COJsDiZ6i7PHfH4LjJt+5t+PngJ/+YD37aD5XCyw29DRaJTp088SrGFEpVLBsixmzZrFqFGjvK+wmIRHF8O+BZCzYMQYeNl74abPwYyXe18/ATjXa3D0XtijIHzQTpYvvQlu/jxcfat9Nc4HfPc++Yi9g0vXRnu7v8mXw2s/Y+9cM2qC9/UTgHMLIM5mOIOZ3uLs03vWtv+G3897ZmOF0ZPgNbfDm/8/6PRnvmgsFuPiiy+W7f4EQRAEQRCE59Lycxbzee+XMWkV8vk8Dz30kDgbgIne4mwGJjqDmd7ibA7N+gaWLBYK3q7z10rk83l27NhhVCc00RnM9BZnMzDRGcz0FmdzaDYXk9vQgiAIgiAIBtLyt6EFQRAEQRCE1iewZDGRSARVte/E43Hmzp1r1HJBJjqDmd7ibAYmOoOZ3uJsDs3mYoElix0dZ1lEeZjR2dnJ9OnT6ezsHLzwMMFEZzDTW5zNwERnMNNbnM2h2VxM5iwKgiAIgiAYSMvPWazX60FV7Tv1ep1cLifOBmCitzibgYnOYKa3OJtDs76BJYsmbSMUjUb5v//7P6LRaNBN8Q0TncFMb3E2AxOdwUxvcTaHZnOxwG5DRyIRLr74Yj+rDoxyucyJEye4/PLLGT3a+716WwETncFMb3EW5+GMid7ibIYz2EnyjBkzZLs/QRAEQRAE4bm0/JxFk3ZwKRQK7NmzR5wNwERvcTYDE53BTG9xNodmfQNLFnO5XFBV+042m2XTpk1ks9mgm+IbJjqDmd7ibAYmOoOZ3uJsDs3mYnIbWhAEQRAEwUBa/ja0IAiCIAiC0PoElix2d3e738diMTKZDAC1Wg3LsqhUKgDk83nC4bBbNh6Pk06nAXt9IMuyKJfLgH3v3bIst2wikSCVSgHQaDSwLItSqQRAsVjEsiycC6vJZJJkMgmA1hrLsigWiwCUSiUsy6LRaACQSqUGbJFjWZZ7379cLmNZlrt2UTqdpqenh4ULF5JIJAiHw+TzeQAqlQqWZVGr1QDIZDIDHmOPRCLuJeJqtYplWfT39wP2p4HTH/GPRqPu5fP+/n4sy6JarQL2ZeZIJOJrvGOxGHPmzOHkyZMDYujEO5VKufF2YthsvMPhsBtvJ4ZOvDOZzIDtmiKRiBtvJ4ZOvLPZ7IB4R6NRN95ODJ1453K5AfGOxWJuvJ0YVqtVEokE8+bN44knnhgQQyfeTgydeBcKhQHxbqbPOiSTSbes02edsufaZ0+P4WB9tru72+3fF3KfHcoYEY/HmTNnDk8//bTv8Q5qjLAsi4ULF9LX1+dJvFt1jDi9f5+PMQLsPnt6vFttjEgkEgP694XaZ4cyRoRCIRYuXMjTTz/dknmEV/Hu6emhGQJLFtevX+9+v2LFCnbu3AnYjVdKuQfrwIEDLFiwwC27evVqtm/fDtgHSinFiRMnADh8+DBz5851y65bt44tW7YAdkdTSnHs2DEAurq6UEq5B3njxo1s3LgRsA+yUoquri4Ajh07hlLKDfCWLVtYt26dW8/cuXM5fPgwACdOnEAp5XaQ7du3c//99zNu3Dja29tZsGABBw4cAOzOoZRyT4adO3eyYsUK93UXL17Mvn37APtEUEq5HXHPnj0sXbrULbts2TJ2794N2J1QKeWeSPv372fRokVu2ZUrV7Jjxw7APomUUm5Sd/DgQebPn++WXbNmDdu2bQPsDqyU4vjx4wAcOXKEOXPmuGXXr1/P5s2b3RiGQiH6+voA+8OBUsrt/Js2bWLDhg3u3yqlOHr0KAC9vb0opdwTfevWraxdu9YtO2/ePA4dOgRAX18fSin3JNu+fTurVq1yyy5cuJD9+/cD9gmmlHIHiV27drF8+XK37JIlS9i7dy9gDyZKKfcE3bt3L0uWLHHLLl++nF27dgH2iayUIhwO097eTrVa5Z577nHLrlq1yu2zhUIBpZQbl0OHDjFv3jy37Nq1a9m6dStgDwJKKXp7ewE4evQoSim37IYNG9i0aRNgD3hKKfdDWE9PD0opdwDZvHnzgHNuzpw5HDlyBIDjx4+jlHLf4Ldt28aaNWvcsvPnz+fgwYMAnDx5EqWUO1Dt2LGD3/3ud27/XrRokRvvSCSCUsodaHfv3s2yZcvc1126dCl79uwB7EFWKeUOcvv27WPx4sVu2VYbI9ra2giFQu65cK5jxOrVq92yrTpGRKNRxo0bR1dX13kZI2q1Gkop982qVceIDRs2uP37fIwRTrwXLlzolm21MaK9vZ1QKOSeC+c6RqxcudIt26pjRDgcZty4cfT09LRkHuHVGOH0j0HRPpPJZDSgu7u73Z9Fo1GdTqe11lr39/frUCiky+Wy1lrrXC6nLctyy8ZiMZ1KpbTWWtdqNR0KhXSpVNJaa53P53UoFHLLxuNxnUwmtdZa1+t1HQqFdLFY1FprXSgUdCgU0o1GQ2utdSKR0IlEQmutdaPR0KFQSBcKBa211sViUYdCIV2v17XWWieTSR2Px916QqGQzufzWmutS6WSDoVCularaa21TqVSOhaLuWUty9K5XE5rrXW5XNahUEj39/drrbVOp9M6Go26ZcPhsM5ms1prrSuVig6FQrparbpxjEQibtlIJKIzmYzWWutqtapDoZCuVCpaa62z2awOh8OBxtuJoRPvZDLpxtuJYbPxtizLjbcTQyfe6XR6QLzD4bAbbyeGTrwzmcyAeEciETfeTgydeGez2QHxjkajbrydGDrxzuVyA+Idi8XceDsxdOKdz+cHxLuZPuuQSCTcsk6ffXa8pc/KGHGhxFvGCBkjLrQ+OxzGiJ6eHg24cT4TgT3gkkqlmDx5sp9VB0aj0aC/v58RI0bQ3m7GNFETncFMb3EW5+GMid7ibIYz2Fe9p0yZ0roPuJi0pU4kEuHb3/72gPkVwx0TncFMb3E2AxOdwUxvcTaHZnOxwK4shsNhZsyY4WfVgVEqlTh27BgveclLGDNmTNDN8QUTncFMb3EW5+GMid7ibIYz2EnyzJkzZbs/QRAEQRAE4bm0/DqLzlM+JlAsFnn00UfF2QBM9BZnMzDRGcz0FmdzaNY3sGTRpC11MpkMq1evdteAMgETncFMb3E2AxOdwUxvcTaHZnOxwG5Dp9NpJk2a5GfVgaG1RmtNW1sbbW1tQTfHF0x0BjO9xVmchzMmeouzGc5gJ8mTJ08e9DZ0p49tGoBJB8O0zgdmOoOZ3uJsBiY6g5ne4mwOzToHdhv69G2chjvJZJLf/va34mwAJnqLsxmY6AxmeouzOTTra87Kk4IgCIIgCMKQkaVzBEEQBEEQDKTll87xOUcNFK01jUZDnA3ARG9xNgMTncFMb3E2h2Z9A0sWTdpSJxwO881vfpNwOBx0U3zDRGcw01uczcBEZzDTW5zNodlcLLBk0aRb0JMmTeJ973ufMUsFgZnOYKa3OJuBic5gprc4m0OzuZgZcxZzYejeBJU8TJgJ17wDRo71p27BP7SGE7sgfBDa2uHSV8MlrwYDl0MQBEEQhMFoNid7QessPvzww6xfv562tjZuu+02XvGKVwz5NUqlkvfJYikF6/4RDq8CXbcTCN2AURPgDX8Df/SP0O79xVUTNyj33fnJrXDfVyHRDTjJoYYZr4T3/AAue633bUCOtTgPX0x0BjO9xdkMZ7C9m2HImdJXvvIVbr31VvL5PKNHj+Yv/uIv2LZt21BfxvstdcpZmPfOZxJFsBNFgEoOtv4X3Pt39tUoj0mn06xYsYJ0Ou15Xa2Cr85dG2HRByHRc+oH+tQXED0M898JJ3Z73w7kWJuCOJuDid7ibA7N5mJDug29fPly/uzP/oxdu3Zx0003AdDf3080GuXSSy9t6jWcS56pVIrJkyc3W/XQ+d1/wM4fP5MonolPrYIr3+JdO4BGo0F/fz8jRoyg3Ycrma2Ab861Cnz3WiincRPEZ9PWDpNmw9886vmVZDnW4jxcMdEZzPQWZzOcwU6Sp0yZcn6XzvnZz37GO97xDjdRBBgxYkTTieKAir1OIPbNHzxRbOuAPXO8a8cp2tvbGTVqlFEd0Dfnx1dDOcUZE0Wwryinj8Oxrd62BTnWpiDO5mCitzibQ7O+Q4rKvn37eOMb38h9993HV7/6Vb7zne/wxBNPnPVvKpUK2Wx2wBdAKpUaStVDI3oEyk1cWtV1eOpB79pxilQqxd133+2tc4vhm3Pvg9DexNTb9k44/pC3bUGOtSmIszmY6C3O5tCsb9PJotaaXC7HwoUL+c53vsO0adM4dOgQN9xwA6tWrTrj3915551MmjTJ/Zo9e7b7ep7RqHlT9gXSaDQoFAo0Gg3P62oVfHOu1zjrVUWXNqj3e9sW5Fibgjibg4ne4mwOzeZiQ5qzOGHCBF70ohdx4MABOjo6APjiF7/I/fffT3d39/P+TaVSoVKpuP/PZrPMnj3b26VzCgn47tWD34amDWZeB1/c4U07BO958P9gyzefeXjpbLz3J/DqT3nfJkEQBEG4APBku7/rrruO66+/3k0UAV71qldx/PjxM2ano0aNYuLEiQO+PGfcRfCy90B7xyAFNdz0Oe/bI3jHjZ/gmaVyzsKIsfCKD3jeHEEQBEEYbgwpWfz4xz/OQw89RKFQcH/2u9/9jhtvvJG2IS587PmWOm/6Z2gfaT8J+3y0dcC0a+GVH/G2HYBlWXzrW9/CsizP62oVfHOeMAPe8P8GL/fmf4NR471tC3KsTUGczcFEb3E2h2ZzsSEtyv3FL36RzZs388pXvpJbbrmFw4cP09fXx7333jvkBk6YMGHIfzMkZrwcPn0P/PZj9uLczoLcbR327ekZr4BPLPdlJ5eJEydy6623GrXFoa/Ob/0Pez7i7p8+c3zB/p4G3PJv8Pove98O5Fibgjibg4ne4mwOzeZiL2i7vwcffJAnnniCWbNmccsttzBu3Lim/9b37f76S3BoJRxZC5UsTLwUbvwzePEtvuzeIvhI4kl7ySTrANAOs2+C19wOky4LumWCIAiC0HI0m5MFtjd0JBLh4osv9rPqwCiXy5w4cYLLL7+c0aNHB90cXzDRGcz0FmdxHs6Y6C3OZjgDRKNRZsyYcX4fcDmfmLSlTiqV4re//a1R6zeZ6AxmeouzGZjoDGZ6i7M5NJuLBXZlMZlMMmXKFD+rDox6vU6xWGTs2LEDniQfzpjoDGZ6i7M4D2dM9BZnM5zBTpKnTp3aurehfZuzKAiCIAiCIDwHT9ZZPJ+YdBs6nU6zZs0acTYAE73F2QxMdAYzvcXZHJr1DSxZrNcH211l+FCr1YjFYtRq3m8t2CqY6AxmeouzGZjoDGZ6i7M5NJuLyW1oQRAEQRAEA2n529CCIAiCIAhC6xNYshiJRIKq2nfC4TD/8z//4/0Why2Eic5gprc4m4GJzmCmtzibQ7O5WGDJ4lB2fbnQGT9+PG984xsZP977vYlbBROdwUxvcTYDE53BTG9xNodmczGZsygIgiAIgmAgLT9nsVKpBFW171QqFXp7e8XZAEz0FmczMNEZzPQWZ3No1jewZNGkLXWSySQLFiwgmUwG3RTfMNEZzPQWZzMw0RnM9BZnc2g2FwvsNnQikWDq1Kl+Vh0YtVqNbDbLxIkT6ezsDLo5vmCiM5jpLc7iPJwx0VuczXAGO0m+6KKLZLs/QRAEQRAE4bm0/JzFTCYTVNW+k8lkWL9+vTgbgIne4mwGJjqDmd7ibA7N+rbEOouxWMxtcK1Ww7Isd9JlPp8fsO5RPB539zKs1+tYlkW5XAagUChgWZZbNpFIuPfjG40GlmVRKpUAKBaLWJaFc2E1mUy6cxW01liWRbFYBKBUKmFZFo1GA7Dv8ScSCbcey7IoFAoAlMtlLMtyt9BJp9NEIhF6e3upVquEw2Hy+TxgTyy1LMvdXiiTyRCLxQbEKJfLAVCtVrEsi/7+fsD+NBCNRt2y0WiUbDYLQH9/P5ZlUa1WAcjlcr7Hu1wu093d7bbJiaET71QqNWBuyFDiHQ6H3Xg7MXTinclkiMfjA2LoxNuJoRPvbDY7IN7RaNSNtxNDJ965XG5AvGOxmOvmxLBarVKtVnnyyScJhUIDYujE24mhE+9CoTAg3s30WYdkMumWdfqsU/Zc++zpMRysz4bDYbd/X8h9dihjRKVSed7+7Ue8gxoj8vk8vb29pNNpT+LdqmPE6f37fIwRYPfZ0+PdamNEtVqlu7vbbdOF2meHMkbkcjl6e3vJZDItmUf4Ee+zEViyuGnTJvf7FStWsHPnTsBuvFLKPVgHDhxgwYIFbtnVq1ezfft2wD5QSilOnDgBwOHDh5k7d65bdt26dWzZsgWwO5pSimPHjgHQ1dWFUso9yBs3bmTjxo2AfZCVUnR1dQFw7NgxlFJugLds2cK6devceubOncvhw4cBOHHiBEopt4Ns376dBx98kC996UtMnz6dBQsWcODAAcDuHEop92TYuXMnK1ascF938eLF7Nu3D7BPBKWU2xH37NnD0qVL3bLLli1j9+7dgN0JlVLuibR//34WLVrkll25ciU7duwA7JNIKcXJkycBOHjwIPPnz3fLrlmzhm3btgF2B1ZKcfz4cQCOHDnCnDlz3LLr169n8+bNAEyZMoVUKuWekN3d3Sil3M6/adMmNmzY4P6tUoqjR48C0Nvbi1LKPdG3bt3K2rVr3bLz5s3j0KFDAPT19aGUck+y7du3s2rVKrfswoUL2b9/P2CfYEopt027du1i+fLlbtklS5awd+9ewB5MlFLuCbp3716WLFnill2+fDm7du0C7BNZKUU4HGb69OnccMMN3HvvvW7ZVatWuX22UCiglKKvrw+AQ4cOMW/ePLfs2rVr2bp1K2APAkopent7ATh69ChKKbfshg0b3POoXq+jlKK7uxuAnp4elFLuALJ582bWr1/v/u2cOXM4cuQIAMePH0cp5b7Bb9u2jTVr1rhl58+fz8GDBwE4efIkSil3oNqxYwfbtm1z+/eiRYvceEciEZRS7kC7e/duli1b5r7u0qVL2bNnD2APskopd5Dbt28fixcvdsu22hgxbdq0AYP9uY4Rq1evdsu26hhRqVT40pe+RCgUOi9jRK1WQylFT08P0LpjxP333+/27/MxRjjxXrhwoVu21caI6dOnk06n3UTiXMeIlStXumVbdYwoFot86UtfIhwOt2Qe4dUYcf/999MU2mcymYwGdHd3t/uzaDSq0+m01lrr/v5+HQqFdLlc1lprncvltGVZbtlYLKZTqZTWWutaraZDoZAulUpaa63z+bwOhUJu2Xg8rpPJpNZa63q9rkOhkC4Wi1prrQuFgg6FQrrRaGittU4kEjqRSGittW40GjoUCulCoaC11rpYLOpQKKTr9brWWutkMqnj8bhbTygU0vl8XmutdalU0qFQSNdqNa211qlUSsdiMbesZVk6l8tprbUul8s6FArp/v5+rbXW6XRaR6NRt2w4HNbZbFZrrXWlUtGhUEhXq1U3jpFIxC0biUR0JpPRWmtdrVZ1KBTSlUpFa611NpvV4XA40Hg7MXTinUwm3Xg7MWw23pZlufF2YujEO51OD4h3OBx24+3E0Il3JpMZEO9IJOLG24mhE+9sNjsg3tFo1I23E0Mn3rlcbkC8Y7GYG28nhk688/n8gHg302cdEomEW9bps8+Ot/RZGSMulHjLGCFjxIXWZ4fDGNHT06MBN85nIrAHXLq7u7nqqqv8rDowIpEIixcv5hOf+AQzZswIujm+YKIzmOktzuI8nDHRW5zNcAb7CvPVV1/dug+4jBkzJqiqfWfs2LG8+tWvZuzYsUE3xTdMdAYzvcXZDEx0BjO9xdkcms3FZOkcQRAEQRAEA2n5pXOcJ5pMoFqtcvLkSXE2ABO9xdkMTHQGM73F2Rya9Q0sWTRpS51EIsGvfvWrAY/JD3dMdAYzvcXZDEx0BjO9xdkcms3FArsNHY/Hueiii/ysOjD6+/tJJpNMnTqVESNGBN0cXzDRGcz0FmdxHs6Y6C3OZjiDnSRPmzZNtvsTBEEQBEEQnkvLz1l0FpA0gWw2y+bNm8XZAEz0FmczMNEZzPQWZ3No1jewZNFZed8EyuUyjz/+uLv6vQmY6AxmeouzGZjoDGZ6i7M5NJuLyW1oQRAEQRAEA2n529CCIAiCIAhC6xNYsuhsBm4C0WiUn/zkJ+6m7CZgojOY6S3OZmCiM5jpLc7m0GwuFliyOGrUqKCq9p3Ro0dzzTXXMHr06KCb4hsmOoOZ3uJsBiY6g5ne4mwOzeZiMmdREARBEATBQJrNyTp9bNMA+vv7g6rad/r7+0mlUkyZMsWYxT5NdAYzvcVZnL2rtAyHV8GJnVCvwfRr4caPw/iL/akfOda+OSefggO/hfQJGDEGrvoTuPrt0OFPmmLicYbmc7HAbkObtKVOPB7n5z//OfF4POim+IaJzmCmtzibge/OR++D710D93wRHl0CB++C+/8T/u+lcP83odHwpRlyrD2mVoFVX4QfvQq2fxceWwaPLISlH4cfvBKe3ud9GzDzOEPzuVhgt6FjsRjTpk3zs+rAqFarRCIRZsyYwciRI4Nuji+Y6AxmeouzOJ93ujfD4ttO/ecMb1F/+Lfwtm942w7kWHvqrDXc9Ul44j7Qz5P8t3VAx0j43GaYeZ137cDM4wx2kjx9+nTZ7k8QBEG4gNDavsqU6uWMiSIAbfC3j8KUK3xpluABxx6Ahe89e5m2DrjyLfDJFf60yTBafp3FXC4XVNW+k8vl2L59uzgbgIne4mwGvjn3Pgippzh7ogi0tcO+X3vbFuRYe8reudA+yJxEXYeezfZcRg8x8ThD87lYYMliqVQKqmrfKRaL7N27l2KxGHRTfMNEZzDTW5zNwDdn6zE7ERwMXYfwQW/bghxrTwk9Ao1aEwU1RA572hQTjzM0n4vJbWhBEAShddj1M9j0b88/h+3ZXPU2uT15IfOD6yF9vLmyf3YXXPsOb9tjIC1/G1oQBEEQnsNlr20uUWxrt8sKFy6X/8Hgt6HBPtazbvC+PcIZCSxZNOnx9Fgsxi9/+Uujtjg00RnM9BZnM/DN+bKbYPrLmrsV/eo/97YtyLH2lNd+dvDb0G0dcO2fwsRZnjbFxOMMzedigSWLJi16OXLkSC677DKjHsc30RnM9BZnM/DNua0N3vMDO0k4W8L41q97nkCAHGtPmX0zvOrTQNvz/76tA0ZNgFu9XyLJxOMMzediMmdREARBaD16H4JVX4BM36lblW3Q6IeR4+AtX4fXfcFOLIULm0YdNv8nPPxz+ypjWweg7e9nXAe3zbN37hE8odmcLLBkMZFIMHXqVD+rDoxarUY+n2f8+PF0dga2w6KvmOgMZnqLszh7RqMBT26B4w/ZycP0a+EVH7ATRp+QY+2TczEJB1fYD7yMGAtX32rPSfXpA4GJxxkgmUxy0UUXte4DLqbNWfzhD39o1FwIE53BTG9xNoNAnNvb4eo/gT/5D7j1m/CqT/qaKIIca98YOxVe95fw9v+Ct/wbzL7J1yvHJh5naD4XC+zKYjQaZfr06X5WHRiVSoWTJ09y6aWXMmrUqKCb4wsmOoOZ3uIszsMZE73F2QxnsJPkiy++uHVvQ8ucRUEQBEEQhOBo+XUW8/l8UFX7Tj6fZ9euXeJsACZ6i7MZmOgMZnqLszk06xtYslgoFIKq2nfy+Tzbtm0zqhOa6AxmeouzGZjoDGZ6i7M5NJuLyW1oQRAEQRAEA2n529CCIAiCIAhC6xNYsphIJIKq2nfi8Tjz5s0zarkgE53BTG9xNgMTncFMb3E2h2ZzscCSxY6OjqCq9p3Ozk6mTp1q1EKfJjqDmd7ibAYmOoOZ3uJsDs3mYjJnURAEQRAEwUBafs5ivV4PqmrfqdfrFAoFcTYAE73F2QxMdAYzvcXZHJr1DSxZNGlLnWg0yne/+12i0WjQTfENE53BTG9xNgMTncFMb3E2h2ZzscBuQ0ciES6++GI/qw6McrnM8ePHedGLXsTo0aODbo4vmOgMZnqLszgPZ0z0FmcznMFOkmfMmCHb/QmCIAiCIAjPpeXnLJq0g0uhUOD3v/+9OBuAid7ibAYmOoOZ3uJsDs36BpYsnjhxwv0+FouRyWQAqNVqWJZFpVIB7C14wuGwWzYej5NOpwF7YqZlWZTLZcCWtizLLZtIJEilUgA0Gg0sy6JUKgFQLBaxLAvnwmoymSSZTAKgtcayLIrFIgClUgnLsmg0GgCkUqkBaxNZluUGvFwuY1mWO2k0nU5z4sQJ7rvvPrLZLOFw2N1OqFKpYFkWtVoNgEwmM2D+QCQSIZfLAVCtVrEsi/7+fsD+NHD63IpoNEo2mwWgv78fy7KoVqsA5HI5IpGIr/FOp9OsW7fObaMTQyfeqVTKjbcTw2bjHQ6H3Xg7MXTinclkBqyTFYlE3Hg7MXTinc1mB8Q7Go268XZi6MQ7l8sNiHcsFnPj7cSwWq2SzWZZt24dTz311IAYOvF2YujEu1AoDIh3M33WIZlMumWdPuuUPdc+e3oMB+uzx48fd/v3hdxnhzJGZDKZ5+3ffsQ7qDEiHo9z3333EQ6HPYl3q44Rp/fv8zFGgN1nT493q40RzjjmtPFC7bNDGSOc/h2JRFoyj/Aq3qfnYmcjsGTx/vvvd79fsWIFO3fuBOzGK6Xcg3XgwAEWLFjgll29ejXbt28H7AOllHJlDx8+zNy5c92y69atY8uWLYDd0ZRSHDt2DICuri6UUu5B3rhxIxs3bgTsg6yUoqurC4Bjx46hlHIDvGXLFtatW+fWM3fuXA4fPgzYSbBSyu0g27dvZ+fOnXz9619n1qxZLFiwgAMHDgB251BKuSfDzp07WbFihfu6ixcvZt++fYB9Iiil3I64Z88eli5d6pZdtmwZu3fvBuxOqJRyT6T9+/ezaNEit+zKlSvZsWMHYJ9ESilOnjwJwMGDB5k/f75bds2aNWzbtg2wO7BSiuPHjwNw5MgR5syZ45Zdv349mzdvBmD69Onu6wN0d3ejlHI7/6ZNm9iwYYP7t0opjh49CkBvby9KKfdE37p1K2vXrnXLzps3j0OHDgHQ19eHUso9ybZv386qVavcsgsXLmT//v2AfYIppdxBYteuXSxfvtwtu2TJEvbu3QvYg4lSyj1B9+7dy5IlS9yyy5cvZ9euXYB9IiulCIfDzJo1i7e85S2sX7/eLbtq1Sq3zxYKBZRS9PX1AXDo0CHmzZvnll27di1bt24F7EFAKUVvby8AR48eRSnllt2wYQObNm0C7AFPKUV3dzcAPT09KKXcAWTz5s0D2jRnzhyOHDkCwPHjx1FKuW/w27ZtY82aNW7Z+fPnc/DgQQBOnjyJUso9rjt27ODBBx90+/eiRYvceEciEZRS7kC7e/duli1b5r7u0qVL2bNnD2APskopd5Dbt28fixcvdsu22hgxc+ZMAPfN6VzHiNWrV7tlW3WMqNfrfP3rXycajZ6XMaJWq6GUoqenB2jdMWLbtm1u/z4fY4QT74ULF7plW22MmDVrFm1tbW5fOtcxYuXKlW7ZVh0jKpUKX//614nH4y2ZR3g1RjzwwAM0hfaZTCajAd3d3e3+LBqN6nQ6rbXWur+/X4dCIV0ul7XWWudyOW1Zlls2FovpVCqltda6VqvpUCikS6WS1lrrfD6vQ6GQWzYej+tkMqm11rper+tQKKSLxaLWWutCoaBDoZBuNBpaa60TiYROJBJaa60bjYYOhUK6UChorbUuFos6FArper2utdY6mUzqeDzu1hMKhXQ+n9daa10qlXQoFNK1Wk1rrXUqldKxWMwta1mWzuVyWmuty+WyDoVCur+/X2utdTqd1tFo1C0bDod1NpvVWmtdqVR0KBTS1WrVjWMkEnHLRiIRnclktNZaV6tVHQqFdKVS0Vprnc1mdTgcDjTeTgydeCeTSTfeTgybjbdlWW68nRg68U6n0wPiHQ6H3Xg7MXTinclkBsQ7Eom48XZi6MQ7m80OiHc0GnXj7cTQiXculxsQ71gs5sbbiaET73w+PyDezfRZh0Qi4ZZ1+uyz4y19VsaICyXeMkbIGHGh9dnhMEb09PRowI3zmQjsAZennnqKK664ws+qAyORSLB+/Xre+c53ctFFFwXdHF8w0RnM9BZncR7OmOgtzmY4g32V/sUvfnHrPuDS1tYWVNW+097ezqhRo2hvDyzcvmOiM5jpLc5mYKIzmOktzubQbC4mS+cIgiAIgiAYSMsvneM8EWQCjUaDarUqzgZgorc4m4GJzmCmtzibQ7O+gSWLJm2pE4lEuPPOOwc85j/cMdEZzPQWZzMw0RnM9BZnc2g2FwvsNnQ4HGbGjBl+Vh0YpVKJnp4errrqKsaMGRN0c3zBRGcw01ucxXk4Y6K3OJvhDHaSPHPmTNnuTxAEQRAEQXguLT9n0VkB3QRKpRKPPfaYOBuAid7ibAYmOoOZ3uJsDs36BpYsOjsfmEA6nWbVqlXurgAmYKIzmOktzmZgojOY6S3O5tBsLhbYbeh0Os2kSZP8rDowtNbU63U6OjqMWV/SRGcw01ucxXk4Y6K3OJvhDHayOHny5EFvQ3f62KYBmHQw2tra6OwMLNSBYKIzmOktzmZgojOY6S3O5tBsLhbYbWhn43ATSKVS3HXXXeJsACZ6i7MZmOgMZnqLszk06xtYsujz3e9AcS5vi/Pwx0RvcTYDE53BTG9xNodmfWXpHEEQBEEQBANp+aVzBEEQBEEQhNYnsGQxHA4HVbXvWJbFf/7nf2JZlj8V1qpw6G5Y+H748atB3QLbvwt5/7ZY9N1Za+jbC6u+CD+5CX76Olj7dxA+6E/9p/DduwXw3bkQh1VfgjtnwzemwX9fAnd9GtJ9/tSPHGffiPfAhq/Bz94AP3ktLLsdjj1gn+8+4bt3qhd++3G7X39jmt3P7/kyFJP+1E8AzvUaHFkLiz8MP34N/PKPYeudkA35Uz8B9e/Qo7D6/9nvVz+9Ge75Kzi5z7/6aT4Xe8G3oX/1q1/xd3/3d3zgAx/gN7/5TdN/51zytCyLmTNnvpCqLziKxSJHjx7lpS99KWPHjvW2svQJO0lMPglt7aBPbRLe1g7tI+BDv4KXv9fbNuCzc73fPskOLoP2DmjU7Z8739/8BXjHt6Hd+89Gvnq3CL46H74Hlt8OnGHYetd34ebPe9sG5Dh77qy1/QF367egrQO0c053QqMGV/4JfHQhjBznbTvw2XvnT2DTvz3/79ra4aOL4KV/6m0b8Nk5F4FFH4TIoYHHuq3d/nrfT+GGj3nbBnx2btThvq/C7+c+06fhme9v/AS850fQ4f3T2eFwmFmzZnmz3d/jjz/O29/+di6++GJe/OIXs2LFiqb/VuYseki1AD//Q8iceCZhGkCbffLdvg5e9Hrfm+cZa/8O9v2aMyYQAG/6Z3jzv/rUIMETrMfsKw5nO84An1gBV7/NlyYJHrFnDtz3j2f+fVsHXHMr/NlS/9rkNUfXwdKPD1KoDb60G2a81JcmeU6tat/5ih89w3sWQNupc/pP/GyZt/zuP+ChH3LmsawNbv5LeNf/et4Uz+YslkolPvrRj/LDH/6QWbNmveAGmrSlTqlU4siRI947P7YMUk+d5aTT9te2O71tBz46p08MnigC7PgBlNLetgUfvVsI35zv+yqDHmeA9f/ibTuQ4+wptSps/e+zl9F1eGI9hPZ72xZ89N7wtSYKadjwVW/bgY/OR9dC9PBZ3rMA2mDLN71tBz46FxKw66ecfSzTsPdXkPX+lrhn2/195Stf4eabb+aDH/zgkBt1OqZt97ds2TLvtxH6/TxgkAU2dQOeesBOsjzEN+dHl9hXSwejXoVDzV8Bf6H45t1C+OLcaEDfw82VTfbY8xo9RI6zh3RvhFIT8/PaO+GRhd62BZ+8Mychfby5sr07vGvHKXw71vt+bV8lPisNsB6FyGFPm+Kb88FloGtNFNRwYIm3baH5XGxIN8RXrFjB/fffz/79zX+aq1QqVCoV9//ZbBaAiy++eChVX9DMmDGDf/qnf2LUqFHeVpR6iqauvACkjsPkyz1rin/Ovc2Va+9svuw54Jt3C+GLcylJ030bIHoEXvxHnjVHjrOHJJ8aOHftTDRqkDzmbVvwyXsoiZBuQLUII72bV+fbsU48Ofhxdkj1woxXeNYUf/t3J+j+s5dra/flPavZXKzpK4t9fX186UtfYtGiRYwfP77phtx5551MmjTJ/Zo9e7ZdsQ8PG7QK7e3tjBkzxnvnjiF08s7R3rUDH507R0FT2xVpz53BR+8Wwhfnkc2POQCMmuBNO04hx9lDOkc/82DeWWmDEWO8bQs+eY8aYv8eNuP3EDw6vU3ifH3PavaDr0/vWU2Va/YF9+3bRzKZ5K1vfSvjx49n/PjxbNiwgXvuuYfx48dz4sTz39b82te+RiaTcb/6+uzlLUzaUieVSrFy5Urvna95u/0E8GCMngQzX+lpU3xzvvItzzxJdjYaNbusx/jm3UL44jxiNIya1FzZ9hEw83rv2oIcZ0+58s00/WZ65Vs9bQr45H3Zzfbdj2YYM9XzlR1a7j2rc4wdIw/xzfmqt7bce1YzNN3j3vOe95DJZAiHw+7X2972Nt7znvcQDofdK4bPZtSoUUycOHHAF5i13V+j0SCbzdJoNPNp+Ry4+fODTBTGvrT92s/ab74e4pvzte+C8TPOPm+xrQOmvxQu9/4JcN+8WwjfnF97e3PlXv4+z99M5Th7yLSr4cV/PMhctlNXFa//qLdtwSfvjk645h3Nlb35C9614xT+ndOftecjn422DnjVJ2C0t6un+Ob84jfB1JecvX+3dcDES+DqW71tCz5t9/fud7+b0aNHy9I5rcS2b5/5aee2DvuKy1+s82V9Mt84vhMWvs9OlJ89/6Wtw35T+cxGmHldMO0Tzg+Nhr0wc/LJM5cZNx3+7pDnH4YEj0kdh1+91V6I+jnndDvQBh/9jS9rDvpGtQjff8XZH+6Z/lL40i5f1oz1jd0/hw3/gv1w5rPSkbYOuOgq+OwmGDM5gMZ5RGg/zH8X1CrP/57VMQL+/F6YfZPnTZHt/kzlln+B9/4EJl028OedY+C1n4Hb7x1eiSLAi94An9kAl7/uWb9og5fcAp/fIonicKC9Hb6859Sn7eeZp3r56+FvH5NEcTgw5UXw+a32nYNn3zWYeT18atXwShTBfmDl7w7CZc+XILTBNe8cfokiwB98CT40F6a+eODPO0bCjR8ffokiwCWvgs9tfv6H8F70BtvZh0RxKJzTlcVyuQzA6NHND85OFtvV1cXVV1/9Qqu+oAiHw8ybN4/PfOYz/u1a02jAiV32dkkjx8IVf+T5ZfzTCcQZINYFkYNAm31CPnsA8pjAvAMkEOdqER7+BWSehnEXwx980dc3FDnOPjpnQ9C3x57DNf1az+dbP5tAvItJePiXUIjZq1a87ou+fggKxFlr+zinT9iuV7wRxkzxp24C7N/JY8+sFzrzBph2lX91A93d3VxzzTXe7OByLjjJYigUOqdFvS8kCoUChw4d4rrrrmPcuGF2Ve8MmOgMZnqLszgPZ0z0FmcznMHeE/uSSy5p3WRR5iwKgiAIgiAER8vPWTx9oe7hTqVSoaenR5wNwERvcTYDE53BTG9xNodmfQNLFk1anyyZTLJ48WKSySa2sBommOgMZnqLsxmY6AxmeouzOTSbiwV2GzqZTDJlin+TV4OkXq9TKBQYN24cHR1NLEA6DDDRGcz0FmdxHs6Y6C3OZjiDnSxOnTpV5iwKgiAIgiAIz6Xl5yxmMpmgqvadTCbD2rVrxdkATPQWZzMw0RnM9BZnc2jWN7BksVZrYm/EYUJ/fz/hcJj+/v6gm+IbJjqDmd7ibAYmOoOZ3uJsDs3mYnIbWhAEQRAEwUBa/ja0IAiCIAiC0PoElixGo9GgqvadSCTCd77zHSKRSNBN8Q0TncFMb3E2AxOdwUxvcTaHZnOxwJLFsWPHBlW174wbN44/+IM/MGoLIROdwUxvcTYDE53BTG9xNodmczGZsygIgiAIgmAgLT9nsVqtBlW171SrVU6cOCHOBmCitzibgYnOYKa3OJtDs76BJYsmbamTSCSYP38+iUQi6Kb4honOYKa3OJuBic5gprc4m0OzuVhgyeLpd79jsZi7MGStVsOyLHdz63w+TzgcdsvG43HS6TRgb89jWRblchmAQqGAZVlu2UQi4e572Gg0sCyLUqkEQLFYxLIstx3JZNINmtYay7IoFosAlEolLMui0WgA9vY4p3coy7IoFAoAlMtlLMuiXq8DkE6naW9v58tf/jLTp08nHA6Tz+cBewNvy7LcdY4ymQyxWMx93UgkQi6XA+zs37Isdw2obDY7YGJqNBolm80C9npRlmW5nxhyudyASbt+xPuiiy7iIx/5COPHjx8QQyfeqVRqQCcdSrzD4bAbbyeGTrwzmQzxeHxADJ14OzF04p3NZgfEOxqNuvF2YujEO5fLDYh3LBZz4+3EsFqtMn36dG6//Xa37U4MnXg7MXTiXSgUBsS7mT7rkEwm3bJOn3XKnmufPT2Gg/XZtrY2t39fyH12KGPEtGnT+MhHPuLOb/Iz3kGNERMnTuTLX/4yY8aM8STerTpGAG7/Ph9jBNh99vR4t9oYMX36dD7ykY+489ku1D47lDFiwoQJfPnLX2bs2LEtmUd4Fe9mCSxZvPvuu93vV6xYwc6dOwG78Uop92AdOHCABQsWuGVXr17N9u3bAftAKaU4ceIEAIcPH2bu3Llu2XXr1rFlyxbA7mhKKY4dOwZAV1cXSin3IG/cuJGNGzcC9kFWStHV1QXAsWPHUEq5Ad6yZQvr1q1z65k7dy6HDx8G4MSJEyil3A6yfft27r33XqZNm0ZnZycLFizgwIEDgN05lFLuAdu5cycrVqxwX3fx4sXs27cPsE8EpZTbEffs2cPSpUvdssuWLWP37t2A3QmVUu6JtH//fhYtWuSWXblyJTt27ADsk0gpxcmTJwE4ePAg8+fPd8uuWbOGbdu2AXYHVkpx/PhxAI4cOcKcOXPcsuvXr2fz5s0D2tTb2wtAd3c3Sim382/atIkNGza4ZZVSHD16FIDe3l6UUu6JvnXrVtauXeuWnTdvHocOHQKgr68PpZR7km3fvp1Vq1a5ZRcuXMj+/fsB+wRTSrmDxK5du1i+fLlbdsmSJezduxewBxOllHuC7t27lyVLlrhlly9fzq5duwD7RFZKEQ6H6ezs5MSJEwPKrlq1yu2zhUIBpRR9fX0AHDp0iHnz5rll165dy9atWwF7EFBKuTE8evQoSim37IYNG9i0aRNgD3hKKbq7uwHo6elBKeUOIJs3b2b9+vXu386ZM4cjR44AcPz4cZRS7hv8tm3bWLNmjVt2/vz5HDx4EICTJ0+ilHIHqh07drB69Wq3fy9atMiNdyQSQSnlDrS7d+9m2bJl7usuXbqUPXv2APYgq5RyB7l9+/axePFit2yrjREdHR0sW7bMLXuuY8Tq1avdsq06RkQiEaZNm8aRI0fOyxhRq9VQStHT0wO07hixatUqt3+fjzHCiffChQvdsq02RnR2drJ8+XK37LmOEStXrnTLtuoYEQqFmDZtGk888URL5hFejRH33HMPTaF9JpPJaEA/+uij7s+i0ahOp9Naa637+/t1KBTS5XJZa611LpfTlmW5ZWOxmE6lUlprrWu1mg6FQrpUKmmttc7n8zoUCrll4/G4TiaTWmut6/W6DoVCulgsaq21LhQKOhQK6UajobXWOpFI6EQiobXWutFo6FAopAuFgtZa62KxqEOhkK7X61prrZPJpI7H4249oVBI5/N5rbXWpVJJh0IhXavVtNZap1Ip/dRTT+kNGzboTCajLcvSuVxOa611uVzWoVBI9/f3a621TqfTOhqNuq8bDod1NpvVWmtdqVR0KBTS1WrVjWMkEnHLRiIRnclktNZaV6tVHQqFdKVS0Vprnc1mdTgc9jXeqVRK33333W4bnRg68U4mk268nRg2G2/Lstx4OzF04p1Op3UsFhsQQyfeTgydeGcymQHxjkQibrydGDrxzmazA+IdjUbdeDsxrFQqOpPJ6DVr1uienp4BMXTi7cTQiXc+nx8Q72b6rEMikXDLOn3WKXuuffb0GA7WZ48dO+b27wu5zw5ljEin0/ruu+922+hnvIMaI6LRqN6wYYMOhUKexLtVx4jT+/f5GCO0tvvs6fFutTEik8nou+++2633Qu2zQxkjnP5tWVZL5hFexfvRRx/VgBvnMxHY09BPPvkkL3nJS/ysOjBisRjLly/nwx/+MNOnTw+6Ob5gojOY6S3O4jycMdFbnM1wBvuK55VXXjno09CydI4gCIIgCIKBtPzSOYIgCIIgCELrE1iyePrTOsOdaDTKD37wA6O2ODTRGcz0FmczMNEZzPQWZ3NoNhcLLFkcPXp0UFX7zpgxY7j++usZM2ZM0E3xDROdwUxvcTYDE53BTG9xNodmczGZsygIgiAIgmAgLT9n0VlryASevXirCZjoDGZ6i7MZmOgMZnqLszk06xtYsmjSljrPXrzVBEx0BjO9xdkMTHQGM73F2RyazcUCuw0dj8e56KKL/Kw6MPr7+4nH40ybNo0RI0YE3RxfMNEZzPQWZ3EezpjoLc5mOIOdLE6bNk3WWRQEQRAEQRCeS8vPWXQ2tjaBXC7Hli1bxNkATPQWZzMw0RnM9BZnc2jWN7Bk0dmQ3ARKpRKPPfYYpVIp6Kb4honOYKa3OJuBic5gprc4m0OzuZjchhYEQRAEQTCQlr8NLQiCIAiCILQ+gSWLvj+erjXUqv7WeYpYLMbPfvazYLY4rFVtd58J1DlATPQOzNk5p6V/+4KJzmCmd6DO9X7zzulG3f4KgGZzsU6P23FGRo4c6U9FJ3bDw7+AI/dCox9GT4JXfQpu/kuY8iJfmjBq1CiuvPJKRo0a5Ut9pPtg7xx4ZCGUUtDeCde8E/7gi3DFG31pgu/OLYKJ3r47x7pgzy/hwG+hWoDO0XDdB+HmL8AlN/rSBDnO5mCit+/OuTDs/RXs+zUUYtDWAVf9CbzuC3DVW31pgu/OtQo8dhc8/EuIHLJ/Nv1l8Lq/hBs+DiP82RK52VxseM9Z3PED2PwfdrLUqD3z87YO6BwFH18GL/4jb9vgNyd2w6IPQn8Z9GmfVJwY3PKvcMs/B9c+QTgXjtwLy28HGgM/ibd32v9/74/g1Z8OqnWCIAwV6wAseC9UcgPfs9o67P+//q/h1m9BW1twbTzfVHKw6EPQ9zD2Dd7GqV+ccpx1I3z6Hhgz2fOmtPycxVqtNnihc+HIvXaiCAMTRbA7YK0MSz4CmZPetgPbNR6Pe++cj8Li26C/NPCkg2disO2/4eAKb9uBj84thonevjlHj8LyP7f78rNv2TRqgIY1fwPHd3rbDuQ4m4SJ3r45l7Pwmw88N1GEZ/6/6yewb7637cDn47z6y/D070/9p3HaL7T9FX4M7v6c9+2g+Vxs+M5ZfPB70HYWPd2wLwP70AljsRg//elPvZ8L8cgC+7acbpylULsdG48vKPvm3GKY6O2b88M/P9Vvz9J329vhoR952w7kOJuEid6+OR9YCsXkcxPFZ/Pg/0HjbO9r545vzslj8PiaszvrOvT8zv6A7DHN5mKB3YaOxWJMmzbNm0qST8GPbmyu7MRL4e8f96Ydp6hWq4TDYWbOnOntXM0f3gipp5or+1cPw8Uv9awpvjm3GCZ6++LcaMB/z7LvCAxGWxv8U6+nt3DkOJvhDGZ6++asboHQo5z1A6DDZ38Hs2/2rCm+OT/wHdh25+AJcnsn/OHfwlu/7l1bsJPF6dOnD3obeng+4FIYwieDoZR9gYwcOZLLL7/c83ooDOFqbSEKeJcs+ubcYpjo7YtzrdRcogj21cdS0tNkUY6zOZjo7ZtzPkJTiaJb1jv8e5+O2nc9B0sWwZ5a5jHN5mKB3YbO5/PevfjoSc2XHeX9wuD5fJ4HH3zQW2eA0UNwGUqMXgC+ObcYJnr74tw5xv6k3SyjpH+fb0x0BjO9/XvPmuxN2ReAf86TaDpB9vh9GprPxQJLFovFoncvPu0auOgq3CeLzkRbB7zyNu/acYpCocDu3bspFAreVnTdh2ynwZg0G2a80tOm+ObcYpjo7Ytzezu87D2DJ4xtHXD562HcRd61BTnOJmGit7/vWU2kIWMvgtmv87Qpvjm/7L3Pfej2+WjU4OXv97YtNJ+LDd+lc/YtgLV/c/YybR3w5Ydh2tXetcNPUr3w49ecelL0LIf1nf9rr18lCBcSfXtg7tsGL/exJfDSP/W+PYIgnBv5KPzwenuptzO+Z7XBm/8N3vRVP1vmLfPfaS+bc6aFuNs77As6f7nN8yWDWn7pHM959afhNbfb3z/7k0tbh/2zD/xy+CSKAFOugA/Ntd2ec4XxVAxu+DO46fN+t0wQzp3ZN9sfdOC5/dv5/x9/VRJFQbhQGH8xfGQRdIx4nrsGbfbXS98Fb/xKEK3zjg/Ng4mXPf+dwLYOGD8DPrqopdaWDCxZTCQS3lbQ1gbv/oGdEF78ioE/v/pW+IsNcP2HvW3DKeLxOHPmzPFni8NXvN9+auzadw1Mki9+Kbz3J/D+n9u39DzGV+cWwkRvX51f9wX41KrnLqZ/6WvgI7+Bt/x/3rcBOc4mYaK3r85X/wl8fgu8/H32FTWHi66Ed33HPq87vH8W11fnibPsq4Z/+DcD5yWOmgiv/zJ84UGYPNv7dtB8LhbY09CdnT5U3dYGN3wMrv8oZENQzcO46TB2qvd1n8aIESOYOXMmI0aM8KfCy14DH1tkb/WXj8HIsfYSQT5+SvHduUUw0dt35yvfYn8V4lBM2IPthJn+1H0KOc7mYKK3784zXwm3zYPy9yEXsbe6mzR7eL9njZ0Kf3KHvataps/+2aTL7N3lfKTZXGz4zlkUBEEQBEEQzkjLz1ms15tYY2iYUK/XyWaz4mwAJnqLsxmY6AxmeouzOTTrG1iyaNLWSdFolO9///tEo94vsNkqmOgMZnqLsxmY6AxmeouzOTSbiwV2GzoajTJ9+nQ/qw6MSqVCX18fs2fPZtQof+cjBIWJzmCmtziL83DGRG9xNsMZ7GTx4osvHvQ2tMxZFARBEARBMJCWn7No2mr4Dz/8sDgbgIne4mwGJjqDmd7ibA7N+g7PvaFbjFwux/33308ulwu6Kb5hojOY6S3OZmCiM5jpLc7m0GwuJrehBUEQBEEQDKTlb0MLgiAIgiAIrU9gyWIymQyqat9JJBL8+te/9n6LwxbCRGcw01uczcBEZzDTW5zNodlcLLBksa2FNsj2mvb2diZOnEi7D3sytwomOoOZ3uJsBiY6g5ne4mwOzeZiMmdREARBEATBQFp+zmKj0Qiqat9pNBqUSiVxNgATvcXZDEx0BjO9xdkcmvUNLFk0aUudSCTC//7v/xKJRIJuim+Y6AxmeouzGZjoDGZ6i7M5NJuLBXYbOhwOM2PGDD+rDoxSqURvby9XXHEFY8aMCbo5vmCiM5jpLc7iPJwx0VuczXAGO0meOXNm696GPn3hy1gsRiaTAaBWq2FZFpVKBbAXjAyHw27ZeDxOOp0GoF6vY1kW5XIZsFcityzLLZtIJEilUoB9qdWyLEqlEgDFYhHLsnBy5WQy6T4VpLXGsiyKxSJgdyLLstzLtalUasATU5Zluaugl8tlLMuiXq8DkE6nKRQKvOxlL2PMmDGEw2F3EcxKpYJlWdRqNQAymcyATb0jkYgbp2q1imVZ9Pf3A3bSffongmg0SjabBaC/vx/LsqhWq26sT/+05Ee8R40axeTJk93fOTF04p1KpQY8hTWUeIfDYTfeTgydeGcyGeLx+IAYOvF2YujEO5vNDoh3NBp14+3E0Il3LpcbEO9YLObG24lhtVplzJgxzJ492/2dE0Mn3k4MnXgXCoUB8W6mzzokk0m3rNNnnbLn2mdPj+FgfTafz7v9+0Lus0MZI0aPHs3kyZPd3/kZ76DGiPb2dl72spdRr9c9iXerjhGn9+/zMUaA3WdPj3erjRFjxoxh8uTJ7u8u1D47lDGira2Nl73sZW5MhxJvP/IIr+Ld7KLcgSWLd911l/v9ihUr2LlzJ2A3XinlHqwDBw6wYMECt+zq1avZvn07YB8opRQnTpwA4PDhw8ydO9ctu27dOrZs2QLYHU0pxbFjxwDo6upCKeUe5I0bN7Jx40bAPshKKbq6ugA4duwYSik3wFu2bGHdunVuPXPnzuXw4cMAnDhxAqWU20G2b9/OypUreeSRRygWiyxYsIADBw4AdudQSrknw86dO1mxYoX7uosXL2bfvn2AfSIopdyOuGfPHpYuXeqWXbZsGbt37wbsTqiUck+k/fv3s2jRIrfsypUr2bFjB2CfREopTp48CcDBgweZP3++W3bNmjVs27YNsDuwUorjx48DcOTIEebMmeOWXb9+PZs3bx5wHB9//HEAuru7UUq5nX/Tpk1s2LDB/VulFEePHgWgt7cXpZR7om/dupW1a9e6ZefNm8ehQ4cA6OvrQynlnmTbt29n1apVbtmFCxeyf/9+wD7BlFLuILFr1y6WL1/ull2yZAl79+4F7MFEKeWeoHv37mXJkiVu2eXLl7Nr1y7APpGVUoTDYYrFIuvWrRvQZ1etWuX22UKhgFKKvr4+AA4dOsS8efPcsmvXrmXr1q2APQgopejt7QXg6NGjKKXcshs2bGDTpk2APeAppeju7gagp6cHpZQ7gGzevJn169e7fztnzhyOHDkCwPHjx1FKuW/w27ZtY82aNW7Z+fPnc/DgQQBOnjyJUsodYHbs2MGKFSvc/r1o0SI33pFIBKWUO9Du3r2bZcuWua+7dOlS9uzZA9iDrFLKHeT27dvH4sWL3bKtNkY4x9Hph+c6Rqxevdot26pjxJNPPskjjzzCvn37zssYUavVUErR09MDtO4Ycdddd7n9+3yMEU68Fy5c6JZttTGiWCwyZ84ctx+e6xixcuVKt2yrjhHd3d088sgj7N+/vyXzCK/GiNPLnhXtM5lMRgN69+7d7s+i0ahOp9Naa637+/t1KBTS5XJZa611LpfTlmW5ZWOxmE6lUlprrWu1mg6FQrpUKmmttc7n8zoUCrll4/G4TiaTWmut6/W6DoVCulgsaq21LhQKOhQK6UajobXWOpFI6EQiobXWutFo6FAopAuFgtZa62KxqEOhkK7X61prrZPJpI7H4249oVBI5/N5rbXWpVJJh0IhXavVtNZap1Ip/fjjj+s77rhDh0IhbVmWzuVyWmuty+WyDoVCur+/X2utdTqd1tFo1H3dcDiss9ms1lrrSqWiQ6GQrlarbhwjkYhbNhKJ6Ewmo7XWulqt6lAopCuVitZa62w2q8PhsK/xfvrpp/Udd9yhjx07NiCGTryTyaQbbyeGzcbbsiw33k4MnXin02kdi8UGxNCJtxNDJ96ZTGZAvCORiBtvJ4ZOvLPZ7IB4R6NRN95ODJ3Xv+OOO/TBgwcHxNCJtxNDJ975fH5AvJvpsw6JRMIt6/RZp+y59tnTYzhYnz18+LDbvy/kPjuUMeLkyZPP27/9iHdQY0Rvb6++4447dE9PjyfxbtUx4vT+fT7GCK3tPnt6vFttjHDGsSeffFJrfeH22aGMEU7/fvLJJ1syj/Aq3rt379aAG+czIUvnCIIgCIIgGEjLL50jCIIgCIIgtD6y3Z8PJJNJlixZIs4GYKK3OJuBic5gprc4m4Ns99dCtLW10dHRIc4GYKK3OJuBic5gprc4m4Ns9ycIgiAIgiCckZafs+hzjhooWmtqtZo4G4CJ3uJsBiY6g5ne4mwOzfoGliyatKVOOBzmv/7rvwYsCjrcMdEZzPQWZzMw0RnM9BZnc2g2F5Pt/nygVCrR3d3N1Vdfbcw2QiY6g5ne4izOwxkTvcXZDGdofrs/mbMoCIIgCIJgIC0/Z9HZW9EESqUSBw8eFGcDMNFbnM3ARGcw01uczaFZ38CSRWfDbxNIp9OsXLnS3W/UBEx0BjO9xdkMTHQGM73F2RyazcUCuw2dSqWYPHmyn1UHRqPRoFar0dnZSXu7GZvmmOgMZnqLszgPZ0z0FmcznMFOkqdMmTLobehOH9s0AJMORnt7OyNHjgy6Gb5iojOY6S3OZmCiM5jpLc7m0GwuFljGlkqlgqrad1KpFMuXLxdnAzDRW5zNwERnMNNbnM2hWd/AriyatPBlo9GgUqnQaDT8rfjpfRB9HMZOhavfDh3+He7AnAMmEO96DWJHoVaBSZfBBH+XpDLxWIuzOZjoLc4+kjgGB5fb37/8/XDxtb5W32wuNuQ5i9lslkceeYT+/n6uv/76Ia+VKEvn+MBDP4IHvwvl0yautnXANW+HDy+ATvMutQ9LahXY+SN4WEEheuqHbXD1rfCmf4LLXhto8wRBEIQz0LMFVvwFlNMDfz56EnxAwbXv8KUZzeZkQ0oWv/71rzN37lyuvvpqOjo62LVrF//+7//O1772tfPeMOEFsub/wSMLz/z78TPgbx+DEaP9a5Nw/ukvw6IPwIndoJ/1SbitA9ra4KOL4Np3BtM+QRAE4fk5tApW3H72Mu/7GbzqE543xZN1FmfPnk1XVxfbtm3j/vvv56677uJf//Vfefjhh4fcQJO21LEsi2984xtYluVtRd33nz1RBMhHYNmnvG0HPjq3GL55b/2v508UAXQdGnVY/ueQjz739+cZE4+1OJuDid7i7DErPjN4mdVfhnrd86Y0m4sNKVn8/Oc/z7hx49z/v+c972HkyJEcOHBgaK0DJkyYMOS/uVCZOHEi73rXu7y/knr/fzRXrmcz1KqeNsU35xbDF+9qAX4/9/kTRRcN9X7Y/xvv2nEKE4+1OJuDid7i7CFb/wtoZl6kho3N37V9oTSbi53TOovbt2/nTW96Ew899BBveMMbnrdMpVKhUqm4/89ms8yePVtuQ3vBf04ZJIE4jQ/8Em74mLftEbyh+3ew+Lbmys68Hr74oLftEQRBEJrjey+DXKi5smOnwT896WlzPN/uL5FI8JnPfIb3vve9Z0wUAe68804mTZrkfs2ePRuAcrn8Qqu+4CiXyzzxxBPeOzebKAIU4t61Ax+dWwxfvCvZITRoCGVfICYea3E2BxO9xdlDakN4/bq3dwCh+VzsBSWLmUyGd7zjHUybNo1FixadtezXvvY1MpmM+9XX1wdg1JY6qVSKpUuXer9+U/uI5stO9/bxfN+cWwxfvCdc0ly5tnaYdKl37TiFicdanM3BRG9x9pAxU5ovO8r76XrN5mIvaOmct73tbQBs2rSJSZMmDalhziXPZDLJlClDCNoFTL1ep1wuM3r0aDo6OryraPGHoXvT4OVGjIF/8/YBI9+cWwxfvBsN+OErIfP04GXf/3O48ePetOMUJh5rcTbDGcz0FmcPnR+/F5Y1+ZSzD09Ep1Ippk6den5vQ2ezWW699VbghSWKp2NKBwTbddy4cd47v+PbQNvg5W7+orftwEfnFsMX7/Z2+ON/OnuZtg57ge5XfMC7dpzCxGMtzuZgorc4e8jL3w0jxg1ernO0L0vnNOs7pGTx3e9+N4cPH+Yzn/kM69evZ+nSpSxdupRDhw4NuYEm3YZOp9Pcc8893jtfdCV8UHHWhPHaP4W33eFtO/DRucXwzfvVn4Y/+kf7+/bTd+Zps7/Gz4BPr7GvInuMicdanM3BRG9x9pi//v2zxu1n0dYBX9rlfTtoPhcb0v5vV1xxBZdccglbt24d+CKdnVx33XVDeSnqPqwf1CrUajWSySS1Ws37yq7/CMy6Adb/Mzy13V5zD2DqlXDLv9i/9wFfnVsI37zb2uCt/w5Xvw32KOjaBPUKTJoNN30WbvwEjJnsbRtOYeKxFmdzMNFbnD1m0iXwz8ftHVx67n/mfbqtHV5yC9z2axjzwu/cDoVmc7FzWjrnhSA7uAiCIAiCIASP50vnCIIgCIIgCMOfwJLFSCQSVNW+Ew6HufPOO43a4tBEZzDTW5zNwERnMNNbnM2h2VwssGTx9G0Dhzvjx4/nlltuYfz48UE3xTdMdAYzvcXZDEx0BjO9xdkcms3FZM6iIAiCIAiCgbT8nMXT94se7lQqFY4dOybOBmCitzibgYnOYKa3OJtDs76BJYsmbSOUTCb5zW9+QzKZDLopvmGiM5jpLc5mYKIzmOktzubQbC4W2G3oRCLB1KlT/aw6MGq1Gvl8nvHjx9PZOaSlLS9YTHQGM73FWZyHMyZ6i7MZzmAnyRdddNGgt6FlzqIgCIIgCIKBtPycxUwmE1TVvpPJZFi3bp04G4CJ3uJsBiY6g5ne4mwOzfoGliz29/cHVbXvVKtVnn76aarVatBN8Q0TncFMb3E2AxOdwUxvcTaHZnMxuQ0tCIIgCIJgIC1/G1oQBEEQBEFofQJLFqPRaFBV+04kEuF73/ueUVscmugMZnqLsxmY6AxmeouzOTSbiwWWLI4ZMyaoqn1n7Nix3HTTTYwdOzbopviGic5gprc4m4GJzmCmtzibQ7O5mMxZFARBEARBMJCWn7N48uRJ9/tYLOY+vl2r1bAsy92CJp/PEw6H3bLxeJx0Og1AvV7HsizK5TIAhUIBy7LcsolEwl2dvNFoYFkWpVIJgGKxiGVZOLlyMpl0V27XWmNZFsViEYBSqYRlWTQaDcBe8TyRSLj1WJZFoVAAoFwuY1kW9XodgHQ6jWVZ9PX1Ua1WCYfD5PN5wN5mx7IsarUaYD/CHovF3NeNRCLkcjnAflLLsiz3yaVsNjvg8nE0GiWbzQL2002WZblPdeVyuQGX1v2Id7lcZv/+/W49TgydeKdSqQEr5Q8l3uFw2I23E0Mn3plMhng8PiCGTrydGDrxzmazA+IdjUbdeDsxdOKdy+UGxDsWi7nxdmJYrVapVqs88cQTPP300wNi6MTBiaET70KhMCDezfRZh2Qy6ZZ1+qxT9lz77OkxHKzPhkIht39fyH12KGNEpVJh//79bj1+xjuoMSKXy9HX10cqlfIk3q06Rpzev8/HGAF2nz093q02RlSr1QH9+0Lts0MZI7LZLH19fe579lDi7Uce4VW8Q6EQzRBYsnj33Xe7369YsYKdO3cCduOVUu7BOnDgAAsWLHDLrl69mu3btwP2gVJKceLECQAOHz7M3Llz3bLr1q1jy5YtgN3RlFIcO3YMgK6uLpRS7kHeuHEjGzduBOyDrJSiq6sLgGPHjqGUcgO8ZcsW1q1b59Yzd+5cDh8+DMCJEydQSrkdZPv27dxzzz3MmzePRCLBggULOHDgAGB3DqWUezLs3LmTFStWuK+7ePFi9u3bB9gnglLK7Yh79uxh6dKlbtlly5axe/duwO6ESin3RNq/fz+LFi1yy65cuZIdO3YA9kmklHKT94MHDzJ//ny37Jo1a9i2bRtgd2ClFMePHwfgyJEjzJkzxy27fv16Nm/eDNgn+Zo1a3jssccA6O7uRinldv5NmzaxYcMG92+VUhw9ehSA3t5elFLuib5161bWrl3rlp03bx6HDh0CoK+vD6WUe5Jt376dVatWuWUXLlzI/v37AfsEU0q5g8SuXbtYvny5W3bJkiXs3bsXsAcTpZR7gu7du5clS5a4ZZcvX86uXbsA+0RWShEOh0kkEixdupTFixe7ZVetWuX22UKhgFKKvr4+AA4dOsS8efPcsmvXrmXr1q2APQgopejt7QXg6NGjKKXcshs2bGDTpk2APeAppeju7gagp6cHpZQ7gGzevJn169e7fztnzhyOHDkCwPHjx1FKuW/w27ZtY82aNW7Z+fPnc/DgQcD+kKeUcgeqHTt2sHLlSrd/L1q0yI13JBJBKeUOtLt372bZsmXu6y5dupQ9e/YA9iCrlHIHuX379g2IYauNEfF4nDVr1vDoo48C5z5GrF692i3bqmPE0aNHmTdvHnv27DkvY0StVkMpRU9PD9C6Y8SKFSvc/n0+xggn3gsXLnTLttoYkUgkWLNmjdu3zscY4dCqY8SRI0eYN28ev//971syj/BqjDj9XDgr2mcymYwG9JEjR9yfRaNRnU6ntdZa9/f361AopMvlstZa61wupy3LcsvGYjGdSqW01lrXajUdCoV0qVTSWmudz+d1KBRyy8bjcZ1MJrXWWtfrdR0KhXSxWNRaa10oFHQoFNKNRkNrrXUikdCJREJrrXWj0dChUEgXCgWttdbFYlGHQiFdr9e11lonk0kdj8fdekKhkM7n81prrUulkg6FQrpWq2mttU6lUtqyLB2JRHS1WtWWZelcLqe11rpcLutQKKT7+/u11lqn02kdjUbd1w2HwzqbzWqtta5UKjoUCulqterGMRKJuGUjkYjOZDJaa62r1aoOhUK6UqlorbXOZrM6HA77Gu9yuawPHTrktsmJoRPvZDLpxtuJYbPxtizLjbcTQyfe6XRax2KxATF04u3E0Il3JpMZEO9IJOLG24mhE+9sNjsg3tFo1HVzYlipVHS1WtVPPfWUfvrppwfE0Im3E0Mn3vl8fkC8m+mzDolEwi3r9Fmn7Ln22dNjOFifDYVCbv++kPvsUMaISqWiDx065LbJz3gHNUbkcjkdiUR0Mpn0JN6tOkacPHnS7d/nY4zQ2u6zp8e71caIarWqDx065B7XC7XPDmWMcI5fKpVqyTzCq3gfPXpUA26cz4TMWRQEQRAEQTCQlp+z6FwyNYFsNsumTZvE2QBM9BZnMzDRGcz0FmdzaNY3sGTRmWtiAuVyma6uLne+hwmY6AxmeouzGZjoDGZ6i7M5NJuLyW1oQRAEQRAEA2n529CCIAiCIAhC6xNYsnj6OkDDnWg0yo9+9COjtjg00RnM9BZnMzDRGcz0FmdzaDYXCyxZHDVqVFBV+87o0aN5+ctfzujRo4Nuim+Y6AxmeouzGZjoDGZ6i7M5NJuLyZxFQRAEQRAEA2n5OYvOKuYm0N/fTyQSEWcDMNFbnM3ARGcw01uczaFZ38CSxdP3RBzuxONxfvGLXwzY23G4Y6IzmOktzmZgojOY6S3O5tBsLhbYbehYLMa0adP8rDowqtUqsViM6dOnM3LkyKCb4wsmOoOZ3uIszsMZE73F2QxnsJPk6dOnD3obWuYsCoIgCIIgGEjLz1nM5XJBVe07uVyObdu2ibMBmOgtzmZgojOY6S3O5tCsb2DJYqlUCqpq3ykWizzyyCMUi8Wgm+IbJjqDmd7ibAYmOoOZ3uJsDs3mYmbchi4koGczVHMwYRZc9SfQOczXeaxV4cn7IXsSRo6HK98C4y8OulXeojWcfATCj0FbO1z6Gph5XdCtErygWoTuTVCMw+jJcPXbYPSkoFslCOeHUgq6N0MlA+Omw9W3wogxQbfKW+o1OLYV0ids15fcAhMvCbpVw55mc7JOH9vkP+UsbPgXeOwuaNSANkDbby5v/Ar84d9CW1vAjTzPaA27fwbbvwulJK5zewdcdxu8839gzJSgW3n+6d0B9/0TRA8P/Pmlr4E//R5c8qpg2iWcX+o12HYnPPxzqBZw+3fnKHj17fC2b8AIsxbVFYYR1SJs+nfYvxDqVdz+PWoC/MGX4U3/ZI/lw419v4at/w35CK5zWzu89D32+D1+esANFAK7De354+mVPPz6T+HA0lOJIsCpi6jlNGz+D7jvq3Zy5TGxWIyf//zn/mxxuOn/g43/eipRBNe5UYeDK2DeO6Cc8bwZvjr33A8L3wuxI8/9XWi/7fz0771vBz57twi+OTcacPfn4MHvnUoUwe3ftQrsnQOLP2RfVfcYOc7m4Jt3rQKLPgD75p1KFMHt35UcPPA/sOqLw+8964HvwNq/PZUoguusG3D0XvjVW6Hg/XI2pvbvZnOxwJLFESNGeFvBju9D5BDo+pnL7J0DT233th3AyJEjueKKK7x/HL9vD+z6yZl/r+sQ74YH/tfbduCjc61iJxCNhj24PBvdgHo/rPy8L4Osb94thG/Oj6+yvzjDcdQN6H0Ifj/X23Ygx9kkfPN++Bf2GP584xgAGg4usxMoj/HNOfI4bP3WmX+v65B5Gjbf4W07MLd/N5uLDc85i7UKfO9ae97H2WjvhGveCR9b5E07/Obuz8HhVaddST0DI8fDP3bDyLH+tMtLDq6Auz/bXNlPr7bnwQgXJr96G5zcd/YPgLTBlBfB3zw6/KaYCMOXRh1+8Ep7jvnZaOuAF70Bbvc+YfSFdf8A++bb/mejYyT8Y9fwnEIVMC2/dE6tNkhCcy7Ejg6eKIKdVB3b5l07TlGr1Ugmk946Azy5ZfBEEaCat6+6eohvzk89YCf9g9He6ctVZN+8WwhfnOv98PSeQRJFAA2pXshZ3rUFOc4m4Yt3+sTgiSLY/f/4Q/adFA/x7Vj3bBk8UQT7trzHU4lM7t/NMDznLNaHsLdjw/t9IGOxGD/+8Y+9nwsxFO+6t/O6/HVu5uJ4m+fO4KN3C+GL81D6Ngyf/t1CmOgMLdi/daOJD03nhn/j9xDOUzmnPaHl5yxOmeLh5eTJL7KfpBqUNpj6Eu/acYqpU6fy53/+50ydOtXbii66qnnvKS/2tCm+Ojczk6LRb5f1GN+8WwhfnEeMgXFNLv3UOQbGz/CuLchxNglfvCdeYt9qbarspdDh7Zx/34719GvsW+vN4PH4bWr/bjYXCyxZHDXKw3UOx0+Ha/+0iU6o4abPedeOU4waNYorrrjCW2eAmz57lsnRp2jrsNeZnHSpp03xzfnGTzRXbsQYuO5D3rYFH71bCF+c29rs/j3Yh6H2Drjx456vSSfH2Rx88R41Hl75kcGXxWlrH17vWa/9zOBXSdva4bKbYPq1njbF5P7dDIEli/l83tsKbvln6Og885tLWwdMvRJu+Ji37cB2feihh7x3vu42mP7SsyTJ7XY83vw1b9uBj84TZ8HrvoS9NtdZeNM/22uVeYxv3i2Eb843fc6+unim/t3WASPGwR/+jbftQI6zSfjm/Ud/D52jz96/J8yE19zubTvw0fmad8Klrz3Le1ab/fXW//C2HZjdv5shsGSxUCgMXuhcmPlK+MTdMHLcqR+cSiacTjntGvjztaf93jvy+Tw7duzwvhOOGA2fXgMzXmH/3z0BT51wI8fAx++yF6r2GN+cAW79Jrz21BPRpw86bR1AG/zxV+EP/877duCzd4vgm/O4aXD7umeuijvH2vlAOGYK/PkamHKFt+1AjrNJ+OZ90ZX2+O3sROT0a6efT77c7v9jvb9N6ptzRyd8Yjlc9lr7/wMeVmyDzpHwkQXw4j/yth2Y27+bzcWG59I5p1PJwcHl8PgaqGTt+R43fsLeHmw4roQP9pNyT26B/b+BTJ99Re2l74brPwqjfdpiMQiiR+H38+yFuNvaYPbr4LV/4cu8VMFH6v1wdJ294H4+AuMugld8CF7x/uG/JZow/KkW4fBKexm0YtLeovaGj8G177KTq+GI1vZqFY8shNRT9kWca94BN/yZL8mxyTSbkw3/ZFEQBEEQBEF4Di2/zmIikQiqat+Jx+PMnTvX+y0OWwgTncFMb3E2AxOdwUxvcTaHZnOxwJLFjo5hegv4eejs7GT69Ol0dg7TWwjPg4nOYKa3OJuBic5gprc4m0OzuZjchhYEQRAEQTCQlr8NXa97uwJ9K1Gv18nlcuJsACZ6i7MZmOgMZnqLszk06xtYsmjSljrRaJT/+7//IxqNBt0U3zDRGcz0FmczMNEZzPQWZ3NoNhcL7DZ0JBLh4oub3L7rAqdcLnPixAkuv/xyRo8eHXRzfMFEZzDTW5zFeThjorc4m+EMdpI8Y8YMWTpHEARBEARBeC4tP2fR8x1cWohCocCePXvE2QBM9BZnMzDRGcz0FmdzaNY3sGQxl8sFVbXvZLNZNm3aRDabDbopvmGiM5jpLc5mYKIzmOktzubQbC4mt6EFQRAEQRAMpOVvQwuCIAiCIAitT2DJYjKZDKpq30kkEixcuNCoLQ5NdAYzvcXZDEx0BjO9xdkcms3FAksW29ragqrad9rb2xk3bhzt7eZcyDXRGcz0FmczMNEZzPQWZ3NoNheTOYuCIAiCIAgG0vJzFhuNRlBV+06j0aBSqYizAZjoLc5mYKIzmOktzubQrG9gyeITTzzhfh+LxchkMgDUajUsy6JSqQCQz+cJh8Nu2Xg8TjqdBuw9DS3LolwuA/Z6QZZluWUTiQSpVAqwA2JZFqVSCYBisYhlWTgXVpPJpHvvXmuNZVkUi0UASqUSlmW5QU2lUgPmNViW5a5VVC6XsSzL3W8xnU7zxBNP8O1vf5tIJEI4HCafzwNQqVSwLItarQZAJpMZsPVOJBJxH2uvVqtYlkV/fz9gfxo4fVuiaDTqPvLf39+PZVlUq1XAfjQ+Eon4Gm/Lsvj2t7/N8ePHB8TQiXcqlRowV2Io8Q6Hw268nRg68c5kMsTj8QExdOLtxNCJdzabHRDvaDTqxtuJoRPvXC43IN6xWMyNtxPDarVKJBLh29/+No8//viAGDrxdmLoxLtQKAyIdzN91iGZTLplnT7rlD3XPnt6DAfrs0ePHnX794XcZ4cyRoTD4eft337EO6gxoq+vj29/+9s89dRTnsS7VceI0/v3+RgjwO6zp8e71cYIZxzr7e0FLtw+O5Qxwunfvb29LZlHeBXv03OxsxFYsrh582b3+xUrVrBz507AbrxSyj1YBw4cYMGCBW7Z1atXs337dsA+UEopTpw4AcDhw4eZO3euW3bdunVs2bIFsDuaUopjx44B0NXVhVLKPcgbN25k48aNgH2QlVJ0dXUBcOzYMZRSboC3bNnCunXr3Hrmzp3L4cOHAThx4gRKKbeDbN++nR07dnDbbbcxefJkFixYwIEDBwC7cyil3JNh586drFixwn3dxYsXs2/fPsA+EZRSbkfcs2cPS5cudcsuW7aM3bt3A3YnVEq5J9L+/ftZtGiRW3blypXs2LEDsE8ipRQnT54E4ODBg8yfP98tu2bNGrZt2wbYHVgp5b5BHjlyhDlz5rhl169f7x7X8ePHA89Mnu3u7kYp5Xb+TZs2sWHDBvdvlVIcPXoUgN7eXpRS7om+detW1q5d65adN28ehw4dAqCvrw+llHuSbd++nVWrVrllFy5cyP79+wH7BFNKuYPErl27WL58uVt2yZIl7N27F7AHE6WUe4Lu3buXJUuWuGWXL1/Orl27APtEVkoRDoeZPHky1113Hffdd59bdtWqVW6fLRQKKKXo6+sD4NChQ8ybN88tu3btWrZu3QrYg4BSyh2wjx49ilLKLbthwwY2bdoE2AOeUoru7m4Aenp6UEq5A8jmzZtZv369+7dz5szhyJEjABw/fhyllPsGv23bNtasWeOWnT9/PgcPHgTg5MmTKKXcgWrHjh088MADbv9etGiRG+9IJIJSyh1od+/ezbJly9zXXbp0KXv27AHsfqKUcge5ffv2sXjxYrdsq40RkyZNAp7ZV/Vcx4jVq1e7ZVt1jCgWi9x2222cPHnyvIwRtVoNpRQ9PT1A644RW7Zscfv3+RgjnHgvXLjQLdtqY8TkyZNpa2tz+8e5jhErV650y7bqGJHL5bjtttuwLKsl8wivxgjn3B0U7TOZTEYDuru72/1ZNBrV6XRaa611f3+/DoVCulwua621zuVy2rIst2wsFtOpVEprrXWtVtOhUEiXSiWttdb5fF6HQiG3bDwe18lkUmutdb1e16FQSBeLRa211oVCQYdCId1oNLTWWicSCZ1IJLTWWjcaDR0KhXShUNBaa10sFnUoFNL1el1rrXUymdTxeNytJxQK6Xw+r7XWulQq6VAopGu1mtZa61QqpWOxmFvWsiydy+W01lqXy2UdCoV0f3+/1lrrdDqto9GoWzYcDutsNqu11rpSqehQKKSr1aobx0gk4paNRCI6k8lorbWuVqs6FArpSqWitdY6m83qcDgcaLydGDrxTiaTbrydGDYbb8uy3Hg7MXTinU6nB8Q7HA678XZi6MQ7k8kMiHckEnHj7cTQiXc2mx0Q72g06sbbiaET71wuNyDesVjMjbcTQyfe+Xx+QLyb6bMOiUTCLev02WfHW/qsjBEXSrxljJAx4kLrs8NhjOjp6dGAG+czEdgDLpZlMXPmTD+rDoxisUhXVxfXXHMNY8eODbo5vmCiM5jpLc7iPJwx0VuczXAG+2r6rFmzWvcBF5O21MlkMqxevdqdT2ECJjqDmd7ibAYmOoOZ3uJsDs3mYoFdWUyn0+68n+GO1hqtNW1tbcasL2miM5jpLc7iPJwx0VuczXAGO0mePHnyoFcWO31s0wBMOhimdT4w0xnM9BZnMzDRGcz0FmdzaNZZtvvzgWQyyW9/+1txNgATvcXZDEx0BjO9xdkcWn67P0EQBEEQBKH1ke3+BEEQBEEQDKTlt/vzOUcNFK01jUZDnA3ARG9xNgMTncFMb3E2h2Z9A0sWT9+mZ7gTDof55je/OWC7oeGOic5gprc4m4GJzmCmtzibQ7O5WGDJokm3oCdNmsT73vc+Y5YKAjOdwUxvcTYDE53BTG9xNodmczGZsygIgiAIgmAgLT9nsVQqBVW175RKJQ4fPizOBmCitzibgYnOYKa3OJtDs76BJYsmbamTTqdZsWIF6XQ66Kb4honOYKa3OJuBic5gprc4m0OzuVhgt6FTqRSTJ0/2s+rAaDQa9Pf3M2LECNrbzVja0kRnMNNbnMV5OGOitzib4Qx2kjxlypTW3e7Pt4OhNRzfCU/cB5UsTLgErv8IXHSlP/Vju44aNcq3+loBE53BTO9AnCOPw6EVUIjB6MnwivfDpa/xrXo5zj5Rq8LRtXB8FzT6YfpL4fqPwtipvjXBd+96HbZ+E/YvhloZRk2AN/493Pw535og/dsnqkU4dDeE9gMaZt0A190Go8b71oRmc7EhX1l84okn+OEPf8jx48e5+uqr+Yd/+Admz57d9N87VxZ7e3t50YteNJSqh07iSbjrkxB9HNpP5cVag67Dy98P7/8ZjBznbRuAVCrFli1beMtb3sKUKVM8r68VMNEZzPT21bmYhLs/B0/e/8w5DdCowWWvhY/8BiZe4m0bkOPsi3P372DVF6CYgPYRgAbdsI/7H3/V/vJhL19fvR+/F5Z9Eniet+X2EfCXW2HmK71tA9K/fXF+9Ldw3z9CNf/MWNaowYix8Pb/htf+hfdtAI4fP84VV1xxfh9w6erq4uabb6ZQKHD77bfz1FNPcfPNN7+gdYk8v/udeRrm3grxJ+z/N2r2l67b/z+yBpZ8FOo1b9uBfXm7UCjQaDQ8r6tVMNEZzPT2zblahAXvhWPbTlVce+YL7E/n895uJ5QeI8fZY57cao/PzrFs9J8avxtQr8LW/4It3/K+HfjofWI3LPsEz5sogh2DX/wR5LxfB1D6t8ccWAr3fNFOFGHgONZfhHv/Dn4/3/t20HwuNqQri5/85Cfp7u7m4YcfBqC/v5+rr76aD3/4w3znO99p6jV8Wzpnzd/Ao4ugUT97udvmwXUf8q4dgiCcHx7+Jaz/Z874ZgrQ1gFv/Aq89d99a5ZwntEafvwaSD1lJ4dnpA3+7jGYfLlvTfOU71wNhejg5S59DXx+i/ftEbyhvwTfvcaeFnc2RoyFf+z2/Ja0J0vnbNq0ife9733u/0eMGMG73/1uNm3a9MJb6gXlrJ25D5YotnXAnjn+tEkQhHPj4V8OXkbX4fdzod7vfXsEbzj+ECSfHCRRBNraYd8Cf9rkNflYc4kiwMlHvG2L4C2Prx48UQT7CuPB5d63p0maThaLxSKxWIzLLrtswM8vu+wyent7z/h3lUqFbDY74AvwdkudRDfUK4OX03WwDnjXjlNYlsW3vvUtLMvyvK5WwURnMNPbF+daxU4gznZV0aGUgpy38Zfj7GVFB+xEcDB0HaxHvW0LPnl3D+WCi4aqt2sBSv/2sqIDp+bgDkJ7py/5SbO5WNPJYrVaBWDMmDEDfj527Fj3d8/HnXfeyaRJk9wv52GYCRMmNFv1Bc/EiRO59dZbjdqxxkRnMNNbnM3ARGcw01uczaHZXKzpZHH8+PF0dnaSTA6cPJ5IJM765NDXvvY1MpmM+9XX1wfAuHEePoU87RroHD14ubYOuOTV3rXjFOPGjePmm2/21rnFMNEZzPT2xblzlH1e08TTr2MvspfI8hA5zh5yyasHvwUN9tXH4TJ+X/vOIRRug5FjBi92Dkj/9pBLXm0/rDQYjRpc8ipv20LzuVjTyWJnZyfXXXcdjzwycL7EI488wo033njGvxs1ahQTJ04c8AVQLpebrXrojJoAN37cTgbPhq7DzZ/3rh2nKJfLdHV1/f/t3X1sVPWex/F3n59mpg88tVza8uAS9AIVF3U1pICGIipXUbapZkXClQ2sREM2KbKJmhg1IZv1GhIlWM0VJbdDES8oq4gbg7gxxqWLhYTyIDgtFvsAzExn+jDTabt/DB3tekeK9pxT5nxe/5Acmpzv53dOTr5zzu/8jrGZxxg7ZgZ75jYt823/fPW/SUqG+X+EFGOXkNVxNlDJP0R/GFz1UfQg/P1qY2vBpNzZBeAoHNnf/m6+cXVcofPbQDf9Ibo27NV++KbnwJyVxtbCyHuxa3rBZfXq1ezevZtvv/0WgCNHjnDw4EFWr159zQUa/kmd8mrIGT98LbafSkqGGXfDjcuNrYPo+k21tbV4vV7D9zVW2DEz2DO3aZnn/VP0l3a8H4HJKZA/Fe74F2PrQMfZUElJcP+fov/+UsO46N8g93fG1oKJuav+cvW/SUqGR2qNrQOd34ZKzYD7/oPo/OtfaBiX/bsp60CPtBe7pqVz+vv7WbNmDe+99x6zZs3ixIkTrF+/nldeeWXEhQ29pn358mXjF770eqDu8egk6ORUICn6eGNwIPoVgOWvQpqxt/MhOm7d3d1kZ2eTknKVu50Jwo6ZwZ65Tc3c64e/rot+kSkp5UozMRh9ZDN1Aaz8MzgmGlsDOs6mZD53KLood6D1x+v3QCQ6xWjxZrjzKVMW5TY195n/gr9U/rge8E+lZsK6/4bxf2dsDej8NiXz8ffgP/8Ven0/vvAy0AcZLli2Jfp01ARer5eCgoKrLp3zq74N3dTURHNzMzNmzGDy5GubG2TaOos/1VIPjfujC2A6C2FOJeSN/KszIjLGXDobvdh2dUBWfvRzf5N+b3VVMtr6I3Dmk+gnWwci0cfTc/4RMhP8JYQv/gT/UxNdPiUjN9ocl1VZXZWMtkgITnwAF/43ur5oUVn0WmbCTawhI+3JflWz+FsMFdbU1ERJSYIspnoVPp+Pw4cPU15eTl5entXlmMKOmcGeuZU5z+pyTGHHzGDP3MqcZ3U5pmlubqa0tHR0F+UeTf39V1kwO4FEIhE6OjqIRIz/tOBYYcfMYM/cymwPdswM9sytzPYx0l7MsjuLpj6GFhEREZFhDPncn4iIiIjYi2XNYltbm1W7Nl1raytbtmwx9hOHY4wdM4M9cyuzPdgxM9gztzLbx0h7McuaRTutDO9wOFiwYAEOh8PqUkxjx8xgz9zKbA92zAz2zK3M9jHSXkxzFkVERERsaMzPWQyFQlbt2nShUAiPx6PMNmDH3MpsD3bMDPbMrcz2MdK8ljWLdvqM0OXLl9mxYweXL1+2uhTT2DEz2DO3MtuDHTODPXMrs32MtBez7DH0pUuXKCgoMHPXlolEInR2duJyuUhNjfOt6gRjx8xgz9zKrMyJzI65ldkemSHaJI8bN27sfsFFcxZFRERErDPm5yz6/X6rdm06v9/Pxx9/rMw2YMfcymwPdswM9sytzPYx0ryWNYt9fX1W7dp04XAYj8dDOBy2uhTT2DEz2DO3MtuDHTODPXMrs32MtBfTY2gRERERGxrzj6FFREREZOwz/ZWfoRuZR44cYf78+QBcvHiRtLQ0cnNziUQiXLx4kfz8fDIyMggGg3R1dTFp0iQALl26REpKCnl5efT399PR0UFeXh6ZmZl0dXURCAQoLCwEom/5JCUlkZ+fz8DAAO3t7eTm5pKVlUV3dzednZ1MmjSJpKSk2OvyBQUFDA4O0tbWhsvlIjs7m56eHvx+PxMnTiQ5ORmv18vg4GDsbe7W1lacTic5OTn09vbi8/mYMGECKSkp+Hw+Ojo6+OSTT6isrGRwcJCcnBwcDgehUAiv18v48eNJTU3F7/fT19fH+PHjAWhvbycrKwun00k4HI69tZSWlkZnZyehUIgJEyYA0NHRQUZGBi6Xi76+vtjb5unp6QQCAXp6epg4caJp493a2squXbtYsWIFJSUlsTEcGu+/NYYjHe+2tjYcDgc5OTmxMRwab7/fTyQSYdy4cbExzM7OxuFwxMZwaLw7OzsJh8Ox8e7o6CAzMxOn0xkbw6HxDgQC9Pb2xsb74sWLpKen43K5YmNYUFCAz+fD7XZTUVHBrFmzYmOYmppKbm5ubAyHxrurq4tgMBgb75Gcs39rvIfO2aG//a3nbH9/f2wM29rafvGcbWtr4+DBg1RWVgJct+fstVwj2tracLvdPzu/zRhvq64RkUiEvXv3cv/995OVlTXq4z1WrxE//PADn376KZWVlSQlJf3ma0R6ejrBYJDu7u7YeI+1a0R7ezu1tbU8+OCDlJaWXrfn7LVcI/r6+ti3bx/Lly8nIyNjzPURRo33mTNngB97s3hMfwz9/fffU1xcbOYuRURERCSO8+fPM2XKlLj/b3qzODAwwIULF3A6nSQlJZm2387OToqLizl//rzmSiY4HWv70LG2Bx1n+9CxNtfg4CCBQIDJkyeTnBx/ZqLpj6GTk5N/sXs1msvl0gloEzrW9qFjbQ86zvahY22e3Nzcq/6NXnARERERkbjULIqIiIhIXLZpFjMyMnj++efJyMiwuhQxmI61fehY24OOs33oWI9Npr/gIiIiIiLXD9vcWRQRERGRa6dmUURERETiUrMoIiIiInGZvs6iFQYGBvjqq69ob29nzpw5zJgxw+qSxCAnTpzg7NmzTJkyhZtvvtnUhd/FfMFgkP3791NUVMTChQutLkcM4vF4OHbsGKWlpZSVlVldjhikoaEBj8dDXl4et956K9nZ2VaXJFck/AsuXq+XpUuXcuHCBW688Ua+/PJLNm7cyIsvvmh1aTKKjhw5wrp16+jp6WH69OkcPXqUwsJCPvzwQ4qKiqwuTwyyatUqdu3axeLFizlw4IDV5cgo6+vrY/369ezatYvy8nK8Xi9FRUXs2bPH6tJkFPl8Pu69917OnTvH7bffjsfjoaWlhbq6Ou666y6ryxNscGdx8+bNBAIBGhsbcTqdHDp0iMWLF7NkyRLdiUggXV1d1NTUMG/ePAB6enq48847efrpp6mrq7O4OjHCO++8w+nTp1m+fDnBYNDqcsQAmzZt4qOPPuL48eNMnToVgH379llblIy6bdu2cerUKc6ePUteXh4AjzzyCBs3bqShocHa4gRI8DmLAwMD1NbWsnbtWpxOJwCLFi3illtuYefOnRZXJ6Np4cKFsUYRICsri2XLlvHNN99YV5QY5vTp02zatImdO3eSmprwv3ltyefzsW3bNjZv3hxrFAEeeOAB64oSQ4RCIfLz82ONIsC0adMIh8PWFSXDJPRVtqmpic7OTmbPnj1s+5w5czh+/LhFVYkZBgcH+eyzz3527OX6FwqFqKqq4qWXXuKGG26wuhwxyNdff01vby8VFRXU19fT0tLCzJkzmTVrltWlySh78sknOXjwII8++igVFRU0NTVRW1vLG2+8YXVpckVCN4t+vx+AgoKCYdvHjRuHz+ezoCIxy8svv0xDQ4MuNgmourqaadOmsWbNGqtLEQO1t7cD8Nxzz3Hy5EmKi4v54osvWLJkCW63W3eUE4jL5eKOO+5g9+7dBINBPB4P06ZNG3ZHWayV0I+hhz4X9P/nMwWDQTIzM60oSUywfft2XnjhBdxuN3PnzrW6HBlFR48e5fXXX+fuu+/G7Xbjdrtpbm6mtbUVt9sd+4Eo17+ha7TD4aChoYH9+/dz9OhRDhw4wPbt2y2uTkbTs88+y549ezh27BgffPABx44dY+bMmSxbtoz+/n6ryxMS/M5iaWkpKSkpNDc3D9ve1NTE9OnTLapKjFRTU8NTTz2F2+3W3KYElJaWxsMPP8zhw4dj21paWgiHw+zdu5cFCxaQm5trYYUyWoaWOHvooYdi26ZPn868efOor6+3qiwxwOeff86SJUuGzVlcuXIl27dv5/z587rDOAYkdLOYnZ3NokWL2L17N6tWrQKijzYOHTrEa6+9ZnF1MtreeustNmzYQG1tLStWrLC6HDHA7Nmzcbvdw7ZVVVXh8/l+tl2ub2VlZZSUlHDy5Enuu+8+AMLhMOfOndNyKgmmuLiYxsbGYdsaGxtJSUmhsLDQoqrkpxK6WQTYsmUL5eXlPP7449x2223U1NQwd+5cHnvsMatLk1G0d+9e1q5dS1VVFeFwONY4DN2JEpHrS3JyMlu3bmXVqlX4/X5KSkpwu90kJyezYcMGq8uTUVRdXU15eTmVlZXcc889fPfdd7z66qtUV1drytgYkfCLcgOcOnWKN998k/b2dsrKyli3bp1Whk8wdXV1vP/++z/bnpmZydtvv21+QWKarVu30t3dzTPPPGN1KWKA+vp63n33XQKBADfddBNPPPGEphokII/Hw44dO2hqaiI/P5+KigqWLl1qdVlyhS2aRRERERH5dRL6bWgRERER+W3ULIqIiIhIXGoWRURERCQuNYsiIiIiEpeaRRERERGJS82iiIiIiMSlZlFERERE4lKzKCIiIiJxqVkUERERkbjULIqIiIhIXGoWRURERCQuNYsiIiIiEtf/ATcjXXMvhjr7AAAAAElFTkSuQmCC", "encoding": "base64", "path": ["value"]}]}, "5c391d406c2a4af2a2f7390366797975": {"model_name": "TemplateModel", "model_module": "jupyter-vue", "model_module_version": "3.1.1", "state": {"_model_module": "jupyter-vue", "_model_module_version": "3.1.1", "_model_name": "TemplateModel", "_view_count": null, "_view_module": null, "_view_module_version": "", "_view_name": null, "esm_export": null, "esm_module": null, "source_url": "gridlayout_v3.vue", "template": "<template>\n  <div>\n    <div v-if=\"gridlayout_loaded\" style=\"padding: 0px; width: 100%;\">\n       <grid-layout\n            v-model:layout=\"grid_layout\"\n            :col-num=\"col_num\"\n            :row-height=\"row_height\"\n            :is-draggable=\"draggable\"\n            :is-resizable=\"resizable\"\n            :is-mirrored=\"false\"\n            :vertical-compact=\"true\"\n            :margin=\"[10, 10]\"\n            :use-css-transforms=\"true\"\n            @layout-updated=\"onLayoutUpdated\"\n    >\n\n        <grid-item v-for=\"item in grid_layout\"\n                   :x=\"item.x\"\n                   :y=\"item.y\"\n                   :w=\"item.w\"\n                   :h=\"item.h\"\n                   :i=\"item.i\"\n                   :key=\"item.i\"\n                   @resized=\"resizedEvent\">\n            <div v-if=\"!items[item.i]\">\n              placeholder: {{item.i}}\n            </div>\n            <div v-if=\"items[item.i]\">\n              <jupyter-widget :widget=\"items[item.i]\" :key=\"'child_' + item.i\"></jupyter-widget>\n            </div>\n        </grid-item>\n    </grid-layout>\n\n    </div>\n  </div>\n</template>\n\n<script>\nmodule.exports = {\n    async created() {\n      this.gridlayout_loaded = false\n\n      const {GridLayout, GridItem} = (await this.import([`${this.getCdn()}/@widgetti/vue-grid-layout@2.3.13-alpha.2/dist/vue-grid-layout.umd.js`]))[0]\n      this.$options.components['grid-item'] = GridItem;\n      this.$options.components['grid-layout'] = GridLayout;\n      this.gridlayout_loaded = true;\n    },\n    methods: {\n        resizedEvent(i, newH, newW, newHPx, newWPx) {\n          // this will cause bqplot to layout itself\n          window.dispatchEvent(new Event('resize'));\n        },\n        onLayoutUpdated(layout) {\n          this.layout_updated(layout);\n        },\n        import(deps) {\n          return this.loadRequire().then(\n            () => {\n              if(window.jupyterVue) {\n                // in jupyterlab, we take Vue from ipyvue/jupyterVue\n                define(\"vue\", [], () => window.jupyterVue.Vue);\n              } else {\n                define(\"vue\", ['jupyter-vue'], jupyterVue => jupyterVue.Vue);\n              }\n              return new Promise((resolve, reject) => {\n                requirejs(deps, (...modules) => resolve(modules));\n              })\n            }\n          );\n        },\n        loadRequire() {\n          /* Needed in lab */\n          if (window.requirejs) {\n              console.log('require found');\n              return Promise.resolve()\n          }\n          return new Promise((resolve, reject) => {\n            const script = document.createElement('script');\n            script.src = `${this.getCdn()}/requirejs@2.3.6/require.js`;\n            script.onload = resolve;\n            script.onerror = reject;\n            document.head.appendChild(script);\n          });\n        },\n        getJupyterBaseUrl() {\n          if (document.getElementsByTagName(\"base\").length) {\n            return \"./\";\n          }\n          const labConfigData = document.getElementById('jupyter-config-data');\n          if(labConfigData) {\n            /* lab and Voila */\n            return JSON.parse(labConfigData.textContent).baseUrl;\n          }\n          let base = document.body.dataset.baseUrl || document.baseURI;\n          if(!base.endsWith('/')) {\n            base += '/';\n          }\n          return base\n        },\n        getCdn() {\n          return this.cdn || (window.solara ? window.solara.cdn : `${this.getJupyterBaseUrl()}_solara/cdn`);\n        },\n    }\n}\n<\/script>\n\n<style id=\"grid_layout\">\n.vue-grid-item > div {\n  height: 100%;\n}\n</style>\n"}}, "8b59778173d5422f96459615ec076eaa": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "815e0a9885f64c548ec6e51c65aa54a5": {"model_name": "VuetifyTemplateModel", "model_module": "jupyter-vuetify", "model_module_version": "3.1.0", "state": {"_component_instances": [], "_dom_classes": [], "_jupyter_vue": "IPY_MODEL_5bc7b9ad9e234ebf9812ab0ffdbfe591", "_model_module": "jupyter-vuetify", "_model_module_version": "3.1.0", "_model_name": "VuetifyTemplateModel", "_view_count": null, "_view_module": "jupyter-vuetify", "_view_module_version": "3.1.0", "_view_name": "VuetifyView", "cdn": null, "col_num": 12, "components": null, "draggable": true, "events": ["layout_updated"], "grid_layout": [{"i": 0, "w": 6, "h": 10, "moved": false, "x": 0, "y": 0}], "gridlayout_loaded": false, "items": ["IPY_MODEL_01d12d6b8f804304816e9bf822ec236e"], "layout": "IPY_MODEL_8b59778173d5422f96459615ec076eaa", "resizable": true, "row_height": 30, "tabbable": null, "template": "IPY_MODEL_5c391d406c2a4af2a2f7390366797975", "tooltip": null}}}, "version_major": 2, "version_minor": 0}</script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script crossorigin="anonymous" data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/" src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@1.0.6/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/6_visualization_basic';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/tutorials/6_visualization_basic.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Visualization - Dynamic Agents" href="7_visualization_dynamic_agents.html" />
+    <link rel="prev" title="Collecting Data" href="5_collecting_data.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.0" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="0_first_model.html">Creating Your First Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_agentset.html">AgentSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_agent_activation.html">Agent Activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_event_scheduling.html">Event Scheduling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_adding_space.html">Adding Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_collecting_data.html">Collecting Data</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Basic Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_visualization_dynamic_agents.html">Dynamic Agent Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8_visualization_rendering_with_space_renderer.html">Visualisation using SpaceRenderer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9_visualization_property_layer_visualization.html">Property Layer Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_visualization_custom.html">Custom Visualization Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_discrete_event_simulation.html">Discrete Event Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12_hybrid_abm_devs.html">Hybrid ABM-DEVS Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best-practices.html">Best Practices</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../overview.html" class="nav-link">Overview of the MODELLY library</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Visualization - Basic Dashboard</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="visualization-basic-dashboard">
+<h1>Visualization - Basic Dashboard<a class="headerlink" href="#visualization-basic-dashboard" title="Link to this heading">#</a></h1>
+<section id="the-boltzmann-wealth-model">
+<h2>The Boltzmann Wealth Model<a class="headerlink" href="#the-boltzmann-wealth-model" title="Link to this heading">#</a></h2>
+<p>If you want to get straight to the tutorial checkout these environment providers:<br>
+<a class="reference external" href="https://mybinder.org/v2/gh/RemiPelloux/Modelly/main?labpath=docs%2Ftutorials%2F6_visualization_basic.ipynb"><img alt="Binder" src="https://mybinder.org/badge_logo.svg" /></a> (This can take 30 seconds to 5 minutes to load)</p>
+<p>Due to conflict with Colab and Solara there are no colab links for this tutorial</p>
+<p><em>If you are running locally, please ensure you have the latest Modelly version installed.</em></p>
+</section>
+<section id="tutorial-description">
+<h2>Tutorial Description<a class="headerlink" href="#tutorial-description" title="Link to this heading">#</a></h2>
+<p>This tutorial extends the Boltzmann wealth model from the <a class="reference internal" href="1_agentset.html"><span class="std std-doc">AgentSet tutorial</span></a>, by adding an interactive dashboard.</p>
+<p>In this portion, we will demonstrate how users can employ build a basic dashboard. This is part one of three part series on building interactive dashboards in Modelly.</p>
+<p><em>If you are starting here please see the <a class="reference internal" href="0_first_model.html"><span class="std std-doc">Running Your First Model tutorial</span></a> for dependency and start-up instructions</em></p>
+<section id="import-dependencies">
+<h3>Import Dependencies<a class="headerlink" href="#import-dependencies" title="Link to this heading">#</a></h3>
+<p>This includes importing of dependencies needed for the tutorial.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Has multi-dimensional arrays and matrices.</span>
+<span class="c1"># Has a large collection of mathematical functions to operate on these arrays.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Data manipulation and analysis.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Data visualization tools.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellAgent</span><span class="p">,</span> <span class="n">OrthogonalMooreGrid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolaraViz</span><span class="p">,</span> <span class="n">SpaceRenderer</span><span class="p">,</span> <span class="n">make_plot_component</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentPortrayalStyle</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="basic-model">
+<h2>Basic Model<a class="headerlink" href="#basic-model" title="Link to this heading">#</a></h2>
+<p>The following is the basic model we will be using to build the dashboard. This is the same model seen in tutorials 0-3.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_gini</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="n">agent_wealths</span> <span class="o">=</span> <span class="p">[</span><span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">agent_wealths</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">num_agents</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">xi</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">xi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">N</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">B</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MoneyAgent</span><span class="p">(</span><span class="n">CellAgent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""An agent with fixed initial wealth."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""initialize a MoneyAgent instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: A model instance</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Move the agent to a random neighboring cell."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">select_random_cell</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">give_money</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Give 1 unit of wealth to a random agent in the same cell."""</span>
+        <span class="n">cellmates</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">agents</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">cellmates</span><span class="p">:</span>  <span class="c1"># Only give money if there are other agents present</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">cellmates</span><span class="p">)</span>
+            <span class="n">other</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""do one step of the agent."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">give_money</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MoneyModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A model with some number of agents."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Initialize a MoneyModel instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            N: The number of agents.</span>
+<span class="sd">            width: width of the grid.</span>
+<span class="sd">            height: Height of the grid.</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_agents</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalMooreGrid</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+
+        <span class="c1"># Create agents</span>
+        <span class="n">MoneyAgent</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_agents</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="o">.</span><span class="n">cells</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_agents</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">DataCollector</span><span class="p">(</span>
+            <span class="n">model_reporters</span><span class="o">=</span><span class="p">{</span><span class="s2">"Gini"</span><span class="p">:</span> <span class="n">compute_gini</span><span class="p">},</span> <span class="n">agent_reporters</span><span class="o">=</span><span class="p">{</span><span class="s2">"Wealth"</span><span class="p">:</span> <span class="s2">"wealth"</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""do one step of the model"""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="important-note-for-solaraviz-users">
+<h3>Important note for SolaraViz users<a class="headerlink" href="#important-note-for-solaraviz-users" title="Link to this heading">#</a></h3>
+<p>When using <strong>SolaraViz</strong>, Modelly models must be instantiated <strong>using keyword arguments only</strong>. SolaraViz creates model instances internally via keyword-based parameters, and positional arguments are <strong>not supported</strong>.</p>
+<p><strong>Not supported:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MyModel</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Supported:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MyModel</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Common Pitfall:</strong></p>
+<p>When converting from positional to keyword arguments, make sure to include ALL parameters. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">=</span><span class="n">MoneyModel</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span> <span class="c1">#n=100, width=10, height=10</span>
+
+<span class="c1"># Correct conversion (keyword)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MoneyModel</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># All parameters included</span>
+
+<span class="c1"># Incorrect conversion (missing n)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MoneyModel</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># Defaults to n=10</span>
+</pre></div>
+</div>
+<p>To avoid errors, it is recommended to define your model constructor with keyword-only arguments, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lets make sure the model works</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MoneyModel</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">get_agent_vars_dataframe</span><span class="p">()</span>
+<span class="c1"># Use seaborn</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"Wealth"</span><span class="p">],</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Wealth distribution"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"Wealth"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"number of agents"</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e41f66087ec2caaf09b4d771f46f991d8b43da9935400dff5b7da98e048021a0.png" src="../_images/e41f66087ec2caaf09b4d771f46f991d8b43da9935400dff5b7da98e048021a0.png" />
+</div>
+</div>
+</section>
+<section id="adding-visualization">
+<h3>Adding visualization<a class="headerlink" href="#adding-visualization" title="Link to this heading">#</a></h3>
+<p>So far, we’ve built a model, run it, and analyzed some output afterwards. However, one of the advantages of agent-based models is that we can often watch them run step by step, potentially spotting unexpected patterns, behaviors or bugs, or developing new intuitions, hypotheses, or insights. Other times, watching a model run can explain it to an unfamiliar audience better than static explanations. Like many ABM frameworks, Modelly allows you to create an interactive visualization of the model. In this section we’ll walk through creating a visualization using built-in components, and (for advanced users) how to create a new visualization element.</p>
+<p>First, a quick explanation of how Modelly’s interactive visualization works. The visualization is done in a browser window or Jupyter instance, using the <a class="reference external" href="https://solara.dev/">Solara</a> framework, a pure Python, React-style web framework. Running <code class="docutils literal notranslate"><span class="pre">solara</span> <span class="pre">run</span> <span class="pre">app.py</span></code> will launch a web server, which runs the model, and displays model detail at each step via a plotting library. Alternatively, you can execute everything inside a Jupyter instance and display it inline.</p>
+<section id="grid-visualization">
+<h4>Grid Visualization<a class="headerlink" href="#grid-visualization" title="Link to this heading">#</a></h4>
+<p>Modelly’s grid visualizer works by iterating over each cell in the grid and generating a portrayal for every agent it finds. The portrayal function is called for each agent and returns an <code class="docutils literal notranslate"><span class="pre">AgentPortrayalStyle</span></code>—an object that defines how the agent is visually represented.</p>
+<p>All you need to provide is a function that takes an agent as input and returns an <code class="docutils literal notranslate"><span class="pre">AgentPortrayalStyle</span></code>.</p>
+<p>Here’s the simplest example: it draws each agent as a filled orange circle with a radius of 50.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">agent_portrayal</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">AgentPortrayalStyle</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"tab:orange"</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In addition to the portrayal method, we instantiate the model parameters, some of which are modifiable by user inputs. In this case, the number of agents, N, is specified as a slider of integers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"n"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"SliderInt"</span><span class="p">,</span>
+        <span class="s2">"value"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Number of agents:"</span><span class="p">,</span>
+        <span class="s2">"min"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s2">"max"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="s2">"step"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">"width"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s2">"height"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Next, we instantiate the visualization object which (by default) displays the grid containing the agents, and timeseries of values computed by the model’s data collector. In this example, we specify the Gini coefficient.</p>
+<p>There are 3 main buttons (we will discuss the play interval, render interval and use threads in lesson 6):</p>
+<ul class="simple">
+<li><p>the step button, which advances the model by 1 step</p></li>
+<li><p>the play button, which advances the model indefinitely until it is paused</p></li>
+<li><p>the pause button, which pauses the model</p></li>
+</ul>
+<p>To reset the model, the order of operations are important</p>
+<ol class="arabic simple">
+<li><p>Stop the model</p></li>
+<li><p>Update the parameters (e.g. move the sliders)</p></li>
+<li><p>Press reset</p></li>
+</ol>
+<section id="spacerenderer">
+<h5>SpaceRenderer<a class="headerlink" href="#spacerenderer" title="Link to this heading">#</a></h5>
+<p>This is the Python object used to visualize the grid, agents, and property layers associated with the space and the model and is passed to the <code class="docutils literal notranslate"><span class="pre">SolaraViz</span></code></p>
+<p>We initialize the SpaceRenderer with a model instance (e.g., <code class="docutils literal notranslate"><span class="pre">money_model</span></code> in this case) and specify the rendering backend. The available backends are <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>(default) and <code class="docutils literal notranslate"><span class="pre">altair</span></code>.</p>
+<p>Both backends can be extended using the post_process function, which can either be passed directly to the render() method or set as a property of the renderer. (We’ll cover this in more detail later.)</p>
+<p>The method shown here is the quickest way to set up the visualization using the <code class="docutils literal notranslate"><span class="pre">render()</span></code> function.</p>
+<p>It renders the space, agents, and property layers—provided that the corresponding portrayal functions are supplied for both agents and property layers.</p>
+<blockquote>
+<div><p><strong>Note:</strong></p>
+<p>You can make the small window full screen by clicking the button in the top-right corner of the title bar.</p>
+</div></blockquote>
+</section>
+</section>
+</section>
+<section id="page-tab-view">
+<h3>Page Tab View<a class="headerlink" href="#page-tab-view" title="Link to this heading">#</a></h3>
+<section id="plot-components">
+<h4><strong>Plot Components</strong><a class="headerlink" href="#plot-components" title="Link to this heading">#</a></h4>
+<p>You can place different components (except the renderer) on separate pages according to your preference. There are no restrictions on page numbering — pages do not need to be sequential or positive. Each page acts as an independent window where components may or may not exist.</p>
+<p>The default page is <code class="docutils literal notranslate"><span class="pre">page=0</span></code>. If pages are not sequential (e.g., <code class="docutils literal notranslate"><span class="pre">page=1</span></code> and <code class="docutils literal notranslate"><span class="pre">page=10</span></code>), the system will automatically create the 8 empty pages in between to maintain consistent indexing. To avoid empty pages in your dashboard, use sequential page numbers.</p>
+<p>To assign a plot component to a specific page, pass the <code class="docutils literal notranslate"><span class="pre">page</span></code> keyword argument to <code class="docutils literal notranslate"><span class="pre">make_plot_component</span></code>. For example, the following will display the plot component on page 1:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plot_comp</span> <span class="o">=</span> <span class="n">make_plot_component</span><span class="p">(</span><span class="s2">"encoding"</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-components">
+<h4><strong>Custom Components</strong><a class="headerlink" href="#custom-components" title="Link to this heading">#</a></h4>
+<p>In tutorial 8, you will learn how to create custom components for the Solara dashboard. If you want a custom component to appear on a specific page, you must pass it as a tuple containing the component and the page number.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@solara</span><span class="o">.</span><span class="n">component</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">CustomComponent</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="n">page</span> <span class="o">=</span> <span class="n">SolaraViz</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">renderer</span><span class="p">,</span>
+    <span class="n">components</span><span class="o">=</span><span class="p">[(</span><span class="n">CustomComponent</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>  <span class="c1"># Custom component will appear on page 1</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>⚠️ <strong>Warning</strong>
+Running the model can be performance-intensive. It is strongly recommended to pause the model in the dashboard before switching pages.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create initial model instance</span>
+<span class="n">money_model</span> <span class="o">=</span> <span class="n">MoneyModel</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># keyword arguments</span>
+
+<span class="n">renderer</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SpaceRenderer</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">money_model</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"matplotlib"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">setup_agents</span><span class="p">(</span><span class="n">agent_portrayal</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">render</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="n">GiniPlot</span> <span class="o">=</span> <span class="n">make_plot_component</span><span class="p">(</span><span class="s2">"Gini"</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">page</span> <span class="o">=</span> <span class="n">SolaraViz</span><span class="p">(</span>
+    <span class="n">money_model</span><span class="p">,</span>
+    <span class="n">renderer</span><span class="p">,</span>
+    <span class="n">components</span><span class="o">=</span><span class="p">[</span><span class="n">GiniPlot</span><span class="p">],</span>
+    <span class="n">model_params</span><span class="o">=</span><span class="n">model_params</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Boltzmann Wealth Model"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># This is required to render the visualization in the Jupyter notebook</span>
+<span class="n">page</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "d897948650cb4e32a48c442d7b6e56a5"}</script></div>
+</div>
+</section>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<p>Check out the next <a class="reference internal" href="7_visualization_dynamic_agents.html"><span class="std std-doc">visualization tutorial dynamic agents</span></a> on how to further enhance your interactive dashboard.</p>
+<p>[Comer2014] Comer, Kenneth W. “Who Goes First? An Examination of the Impact of Activation on Outcome Behavior in AgentBased Models.” George Mason University, 2014. http://mars.gmu.edu/bitstream/handle/1920/9070/Comer_gmu_0883E_10539.pdf</p>
+<p>[Dragulescu2002] Drăgulescu, Adrian A., and Victor M. Yakovenko. “Statistical Mechanics of Money, Income, and Wealth: A Short Survey.” arXiv Preprint Cond-mat/0211175, 2002. http://arxiv.org/abs/cond-mat/0211175.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="5_collecting_data.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Collecting Data</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="7_visualization_dynamic_agents.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Visualization - Dynamic Agents</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-boltzmann-wealth-model">The Boltzmann Wealth Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-description">Tutorial Description</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#import-dependencies">Import Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-model">Basic Model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#important-note-for-solaraviz-users">Important note for SolaraViz users</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-visualization">Adding visualization</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#grid-visualization">Grid Visualization</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spacerenderer">SpaceRenderer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#page-tab-view">Page Tab View</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-components"><strong>Plot Components</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-components"><strong>Custom Components</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/tutorials/6_visualization_basic.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

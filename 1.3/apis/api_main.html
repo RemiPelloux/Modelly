@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>APIs &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'apis/api_main';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.3';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/apis/api_main.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Core" href="core.html" />
+    <link rel="prev" title="Performance audit" href="../performance.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#" aria-current="page">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="space.html">Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geo.html">Geospatial space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time.html">Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="behaviour.html">Behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenarios.html">Scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibrate.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viz.html">Viz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrate.html">Migrate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Lint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">LLM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zoo.html">Model zoo</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">APIs</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="apis">
+<h1>APIs<a class="headerlink" href="#apis" title="Link to this heading">#</a></h1>
+<p>One page per domain package of <code class="docutils literal notranslate"><span class="pre">modelly</span></code>: <code class="docutils literal notranslate"><span class="pre">core</span></code>, <code class="docutils literal notranslate"><span class="pre">space</span></code> (with <code class="docutils literal notranslate"><span class="pre">space.geo</span></code> and
+<code class="docutils literal notranslate"><span class="pre">space.networks</span></code>), <code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">behaviour</span></code>, <code class="docutils literal notranslate"><span class="pre">scenarios</span></code>, <code class="docutils literal notranslate"><span class="pre">experiments</span></code>, <code class="docutils literal notranslate"><span class="pre">batch</span></code>, <code class="docutils literal notranslate"><span class="pre">viz</span></code>,
+<code class="docutils literal notranslate"><span class="pre">timetravel</span></code>, <code class="docutils literal notranslate"><span class="pre">llm</span></code> and <code class="docutils literal notranslate"><span class="pre">zoo</span></code>, plus the <code class="docutils literal notranslate"><span class="pre">log</span></code>, <code class="docutils literal notranslate"><span class="pre">migrate</span></code>, <code class="docutils literal notranslate"><span class="pre">lint</span></code>, <code class="docutils literal notranslate"><span class="pre">profile</span></code>, <code class="docutils literal notranslate"><span class="pre">provenance</span></code> and
+<code class="docutils literal notranslate"><span class="pre">plugins</span></code> modules.
+<code class="docutils literal notranslate"><span class="pre">scenarios</span></code>, <code class="docutils literal notranslate"><span class="pre">experiments</span></code>, <code class="docutils literal notranslate"><span class="pre">calibrate</span></code>, <code class="docutils literal notranslate"><span class="pre">sensitivity</span></code>, <code class="docutils literal notranslate"><span class="pre">batch</span></code> and <code class="docutils literal notranslate"><span class="pre">viz</span></code>, plus the <code class="docutils literal notranslate"><span class="pre">log</span></code>, <code class="docutils literal notranslate"><span class="pre">migrate</span></code>, <code class="docutils literal notranslate"><span class="pre">lint</span></code> and <code class="docutils literal notranslate"><span class="pre">profile</span></code> modules.
+<code class="docutils literal notranslate"><span class="pre">scenarios</span></code>, <code class="docutils literal notranslate"><span class="pre">batch</span></code>, <code class="docutils literal notranslate"><span class="pre">viz</span></code>, <code class="docutils literal notranslate"><span class="pre">timetravel</span></code> and <code class="docutils literal notranslate"><span class="pre">studio</span></code>, plus the <code class="docutils literal notranslate"><span class="pre">log</span></code>, <code class="docutils literal notranslate"><span class="pre">migrate</span></code>, <code class="docutils literal notranslate"><span class="pre">lint</span></code> and <code class="docutils literal notranslate"><span class="pre">profile</span></code> modules.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core.html#model">Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.model.Model"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#module-modelly.core.agent">Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.agent.Agent"><code class="docutils literal notranslate"><span class="pre">Agent</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#agent-sets">Agent sets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.agentset.weak.AgentSet"><code class="docutils literal notranslate"><span class="pre">AgentSet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.agentset.abstract.AbstractAgentSet"><code class="docutils literal notranslate"><span class="pre">AbstractAgentSet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.agentset.groupby.GroupBy"><code class="docutils literal notranslate"><span class="pre">GroupBy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#columns">Columns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.columns.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.columns.ColumnTable"><code class="docutils literal notranslate"><span class="pre">ColumnTable</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.columns.ColumnStore"><code class="docutils literal notranslate"><span class="pre">ColumnStore</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.column_access.fast_view"><code class="docutils literal notranslate"><span class="pre">fast_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.column_access.column_property"><code class="docutils literal notranslate"><span class="pre">column_property()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.column_access.collect_column_specs"><code class="docutils literal notranslate"><span class="pre">collect_column_specs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.column_access.install_column_properties"><code class="docutils literal notranslate"><span class="pre">install_column_properties()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#random-numbers">Random numbers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.rng.PyFastRandom"><code class="docutils literal notranslate"><span class="pre">PyFastRandom</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.rng.FastRandom"><code class="docutils literal notranslate"><span class="pre">FastRandom</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#checkpoints">Checkpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.checkpoint.save_model"><code class="docutils literal notranslate"><span class="pre">save_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.checkpoint.load_model"><code class="docutils literal notranslate"><span class="pre">load_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.checkpoint.CheckpointWriter"><code class="docutils literal notranslate"><span class="pre">CheckpointWriter</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#module-modelly.core.exceptions">Exceptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.ModellyException"><code class="docutils literal notranslate"><span class="pre">ModellyException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.SpaceException"><code class="docutils literal notranslate"><span class="pre">SpaceException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.agent_label"><code class="docutils literal notranslate"><span class="pre">agent_label()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.model_time"><code class="docutils literal notranslate"><span class="pre">model_time()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.CellFullException"><code class="docutils literal notranslate"><span class="pre">CellFullException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.AgentMissingException"><code class="docutils literal notranslate"><span class="pre">AgentMissingException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.AgentRemovedError"><code class="docutils literal notranslate"><span class="pre">AgentRemovedError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.ColumnMissingError"><code class="docutils literal notranslate"><span class="pre">ColumnMissingError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.CellMissingException"><code class="docutils literal notranslate"><span class="pre">CellMissingException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.ConnectionMissingException"><code class="docutils literal notranslate"><span class="pre">ConnectionMissingException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.TableMissingException"><code class="docutils literal notranslate"><span class="pre">TableMissingException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.DimensionException"><code class="docutils literal notranslate"><span class="pre">DimensionException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#modelly.core.exceptions.CheckpointError"><code class="docutils literal notranslate"><span class="pre">CheckpointError</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="space.html">Space</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="space.html#cells">Cells</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.cell.Cell"><code class="docutils literal notranslate"><span class="pre">Cell</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.collection.CellCollection"><code class="docutils literal notranslate"><span class="pre">CellCollection</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="space.html#module-modelly.space.cells.agents">Cell agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.agents.HasCellProtocol"><code class="docutils literal notranslate"><span class="pre">HasCellProtocol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.agents.HasCell"><code class="docutils literal notranslate"><span class="pre">HasCell</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.agents.BasicMovement"><code class="docutils literal notranslate"><span class="pre">BasicMovement</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.agents.FixedCell"><code class="docutils literal notranslate"><span class="pre">FixedCell</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.agents.CellAgent"><code class="docutils literal notranslate"><span class="pre">CellAgent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.agents.FixedAgent"><code class="docutils literal notranslate"><span class="pre">FixedAgent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.agents.Grid2DMovingAgent"><code class="docutils literal notranslate"><span class="pre">Grid2DMovingAgent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.agents.HexGridMovingAgent"><code class="docutils literal notranslate"><span class="pre">HexGridMovingAgent</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="space.html#module-modelly.space.base">Discrete spaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.base.space_agents"><code class="docutils literal notranslate"><span class="pre">space_agents()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.base.DiscreteSpace"><code class="docutils literal notranslate"><span class="pre">DiscreteSpace</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#module-modelly.space.grid.base">Grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#property-layers">Property layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#module-modelly.space.network">Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#module-modelly.space.voronoi">Voronoi</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="space.html#module-modelly.space.cells.index">Integer cells: index, occupancy and row-placed agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.index.CellIndex"><code class="docutils literal notranslate"><span class="pre">CellIndex</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.occupancy.Occupancy"><code class="docutils literal notranslate"><span class="pre">Occupancy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.cells.occupancy.claim"><code class="docutils literal notranslate"><span class="pre">claim()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="space.html#continuous-space">Continuous space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.continuous.space.ContinuousSpace"><code class="docutils literal notranslate"><span class="pre">ContinuousSpace</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.continuous.agents.HasPositionProtocol"><code class="docutils literal notranslate"><span class="pre">HasPositionProtocol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.continuous.agents.ContinuousSpaceAgent"><code class="docutils literal notranslate"><span class="pre">ContinuousSpaceAgent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.continuous.vectorised.pairs_within"><code class="docutils literal notranslate"><span class="pre">pairs_within()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.continuous.vectorised.difference_vectors"><code class="docutils literal notranslate"><span class="pre">difference_vectors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="space.html#modelly.space.continuous.vectorised.move_all"><code class="docutils literal notranslate"><span class="pre">move_all()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="geo.html">Geospatial space</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="geo.html#geospace">GeoSpace</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.space.GeoSpace"><code class="docutils literal notranslate"><span class="pre">GeoSpace</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.regions.RegionQueriesMixin"><code class="docutils literal notranslate"><span class="pre">RegionQueriesMixin</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.agents.GeoAgent"><code class="docutils literal notranslate"><span class="pre">GeoAgent</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="geo.html#module-modelly.space.geo.raster">Rasters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.raster.RasterLayer"><code class="docutils literal notranslate"><span class="pre">RasterLayer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="geo.html#module-modelly.space.geo.roads">Road networks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.roads.RoadNetwork"><code class="docutils literal notranslate"><span class="pre">RoadNetwork</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.roads.download_osm"><code class="docutils literal notranslate"><span class="pre">download_osm()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="geo.html#module-modelly.space.geo.population">Synthetic populations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.population.ipf"><code class="docutils literal notranslate"><span class="pre">ipf()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.population.synthesize_population"><code class="docutils literal notranslate"><span class="pre">synthesize_population()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="geo.html#module-modelly.space.geo.export">Export</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.export.agents_frame"><code class="docutils literal notranslate"><span class="pre">agents_frame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.export.regions_frame"><code class="docutils literal notranslate"><span class="pre">regions_frame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="geo.html#modelly.space.geo.export.write_frame"><code class="docutils literal notranslate"><span class="pre">write_frame()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="networks.html#module-modelly.space.networks.temporal">Temporal networks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.temporal.TemporalEdge"><code class="docutils literal notranslate"><span class="pre">TemporalEdge</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.temporal.TemporalNetwork"><code class="docutils literal notranslate"><span class="pre">TemporalNetwork</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="networks.html#module-modelly.space.networks.multilayer">Multilayer networks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.multilayer.MultilayerNetwork"><code class="docutils literal notranslate"><span class="pre">MultilayerNetwork</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="networks.html#module-modelly.space.networks.contacts">Contact matrices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.contacts.age_groups"><code class="docutils literal notranslate"><span class="pre">age_groups()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.contacts.contact_matrix"><code class="docutils literal notranslate"><span class="pre">contact_matrix()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="networks.html#module-modelly.space.networks.collectors">Network statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.collectors.as_adjacency"><code class="docutils literal notranslate"><span class="pre">as_adjacency()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.collectors.degrees"><code class="docutils literal notranslate"><span class="pre">degrees()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.collectors.degree_distribution"><code class="docutils literal notranslate"><span class="pre">degree_distribution()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.collectors.clustering"><code class="docutils literal notranslate"><span class="pre">clustering()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.collectors.average_clustering"><code class="docutils literal notranslate"><span class="pre">average_clustering()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.collectors.component_sizes"><code class="docutils literal notranslate"><span class="pre">component_sizes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.collectors.largest_component"><code class="docutils literal notranslate"><span class="pre">largest_component()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.collectors.mean_degree"><code class="docutils literal notranslate"><span class="pre">mean_degree()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.collectors.network_reporter"><code class="docutils literal notranslate"><span class="pre">network_reporter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="networks.html#module-modelly.space.networks.io">Import and export</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.io.from_networkx"><code class="docutils literal notranslate"><span class="pre">from_networkx()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.io.from_igraph"><code class="docutils literal notranslate"><span class="pre">from_igraph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.io.read_edge_list"><code class="docutils literal notranslate"><span class="pre">read_edge_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.io.write_edge_list"><code class="docutils literal notranslate"><span class="pre">write_edge_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.io.read_temporal_edge_list"><code class="docutils literal notranslate"><span class="pre">read_temporal_edge_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.base.NodeRows"><code class="docutils literal notranslate"><span class="pre">NodeRows</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="networks.html#modelly.space.networks.base.csr_from_rows"><code class="docutils literal notranslate"><span class="pre">csr_from_rows()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="time.html">Time</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="time.html#module-modelly.time.events.event">Events</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.events.event.Priority"><code class="docutils literal notranslate"><span class="pre">Priority</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.events.event.Event"><code class="docutils literal notranslate"><span class="pre">Event</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.events.event_list.EventList"><code class="docutils literal notranslate"><span class="pre">EventList</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.events.generator.Schedule"><code class="docutils literal notranslate"><span class="pre">Schedule</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.events.generator.EventGenerator"><code class="docutils literal notranslate"><span class="pre">EventGenerator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="time.html#scheduling-on-the-model">Scheduling on the model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.schedule.HasSchedule"><code class="docutils literal notranslate"><span class="pre">HasSchedule</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="time.html#signals">Signals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.core.BaseObservable"><code class="docutils literal notranslate"><span class="pre">BaseObservable</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.core.Observable"><code class="docutils literal notranslate"><span class="pre">Observable</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.core.computed_property"><code class="docutils literal notranslate"><span class="pre">computed_property()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.core.ComputedState"><code class="docutils literal notranslate"><span class="pre">ComputedState</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.emitters.HasEmitters"><code class="docutils literal notranslate"><span class="pre">HasEmitters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.emitters.descriptor_generator"><code class="docutils literal notranslate"><span class="pre">descriptor_generator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.emitters.emit"><code class="docutils literal notranslate"><span class="pre">emit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.computed.ComputedProperty"><code class="docutils literal notranslate"><span class="pre">ComputedProperty</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.computed.ComputedStateBase"><code class="docutils literal notranslate"><span class="pre">ComputedStateBase</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.collections.ObservableList"><code class="docutils literal notranslate"><span class="pre">ObservableList</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.batching.aggregate"><code class="docutils literal notranslate"><span class="pre">aggregate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.types.ObservableSignals"><code class="docutils literal notranslate"><span class="pre">ObservableSignals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.types.ListSignals"><code class="docutils literal notranslate"><span class="pre">ListSignals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.types.ModelSignals"><code class="docutils literal notranslate"><span class="pre">ModelSignals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.util.Message"><code class="docutils literal notranslate"><span class="pre">Message</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.util.SignalType"><code class="docutils literal notranslate"><span class="pre">SignalType</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="time.html#modelly.time.signals.util.create_weakref"><code class="docutils literal notranslate"><span class="pre">create_weakref()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data.html#datacollector">DataCollector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.collector.DataCollector"><code class="docutils literal notranslate"><span class="pre">DataCollector</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#arrow-parquet-and-duckdb">Arrow, Parquet and DuckDB</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.io.to_arrow"><code class="docutils literal notranslate"><span class="pre">to_arrow()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.io.write_parquet_atomic"><code class="docutils literal notranslate"><span class="pre">write_parquet_atomic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.io.to_parquet"><code class="docutils literal notranslate"><span class="pre">to_parquet()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.io.query"><code class="docutils literal notranslate"><span class="pre">query()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.io.tables_of"><code class="docutils literal notranslate"><span class="pre">tables_of()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#reporters">Reporters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.reporters.snapshot"><code class="docutils literal notranslate"><span class="pre">snapshot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.reporters.check_list_reporter"><code class="docutils literal notranslate"><span class="pre">check_list_reporter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.reporters.validate_model_reporter"><code class="docutils literal notranslate"><span class="pre">validate_model_reporter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.reporters.compile_model_reporter"><code class="docutils literal notranslate"><span class="pre">compile_model_reporter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.reporters.getattr_or_none"><code class="docutils literal notranslate"><span class="pre">getattr_or_none()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.reporters.collect_model_value"><code class="docutils literal notranslate"><span class="pre">collect_model_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.reporters.make_agent_reporter"><code class="docutils literal notranslate"><span class="pre">make_agent_reporter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.reporters.collect_agent_rows"><code class="docutils literal notranslate"><span class="pre">collect_agent_rows()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#module-modelly.data.recorders.registry">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.registry.DataRegistry"><code class="docutils literal notranslate"><span class="pre">DataRegistry</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.protocol.DataSet"><code class="docutils literal notranslate"><span class="pre">DataSet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.protocol.BaseDataSet"><code class="docutils literal notranslate"><span class="pre">BaseDataSet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.object_datasets.AgentDataSet"><code class="docutils literal notranslate"><span class="pre">AgentDataSet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.object_datasets.ModelDataSet"><code class="docutils literal notranslate"><span class="pre">ModelDataSet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.object_datasets.TableDataSet"><code class="docutils literal notranslate"><span class="pre">TableDataSet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.numpy_dataset.NumpyAgentDataSet"><code class="docutils literal notranslate"><span class="pre">NumpyAgentDataSet</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#module-modelly.data.recorders.config">Recorders</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.config.DatasetConfig"><code class="docutils literal notranslate"><span class="pre">DatasetConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.base.BaseDataRecorder"><code class="docutils literal notranslate"><span class="pre">BaseDataRecorder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.memory.DatasetStorage"><code class="docutils literal notranslate"><span class="pre">DatasetStorage</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.memory.DataRecorder"><code class="docutils literal notranslate"><span class="pre">DataRecorder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.json_recorder.NumpyJSONEncoder"><code class="docutils literal notranslate"><span class="pre">NumpyJSONEncoder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.json_recorder.JSONDataRecorder"><code class="docutils literal notranslate"><span class="pre">JSONDataRecorder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.parquet.ParquetDataRecorder"><code class="docutils literal notranslate"><span class="pre">ParquetDataRecorder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html#modelly.data.recorders.sql.SQLDataRecorder"><code class="docutils literal notranslate"><span class="pre">SQLDataRecorder</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="behaviour.html">Behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="behaviour.html#actions">Actions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="behaviour.html#modelly.behaviour.actions.action.Action"><code class="docutils literal notranslate"><span class="pre">Action</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="behaviour.html#modelly.behaviour.actions.lifecycle.ActionState"><code class="docutils literal notranslate"><span class="pre">ActionState</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="behaviour.html#modelly.behaviour.actions.actions.HasActions"><code class="docutils literal notranslate"><span class="pre">HasActions</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="behaviour.html#module-modelly.behaviour.states.state">States</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="behaviour.html#modelly.behaviour.states.state.ContinuousState"><code class="docutils literal notranslate"><span class="pre">ContinuousState</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="behaviour.html#modelly.behaviour.states.state.Threshold"><code class="docutils literal notranslate"><span class="pre">Threshold</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="behaviour.html#modelly.behaviour.states.threshold.Threshold"><code class="docutils literal notranslate"><span class="pre">Threshold</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="behaviour.html#meta-agents">Meta-agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="behaviour.html#group-creation-and-reuse">Group creation and reuse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="behaviour.html#caching-candidate-scores">Caching candidate scores</a></li>
+<li class="toctree-l3"><a class="reference internal" href="behaviour.html#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scenarios.html">Scenarios</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scenarios.html#module-modelly.scenarios.scenario">Scenario</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.scenario.Scenario"><code class="docutils literal notranslate"><span class="pre">Scenario</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scenarios.html#module-modelly.scenarios.runner">Running scenarios</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.runner.RunConfiguration"><code class="docutils literal notranslate"><span class="pre">RunConfiguration</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.runner.run_scenarios"><code class="docutils literal notranslate"><span class="pre">run_scenarios()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.sampling.rescale_samples"><code class="docutils literal notranslate"><span class="pre">rescale_samples()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scenarios.html#module-modelly.scenarios.store">Storing results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.store.Status"><code class="docutils literal notranslate"><span class="pre">Status</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.store.RunId"><code class="docutils literal notranslate"><span class="pre">RunId</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.store.RunRecord"><code class="docutils literal notranslate"><span class="pre">RunRecord</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.store.Writer"><code class="docutils literal notranslate"><span class="pre">Writer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.store.Store"><code class="docutils literal notranslate"><span class="pre">Store</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.store.Reference"><code class="docutils literal notranslate"><span class="pre">Reference</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.store.InMemoryReference"><code class="docutils literal notranslate"><span class="pre">InMemoryReference</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.store.InMemoryWriter"><code class="docutils literal notranslate"><span class="pre">InMemoryWriter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.store.InMemoryStore"><code class="docutils literal notranslate"><span class="pre">InMemoryStore</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scenarios.html#module-modelly.scenarios.exceptions">Exceptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.exceptions.FailureOrigin"><code class="docutils literal notranslate"><span class="pre">FailureOrigin</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.exceptions.FailureInfo"><code class="docutils literal notranslate"><span class="pre">FailureInfo</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.exceptions.RunStageException"><code class="docutils literal notranslate"><span class="pre">RunStageException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.exceptions.ModelInstantiationException"><code class="docutils literal notranslate"><span class="pre">ModelInstantiationException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.exceptions.ModelRunException"><code class="docutils literal notranslate"><span class="pre">ModelRunException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.exceptions.OutcomeExtractionException"><code class="docutils literal notranslate"><span class="pre">OutcomeExtractionException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.exceptions.ScenarioNotFoundException"><code class="docutils literal notranslate"><span class="pre">ScenarioNotFoundException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.exceptions.ScenarioNotReadyException"><code class="docutils literal notranslate"><span class="pre">ScenarioNotReadyException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.exceptions.ScenarioFailedException"><code class="docutils literal notranslate"><span class="pre">ScenarioFailedException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scenarios.html#modelly.scenarios.exceptions.ScenarioAbortedException"><code class="docutils literal notranslate"><span class="pre">ScenarioAbortedException</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="experiments.html#module-modelly.experiments.experiment">Experiment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.experiment.ExperimentError"><code class="docutils literal notranslate"><span class="pre">ExperimentError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.experiment.RunReport"><code class="docutils literal notranslate"><span class="pre">RunReport</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.experiment.scenario_class"><code class="docutils literal notranslate"><span class="pre">scenario_class()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.experiment.Experiment"><code class="docutils literal notranslate"><span class="pre">Experiment</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="experiments.html#module-modelly.experiments.space">Parameter space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.space.Range"><code class="docutils literal notranslate"><span class="pre">Range</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.space.Choice"><code class="docutils literal notranslate"><span class="pre">Choice</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.space.Fixed"><code class="docutils literal notranslate"><span class="pre">Fixed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.space.as_dimension"><code class="docutils literal notranslate"><span class="pre">as_dimension()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.space.ScenarioSpace"><code class="docutils literal notranslate"><span class="pre">ScenarioSpace</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="experiments.html#module-modelly.experiments.designs">Designs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.Design"><code class="docutils literal notranslate"><span class="pre">Design</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.FullFactorial"><code class="docutils literal notranslate"><span class="pre">FullFactorial</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.LatinHypercube"><code class="docutils literal notranslate"><span class="pre">LatinHypercube</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.Sobol"><code class="docutils literal notranslate"><span class="pre">Sobol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.Halton"><code class="docutils literal notranslate"><span class="pre">Halton</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.Custom"><code class="docutils literal notranslate"><span class="pre">Custom</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.full_factorial"><code class="docutils literal notranslate"><span class="pre">full_factorial()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.latin_hypercube"><code class="docutils literal notranslate"><span class="pre">latin_hypercube()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.sobol"><code class="docutils literal notranslate"><span class="pre">sobol()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.halton"><code class="docutils literal notranslate"><span class="pre">halton()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.designs.custom"><code class="docutils literal notranslate"><span class="pre">custom()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="experiments.html#module-modelly.experiments.store">Results store</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.store.StoreMismatchError"><code class="docutils literal notranslate"><span class="pre">StoreMismatchError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.store.write_text_atomic"><code class="docutils literal notranslate"><span class="pre">write_text_atomic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.store.ResultsStore"><code class="docutils literal notranslate"><span class="pre">ResultsStore</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.store.Results"><code class="docutils literal notranslate"><span class="pre">Results</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="experiments.html#module-modelly.experiments.tasks">Runs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.tasks.reference"><code class="docutils literal notranslate"><span class="pre">reference()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.tasks.spawn_safe"><code class="docutils literal notranslate"><span class="pre">spawn_safe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.tasks.resolve"><code class="docutils literal notranslate"><span class="pre">resolve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.tasks.run_seed"><code class="docutils literal notranslate"><span class="pre">run_seed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.tasks.RunTask"><code class="docutils literal notranslate"><span class="pre">RunTask</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.tasks.RunOutcome"><code class="docutils literal notranslate"><span class="pre">RunOutcome</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.tasks.simulate"><code class="docutils literal notranslate"><span class="pre">simulate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.tasks.run_task"><code class="docutils literal notranslate"><span class="pre">run_task()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="experiments.html#module-modelly.experiments.executors">Executors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.Executor"><code class="docutils literal notranslate"><span class="pre">Executor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.available_executors"><code class="docutils literal notranslate"><span class="pre">available_executors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.get_executor"><code class="docutils literal notranslate"><span class="pre">get_executor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.register_executor"><code class="docutils literal notranslate"><span class="pre">register_executor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.local.SerialExecutor"><code class="docutils literal notranslate"><span class="pre">SerialExecutor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.local.ThreadExecutor"><code class="docutils literal notranslate"><span class="pre">ThreadExecutor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.local.ProcessExecutor"><code class="docutils literal notranslate"><span class="pre">ProcessExecutor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.dask_executor.DaskExecutor"><code class="docutils literal notranslate"><span class="pre">DaskExecutor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.ray_executor.RayExecutor"><code class="docutils literal notranslate"><span class="pre">RayExecutor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.cluster.ClusterExecutor"><code class="docutils literal notranslate"><span class="pre">ClusterExecutor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.cluster.SlurmExecutor"><code class="docutils literal notranslate"><span class="pre">SlurmExecutor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.executors.cluster.PBSExecutor"><code class="docutils literal notranslate"><span class="pre">PBSExecutor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="experiments.html#module-modelly.experiments.spec">Experiment files and the worker</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.spec.SpecError"><code class="docutils literal notranslate"><span class="pre">SpecError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.spec.RunSettings"><code class="docutils literal notranslate"><span class="pre">RunSettings</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.spec.relative_path"><code class="docutils literal notranslate"><span class="pre">relative_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.spec.model_reference"><code class="docutils literal notranslate"><span class="pre">model_reference()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.spec.read_document"><code class="docutils literal notranslate"><span class="pre">read_document()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.spec.read_space"><code class="docutils literal notranslate"><span class="pre">read_space()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.spec.read_run"><code class="docutils literal notranslate"><span class="pre">read_run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.spec.load_spec"><code class="docutils literal notranslate"><span class="pre">load_spec()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.worker.load_tasks"><code class="docutils literal notranslate"><span class="pre">load_tasks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.worker.array_index"><code class="docutils literal notranslate"><span class="pre">array_index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.worker.run_array_task"><code class="docutils literal notranslate"><span class="pre">run_array_task()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="experiments.html#modelly.experiments.worker.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="calibrate.html">Calibration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="calibrate.html#module-modelly.calibrate.base">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.base.CalibrationError"><code class="docutils literal notranslate"><span class="pre">CalibrationError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.base.Calibration"><code class="docutils literal notranslate"><span class="pre">Calibration</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.smc.Accepted"><code class="docutils literal notranslate"><span class="pre">Accepted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.smc.Generation"><code class="docutils literal notranslate"><span class="pre">Generation</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.smc.ABCSMC"><code class="docutils literal notranslate"><span class="pre">ABCSMC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.rejection.ABCRejection"><code class="docutils literal notranslate"><span class="pre">ABCRejection</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.moments.SimulatedMoments"><code class="docutils literal notranslate"><span class="pre">SimulatedMoments</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.bayesopt.BayesOpt"><code class="docutils literal notranslate"><span class="pre">BayesOpt</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.optimize.UnitBox"><code class="docutils literal notranslate"><span class="pre">UnitBox</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.optimize.PointEstimate"><code class="docutils literal notranslate"><span class="pre">PointEstimate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.kernels.joint_logprior"><code class="docutils literal notranslate"><span class="pre">joint_logprior()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.kernels.Kernel"><code class="docutils literal notranslate"><span class="pre">Kernel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="calibrate.html#module-modelly.calibrate.priors">Priors, targets and distances</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.priors.Prior"><code class="docutils literal notranslate"><span class="pre">Prior</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.targets.Target"><code class="docutils literal notranslate"><span class="pre">Target</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.targets.total_distance"><code class="docutils literal notranslate"><span class="pre">total_distance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.distance.rmse"><code class="docutils literal notranslate"><span class="pre">rmse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.distance.mae"><code class="docutils literal notranslate"><span class="pre">mae()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.distance.euclidean"><code class="docutils literal notranslate"><span class="pre">euclidean()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.distance.wasserstein"><code class="docutils literal notranslate"><span class="pre">wasserstein()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.distance.Weighted"><code class="docutils literal notranslate"><span class="pre">Weighted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.distance.weighted"><code class="docutils literal notranslate"><span class="pre">weighted()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="calibrate.html#module-modelly.calibrate.posterior">Posterior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.posterior.weighted_quantile"><code class="docutils literal notranslate"><span class="pre">weighted_quantile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.posterior.hdi"><code class="docutils literal notranslate"><span class="pre">hdi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.posterior.Posterior"><code class="docutils literal notranslate"><span class="pre">Posterior</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.plots.posterior_figure"><code class="docutils literal notranslate"><span class="pre">posterior_figure()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="calibrate.html#module-modelly.calibrate.simulator">Runs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.simulator.Stream"><code class="docutils literal notranslate"><span class="pre">Stream</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.simulator.SimulationError"><code class="docutils literal notranslate"><span class="pre">SimulationError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.simulator.entropy"><code class="docutils literal notranslate"><span class="pre">entropy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.simulator.generator"><code class="docutils literal notranslate"><span class="pre">generator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.simulator.Execution"><code class="docutils literal notranslate"><span class="pre">Execution</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.simulator.Batch"><code class="docutils literal notranslate"><span class="pre">Batch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.simulator.Simulator"><code class="docutils literal notranslate"><span class="pre">Simulator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.pool.PooledProcessExecutor"><code class="docutils literal notranslate"><span class="pre">PooledProcessExecutor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.gp.GaussianProcess"><code class="docutils literal notranslate"><span class="pre">GaussianProcess</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.gp.expected_improvement"><code class="docutils literal notranslate"><span class="pre">expected_improvement()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="calibrate.html#module-modelly.calibrate.spec">Calibration files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.spec.priors_and_fixed"><code class="docutils literal notranslate"><span class="pre">priors_and_fixed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="calibrate.html#modelly.calibrate.spec.load_calibration"><code class="docutils literal notranslate"><span class="pre">load_calibration()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sensitivity.html#module-modelly.sensitivity.screening">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.screening.oat"><code class="docutils literal notranslate"><span class="pre">oat()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.screening.morris_design"><code class="docutils literal notranslate"><span class="pre">morris_design()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.screening.morris"><code class="docutils literal notranslate"><span class="pre">morris()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.variance.saltelli_sample"><code class="docutils literal notranslate"><span class="pre">saltelli_sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.variance.indices"><code class="docutils literal notranslate"><span class="pre">indices()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.variance.sobol"><code class="docutils literal notranslate"><span class="pre">sobol()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.pawn.ks_statistics"><code class="docutils literal notranslate"><span class="pre">ks_statistics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.pawn.pawn"><code class="docutils literal notranslate"><span class="pre">pawn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.emulator.Emulator"><code class="docutils literal notranslate"><span class="pre">Emulator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.emulator.emulate"><code class="docutils literal notranslate"><span class="pre">emulate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sensitivity.html#module-modelly.sensitivity.study">Studies and results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.study.is_model"><code class="docutils literal notranslate"><span class="pre">is_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.study.Study"><code class="docutils literal notranslate"><span class="pre">Study</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.results.SensitivityResult"><code class="docutils literal notranslate"><span class="pre">SensitivityResult</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.results.MorrisResult"><code class="docutils literal notranslate"><span class="pre">MorrisResult</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.results.SobolResult"><code class="docutils literal notranslate"><span class="pre">SobolResult</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.results.OATResult"><code class="docutils literal notranslate"><span class="pre">OATResult</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sensitivity.html#module-modelly.sensitivity.spec">Analysis files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity.html#modelly.sensitivity.spec.load_sensitivity"><code class="docutils literal notranslate"><span class="pre">load_sensitivity()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="batch.html#parallel-runs">Parallel runs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="batch.html#modelly.batch.runs.default_workers"><code class="docutils literal notranslate"><span class="pre">default_workers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="batch.html#modelly.batch.runs.run_batch"><code class="docutils literal notranslate"><span class="pre">run_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="batch.html#modelly.batch.runs.grid_tasks"><code class="docutils literal notranslate"><span class="pre">grid_tasks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="batch.html#modelly.batch.runs.run_grid"><code class="docutils literal notranslate"><span class="pre">run_grid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="batch.html#cohorts">Cohorts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="batch.html#modelly.batch.cohorts.CohortTable"><code class="docutils literal notranslate"><span class="pre">CohortTable</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="batch.html#modelly.batch.cohorts.from_counts"><code class="docutils literal notranslate"><span class="pre">from_counts()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="viz.html">Viz</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#module-modelly.viz.solara.app">Solara app</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.solara.app.check_param_is_fixed"><code class="docutils literal notranslate"><span class="pre">check_param_is_fixed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.solara.app.copy_renderer"><code class="docutils literal notranslate"><span class="pre">copy_renderer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.solara.app.create_space_component"><code class="docutils literal notranslate"><span class="pre">create_space_component()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.solara.app.make_initial_grid_layout"><code class="docutils literal notranslate"><span class="pre">make_initial_grid_layout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.solara.app.split_model_params"><code class="docutils literal notranslate"><span class="pre">split_model_params()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.components.make_plot_component"><code class="docutils literal notranslate"><span class="pre">make_plot_component()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.components.make_space_component"><code class="docutils literal notranslate"><span class="pre">make_space_component()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#module-modelly.viz.solara.params">User parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.solara.params.UserParam"><code class="docutils literal notranslate"><span class="pre">UserParam</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.solara.params.Slider"><code class="docutils literal notranslate"><span class="pre">Slider</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#module-modelly.viz.mpl.components">Matplotlib-based visualizations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.components.make_space_matplotlib"><code class="docutils literal notranslate"><span class="pre">make_space_matplotlib()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.components.make_mpl_space_component"><code class="docutils literal notranslate"><span class="pre">make_mpl_space_component()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.components.make_plot_measure"><code class="docutils literal notranslate"><span class="pre">make_plot_measure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.components.make_mpl_plot_component"><code class="docutils literal notranslate"><span class="pre">make_mpl_plot_component()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.space.HexGrid"><code class="docutils literal notranslate"><span class="pre">HexGrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.space.Network"><code class="docutils literal notranslate"><span class="pre">Network</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.space.collect_agent_data"><code class="docutils literal notranslate"><span class="pre">collect_agent_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.space.draw_continuous_space"><code class="docutils literal notranslate"><span class="pre">draw_continuous_space()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.space.draw_hex_grid"><code class="docutils literal notranslate"><span class="pre">draw_hex_grid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.space.draw_network"><code class="docutils literal notranslate"><span class="pre">draw_network()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.space.draw_orthogonal_grid"><code class="docutils literal notranslate"><span class="pre">draw_orthogonal_grid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.space.draw_property_layers"><code class="docutils literal notranslate"><span class="pre">draw_property_layers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.space.draw_space"><code class="docutils literal notranslate"><span class="pre">draw_space()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.space.draw_voronoi_grid"><code class="docutils literal notranslate"><span class="pre">draw_voronoi_grid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#module-modelly.viz.altair.components">Altair-based visualizations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.altair.components.chart_property_layers"><code class="docutils literal notranslate"><span class="pre">chart_property_layers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.altair.components.make_altair_plot_component"><code class="docutils literal notranslate"><span class="pre">make_altair_plot_component()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.altair.components.make_altair_space"><code class="docutils literal notranslate"><span class="pre">make_altair_space()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.altair.components.make_space_altair"><code class="docutils literal notranslate"><span class="pre">make_space_altair()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#module-modelly.viz.console.console">Command console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.console.console.CaptureOutput"><code class="docutils literal notranslate"><span class="pre">CaptureOutput</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.console.console.ConsoleEntry"><code class="docutils literal notranslate"><span class="pre">ConsoleEntry</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.console.console.ConsoleManager"><code class="docutils literal notranslate"><span class="pre">ConsoleManager</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.console.console.InteractiveConsole"><code class="docutils literal notranslate"><span class="pre">InteractiveConsole</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.console.console.format_command_html"><code class="docutils literal notranslate"><span class="pre">format_command_html()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.console.console.format_output_html"><code class="docutils literal notranslate"><span class="pre">format_output_html()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#module-modelly.viz.render.portrayal">Portrayal components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.portrayal.AgentPortrayalStyle"><code class="docutils literal notranslate"><span class="pre">AgentPortrayalStyle</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.portrayal.style_defaults"><code class="docutils literal notranslate"><span class="pre">style_defaults()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.portrayal.warn_dict_portrayal"><code class="docutils literal notranslate"><span class="pre">warn_dict_portrayal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.portrayal.dict_to_style"><code class="docutils literal notranslate"><span class="pre">dict_to_style()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.portrayal.ClassColours"><code class="docutils literal notranslate"><span class="pre">ClassColours</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.portrayal.PropertyLayerStyle"><code class="docutils literal notranslate"><span class="pre">PropertyLayerStyle</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.portrayal.property_layer_dict_to_callable"><code class="docutils literal notranslate"><span class="pre">property_layer_dict_to_callable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.portrayal.as_property_layer_callable"><code class="docutils literal notranslate"><span class="pre">as_property_layer_callable()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#module-modelly.viz.render.backend">Backends</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.backend.AbstractRenderer"><code class="docutils literal notranslate"><span class="pre">AbstractRenderer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.altair.backend.AltairBackend"><code class="docutils literal notranslate"><span class="pre">AltairBackend</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.backend.MatplotlibBackend"><code class="docutils literal notranslate"><span class="pre">MatplotlibBackend</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#module-modelly.viz.render.renderer">Space renderer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.renderer.SpaceRenderer"><code class="docutils literal notranslate"><span class="pre">SpaceRenderer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#module-modelly.viz.render.drawers.base">Space drawers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.drawers.base.BaseSpaceDrawer"><code class="docutils literal notranslate"><span class="pre">BaseSpaceDrawer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.drawers.base.axes_with_figure_kwargs"><code class="docutils literal notranslate"><span class="pre">axes_with_figure_kwargs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.drawers.base.chart_properties"><code class="docutils literal notranslate"><span class="pre">chart_properties()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.drawers.base.line_mark_kwargs"><code class="docutils literal notranslate"><span class="pre">line_mark_kwargs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.drawers.orthogonal.OrthogonalSpaceDrawer"><code class="docutils literal notranslate"><span class="pre">OrthogonalSpaceDrawer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.drawers.hexagonal.HexSpaceDrawer"><code class="docutils literal notranslate"><span class="pre">HexSpaceDrawer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.drawers.network.NetworkSpaceDrawer"><code class="docutils literal notranslate"><span class="pre">NetworkSpaceDrawer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.drawers.continuous.ContinuousSpaceDrawer"><code class="docutils literal notranslate"><span class="pre">ContinuousSpaceDrawer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.drawers.voronoi.VoronoiSpaceDrawer"><code class="docutils literal notranslate"><span class="pre">VoronoiSpaceDrawer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.render.drawers.voronoi.clip_line"><code class="docutils literal notranslate"><span class="pre">clip_line()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#publication-styles-and-palettes">Publication styles and palettes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.styles.ColumnWidths"><code class="docutils literal notranslate"><span class="pre">ColumnWidths</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.styles.figure_size"><code class="docutils literal notranslate"><span class="pre">figure_size()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.styles.paper"><code class="docutils literal notranslate"><span class="pre">paper()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.styles.rc_params"><code class="docutils literal notranslate"><span class="pre">rc_params()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="viz.html#module-modelly.viz.mpl.figure">Headless figures and animations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.figure.can_draw"><code class="docutils literal notranslate"><span class="pre">can_draw()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.figure.figure_pixels"><code class="docutils literal notranslate"><span class="pre">figure_pixels()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.figure.model_space"><code class="docutils literal notranslate"><span class="pre">model_space()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.mpl.figure.space_figure"><code class="docutils literal notranslate"><span class="pre">space_figure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.animation.AnimationOptions"><code class="docutils literal notranslate"><span class="pre">AnimationOptions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.animation.frames_from_run"><code class="docutils literal notranslate"><span class="pre">frames_from_run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.animation.frames_from_timeline"><code class="docutils literal notranslate"><span class="pre">frames_from_timeline()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="viz.html#modelly.viz.animation.save_animation"><code class="docutils literal notranslate"><span class="pre">save_animation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.Timeline"><code class="docutils literal notranslate"><span class="pre">Timeline</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.Timeline.steps"><code class="docutils literal notranslate"><span class="pre">Timeline.steps</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.Timeline.span"><code class="docutils literal notranslate"><span class="pre">Timeline.span</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.Timeline.at"><code class="docutils literal notranslate"><span class="pre">Timeline.at()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.thaw"><code class="docutils literal notranslate"><span class="pre">thaw()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.reseed_model"><code class="docutils literal notranslate"><span class="pre">reseed_model()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.Recorder"><code class="docutils literal notranslate"><span class="pre">Recorder</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.Recorder.recording"><code class="docutils literal notranslate"><span class="pre">Recorder.recording</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.Recorder.steps"><code class="docutils literal notranslate"><span class="pre">Recorder.steps</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.Recorder.span"><code class="docutils literal notranslate"><span class="pre">Recorder.span</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.Recorder.nbytes"><code class="docutils literal notranslate"><span class="pre">Recorder.nbytes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.Recorder.start"><code class="docutils literal notranslate"><span class="pre">Recorder.start()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.Recorder.stop"><code class="docutils literal notranslate"><span class="pre">Recorder.stop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.Recorder.checkpoint"><code class="docutils literal notranslate"><span class="pre">Recorder.checkpoint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.Recorder.at"><code class="docutils literal notranslate"><span class="pre">Recorder.at()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.recorder.Recorder.branch"><code class="docutils literal notranslate"><span class="pre">Recorder.branch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.ring.MemoryRing"><code class="docutils literal notranslate"><span class="pre">MemoryRing</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.ring.MemoryRing.get"><code class="docutils literal notranslate"><span class="pre">MemoryRing.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.ring.MemoryRing.discard"><code class="docutils literal notranslate"><span class="pre">MemoryRing.discard()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.ring.DiskRing"><code class="docutils literal notranslate"><span class="pre">DiskRing</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.ring.DiskRing.path"><code class="docutils literal notranslate"><span class="pre">DiskRing.path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.ring.DiskRing.get"><code class="docutils literal notranslate"><span class="pre">DiskRing.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.ring.DiskRing.discard"><code class="docutils literal notranslate"><span class="pre">DiskRing.discard()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.diff.data_difference"><code class="docutils literal notranslate"><span class="pre">data_difference()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.diff.state_difference"><code class="docutils literal notranslate"><span class="pre">state_difference()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.diff.diff"><code class="docutils literal notranslate"><span class="pre">diff()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.report.Difference"><code class="docutils literal notranslate"><span class="pre">Difference</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.report.RunDiff"><code class="docutils literal notranslate"><span class="pre">RunDiff</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.report.RunDiff.identical"><code class="docutils literal notranslate"><span class="pre">RunDiff.identical</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.report.RunDiff.step"><code class="docutils literal notranslate"><span class="pre">RunDiff.step</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="timetravel.html#modelly.timetravel.report.RunDiff.report"><code class="docutils literal notranslate"><span class="pre">RunDiff.report()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.snapshot.agent_state"><code class="docutils literal notranslate"><span class="pre">agent_state()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.snapshot.ModelState"><code class="docutils literal notranslate"><span class="pre">ModelState</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.snapshot.model_state"><code class="docutils literal notranslate"><span class="pre">model_state()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.snapshot.same"><code class="docutils literal notranslate"><span class="pre">same()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.snapshot.first_value_difference"><code class="docutils literal notranslate"><span class="pre">first_value_difference()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timetravel.html#modelly.timetravel.snapshot.first_state_difference"><code class="docutils literal notranslate"><span class="pre">first_state_difference()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.config.StudioConfig"><code class="docutils literal notranslate"><span class="pre">StudioConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.config.StudioConfig.memory_budget"><code class="docutils literal notranslate"><span class="pre">StudioConfig.memory_budget</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.config.StudioConfig.source_file"><code class="docutils literal notranslate"><span class="pre">StudioConfig.source_file</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.config.StudioConfig.to_json"><code class="docutils literal notranslate"><span class="pre">StudioConfig.to_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.config.StudioConfig.from_json"><code class="docutils literal notranslate"><span class="pre">StudioConfig.from_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.config.StudioConfig.export"><code class="docutils literal notranslate"><span class="pre">StudioConfig.export()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.config.StudioConfig.from_environment"><code class="docutils literal notranslate"><span class="pre">StudioConfig.from_environment()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.params.Parameter"><code class="docutils literal notranslate"><span class="pre">Parameter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.params.Parameter.editable"><code class="docutils literal notranslate"><span class="pre">Parameter.editable</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.params.kind_of"><code class="docutils literal notranslate"><span class="pre">kind_of()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.params.parameters_of"><code class="docutils literal notranslate"><span class="pre">parameters_of()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.loader.import_source"><code class="docutils literal notranslate"><span class="pre">import_source()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.loader.load_model_class"><code class="docutils literal notranslate"><span class="pre">load_model_class()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.loader.load_portrayal"><code class="docutils literal notranslate"><span class="pre">load_portrayal()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.loader.module_name"><code class="docutils literal notranslate"><span class="pre">module_name()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession"><code class="docutils literal notranslate"><span class="pre">StudioSession</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession.shown"><code class="docutils literal notranslate"><span class="pre">StudioSession.shown</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession.replaying"><code class="docutils literal notranslate"><span class="pre">StudioSession.replaying</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession.say"><code class="docutils literal notranslate"><span class="pre">StudioSession.say()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession.reset"><code class="docutils literal notranslate"><span class="pre">StudioSession.reset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession.step"><code class="docutils literal notranslate"><span class="pre">StudioSession.step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession.scrub"><code class="docutils literal notranslate"><span class="pre">StudioSession.scrub()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession.replay"><code class="docutils literal notranslate"><span class="pre">StudioSession.replay()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession.profile_report"><code class="docutils literal notranslate"><span class="pre">StudioSession.profile_report()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession.source_file"><code class="docutils literal notranslate"><span class="pre">StudioSession.source_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.session.StudioSession.lint"><code class="docutils literal notranslate"><span class="pre">StudioSession.lint()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.timeline.ReplayTimeline"><code class="docutils literal notranslate"><span class="pre">ReplayTimeline</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.timeline.ReplayTimeline.steps"><code class="docutils literal notranslate"><span class="pre">ReplayTimeline.steps</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.timeline.ReplayTimeline.span"><code class="docutils literal notranslate"><span class="pre">ReplayTimeline.span</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.timeline.ReplayTimeline.at"><code class="docutils literal notranslate"><span class="pre">ReplayTimeline.at()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="studio.html#modelly.studio.timeline.ReplayTimeline.stop"><code class="docutils literal notranslate"><span class="pre">ReplayTimeline.stop()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.timeline.track"><code class="docutils literal notranslate"><span class="pre">track()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.model_series"><code class="docutils literal notranslate"><span class="pre">model_series()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.series_figure"><code class="docutils literal notranslate"><span class="pre">series_figure()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.agent_classes"><code class="docutils literal notranslate"><span class="pre">agent_classes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.agent_table"><code class="docutils literal notranslate"><span class="pre">agent_table()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.figure_bytes"><code class="docutils literal notranslate"><span class="pre">figure_bytes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.series_image"><code class="docutils literal notranslate"><span class="pre">series_image()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.space_image"><code class="docutils literal notranslate"><span class="pre">space_image()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.parquet_available"><code class="docutils literal notranslate"><span class="pre">parquet_available()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.data_bytes"><code class="docutils literal notranslate"><span class="pre">data_bytes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.checkpoint_file"><code class="docutils literal notranslate"><span class="pre">checkpoint_file()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.timeline_steps"><code class="docutils literal notranslate"><span class="pre">timeline_steps()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.replay_frames"><code class="docutils literal notranslate"><span class="pre">replay_frames()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.data.animation_bytes"><code class="docutils literal notranslate"><span class="pre">animation_bytes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="studio.html#modelly.studio.app.new_session"><code class="docutils literal notranslate"><span class="pre">new_session()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">logging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="log.html#modelly.log.function_logger"><code class="docutils literal notranslate"><span class="pre">function_logger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html#modelly.log.get_module_logger"><code class="docutils literal notranslate"><span class="pre">get_module_logger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html#modelly.log.get_rootlogger"><code class="docutils literal notranslate"><span class="pre">get_rootlogger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html#modelly.log.log_to_stderr"><code class="docutils literal notranslate"><span class="pre">log_to_stderr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html#modelly.log.method_logger"><code class="docutils literal notranslate"><span class="pre">method_logger()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="migrate.html">Migrate</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.Finding"><code class="docutils literal notranslate"><span class="pre">Finding</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.FileResult"><code class="docutils literal notranslate"><span class="pre">FileResult</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="migrate.html#modelly.migrate.FileResult.changed"><code class="docutils literal notranslate"><span class="pre">FileResult.changed</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.map_module"><code class="docutils literal notranslate"><span class="pre">map_module()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.rewrite_line"><code class="docutils literal notranslate"><span class="pre">rewrite_line()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.find_flags"><code class="docutils literal notranslate"><span class="pre">find_flags()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.migrate_source"><code class="docutils literal notranslate"><span class="pre">migrate_source()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.python_files"><code class="docutils literal notranslate"><span class="pre">python_files()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.render_diff"><code class="docutils literal notranslate"><span class="pre">render_diff()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.render_report"><code class="docutils literal notranslate"><span class="pre">render_report()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.migrate"><code class="docutils literal notranslate"><span class="pre">migrate()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.build_parser"><code class="docutils literal notranslate"><span class="pre">build_parser()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="migrate.html#modelly.migrate.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Lint</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.Finding"><code class="docutils literal notranslate"><span class="pre">Finding</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lint.html#modelly.lint.Finding.location"><code class="docutils literal notranslate"><span class="pre">Finding.location()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.lint_paths"><code class="docutils literal notranslate"><span class="pre">lint_paths()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.lint_source"><code class="docutils literal notranslate"><span class="pre">lint_source()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.rules.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.rules.dotted"><code class="docutils literal notranslate"><span class="pre">dotted()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.rules.is_population"><code class="docutils literal notranslate"><span class="pre">is_population()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.rules.is_set_expr"><code class="docutils literal notranslate"><span class="pre">is_set_expr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.rules.is_mutable_literal"><code class="docutils literal notranslate"><span class="pre">is_mutable_literal()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.rules.calls_super_init"><code class="docutils literal notranslate"><span class="pre">calls_super_init()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.rules.branches"><code class="docutils literal notranslate"><span class="pre">branches()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.config.ConfigError"><code class="docutils literal notranslate"><span class="pre">ConfigError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.config.prefixes"><code class="docutils literal notranslate"><span class="pre">prefixes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.config.matches"><code class="docutils literal notranslate"><span class="pre">matches()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.config.Config"><code class="docutils literal notranslate"><span class="pre">Config</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lint.html#modelly.lint.config.Config.keeps"><code class="docutils literal notranslate"><span class="pre">Config.keeps()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lint.html#modelly.lint.config.Config.file_ignores"><code class="docutils literal notranslate"><span class="pre">Config.file_ignores()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.config.find_pyproject"><code class="docutils literal notranslate"><span class="pre">find_pyproject()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lint.html#modelly.lint.config.load_config"><code class="docutils literal notranslate"><span class="pre">load_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="profile.html#modelly.profile.Profiler"><code class="docutils literal notranslate"><span class="pre">Profiler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.Profiler.report"><code class="docutils literal notranslate"><span class="pre">Profiler.report()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.Profiler.to_dict"><code class="docutils literal notranslate"><span class="pre">Profiler.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.Profiler.to_dataframe"><code class="docutils literal notranslate"><span class="pre">Profiler.to_dataframe()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="profile.html#modelly.profile.SizeComparison"><code class="docutils literal notranslate"><span class="pre">SizeComparison</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.SizeComparison.growths"><code class="docutils literal notranslate"><span class="pre">SizeComparison.growths()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.SizeComparison.hints"><code class="docutils literal notranslate"><span class="pre">SizeComparison.hints()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.SizeComparison.report"><code class="docutils literal notranslate"><span class="pre">SizeComparison.report()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.SizeComparison.to_dict"><code class="docutils literal notranslate"><span class="pre">SizeComparison.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.SizeComparison.to_dataframe"><code class="docutils literal notranslate"><span class="pre">SizeComparison.to_dataframe()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="profile.html#modelly.profile.StepRecord"><code class="docutils literal notranslate"><span class="pre">StepRecord</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.StepRecord.add"><code class="docutils literal notranslate"><span class="pre">StepRecord.add()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="profile.html#modelly.profile.compare_sizes"><code class="docutils literal notranslate"><span class="pre">compare_sizes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="profile.html#modelly.profile.profiler.StepRecord"><code class="docutils literal notranslate"><span class="pre">StepRecord</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.profiler.StepRecord.add"><code class="docutils literal notranslate"><span class="pre">StepRecord.add()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="profile.html#modelly.profile.profiler.agent_classes"><code class="docutils literal notranslate"><span class="pre">agent_classes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="profile.html#modelly.profile.profiler.callable_name"><code class="docutils literal notranslate"><span class="pre">callable_name()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="profile.html#modelly.profile.profiler.Profiler"><code class="docutils literal notranslate"><span class="pre">Profiler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.profiler.Profiler.report"><code class="docutils literal notranslate"><span class="pre">Profiler.report()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.profiler.Profiler.to_dict"><code class="docutils literal notranslate"><span class="pre">Profiler.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="profile.html#modelly.profile.profiler.Profiler.to_dataframe"><code class="docutils literal notranslate"><span class="pre">Profiler.to_dataframe()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Provenance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.manifest.ManifestError"><code class="docutils literal notranslate"><span class="pre">ManifestError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.manifest.json_safe"><code class="docutils literal notranslate"><span class="pre">json_safe()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.manifest.manifest_path"><code class="docutils literal notranslate"><span class="pre">manifest_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.manifest.check_format"><code class="docutils literal notranslate"><span class="pre">check_format()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.manifest.read_manifest"><code class="docutils literal notranslate"><span class="pre">read_manifest()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.manifest.write_manifest"><code class="docutils literal notranslate"><span class="pre">write_manifest()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.runner.RunSpec"><code class="docutils literal notranslate"><span class="pre">RunSpec</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.runner.read_scenario"><code class="docutils literal notranslate"><span class="pre">read_scenario()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.runner.run_study"><code class="docutils literal notranslate"><span class="pre">run_study()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.verify.Verification"><code class="docutils literal notranslate"><span class="pre">Verification</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="provenance.html#modelly.provenance.verify.Verification.matches"><code class="docutils literal notranslate"><span class="pre">Verification.matches</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.verify.verify"><code class="docutils literal notranslate"><span class="pre">verify()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.compare.Difference"><code class="docutils literal notranslate"><span class="pre">Difference</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.compare.Tolerance"><code class="docutils literal notranslate"><span class="pre">Tolerance</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.compare.first_difference"><code class="docutils literal notranslate"><span class="pre">first_difference()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.bundle.BundleError"><code class="docutils literal notranslate"><span class="pre">BundleError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.bundle.bundle_entries"><code class="docutils literal notranslate"><span class="pre">bundle_entries()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.bundle.bundle"><code class="docutils literal notranslate"><span class="pre">bundle()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="provenance.html#modelly.provenance.odd.odd_markdown"><code class="docutils literal notranslate"><span class="pre">odd_markdown()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">LLM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="llm.html#client-and-agents">Client and agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.Client"><code class="docutils literal notranslate"><span class="pre">Client</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.LLMAgent"><code class="docutils literal notranslate"><span class="pre">LLMAgent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.decide_all"><code class="docutils literal notranslate"><span class="pre">decide_all()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="llm.html#requests-and-replies">Requests and replies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.Request"><code class="docutils literal notranslate"><span class="pre">Request</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.Response"><code class="docutils literal notranslate"><span class="pre">Response</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.Message"><code class="docutils literal notranslate"><span class="pre">Message</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="llm.html#cache">Cache</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.ResponseCache"><code class="docutils literal notranslate"><span class="pre">ResponseCache</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="llm.html#budgets-and-retries">Budgets and retries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.Budget"><code class="docutils literal notranslate"><span class="pre">Budget</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.Price"><code class="docutils literal notranslate"><span class="pre">Price</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.Usage"><code class="docutils literal notranslate"><span class="pre">Usage</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.RetryPolicy"><code class="docutils literal notranslate"><span class="pre">RetryPolicy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="llm.html#providers">Providers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.Provider"><code class="docutils literal notranslate"><span class="pre">Provider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.AnthropicProvider"><code class="docutils literal notranslate"><span class="pre">AnthropicProvider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.OpenAICompatibleProvider"><code class="docutils literal notranslate"><span class="pre">OpenAICompatibleProvider</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.FakeProvider"><code class="docutils literal notranslate"><span class="pre">FakeProvider</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="llm.html#schemas">Schemas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.validate"><code class="docutils literal notranslate"><span class="pre">validate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.parse_json"><code class="docutils literal notranslate"><span class="pre">parse_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="llm.html#errors">Errors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.LLMError"><code class="docutils literal notranslate"><span class="pre">LLMError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.ProviderError"><code class="docutils literal notranslate"><span class="pre">ProviderError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.CacheMiss"><code class="docutils literal notranslate"><span class="pre">CacheMiss</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.BudgetExceeded"><code class="docutils literal notranslate"><span class="pre">BudgetExceeded</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.SchemaError"><code class="docutils literal notranslate"><span class="pre">SchemaError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="llm.html#modelly.llm.DecisionError"><code class="docutils literal notranslate"><span class="pre">DecisionError</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#modelly.plugins.PluginError"><code class="docutils literal notranslate"><span class="pre">PluginError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#modelly.plugins.Plugin"><code class="docutils literal notranslate"><span class="pre">Plugin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html#modelly.plugins.Plugin.load"><code class="docutils literal notranslate"><span class="pre">Plugin.load()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#modelly.plugins.discover"><code class="docutils literal notranslate"><span class="pre">discover()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#modelly.plugins.load_all"><code class="docutils literal notranslate"><span class="pre">load_all()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="zoo.html">Model zoo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zoo.html#module-modelly.zoo.registry">Catalogue and copying</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.registry.ZooModel"><code class="docutils literal notranslate"><span class="pre">ZooModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.registry.names"><code class="docutils literal notranslate"><span class="pre">names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.registry.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.copy.parameters"><code class="docutils literal notranslate"><span class="pre">parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.copy.readme"><code class="docutils literal notranslate"><span class="pre">readme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.copy.copy_model"><code class="docutils literal notranslate"><span class="pre">copy_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.measures.gini"><code class="docutils literal notranslate"><span class="pre">gini()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.measures.clusters"><code class="docutils literal notranslate"><span class="pre">clusters()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zoo.html#module-modelly.zoo.age_seir.model">Epidemiology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.age_seir.model.State"><code class="docutils literal notranslate"><span class="pre">State</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.age_seir.model.SEIRScenario"><code class="docutils literal notranslate"><span class="pre">SEIRScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.age_seir.model.AgeSEIR"><code class="docutils literal notranslate"><span class="pre">AgeSEIR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.age_seir.model.count_in"><code class="docutils literal notranslate"><span class="pre">count_in()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.vector_borne.model.Host"><code class="docutils literal notranslate"><span class="pre">Host</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.vector_borne.model.Vector"><code class="docutils literal notranslate"><span class="pre">Vector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.vector_borne.model.Person"><code class="docutils literal notranslate"><span class="pre">Person</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.vector_borne.model.VectorScenario"><code class="docutils literal notranslate"><span class="pre">VectorScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.vector_borne.model.VectorBorne"><code class="docutils literal notranslate"><span class="pre">VectorBorne</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.vector_borne.model.susceptible"><code class="docutils literal notranslate"><span class="pre">susceptible()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.vector_borne.model.infectious"><code class="docutils literal notranslate"><span class="pre">infectious()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.vector_borne.model.recovered"><code class="docutils literal notranslate"><span class="pre">recovered()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zoo.html#module-modelly.zoo.energy_budget.model">Ecology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.energy_budget.model.Forager"><code class="docutils literal notranslate"><span class="pre">Forager</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.energy_budget.model.EnergyScenario"><code class="docutils literal notranslate"><span class="pre">EnergyScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.energy_budget.model.EnergyBudget"><code class="docutils literal notranslate"><span class="pre">EnergyBudget</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.energy_budget.model.population"><code class="docutils literal notranslate"><span class="pre">population()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.energy_budget.model.stock"><code class="docutils literal notranslate"><span class="pre">stock()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.forest_fire.model.Cover"><code class="docutils literal notranslate"><span class="pre">Cover</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.forest_fire.model.ForestScenario"><code class="docutils literal notranslate"><span class="pre">ForestScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.forest_fire.model.ForestFire"><code class="docutils literal notranslate"><span class="pre">ForestFire</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.forest_fire.model.count_of"><code class="docutils literal notranslate"><span class="pre">count_of()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zoo.html#module-modelly.zoo.order_book.model">Economics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.order_book.model.OrderBookScenario"><code class="docutils literal notranslate"><span class="pre">OrderBookScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.order_book.model.OrderBook"><code class="docutils literal notranslate"><span class="pre">OrderBook</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.order_book.model.mid_price"><code class="docutils literal notranslate"><span class="pre">mid_price()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.order_book.model.spread"><code class="docutils literal notranslate"><span class="pre">spread()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.kinetic_wealth.model.Holder"><code class="docutils literal notranslate"><span class="pre">Holder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.kinetic_wealth.model.KineticScenario"><code class="docutils literal notranslate"><span class="pre">KineticScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.kinetic_wealth.model.KineticWealth"><code class="docutils literal notranslate"><span class="pre">KineticWealth</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.kinetic_wealth.model.gini_of"><code class="docutils literal notranslate"><span class="pre">gini_of()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.bouchaud_mezard.model.Saver"><code class="docutils literal notranslate"><span class="pre">Saver</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.bouchaud_mezard.model.BouchaudMezardScenario"><code class="docutils literal notranslate"><span class="pre">BouchaudMezardScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.bouchaud_mezard.model.BouchaudMezard"><code class="docutils literal notranslate"><span class="pre">BouchaudMezard</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.bouchaud_mezard.model.gini_of"><code class="docutils literal notranslate"><span class="pre">gini_of()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zoo.html#module-modelly.zoo.deffuant.model">Sociology and political science</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.deffuant.model.DeffuantScenario"><code class="docutils literal notranslate"><span class="pre">DeffuantScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.deffuant.model.Voter"><code class="docutils literal notranslate"><span class="pre">Voter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.deffuant.model.Deffuant"><code class="docutils literal notranslate"><span class="pre">Deffuant</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.deffuant.model.cluster_count"><code class="docutils literal notranslate"><span class="pre">cluster_count()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.deffuant.model.spread"><code class="docutils literal notranslate"><span class="pre">spread()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.hegselmann_krause.model.HKScenario"><code class="docutils literal notranslate"><span class="pre">HKScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.hegselmann_krause.model.Voter"><code class="docutils literal notranslate"><span class="pre">Voter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.hegselmann_krause.model.confidence_means"><code class="docutils literal notranslate"><span class="pre">confidence_means()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.hegselmann_krause.model.HegselmannKrause"><code class="docutils literal notranslate"><span class="pre">HegselmannKrause</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.hegselmann_krause.model.cluster_count"><code class="docutils literal notranslate"><span class="pre">cluster_count()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.hegselmann_krause.model.spread"><code class="docutils literal notranslate"><span class="pre">spread()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.axelrod.model.AxelrodScenario"><code class="docutils literal notranslate"><span class="pre">AxelrodScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.axelrod.model.Axelrod"><code class="docutils literal notranslate"><span class="pre">Axelrod</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.axelrod.model.interact"><code class="docutils literal notranslate"><span class="pre">interact()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.axelrod.model.region_count"><code class="docutils literal notranslate"><span class="pre">region_count()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.axelrod.model.active_bonds"><code class="docutils literal notranslate"><span class="pre">active_bonds()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="zoo.html#module-modelly.zoo.nagel_schreckenberg.model">Transport and energy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.nagel_schreckenberg.model.TrafficScenario"><code class="docutils literal notranslate"><span class="pre">TrafficScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.nagel_schreckenberg.model.Car"><code class="docutils literal notranslate"><span class="pre">Car</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.nagel_schreckenberg.model.NagelSchreckenberg"><code class="docutils literal notranslate"><span class="pre">NagelSchreckenberg</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.nagel_schreckenberg.model.fundamental_diagram"><code class="docutils literal notranslate"><span class="pre">fundamental_diagram()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.bass_diffusion.model.BassScenario"><code class="docutils literal notranslate"><span class="pre">BassScenario</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.bass_diffusion.model.Household"><code class="docutils literal notranslate"><span class="pre">Household</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.bass_diffusion.model.BassDiffusion"><code class="docutils literal notranslate"><span class="pre">BassDiffusion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="zoo.html#modelly.zoo.bass_diffusion.model.bass_curve"><code class="docutils literal notranslate"><span class="pre">bass_curve()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../performance.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Performance audit</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="core.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Core</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/apis/api_main.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

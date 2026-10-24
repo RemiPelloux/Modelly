@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Calibration &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'calibration';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/calibration.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Sensitivity analysis" href="sensitivity.html" />
+    <link rel="prev" title="Language-model agents" href="llm_agents.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#" aria-current="page">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Calibration</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="calibration">
+<h1>Calibration<a class="headerlink" href="#calibration" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.calibrate</span></code> fits a model’s parameters to observed data and says how sure the fit is. You
+give priors over the parameters and targets (an observed series, or summary statistics of one);
+a method runs the model many times through the <a class="reference internal" href="experiments.html"><span class="std std-doc">experiment executors</span></a> and
+returns a posterior: weighted parameter samples, their summaries, plots and predictions.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>What it returns</p></th>
+<th class="head"><p>Use it when</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ABCSMC</span></code></p></td>
+<td><p>a posterior distribution</p></td>
+<td><p>the default: approximate Bayesian computation by sequential Monte Carlo</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ABCRejection</span></code></p></td>
+<td><p>a posterior distribution</p></td>
+<td><p>a quick first look, or a cheap model</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SimulatedMoments</span></code></p></td>
+<td><p>the best point</p></td>
+<td><p>you match moments (means, variances, autocorrelations) of series</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BayesOpt</span></code></p></td>
+<td><p>the best point</p></td>
+<td><p>each run is expensive and you can afford only tens of them</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Every run is written to a Parquet store like an experiment’s, so the store needs the
+<code class="docutils literal notranslate"><span class="pre">experiments</span></code> extra:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"modelly-abm[experiments]"</span>
+</pre></div>
+</div>
+<section id="a-worked-example-an-sir-model-and-case-data">
+<h2>A worked example: an SIR model and case data<a class="headerlink" href="#a-worked-example-an-sir-model-and-case-data" title="Link to this heading">#</a></h2>
+<p>The model lives in its own file, <code class="docutils literal notranslate"><span class="pre">epidemic.py</span></code>, so that worker processes can import it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.scenarios</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scenario</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EpidemicScenario</span><span class="p">(</span><span class="n">Scenario</span><span class="p">):</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span>  <span class="c1"># infection rate</span>
+    <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># recovery rate</span>
+    <span class="n">population</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">initial</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Epidemic</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A stochastic SIR model: binomial infections and recoveries each day."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario</span><span class="p">:</span> <span class="n">EpidemicScenario</span> <span class="o">=</span> <span class="n">EpidemicScenario</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">scenario</span><span class="o">=</span><span class="n">scenario</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">population</span> <span class="o">-</span> <span class="n">scenario</span><span class="o">.</span><span class="n">initial</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">initial</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovered</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span>
+        <span class="n">pressure</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">beta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">/</span> <span class="n">s</span><span class="o">.</span><span class="n">population</span><span class="p">)</span>
+        <span class="n">infections</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span><span class="p">,</span> <span class="n">pressure</span><span class="p">))</span>
+        <span class="n">recoveries</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">infected</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">gamma</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span> <span class="o">-=</span> <span class="n">infections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">+=</span> <span class="n">infections</span> <span class="o">-</span> <span class="n">recoveries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovered</span> <span class="o">+=</span> <span class="n">recoveries</span>
+</pre></div>
+</div>
+<p>The “case data” here are 40 days of one run at <code class="docutils literal notranslate"><span class="pre">beta</span> <span class="pre">=</span> <span class="pre">0.4</span></code>, <code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">=</span> <span class="pre">0.1</span></code>; in a real study
+they come from a file (<code class="docutils literal notranslate"><span class="pre">pandas.read_csv(&quot;cases.csv&quot;)[&quot;cases&quot;]</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">epidemic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Epidemic</span><span class="p">,</span> <span class="n">EpidemicScenario</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.calibrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABCSMC</span><span class="p">,</span> <span class="n">Prior</span><span class="p">,</span> <span class="n">Target</span>
+
+<span class="n">truth</span> <span class="o">=</span> <span class="n">Epidemic</span><span class="p">(</span><span class="n">EpidemicScenario</span><span class="p">(</span><span class="n">beta</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">99</span><span class="p">))</span>
+<span class="n">cases</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">40</span><span class="p">):</span>
+    <span class="n">truth</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="n">cases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">truth</span><span class="o">.</span><span class="n">infected</span><span class="p">)</span>
+
+<span class="n">calibration</span> <span class="o">=</span> <span class="n">ABCSMC</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">Epidemic</span><span class="p">,</span>
+    <span class="n">priors</span><span class="o">=</span><span class="p">{</span><span class="s2">"beta"</span><span class="p">:</span> <span class="n">Prior</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="n">Prior</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)},</span>
+    <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="n">Target</span><span class="p">(</span><span class="s2">"infected"</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">cases</span><span class="p">)],</span>
+    <span class="n">steps</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+    <span class="n">particles</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">2027</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>  <span class="c1"># process workers re-import this script on Windows and macOS</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">calibration</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">generations</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="s2">"processes"</span><span class="p">,</span> <span class="n">max_parallel</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">posterior</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">calibration</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>        mean  median     sd  hdi_low  hdi_high
+beta   0.418   0.413  0.055    0.288     0.512
+gamma  0.102   0.099  0.021    0.071     0.143
+
+   generation  tolerance  acceptance      ess  runs
+0           0        inf        1.00  100.000   100
+1           1    234.254        0.50   98.419   200
+2           2    196.962        0.25   97.974   400
+3           3    160.792        0.25   98.569   400
+4           4    120.497        0.20   96.417   500
+5           5     87.196        0.25   98.382   400
+</pre></div>
+</div>
+<p>The 95 % highest-density intervals contain the true values. Each generation lowers the
+tolerance (the largest accepted distance to the data) and costs more runs to fill; more
+generations, or more particles, narrow the posterior further.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"fit.png"</span><span class="p">)</span>  <span class="c1"># marginals, pairs, and the fit against the data</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>  <span class="c1"># beta, gamma, weight, distance: one row per particle</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">best</span>  <span class="c1"># the particle closest to the data</span>
+<span class="n">posterior</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
+    <span class="n">draws</span><span class="o">=</span><span class="mi">20</span>
+<span class="p">)</span>  <span class="c1"># 20 new runs at posterior samples: draw, replicate, step, infected</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">plot()</span></code> returns a Matplotlib figure: weighted histograms of each parameter, scatter plots of
+each pair, and for each target the observed values against the posterior median and the 95 %
+band of the particles’ simulations.</p>
+</section>
+<section id="priors">
+<h2>Priors<a class="headerlink" href="#priors" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Prior</p></th>
+<th class="head"><p>Parameters</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Prior.uniform(low,</span> <span class="pre">high)</span></code></p></td>
+<td><p>every value in the interval equally likely</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Prior.log_uniform(low,</span> <span class="pre">high)</span></code></p></td>
+<td><p>uniform on a log scale, <code class="docutils literal notranslate"><span class="pre">low</span> <span class="pre">&gt;</span> <span class="pre">0</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Prior.normal(mean,</span> <span class="pre">sd)</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Prior.log_normal(mu,</span> <span class="pre">sigma)</span></code></p></td>
+<td><p>the logarithm is normal</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Prior.truncated_normal(mean,</span> <span class="pre">sd,</span> <span class="pre">low,</span> <span class="pre">high)</span></code></p></td>
+<td><p>a normal cut to an interval</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Prior.choice(values,</span> <span class="pre">probabilities=None)</span></code></p></td>
+<td><p>one of a list, for discrete parameters</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">prior.sample(rng,</span> <span class="pre">n)</span></code> draws from a numpy generator and <code class="docutils literal notranslate"><span class="pre">prior.logpdf(x)</span></code> is the log density
+(<code class="docutils literal notranslate"><span class="pre">-inf</span></code> off the support). Parameters the model needs but you do not fit go to <code class="docutils literal notranslate"><span class="pre">fixed=</span></code>:
+<code class="docutils literal notranslate"><span class="pre">ABCSMC(...,</span> <span class="pre">fixed={&quot;population&quot;:</span> <span class="pre">5000})</span></code>. When the model’s <code class="docutils literal notranslate"><span class="pre">scenario</span></code> argument defaults to a
+<code class="docutils literal notranslate"><span class="pre">Scenario</span></code> class, the names and types are checked against it before anything runs.</p>
+</section>
+<section id="targets-and-distances">
+<h2>Targets and distances<a class="headerlink" href="#targets-and-distances" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Target(name,</span> <span class="pre">observed,</span> <span class="pre">distance=...,</span> <span class="pre">weight=...,</span> <span class="pre">summary=...,</span> <span class="pre">output=...)</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> is what the model records every step, read like an <a class="reference internal" href="experiments.html#outputs"><span class="std std-ref">experiment
+output</span></a>: an attribute, a property or a method of the model. A model
+reporter of a <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> that reads an attribute reads the same thing. <code class="docutils literal notranslate"><span class="pre">output=</span></code> names
+something else to record (a dotted path or a module-level function of the model).</p></li>
+<li><p>Without <code class="docutils literal notranslate"><span class="pre">summary</span></code>, <code class="docutils literal notranslate"><span class="pre">observed</span></code> is a series matched to the end of the simulated one: its last
+value against the state after the last step. 40 observed values and <code class="docutils literal notranslate"><span class="pre">steps=40</span></code> compare days 1
+to 40.</p></li>
+<li><p>With <code class="docutils literal notranslate"><span class="pre">summary</span></code>, a function of one run’s series (step 0 first) returns the statistics compared
+with <code class="docutils literal notranslate"><span class="pre">observed</span></code>: <code class="docutils literal notranslate"><span class="pre">Target(&quot;infected&quot;,</span> <span class="pre">observed=[455],</span> <span class="pre">summary=numpy.max)</span></code> fits the peak.</p></li>
+<li><p>With <code class="docutils literal notranslate"><span class="pre">replicates=</span></code> above 1, the replicates’ summaries are averaged before the distance.</p></li>
+<li><p>The total distance is the sum of the targets’ <code class="docutils literal notranslate"><span class="pre">weight</span> <span class="pre">*</span> <span class="pre">distance</span></code>, which fits several
+patterns at once (pattern-oriented modelling).</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Distance</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">distance.rmse</span></code> (default), <code class="docutils literal notranslate"><span class="pre">&quot;rmse&quot;</span></code></p></td>
+<td><p>root mean squared error</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">distance.mae</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mae&quot;</span></code></p></td>
+<td><p>mean absolute error</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">distance.euclidean</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;euclidean&quot;</span></code></p></td>
+<td><p>the norm of the difference, for vectors of statistics</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">distance.weighted(weights)</span></code></p></td>
+<td><p>a weighted RMSE, one weight per value</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">distance.wasserstein</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;wasserstein&quot;</span></code></p></td>
+<td><p>Wasserstein-1 between the two sets of values (scipy)</p></td>
+</tr>
+<tr class="row-odd"><td><p>any <code class="docutils literal notranslate"><span class="pre">f(simulated,</span> <span class="pre">observed)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p></td>
+<td><p>your own</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Counts that span orders of magnitude fit better on a log scale:
+<code class="docutils literal notranslate"><span class="pre">Target(&quot;prey&quot;,</span> <span class="pre">numpy.log1p(counts),</span> <span class="pre">summary=log_counts)</span></code> with a module-level
+<code class="docutils literal notranslate"><span class="pre">def</span> <span class="pre">log_counts(series):</span> <span class="pre">return</span> <span class="pre">numpy.log1p(series[1:])</span></code>.</p>
+</section>
+<section id="abc-smc">
+<h2>ABC-SMC<a class="headerlink" href="#abc-smc" title="Link to this heading">#</a></h2>
+<p>Generation 0 samples the priors and accepts every particle. Each later generation sets its
+tolerance to the <code class="docutils literal notranslate"><span class="pre">quantile</span></code> (default 0.5) of the previous distances, draws ancestors by weight
+and moves them with a perturbation kernel, keeps the particles within the tolerance and weights
+them by prior density over proposal density. The kernel is a multivariate normal with twice the
+weighted covariance of the previous population for continuous parameters; a choice keeps its
+value with probability 0.7 and otherwise jumps to another value. The effective sample size of
+the weights is in <code class="docutils literal notranslate"><span class="pre">trace()</span></code> and <code class="docutils literal notranslate"><span class="pre">posterior.effective_sample_size</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">run()</span></code> stops at the first of:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Rule</p></th>
+<th class="head"><p>Set with</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>a number of generations</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">run(generations=5)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>a budget of model runs</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">run(budget=20_000)</span></code>; a generation that would exceed it is not started</p></td>
+</tr>
+<tr class="row-even"><td><p>a tolerance reached</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ABCSMC(...,</span> <span class="pre">min_tolerance=10.0)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>an acceptance rate too low</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ABCSMC(...,</span> <span class="pre">min_acceptance=0.01)</span></code> (the default)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">posterior.info[&quot;stopped&quot;]</span></code> says which one.</p>
+</section>
+<section id="seeds-executors-and-resuming">
+<h2>Seeds, executors and resuming<a class="headerlink" href="#seeds-executors-and-resuming" title="Link to this heading">#</a></h2>
+<p>A calibration’s <code class="docutils literal notranslate"><span class="pre">seed</span></code> is the root of every random stream: the priors’ draws, the proposals of
+each batch and the seeds of every run (<code class="docutils literal notranslate"><span class="pre">SeedSequence(seed,</span> <span class="pre">spawn_key=...)</span></code>, as in experiments).
+Proposals are made in batches of <code class="docutils literal notranslate"><span class="pre">particles</span></code>, and a generation keeps the first accepted
+particles in proposal order, so the posterior is the same on <code class="docutils literal notranslate"><span class="pre">&quot;serial&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;threads&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;processes&quot;</span></code>, Dask, Ray or a cluster, with any number of workers, and with the compiled core
+or <code class="docutils literal notranslate"><span class="pre">MODELLY_PURE_PYTHON=1</span></code>. With <code class="docutils literal notranslate"><span class="pre">&quot;processes&quot;</span></code>, the workers are started once and reused for
+every batch of the run.</p>
+<p>A run can stop and resume:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">calibration</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">generations</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">calibration</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"sir.ckpt"</span><span class="p">)</span>
+
+<span class="c1"># later, possibly in another process</span>
+<span class="n">calibration</span> <span class="o">=</span> <span class="n">ABCSMC</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"sir.ckpt"</span><span class="p">)</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">calibration</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">generations</span><span class="o">=</span><span class="mi">6</span>
+<span class="p">)</span>  <span class="c1"># identical to one uninterrupted 6-generation run</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">run(...,</span> <span class="pre">checkpoint=&quot;sir.ckpt&quot;)</span></code> saves after every generation. A run stopped by its budget
+in the middle of a generation resumes from the last whole generation and repeats the same
+proposals, so the result is still identical. With <code class="docutils literal notranslate"><span class="pre">store=&quot;runs/sir&quot;</span></code> the runs themselves are
+kept, and a rerun reads them instead of running them again.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>A calibration checkpoint is a pickle, like a <a class="reference internal" href="checkpoints.html"><span class="std std-doc">model checkpoint</span></a>: only load
+files you wrote or otherwise trust. Distances, summaries and outputs must be module-level
+functions (not lambdas) for the calibration to be saved.</p>
+</div>
+</section>
+<section id="abc-rejection">
+<h2>ABC rejection<a class="headerlink" href="#abc-rejection" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.calibrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABCRejection</span>
+
+<span class="n">rejection</span> <span class="o">=</span> <span class="n">ABCRejection</span><span class="p">(</span><span class="n">Epidemic</span><span class="p">,</span> <span class="n">priors</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">rejection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">budget</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">quantile</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>  <span class="c1"># keep the closest 5 %</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">rejection</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">budget</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">150.0</span>
+<span class="p">)</span>  <span class="c1"># or every run within a distance</span>
+</pre></div>
+</div>
+<p>All <code class="docutils literal notranslate"><span class="pre">budget</span></code> samples run as one batch; the accepted ones have equal weights.</p>
+</section>
+<section id="simulated-method-of-moments">
+<h2>Simulated method of moments<a class="headerlink" href="#simulated-method-of-moments" title="Link to this heading">#</a></h2>
+<p>Each target gives moments (a series, or the statistics of its <code class="docutils literal notranslate"><span class="pre">summary</span></code>); the objective is
+<code class="docutils literal notranslate"><span class="pre">g'</span> <span class="pre">W</span> <span class="pre">g</span></code> with <code class="docutils literal notranslate"><span class="pre">g</span></code> the gap between the replicate mean of the simulated moments and the observed
+ones. It is minimised with <code class="docutils literal notranslate"><span class="pre">scipy.optimize</span></code> (<code class="docutils literal notranslate"><span class="pre">optimizer=&quot;Nelder-Mead&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;Powell&quot;</span></code>) over the
+priors’ box (their support, or the central 99.8 % of an unbounded prior; log-scaled priors on a
+log scale). Every evaluation uses the same replicate seeds (common random numbers), so the
+optimiser sees a deterministic function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.calibrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulatedMoments</span>
+
+<span class="n">fit</span> <span class="o">=</span> <span class="n">SimulatedMoments</span><span class="p">(</span>
+    <span class="n">Market</span><span class="p">,</span> <span class="n">priors</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">replicates</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s2">"diagonal"</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">3</span>
+<span class="p">)</span>
+<span class="n">estimate</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">evaluations</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">estimate</span><span class="o">.</span><span class="n">best</span>  <span class="c1"># the parameters</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>  <span class="c1"># every evaluation and its objective</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">weighting</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;identity&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;diagonal&quot;</span></code> (inverse variances of the moments), <code class="docutils literal notranslate"><span class="pre">&quot;optimal&quot;</span></code>
+(inverse covariance), both estimated from the replicates at the start point, or a matrix.</p>
+</section>
+<section id="bayesian-optimisation">
+<h2>Bayesian optimisation<a class="headerlink" href="#bayesian-optimisation" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">BayesOpt</span></code> is a basic optimiser built on numpy and scipy, with no extra library: a Latin
+hypercube of <code class="docutils literal notranslate"><span class="pre">initial</span></code> points, then one point at a time, the candidate with the largest
+expected improvement under a Gaussian process (squared-exponential kernel with one length scale
+per parameter) fitted to the evaluations so far. It minimises the targets’ total distance with
+common random numbers and returns the best point. It suits a handful of parameters and up to a
+few hundred evaluations; for more, use a dedicated optimisation library on the same objective.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.calibrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">BayesOpt</span>
+
+<span class="n">search</span> <span class="o">=</span> <span class="n">BayesOpt</span><span class="p">(</span><span class="n">Epidemic</span><span class="p">,</span> <span class="n">priors</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">replicates</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">search</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">evaluations</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">best</span>
+</pre></div>
+</div>
+</section>
+<section id="from-the-command-line">
+<h2>From the command line<a class="headerlink" href="#from-the-command-line" title="Link to this heading">#</a></h2>
+<p>A calibration can live in a TOML file that reuses the <a class="reference internal" href="experiments.html#from-the-command-line"><span class="std std-ref">experiment format</span></a>:</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[experiment]</span>
+<span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"epidemic.py:Epidemic"</span><span class="w">   </span><span class="c1"># relative to this file, or package.module:Class</span>
+<span class="n">steps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40</span>
+<span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2027</span>
+<span class="n">store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"runs/calibration"</span><span class="w">       </span><span class="c1"># optional; a temporary folder otherwise</span>
+
+<span class="k">[space]</span><span class="w">                          </span><span class="c1"># a range is a uniform prior (log = true: log-uniform),</span>
+<span class="n">beta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">min</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1"># an integer range or a list a choice,</span>
+<span class="n">population</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="w">                </span><span class="c1"># anything else a fixed parameter</span>
+
+<span class="k">[priors]</span><span class="w">                         </span><span class="c1"># other priors, by kind and arguments</span>
+<span class="n">gamma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">"truncated_normal"</span><span class="p">,</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.15</span><span class="p">,</span><span class="w"> </span><span class="n">sd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">low</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="n">high</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="p">}</span>
+
+<span class="k">[[targets]]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"infected"</span>
+<span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cases.csv"</span><span class="w">               </span><span class="c1"># or observed = [...]; column defaults to the name</span>
+<span class="n">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cases"</span>
+<span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"rmse"</span><span class="w">                </span><span class="c1"># or mae, euclidean, wasserstein, module:function</span>
+
+<span class="k">[calibration]</span>
+<span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"abc_smc"</span><span class="w">               </span><span class="c1"># abc_rejection, simulated_moments, bayes_opt</span>
+<span class="n">particles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w">                  </span><span class="c1"># the method's settings</span>
+<span class="n">generations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w">                  </span><span class="c1"># and its run() arguments</span>
+<span class="n">budget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5000</span>
+
+<span class="k">[run]</span>
+<span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"processes"</span>
+<span class="n">max_parallel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modelly<span class="w"> </span>calibrate<span class="w"> </span>sir.toml
+modelly<span class="w"> </span>calibrate<span class="w"> </span>sir.toml<span class="w"> </span>--output<span class="w"> </span>posterior.csv<span class="w">     </span><span class="c1"># every sample with its weight</span>
+modelly<span class="w"> </span>calibrate<span class="w"> </span>sir.toml<span class="w"> </span>--checkpoint<span class="w"> </span>sir.ckpt<span class="w">      </span><span class="c1"># resumes when the file exists</span>
+</pre></div>
+</div>
+<p>It prints the summary and the run’s diagnostics. Exit status: 0 when the calibration finished,
+1 when a run failed or no sample was accepted, 2 for a bad command line or spec.
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">modelly.calibrate</span></code> is the same command; <code class="docutils literal notranslate"><span class="pre">--help</span></code> shows the whole reference.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="llm_agents.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Language-model agents</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="sensitivity.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Sensitivity analysis</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-worked-example-an-sir-model-and-case-data">A worked example: an SIR model and case data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#priors">Priors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#targets-and-distances">Targets and distances</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#abc-smc">ABC-SMC</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#seeds-executors-and-resuming">Seeds, executors and resuming</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#abc-rejection">ABC rejection</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulated-method-of-moments">Simulated method of moments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-optimisation">Bayesian optimisation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-the-command-line">From the command line</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/calibration.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>2.0.0: clean foundations &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'roadmap/2.0.0';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/roadmap/2.0.0.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Platforms: Windows, macOS and Linux" href="platforms.html" />
+    <link rel="prev" title="1.5.0: ecosystem and collaboration" href="1.5.0.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1.3.0.html">1.3.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.0.html">1.4.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.0.html">1.5.0</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">2.0.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="platforms.html">Platforms</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Roadmap</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">2.0.0: clean foundations</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="clean-foundations">
+<h1>2.0.0: clean foundations<a class="headerlink" href="#clean-foundations" title="Link to this heading">#</a></h1>
+<p><strong>Status:</strong> proposed · <strong>Base:</strong> 1.5.0</p>
+<p>2.0.0 is the only release on this roadmap allowed to break things, and it breaks them on
+purpose and with a map. Three 1.x releases of features leave behind parallel ways of doing the
+same thing; 2.0 keeps the best one of each and makes it the only one. <strong>One space API, one
+clock, columns by default, typed scenarios, per-agent random streams, a stable C ABI and a
+checkpoint format that lasts.</strong> Every removal was deprecated in 1.5 at the latest, and
+<code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">migrate</span> <span class="pre">--to</span> <span class="pre">2.0</span></code> rewrites what can be rewritten. All on Windows, macOS and Linux (see
+<a class="reference internal" href="platforms.html"><span class="std std-doc">Platforms</span></a>).</p>
+<section id="principles">
+<h2>Principles<a class="headerlink" href="#principles" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>No surprise breaks.</strong> Nothing is removed in 2.0 that did not warn in 1.5, naming the
+replacement.</p></li>
+<li><p><strong>One way.</strong> Where 1.x grew two ways to do a thing, 2.0 keeps one.</p></li>
+<li><p><strong>Same science.</strong> A model migrated to 2.0 gives statistically the same results as on 1.5;
+where the random streams change (per-agent streams), the migration guide says so and the
+agreement test (Welch, as in the playbooks) proves it.</p></li>
+<li><p><strong>Faster everywhere.</strong> No playbook slower than 1.5 on any OS.</p></li>
+<li><p><strong>Supported 1.x.</strong> 1.5 is a long-term-support line: it keeps receiving bug and security
+fixes after 2.0.0, so every user can migrate when their own work allows.</p></li>
+</ol>
+</section>
+<section id="epics">
+<h2>Epics<a class="headerlink" href="#epics" title="Link to this heading">#</a></h2>
+<section id="h1-removals-and-the-migration-tool">
+<h3>H1 · Removals and the migration tool<a class="headerlink" href="#h1-removals-and-the-migration-tool" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> remove every deprecated name and make upgrading a command, not a project.</p>
+<p><strong>Work items:</strong> remove everything deprecated in 1.3 to 1.5; <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">migrate</span> <span class="pre">--to</span> <span class="pre">2.0</span></code> (the
+codemod from <code class="docutils literal notranslate"><span class="pre">modelly.migrate</span></code>, extended to 1.x → 2.0 rewrites) with a dry run, a diff and a
+report of what needs a human; a migration guide with before/after for every removal; migration
+tested on every zoo and hub model.</p>
+<p><strong>Done when:</strong> every zoo model and the three community models migrate automatically, pass their
+validation tests, and agree with their 1.5 results.</p>
+<p><strong>Size:</strong> L</p>
+</section>
+<section id="h2-one-space-api">
+<h3>H2 · One space API<a class="headerlink" href="#h2-one-space-api" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> grids, networks, continuous space and geographic space share one protocol: the same
+calls to place, move, query neighbours and iterate, whatever the geometry.</p>
+<p><strong>Design:</strong> a <code class="docutils literal notranslate"><span class="pre">Space</span></code> protocol (<code class="docutils literal notranslate"><span class="pre">place</span></code>, <code class="docutils literal notranslate"><span class="pre">move</span></code>, <code class="docutils literal notranslate"><span class="pre">neighbors</span></code>, <code class="docutils literal notranslate"><span class="pre">within</span></code>, <code class="docutils literal notranslate"><span class="pre">positions</span></code> as a column);
+discrete spaces keep cells, continuous and geographic spaces keep coordinates, both answer the
+same queries; property layers become fields (from 1.4 F6) on every space; old space classes kept
+as thin aliases through 2.x where they map cleanly.</p>
+<p><strong>Done when:</strong> every zoo model runs on the new protocol; a model can switch grid to network to
+continuous space by changing one line, verified by a tutorial.</p>
+<p><strong>Size:</strong> XL</p>
+</section>
+<section id="h3-columns-by-default">
+<h3>H3 · Columns by default<a class="headerlink" href="#h3-columns-by-default" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> agent state lives in columns unless the model asks otherwise, so every model gets the
+1.x column speed-ups without rewriting.</p>
+<p><strong>Design:</strong> typed attribute declarations (<code class="docutils literal notranslate"><span class="pre">wealth:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">Column(0.0)</span></code> or plain annotations)
+become columns automatically; attributes that cannot be columns (objects, lists) stay per-agent
+and are reported by <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">profile</span></code>; <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> gathers columns without Python loops.</p>
+<p><strong>Done when:</strong> the classic playbook variants (per-agent code) run at least as fast as their 1.5
+column variants after migration; no model loses an attribute in migration.</p>
+<p><strong>Size:</strong> L</p>
+</section>
+<section id="h4-one-clock">
+<h3>H4 · One clock<a class="headerlink" href="#h4-one-clock" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> ticks and events on one scheduler with one documented ordering rule.</p>
+<p><strong>Design:</strong> steps are events at integer times; phases are priorities; tie-breaking is fully
+specified (time, priority, insertion order); the compiled scheduler from 1.4 is the only one; a
+<code class="docutils literal notranslate"><span class="pre">schedule</span></code> report shows what runs when.</p>
+<p><strong>Done when:</strong> every model with mixed ticks and events gives the same results as on 1.5 under the
+documented ordering; the ordering spec is a docs page with tests for each rule.</p>
+<p><strong>Size:</strong> M</p>
+</section>
+<section id="h5-typed-scenarios-and-configuration">
+<h3>H5 · Typed scenarios and configuration<a class="headerlink" href="#h5-typed-scenarios-and-configuration" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> scenarios are typed, validated and loadable from files.</p>
+<p><strong>Design:</strong> <code class="docutils literal notranslate"><span class="pre">Scenario</span></code> as a <code class="docutils literal notranslate"><span class="pre">dataclass_transform</span></code> base (the default-type TODO in
+<code class="docutils literal notranslate"><span class="pre">modelly/core/model.py</span></code> that waits for Python 3.13); validation with clear errors (range, type,
+units); TOML and YAML loading; scenarios hashed into the manifest; sweeps over typed spaces.</p>
+<p><strong>Size:</strong> M</p>
+</section>
+<section id="h6-per-agent-random-streams-by-default">
+<h3>H6 · Per-agent random streams by default<a class="headerlink" href="#h6-per-agent-random-streams-by-default" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> results independent of iteration order, partitioning and executor.</p>
+<p><strong>Design:</strong> opt-in in 1.4 (F1), default in 2.0; counter-based generators (Philox) keyed by run
+seed and agent id, shared by CPU and GPU; the model-level generators remain for model-level
+draws.</p>
+<p><strong>Done when:</strong> partition-independence holds for every space by default; agreement tests show the
+same distributions as 1.5 on every playbook.</p>
+<p><strong>Size:</strong> M · <strong>Depends on:</strong> 1.4 F1, F2</p>
+</section>
+<section id="h7-stable-abi-and-native-code">
+<h3>H7 · Stable ABI and native code<a class="headerlink" href="#h7-stable-abi-and-native-code" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> one wheel per platform for every supported Python, and native code ready for every
+CPython build.</p>
+<p><strong>Design:</strong> the compiled modules move to the limited C API (abi3) where measurement shows no
+loss, keeping the version-specific build only where it matters; free-threaded builds are
+first-class; the private and unstable APIs left are inventoried and justified.</p>
+<p><strong>Done when:</strong> abi3 wheels for every row of the <a class="reference internal" href="platforms.html"><span class="std std-doc">support matrix</span></a>; no playbook slower
+than the version-specific build by more than 3%; a new CPython release installs on day one.</p>
+<p><strong>Size:</strong> M</p>
+</section>
+<section id="h8-checkpoint-and-data-formats-v2">
+<h3>H8 · Checkpoint and data formats v2<a class="headerlink" href="#h8-checkpoint-and-data-formats-v2" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> a checkpoint written by 2.0 loads in every later 2.x release.</p>
+<p><strong>Design:</strong> a versioned, documented state format (columns as Arrow, structure as JSON, only
+user objects pickled); forward migrations between format versions; <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">checkpoint</span> <span class="pre">upgrade</span></code>
+for 1.x files where the state maps; result stores and manifests versioned the same way.</p>
+<p><strong>Done when:</strong> a 2.0 checkpoint loads in a 2.1 test build; 1.5 checkpoints of every zoo model
+upgrade and resume with the same results.</p>
+<p><strong>Size:</strong> M</p>
+</section>
+<section id="h9-python-and-platform-baseline">
+<h3>H9 · Python and platform baseline<a class="headerlink" href="#h9-python-and-platform-baseline" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> Python 3.13 minimum (3.12 dropped, as its own end of life approaches); a single
+test and release matrix covering every platform in the support table; installation verified
+on clean Windows, macOS and Linux machines with no compiler and no admin rights.</p>
+<p><strong>Size:</strong> S</p>
+</section>
+<section id="h10-public-api-contract">
+<h3>H10 · Public API contract<a class="headerlink" href="#h10-public-api-contract" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> every public name listed in one place with its stability level (stable,
+provisional); the semantic-versioning promise written down; type-checked public API (strict);
+the plugin API v1 from 1.5 carried over unchanged.</p>
+<p><strong>Size:</strong> S</p>
+</section>
+<section id="h11-documentation-2-0">
+<h3>H11 · Documentation 2.0<a class="headerlink" href="#h11-documentation-2-0" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> docs restructured around tasks (build, calibrate, scale, share, publish); every
+page tested (doctests and executed notebooks) on all three OSs; the migration guide and the
+“what is new in 2.0” tour; versioned docs keep <code class="docutils literal notranslate"><span class="pre">/1.5/</span></code> as the LTS reference.</p>
+<p><strong>Size:</strong> M</p>
+</section>
+</section>
+<section id="priorities">
+<h2>Priorities<a class="headerlink" href="#priorities" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Priority</p></th>
+<th class="head"><p>Epics</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must</strong></p></td>
+<td><p>H1 Removals and migration, H2 One space API, H4 One clock, H8 Formats v2, H10 API contract</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Should</strong></p></td>
+<td><p>H3 Columns by default, H5 Typed scenarios, H6 Per-agent streams, H11 Docs</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Could</strong></p></td>
+<td><p>H7 abi3 (if measurement allows), H9 is required but small</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Won’t</strong></p></td>
+<td><p>New features unrelated to the foundations; those go to 2.1</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<pre  class="mermaid">
+        flowchart LR
+    F1[&quot;1.4 Distributed&quot;] --&gt; H6[H6 Per-agent streams]
+    F2[&quot;1.4 GPU&quot;] --&gt; H6
+    F6[&quot;1.4 Fields&quot;] --&gt; H2[H2 One space API]
+    H2 --&gt; H3[H3 Columns by default]
+    H4[H4 One clock] --&gt; H8[H8 Formats v2]
+    H3 --&gt; H8
+    H5[H5 Typed scenarios] --&gt; H8
+    H8 --&gt; H1[H1 Migration tool]
+    H2 --&gt; H1
+    H4 --&gt; H1
+    H1 --&gt; H11[H11 Docs 2.0]
+    </pre></section>
+<section id="sprint-plan">
+<h2>Sprint plan<a class="headerlink" href="#sprint-plan" title="Link to this heading">#</a></h2>
+<p>2.0 has one more sprint than its features need: users migrate their models on the beta and
+report what the migration tool misses, and S7 fixes it.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Sprint</p></th>
+<th class="head"><p>Goal</p></th>
+<th class="head"><p>Main items</p></th>
+<th class="head"><p>Exit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>S1</p></td>
+<td><p>Contract and clock</p></td>
+<td><p>Public API inventory and stability levels; one scheduler with the ordering spec</p></td>
+<td><p>Ordering spec tests pass on every example</p></td>
+</tr>
+<tr class="row-odd"><td><p>S2</p></td>
+<td><p>Space protocol</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Space</span></code> protocol; grids and networks on it</p></td>
+<td><p>Grid and network zoo models pass on the protocol</p></td>
+</tr>
+<tr class="row-even"><td><p>S3</p></td>
+<td><p>Columns and streams · <strong>a1</strong></p></td>
+<td><p>Continuous and geographic spaces on the protocol; columns by default; per-agent streams default</p></td>
+<td><p>Playbooks agree with 1.5 (Welch)</p></td>
+</tr>
+<tr class="row-odd"><td><p>S4</p></td>
+<td><p>Formats and scenarios</p></td>
+<td><p>Checkpoint and result formats v2; typed scenarios; Python 3.13 minimum</p></td>
+<td><p>1.5 checkpoints upgrade and resume</p></td>
+</tr>
+<tr class="row-even"><td><p>S5</p></td>
+<td><p>Migration tool</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">migrate</span> <span class="pre">--to</span> <span class="pre">2.0</span></code> rewrites, report, guide; removals</p></td>
+<td><p>Every zoo model migrates automatically</p></td>
+</tr>
+<tr class="row-odd"><td><p>S6</p></td>
+<td><p>Beta and abi3 · <strong>b1</strong></p></td>
+<td><p>abi3 builds measured; docs 2.0; call for migration testing</p></td>
+<td><p>API frozen; hub models migrated</p></td>
+</tr>
+<tr class="row-even"><td><p>S7</p></td>
+<td><p>Migration feedback · <strong>rc1</strong></p></td>
+<td><p>Fix what users’ migrations reveal</p></td>
+<td><p>No open blocker</p></td>
+</tr>
+<tr class="row-odd"><td><p>S8</p></td>
+<td><p>Hardening · <strong>2.0.0</strong></p></td>
+<td><p>Full matrix on all platforms; LTS branch <code class="docutils literal notranslate"><span class="pre">1.5.x</span></code>; release notes</p></td>
+<td><p>All gates pass</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="release-gates">
+<h2>Release gates<a class="headerlink" href="#release-gates" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Release</p></th>
+<th class="head"><p>Gate</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2.0.0a1</p></td>
+<td><p>Space protocol, one clock, columns by default and per-agent streams in; playbooks agree with 1.5</p></td>
+</tr>
+<tr class="row-odd"><td><p>2.0.0b1</p></td>
+<td><p>Every Must epic done; API frozen; every zoo and hub model migrated automatically</p></td>
+</tr>
+<tr class="row-even"><td><p>2.0.0rc1</p></td>
+<td><p>No open blocker from user migrations</p></td>
+</tr>
+<tr class="row-odd"><td><p>2.0.0</p></td>
+<td><p>Determinism and agreement suites green on Windows, macOS and Linux; no playbook slower than 1.5 on any OS; LTS for 1.5 announced</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="success-metrics">
+<h2>Success metrics<a class="headerlink" href="#success-metrics" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Metric</p></th>
+<th class="head"><p>1.5.0</p></th>
+<th class="head"><p>2.0.0 target</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Ways to place and move an agent</p></td>
+<td><p>one per space type</p></td>
+<td><p>one</p></td>
+</tr>
+<tr class="row-odd"><td><p>Schedulers</p></td>
+<td><p>ticks plus events</p></td>
+<td><p>one clock</p></td>
+</tr>
+<tr class="row-even"><td><p>Models migrated automatically</p></td>
+<td><p>not applicable</p></td>
+<td><p>every zoo and hub model</p></td>
+</tr>
+<tr class="row-odd"><td><p>Checkpoint compatibility</p></td>
+<td><p>same minor version</p></td>
+<td><p>every later 2.x</p></td>
+</tr>
+<tr class="row-even"><td><p>Wheels per platform</p></td>
+<td><p>one per Python version</p></td>
+<td><p>one (abi3) where measured equal</p></td>
+</tr>
+<tr class="row-odd"><td><p>Slowest playbook versus 1.5</p></td>
+<td><p>not applicable</p></td>
+<td><p>not slower on any OS</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="risks">
+<h2>Risks<a class="headerlink" href="#risks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Risk</p></th>
+<th class="head"><p>Likelihood</p></th>
+<th class="head"><p>Impact</p></th>
+<th class="head"><p>Mitigation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Migration breaks user models silently</p></td>
+<td><p>Medium</p></td>
+<td><p>High</p></td>
+<td><p>Agreement tests in the migration report; dry run by default; LTS for 1.5</p></td>
+</tr>
+<tr class="row-odd"><td><p>The space protocol cannot express a space well</p></td>
+<td><p>Medium</p></td>
+<td><p>High</p></td>
+<td><p>Prototype in S2 on all four space types before committing; keep thin aliases</p></td>
+</tr>
+<tr class="row-even"><td><p>Per-agent streams change results users have published</p></td>
+<td><p>High</p></td>
+<td><p>Medium</p></td>
+<td><p>Documented in the guide; the 1.5 LTS reproduces old results; agreement tests prove the distributions match</p></td>
+</tr>
+<tr class="row-odd"><td><p>abi3 is slower</p></td>
+<td><p>Medium</p></td>
+<td><p>Low</p></td>
+<td><p>Keep version-specific wheels where measured slower</p></td>
+</tr>
+<tr class="row-even"><td><p>Too many changes at once</p></td>
+<td><p>High</p></td>
+<td><p>High</p></td>
+<td><p>Won’t list strictly enforced: no new features in 2.0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="open-questions">
+<h2>Open questions<a class="headerlink" href="#open-questions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>[ ] Python 3.13 or 3.14 as the 2.0 minimum?</p></li>
+<li><p>[ ] Do the old space classes stay as aliases through 2.x, or go in 2.1?</p></li>
+<li><p>[ ] When does 1.5 LTS end: when 2.1 ships, or when the hub’s models have all migrated?</p></li>
+</ul>
+</section>
+<section id="sprint-review-log">
+<h2>Sprint review log<a class="headerlink" href="#sprint-review-log" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Sprint</p></th>
+<th class="head"><p>Shipped</p></th>
+<th class="head"><p>Slipped</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>S1</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>S2</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>S3</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>S4</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>S5</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>S6</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>S7</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>S8</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="1.5.0.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">1.5.0: ecosystem and collaboration</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="platforms.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Platforms: Windows, macOS and Linux</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#principles">Principles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epics">Epics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h1-removals-and-the-migration-tool">H1 · Removals and the migration tool</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h2-one-space-api">H2 · One space API</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h3-columns-by-default">H3 · Columns by default</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h4-one-clock">H4 · One clock</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h5-typed-scenarios-and-configuration">H5 · Typed scenarios and configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h6-per-agent-random-streams-by-default">H6 · Per-agent random streams by default</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h7-stable-abi-and-native-code">H7 · Stable ABI and native code</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h8-checkpoint-and-data-formats-v2">H8 · Checkpoint and data formats v2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h9-python-and-platform-baseline">H9 · Python and platform baseline</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h10-public-api-contract">H10 · Public API contract</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#h11-documentation-2-0">H11 · Documentation 2.0</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#priorities">Priorities</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sprint-plan">Sprint plan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-gates">Release gates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#success-metrics">Success metrics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#risks">Risks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#open-questions">Open questions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sprint-review-log">Sprint review log</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/roadmap/2.0.0.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

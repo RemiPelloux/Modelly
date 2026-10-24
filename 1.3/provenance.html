@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Publishing a reproducible study &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=1f29e9d3"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'provenance';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.3';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/provenance.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Time travel and run diff" href="timetravel.html" />
+    <link rel="prev" title="Checkpoints" href="checkpoints.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#" aria-current="page">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Publishing a reproducible study</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="publishing-a-reproducible-study">
+<h1>Publishing a reproducible study<a class="headerlink" href="#publishing-a-reproducible-study" title="Link to this heading">#</a></h1>
+<p>Four commands take a model from one run on your machine to an archive a reviewer can rerun
+with a single command. <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">run</span></code> writes the outputs and a manifest that records everything
+that produced them; <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">verify</span></code> reruns a manifest and compares; <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">bundle</span></code> packs a
+run into one zip; <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">odd</span></code> writes the skeleton of the model’s ODD protocol description.
+All four work the same on Windows, macOS and Linux, need no network, and use <code class="docutils literal notranslate"><span class="pre">git</span></code> only when
+it is installed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modelly<span class="w"> </span>run<span class="w"> </span>model.py:Epidemic<span class="w"> </span>--scenario<span class="w"> </span>scenario.toml<span class="w"> </span>--steps<span class="w"> </span><span class="m">365</span><span class="w"> </span>--out<span class="w"> </span>runs/
+modelly<span class="w"> </span>verify<span class="w"> </span>runs/manifest.json<span class="w">          </span><span class="c1"># outputs match</span>
+modelly<span class="w"> </span>bundle<span class="w"> </span>runs/<span class="w"> </span>--out<span class="w"> </span>epidemic-study.zip
+modelly<span class="w"> </span>odd<span class="w"> </span>model.py:Epidemic<span class="w"> </span>&gt;<span class="w"> </span>ODD.md
+</pre></div>
+</div>
+<section id="for-authors">
+<h2>For authors<a class="headerlink" href="#for-authors" title="Link to this heading">#</a></h2>
+<section id="run-and-record">
+<h3>Run and record<a class="headerlink" href="#run-and-record" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modelly<span class="w"> </span>run<span class="w"> </span>model.py:Epidemic<span class="w"> </span>--scenario<span class="w"> </span>scenario.toml<span class="w"> </span>--steps<span class="w"> </span><span class="m">365</span><span class="w"> </span>--out<span class="w"> </span>runs/
+</pre></div>
+</div>
+<p>The target is a file and a class (<code class="docutils literal notranslate"><span class="pre">path/to/model.py:Epidemic</span></code>) or a dotted module
+(<code class="docutils literal notranslate"><span class="pre">package.module:Epidemic</span></code>), as for <a class="reference internal" href="profile.html"><span class="std std-doc">the profiler</span></a>. The scenario file is a flat
+TOML table; a <code class="docutils literal notranslate"><span class="pre">seed</span></code> key is the seed, every other key is a parameter. Parameters the model’s
+constructor takes by name go to it, the others to its <code class="docutils literal notranslate"><span class="pre">Scenario</span></code>.</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span>
+<span class="n">beta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span>
+<span class="n">gamma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--param</span> <span class="pre">key=value</span></code> adds or overrides a parameter, <code class="docutils literal notranslate"><span class="pre">--seed</span></code> overrides the seed, and
+<code class="docutils literal notranslate"><span class="pre">--input</span> <span class="pre">data.csv</span></code> (repeatable) records the hash of a data file the model reads. Without any
+seed a seed is drawn and recorded, so even that run can be repeated.</p>
+<p>The run folder then holds one file per table the model’s <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> holds and
+<code class="docutils literal notranslate"><span class="pre">manifest.json</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Content</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">model.parquet</span></code></p></td>
+<td><p>model reporters, one row per collection</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">agents.parquet</span></code></p></td>
+<td><p>agent reporters, with <code class="docutils literal notranslate"><span class="pre">Step</span></code> and <code class="docutils literal notranslate"><span class="pre">AgentID</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">agents_&lt;Class&gt;.parquet</span></code></p></td>
+<td><p>agent-type reporters</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">table_&lt;name&gt;.parquet</span></code></p></td>
+<td><p>each <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> table</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">manifest.json</span></code></p></td>
+<td><p>the record described below</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Parquet needs <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code>; without it, and for a table Parquet cannot hold (mixed objects), the
+file is UTF-8 CSV. The manifest says which.</p>
+</section>
+<section id="what-the-manifest-records">
+<h3>What the manifest records<a class="headerlink" href="#what-the-manifest-records" title="Link to this heading">#</a></h3>
+<p>The manifest is JSON with a <code class="docutils literal notranslate"><span class="pre">format</span></code> field, <code class="docutils literal notranslate"><span class="pre">modelly-manifest/1</span></code>. A reader accepts any
+manifest of its major version and refuses others with a clear error. Every path in it is
+relative to the manifest’s folder and written with forward slashes; every hash is
+<code class="docutils literal notranslate"><span class="pre">sha256:&lt;hex&gt;</span></code> over the file’s bytes.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Content</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">target</span></code></p></td>
+<td><p>the model class and where it was loaded from (<code class="docutils literal notranslate"><span class="pre">file</span></code> or <code class="docutils literal notranslate"><span class="pre">module</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">code</span></code></p></td>
+<td><p>the code root (the model file’s folder), a hash of each model source file the run imported, one hash over all of them, and, inside a git working tree, the commit, whether the tree is dirty and a hash of the uncommitted diff</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">environment</span></code></p></td>
+<td><p>Modelly’s version and build (<code class="docutils literal notranslate"><span class="pre">compiled</span></code>, <code class="docutils literal notranslate"><span class="pre">pure</span></code> or <code class="docutils literal notranslate"><span class="pre">partial</span></code>, with the state of each compiled core), Python version and implementation, platform, the installed versions of Modelly’s dependencies, and every installed package (<code class="docutils literal notranslate"><span class="pre">packages</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scenario</span></code></p></td>
+<td><p>the scenario file and its hash, the parameters given, and every value the model’s scenario held</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">run</span></code>, <code class="docutils literal notranslate"><span class="pre">seeds</span></code></p></td>
+<td><p>the step count, the seed and the seed sequence it expanded to</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">inputs</span></code></p></td>
+<td><p>each <code class="docutils literal notranslate"><span class="pre">--input</span></code> file and its hash</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">outputs</span></code></p></td>
+<td><p>each table: file, format, hash, rows and columns</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">timing</span></code></p></td>
+<td><p>wall-clock and CPU seconds of building and running the model</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Cite the manifest, or its hash, next to every number in the paper it produced.</p>
+</section>
+<section id="bundle-for-an-archive">
+<h3>Bundle for an archive<a class="headerlink" href="#bundle-for-an-archive" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modelly<span class="w"> </span>bundle<span class="w"> </span>runs/<span class="w"> </span>--out<span class="w"> </span>epidemic-study.zip
+</pre></div>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Entry</p></th>
+<th class="head"><p>Content</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">manifest.json</span></code></p></td>
+<td><p>the manifest, its paths rewritten for the archive</p></td>
+</tr>
+<tr class="row-odd"><td><p>outputs</p></td>
+<td><p>the recorded tables</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">code/</span></code></p></td>
+<td><p>the model’s source files</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">inputs/</span></code></p></td>
+<td><p>the <code class="docutils literal notranslate"><span class="pre">--input</span></code> files and the scenario file</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">requirements.lock</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">name==version</span></code> of every package installed at run time (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">seeds.json</span></code></p></td>
+<td><p>the seed, its seed sequence and the step count</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.zenodo.json</span></code></p></td>
+<td><p>Zenodo deposit metadata</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CITATION.cff</span></code></p></td>
+<td><p>a citation stub for the study that cites Modelly</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Entries are sorted, stored uncompressed and carry a fixed date and mode, so the same run gives
+a byte-identical archive on any machine: the archive’s hash identifies the study. Bundling
+refuses a run whose outputs or code changed since <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">run</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">.zenodo.json</span></code> and <code class="docutils literal notranslate"><span class="pre">CITATION.cff</span></code> hold <code class="docutils literal notranslate"><span class="pre">TODO</span></code> where only you know the answer: the title, the
+creators, the licence. Fill them in, then upload the zip to <a class="reference external" href="https://zenodo.org/">Zenodo</a>,
+which reads <code class="docutils literal notranslate"><span class="pre">.zenodo.json</span></code> and gives the deposit a DOI.</p>
+</section>
+<section id="describe-the-model-odd">
+<h3>Describe the model: ODD<a class="headerlink" href="#describe-the-model-odd" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modelly<span class="w"> </span>odd<span class="w"> </span>model.py:Epidemic<span class="w"> </span>&gt;<span class="w"> </span>ODD.md
+</pre></div>
+</div>
+<p>The <a class="reference external" href="https://doi.org/10.18564/jasss.4259">ODD protocol</a> (Overview, Design concepts, Details)
+is the usual way to describe an agent-based model in a paper. <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">odd</span></code> builds the model
+without running it and writes the seven elements, filled from the code where the code can say:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Element</p></th>
+<th class="head"><p>Filled from</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1. Purpose and patterns</p></td>
+<td><p>the model class’s docstring</p></td>
+</tr>
+<tr class="row-odd"><td><p>2. Entities, state variables and scales</p></td>
+<td><p>each agent class, its <code class="docutils literal notranslate"><span class="pre">Column</span></code> declarations (<code class="docutils literal notranslate"><span class="pre">Agent.column_specs()</span></code>), its attributes and initial count; the model’s scalar attributes; its spaces and their dimensions</p></td>
+</tr>
+<tr class="row-even"><td><p>3. Process overview and scheduling</p></td>
+<td><p>the statements of <code class="docutils literal notranslate"><span class="pre">step()</span></code> in order, and the agent methods it calls through <code class="docutils literal notranslate"><span class="pre">do</span></code>, <code class="docutils literal notranslate"><span class="pre">shuffle_do</span></code> or <code class="docutils literal notranslate"><span class="pre">map</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>4. Design concepts</p></td>
+<td><p>the eleven concepts; Observation lists the <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> reporters</p></td>
+</tr>
+<tr class="row-even"><td><p>5. Initialization</p></td>
+<td><p>the scenario’s parameters, defaults and values, and the initial population</p></td>
+</tr>
+<tr class="row-odd"><td><p>6. Input data</p></td>
+<td><p>left to you</p></td>
+</tr>
+<tr class="row-even"><td><p>7. Submodels</p></td>
+<td><p>each agent method, scheduled ones first, with its docstring</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Every place that needs a human holds a <code class="docutils literal notranslate"><span class="pre">TODO</span></code> marker. <code class="docutils literal notranslate"><span class="pre">--scenario</span></code>, <code class="docutils literal notranslate"><span class="pre">--param</span></code> and <code class="docutils literal notranslate"><span class="pre">--seed</span></code>
+build the model as <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">run</span></code> does.</p>
+</section>
+</section>
+<section id="for-reviewers">
+<h2>For reviewers<a class="headerlink" href="#for-reviewers" title="Link to this heading">#</a></h2>
+<p>Unpack the archive, install the lock file in a fresh environment, and verify:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>.venv/bin/pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.lock
+.venv/bin/modelly<span class="w"> </span>verify<span class="w"> </span>manifest.json
+</pre></div>
+</div>
+<p>On Windows the scripts are in <code class="docutils literal notranslate"><span class="pre">.venv\Scripts\</span></code> instead of <code class="docutils literal notranslate"><span class="pre">.venv/bin/</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">verify</span></code> reruns the model with the recorded parameters, seed and step count, then
+compares every output table with the recorded one, column by column and row by row. It prints
+<code class="docutils literal notranslate"><span class="pre">outputs</span> <span class="pre">match</span></code>, or the first difference:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>outputs differ: table 'model', column 'Gini', row 12: expected 0.4312, got 0.4415
+</pre></div>
+</div>
+<p>The row is the 0-based position in the table. Before the rerun it checks the code files, the
+input files and the Modelly and Python versions against the record and prints what differs as
+notes on stderr; a note alone does not fail the check.</p>
+<p>Numeric columns are compared with <code class="docutils literal notranslate"><span class="pre">numpy.isclose</span></code>; both tolerances are 0 by default, so the
+values must be identical. A study run on another processor or operating system may differ in
+the last bits of some floating-point results; <code class="docutils literal notranslate"><span class="pre">--rtol</span> <span class="pre">1e-12</span></code> (or <code class="docutils literal notranslate"><span class="pre">--atol</span></code>) accepts that, and a
+report should say which tolerance it used.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Exit code</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">verify</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>outputs match</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>an output differs (the first difference is printed)</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>bad command line, unreadable or unsupported manifest, or the model cannot be loaded</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>the model raised during the rerun (traceback on stderr)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">run</span></code> and <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">odd</span></code> exit 0 on success, 2 for a target or scenario that cannot be
+used and 3 when the model raises; <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">bundle</span></code> exits 0 or 2.</p>
+</section>
+<section id="for-journals">
+<h2>For journals<a class="headerlink" href="#for-journals" title="Link to this heading">#</a></h2>
+<p>A submission that ships the bundle lets the editor check three things without reading code:</p>
+<ul class="simple">
+<li><p>the archive’s hash matches the one cited in the paper (the bundle is byte-deterministic);</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">verify</span> <span class="pre">manifest.json</span></code> prints <code class="docutils literal notranslate"><span class="pre">outputs</span> <span class="pre">match</span></code> in a fresh environment built from
+<code class="docutils literal notranslate"><span class="pre">requirements.lock</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ODD.md</span></code> and <code class="docutils literal notranslate"><span class="pre">CITATION.cff</span></code> are complete (no <code class="docutils literal notranslate"><span class="pre">TODO</span></code> left).</p></li>
+</ul>
+<p>Rerunning needs neither the authors’ machine nor a network connection.</p>
+</section>
+<section id="limits">
+<h2>Limits<a class="headerlink" href="#limits" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The code root is the folder of the model file. Source files outside it that the model
+imports (an installed package) are identified by <code class="docutils literal notranslate"><span class="pre">environment.packages</span></code>, not by hash.</p></li>
+<li><p>Hashes are over bytes: a checkout that converts line endings (git’s <code class="docutils literal notranslate"><span class="pre">autocrlf</span></code> on Windows)
+changes the hash of the source files, and <code class="docutils literal notranslate"><span class="pre">verify</span></code> notes it. The outputs are compared by
+value, so the check itself still passes.</p></li>
+<li><p>Parameters given as Python tuples are stored as JSON lists.</p></li>
+<li><p>A model that reads data files is rerun with the paths in its parameters; keep those paths
+relative to where the study is run, and record the files with <code class="docutils literal notranslate"><span class="pre">--input</span></code>.</p></li>
+</ul>
+<p>From Python, the same steps are <code class="docutils literal notranslate"><span class="pre">modelly.provenance.run_study</span></code>, <code class="docutils literal notranslate"><span class="pre">verify</span></code>, <code class="docutils literal notranslate"><span class="pre">bundle</span></code> and
+<code class="docutils literal notranslate"><span class="pre">odd_markdown</span></code> (<a class="reference internal" href="apis/provenance.html"><span class="std std-doc">API</span></a>).</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="checkpoints.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Checkpoints</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="timetravel.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Time travel and run diff</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#for-authors">For authors</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-and-record">Run and record</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-manifest-records">What the manifest records</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bundle-for-an-archive">Bundle for an archive</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#describe-the-model-odd">Describe the model: ODD</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#for-reviewers">For reviewers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#for-journals">For journals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limits">Limits</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/provenance.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>
