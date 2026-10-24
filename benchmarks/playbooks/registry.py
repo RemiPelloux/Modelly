@@ -113,4 +113,26 @@ PLAYBOOKS = {
         "sizes": {"small": {"n": 500}, "large": {"n": 10000}},
         "params": {"initial_wealth": 1},
     },
+    "sugarscape": {
+        "title": "Sugarscape, constant growback: foragers move to the best sugar in sight",
+        "variants": {
+            "mesa": "mesa_model",
+            "modelly-cells": "modelly_cells",
+            "modelly": "modelly_model",
+        },
+        "steps": 100,
+        "sizes": {
+            "small": {"side": 50, "n": 400},
+            "large": {"side": 100, "n": 1600},
+        },
+        "params": {
+            "max_sugar": 4,
+            "growback": 1,
+            "peaks": [[0.3, 0.7], [0.7, 0.3]],
+            "spread": 0.2,
+            "vision": [1, 6],
+            "metabolism": [1, 4],
+            "initial_sugar": [5, 25],
+        },
+    },
 }
