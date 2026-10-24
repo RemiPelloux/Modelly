@@ -125,7 +125,7 @@ _site-packages-to-flat-layout-mapping = [
 packages = ["modelly"]
 exclude = ["modelly/_native/*.c"]
 
-# Compiles modelly/_native/fastrng.c into platform wheels (optional, see hatch_build.py).
+# Compiles the modelly/_native C modules into platform wheels (optional, see hatch_build.py).
 [tool.hatch.build.targets.wheel.hooks.custom]
 
 [tool.hatch.version]
