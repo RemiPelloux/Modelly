@@ -14,10 +14,22 @@ Available Backends:
 
 """
 
-from modelly.viz.altair.backend import AltairBackend
-from modelly.viz.mpl.backend import MatplotlibBackend
+import importlib
+
+# Imported on first use, so that the backends can import modelly.viz.render.portrayal.
+_LAZY = {
+    "AltairBackend": "modelly.viz.altair.backend",
+    "MatplotlibBackend": "modelly.viz.mpl.backend",
+}
 
 __all__ = [
     "AltairBackend",
     "MatplotlibBackend",
 ]
+
+
+def __getattr__(name: str):
+    """Import a backend the first time it is asked for."""
+    if name not in _LAZY:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    return getattr(importlib.import_module(_LAZY[name]), name)

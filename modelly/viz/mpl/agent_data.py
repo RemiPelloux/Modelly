@@ -5,7 +5,6 @@ Shared by ``collect_agent_data`` here and ``MatplotlibBackend.collect_agent_data
 
 import warnings
 from collections.abc import Callable
-from dataclasses import fields
 from operator import attrgetter
 
 import numpy as np
@@ -18,6 +17,11 @@ from modelly.space import (
     VoronoiGrid,
 )
 from modelly.space.continuous import ContinuousSpace
+from modelly.viz.render.portrayal import (
+    dict_to_style,
+    style_defaults,
+    warn_dict_portrayal,
+)
 
 OrthogonalGrid = OrthogonalMooreGrid | OrthogonalVonNeumannGrid
 HexGrid = modelly.space.HexGrid
@@ -104,23 +108,7 @@ def rows_to_arguments(rows: list) -> dict:
 
 def portrayal_style_defaults() -> dict:
     """Return the AgentPortrayalStyle field defaults by field name."""
-    # Imported here to prevent circular imports
-    from modelly.viz.components import AgentPortrayalStyle  # noqa: PLC0415
-
-    return {f.name: f.default for f in fields(AgentPortrayalStyle)}
-
-
-def warn_dict_portrayal():
-    """Warn that returning a dict from agent_portrayal is deprecated."""
-    warnings.warn(
-        (
-            "Returning a dict from agent_portrayal is deprecated and will be removed in a future release. "
-            "Please return an AgentPortrayalStyle instance instead. "
-            "For more information, refer to the migration guide: "
-        ),
-        FutureWarning,
-        stacklevel=3,  # the caller of collect_agent_data()
-    )
+    return style_defaults()
 
 
 def style_from_dict(portray_input: dict, position, style_fields: dict, ignored_msg):
@@ -128,23 +116,8 @@ def style_from_dict(portray_input: dict, position, style_fields: dict, ignored_m
 
     Warns with ``ignored_msg`` followed by the names of the keys it did not use.
     """
-    from modelly.viz.components import AgentPortrayalStyle  # noqa: PLC0415
-
-    dict_data = portray_input.copy()
-    agent_x, agent_y = position
-    aps = AgentPortrayalStyle(
-        x=agent_x,
-        y=agent_y,
-        size=dict_data.pop("size", style_fields.get("size")),
-        color=dict_data.pop("color", style_fields.get("color")),
-        marker=dict_data.pop("marker", style_fields.get("marker")),
-        zorder=dict_data.pop("zorder", style_fields.get("zorder")),
-        alpha=dict_data.pop("alpha", style_fields.get("alpha")),
-        edgecolors=dict_data.pop("edgecolors", None),
-        linewidths=dict_data.pop("linewidths", style_fields.get("linewidths")),
-    )
-    if dict_data:
-        ignored_keys = list(dict_data.keys())
+    aps, ignored_keys = dict_to_style(portray_input, position, style_fields)
+    if ignored_keys:
         warnings.warn(
             f"{ignored_msg}{', '.join(ignored_keys)}",
             UserWarning,

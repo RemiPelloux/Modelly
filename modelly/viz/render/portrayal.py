@@ -8,11 +8,18 @@ Classes:
 2. PropertyLayerStyle: Controls the appearance of background property layers (e.g., color gradients or uniform fills).
 
 These components are designed to be passed into Modelly visualizations to customize and standardize how data is presented.
+
+This module is the one portrayal API every backend (Matplotlib, Altair) and Modelly Studio
+share: the style classes, their defaults, the conversion of legacy portrayal dicts, and
+``ClassColours``, the default portrayal that colours agents by class.
 """
 
 import warnings
-from dataclasses import dataclass
+from collections.abc import Sequence
+from dataclasses import dataclass, fields
 from typing import Any
+
+from modelly.viz.palettes import OKABE_ITO
 
 ColorLike = str | tuple | int | float
 
@@ -86,6 +93,78 @@ class AgentPortrayalStyle:
             raise ValueError("Scalar color values must be non-negative")
         if isinstance(self.size, (int, float)) and self.size < 0:
             raise ValueError("Size must be a non-negative number")
+
+
+# Attribute a warning to the caller of the function that called the warning helper.
+CALLER_STACKLEVEL = 3
+# Fields a legacy portrayal dict may set, besides the position.
+DICT_STYLE_KEYS = (
+    "size",
+    "color",
+    "marker",
+    "zorder",
+    "alpha",
+    "edgecolors",
+    "linewidths",
+)
+
+
+def style_defaults() -> dict[str, Any]:
+    """Return the default value of every AgentPortrayalStyle field, by field name."""
+    return {f.name: f.default for f in fields(AgentPortrayalStyle)}
+
+
+def warn_dict_portrayal(stacklevel: int = CALLER_STACKLEVEL) -> None:
+    """Warn that returning a dict from agent_portrayal is deprecated."""
+    warnings.warn(
+        (
+            "Returning a dict from agent_portrayal is deprecated and will be removed in a future release. "
+            "Please return an AgentPortrayalStyle instance instead. "
+            "For more information, refer to the migration guide: "
+        ),
+        FutureWarning,
+        stacklevel=stacklevel,
+    )
+
+
+def dict_to_style(
+    portray_input: dict, position, style_fields: dict
+) -> tuple["AgentPortrayalStyle", list[str]]:
+    """Build an AgentPortrayalStyle from a legacy portrayal dict.
+
+    Returns the style and the keys of the dict it did not use, for the caller to warn about.
+    """
+    dict_data = portray_input.copy()
+    agent_x, agent_y = position
+    styles = {key: dict_data.pop(key, style_fields.get(key)) for key in DICT_STYLE_KEYS}
+    return AgentPortrayalStyle(x=agent_x, y=agent_y, **styles), list(dict_data)
+
+
+class ClassColours:
+    """The default portrayal: one colour per agent class, in the order classes are met.
+
+    Any model can be drawn with it, which is what Modelly Studio does when no portrayal is
+    given. The palette defaults to Okabe-Ito, which stays distinct with colour-blindness.
+
+    Args:
+        palette: The colours to cycle through, one per agent class.
+        size: The marker size of every agent.
+    """
+
+    def __init__(self, palette: Sequence[str] | None = None, size: float = 50) -> None:
+        """Colour agents from ``palette`` (Okabe-Ito when None)."""
+        self.palette = tuple(palette or OKABE_ITO)
+        self.size = size
+        self.classes: dict[str, str] = {}
+
+    def __call__(self, agent: Any) -> "AgentPortrayalStyle":
+        """The style of ``agent``: its class's colour."""
+        name = type(agent).__name__
+        colour = self.classes.get(name)
+        if colour is None:
+            colour = self.palette[len(self.classes) % len(self.palette)]
+            self.classes[name] = colour
+        return AgentPortrayalStyle(color=colour, size=self.size)
 
 
 @dataclass

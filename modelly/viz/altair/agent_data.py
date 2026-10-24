@@ -1,9 +1,14 @@
 """Helpers that turn agent portrayals into the column arrays the Altair backend draws."""
 
 import warnings
-from dataclasses import fields
 
 import numpy as np
+
+from modelly.viz.render.portrayal import dict_to_style
+from modelly.viz.render.portrayal import style_defaults as shared_style_defaults
+from modelly.viz.render.portrayal import (
+    warn_dict_portrayal as shared_warn_dict_portrayal,
+)
 
 # Marker mapping from Matplotlib to Altair
 MARKER_TO_SHAPE = {
@@ -24,15 +29,6 @@ MARKER_TO_SHAPE = {
 }
 
 _FLOAT_KEYS = ("x", "y", "size", "order", "opacity", "strokeWidth")
-_DICT_STYLE_KEYS = (
-    "size",
-    "color",
-    "marker",
-    "zorder",
-    "alpha",
-    "edgecolors",
-    "linewidths",
-)
 
 # The helpers below warn on behalf of ``AltairBackend.collect_agent_data`` through
 # one helper frame (``_portrayal_styles`` or ``style_columns``); this stacklevel
@@ -42,37 +38,18 @@ _CALLER_STACKLEVEL = 4
 
 def style_defaults() -> dict:
     """Return the default value of every AgentPortrayalStyle field."""
-    # Import here to avoid circular import issues
-    from modelly.viz.components import AgentPortrayalStyle  # noqa: PLC0415
-
-    return {f.name: f.default for f in fields(AgentPortrayalStyle)}
+    return shared_style_defaults()
 
 
 def warn_dict_portrayal() -> None:
     """Warn that returning a dict from agent_portrayal is deprecated."""
-    warnings.warn(
-        (
-            "Returning a dict from agent_portrayal is deprecated and will be removed in a future release. "
-            "Please return an AgentPortrayalStyle instance instead. "
-            "For more information, refer to the migration guide: "
-        ),
-        FutureWarning,
-        stacklevel=_CALLER_STACKLEVEL,
-    )
+    shared_warn_dict_portrayal(stacklevel=_CALLER_STACKLEVEL + 1)
 
 
 def style_from_dict(portray_input: dict, position, style_fields: dict):
     """Build an AgentPortrayalStyle from a (deprecated) dict portrayal."""
-    from modelly.viz.components import AgentPortrayalStyle  # noqa: PLC0415
-
-    dict_data = portray_input.copy()
-    agent_x, agent_y = position
-    styles = {
-        key: dict_data.pop(key, style_fields.get(key)) for key in _DICT_STYLE_KEYS
-    }
-    aps = AgentPortrayalStyle(x=agent_x, y=agent_y, **styles)
-    if dict_data:
-        ignored_keys = list(dict_data.keys())
+    aps, ignored_keys = dict_to_style(portray_input, position, style_fields)
+    if ignored_keys:
         warnings.warn(
             f"The following keys were ignored from dict portrayal: {', '.join(ignored_keys)}",
             UserWarning,
