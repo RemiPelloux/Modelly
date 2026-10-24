@@ -67,6 +67,15 @@ MODELS: tuple[ZooModel, ...] = (
         "attack rate against the final-size relation, within the CLT bound",
     ),
     ZooModel(
+        "order_book",
+        "Continuous double auction (zero-intelligence order book)",
+        "economics",
+        "OrderBook",
+        "OrderBookScenario",
+        "Random limit, market and cancel orders (per resting order) in a limit order book.",
+        "fat tails: excess kurtosis far above the normal-returns standard error",
+    ),
+    ZooModel(
         "kinetic_wealth",
         "Boltzmann wealth exchange",
         "economics",
