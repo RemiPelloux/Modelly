@@ -185,6 +185,7 @@ Profiling a model <profile>
 Experiments and sweeps <experiments>
 Checkpoints <checkpoints>
 Reproducible studies <provenance>
+Time travel <timetravel>
 Vectorised step phases <vectorised_phases>
 Roadmap <roadmap/index>
 ```

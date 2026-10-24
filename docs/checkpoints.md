@@ -30,6 +30,9 @@ code chosen by whoever wrote the file. Only load checkpoints you made yourself o
 trust, and never load one downloaded from an unknown source.
 ```
 
+To rewind a run to any step, replay it with changes or diff two runs, see
+[Time travel and run diff](timetravel.md), which keeps these checkpoints in a ring.
+
 ## Saving periodically
 
 ```python
