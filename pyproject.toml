@@ -98,6 +98,11 @@ ray = [
   "modelly-abm[experiments]",
   "ray",
 ]
+# MP4 export of space views (modelly.viz.animation); imageio-ffmpeg bundles ffmpeg.
+video = [
+  "imageio",
+  "imageio-ffmpeg",
+]
 # Dev and CI stuff
 dev = [
   "modelly-abm[rec,geo,bench]",
