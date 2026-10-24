@@ -85,15 +85,31 @@ class _RemovedTable:
     """The column table of a removed agent: every column raises ColumnMissingError.
 
     Set on removal instead of deleting the table, so the getter needs no try block and
-    live agents pay nothing for the clear error.
+    live agents pay nothing for the clear error. It holds a weak reference only (removal
+    is a hot path: models remove thousands of agents a step) and builds the raising
+    columns when someone actually reads or writes one.
     """
+
+    __slots__ = ("_agent",)
 
     def __init__(self, agent: Any) -> None:
         """Stand in for the table ``agent`` had before it was removed."""
-        agent_ref = weakref.ref(agent)
-        names = list(type(agent)._column_specs)
-        self._views = [_RaisingColumn(agent_ref, name) for name in names]
-        self._data = dict(zip(names, self._views, strict=True))
+        self._agent = weakref.ref(agent)
+
+    def _columns(self) -> list[_RaisingColumn]:
+        """One raising column per column of the agent's class, in position order."""
+        names = type(self._agent())._column_specs
+        return [_RaisingColumn(self._agent, name) for name in names]
+
+    @property
+    def _views(self) -> list[_RaisingColumn]:
+        """The raising columns by position, as the fast getter indexes them."""
+        return self._columns()
+
+    @property
+    def _data(self) -> dict[str, _RaisingColumn]:
+        """The raising columns by name, as the setter's fallback indexes them."""
+        return {column._name: column for column in self._columns()}
 
 
 def collect_column_specs(cls: type) -> dict[str, Column]:
