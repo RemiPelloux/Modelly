@@ -184,5 +184,6 @@ Checking a model <lint>
 Profiling a model <profile>
 Checkpoints <checkpoints>
 Vectorised step phases <vectorised_phases>
+Roadmap <roadmap/index>
 ```
 
