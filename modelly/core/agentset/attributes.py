@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import operator
 from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING, Any, Literal, overload
 
+from modelly._native.sets import attr_values
 from modelly.core.agentset._utils import _resolve_per_agent_values
 
 if TYPE_CHECKING:
@@ -92,8 +92,8 @@ class AttributeMixin[A: Agent]:
 
         if handle_missing == "error":
             if is_single_attr:
-                # attrgetter runs the attribute lookups in C
-                return list(map(operator.attrgetter(attr_names), agents))
+                # operator.attrgetter's lookups, in one C loop when built
+                return attr_values(agents, attr_names)
             return [[getattr(agent, attr) for attr in attr_names] for agent in agents]
 
         elif handle_missing == "default":

@@ -8,6 +8,7 @@ from collections.abc import Callable, Iterable, Iterator
 from random import Random
 from typing import TYPE_CHECKING, Any
 
+from modelly._native.sets import live_agents, make_refs
 from modelly.core.agentset._utils import _resolve_random
 from modelly.core.agentset.abstract import AbstractAgentSet
 
@@ -59,9 +60,7 @@ class AgentSet[A: Agent](AbstractAgentSet[A]):
 
     def _make_refs(self, agents: Iterable[A]) -> dict[weakref.ReferenceType[A], None]:
         """Build the ordered ref dict for ``agents`` with this set's removal callback."""
-        ref = weakref.ref
-        callback = self._remove
-        return dict.fromkeys([ref(agent, callback) for agent in agents])
+        return make_refs(agents, self._remove)
 
     def _first_agent(self) -> A | None:
         for r in list(self._refs):
@@ -115,7 +114,7 @@ class AgentSet[A: Agent](AbstractAgentSet[A]):
             Use this when you need list operations such as indexing or slicing;
             an AgentSet is an ordered set, not a sequence.
         """
-        return [agent for r in list(self._refs) if (agent := r()) is not None]
+        return live_agents(self._refs)
 
     def add(self, agent: A):
         """Add an agent to the AgentSet.

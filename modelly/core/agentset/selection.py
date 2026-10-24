@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
+from modelly._native.sets import keep_if, keep_type
 from modelly.core.agentset._utils import _INF, _resolve_weights, _validate_at_most
 
 if TYPE_CHECKING:
@@ -61,13 +62,13 @@ class SelectionMixin[A: Agent]:
 
         at_most = _validate_at_most(at_most, len(self))
 
-        # One pass, comprehension-based: a generator with a running count is
-        # 2-3x slower for the common unbounded case.
+        # Whole-list passes (in C when built, see modelly/_native/sets.py): a
+        # generator with a running count is 2-3x slower for the unbounded case.
         agents = self.to_list()
         if agent_type is not None:
-            agents = [a for a in agents if isinstance(a, agent_type)]
+            agents = keep_type(agents, agent_type)
         if filter_func is not None:
-            agents = [a for a in agents if filter_func(a)]
+            agents = keep_if(agents, filter_func)
         if at_most != _INF:
             agents = agents[:at_most]
 
