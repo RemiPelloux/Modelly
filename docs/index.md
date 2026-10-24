@@ -178,6 +178,7 @@ API <apis/api_main>
 Overview <overview>
 Best practices <best-practices>
 Checking a model <lint>
+Profiling a model <profile>
 Vectorised step phases <vectorised_phases>
 ```
 

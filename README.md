@@ -395,6 +395,17 @@ python -m modelly.lint --explain MDL101      # why a rule matters, with a fix
 Every tool is also one command: `python -m modelly --help` (or `modelly --help` once installed)
 lists them, and `modelly lint src/` is `python -m modelly.lint src/`. Every rule, with the fix, is in [docs/lint.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/lint.md).
 
+Its runtime companion runs the model and shows where each step's time goes: every
+`AgentSet.do` / `shuffle_do` call by agent class and method, with its cost per agent,
+`DataCollector.collect`, scheduled events, births and deaths, plus hints that point at lint codes:
+
+```bash
+python -m modelly.profile path/to/model.py:MyModel --steps 100 --param n=5000
+```
+
+From Python, `with modelly.profile.Profiler(model) as prof: model.run_for(100)`, then
+`prof.report()` or `prof.to_dataframe()`. See [docs/profile.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/profile.md).
+
 ## Architecture
 
 <p align="center">
@@ -428,6 +439,7 @@ One package per domain; each `__init__.py` lists its public names in `__all__`.
 | `modelly.batch` | `run_batch`, `run_grid`, `CohortTable` |
 | `modelly.viz` | Solara app, space renderer, matplotlib and altair backends, command console |
 | `modelly.lint` | `python -m modelly.lint`, static checks for models |
+| `modelly.profile` | `python -m modelly.profile` and `Profiler`, where a running model's time goes |
 | `modelly.migrate` | `python -m modelly.migrate`, the Mesa codemod |
 | `modelly._native` | the compiled modules (`fastrng.c`, `fastloop.c`), each with a pure-Python twin |
 
@@ -539,6 +551,7 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 | **Performance audit** | `docs/performance.md`: measurements, what changed, what is next |
 | **Best practices** | `docs/best-practices.md` |
 | **Checking a model** | `docs/lint.md`: the `python -m modelly.lint` rules and their fixes |
+| **Profiling a model** | `docs/profile.md`: `python -m modelly.profile`, the report and its hints |
 | **API reference** | `docs/apis/`: agents, agent sets, columns, model, space, time, data, migrate |
 | **Changelog** | `CHANGELOG.md`: what each release added, changed and fixed |
 
