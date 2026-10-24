@@ -14,7 +14,7 @@ gives the same results, more slowly.
 |---|---|---|---|---|---|
 | Linux x86-64 (manylinux) | compiled | compiled | compiled | compiled | compiled, abi3 |
 | Linux ARM64 (manylinux) | compiled | compiled | compiled | compiled | compiled, abi3 |
-| Linux musllinux (Alpine) | pure | pure | compiled | compiled | compiled, abi3 |
+| Linux musllinux (Alpine), x86-64 and ARM64 | compiled | compiled | compiled | compiled | compiled, abi3 |
 | macOS Apple silicon (ARM64) | compiled | compiled | compiled | compiled | compiled, abi3 |
 | macOS Intel (x86-64) | compiled | compiled | compiled | compiled | compiled, abi3 |
 | Windows x86-64 | compiled | compiled | compiled | compiled | compiled, abi3 |
@@ -88,6 +88,6 @@ path on every operating system, and the docs say which.
 | Release | Platform work |
 |---|---|
 | 1.3.0 | Windows ARM64 wheels; free-threaded wheels on all three; `python -m modelly.dev gate`; unspecified-encoding rule; cross-platform determinism suite; `spawn`-safe lint rule; Pyodide pure-wheel smoke test |
-| 1.4.0 | musllinux compiled wheels; WebAssembly build of the compiled modules; MPI on all three (MS-MPI on Windows); GPU backends per platform; PGO wheels per compiler (GCC, Clang, MSVC) measured separately |
+| 1.4.0 | WebAssembly build of the compiled modules; MPI on all three (MS-MPI on Windows); GPU backends per platform; PGO wheels per compiler (GCC, Clang, MSVC) measured separately |
 | 1.5.0 | R and Julia bindings tested on all three; Studio accessibility audit on all three browsers' engines; installer guide for locked-down Windows machines (no admin rights) |
 | 2.0.0 | Stable ABI (abi3) wheels; Python 3.13 minimum; a single test and release matrix for every platform in the support table |

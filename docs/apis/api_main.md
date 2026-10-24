@@ -1,14 +1,9 @@
 # APIs
 
-One page per domain package of `modelly`: `core`, `space`, `time`, `data`, `behaviour`,
-`scenarios`, `experiments`, `batch` and `viz`, plus the `log`, `migrate`, `lint`, `profile` and
-`provenance` modules.
-`scenarios`, `batch`, `viz` and `timetravel`, plus the `log`, `migrate`, `lint` and `profile` modules.
 One page per domain package of `modelly`: `core`, `space` (with `space.geo` and
-`space.networks`), `time`, `data`, `behaviour`,
-`scenarios`, `batch` and `viz`, plus the `log`, `migrate`, `lint` and `profile` modules and the `llm` package.
-`scenarios`, `batch` and `viz`, plus the `log`, `migrate`, `lint`, `profile` and
-`plugins` modules and the model zoo.
+`space.networks`), `time`, `data`, `behaviour`, `scenarios`, `experiments`, `batch`, `viz`,
+`timetravel`, `llm` and `zoo`, plus the `log`, `migrate`, `lint`, `profile`, `provenance` and
+`plugins` modules.
 
 ```{toctree}
 :maxdepth: 3

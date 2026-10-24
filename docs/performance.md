@@ -212,8 +212,9 @@ with `random.Random`; on any mismatch, without a compiler, or with
 
 Assembly would not beat this: generating a word is 2 to 3 ns of C that compilers already turn
 into near-optimal code, and the rest is the interpreter's call, which no language can avoid.
-Platform wheels carry the compiled modules (Linux x86-64 and ARM, macOS, Windows x86-64 and
-ARM64, the GIL and the free-threaded interpreters); other platforms install the pure wheel.
+Platform wheels carry the compiled modules (Linux glibc and musl on x86-64 and ARM64, macOS,
+Windows x86-64 and ARM64, the GIL and the free-threaded interpreters); other platforms install
+the pure wheel.
 
 A second compiled module, `modelly/_native/fastloop.c`, runs `do` and `shuffle_do` on the
 model's agent registries and the breadth-first walk behind `Cell.get_neighborhood`. Each loop

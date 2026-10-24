@@ -32,9 +32,10 @@ viz = ["modelly-abm[viz]>=1.2"]
 
 Then `pip install -e .` (or `pip install -e ".[viz]"` for the browser UI).
 
-On Linux, macOS and Windows (x86-64), `pip install modelly-abm` installs a wheel with Modelly's
-random core compiled in. Elsewhere (Windows on ARM, free-threaded Python, other platforms) it
-installs the pure Python package, and building from the source distribution compiles the core
+On Linux (glibc and musl, x86-64 and ARM64), macOS (Intel and Apple silicon) and Windows
+(x86-64 and ARM64), on regular and free-threaded CPython, `pip install modelly-abm` installs a
+wheel with Modelly's compiled modules. Elsewhere it installs the pure Python package, which gives
+the same results more slowly, and building from the source distribution compiles the modules
 when a C compiler is available (on Windows, MSVC through setuptools). Check which one you have:
 
 ```python
