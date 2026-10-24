@@ -7,6 +7,8 @@ One page per domain package of `modelly`: `core`, `space`, `time`, `data`, `beha
 One page per domain package of `modelly`: `core`, `space` (with `space.geo` and
 `space.networks`), `time`, `data`, `behaviour`,
 `scenarios`, `batch` and `viz`, plus the `log`, `migrate`, `lint` and `profile` modules and the `llm` package.
+`scenarios`, `batch` and `viz`, plus the `log`, `migrate`, `lint`, `profile` and
+`plugins` modules and the model zoo.
 
 ```{toctree}
 :maxdepth: 3
@@ -29,4 +31,6 @@ lint
 profile
 provenance
 llm
+plugins
+zoo
 ```
