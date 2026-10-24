@@ -144,9 +144,9 @@ Size `large`, 100 steps, CPU seconds; run = the steps, build = model constructio
 
 | variant | population | build | run 1 | run 2 | run 3 | run median | speed-up (run) | speed-up (build + run) | deterministic |
 |---|---|---|---|---|---|---|---|---|---|
-| mesa | 683 | 0.00 | 7.33 | 6.33 | 6.68 | 6.68 | 1.0x | 1.0x | yes |
-| modelly-cells | 676 | 0.02 | 1.17 | 1.14 | 1.29 | 1.17 | 5.7x | 5.6x | yes |
-| modelly | 683 | 0.03 | 0.52 | 0.57 | 0.59 | 0.57 | 11.7x | 11.0x | yes |
+| mesa | 683 | 0.00 | 5.66 | 5.57 | 5.50 | 5.57 | 1.0x | 1.0x | yes |
+| modelly-cells | 676 | 0.02 | 0.91 | 0.88 | 0.83 | 0.88 | 6.3x | 6.2x | yes |
+| modelly | 683 | 0.03 | 0.18 | 0.18 | 0.17 | 0.18 | 31.5x | 27.1x | yes |
 
 Agreement over 6 shared seeds at the small size (mean ± sd; p from Welch's t-test against Mesa, flagged below 0.01).
 

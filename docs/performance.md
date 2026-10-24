@@ -371,7 +371,7 @@ Median CPU seconds of the steps at the large size on this machine:
 | Insect population, `CohortTable` | ~26,000 | 2.83 s | | 0.013 s | 213x |
 | Schelling segregation, 40 steps | ~32,000 | 3.23 s | 0.22 s | 0.12 s | 27x |
 | Boltzmann wealth with a `DataCollector`, 100 steps | 10,000 | 1.51 s | | 0.20 s | 7.4x |
-| Sugarscape, constant growback, 100 steps | 1,600 to ~680 | 6.68 s | 1.17 s | 0.57 s | 12x |
+| Sugarscape, constant growback, 100 steps | 1,600 to ~680 | 5.57 s | 0.88 s | 0.18 s | 32x |
 
 The "cell lists" column is the same model with Mesa's data structure, every cell holding the
 list of its agents, so movement and predation stay per-agent loops: 1.4 to 1.9x, consistent
@@ -380,7 +380,7 @@ with the port. The gap opens when the cell becomes a column of rows: the random 
 predation a vectorised matching with the law of the shuffled sequential rule. Construction is
 reported separately (a 180x180 Moore grid builds in 0.11 s, a 30,000-node network in 0.4 s,
 against milliseconds for Mesa's lazy structures); the build+run speed-ups in the results are
-correspondingly lower (26x, 6.7x, 38x, 10.5x, 4.3x, 191x, 9.2x, 6.9x, 11x).
+correspondingly lower (26x, 6.7x, 38x, 10.5x, 4.3x, 191x, 9.2x, 6.9x, 27x).
 
 The last three playbooks have phases that are sequential by nature, and each still has an
 exact array form (`vectorised_phases.md`, §7 to §9). Schelling's unhappy residents move one at
@@ -390,14 +390,20 @@ Boltzmann exchange, who gives in the random order is the least fixed point of a 
 over the drawn order and partners, reached in a few array passes; the `DataCollector` slices
 the wealth column instead of visiting agents. In Sugarscape the foragers' choices depend on the
 cells taken before their turn, so the walk to the first free cell stays a loop, but everything
-it reads (the visible cells, their sugar, each forager's ranking) is one array pass, and eating
-and starving move after the loop without changing the law. The "cell lists" variants of these
-two are far ahead of Mesa (15x and 5.7x), unlike the 1.4 to 1.9x above: Schelling's happiness
+it reads (the visible cells, their sugar, the head of each forager's ranking) is one array
+pass, and eating and starving move after the loop without changing the law. Rankings are not
+sorted up front: the loop takes a forager's head when it is free and sorts the ranking only
+when that cell is not free at its turn (under a third of the turns). That gives the same runs,
+bit for bit, as sorting every ranking, and is 2.5x faster (median of 5 paired runs, range 1.9
+to 2.6x, thread CPU time, large size, a loaded machine). The "cell lists" variants of these
+two are far ahead of Mesa (15x and 6.3x), unlike the 1.4 to 1.9x above: Schelling's happiness
 count is an array pass even there, the empty-cell index answers each move in O(1) where Mesa's
 `move_to_empty` draws until it hits an empty cell, and the Sugarscape scan reads cached
 neighbourhoods where Mesa's `select_cells` builds whole-grid masks for every forager. These
 three were measured in a later session on another core (core 11, under the load of a shared
-machine), so compare their ratios rather than their seconds with the rows above.
+machine), so compare their ratios rather than their seconds with the rows above; Sugarscape
+was measured again, all three variants, after the head-first walk (core 5, load average
+about 8 on 16 cores).
 
 The insect playbook is a stage-structured population under sterile releases, an original
 model with the dynamics of the medfly workload (thousands of eggs a day, stage-specific

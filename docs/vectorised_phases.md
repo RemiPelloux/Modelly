@@ -217,6 +217,10 @@ holding no sugar, which is never richer than another forager's own cell, so
 deferring the deaths changes no choice. What remains sequential is occupancy
 (who took or freed which cell before this turn), which the loop tracks; the
 random key picks uniformly among the free cells tied on sugar and distance.
+No ranking needs a full sort: a forager takes the head of its ranking (its
+minimum, found for all foragers at once) unless that cell is not free at its
+turn, and only then is its ranking sorted and walked; the order, and so every
+choice, is the one the full sort gives.
 Used by: `sugarscape`, variant `modelly`.
 
 ## How the playbooks check the claims

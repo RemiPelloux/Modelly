@@ -19,7 +19,7 @@ question (a line-by-line port), see `docs/performance.md`.
 | `insect_cohorts` | survival, ageing, stage transitions, laying | egg creation (`modelly`); nothing (`modelly-cohorts`) |
 | `schelling` | same-kind neighbour counts (`counts` + `neighbor_sum`), the moves to random empty cells (a fixed-size pool of empty cells) | nothing |
 | `boltzmann_wealth` | who gives in the random order (a fixed point over the drawn order and partners), the exchange, the Gini and wealth records (`DataCollector`, column reporter) | nothing |
-| `sugarscape` | visible cells, their sugar and each forager's ranking; eating, metabolism, starvation (`remove_where`), growback on the property layer | the walk down each ranking to the first free cell |
+| `sugarscape` | visible cells, their sugar and the head of each forager's ranking (segment minima, no sort); eating, metabolism, starvation (`remove_where`), growback on the property layer | the walk to the first free cell (a ranking is sorted only when its head was taken) |
 
 Five playbooks carry a third variant. `grid_epidemic`, `predator_prey`,
 `schelling` and `sugarscape` have `modelly-cells`: the same model with Mesa's

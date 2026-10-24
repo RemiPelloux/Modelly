@@ -6,7 +6,9 @@ choice depends on the cells freed and taken before its turn, but all the
 looking is one array pass (docs/vectorised_phases.md, §9): every forager's
 visible cells (one table of von Neumann offsets), their sugar, and its ranking
 of the cells richer than its own, by sugar, then distance, then a random key.
-The loop only walks each ranked list to its first free cell. Eating, burning
+Only the head of each ranking is found for all (segment minima, no sort); the
+loop takes it when free and sorts a ranking only for a forager whose head was
+taken before its turn, walking it to its first free cell. Eating, burning
 and starving are column operations after the loop, which is exact: a cell a
 forager takes stays taken, and one it frees by starving holds no sugar, so it
 cannot attract a later forager.
@@ -21,6 +23,7 @@ from modelly.space import CellIndex, OrthogonalVonNeumannGrid
 
 # column -> registry range it is drawn from, in the order the Mesa version draws them
 TRAITS = {"vision": "vision", "metabolism": "metabolism", "wealth": "initial_sugar"}
+NONE = -1  # no cell: a forager sees none richer than its own, or none of them is free
 
 
 class Forager(Agent):
@@ -66,6 +69,42 @@ def sight(side, radius):
     return np.where(inside, tx * side + ty, 0), inside, distance
 
 
+class Ranking:
+    """Every forager's candidate cells, end to end, put in order only on demand.
+
+    A forager's order is by ``worse`` (sugar, then distance), then ``key``, then
+    position, as a stable lexsort of the two would give.
+    """
+
+    def __init__(self, cells, worse, key, ends):
+        self.cells, self.worse, self.key, self.ends = cells, worse, key, ends
+        self.counts = np.diff(ends, prepend=0)
+        self.starts = ends - self.counts
+
+    def heads(self):
+        """Each forager's best cell (NONE without candidates), from segment minima."""
+        heads = np.full(len(self.ends), NONE)
+        seen = self.counts > 0
+        if not seen.any():
+            return heads
+        starts, counts = self.starts[seen], self.counts[seen]
+        best = self.worse == np.repeat(np.minimum.reduceat(self.worse, starts), counts)
+        key = np.where(best, self.key, np.inf)
+        best &= key == np.repeat(np.minimum.reduceat(key, starts), counts)
+        first = np.flatnonzero(best)
+        heads[seen] = self.cells[first[np.searchsorted(first, starts)]]
+        return heads
+
+    def first_free(self, i, free):
+        """Forager ``i``'s first free cell in ranking order, else NONE."""
+        span = slice(self.starts[i], self.ends[i])
+        order = np.lexsort((self.key[span], self.worse[span]))
+        for cell in self.cells[span][order].tolist():
+            if free[cell]:
+                return cell
+        return NONE
+
+
 class Sugarscape(Model):
     """The grid, the sugar layer and the foragers' column table."""
 
@@ -83,6 +122,8 @@ class Sugarscape(Model):
         self.sugar = self.grid.create_property_layer("sugar", 0, dtype=np.int64)
         self.sugar[:] = self.capacity
         self.targets, self.inside, self.distance = sight(side, params["vision"][1])
+        # sugar never exceeds top_sugar and distance stays below far: see rankings
+        self.top_sugar, self.far = int(self.capacity.max()), params["vision"][1] + 1
         self._populate(side, n, params)
         self.history = []
 
@@ -95,7 +136,11 @@ class Sugarscape(Model):
         Forager.create_agents(self, n, row=rows, **traits)
 
     def rankings(self, table):
-        """Every forager's visible cells richer than its own, best first, end to end."""
+        """Every forager's visible cells richer than its own, unsorted, end to end.
+
+        Returns the cells, their sort keys (sugar, then distance, as one integer
+        where lower is better; then a random key) and each forager's end offset.
+        """
         flat = self.sugar.reshape(-1)
         distance = self.distance
         target, inside = self.targets[table.row], self.inside[table.row]
@@ -104,21 +149,23 @@ class Sugarscape(Model):
         richer &= sugar > flat[table.row][:, None]
         forager, slot = np.nonzero(richer)
         key = self.rng.random(forager.shape[0])
-        order = np.lexsort((key, distance[slot], -sugar[forager, slot], forager))
+        worse = (self.top_sugar - sugar[forager, slot]) * self.far + distance[slot]
         ends = np.cumsum(np.bincount(forager, minlength=len(table)))
-        return target[forager, slot][order].tolist(), ends.tolist()
+        return Ranking(target[forager, slot], worse, key, ends)
 
     def move(self, table):
         """Foragers in a random order each take the first free cell of their ranking."""
-        ranked, ends = self.rankings(table)
+        ranking = self.rankings(table)
+        heads = ranking.heads().tolist()
         rows = table.row.tolist()
         free = (self.index.counts(table.row) == 0).tolist()
         for i in self.rng.permutation(len(rows)).tolist():
-            for cell in ranked[ends[i - 1] if i else 0 : ends[i]]:
-                if free[cell]:
-                    free[cell], free[rows[i]] = False, True
-                    rows[i] = cell
-                    break
+            cell = heads[i]
+            if cell >= 0 and not free[cell]:
+                cell = ranking.first_free(i, free)
+            if cell >= 0:
+                free[cell], free[rows[i]] = False, True
+                rows[i] = cell
         table.row = rows
 
     def step(self):
