@@ -56,6 +56,14 @@ def default_workers() -> int:
     return max(1, min(DEFAULT_MAX_WORKERS, os.cpu_count() or 1))
 
 
+def worker_context() -> mp.context.BaseContext:
+    """The start method for workers that import their task (``forkserver``, else ``spawn``).
+
+    Workers start clean, inheriting no threads or state, on every platform.
+    """
+    return mp.get_context(_SAFE_START)
+
+
 def _call_by_index(index: int) -> Any:
     """Run task ``index`` of the batch the forked worker inherited."""
     return _CURRENT(_TASKS[index])
@@ -80,7 +88,7 @@ def run_batch(
     if workers <= 1 or len(tasks) <= 1:
         return [run(task) for task in tasks]
     if _importable(run):
-        with mp.get_context(_SAFE_START).Pool(workers) as pool:
+        with worker_context().Pool(workers) as pool:
             return pool.map(run, tasks, chunksize=1)
     if not _CAN_FORK:
         raise TypeError(

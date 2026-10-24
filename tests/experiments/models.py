@@ -53,12 +53,35 @@ def first_position(model):
 
 
 class Plain(Model):
-    """A model with no Scenario class: parameters go to its constructor."""
+    """A model with no Scenario class: parameters go to its constructor.
 
-    def __init__(self, rate=1.0, rng=None):  # noqa: D107
+    It stops itself (``running = False``) after ``stop_at`` steps when given.
+    """
+
+    def __init__(self, rate=1.0, stop_at=None, rng=None):  # noqa: D107
         super().__init__(rng=rng)
         self.rate = rate
+        self.stop_at = stop_at
         self.value = 0.0
 
     def step(self):  # noqa: D102
         self.value += self.rate * self.rng.random()
+        if self.stop_at is not None and self.time >= self.stop_at:
+            self.running = False
+
+
+ATTEMPTS = {}
+
+
+def flaky_value(model):
+    """An output that raises on the first call for each rate, then reads ``value``."""
+    key = model.rate
+    ATTEMPTS[key] = ATTEMPTS.get(key, 0) + 1
+    if ATTEMPTS[key] == 1:
+        raise RuntimeError("first attempt fails")
+    return model.value
+
+
+def not_a_scalar(model):
+    """An output of the wrong kind."""
+    return [model.value]
