@@ -27,7 +27,8 @@ time, pandas data collection, browser visualization. Fast by construction, repro
   <a href="https://remipelloux.github.io/Modelly/getting_started.html">Tutorials</a> ·
   <a href="#built-in-examples">Examples</a> ·
   <a href="#coming-from-mesa">Coming from Mesa</a> ·
-  <a href="https://github.com/RemiPelloux/Modelly/blob/main/CHANGELOG.md">Changelog</a>
+  <a href="https://github.com/RemiPelloux/Modelly/blob/main/CHANGELOG.md">Changelog</a> ·
+  <a href="https://remipelloux.github.io/Modelly/roadmap/">Roadmap</a>
 </p>
 
 ---
