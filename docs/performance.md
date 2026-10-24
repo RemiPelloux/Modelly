@@ -285,9 +285,9 @@ the same results bit for bit on three seeds, compiled and pure.
 
 ### Free-threaded CPython
 
-All four modules load on free-threaded CPython (3.13t and later) and declare
-`Py_MOD_GIL_NOT_USED`, so importing Modelly leaves the GIL off; before 1.3 they refused to load
-and the pure twins ran instead. What each one does to be safe:
+All four modules load on free-threaded CPython (wheels for 3.14t and 3.15t; tested on 3.15t)
+and declare `Py_MOD_GIL_NOT_USED`, so importing Modelly leaves the GIL off; before 1.3 they
+refused to load and the pure twins ran instead. What each one does to be safe:
 
 - `fastrng`: every draw holds the generator's per-object critical section, the lock
   `_random.Random`'s own methods take, so a draw from C and a `random()` from the standard
