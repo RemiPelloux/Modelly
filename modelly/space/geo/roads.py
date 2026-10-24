@@ -137,7 +137,7 @@ class RoadNetwork:
         """
         for _, _, data in self.graph.edges(data=True):
             data[TRAVEL_TIME] = data[LENGTH] / data.get(SPEED, speed)
-        self._csr_cache.pop(TRAVEL_TIME, None)
+        self.invalidate(TRAVEL_TIME)
 
     def distances_from(
         self, origin: Any, cutoff: float | None = None, weight: str | None = None
@@ -172,6 +172,13 @@ class RoadNetwork:
         if weight not in self._csr_cache:
             self._csr_cache[weight] = _routing_matrix(self, weight)
         return self._csr_cache[weight]
+
+    def invalidate(self, weight: str | None = None) -> None:
+        """Forget the routing matrix of ``weight`` (all when ``None``) after edges changed."""
+        if weight is None:
+            self._csr_cache.clear()
+        else:
+            self._csr_cache.pop(weight, None)
 
     def path_geometry(self, path: list) -> shapely.LineString:
         """The polyline through the coordinates of the nodes of ``path``."""

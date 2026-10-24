@@ -52,3 +52,12 @@ Demonstrates `modelly.behaviour.meta_agents`: agents form alliances through a ga
 
 ### [Tram Route Model](behaviour/tram_model)
 Demonstrates continuous states and thresholds: a tram accelerates, coasts, brakes and dwells its way along a route, with every transition solved for analytically and scheduled on the event queue rather than polled for on each tick.
+
+## Spatial Examples
+These examples use the geospatial space (`modelly.space.geo`, the `geo` extra) and the dynamic and multilayer networks (`modelly.space.networks`). Their data are generated, so they run offline.
+
+### [Commuting City](https://github.com/RemiPelloux/Modelly/tree/main/modelly/examples/spatial/commuting_city)
+Residents from a synthetic population commute across city zones on a street network, choosing workplaces by a gravity rule and routing around congestion.
+
+### [Layered Epidemic](https://github.com/RemiPelloux/Modelly/tree/main/modelly/examples/spatial/layered_epidemic)
+An age-structured SIR epidemic on household, school and work layers, with school closure as a change of one layer's weight.
