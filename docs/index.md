@@ -186,6 +186,8 @@ Experiments and sweeps <experiments>
 Checkpoints <checkpoints>
 Reproducible studies <provenance>
 Time travel <timetravel>
+Geospatial models <geospatial>
+Networks <networks>
 Vectorised step phases <vectorised_phases>
 Roadmap <roadmap/index>
 ```
