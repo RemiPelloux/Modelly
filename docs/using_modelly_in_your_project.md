@@ -14,7 +14,7 @@ python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\
 pip install modelly-abm
 ```
 
-The distribution is `modelly-abm` and the import is `modelly`. Pin the version you tested against (`modelly-abm==1.0.0`), or declare it in your own `pyproject.toml`:
+The distribution is `modelly-abm` and the import is `modelly`. Pin the version you tested against (`modelly-abm==2.0.0`), or declare it in your own `pyproject.toml`:
 
 ```toml
 [project]
