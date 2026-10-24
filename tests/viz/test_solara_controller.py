@@ -154,6 +154,21 @@ def test_reset_copies_the_renderer_onto_the_new_model():
     assert new_renderer.backend == "matplotlib"
 
 
+def test_reset_keeps_the_renderer_drawing_settings():
+    """Reset keeps what was configured through setup_structure and setup_agents."""
+    model = GridModel()
+    renderer = SpaceRenderer(model, backend="matplotlib")
+    portrayal = lambda agent: {}  # noqa: E731
+    renderer.setup_structure(linewidth=2).setup_agents(portrayal, zorder=3)
+    ctl = make_ctl(model)
+    ctl.renderer = solara.reactive(renderer)
+    _reset(ctl)
+    new_renderer = ctl.renderer.value
+    assert new_renderer.draw_space_kwargs == {"linewidth": 2}
+    assert new_renderer.draw_agent_kwargs == {"zorder": 3}
+    assert new_renderer.agent_portrayal is portrayal
+
+
 def test_copy_renderer_skips_unset_attributes():
     """Copy renderer skips unset attributes."""
     model = GridModel()

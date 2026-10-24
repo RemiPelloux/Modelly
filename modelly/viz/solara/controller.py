@@ -26,6 +26,9 @@ _MS_PER_SECOND = 1000
 _RENDERER_ATTRIBUTES = (
     "agent_portrayal",
     "property_layer_portrayal",
+    "draw_space_kwargs",
+    "draw_agent_kwargs",
+    # Legacy names, kept so renderers that set them still have them copied.
     "space_kwargs",
     "agent_kwargs",
     "space_mesh",
