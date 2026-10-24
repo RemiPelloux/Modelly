@@ -40,11 +40,14 @@ a hint.
 | `--format github` | `::error file=...,line=...,col=...,title=MDL001::...` annotations for GitHub Actions |
 | `--statistics` | one line per rule with its count, most frequent first |
 | `-q`, `--quiet` | only the `path:line:col: CODE message` lines: no hints, no summary |
+| `--fix` | apply the [safe fixes](#fixing-findings), then report what is left |
+| `--diff` | print the safe fixes as a unified diff; nothing is written |
 | `--exit-zero` | report, but exit 0 |
 | `--explain CODE` | print why a rule matters, a bad and a good example, and exit |
 | `--list-rules` | print every rule and exit |
 
-Exit status: **0** no findings (or `--exit-zero`), **1** at least one finding, **2** a usage error
+Exit status: **0** no findings (or `--exit-zero`), **1** at least one finding (with `--diff`:
+at least one fix to apply), **2** a usage error
 (a path that cannot be read, a file that does not parse, a bad configuration or an unknown rule
 for `--explain`).
 
@@ -347,6 +350,40 @@ class Pasture(Model):
         table = self.columns[Sheep]
         table.energy -= 1  # one numpy operation
 ```
+
+(fixing-findings)=
+## Fixing findings
+
+Four rules have a fix that is safe to apply without reading the code around it.
+`--diff` shows what it would change; `--fix` writes it and then reports the findings that
+are left for you.
+
+```bash
+python -m modelly.lint --diff my_model/   # review
+python -m modelly.lint --fix my_model/    # apply
+```
+
+| Rule | Before | After |
+|---|---|---|
+| MDL001 | `random.choice(xs)` in an agent or model method | `self.random.choice(xs)` |
+| MDL001 | `np.random.normal(0, 1)` in an agent or model method | `self.rng.normal(0, 1)` |
+| MDL002 | an agent `__init__(self, model, ...)` without the call | `super().__init__(model)` inserted first |
+| MDL002 | a model `__init__(self, scenario=...)` without the call | `super().__init__(scenario=scenario)` inserted first |
+| MDL003 | `for x in set(names):` | `for x in sorted(set(names)):` |
+| MDL003 | `for a in set(self.cell.agents):` | `sorted(..., key=lambda a: a.unique_id)`: agents do not compare |
+| MDL009 | `self.model.agents.discard(self)` | `self.remove()` |
+| MDL009 | `self.agents_by_type[Sheep].clear()` | `self.agents_by_type[Sheep].do("remove")` |
+
+Only the expression the finding points at is rewritten: formatting, comments and line endings
+around it are kept. A finding is left alone when the right rewrite is a guess: a draw outside a
+method (there is no `self`), a numpy function whose `Generator` method takes other arguments
+(`randint`, `rand`), a base class whose `__init__` signature is unknown, a model `__init__` that
+takes both `rng` and `scenario`, or `agents.add(...)` (an agent registers itself when it is
+created). Every fix removes its own finding, so a second `--fix` changes nothing. A finding
+silenced by `# noqa`, or dropped by `select`, `ignore` or `per-file-ignores`, is not fixed.
+
+An imported name keeps its import (`from random import choice` stays when `choice(xs)` becomes
+`self.random.choice(xs)`); remove it with your formatter or `ruff check --fix`.
 
 ## Silencing a finding
 

@@ -9,6 +9,7 @@ import sys
 from modelly.lint import GUIDE, lint_paths
 from modelly.lint.config import Config, load_config, prefixes
 from modelly.lint.explain import explain
+from modelly.lint.fix import FixReport, fix_paths
 from modelly.lint.report import FORMATS, list_rules, render, statistics
 
 EXIT_CLEAN = 0
@@ -30,6 +31,8 @@ examples:
   python -m modelly.lint --ignore MDL105,MDL107 src/
   python -m modelly.lint --statistics src/        how many findings of each rule
   python -m modelly.lint --format github src/     annotations in a GitHub Actions log
+  python -m modelly.lint --diff src/              the safe fixes, as a diff; nothing written
+  python -m modelly.lint --fix src/               apply them, then report what is left
   python -m modelly.lint --explain MDL101         why a rule matters, a bad and a good example
   python -m modelly.lint --list-rules             every rule, one line each
 
@@ -50,7 +53,7 @@ configuration, in the nearest pyproject.toml from the working directory up:
 
 exit status:
   {EXIT_CLEAN}  no findings (or --exit-zero)
-  {EXIT_FINDINGS}  at least one finding
+  {EXIT_FINDINGS}  at least one finding (with --diff: at least one fix to apply)
   {EXIT_USAGE}  usage error: unreadable path, syntax error, bad configuration, unknown rule
 
 rules, examples and fixes: {GUIDE}"""  # noqa: S608 (help text, not SQL)
@@ -85,8 +88,23 @@ def build_parser(prog: str = PROG) -> argparse.ArgumentParser:
     return parser
 
 
+def add_fixes(parser: argparse.ArgumentParser) -> None:
+    """The options that rewrite the files, or show how they would be rewritten."""
+    parser.add_argument(
+        "--fix",
+        action="store_true",
+        help="apply the safe fixes (MDL001, MDL002, MDL003, MDL009), then report the rest",
+    )
+    parser.add_argument(
+        "--diff",
+        action="store_true",
+        help="print the safe fixes as a unified diff without writing them",
+    )
+
+
 def add_modes(parser: argparse.ArgumentParser) -> None:
     """The options that change what is printed rather than what is checked."""
+    add_fixes(parser)
     parser.add_argument(
         "--statistics",
         action="store_true",
@@ -129,6 +147,16 @@ def print_explanation(code: str) -> int:
     return EXIT_CLEAN
 
 
+def run_fixes(args: argparse.Namespace, config: Config) -> FixReport:
+    """Apply (--fix) or print (--diff) the safe fixes; nothing when neither is given."""
+    if not (args.fix or args.diff):
+        return FixReport()
+    report = fix_paths(args.paths, config.keeps, write=not args.diff)
+    if args.diff:
+        sys.stdout.write("".join(report.diffs))
+    return report
+
+
 def main(argv: list[str] | None = None, prog: str = PROG) -> int:
     """Run the checks and return the exit status; ``prog`` names the command in --help."""
     args = build_parser(prog).parse_args(argv)
@@ -139,6 +167,9 @@ def main(argv: list[str] | None = None, prog: str = PROG) -> int:
         return print_explanation(args.explain)
     try:
         config = settings(args)
+        report = run_fixes(args, config)
+        if args.diff:
+            return EXIT_FINDINGS if report.edits else EXIT_CLEAN
         findings = [f for f in lint_paths(args.paths) if config.keeps(f)]
     except (OSError, SyntaxError, ValueError) as error:
         sys.stderr.write(f"modelly.lint: {error}\n")
@@ -149,6 +180,8 @@ def main(argv: list[str] | None = None, prog: str = PROG) -> int:
         output = render(findings, args.format, args.quiet)
     if output:
         sys.stdout.write(output + "\n")
+    if args.fix:
+        sys.stderr.write(f"modelly.lint: {report.edits} fix(es) applied\n")
     return EXIT_FINDINGS if findings and not args.exit_zero else EXIT_CLEAN
 
 
