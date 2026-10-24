@@ -104,6 +104,6 @@ once at set-up is fine, and the comment is the place to say so.
 ## In CI
 
 ```yaml
-- run: pip install git+https://github.com/RemiPelloux/Modelly.git
+- run: pip install modelly-abm
 - run: python -m modelly.lint src/
 ```
