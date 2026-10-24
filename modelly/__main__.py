@@ -19,6 +19,11 @@ EXIT_USAGE = 2
 # (name, module with main(argv, prog) -> int, one-line summary)
 COMMANDS = (
     (
+        "calibrate",
+        "modelly.calibrate.__main__",
+        "fit parameters to observed data (ABC-SMC, ABC, moments, Bayesian opt.)",
+    ),
+    (
         "experiment",
         "modelly.experiments.__main__",
         "run a parameter sweep from a TOML spec; resumable, on any executor",
@@ -73,6 +78,11 @@ COMMANDS = (
         "modelly.zoo.__main__",
         "list, describe and copy the validated reference models",
     ),
+    (
+        "sensitivity",
+        "modelly.sensitivity.__main__",
+        "rank parameters by influence (OAT, Morris, Sobol, PAWN)",
+    ),
 )
 
 DESCRIPTION = "Command-line tools for Modelly models."
@@ -82,6 +92,7 @@ commands:
 {commands}
 
 examples:
+  modelly calibrate sir.toml            fit priors to data, print the posterior
   modelly experiment run study.toml     run a sweep (resumes where it stopped)
   modelly lint src/                    check a model (same as python -m modelly.lint src/)
   modelly lint --explain MDL101         why a rule matters, with a fix
@@ -95,6 +106,7 @@ examples:
   modelly odd model.py:MyModel > ODD.md ODD protocol skeleton
   modelly bench --label v1.3.0          time the playbooks, append to the history
   modelly zoo copy age_seir my_model/   start a project from a zoo model
+  modelly sensitivity sir.toml          which parameters matter most
   modelly COMMAND --help                every option of one command
 
 exit status:
