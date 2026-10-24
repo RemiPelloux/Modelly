@@ -15,6 +15,9 @@ with open(f"{filename2}.pickle", "rb") as handle:
     timings_2 = pickle.load(handle)  # noqa: S301
 
 
+BOOTSTRAP_SEED = 42
+
+
 def bootstrap_percentage_change_confidence_interval(data1, data2, n=1000):
     """Calculate the percentage change and perform bootstrap to estimate the confidence interval.
 
@@ -26,11 +29,10 @@ def bootstrap_percentage_change_confidence_interval(data1, data2, n=1000):
     Returns:
         float, mean, and lower and upper bound of confidence interval.
     """
+    rng = np.random.default_rng(BOOTSTRAP_SEED)
     change_samples = []
     for _ in range(n):
-        sampled_indices = np.random.choice(
-            range(len(data1)), size=len(data1), replace=True
-        )
+        sampled_indices = rng.choice(range(len(data1)), size=len(data1), replace=True)
         sampled_data1 = np.array(data1)[sampled_indices]
         sampled_data2 = np.array(data2)[sampled_indices]
         change = 100 * (sampled_data2 - sampled_data1) / sampled_data1
