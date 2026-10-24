@@ -12,8 +12,8 @@ from typing import Any
 import numpy as np
 
 from modelly.core.agent import Agent
-from modelly.core.agentset import _HardKeyAgentSet
 from modelly.core.columns import ColumnStore
+from modelly.core.registry import AgentRegistry
 from modelly.core.rng import FastRandom
 from modelly.data.recorders.datasets import DataRegistry
 from modelly.log import create_module_logger, method_logger
@@ -42,7 +42,7 @@ _AGENT_SIGNALS = frozenset({ModelSignals.AGENT_ADDED, ModelSignals.AGENT_REMOVED
 
 
 # TODO: We can add `= Scenario` default type when Python 3.13+ is required
-class Model[A: Agent, S: Scenario](HasSchedule, HasEmitters):
+class Model[A: Agent, S: Scenario](AgentRegistry[A], HasSchedule, HasEmitters):
     """Base class for models in the Modelly ABM library.
 
     This class serves as a foundational structure for creating agent-based models.
@@ -89,19 +89,29 @@ class Model[A: Agent, S: Scenario](HasSchedule, HasEmitters):
         if not cls._default_registry:
             cls._quiet = False  # Agent.__init__ must call the override
 
-    def _register_new_type(self, agent: A) -> None:
-        """Create the per-type registry for the first agent of a class."""
-        self._agents_by_type[type(agent)] = _HardKeyAgentSet(
-            [agent], random=self.random
-        )
+    def _init_scenario(
+        self, rng: RNGLike | SeedLike | None, scenario: S | type[S]
+    ) -> None:
+        """Set the scenario and the two generators it seeds."""
+        if isinstance(scenario, Scenario) and rng is not None:
+            raise ValueError("Pass either rng or scenario, not both.")
+        if not isinstance(scenario, Scenario):
+            scenario = scenario(rng=rng)  # type: ignore[assignment]
 
-    def _notify_agent_added(self, agent: A) -> None:
-        """Emit AGENT_ADDED; reached only when the model is not ``_quiet``."""
-        self.notify("agents", ModelSignals.AGENT_ADDED, args=(agent,))
+        self.scenario = scenario
+        self.rng: np.random.Generator = scenario.rng
+        self.random = FastRandom(scenario._stdlib_seed)
 
-    def _notify_agent_removed(self, agent: A) -> None:
-        """Emit AGENT_REMOVED; see _notify_agent_added."""
-        self.notify("agents", ModelSignals.AGENT_REMOVED, args=(agent,))
+    def _init_default_schedule(self) -> None:
+        """Wrap the user's step in the default schedule (every 1.0 time units)."""
+        self._user_step = self.step
+        self._default_schedule: EventGenerator = EventGenerator(
+            self,
+            self._user_step,
+            Schedule(interval=1.0, start=1.0),
+            priority=Priority.HIGH,
+        ).start()
+        self.step = self._wrapped_step
 
     @property
     def scenario(self) -> S:
@@ -151,150 +161,13 @@ class Model[A: Agent, S: Scenario](HasSchedule, HasEmitters):
         # Strong references to active EventGenerators (prevent GC)
         self._event_generators: set[EventGenerator] = set()
 
-        if isinstance(scenario, Scenario) and rng is not None:
-            raise ValueError("Pass either rng or scenario, not both.")
-        if not isinstance(scenario, Scenario):
-            scenario = scenario(rng=rng)  # type: ignore[assignment]
-
-        self.scenario = scenario
-        self.rng: np.random.Generator = scenario.rng
-        self.random = FastRandom(scenario._stdlib_seed)
-
-        # Store user's step method and create the default step schedule.
-        # Uses EventGenerator to schedule _do_step every 1.0 time units.
-        self._user_step = self.step
-        self._default_schedule: EventGenerator = EventGenerator(
-            self,
-            self._user_step,
-            Schedule(interval=1.0, start=1.0),
-            priority=Priority.HIGH,
-        ).start()
-        self.step = self._wrapped_step
-
-        # setup agent registration data structures
-        self._agents_by_type: dict[
-            type[A], _HardKeyAgentSet[A]
-        ] = {}  # a dict with an agentset for each class of agents
-        self._all_agents: _HardKeyAgentSet[A] = _HardKeyAgentSet(
-            [], random=self.random
-        )  # an agenset with all agents
+        self._init_scenario(rng, scenario)
+        self._init_default_schedule()
+        self._init_registries()
 
         self.data_registry = DataRegistry()
         # Column tables for agent classes that declare Column attributes.
         self.columns = ColumnStore(self.random, self.rng)
-
-    @property
-    def agents(self) -> _HardKeyAgentSet[A]:
-        """Provides a _HardKeyAgentSet of all agents in the model, combining agents from all types.
-
-        Returns:
-            _HardKeyAgentSet: The agent set containing all agents with strong references.
-
-        Warning:
-            This returns the actual internal _HardKeyAgentSet used by Modelly for agent registration
-            and tracking. It uses strong references to prevent premature garbage collection and reduce performance overhead
-            caused by weak reference management.
-
-            **Do not modify this AgentSet directly** (e.g., by adding or removing agents manually).
-            Direct modifications can break the model's agent tracking system and cause unexpected
-            behavior. Instead:
-
-            - Use ``Agent()`` to create new agents (automatically registers them)
-            - Use ``agent.remove()`` to remove agents (automatically deregisters them)
-            - For read-only operations or transformations, work on a copy: ``model.agents.copy()``
-
-        Notes:
-            This is Modelly's core agent registration system. All agents created via ``Agent.__init__``
-            are automatically registered here.
-        """
-        return self._all_agents
-
-    @agents.setter
-    def agents(self, agents: Any) -> None:
-        raise AttributeError(
-            "model.agents is managed by Modelly and cannot be assigned. "
-            "Use a different attribute name for custom agent storage."
-        )
-
-    @property
-    def agent_types(self) -> list[type]:
-        """Return a list of all unique agent types registered with the model."""
-        return list(self._agents_by_type.keys())
-
-    @property
-    def agents_by_type(self) -> dict[type[A], _HardKeyAgentSet[A]]:
-        """A dictionary where keys are agent types and values are the corresponding _HardKeyAgentSets.
-
-        Returns:
-            dict[type[A], _HardKeyAgentSet[A]]: Dictionary mapping agent types to their AgentSets.
-
-        Warning:
-            Each AgentSet in this dictionary is a _HardKeyAgentSet with strong references,
-            forming part of Modelly's core agent registration system.
-
-            **Do not modify these AgentSets directly**. Direct modifications can break agent
-            tracking and cause unexpected behavior. Instead:
-
-            - Use ``Agent()`` to create new agents (automatically registers them)
-            - Use ``agent.remove()`` to remove agents (automatically deregisters them)
-            - For read-only operations, work on copies: ``model.agents_by_type[AgentType].copy()``
-
-        Notes:
-            This is part of Modelly's core agent registration system. All agents are automatically
-            registered in the appropriate type-specific AgentSet when created via ``Agent.__init__``.
-        """
-        return self._agents_by_type
-
-    def register_agent(self, agent: A):
-        """Register the agent with the model.
-
-        Args:
-            agent: The agent to register.
-
-        Notes:
-            This method is called automatically by ``Agent.__init__``, so there
-            is no need to use this if you are subclassing Agent and calling its
-            super in the ``__init__`` method.
-        """
-        # The registries' dicts are written directly: this runs on every agent
-        # birth, and two method calls per birth were a third of its cost.
-        self._all_agents[agent] = None
-        agent.unique_id = self.agent_id_counter
-        self.agent_id_counter += 1
-
-        # because AgentSet requires model, we cannot use defaultdict
-        # tricks with a function won't work because model then cannot be pickled
-        try:
-            self._agents_by_type[type(agent)][agent] = None
-        except KeyError:
-            self._register_new_type(agent)
-        if (
-            self._suppress
-            or self._batch_context is not None
-            or self.subscribers
-            or self._class_subscribers
-        ):
-            self._notify_agent_added(agent)
-
-    def deregister_agent(self, agent: A):
-        """Deregister the agent with the model.
-
-        Args:
-            agent: The agent to deregister.
-
-        Notes:
-            This method is called automatically by ``Agent.remove``
-
-        """
-        del self._agents_by_type[type(agent)][agent]
-        del self._all_agents[agent]
-        if (
-            self._suppress
-            or self._batch_context is not None
-            or self.subscribers
-            or self._class_subscribers
-        ):
-            self._notify_agent_removed(agent)
 
     def run_model(self) -> None:
         """Run the model until the end condition is reached.

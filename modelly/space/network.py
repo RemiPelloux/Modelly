@@ -55,21 +55,25 @@ class Network(DiscreteSpace[Cell]):
         super().__init__(capacity=capacity, random=random, cell_klass=cell_klass)
         self.G = G
 
-        # Resolve positions from the layout argument
-        node_positions = {}
-        if callable(layout):
-            node_positions = layout(self.G)
-        elif isinstance(layout, Mapping):
-            node_positions = layout
-        else:
-            raise TypeError(
-                "Incorrect Layout Argument.\nShould be either `Mapping` or `Callable`"
-            )
-
+        node_positions = _layout_positions(self.G, layout)
         self._kdtree_cells = []
         self._kdtree_dirty = False  # True when KDTree needs a rebuild.
-        positions_for_tree = []
+        positions_for_tree = self._create_cells(node_positions, capacity)
 
+        from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
+            KDTree,
+        )
+
+        if positions_for_tree:
+            self._kdtree = KDTree(np.array(positions_for_tree))
+        else:
+            self._kdtree = None
+
+        self._connect_cells()
+
+    def _create_cells(self, node_positions: Mapping, capacity: int | None) -> list:
+        """Create one cell per node and return the node positions, in node order."""
+        positions_for_tree = []
         # Create cells and gather KD-Tree data simultaneously
         for node_id in self.G.nodes:
             try:
@@ -89,17 +93,7 @@ class Network(DiscreteSpace[Cell]):
 
             self._kdtree_cells.append(cell)
             positions_for_tree.append(pos)
-
-        from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
-            KDTree,
-        )
-
-        if positions_for_tree:
-            self._kdtree = KDTree(np.array(positions_for_tree))
-        else:
-            self._kdtree = None
-
-        self._connect_cells()
+        return positions_for_tree
 
     def _rebuild_kdtree(self) -> None:
         """Rebuild the KD-Tree."""
@@ -179,3 +173,14 @@ class Network(DiscreteSpace[Cell]):
         """Remove a connection between the two cells."""
         super().remove_connection(cell1, cell2)
         self.G.remove_edge(cell1.coordinate, cell2.coordinate)
+
+
+def _layout_positions(graph: Any, layout: Mapping | Callable) -> Mapping:
+    """Resolve the ``layout`` argument of ``Network`` to node positions."""
+    if callable(layout):
+        return layout(graph)
+    if isinstance(layout, Mapping):
+        return layout
+    raise TypeError(
+        "Incorrect Layout Argument.\nShould be either `Mapping` or `Callable`"
+    )

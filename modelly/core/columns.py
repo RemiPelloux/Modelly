@@ -135,8 +135,7 @@ class ColumnTable:
         return self._data[name][: len(self._agents)]
 
     def __getattr__(self, name: str) -> np.ndarray:
-        """Return a view of column ``name`` (attribute-style access)."""
-        # Only reached for names that are not real attributes.
+        """Return a view of column ``name``; only reached for non-attribute names."""
         data = self.__dict__.get("_data")
         if data is not None and name in data:
             return data[name][: len(self.__dict__["_agents"])]

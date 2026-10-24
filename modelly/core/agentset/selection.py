@@ -102,6 +102,29 @@ class SelectionMixin[A: Agent]:
             ValueError: If the AgentSet is empty, n <= 0, n > len(self) when replace=False, n exceeds the number of positive weights when sampling without replacement, weights are negative, total weight <= 0, or length of weights sequence does not match the AgentSet.
             TypeError: If n or weights is of an unsupported type.
         """
+        sample_size = self._sample_size(n, replace)
+        if sample_size == 0:
+            return self._update([]) if inplace else self._view([])
+
+        items = self.to_list()
+
+        if weights is None:
+            if replace:
+                chosen = self.random.choices(items, k=sample_size)
+            else:
+                chosen = self.random.sample(items, k=sample_size)
+        else:
+            w = _resolve_weights(items, weights)
+
+            if replace:
+                chosen = self.random.choices(items, weights=w, k=sample_size)
+            else:
+                chosen = _weighted_sample(self.random.random, items, w, sample_size)
+
+        return self._update(chosen) if inplace else self._view(chosen)
+
+    def _sample_size(self, n: int | float, replace: bool) -> int:
+        """Validate ``n`` for ``select_random`` and return the number of agents to draw."""
         if len(self) == 0:
             raise ValueError("Cannot sample from an empty AgentSet.")
 
@@ -125,39 +148,21 @@ class SelectionMixin[A: Agent]:
             raise ValueError(
                 f"Sample size ({sample_size}) cannot exceed AgentSet size ({len(self)}) when replace=False."
             )
+        return sample_size
 
-        if sample_size == 0:
-            return self._update([]) if inplace else self._view([])
 
-        items = self.to_list()
+def _weighted_sample[T](
+    random: Callable[[], float], items: list[T], w: list[float], sample_size: int
+) -> list[T]:
+    """Weighted sampling without replacement (Efraimidis & Spirakis, A-Res)."""
+    keys = [(random() ** (1.0 / wi), agent) for agent, wi in zip(items, w) if wi > 0]
 
-        if weights is None:
-            if replace:
-                chosen = self.random.choices(items, k=sample_size)
-            else:
-                chosen = self.random.sample(items, k=sample_size)
-        else:
-            w = _resolve_weights(items, weights)
-
-            if replace:
-                chosen = self.random.choices(items, weights=w, k=sample_size)
-            else:
-                # Efraimidis & Spirakis (A-Res) algorithm for weighted sampling without replacement
-                random = self.random.random
-                keys = [
-                    (random() ** (1.0 / wi), agent)
-                    for agent, wi in zip(items, w)
-                    if wi > 0
-                ]
-
-                positive_weight_count = len(keys)
-                if sample_size > positive_weight_count:
-                    raise ValueError(
-                        f"Sample size ({sample_size}) cannot exceed the number of "
-                        f"agents with positive weights ({positive_weight_count}) when "
-                        "replace=False."
-                    )
-                keys.sort(key=operator.itemgetter(0), reverse=True)
-                chosen = [agent for _, agent in keys[:sample_size]]
-
-        return self._update(chosen) if inplace else self._view(chosen)
+    positive_weight_count = len(keys)
+    if sample_size > positive_weight_count:
+        raise ValueError(
+            f"Sample size ({sample_size}) cannot exceed the number of "
+            f"agents with positive weights ({positive_weight_count}) when "
+            "replace=False."
+        )
+    keys.sort(key=operator.itemgetter(0), reverse=True)
+    return [agent for _, agent in keys[:sample_size]]
