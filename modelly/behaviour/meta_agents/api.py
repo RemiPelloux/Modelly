@@ -7,6 +7,7 @@ from typing import Any
 
 from modelly.behaviour.meta_agents.backend import MembershipBackend, RelationKey
 from modelly.behaviour.meta_agents.combinations import (
+    cache_build,
     evaluate_combination,
     find_combinations,
 )
@@ -205,9 +206,7 @@ class MetaAgents(MembershipQueries):
         """Remove an entity from all memberships without deleting the object."""
         return self._detach_entity(entity)
 
-    # TODO(perf): Add a cache_build staticmethod so models that constantly
-    # reference the same sets of meta-agents can cache them instead of
-    # constantly rebuilding the lookup. More involved, so a future iteration.
+    cache_build = staticmethod(cache_build)
     evaluate_combination = staticmethod(evaluate_combination)
     find_combinations = staticmethod(find_combinations)
 

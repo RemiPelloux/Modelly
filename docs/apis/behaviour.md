@@ -58,7 +58,7 @@ includes features for intuitive use, management, and exploration:
 - look up who belongs to a group and which groups an agent belongs to
 - walk nested levels (`at_level`)
 - deactivate or dissolve a group
-- find candidate groups (`find_combinations`)
+- find candidate groups (`find_combinations`), with cached scoring (`cache_build`)
 
 ```
         model.meta_agents
@@ -129,6 +129,40 @@ assert other_team is not team
 team_a = model.meta_agents.create("Team_2026_A", [alice])
 team_b = model.meta_agents.create("Team_2026_B", [dave])
 ```
+
+### Caching candidate scores
+
+Models that search the same agents for alliances every step re-score every
+candidate group on each `find_combinations` call. Wrap the scoring function
+once with `cache_build` and pass the wrapper instead: each group is scored the
+first time it is seen and served from the cache afterwards. Results and their
+order are unchanged, provided the scoring function is deterministic for a
+given group.
+
+```python
+class Alliances(Model):
+    def __init__(self):
+        super().__init__()
+        self.meta_agents = MetaAgents(self)
+        self.score = self.meta_agents.cache_build(shapley_value)  # build once
+
+    def step(self):
+        candidates = self.meta_agents.find_combinations(
+            self.agents, size=2, evaluation_func=self.score
+        )
+```
+
+The cache is keyed by the exact tuple of agents passed to the scoring
+function, so pass agents in a stable order (for example sorted by
+`unique_id`) to get hits. It never expires by itself: call
+`self.score.invalidate(agent)` when an agent's state changes or it leaves the
+model (its groups are re-scored next time), or `self.score.invalidate()` to drop
+everything. `maxsize` bounds the cache, evicting the oldest score first;
+`score.hits` and `score.misses` show how well it works.
+
+Removing an agent or group (`deactivate`, `dissolve`, or `agent.remove()`)
+costs time proportional to that entity's own memberships, not to the total
+number of memberships in the model.
 
 ### Reference
 
