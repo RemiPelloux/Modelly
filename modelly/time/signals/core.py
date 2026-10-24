@@ -13,18 +13,36 @@ The module implements a robust reactive system where changes to observable prope
 automatically trigger updates to dependent computed values and notify subscribed
 observers. This enables building models with complex interdependencies while maintaining
 clean separation of concerns.
+
+It also owns the dependency-tracking state (CURRENT_COMPUTED, PROCESSING_SIGNALS),
+so everything that reads or rebinds that state is defined here.
 """
 
 from __future__ import annotations
 
 import functools
 import weakref
-from collections import defaultdict, namedtuple
-from collections.abc import Callable, Generator, Iterable, MutableSequence
-from typing import Any, ClassVar, Literal
+from collections import namedtuple
+from collections.abc import Callable, Iterable, MutableSequence
+from typing import Any
 
+from modelly.time.signals.computed import (
+    ComputedProperty,
+    ComputedStateBase,
+    _parents_changed,
+    _resubscribe,
+)
+
+# descriptor_generator, ObservableName, SignalSpec, ALL, Message and create_weakref
+# are re-exported: they were importable from this module before it was split.
+from modelly.time.signals.emitters import (  # noqa: F401
+    HasEmitters,
+    descriptor_generator,
+    emit,
+)
+from modelly.time.signals.subscriptions import ObservableName, SignalSpec  # noqa: F401
 from modelly.time.signals.types import ObservableSignals
-from modelly.time.signals.util import (
+from modelly.time.signals.util import (  # noqa: F401
     ALL,
     Message,
     SignalType,
@@ -38,11 +56,6 @@ __all__ = [
     "computed_property",
     "emit",
 ]
-
-
-ObservableName = str | type(ALL) | Iterable[str]
-SignalSpec = str | SignalType | type(ALL) | Iterable[str | SignalType]
-
 
 _hashable_signal = namedtuple("_HashableSignal", "instance name")
 
@@ -147,78 +160,10 @@ class Observable(BaseObservable):
             PROCESSING_SIGNALS.clear()  # we have notified our children, so we can clear this out
 
 
-class ComputedState:
+class ComputedState(ComputedStateBase):
     """Internal class to hold the state of a computed property for a specific instance."""
 
-    __slots__ = [
-        "__weakref__",
-        "dependencies",
-        "func",
-        "is_dirty",
-        "name",
-        "owner",
-        "parents",
-        "value",
-    ]
-
-    def __init__(
-        self,
-        owner: HasEmitters,
-        name: str,
-        func: Callable,
-        dependencies: Iterable[tuple[str, str | SignalType]] | None = None,
-    ):
-        """Initialize a ComputedState.
-
-        Args:
-            owner: the HasEmitters instance on which this state is defined
-            name: the name of the computed property
-            func: the computation function
-            dependencies: optional iterable of explicit dependencies to track
-        """
-        self.owner = owner
-        self.name = name
-        self.func = func
-        self.value = None
-        self.is_dirty = True
-        self.parents: weakref.WeakKeyDictionary[HasEmitters, dict[str, Any]] = (
-            weakref.WeakKeyDictionary()
-        )
-        self.dependencies: list[tuple[str, SignalType]] = []
-
-        if dependencies:
-            for dep_spec in dependencies:
-                if isinstance(dep_spec, tuple) and len(dep_spec) >= 2:
-                    obs_name = dep_spec[0]
-                    signal_types = dep_spec[1:]
-                    for signal_type in signal_types:
-                        owner.observe(obs_name, signal_type, self._set_dirty)
-                        self.dependencies.append((obs_name, signal_type))
-                elif isinstance(dep_spec, tuple) and len(dep_spec) == 1:
-                    obs_name = dep_spec[0]
-                    owner.observe(obs_name, ALL, self._set_dirty)
-                    self.dependencies.append((obs_name, ALL))
-
-    def _set_dirty(self, signal):
-        if not self.is_dirty:
-            self.is_dirty = True
-            self.owner.notify(self.name, ObservableSignals.CHANGED, old=self.value)
-
-    def _record_access(
-        self, parent: HasEmitters, name: str, current_value: Any
-    ) -> None:
-        """Records access to a parent Observable.
-
-        Args:
-            parent: the HasEmitters instance to which the Observable belongs
-            name: the public name of the Observable
-            current_value: the current value of the Observable
-
-        """
-        try:
-            self.parents[parent][name] = current_value
-        except KeyError:
-            self.parents[parent] = {name: current_value}
+    __slots__ = ()
 
     def evaluate(self) -> Any:
         """Recompute the value by calling self.func, tracking dependencies as it runs.
@@ -239,13 +184,11 @@ class ComputedState:
         global CURRENT_COMPUTED  # noqa: PLW0603
 
         old_computed = CURRENT_COMPUTED
-        # Save and reset PROCESSING_SIGNALS so that `self.func` accessing an
-        # Observable that is itself derived from this same ComputedState
-        # (e.g. a rate function reading the ContinuousState it drives) does
-        # not falsely trigger a cyclical-dependency error.
+        # Save and reset PROCESSING_SIGNALS so that `self.func` reading an Observable
+        # derived from this same ComputedState (e.g. a rate function reading the
+        # ContinuousState it drives) does not trigger a false cyclical-dependency error.
         old_processing = set(PROCESSING_SIGNALS)
         PROCESSING_SIGNALS.clear()
-
         CURRENT_COMPUTED = self
         old_parents = self.parents
         self.parents = weakref.WeakKeyDictionary()
@@ -259,23 +202,19 @@ class ComputedState:
             CURRENT_COMPUTED = old_computed
             PROCESSING_SIGNALS.update(old_processing)
 
-        # Diffing engine: subscribe/unsubscribe as dependencies come and go.
-        old_deps = {(p, attr) for p, attrs in old_parents.items() for attr in attrs}
-        new_deps = {(p, attr) for p, attrs in self.parents.items() for attr in attrs}
-
-        for p, attr in old_deps - new_deps:
-            p.unobserve(attr, ALL, self._set_dirty)
-        for p, attr in new_deps - old_deps:
-            p.observe(attr, ALL, self._set_dirty)
+        _resubscribe(self, old_parents)
 
         self.is_dirty = False
         return self.value
 
 
-class ComputedProperty(property):
-    """A custom property class to identify computed properties."""
-
-    signal_types = ObservableSignals
+def _create_state(
+    owner: HasEmitters, key: str, func: Callable, dependencies: Any
+) -> ComputedState:
+    """Create the ComputedState of func on owner and store it under key."""
+    state = ComputedState(owner, func.__name__, func, dependencies=dependencies)
+    setattr(owner, key, state)
+    return state
 
 
 def computed_property(
@@ -299,476 +238,22 @@ def computed_property(
         @functools.wraps(computation_func)
         def wrapper(self: HasEmitters):
             if not hasattr(self, key):
-                state = ComputedState(
-                    self,
-                    computation_func.__name__,
-                    computation_func,
-                    dependencies=dependencies,
-                )
-                setattr(self, key, state)
+                state = _create_state(self, key, computation_func, dependencies)
             else:
                 state = getattr(self, key)
 
             if state.is_dirty:
-                changed = False
-
-                # Check if parents actually changed
-                if not state.parents:
-                    changed = True
-                else:
-                    for parent, observations in state.parents.items():
-                        if parent is None:
-                            changed = True
-                            break
-                        for attr, old_val in observations.items():
-                            current_val = getattr(parent, attr)
-                            if current_val != old_val:
-                                changed = True
-                                break
-                        if changed:
-                            break
-
-                if changed:
+                # Only recompute when a parent actually changed.
+                if _parents_changed(state.parents):
                     state.evaluate()
-
                 state.is_dirty = False
-
             if CURRENT_COMPUTED is not None:
                 CURRENT_COMPUTED._record_access(
                     self, computation_func.__name__, state.value
                 )
-
             return state.value
 
         return ComputedProperty(wrapper)
 
-    if func is None:
-        # Called with arguments: @computed_property(dependencies=...)
-        return decorator
-    else:
-        # Called without arguments: @computed_property
-        return decorator(func)
-
-
-class HasEmitters:
-    """HasEmitters class.
-
-    Attributes:
-        subscribers: mapping of observables/emitters and signal type to subscribers
-        observables: mapping of observables/emitters to their available signal types
-
-    HasEmitters automatically discovers the observables/emitters defined on the class.
-
-    """
-
-    # a list of weakrefs: a WeakSet mishandles bound methods, and a list is faster
-    subscribers: dict[
-        tuple[str, SignalType], list[weakref.ref]
-    ]  # (observable_name, signal_type) -> list of weakref subscribers
-    observables: dict[str, type[SignalType] | frozenset[SignalType]]
-
-    _class_subscribers: ClassVar[dict[tuple[str, SignalType], list[weakref.ref]]] = (
-        defaultdict(list)
-    )
-
-    # False once anything may listen; never reset (a stale False is only slower).
-    _quiet: ClassVar[bool] = True
-
-    def __init_subclass__(cls, **kwargs):
-        """Initialize a HasEmitters subclass."""
-        super().__init_subclass__(**kwargs)
-        cls.observables = dict(descriptor_generator(cls))
-        cls._class_subscribers = defaultdict(list)
-
-    def __init__(self, *args, **kwargs) -> None:
-        """Initialize a HasEmitters."""
-        super().__init__(*args, **kwargs)
-        self.subscribers = defaultdict(list)
-        self._batch_context = None
-        self._suppress = False
-
-    def _has_subscribers(self, name: str, signal_type: str | SignalType) -> bool:
-        """Check if there are any subscribers for a given observable and signal type."""
-        # Fast path: the overwhelming majority of models never subscribe to
-        # anything, so skip the tuple allocation and dict lookups entirely.
-        if not self.subscribers and not self._class_subscribers:
-            return False
-        key = (name, signal_type)
-        return bool(self.subscribers.get(key)) or bool(self._class_subscribers.get(key))
-
-    def observe(
-        self,
-        observable_name: ObservableName,
-        signal_type: SignalSpec,
-        handler: Callable,
-    ):
-        """Subscribe to the Observable <name> for signal_type.
-
-        Args:
-            observable_name: name of the Observable to subscribe to
-            signal_type: the type of signal on the Observable to subscribe to
-            handler: the handler to call
-
-        Raises:
-            ValueError: if the Observable <name> is not registered or if the Observable
-            does not emit the given signal_type
-
-        """
-        self._register_observer(self.subscribers, observable_name, signal_type, handler)
-        self._quiet = False
-
-    @classmethod
-    def _unregister_observer(
-        cls,
-        subs_dict: dict,
-        observable_name: ObservableName,
-        signal_type: SignalSpec,
-        handler: Callable,
-    ):
-        """Shared logic to validate and unregister an observer from a dictionary."""
-        names = cls._process_name(observable_name)
-        target_signals = cls._process_signal_type(signal_type)
-
-        for name in names:
-            current_signals = (
-                target_signals if target_signals is not None else cls.observables[name]
-            )
-
-            for st in current_signals:
-                key = (name, st)
-                if key in subs_dict:
-                    remaining = []
-                    for ref in subs_dict[key]:
-                        if subscriber := ref():  # noqa: SIM102
-                            if subscriber != handler:
-                                remaining.append(ref)
-
-                    if remaining:
-                        subs_dict[key] = remaining
-                    else:
-                        del subs_dict[key]
-
-    def unobserve(
-        self,
-        observable_name: ObservableName,
-        signal_type: SignalSpec,
-        handler: Callable,
-    ):
-        """Unsubscribe to the Observable <name> for signal_type.
-
-        Args:
-            observable_name: name of the Observable to unsubscribe from
-            signal_type: the type of signal on the Observable to unsubscribe to
-            handler: the handler that is unsubscribing
-
-        """
-        self._unregister_observer(
-            self.subscribers, observable_name, signal_type, handler
-        )
-
-    @classmethod
-    def unobserve_class(
-        cls,
-        observable_name: ObservableName,
-        signal_type: SignalSpec,
-        handler: Callable,
-    ):
-        """Unsubscribe at the class level to the Observable <name> for signal_type.
-
-        Args:
-            observable_name: name of the Observable to unsubscribe from
-            signal_type: the type of signal on the Observable to unsubscribe to
-            handler: the handler that is unsubscribing
-        """
-        cls._unregister_observer(
-            cls._class_subscribers, observable_name, signal_type, handler
-        )
-
-    @classmethod
-    def _clear_all_subscriptions(cls, subs_dict: dict, name: ObservableName):
-        """Shared logic to clear all subscriptions for an observable."""
-        if name is ALL:
-            subs_dict.clear()
-        elif isinstance(name, str):
-            keys_to_remove = [k for k in subs_dict if k[0] == name]
-            for k in keys_to_remove:
-                del subs_dict[k]
-        else:
-            for n in name:
-                keys_to_remove = [k for k in subs_dict if k[0] == n]
-                for k in keys_to_remove:
-                    del subs_dict[k]
-
-    def clear_all_subscriptions(self, name: ObservableName):
-        """Clears all instance-level subscriptions for the observable <name>.
-
-        if name is ALL, all subscriptions are removed
-
-        Args:
-            name: name of the Observable to unsubscribe for all signal types
-
-        """
-        self._clear_all_subscriptions(self.subscribers, name)
-
-    @classmethod
-    def clear_all_class_subscriptions(cls, name: ObservableName):
-        """Clears all class-level subscriptions for the observable <name>.
-
-        if name is ALL, all subscriptions are removed
-
-        Args:
-            name: name of the Observable to unsubscribe for all signal types
-        """
-        cls._clear_all_subscriptions(cls._class_subscribers, name)
-
-    def notify(
-        self,
-        observable: str,
-        signal_type: str | SignalType,
-        **kwargs,
-    ):
-        """Emit a signal.
-
-        Args:
-            observable: the public name of the observable emitting the signal
-            signal_type: the type of signal to emit
-            kwargs: additional keyword arguments to include in the signal
-
-        """
-        if self._suppress:
-            return
-
-        if self._batch_context is not None:
-            signal = Message(
-                name=observable,
-                owner=self,
-                signal_type=signal_type,
-                additional_kwargs=kwargs,
-            )
-            self._batch_context.capture(signal)
-            return
-
-        # because we are using a list of subscribers
-        # we should update this list to subscribers that are still alive
-        if not self._has_subscribers(observable, signal_type):
-            return
-
-        signal = Message(
-            name=observable,
-            owner=self,
-            signal_type=signal_type,
-            additional_kwargs=kwargs,
-        )
-
-        self._modelly_notify(signal)
-
-    def _modelly_notify(self, signal: Message):
-        """Send out the signal.
-
-        Args:
-        signal: the signal
-
-        Notes:
-        signal must contain name and type attributes because this is how observers are stored.
-
-        """
-        # we put this into a helper method, so we can emit signals with other fields
-        # than the default ones in notify.
-        observable = signal.name
-        signal_type = signal.signal_type
-        key = (observable, signal_type)
-
-        for subs_dict in (self.subscribers, self._class_subscribers):
-            observers = subs_dict.get(key, [])
-            if not observers:
-                continue
-
-            active_observers = []
-            for observer in observers:
-                if active_observer := observer():
-                    active_observer(signal)
-                    active_observers.append(observer)
-
-            if active_observers:
-                subs_dict[key] = active_observers
-            else:
-                del subs_dict[key]
-
-    def batch(self):
-        """Return a context manager that batches signals.
-
-        Signals emitted during the batch are buffered and aggregated on exit.
-        Nested batches merge into the outer batch; only the outermost dispatches.
-
-        Note:
-            Computed properties may return stale cached values during the batch.
-            They will be updated when aggregated signals are dispatched on exit.
-
-        """
-        from modelly.time.signals.batching import _BatchContext  # noqa: PLC0415
-
-        return _BatchContext(self)
-
-    def suppress(self):
-        """Return a context manager that suppresses all signals.
-
-        No signals are emitted, buffered, or dispatched during suppression.
-
-        Note:
-            Computed properties may become permanently stale because their
-            triggering signals are dropped entirely.
-
-        """
-        from modelly.time.signals.batching import _SuppressContext  # noqa: PLC0415
-
-        return _SuppressContext(self)
-
-    @classmethod
-    def _process_name(cls, name: ObservableName) -> Iterable[str]:
-        """Convert name to an iterable of observable names."""
-        if name is ALL:
-            return cls.observables.keys()
-        elif isinstance(name, str):
-            return [name]
-        else:
-            return name
-
-    @classmethod
-    def _process_signal_type(
-        cls, signal_type: SignalSpec
-    ) -> Iterable[SignalType] | None:
-        """Convert signal_type to an iterable of signal types."""
-        if signal_type is ALL:
-            return None  # None is used to indicate all signal types
-        if isinstance(signal_type, (str, SignalType)):
-            return [signal_type]
-        else:
-            return signal_type
-
-    @classmethod
-    def observe_class(
-        cls,
-        observable_name: ObservableName,
-        signal_type: SignalSpec,
-        handler: Callable,
-    ):
-        """Subscribe at the class level to the Observable <name> for signal_type.
-
-        All instances of this class will trigger the handler when they emit this signal.
-        Handlers are stored as weak references to prevent memory leaks during experiments.
-
-        Args:
-            observable_name: name of the Observable to subscribe to
-            signal_type: the type of signal on the Observable to subscribe to
-            handler: the handler to call
-        """
-        cls._register_observer(
-            cls._class_subscribers, observable_name, signal_type, handler
-        )
-        cls._quiet = False
-
-    @classmethod
-    def _register_observer(
-        cls,
-        subs_dict: dict,
-        observable_name: ObservableName,
-        signal_type: SignalSpec,
-        handler: Callable,
-    ):
-        """Shared logic to validate and register an observer to a dictionary."""
-        names = cls._process_name(observable_name)
-        target_signals = cls._process_signal_type(signal_type)
-
-        for name in names:
-            if name not in cls.observables:
-                raise ValueError(
-                    f"you are trying to subscribe to {name}, but this Observable is not known"
-                )
-
-            current_signals = (
-                target_signals if target_signals is not None else cls.observables[name]
-            )
-
-            for st in current_signals:
-                if st not in cls.observables[name]:
-                    raise ValueError(f"Signal {st} not supported by {name}")
-
-            ref = create_weakref(handler)
-            for st in current_signals:
-                subs_dict[(name, st)].append(ref)
-
-    def peek(self, name: str, default: Any = None) -> Any:
-        """Retrieve an attribute without registering it in the dependency graph."""
-        global CURRENT_COMPUTED  # noqa: PLW0603
-        prev = CURRENT_COMPUTED
-        CURRENT_COMPUTED = None
-
-        try:
-            return getattr(self, name, default)
-        finally:
-            CURRENT_COMPUTED = prev
-
-
-def descriptor_generator(
-    cls,
-) -> Generator[tuple[str, type[SignalType] | frozenset[SignalType]]]:
-    """Yield the name and signal_types for each Observable defined on cls.
-
-    This handles both legacy BaseObservable descriptors and new @computed_properties.
-    """
-    emitters = defaultdict(set)
-    for base in cls.__mro__:
-        base_dict = vars(base)
-
-        for name, entry in base_dict.items():
-            if isinstance(entry, ComputedProperty):
-                yield name, entry.signal_types
-            elif isinstance(entry, BaseObservable):
-                yield entry.public_name, entry.signal_types
-            elif hasattr(entry, "_modelly_signal_emitter"):
-                observable_name, signal = entry._modelly_signal_emitter
-                emitters[observable_name].add(signal)
-
-    for name, signals in emitters.items():
-        yield name, frozenset(signals)
-
-
-def emit(observable_name, signal_to_emit, when: Literal["before", "after"] = "after"):
-    """Decorator to emit a signal before or after the call to method (HasEmitters only).
-
-    Args:
-        observable_name: the name of the observable that emits the signal
-        signal_to_emit: the signal to emit
-        when: whether to emit the signal before or after the function call.
-    """
-    key = (observable_name, signal_to_emit)
-    before = when == "before"
-
-    def inner(method):
-        """Wrap func; the listener check is inlined since it runs on every agent birth and death."""
-
-        @functools.wraps(method)
-        def wrapper(self, *args, **kwargs):
-            if before:
-                if (
-                    self._suppress
-                    or self._batch_context is not None
-                    or self.subscribers.get(key)
-                    or self._class_subscribers.get(key)
-                ):
-                    self.notify(observable_name, signal_to_emit, args=args, **kwargs)
-                return method(self, *args, **kwargs)
-            ret = method(self, *args, **kwargs)
-            if (
-                self._suppress
-                or self._batch_context is not None
-                or self.subscribers.get(key)
-                or self._class_subscribers.get(key)
-            ):
-                self.notify(observable_name, signal_to_emit, args=args, **kwargs)
-            return ret
-
-        wrapper._modelly_signal_emitter = observable_name, signal_to_emit
-        return wrapper
-
-    return inner
+    # Called with arguments (@computed_property(dependencies=...)) or without.
+    return decorator if func is None else decorator(func)

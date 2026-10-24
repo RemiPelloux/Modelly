@@ -9,13 +9,8 @@ from __future__ import annotations
 import warnings
 from collections.abc import Callable
 
-from modelly.time.events import (
-    Event,
-    EventGenerator,
-    Priority,
-    Schedule,
-    _create_callable_reference,
-)
+from modelly.time.events.event import Event, Priority, _create_callable_reference
+from modelly.time.events.generator import EventGenerator, Schedule
 from modelly.time.signals import ModelSignals, ObservableSignals, emit
 
 
