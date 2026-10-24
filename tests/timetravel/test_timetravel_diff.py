@@ -6,8 +6,11 @@ import numpy as np
 import pytest
 from timetravel_support import EXAMPLES
 
+from modelly import Agent, Model
 from modelly.timetravel import Difference, Recorder, RunDiff, agent_state, diff
 from modelly.timetravel.snapshot import same
+
+MATRIX_SIDE = 3
 
 STEPS = 40
 SEEDED_AT = 23
@@ -120,3 +123,13 @@ def test_snapshot_values():
     assert RunDiff().identical
     who = Difference(1.0, "x", 1, 2, agent=4)
     assert str(who) == "step 1, agent 4, x: 1 != 2"
+
+
+def test_unplaceable_position_is_left_out():
+    """A position that is not a short vector is not state, and never a sentinel."""
+    model = Model(rng=1)
+    agent = Agent(model)
+    agent.position = np.zeros((MATRIX_SIDE, MATRIX_SIDE))
+    assert "position" not in agent_state(agent)
+    agent.position = (1.0, 2.0)
+    assert agent_state(agent)["position"] == (1.0, 2.0)

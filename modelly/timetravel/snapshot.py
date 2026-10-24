@@ -59,18 +59,22 @@ def _place(agent: Agent) -> tuple[str, Any] | None:
     """``("cell", coordinate)`` or ``("position", xy)``, or None."""
     cell = getattr(agent, "cell", None)
     if cell is not None:
-        return "cell", _value(getattr(cell, "coordinate", None))
-    position = getattr(agent, "position", None)
-    if position is not None:
-        return "position", _value(np.asarray(position))
-    return None
+        name, value = "cell", _value(getattr(cell, "coordinate", None))
+    else:
+        position = getattr(agent, "position", None)
+        if position is None:
+            return None
+        name, value = "position", _value(np.asarray(position))
+    return None if value is _SKIP else (name, value)
 
 
 def agent_state(agent: Agent) -> dict[str, Any]:
     """The state of ``agent``: columns, ``__dict__`` scalars and place."""
     state = dict(_scalars(vars(agent)))
     for name in getattr(type(agent), "_column_specs", {}):
-        state[name] = _value(getattr(agent, name))
+        value = _value(getattr(agent, name))
+        if value is not _SKIP:
+            state[name] = value
     place = _place(agent)
     if place is not None:
         state[place[0]] = place[1]
