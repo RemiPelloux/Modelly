@@ -20,7 +20,8 @@ from modelly.space.geo._deps import require
 
 if TYPE_CHECKING:
     from modelly.space.geo.space import GeoSpace
-    from modelly.space.grid.base import Grid
+    from modelly.space.grid.grids import OrthogonalMooreGrid
+    from modelly.space.grid.layers import HasPropertyLayers
 
 # Pixel offset of a cell's centre from its upper-left corner, and the GeoTIFF band written.
 _CENTER = 0.5
@@ -141,11 +142,15 @@ class RasterLayer:
             (t.a * cols + t.b * rows + t.c, t.d * cols + t.e * rows + t.f), -1
         )
 
-    def attach(self, grid: Grid, name: str, read_only: bool = False) -> None:
+    def attach(
+        self, grid: HasPropertyLayers, name: str, read_only: bool = False
+    ) -> None:
         """Attach ``values`` to ``grid`` as property layer ``name`` (shared, not copied)."""
         grid.add_property_layer(name, self.values, read_only=read_only)
 
-    def to_grid(self, name: str, random: Random | None = None, **kwargs) -> Grid:
+    def to_grid(
+        self, name: str, random: Random | None = None, **kwargs
+    ) -> OrthogonalMooreGrid:
         """A new ``OrthogonalMooreGrid`` of the raster's shape with the band as layer ``name``.
 
         Extra keyword arguments (``torus``, ``capacity``, ...) go to the grid.
