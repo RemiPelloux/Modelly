@@ -3,7 +3,11 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
-## Unreleased
+## 1.3.2 - 2026-10-25
+
+A correctness release: ABC-SMC importance weights near a bounded prior are now exact. No score
+is slower than 1.3.1 (core operations, the playbooks seed by seed, and the notebooks; the
+playbooks and the operations they time run the same Python and the same machine code as 1.3.1).
 
 ### Added
 
@@ -12,6 +16,29 @@ versioning.
   alternating bursts on one core, and fails when one is significantly slower; suspects are
   re-timed before failing. `python -m modelly.dev install-hooks` makes git run it before every
   commit that touches `modelly/` (`.githooks/pre-commit`; about ten seconds).
+
+### Fixed
+
+- ABC-SMC importance weights near a bounded prior. A proposal that left the prior's support
+  was moved again from the same ancestor, so particles close to a bound were over-weighted
+  (by 17% in the bin next to the bound, for a population crowding it). The ancestor is now
+  redrawn as well (Toni et al., 2009): the proposal is the mixture truncated to the support,
+  and the weights are exact. Posteriors from the same seed differ from 1.3.1's; the
+  calibration guide's example was rerun.
+
+### Benchmarks
+
+- The playbooks have a Mesa 3.5 variant (`mesa3_model.py`), written the way Mesa 3.5's API and
+  examples intend, checked to agree with the Mesa 2.3 reference in distribution. All variants
+  were re-timed in one session, five rounds each: columns run the steps 4.9 to 60x faster than
+  Mesa 2.3 and 2.6 to 37x faster than Mesa 3.5, cohorts 249x and 136x.
+
+### Documentation
+
+- The same-code comparison with Mesa 2.3 is corrected: the "12% faster" figure paired the
+  Mesa notebook with an optimised Modelly notebook. The plain codemod port runs at 0.94 of
+  Mesa's time with `FastRandom` and 1.02 to 1.04 with `random.Random`, bit-identical output
+  (`docs/performance.md`, README, documentation home page).
 
 ## 1.3.1 - 2026-10-24
 
