@@ -335,7 +335,7 @@ results = run_grid(
 When individuals in the same state face the same probabilities (an insect's stage, age and
 sex), one row with a count replaces them all, and each per-individual draw becomes one
 binomial draw per row with exactly the same law. `CohortTable` holds such a population with no
-agent objects; the stage-structured playbook runs 213x faster than its individual Mesa
+agent objects; the stage-structured playbook runs 249x faster than its individual Mesa
 version and agrees with it statistically.
 
 ```python
@@ -493,35 +493,35 @@ Two questions, two methods, both in the repository.
 
 **Same code on both frameworks.** A research notebook written for Mesa 2.3, ported with the
 codemod and nothing else changed, identical seeds, outputs checked bit-identical, CPU time
-pinned and alternating: with its compiled random core Modelly is 12% faster than Mesa 2.3
-(paired runs at 0.877 to 0.884 of Mesa's time, identical output in every chunk). With the
-pure-Python `FastRandom` it is 1.3 to 3.8% faster, and 1.5 to 2% behind with the standard
-library's generator. The method and every round are in
+pinned and alternating: Modelly runs at Mesa's speed within a few percent. Seeded with
+`FastRandom` it took 0.94 of Mesa's time (6% faster); left on the standard library's
+`random.Random`, 1.02 to 1.04 (about 2% slower). Identical output in every chunk. The method
+and every round are in
 [docs/performance.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/performance.md).
 
 **Same model, each framework's own idiom.** `benchmarks/playbooks/` holds eight models written
-twice: for Mesa 2.3 the way its API intends, and for Modelly with columns, vectorised phases,
-`CellIndex` and one KD-tree per step. The runner executes both in their own environments,
-pinned to one core, alternating rounds, checks that the implementations agree in distribution
-(Welch's t-test over shared seeds, every statistic) and that each is deterministic. CPU seconds
-of the steps at the large size, median of three rounds, this machine:
+for Mesa 2.3 and for the current Mesa 3.5 the way their APIs intend, and for Modelly with
+columns, vectorised phases, `CellIndex` and one KD-tree per step. The runner executes each in
+its own environment, pinned to one core, alternating rounds, checks that the implementations
+agree in distribution (over shared seeds, every statistic) and that each is deterministic. CPU
+seconds of the steps at the large size, median of five rounds in one session, this machine:
 
-| Playbook | Agents | Mesa 2.3 | Modelly | Speed-up |
-|---|---|---|---|---|
-| Grid epidemic (SIR, random walk, synchronous) | 20,000 | 11.54 s | 0.21 s | 56x |
-| Predator-prey with grass (births and deaths every step) | ~5,500 | 3.90 s | 0.47 s | 8.3x |
-| Flocking in continuous space | 4,000 | 27.91 s | 0.72 s | 39x |
-| Virus on a random network | 30,000 | 8.70 s | 0.20 s | 44x |
-| Stage-structured insect population, individuals | ~26,000 | 2.83 s | 0.65 s | 4.3x |
-| Same population as a `CohortTable` (binomial thinning) | ~26,000 | 2.83 s | 0.013 s | 213x |
-| Schelling segregation (moves to random empty cells) | ~32,000 | 3.23 s | 0.12 s | 27x |
-| Boltzmann wealth exchange, Gini by a `DataCollector` | 10,000 | 1.51 s | 0.20 s | 7.4x |
-| Sugarscape, constant growback (vision, best sugar in sight) | 1,600 to ~680 | 5.57 s | 0.18 s | 32x |
+| Playbook | Mesa 2.3 | Mesa 3.5 | Modelly, cell lists | Modelly | vs Mesa 2.3 | vs Mesa 3.5 |
+|---|---|---|---|---|---|---|
+| Grid epidemic (SIR, random walk, synchronous) | 7.43 s | 4.24 s | 3.24 s | 0.126 s | 59x | 34x |
+| Predator-prey with grass (births and deaths every step) | 4.47 s | 5.07 s | 3.15 s | 0.540 s | 8.3x | 9.4x |
+| Flocking in continuous space | 25.70 s | 32.51 s |  | 0.868 s | 30x | 37x |
+| Virus on a random network | 7.15 s | 2.05 s |  | 0.120 s | 60x | 17x |
+| Stage-structured insect population, individuals | 2.54 s | 1.38 s |  | 0.522 s | 4.9x | 2.6x |
+| Same population as a `CohortTable` (binomial thinning) | 2.54 s | 1.38 s |  | 0.010 s | 249x | 136x |
+| Schelling segregation (moves to random empty cells) | 4.58 s | 4.01 s | 0.29 s | 0.160 s | 29x | 25x |
+| Boltzmann wealth exchange, Gini by a `DataCollector` | 1.58 s | 0.85 s |  | 0.205 s | 7.7x | 4.2x |
+| Sugarscape, constant growback (vision, best sugar in sight) | 5.91 s | 1.42 s | 0.91 s | 0.180 s | 33x | 7.9x |
 
 Where Modelly keeps Mesa's data structure (agents held in cell lists, `modelly-cells` in the
-results) the gap closes to 1.4 to 1.9x on the epidemic and predator-prey models: the layout is
-where the time is, not the interpreter. (Schelling and Sugarscape with cell lists stay 15x and
-6.3x ahead, from the O(1) empty-cell index and cached neighbourhoods.)
+results) the gap closes to 1.4 to 2.3x over Mesa 2.3 on the epidemic and predator-prey models:
+the layout is where the time is, not the interpreter. (Schelling and Sugarscape with cell lists
+stay 16x and 6.5x ahead of Mesa 2.3, from the O(1) empty-cell index and cached neighbourhoods.)
 Every vectorised phase rests on a stated equivalence argument, in
 [docs/vectorised_phases.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/vectorised_phases.md); the full tables with the agreement
 checks are in [benchmarks/playbooks/results/README.md](https://github.com/RemiPelloux/Modelly/blob/main/benchmarks/playbooks/results/README.md).

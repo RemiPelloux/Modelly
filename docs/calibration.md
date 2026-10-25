@@ -87,16 +87,16 @@ if __name__ == "__main__":  # process workers re-import this script on Windows a
 
 ```text
         mean  median     sd  hdi_low  hdi_high
-beta   0.418   0.413  0.055    0.288     0.512
-gamma  0.102   0.099  0.021    0.071     0.143
+beta   0.423   0.420  0.063    0.332     0.553
+gamma  0.098   0.096  0.020    0.067     0.139
 
    generation  tolerance  acceptance      ess  runs
-0           0        inf        1.00  100.000   100
-1           1    234.254        0.50   98.419   200
-2           2    196.962        0.25   97.974   400
-3           3    160.792        0.25   98.569   400
-4           4    120.497        0.20   96.417   500
-5           5     87.196        0.25   98.382   400
+0           0        inf       1.000  100.000   100
+1           1    234.254       0.333   98.564   300
+2           2    194.326       0.250   98.173   400
+3           3    157.520       0.250   90.862   400
+4           4    114.285       0.167   98.561   600
+5           5     83.620       0.250   96.691   400
 ```
 
 The 95 % highest-density intervals contain the true values. Each generation lowers the
