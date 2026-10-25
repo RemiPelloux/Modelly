@@ -3,6 +3,26 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Benchmarks
+
+- Fairer Sugarscape baselines: the Mesa 2.3 forager no longer builds a whole-grid mask with
+  `select_cells` for every move (the cached neighbourhood gives the same runs, bit for bit,
+  4 to 5x faster), and both Mesa versions run the same single-pass search as Modelly's cell-list
+  variant. All variants re-timed in one session, ten rounds on a performance core, the order
+  rotating every round: columns run the steps 4.7 to 41x faster than Mesa 2.3 and 2.6 to 33x
+  faster than Mesa 3.5, cohorts 283x and 132x.
+- A mesa-frames variant (`frames_model.py`) of four playbooks, run in `.venv-frames` with polars on
+  one thread: Modelly columns are 2.9 to 9.8x faster. Mesa 3.5's flocking uses
+  `mesa.space.ContinuousSpace`, 1.6x faster than its experimental space and bit-identical to Mesa
+  2.3. Each result file records the commit, date, load, core, power policy and versions
+  (`benchmarks/playbooks/environment.py`).
+- `benchmarks/ports/`: the two playbooks without a Mesa 2 grid, ported from Mesa 2.3 by the
+  codemod and the steps it reports, bit-identical to the originals and 2.5 to 4.5x faster.
+- The Mesa 3.5 implementations pass the 100-seed agreement study against Mesa 2.3 (all 40
+  statistics equivalent within half a standard deviation).
+
 ## 1.3.2 - 2026-10-25
 
 A correctness release: ABC-SMC importance weights near a bounded prior are now exact. No score
