@@ -148,7 +148,7 @@ have a further \modelly{} variant, \emph{cell lists}, which keeps Mesa's data st
 cell holds the list of its agents) and vectorises only the obvious phases. Where a phase
 searches cells one agent at a time, as Sugarscape's foragers do, the Mesa implementations and
 the cell-list variant use the same single-pass algorithm, so that their comparison is between
-data structures; the column and mesa-frames variants rank every forager's visible cells in one
+data structures; the column and mesa-frames variants find every forager's best visible cell in one
 array pass and keep only the walk to a free cell sequential. Every implementation agrees with
 Mesa~2.3 (\cref{sec:agreement}), and three Mesa~3.5 implementations, which draw the same
 random numbers in the same order, reproduce it run by run: flocking, the network contagion and
@@ -253,7 +253,7 @@ agent lists, give 1.3 to 14 times over Mesa~2.3 and 1.3 to 11 over Mesa~3.5: lar
 Schelling's model, whose residents mostly count their neighbours, small where movement and
 search stay per agent. Construction is where \modelly{} spends more than Mesa~2.3 (it
 allocates the columns and indexes the space; Mesa~3.5's cell spaces cost about as much, 0.31
-to 0.43~s on the three large grids and the network), so the gain including construction is
+to 0.43~s on the three large grids and the network), so the column form's gain including construction is
 4.0 to 32 times, and lower than per step on short runs such as the network contagion (39 times
 per step, 10 in total).
 
