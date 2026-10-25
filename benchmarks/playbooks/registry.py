@@ -13,6 +13,7 @@ PLAYBOOKS = {
         "variants": {
             "mesa": "mesa_model",
             "mesa3": "mesa3_model",
+            "mesa3np": "mesa3np_model",
             "frames": "frames_model",
             "modelly-cells": "modelly_cells",
             "modelly": "modelly_model",
@@ -112,6 +113,7 @@ PLAYBOOKS = {
         "variants": {
             "mesa": "mesa_model",
             "mesa3": "mesa3_model",
+            "mesa3np": "mesa3np_model",
             "frames": "frames_model",
             "modelly-cells": "modelly_cells",
             "modelly": "modelly_model",
@@ -125,6 +127,7 @@ PLAYBOOKS = {
         "variants": {
             "mesa": "mesa_model",
             "mesa3": "mesa3_model",
+            "mesa3np": "mesa3np_model",
             "frames": "frames_model",
             "modelly": "modelly_model",
         },

@@ -10,6 +10,8 @@ because indexing an ``AgentSet`` in Mesa 2.3 copies its keys (O(n) per draw).
 
 from __future__ import annotations
 
+import numpy as np
+
 import modelly
 
 
@@ -29,9 +31,9 @@ class Person(modelly.Agent):
 
 def gini(model):
     """Gini coefficient of the agents' wealth."""
-    x = sorted(agent.wealth for agent in model.people)
-    n = len(x)
-    b = sum(xi * (n - i) for i, xi in enumerate(x)) / (n * sum(x))
+    x = np.sort(np.fromiter((agent.wealth for agent in model.people), dtype=np.int64))
+    n = x.shape[0]
+    b = float((x * np.arange(n, 0, -1)).sum()) / (n * float(x.sum()))
     return 1 + 1 / n - 2 * b
 
 

@@ -27,22 +27,38 @@ from modelly.calibrate import ABCSMC, Prior, Target  # noqa: E402
 from tests.calibrate import shared  # noqa: E402
 from tests.calibrate.models import SIR, PreyPredator, log_counts  # noqa: E402
 
+sys.path.insert(0, str(PAPER.parent / "benchmarks" / "playbooks"))
+from environment import environment  # noqa: E402
+
 DATA_BASE = 5000
 GENERATIONS = 6
 LEVEL = 0.95
 MODELS = ("SIR", "Predator-prey")
+# Three true points per model across the priors; the first is the test suite's.
+TRUTHS = {
+    "SIR": (
+        shared.SIR_TRUTH,
+        {"beta": 0.25, "gamma": 0.05},
+        {"beta": 0.6, "gamma": 0.2},
+    ),
+    "Predator-prey": (
+        shared.PREY_TRUTH,
+        {"growth": 0.35, "predation": 0.006},
+        {"growth": 0.7, "predation": 0.02},
+    ),
+}
 
 
-def calibration(model: str, replicate: int) -> ABCSMC:
+def calibration(model: str, point: int, replicate: int) -> ABCSMC:
     """The test suite's calibration of ``model``, fitted to replicate's own dataset."""
     seed = DATA_BASE + replicate
     if model == "SIR":
-        observed = shared.synthetic(SIR, shared.SIR_TRUTH, ["infected"], seed=seed)
+        observed = shared.synthetic(SIR, TRUTHS[model][point], ["infected"], seed=seed)
         targets = [Target("infected", observed["infected"])]
         return ABCSMC(SIR, shared.sir_priors(), targets, steps=shared.STEPS,
                       seed=replicate, particles=30)  # fmt: skip
     observed = shared.synthetic(
-        PreyPredator, shared.PREY_TRUTH, ["prey", "predators"], seed=seed
+        PreyPredator, TRUTHS[model][point], ["prey", "predators"], seed=seed
     )
     targets = [Target(n, np.log1p(v), summary=log_counts) for n, v in observed.items()]
     priors = {  # as tests/calibrate/shared.py's prey_smc
@@ -53,26 +69,38 @@ def calibration(model: str, replicate: int) -> ABCSMC:
                   seed=replicate, particles=40)  # fmt: skip
 
 
-def one(task: tuple[str, int]) -> dict:
+def one(task: tuple[str, int, int]) -> dict:
     """One replicate's posterior summary, as plain numbers."""
-    model, replicate = task
-    summary = calibration(model, replicate).run(generations=GENERATIONS).summary()
+    model, point, replicate = task
+    summary = (
+        calibration(model, point, replicate).run(generations=GENERATIONS).summary()
+    )
     rows = summary[["mean", "median", "hdi_low", "hdi_high"]].to_dict("index")
-    return {"model": model, "replicate": replicate, "posterior": rows}
+    return {"model": model, "point": point, "replicate": replicate, "posterior": rows}
 
 
-def truth(model: str) -> dict[str, float]:
-    """The true parameters of ``model``."""
-    return shared.SIR_TRUTH if model == "SIR" else shared.PREY_TRUTH
+def truth(model: str, point: int = 0) -> dict[str, float]:
+    """The true parameters of ``model`` at ``point``."""
+    return TRUTHS[model][point]
 
 
 def run(replicates: int, jobs: int) -> None:
     """Every replicate of both models, written to data/recovery.json."""
-    tasks = [(m, r) for m in MODELS for r in range(1, replicates + 1)]
+    tasks = [
+        (m, k, r)
+        for m in MODELS
+        for k in range(len(TRUTHS[m]))
+        for r in range(1, replicates + 1)
+    ]
     with ProcessPoolExecutor(max_workers=jobs) as pool:
         results = list(pool.map(one, tasks))
     out = PAPER / "data" / "recovery.json"
-    out.write_text(json.dumps({"replicates": replicates, "runs": results}, indent=1))
+    payload = {
+        "environment": environment(PAPER.parent, {"modelly": sys.executable}, None),
+        "replicates": replicates,
+        "runs": results,
+    }
+    out.write_text(json.dumps(payload, indent=1))
     print(f"{len(results)} calibrations written to {out}")
 
 
@@ -84,10 +112,14 @@ def clopper_pearson(hits: int, n: int) -> tuple[float, float]:
     return float(low), float(high)
 
 
-def summarise(runs: list[dict], model: str, name: str) -> dict:
+def summarise(runs: list[dict], model: str, point: int, name: str) -> dict:
     """Errors of the posterior mean and median, and HDI coverage, for one parameter."""
-    value = truth(model)[name]
-    rows = [r["posterior"][name] for r in runs if r["model"] == model]
+    value = truth(model, point)[name]
+    rows = [
+        r["posterior"][name]
+        for r in runs
+        if r["model"] == model and r.get("point", 0) == point
+    ]
     mean_err = [(row["mean"] - value) / value for row in rows]
     median_err = [(row["median"] - value) / value for row in rows]
     hits = sum(row["hdi_low"] <= value <= row["hdi_high"] for row in rows)
@@ -131,9 +163,10 @@ def analyse() -> None:
     """data/recovery.json to tables/recovery.tex and a summary on stdout."""
     payload = json.loads((PAPER / "data" / "recovery.json").read_text())
     rows = [
-        summarise(payload["runs"], model, name)
+        summarise(payload["runs"], model, point, name)
         for model in MODELS
-        for name in truth(model)
+        for point in range(len(TRUTHS[model]))
+        for name in truth(model, point)
     ]
     (PAPER / "tables" / "recovery.tex").write_text(table(rows), encoding="utf-8")
     for row in rows:

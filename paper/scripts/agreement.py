@@ -30,6 +30,7 @@ sys.path.insert(0, str(HARNESS))
 
 import compare  # noqa: E402
 from agreement_tables import forest, full_table, table  # noqa: E402
+from environment import environment  # noqa: E402
 from registry import PLAYBOOKS  # noqa: E402
 
 REFERENCE = "mesa"
@@ -69,7 +70,9 @@ def run(seeds: int, jobs: int, size: str, tag: str, only: tuple[list, list]) -> 
         for name, variant, seed, row in pool.map(one, tasks):
             raw.setdefault(name, {}).setdefault(variant, {})[str(seed)] = row
     DATA_DIR.mkdir(exist_ok=True)
-    payload = {"seeds": seeds, "seed_base": SEED_BASE, "size": size, "runs": raw}
+    env = environment(PAPER.parent, compare.PYTHONS, None)
+    payload = {"environment": env, "seeds": seeds, "seed_base": SEED_BASE, "size": size}
+    payload["runs"] = raw
     out = DATA_DIR / f"agreement_{tag}.json"
     out.write_text(json.dumps(payload, indent=1), encoding="utf-8")
     print(f"{len(tasks)} runs written to {out}")
