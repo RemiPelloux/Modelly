@@ -1,0 +1,52 @@
+\section{When to use \modelly{}}
+\label{sec:usecases}
+
+\modelly{} is most useful when a study needs many runs, large populations, or results that
+others must be able to check. \Cref{tab:usecases} summarises the situations where it helps
+most, and the part of the framework that does the work.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Typical research situations and what \modelly{} brings to each.}
+  \label{tab:usecases}
+  \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.30\linewidth}X}
+    \toprule
+    Situation & What helps \\
+    \midrule
+    Large populations whose phases act on all agents alike (movement, infection, ageing,
+    mortality) & Columns turn those phases into array operations: 2.6 to 33 times faster than
+    Mesa~3.5 and 4.7 to 41 times faster than
+    Mesa 2.3 on the playbooks (\cref{sec:playbooks}). \\ \addlinespace
+    Populations with many identical individuals (insects, cohorts of patients, age classes)
+    & Cohort tables with binomial draws keep the individual model's law
+    (\cref{eq:cohorts}) at a fraction of the cost: 132 times faster than Mesa~3.5 on the insect model. \\ \addlinespace
+    Parameter sweeps, replicates and cluster runs & Experiments with resumable stores and
+    executors from a laptop to SLURM, with results independent of the executor. \\ \addlinespace
+    Fitting a model to data; knowing which parameters matter & ABC-SMC, simulated moments,
+    Morris, Sobol and PAWN on the same seeded engine, checked on known answers
+    (\cref{tab:recovery}). \\ \addlinespace
+    A paper whose results a reviewer must be able to rerun & Run manifests, \cmd{modelly verify}, byte-identical bundles for archiving, ODD skeletons, golden digests checked on
+    three operating systems. \\ \addlinespace
+    An existing Mesa model that has become too slow & Port with the codemod (bit-identical results, from Mesa's
+    speed to 4.5 times faster), then move the hot phases to columns one at a time. \\ \addlinespace
+    Long or expensive runs & Checkpoints and time travel: resume, rewind, branch, and find
+    where two runs diverge. \\ \addlinespace
+    Generative agents driven by language models & Cached, budgeted calls that replay offline
+    and identically, so such a study can be reproduced. \\ \addlinespace
+    Real geography, road networks, contact layers & Geographic space, rasters, road routing,
+    synthetic populations, temporal and multilayer networks. \\ \addlinespace
+    Teaching & Twelve validated reference models, domain tutorials, a course outline, Studio
+    for live demonstration. \\ \addlinespace
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Some examples by field: an epidemiologist calibrating an age-structured transmission model to
+case counts, then ranking intervention parameters by Sobol index; an ecologist running a
+stage-structured insect model with cohorts over a factorial of release strategies; an
+economist studying wealth inequality across a Latin hypercube of exchange rules on a cluster;
+a social scientist comparing opinion dynamics on household, school and work networks; a
+transport researcher routing commuters on a city's road graph. In each case the model is
+ordinary Python, and the study's runs, fit and sensitivity analysis share one seed and one
+record.

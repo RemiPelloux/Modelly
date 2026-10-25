@@ -1,0 +1,175 @@
+\section{From a model to a published study}
+\label{sec:workflow}
+
+\modelly{} ships the steps that usually separate a working model from a defensible study. They
+share the framework's seeding: each run's seed is derived deterministically from the study's
+seed and the run's position in the design, so results never depend on the executor, the number
+of workers or the order in which runs finish.
+
+\subsection{Experiments}
+
+An \code{Experiment} combines a model, a \code{ScenarioSpace} (ranges, log and integer ranges,
+choices, fixed values), a design (full factorial, Latin hypercube \citep{mckay1979comparison},
+scrambled Sobol \citep{sobol1967distribution, owen1998scrambling, matousek1998l2,
+roy2023quasi} or Halton
+\citep{halton1960efficiency}
+sequences, or a custom list), a number
+of replicates and the outputs to record (\cref{lst:experiment}).
+
+\begin{lstlisting}[float=tp,caption={A Latin-hypercube sweep over two parameters, three replicates per point, run on four
+processes; results are queried with SQL.},label={lst:experiment}]
+from modelly.examples import BoltzmannWealth
+from modelly.experiments import Experiment, ScenarioSpace, designs
+
+experiment = Experiment(
+    model=BoltzmannWealth,
+    space=ScenarioSpace(n=(50, 200), width=[10, 20], height=10),
+    design=designs.latin_hypercube(8),
+    replicates=3, steps=20, outputs=["gini"],
+    store="runs/boltzmann", seed=42,
+)
+if __name__ == "__main__":   # process workers re-import the script
+    experiment.run(executor="processes", max_parallel=4)
+    sql = "SELECT width, avg(gini) FROM runs GROUP BY width"
+    print(experiment.results().query(sql).df())
+\end{lstlisting}
+
+Results are appended to Parquet files with a DuckDB view; an interrupted sweep resumes without
+repeating finished runs. Executors cover serial runs, threads, processes, Dask, Ray and SLURM
+or PBS job arrays, and are pluggable. The test suite checks that serial, thread and process
+runs of the same experiment give identical results, and Dask runs when Dask is installed; the
+Ray and cluster executors are tested against stand-ins for their schedulers.
+
+\subsection{Calibration and sensitivity analysis}
+
+\code{modelly.calibrate} fits scenario parameters to observed data with ABC rejection
+\citep{beaumont2002approximate}, ABC-SMC, the simulated method of moments
+\citep{mcfadden1989method} and a Gaussian-process Bayesian optimiser \citep{jones1998efficient}, through
+the experiment executors; a stopped calibration resumes to the same posterior.
+\code{modelly.sensitivity} computes one-at-a-time effects, Morris elementary effects
+\citep{morris1991factorial}, Sobol indices and PAWN \citep{pianosi2018distribution}, on a
+model, a function or a Gaussian-process emulator \citep{oakley2004probabilistic}. Both are checked against known answers
+(\cref{sec:validation}); \cref{lst:abc} calibrates an epidemic model.
+
+\begin{lstlisting}[float=tp,caption={ABC-SMC calibration of two rates of an epidemic model to an observed series
+(a sketch: \code{epidemic} is the model module of \code{docs/calibration.md}, which gives the full script).},
+label={lst:abc}]
+from modelly.calibrate import ABCSMC, Prior, Target
+from epidemic import Epidemic, cases   # the model and the observed series
+
+calibration = ABCSMC(
+    model=Epidemic,
+    priors={"beta": Prior.uniform(0.05, 1.0), "gamma": Prior.uniform(0.02, 0.5)},
+    targets=[Target("infected", observed=cases)],
+    steps=40, particles=100, seed=2027,
+)
+if __name__ == "__main__":
+    posterior = calibration.run(generations=6, executor="processes")
+    print(posterior.summary())   # means, medians, highest-density intervals
+\end{lstlisting}
+
+\paragraph{ABC-SMC.} Let $\rho(\theta) = \sum_k w_k\, d_k\bigl(\bar y_k(\theta),
+y_k^{\mathrm{obs}}\bigr)$ be the weighted distance between the simulated summaries (averaged
+over replicates) and the data, with the root-mean-square error as the default $d_k$.
+Generation~0 draws $N$ particles from the prior $\pi$ with weights $1/N$. Generation $t \ge 1$
+sets its tolerance to a quantile of the previous generation's distances,
+\begin{equation}
+  \varepsilon_t = \max\bigl(Q_\alpha\{\rho_i^{(t-1)}\},\ \varepsilon_{\min}\bigr),
+  \qquad \alpha = 0.5 \text{ by default},
+\end{equation}
+and proposes $\theta^\ast = \theta_j^{(t-1)} + \eta$, with the ancestor $j$ drawn with
+probability $w_j^{(t-1)}$ and $\eta \sim \mathcal{N}(0, \Sigma_t)$, $\Sigma_t =
+2\,\mathrm{Cov}_w(\theta^{(t-1)})$, twice the weighted (biased) covariance
+\citep{beaumont2009adaptive}; \modelly{} adds $10^{-9}\max(\bar s^2, 1)$ to its diagonal,
+$\bar s^2$ being the mean variance, to keep it invertible. A proposal outside the prior's
+support is discarded and both the ancestor and the move are drawn again, so the
+proposal density is the mixture truncated to the support; \citet{sisson2018handbook} review
+the method. Choice parameters keep their value
+with probability 0.7 and otherwise jump uniformly to another value. A particle is accepted
+when $\rho(\theta^\ast) \le \varepsilon_t$, and the accepted particles are weighted by
+\begin{equation}
+  w_i^{(t)} \propto \frac{\pi(\theta_i^{(t)})}
+  {\sum_j w_j^{(t-1)}\, K_t\bigl(\theta_i^{(t)} \mid \theta_j^{(t-1)}\bigr)}
+  \label{eq:abc-weights}
+\end{equation}
+\citep{toni2009approximate}, where $K_t$ is the kernel's density; the truncation's normalising
+constant is the same for every particle and cancels when the weights are normalised. The run
+stops after the requested generations, at $\varepsilon_{\min}$, when the acceptance rate falls
+below 1\%, or before exceeding a budget of model runs. The posterior is summarised by weighted
+means and medians and by the shortest interval holding 95\% of the weight, and its effective
+sample size is Kish's $1/\sum_i w_i^2$ \citep{kish1965survey}. Proposals are made in batches whose random streams are
+keyed by generation and batch, which makes the posterior independent of the executor and of a
+resume.
+
+\paragraph{Sobol indices.} For a model output $Y = f(X_1, \dots, X_d)$ with independent
+inputs, the first-order and total indices are \citep{sobol2001global, homma1996importance}
+\begin{equation}
+  S_i = \frac{\mathrm{Var}\bigl(\mathbb{E}[Y \mid X_i]\bigr)}{\mathrm{Var}(Y)},
+  \qquad
+  S_{Ti} = \frac{\mathbb{E}\bigl[\mathrm{Var}(Y \mid X_{\sim i})\bigr]}{\mathrm{Var}(Y)}.
+\end{equation}
+\modelly{} draws $A$ and $B$, two $N \times d$ matrices, from one scrambled Sobol sequence of
+dimension $2d$ \citep{saltelli2002making, saltelli2008global}, forms $A_B^{(i)}$ as $A$ with its $i$-th column taken from $B$, and evaluates
+the model $N(d+2)$ times. With $V$ the variance of the $2N$ values of $f(A)$ and $f(B)$, the
+default estimators are Jansen's \citep{jansen1999analysis, saltelli2010variance}:
+\begin{equation}
+  \hat S_i = \frac{V - \frac{1}{2N}\sum_{j=1}^{N}\bigl(f(B)_j - f(A_B^{(i)})_j\bigr)^2}{V},
+  \qquad
+  \hat S_{Ti} = \frac{\frac{1}{2N}\sum_{j=1}^{N}\bigl(f(A)_j - f(A_B^{(i)})_j\bigr)^2}{V},
+  \label{eq:jansen}
+\end{equation}
+with Saltelli's estimators as an option, and 95\% intervals from 200 bootstrap resamples of the
+rows. For a stochastic model, $f$ is the mean of the chosen statistic over a number of
+replicates per design point (one by default); the replicates' noise then adds to the variance
+the indices apportion, which inflates $S_{Ti}$, so a study of a noisy model should average
+replicates or account for the noise explicitly \citep{hart2017efficient}, as reviews of
+sensitivity analysis for agent-based models advise \citep{tenbroeke2016which}.
+
+\subsection{Provenance and publication}
+
+\cmd{modelly run} writes a run's outputs with a manifest: code hash, Modelly and Python
+versions, compiled or pure build, platform, scenario, seeds and hashes of inputs and outputs.
+\cmd{modelly verify} reruns a manifest and names the first output that differs;
+\cmd{modelly bundle} packs code, dependency lock, seeds and outputs into a byte-identical
+archive with Zenodo metadata; \cmd{modelly odd} writes the skeleton of an ODD description
+\citep{grimm2020odd} from the model's classes, columns, scenario and schedule.
+
+\subsection{Tools for building and checking models}
+
+These tools are part of the release and tested, but not evaluated in this paper.
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item \textbf{A linter} (\cmd{modelly lint}) finds reproducibility bugs (random draws outside
+  the model's generators, iteration over sets, wall-clock time, unpicklable callbacks sent to
+  worker processes, network calls that bypass the cached language-model client) and quadratic
+  patterns (agents scanning the whole population), explains each rule with a bad and a fixed
+  example, and fixes several automatically.
+  \item \textbf{A profiler} (\cmd{modelly profile}) reports where each step's time goes by
+  agent class and method, and compares the cost per agent across population sizes to detect
+  scans that grow with $N$.
+  \item \textbf{Time travel} rewinds a run to any step, replays it with changed parameters or
+  branches it into several futures, and finds the first step and agent where two runs diverge.
+  \item \textbf{Studio} (\cmd{modelly studio}) runs a model in the browser with a parameter
+  panel generated from its scenario, a timeline scrubber, and the profiler and linter beside
+  the plots.
+  \item \textbf{Language-model agents} (\code{modelly.llm}) decide through a provider-agnostic
+  client whose replies are cached under a key of the call and the run's seed: a cached study
+  replays offline, identically, and travels with its bundle.
+\end{itemize}
+
+\subsection{A zoo of validated models}
+\label{sec:zoo}
+
+Twelve reference models, each with a validation test against an analytical or well-known
+result, serve as starting points and regression tests: an age-structured SEIR model checked
+against the final-size relation \citep{kermack1927contribution}, Nagel--Schreckenberg traffic
+\citep{nagel1992cellular} against its flow--density relation, Bass diffusion
+\citep{bass1969new} against the Bass equation, the Deffuant \citep{deffuant2000mixing} and
+Hegselmann--Krause \citep{hegselmann2002opinion} bounded-confidence models, Axelrod's culture
+model \citep{axelrod1997dissemination}, a kinetic wealth-exchange model
+\citep{dragulescu2000statistical} and the Bouchaud--M{\'e}zard model
+\citep{bouchaud2000wealth} against their stationary distributions, a zero-intelligence
+continuous double auction \citep{farmer2005predictive}, a Drossel--Schwabl forest fire
+\citep{drossel1992self} around the percolation threshold \citep{newman2000efficient}, an
+energy-budget population \citep{sibly2013representing} around its carrying capacity, and
+Ross--Macdonald vector-borne transmission \citep{smith2012ross} ordered by $R_0$.

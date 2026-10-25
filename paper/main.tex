@@ -1,0 +1,97 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[final]{microtype}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[font=small,labelfont=bf,labelsep=period]{caption}
+\usepackage{float}
+\usepackage[section]{placeins}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor={blue!50!black},citecolor={blue!50!black},
+  urlcolor={blue!60!black},pdftitle={Modelly: Fast and Reproducible Agent-Based Modelling in Python, with Calibration and Sensitivity Analysis Built In},
+  pdfauthor={R\'emi Pelloux},pdfkeywords={agent-based modelling, Python, reproducibility,
+  calibration, sensitivity analysis, performance}]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+\urlstyle{same}
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color[HTML]{0072B2},
+  commentstyle=\color[HTML]{6B6B6B},
+  stringstyle=\color[HTML]{009E73},
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=lines,
+  framesep=4pt,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+  aboveskip=6pt,
+  belowskip=4pt,
+}
+\captionsetup[lstlisting]{font=small,labelfont=bf,labelsep=period,singlelinecheck=false}
+\setlength{\textfloatsep}{12pt plus 2pt minus 4pt}
+% Let large tables and figures share a page with text, and top-align float-only pages.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.8}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\makeatother
+
+\newcommand{\modelly}{Modelly}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\cmd}[1]{\mbox{\texttt{#1}}} % a shell command, never broken across lines
+\setlength{\emergencystretch}{1.5em} % long code names wrap instead of overflowing
+
+\title{{\LARGE\bfseries \modelly{}: Fast and Reproducible\\[2pt] Agent-Based Modelling in Python}\\[6pt]
+{\large with Calibration and Sensitivity Analysis Built In}}
+
+\author{Rémi Pelloux\\
+  \small \textit{OpenPro}\\
+  \small \href{mailto:rp@openpro.ai}{rp@openpro.ai}\\
+  \small \url{https://github.com/RemiPelloux/Modelly}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/abstract}
+
+\noindent\textbf{Keywords:} agent-based modelling; Python; reproducibility; approximate Bayesian
+computation; global sensitivity analysis; benchmarking; scientific software
+
+\input{sections/introduction}
+\input{sections/related}
+\input{sections/design}
+\input{sections/workflow}
+\input{sections/performance}
+\input{sections/reproducibility}
+\input{sections/usecases}
+\input{sections/threats}
+\input{sections/availability}
+
+\renewcommand{\bibfont}{\raggedright}
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\clearpage
+\appendix
+\input{sections/appendix}
+
+\end{document}

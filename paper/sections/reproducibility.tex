@@ -1,0 +1,118 @@
+\section{Correctness and reproducibility}
+\label{sec:reproducibility}
+
+\subsection{Same seed, same digest}
+
+A determinism suite runs fourteen bundled examples for ten steps from a fixed seed and digests
+their collected data and final agent state (SHA-256 of a canonical serialisation). The digest
+must be identical between the compiled and the pure-Python builds, between a straight run and
+a run saved and resumed from a checkpoint at the midpoint (twelve of the fourteen examples can
+be checkpointed), and against reference digests stored in the repository. Eight examples are
+compared exactly. Six pass through functions whose last bit legitimately differs between
+platforms' maths libraries (\code{exp}, \code{log}, non-integer powers, \code{arctan2}, BLAS
+reductions) and are digested at ten significant digits; one of these depends on geographic
+libraries and is compared only on the platform that recorded it. Property-based tests check
+invariants of columns, cohorts, cell spaces, checkpoints and experiment designs on random
+inputs.
+
+\Cref{tab:determinism} states where each part of this is exercised. Continuous integration
+runs the suite on Linux, macOS and Windows; there it runs the pure-Python core, and a separate
+job forces the pure-Python path explicitly. The comparison between the compiled and the
+pure-Python core runs on the development machine (Linux, x86-64, CPython 3.15), and the
+published wheels for the other platforms are checked to import and load their compiled
+modules. Running the full suite on every wheel is the obvious next step (\cref{sec:threats}).
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Where the reproducibility checks run, for release 1.3.2.}
+  \label{tab:determinism}
+  \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.43\linewidth}X}
+    \toprule
+    Check & Where it runs \\
+    \midrule
+    Golden digests, straight and resumed (pure-Python core) & CI: Linux (CPython 3.12, 3.13,
+    3.14), macOS and Windows (3.14) \\ \addlinespace
+    Compiled core against pure-Python core, same digests & Development machine: Linux
+    x86-64, CPython 3.15 (the compiled modules' own tests also on free-threaded 3.15t) \\ \addlinespace
+    Compiled wheels & Built for Linux (glibc, musl; x86-64, ARM64), macOS, Windows (x86-64,
+    ARM64); import test of the compiled modules \\ \addlinespace
+    Executor independence (serial, threads, processes) & CI, all three operating systems \\ \addlinespace
+    Calibration resumed from a checkpoint & CI, all three operating systems \\ \addlinespace
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Validation of the scientific methods}
+\label{sec:validation}
+
+\paragraph{Sobol indices on the Ishigami function.} The Ishigami function
+\citep{ishigami1990importance},
+\begin{equation}
+  f(x) = \sin x_1 + a \sin^2 x_2 + b\, x_3^4 \sin x_1, \qquad x_i \sim
+  \mathcal{U}(-\pi, \pi), \quad a = 7,\ b = 0.1,
+\end{equation}
+has known indices. With $V_1 = \tfrac12\bigl(1 + b\pi^4/5\bigr)^2$, $V_2 = a^2/8$ and
+$V_{13} = b^2\pi^8\bigl(\tfrac{1}{18} - \tfrac{1}{50}\bigr)$, the variance is $V = V_1 + V_2 +
+V_{13} = 13.845$, and
+\begin{equation}
+  S = \Bigl(\tfrac{V_1}{V}, \tfrac{V_2}{V}, 0\Bigr) = (0.314, 0.442, 0), \qquad
+  S_T = \Bigl(\tfrac{V_1 + V_{13}}{V}, \tfrac{V_2}{V}, \tfrac{V_{13}}{V}\Bigr)
+  = (0.558, 0.442, 0.244).
+\end{equation}
+With $N = 4{,}096$ base samples ($20{,}480$ evaluations) and the Jansen estimators of
+\cref{eq:jansen}, \modelly{} estimates, from seed 1, $\hat S = (0.313, 0.442, -0.003)$ and $\hat S_T =
+(0.557, 0.442, 0.244)$, and every analytical value lies inside the bootstrap interval of its
+estimate. This is one seed; the bootstrap treats the rows of a scrambled Sobol design as
+independent, which is an approximation.
+
+\paragraph{Parameter recovery and coverage of ABC-SMC.} Synthetic data are generated from a
+stochastic SIR model with $\beta = 0.4$ and $\gamma = 0.1$ and fitted with uniform priors. In
+the documentation's worked example (100 particles, six generations, 2,200 model runs, final
+tolerance 83.6), the posterior means are $\hat\beta = 0.423$ and $\hat\gamma = 0.098$, with 95\%
+highest-density intervals $[0.33, 0.55]$ and $[0.067, 0.139]$. One dataset and one run are an
+anecdote, so we measured coverage: for each of 200 replicates we simulated a fresh dataset
+from the true parameters (its own data seed) and calibrated it with the test suite's settings
+(30 particles for the SIR model, 40 for a stochastic predator-prey model with a log-uniform
+prior on the predation rate, six generations). \Cref{tab:recovery} gives how often the true
+value lies in the posterior's 95\% highest-density interval.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{ABC-SMC over 200 synthetic datasets per model: mean relative error of the posterior
+  mean (signed and absolute), mean absolute error of the posterior median, and how often the
+  true value lies in the 95\% highest-density interval, with its Clopper--Pearson 95\%
+  interval \citep{clopper1934use}. Generated by \code{paper/scripts/recovery.py}.}
+  \label{tab:recovery}
+  \input{tables/recovery}
+\end{table}
+
+Coverage is 96 to 100\% for a nominal 95\% at these true values, so the intervals are not too
+narrow here and, for $\gamma$, conservative, as expected of ABC: a non-zero tolerance widens the posterior. The posterior means
+overestimate every rate, by 2 to 16\%, most the predation rate, whose posterior
+is right-skewed under its log-uniform prior; its median is closer (mean absolute error 15\%).
+The test suite asserts recovery on three fixed seeds per model, with a 25\% criterion on the
+posterior mean and the truth inside the interval; for the skewed predation rate it uses the
+median, a change made with the correction described next.
+
+\paragraph{Importance weights.} A dedicated test checks \cref{eq:abc-weights} directly: from a
+population crowding the lower bound of a uniform prior, 40,000 proposals reweighted by their
+importance weights must be uniform within 8\% in every bin next to the bound. Writing it
+uncovered a bias in release 1.3.1, where a proposal outside the support was moved again from
+the same ancestor, which made the effective proposal density differ from the one in the
+weights; the bin next to the bound was over-weighted by 17\%. Release 1.3.2 redraws the
+ancestor as well, and all the results of this section use it.
+
+\paragraph{Executor independence and resumption.} Posteriors and Sobol indices are identical
+on the serial, thread and process executors, and an ABC-SMC run gives the same posterior with
+the compiled or the pure-Python core. A calibration stopped after a generation, or by its run
+budget, and resumed from its checkpoint reaches the same final posterior as an uninterrupted
+one.
+
+\paragraph{Reference models.} Each of the twelve zoo models (\cref{sec:zoo}) has a test
+against an analytical or well-established result. For the age-structured SEIR and Bass
+diffusion models the tolerance is derived from the statistic's sampling variance; others use
+fixed tolerances (for example 3\% for the energy-budget population around its carrying
+capacity) or a heuristic expectation (the number of opinion clusters in the Deffuant model,
+about $1/(2\varepsilon)$).

@@ -1,0 +1,14 @@
+\begin{tabularx}{\linewidth}{@{}l r >{\raggedright\arraybackslash}p{0.24\linewidth} >{\raggedright\arraybackslash}X@{}}
+\toprule
+Workload & Steps & Small / large size & Parameters \\
+\midrule
+Grid epidemic (SIR) & 60 & \code{n}~$=$~2{,}000, \code{side}~$=$~60 / \code{n}~$=$~20{,}000, \code{side}~$=$~180 & \code{beta}~$=$~0.25, \code{recovery}~$=$~10, \code{initially\_infected}~$=$~20 \\ \addlinespace
+Predator-prey & 200 & \code{side}~$=$~80, \code{sheep}~$=$~240, \code{wolves}~$=$~16 / \code{side}~$=$~200, \code{sheep}~$=$~1{,}500, \code{wolves}~$=$~100 & \code{sheep\_reproduce}~$=$~0.04, \code{wolf\_reproduce}~$=$~0.03, \code{sheep\_gain}~$=$~4, \code{wolf\_gain}~$=$~40, \code{regrowth}~$=$~20 \\ \addlinespace
+Flocking (boids) & 50 & \code{n}~$=$~500, \code{side}~$=$~100 / \code{n}~$=$~4{,}000, \code{side}~$=$~300 & \code{vision}~$=$~10, \code{speed}~$=$~1, \code{separation}~$=$~2, \code{cohere}~$=$~0.03, \code{separate}~$=$~0.015, \code{match}~$=$~0.05 \\ \addlinespace
+Network contagion & 100 & \code{n}~$=$~2{,}000 / \code{n}~$=$~30{,}000 & \code{avg\_degree}~$=$~6, \code{beta}~$=$~0.15, \code{gamma}~$=$~0.1, \code{resistance}~$=$~0.5, \code{outbreak}~$=$~0.01 \\ \addlinespace
+Insect population & 120 & \code{initial\_adults}~$=$~100, \code{capacity}~$=$~5{,}000 / \code{initial\_adults}~$=$~500, \code{capacity}~$=$~50{,}000 & \code{egg\_days}~$=$~3, \code{larva\_days}~$=$~8, \code{pupa\_days}~$=$~10, \code{maturity\_days}~$=$~5, \code{survival}~$=$~\{egg 0.9, larva 0.95, pupa 0.97, adult 0.95\}, \code{lay\_prob}~$=$~0.5, \code{clutch}~$=$~8, \code{sterile\_ratio}~$=$~1 \\ \addlinespace
+Schelling segregation & 40 & \code{side}~$=$~40 / \code{side}~$=$~200 & \code{density}~$=$~0.8, \code{minority}~$=$~0.3, \code{homophily}~$=$~3 \\ \addlinespace
+Boltzmann wealth & 100 & \code{n}~$=$~500 / \code{n}~$=$~10{,}000 & \code{initial\_wealth}~$=$~1 \\ \addlinespace
+Sugarscape & 100 & \code{side}~$=$~50, \code{n}~$=$~400 / \code{side}~$=$~100, \code{n}~$=$~1{,}600 & \code{max\_sugar}~$=$~4, \code{growback}~$=$~1, \code{peaks}~$=$~0.3--0.7; 0.7--0.3, \code{spread}~$=$~0.2, \code{vision}~$=$~1--6, \code{metabolism}~$=$~1--4, \code{initial\_sugar}~$=$~5--25 \\ \addlinespace
+\bottomrule
+\end{tabularx}

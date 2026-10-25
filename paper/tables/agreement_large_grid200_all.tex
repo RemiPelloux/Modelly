@@ -1,0 +1,24 @@
+\begin{longtable}{lllrrrrrr}
+\caption{Every comparison of the agreement study at the small size (200 seeds): standardised difference $d$ with its paired 95\% interval, correlation $r$ between the implementations' runs on the same seed, and the paired $t$, Kolmogorov--Smirnov and paired TOST $p$-values, uncorrected.}\label{tab:agreement-all}\\
+\toprule
+Workload & Modelly variant & Statistic & $d$ & 95\% interval & $r$ & $p_t$ & $p_{\mathrm{KS}}$ & $p_{\mathrm{TOST}}$ \\
+\midrule
+\endfirsthead
+\toprule
+Workload & Modelly variant & Statistic & $d$ & 95\% interval & $r$ & $p_t$ & $p_{\mathrm{KS}}$ & $p_{\mathrm{TOST}}$ \\
+\midrule
+\endhead
+\bottomrule\endfoot
+Grid epidemic & cell lists & \code{final\_S} & $+0.13$ & [$-0.07$, $+0.33$] & $-0.02$ & 0.21 & 0.18 & $<$0.001 \\
+Grid epidemic & cell lists & \code{final\_I} & $-0.04$ & [$-0.24$, $+0.15$] & $+0.00$ & 0.66 & 0.39 & $<$0.001 \\
+Grid epidemic & cell lists & \code{final\_R} & $-0.15$ & [$-0.35$, $+0.05$] & $-0.02$ & 0.15 & 0.11 & $<$0.001 \\
+Grid epidemic & cell lists & \code{peak\_I} & $-0.09$ & [$-0.29$, $+0.11$] & $-0.06$ & 0.39 & 0.47 & $<$0.001 \\
+Grid epidemic & cell lists & \code{peak\_step} & $+0.08$ & [$-0.13$, $+0.28$] & $-0.07$ & 0.46 & 0.63 & $<$0.001 \\
+Grid epidemic & cell lists & \code{mean\_I} & $-0.14$ & [$-0.34$, $+0.06$] & $-0.02$ & 0.17 & 0.18 & $<$0.001 \\
+Grid epidemic & columns & \code{final\_S} & $+0.04$ & [$-0.17$, $+0.25$] & $-0.14$ & 0.70 & 0.47 & $<$0.001 \\
+Grid epidemic & columns & \code{final\_I} & $+0.06$ & [$-0.15$, $+0.26$] & $-0.07$ & 0.58 & 0.96 & $<$0.001 \\
+Grid epidemic & columns & \code{final\_R} & $-0.07$ & [$-0.28$, $+0.14$] & $-0.15$ & 0.50 & 0.39 & $<$0.001 \\
+Grid epidemic & columns & \code{peak\_I} & $-0.01$ & [$-0.23$, $+0.20$] & $-0.14$ & 0.89 & 0.71 & $<$0.001 \\
+Grid epidemic & columns & \code{peak\_step} & $+0.10$ & [$-0.10$, $+0.30$] & $-0.06$ & 0.34 & 0.14 & $<$0.001 \\
+Grid epidemic & columns & \code{mean\_I} & $-0.05$ & [$-0.27$, $+0.16$] & $-0.15$ & 0.61 & 0.39 & $<$0.001 \\
+\end{longtable}

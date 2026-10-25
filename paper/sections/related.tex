@@ -1,0 +1,84 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{General-purpose ABM platforms.} NetLogo \citep{wilensky1999netlogo} is widely used in
+teaching, with its own language and an integrated interface; it excels at exploratory models,
+and a Python analysis reaches it through a bridge such as PyNetLogo
+\citep{jaxarozen2018pynetlogo}; GAMA \citep{taillandier2019building} specialises in spatial
+models. Repast Simphony \citep{north2013repast} and MASON
+\citep{luke2005mason} are mature Java platforms built for performance and large simulations,
+and Repast4Py \citep{collier2020repast4py} distributes a single run over MPI processes from
+Python. Agents.jl \citep{datseris2024agents} brings a performant, concise framework to Julia,
+and FLAME GPU \citep{richmond2023flamegpu} runs agent models on GPUs. Reviews of the field
+\citep{railsback2006agent, abar2017agent} have long noted the trade-off between ease of use and speed that
+these tools resolve in different ways.
+
+\paragraph{Python.} Mesa \citep{masad2015mesa, kazil2020mesa, terhoeven2025mesa3} provides the agent, model,
+space and data-collection abstractions that most Python ABMs use, and a browser
+visualisation. AgentPy \citep{foramitti2021agentpy} combines a similar model with experiment
+and Sobol tooling built on SALib \citep{herman2017salib}, though it is no longer actively
+developed, and mesa-frames \citep{mesaframes}
+represents agent sets as data frames to vectorise Mesa models. \modelly{} implements a
+programming model compatible with Mesa's: its codemod (\cmd{python -m modelly.migrate})
+performs the mechanical rewrites of a Mesa model and reports what needs a decision
+(schedulers, legacy grids, batch runs), and a port that changes only the framework API
+produces bit-identical results (\cref{sec:portability}). Unlike a data-frame representation, \modelly{}'s columns keep
+the per-agent object: each agent reads and writes its row as an attribute, so a model can be
+vectorised one phase at a time (\cref{sec:storage}).
+
+\paragraph{Calibration, sensitivity analysis and model exploration.} The methods \modelly{}
+implements are standard: approximate Bayesian computation \citep{beaumont2002approximate}, with sequential Monte
+Carlo \citep{sisson2007sequential, toni2009approximate, beaumont2009adaptive}, already applied to
+agent-based models \citep{vandervaart2015calibration, platt2020comparison}, elementary effects
+\citep{morris1991factorial}, variance-based indices \citep{sobol2001global, saltelli2010variance,
+jansen1999analysis} and the PAWN density-based index \citep{pianosi2015simple,
+pianosi2018distribution}. Libraries implement them for generic simulators
+\citep{herman2017salib, iwanaga2022salib, klinger2018pyabc, schalte2022pyabc}, and workflow
+tools connect them to ABM platforms: the EMA Workbench \citep{kwakkel2017ema}, OpenMOLE
+\citep{reuillon2013openmole} and nlrx for NetLogo \citep{salecker2019nlrx}; reviews and tutorials give
+guidance on which to use \citep{thiele2014facilitating, tenbroeke2016which, hartig2011statistical,
+lee2015complexities}. \modelly{}'s contribution here is integration rather than new methods:
+the samplers share the simulation's seeding and executors, so a calibration or a Sobol analysis
+of a model is reproducible, resumable and parallel without extra code.
+
+\paragraph{Documentation and reproducibility.} The ODD protocol \citep{grimm2006odd,
+grimm2010odd, grimm2020odd} and its extension to human decisions, ODD+D
+\citep{muller2013describing}, are the standard description of an ABM in a publication, TRACE
+\citep{grimm2014towards} documents its testing and analysis, and pattern-oriented modelling
+\citep{grimm2005pattern} guides its validation. Archiving model code remains uncommon
+\citep{janssen2017practice}, and replicating a published model is a study in itself
+\citep{axtell1996aligning, wilensky2007making}. \modelly{} generates an ODD skeleton from the
+model's code and records each run in a manifest that a reviewer can rerun and verify.
+
+\Cref{tab:features} compares the built-in capabilities of the Python frameworks and of three
+widely used platforms in other languages.
+
+\begin{table}[htbp]
+  \centering
+  \footnotesize
+  \caption{Capabilities as documented by each project in October 2026 (Mesa 3.5.1,
+  mesa-frames 0.1.0a0 (an alpha release), AgentPy 0.1.5, NetLogo 7, Repast4Py 1.3, Agents.jl 7.1). \checkmark{}: built in;
+  ext.: through a companion tool that the project or the tool documents for it (EMA Workbench for
+  Mesa, nlrx for NetLogo, EMEWS \citep{ozik2016desktop} for Repast4Py); --: not documented. NetLogo's checkpoints are
+  \code{export-world} and \code{import-world}. Licences from the projects' licence files.}
+  \label{tab:features}
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{lccccccc}
+    \toprule
+    & \modelly{} & Mesa 3 & mesa-frames & AgentPy & NetLogo & Repast4Py & Agents.jl \\
+    \midrule
+    Language & Python & Python & Python & Python & NetLogo & Python & Julia \\
+    Licence & Apache-2.0 & Apache-2.0 & Apache-2.0 & BSD-3 & GPL-2.0 & BSD-3 & MIT \\
+    Per-agent objects & \checkmark & \checkmark & -- & \checkmark & \checkmark & \checkmark & \checkmark \\
+    Array or table agent state & \checkmark & -- & \checkmark & -- & -- & -- & -- \\
+    Counted cohorts & \checkmark & -- & -- & -- & -- & -- & -- \\
+    One run across processes & -- & -- & -- & -- & -- & \checkmark & -- \\
+    Parameter sweeps & \checkmark & \checkmark & -- & \checkmark & \checkmark & ext. & \checkmark \\
+    Global sensitivity analysis & \checkmark & ext. & -- & \checkmark & ext. & ext. & -- \\
+    Bayesian calibration & \checkmark & -- & -- & -- & ext. & ext. & -- \\
+    Checkpoint and resume & \checkmark & -- & -- & -- & \checkmark & \checkmark & \checkmark \\
+    Run manifests and bundles & \checkmark & -- & -- & -- & -- & -- & -- \\
+    Interactive visualisation & \checkmark & \checkmark & -- & ext. & \checkmark & -- & \checkmark \\
+    \bottomrule
+  \end{tabular}
+\end{table}

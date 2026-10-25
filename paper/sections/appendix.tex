@@ -1,0 +1,105 @@
+\section{Reproducing the measurements}
+\label{app:reproduce}
+
+Every measured table and figure of this paper is generated from data and scripts in the
+repository.
+The raw output of the agreement study is in the paper's \code{data/} folder, and the playbook
+timings are in \code{benchmarks/playbooks/results/}.
+
+\begin{lstlisting}[language=bash,keywordstyle=\color{black}]
+git clone https://github.com/RemiPelloux/Modelly && cd Modelly
+python3.15 -m venv .venv && .venv/bin/pip install -e ".[dev]"   # CPython 3.15
+PINS="numpy==2.5.4 pandas==3.0.6 networkx==3.7"     # the versions of the measurements
+.venv/bin/pip install "mesa==3.5.1" $PINS scipy==1.18.1  # Mesa 3.5 runs next to Modelly
+python3.15 -m venv .venv-mesa2 && .venv-mesa2/bin/pip install "mesa==2.3.2" $PINS
+python3.15 -m venv .venv-frames && .venv-frames/bin/pip install beartype $PINS \
+    "mesa-frames @ git+https://github.com/mesa/mesa-frames@ef92326"
+
+# the eight playbooks (Mesa 2.3, Mesa 3.5, Modelly), then their table and figure
+.venv/bin/python benchmarks/playbooks/compare.py --core 2 --rounds 10  # a P-core
+.venv/bin/python paper/scripts/make_figures.py
+# the agreement study at the small size: 2,100 runs, then its tables and figure
+.venv/bin/python paper/scripts/agreement.py run --size small --seeds 100 --jobs 8
+.venv/bin/python paper/scripts/agreement.py analyse --size small
+# the same at the timed size, 50 seeds
+.venv/bin/python paper/scripts/agreement.py run --size large --seeds 50 --jobs 8
+.venv/bin/python paper/scripts/agreement.py analyse --size large
+# the grid epidemic at the timed size over 200 seeds, and Mesa 3.5 against Mesa 2.3
+.venv/bin/python paper/scripts/agreement.py run --size large --seeds 200 \
+    --playbooks grid_epidemic --tag large_grid200
+.venv/bin/python paper/scripts/agreement.py run --variants mesa3 frames --tag small_baselines
+.venv/bin/python paper/scripts/agreement.py run --seeds 300 --playbooks schelling \
+    --variants mesa3 frames modelly modelly-cells --tag schelling300
+.venv/bin/python paper/scripts/agreement.py analyse --tag large_grid200
+.venv/bin/python paper/scripts/agreement.py analyse --tag small_baselines
+.venv/bin/python paper/scripts/agreement.py analyse --tag schelling300
+# the two public same-code ports against Mesa 2.3
+.venv/bin/python paper/scripts/ports.py --rounds 10 --core 2
+# the core operations against the last release
+.venv/bin/python -m modelly.dev perf
+# ABC-SMC coverage over 200 datasets per model
+.venv/bin/python paper/scripts/recovery.py run --replicates 200 --jobs 8
+.venv/bin/python paper/scripts/recovery.py analyse
+# determinism, calibration and sensitivity checks
+.venv/bin/python -m pytest tests/determinism tests/calibrate tests/sensitivity
+\end{lstlisting}
+
+The playbook runner starts each run in a fresh interpreter, pins it to one core with
+\code{taskset}, alternates the implementations over rounds, checks determinism, and writes JSON
+results and a Markdown report to \code{benchmarks/playbooks/results/}. The methods, and the
+rules a fair comparison must follow, are described in \code{docs/performance.md}. The medfly
+notebook of \cref{sec:portability} is a private research model and is not distributed; its
+harness and the codemod that produced the port are described in the same document.
+
+\section{The workloads}
+\label{app:workloads}
+
+\begin{table}[H]
+  \centering
+  \footnotesize
+  \caption{The eight playbooks: steps per run, the size parameters at the small size (agreement
+  study) and the large size (timings), and the model parameters shared by every implementation.
+  Generated from \code{benchmarks/playbooks/registry.py} by \code{paper/scripts/make\_figures.py}.}
+  \label{tab:workloads}
+  \input{tables/workloads}
+\end{table}
+
+\section{Further agreement tables}
+\label{app:agreement-more}
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{As \cref{tab:agreement}, for the Mesa~3.5 and mesa-frames implementations against
+  Mesa~2.3, over 100 shared seeds at the small size.}
+  \label{tab:agreement-baselines}
+  \input{tables/agreement_small_baselines}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{As \cref{tab:agreement}, for Schelling's model over 300 shared seeds at the small
+  size, every implementation against Mesa~2.3.}
+  \label{tab:agreement-schelling300}
+  \input{tables/agreement_schelling300}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{As \cref{tab:agreement-large}, for the grid epidemic over 200 shared seeds at the
+  large size.}
+  \label{tab:agreement-grid200}
+  \input{tables/agreement_large_grid200}
+\end{table}
+
+\clearpage
+\section{Every comparison of the agreement study}
+\label{app:agreement}
+
+{\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{0.94}
+\input{tables/agreement_small_all}
+}

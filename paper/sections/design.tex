@@ -1,0 +1,140 @@
+\section{Design}
+\label{sec:design}
+
+\subsection{The programming model}
+
+A \modelly{} model is a \code{Model} subclass that owns its agents, its spaces, its clock and
+its random generators; an agent is an \code{Agent} subclass with a \code{step} method or
+whatever behaviour the model calls. Parameters live in a typed \code{Scenario} that also
+carries the seed, so that a model's whole input is one object that can be stored, swept and
+hashed. Agents are kept in ordered \code{AgentSet}s with \code{do}, \code{shuffle\_do},
+\code{select}, \code{agg} and \code{groupby}; the model's registries are backed by
+dictionaries, so membership tests run in C and iteration order is deterministic. Time advances
+in ticks, through scheduled events, or both on one heap with lazy cancellation.
+
+\subsection{Three ways to store a population}
+\label{sec:storage}
+
+The same model can be written at three levels of the speed/expressiveness trade-off, and
+\modelly{} supports all three in one framework:
+
+\begin{description}[style=nextline,leftmargin=1.5em,itemsep=2pt]
+  \item[Objects (as in Mesa).] Each agent is a Python object with its own attributes, and each
+  cell keeps the list of its occupants. This is the most direct translation of a model's
+  description and the easiest to read.
+  \item[Columns.] An attribute declared as a \code{Column} is stored in a model-owned
+  \code{numpy} array, one table per agent class. Each agent still reads and writes it as an
+  attribute (a property reading its row), while the whole population is available as one array
+  for vectorised phases (\cref{lst:columns}). Phases that act on all agents at once (movement,
+  infection, ageing, mortality) become array operations.
+  \item[Cohorts.] When many agents are identical in every state variable that matters (stage,
+  age, sex), a \code{CohortTable} stores one row per class with a count, and stochastic events
+  become binomial draws on the counts (below), the super-individual approach of
+  individual-based ecology \citep{scheffer1995super}. A population of tens of thousands then
+  costs a few hundred rows.
+\end{description}
+
+\paragraph{Why cohorts keep the individual model's law.} Let a row hold $n$ individuals in
+state $x$, and let each face, independently, the same probability $s(x)$ of surviving a phase.
+In the individual model the survivors are $\sum_{k=1}^{n} B_k$ with $B_k \sim
+\mathrm{Bernoulli}(s(x))$ independent, which is $\mathrm{Binomial}(n, s(x))$; the cohort
+draws that count directly:
+\begin{equation}
+  \begin{aligned}
+    &\text{survival (\code{thin}):} && n' \sim \mathrm{Binomial}\bigl(n, s(x)\bigr),\\
+    &\text{transition (\code{split}):} && K \sim \mathrm{Binomial}\bigl(n, p(x)\bigr)
+      \text{ move to state } x', \text{ and } n - K \text{ stay},\\
+    &\text{events (\code{draw}):} && E \sim \mathrm{Binomial}\bigl(n, q(x)\bigr).
+  \end{aligned}
+  \label{eq:cohorts}
+\end{equation}
+The three operations cover survival, two-way transitions and counts of events that each
+individual triggers at most once per phase (an egg batch, an emergence). Distinct rows are drawn independently, as the
+individuals are, so by induction over the phases the vector of counts per state has the same
+distribution as in the individual model. The condition is homogeneity within a phase: every
+member of a row must face the same probabilities, so density-dependent rates are evaluated
+once per phase (a synchronous update), and the cohort model reproduces the law of the
+individual model with that synchronous update, as the Mesa implementations of the insect
+playbook do.
+Individual identities, and histories that differ
+within a state, are not represented; a model that needs them stays at the object or column
+level.
+
+\begin{lstlisting}[float=tp,caption={A wealth-exchange model whose agents keep their wealth in a column;
+the step acts on the whole population at once. Run as shown with \modelly{} 1.3.2.},
+label={lst:columns}]
+import numpy as np
+from modelly import Agent, Column, Model
+from modelly.scenarios import Scenario
+
+class Economy(Scenario):
+    n: int = 1000
+
+class Trader(Agent):
+    wealth = Column(int, default=1)
+
+class Exchange(Model):
+    def __init__(self, scenario: Economy | None = None):
+        scenario = scenario or Economy()
+        super().__init__(scenario=scenario)
+        Trader.create_agents(self, scenario.n)
+
+    def step(self):
+        wealth = self.columns[Trader].wealth   # the whole population, one array
+        givers = np.flatnonzero(wealth > 0)
+        takers = self.rng.integers(0, wealth.size, size=givers.size)
+        np.subtract.at(wealth, givers, 1)
+        np.add.at(wealth, takers, 1)
+
+model = Exchange(Economy(n=1000, rng=42))
+model.run_for(100)       # same seed, same run
+\end{lstlisting}
+
+The columns view and the per-agent attribute are the same memory, so a model can mix
+per-agent code and vectorised phases freely: the benchmarks in \cref{sec:performance} include
+variants of the same model at each level.
+
+\subsection{Seeded randomness}
+
+Every model owns two generators: \code{model.random}, a \code{FastRandom} that produces exactly
+the numbers of Python's \code{random.Random} for the same seed (the Mersenne Twister
+\citep{matsumoto1998mersenne}), and \code{model.rng}, a \code{numpy} \code{Generator}.
+\code{FastRandom}'s hot methods (\code{randint}, \code{choice}, \code{shuffle},
+\code{sample}) run in C on CPython's own generator state; at import it is checked against
+\code{random.Random}, and a pure-Python implementation with the same stream is used when the C
+module is absent. A model ported from code that used \code{random.Random(seed)} therefore keeps
+its exact stream, which is what makes the bit-identical port of \cref{sec:portability}
+possible.
+
+\subsection{Compiled loops with pure-Python twins}
+
+Four small C modules implement the framework's inner loops: the random core, per-agent method
+calls (\code{do}, \code{shuffle\_do}), the cell move and breadth-first neighbourhood walk, and
+set filtering and attribute gathering (\code{select}, \code{agg}). Each C function is a
+line-for-line port of a Python function that stays in the source as its fallback; tests run the
+two side by side, and \code{MODELLY\_PURE\_PYTHON=1} forces the Python path. Results are
+identical either way. The modules build with GCC, Clang and MSVC and are shipped compiled for
+Linux (glibc and musl, x86-64 and ARM64), macOS and Windows (x86-64 and ARM64). They also
+build for free-threaded CPython, where critical sections and cache generation counters replace
+the global interpreter lock; the release workflow builds those wheels and checks that they
+import with the lock off, and the compiled modules' tests run on them on the development
+machine
+(\cref{tab:determinism}).
+
+\subsection{Spaces}
+
+Discrete spaces (orthogonal Moore and von Neumann grids, hexagonal grids, networks, Voronoi
+meshes) share one cell abstraction with cached neighbourhoods, property layers backed by arrays
+and an empty-cell index; a \code{CellIndex} exposes any discrete space as integer rows and a
+sparse adjacency for vectorised counts and random-neighbour draws. Continuous space keeps
+positions in one array and answers neighbour queries with one KD-tree per step. A geographic
+space, comparable in scope to Mesa-Geo \citep{wang2022mesageo}, projects coordinates once and supports regions, contiguity and road networks, and
+temporal and multilayer networks represent contact structures that change over time.
+
+\subsection{State that survives a pause}
+
+\code{model.save(path)} writes a checkpoint holding the whole model, both generators and the
+event scheduler; a run resumed from it, in a new process, is the run it would have been.
+Agents are written flat, so the cost of a checkpoint does not grow with the depth of the
+agent--cell graph. Checkpoints are the basis of time travel, resumable experiments and
+calibrations, and the browser studio's timeline (\cref{sec:workflow}).

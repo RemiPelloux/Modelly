@@ -1,0 +1,277 @@
+\section{Performance}
+\label{sec:performance}
+
+A framework can be fast in two senses: the same model code runs faster on it, or it lets a
+modeller write the same model in a faster form. We measure both, with methods chosen to make
+the comparison fair and repeatable, and check separately that the faster forms compute the
+same model. All the comparisons with Mesa are CPU time (\code{time.process\_time}), measured
+in-process, pinned to one core with \code{taskset}, with the implementations alternating, on an
+Intel Core Ultra 7 356H laptop running Linux, CPython 3.15.0 and numpy 2.5.4 in each
+implementation's environment, against Mesa 2.3.2 and Mesa 3.5.1; the pre-commit guard of
+\cref{sec:regressions} times short bursts of wall-clock time instead.
+
+\paragraph{Speed-up.} For a workload with CPU times $T_{r}$ over rounds $r = 1, \dots, R$, we
+report
+\begin{equation}
+  S_{\mathrm{steps}} = \frac{\operatorname{median}_r T^{\mathrm{Mesa}}_{\mathrm{steps},r}}
+  {\operatorname{median}_r T^{\mathrm{Modelly}}_{\mathrm{steps},r}},
+  \qquad
+  S_{\mathrm{total}} = \frac{\operatorname{median}_r T^{\mathrm{Mesa}}_{\mathrm{build},r}
+  + \operatorname{median}_r T^{\mathrm{Mesa}}_{\mathrm{steps},r}}
+  {\operatorname{median}_r T^{\mathrm{Modelly}}_{\mathrm{build},r}
+  + \operatorname{median}_r T^{\mathrm{Modelly}}_{\mathrm{steps},r}},
+  \label{eq:speedup}
+\end{equation}
+where \emph{steps} is the simulation and \emph{build} the construction of the model and its
+agents. $S_{\mathrm{steps}}$ is the gain per simulated step, which dominates long runs;
+$S_{\mathrm{total}}$ is the gain for one run of the benchmark's length. Round $r$ runs every
+implementation on seed $r$, so the per-round ratios are paired.
+
+\subsection{Same code: a port that changes only the framework API}
+\label{sec:portability}
+
+A research notebook written for Mesa~2.3, a medfly population model whose main cell runs a
+576-season factorial experiment, was ported with \modelly{}'s codemod. The port changes only
+the framework API: imports, agent construction, the agent registries, the name of the model's
+step method and the seeding line; every line of model logic is unchanged. Both versions are
+seeded identically, and their output tables are bit-identical.
+
+The seasons were then run in 48 chunks alternating between two persistent processes, one per
+framework, pinned to one core, with every chunk's records hashed and compared (no mismatch in
+any run), at 1/30 of the model's full scale. With the port seeding \code{random.Random}, as
+Mesa does, \modelly{} took 1.04, 1.02 and 1.02 of Mesa's CPU time in three paired runs (median
+1.02, about 2\% slower); with \code{FastRandom}, \modelly{}'s compiled generator, which
+reproduces the same stream, it took 1.02, 0.94 and 0.94 (median 0.94, 6\% faster; the first
+of these runs shared the machine with other jobs). This model spends about two thirds of its
+time in its own code, so the framework has little to gain on it.
+
+\paragraph{Two public ports.} The medfly notebook is private, so we repeated the experiment on
+the two playbooks of \cref{sec:playbooks} whose Mesa~2.3 implementations use no Mesa~2 grid
+(Modelly provides cell spaces instead, and porting a grid means rewriting it): the insect
+population and Boltzmann wealth. The codemod rewrote imports and constructors; the steps it
+reported were done by hand, as its report says (the agents' identifier parameter removed, the
+seeding line, which sets \code{model.random} to \modelly{}'s compiled \code{FastRandom} on the
+stream Mesa~2.3 draws from, and for Boltzmann wealth Mesa~2.3's random activation, which reshuffles one
+persistent order in place each step, kept as an agent set reshuffled in place). The ports,
+in \code{benchmarks/ports/}, give the same statistics as the Mesa~2.3 originals on every seed
+tried (20 at the small size, 5 at the large), and over ten alternating rounds in fresh
+interpreters on one performance core they take 0.22 (insect population) and 0.40 (Boltzmann
+wealth) of Mesa~2.3's CPU time, every round within 0.20 to 0.24 and 0.36 to 0.43
+(\code{paper/scripts/ports.py}). Profiles
+show why: these models spend most of their time in framework calls (Mesa~2.3 rebuilds its
+agent set each time \code{model.agents} is read, draws through the standard library's
+generator, and collects agent data in a Python loop), and those calls are \modelly{}'s
+compiled ones. Same-code gains therefore range from none, when the model's own code dominates
+as in the medfly notebook, to 2.5 and 4.5 times, when framework calls do; the larger gains come
+from the forms of \cref{sec:playbooks}.
+
+\subsection{Each framework's own idiom: eight playbooks}
+\label{sec:playbooks}
+
+Eight workloads, chosen to exercise different parts of an ABM framework, are each implemented
+at least twice: an SIR epidemic on a grid, predator-prey with grass, flocking
+\citep{reynolds1987flocks}, a contagion on a network, a stage-structured insect population,
+Schelling's segregation model \citep{schelling1971dynamic}, Boltzmann wealth exchange
+\citep{dragulescu2000statistical} and Sugarscape \citep{epstein1996growing}. Each has two
+reference implementations written the way Mesa's API intends: one for Mesa~2.3 (per-agent
+methods on its grids, continuous space and network space) and one for the current Mesa~3.5
+(its cell spaces, \code{CellAgent}, \code{AgentSet.shuffle\_do} and its network space, as in
+Mesa's own examples, and for flocking \code{mesa.space.ContinuousSpace}, which Mesa~3.5 still
+provides and which runs this workload 1.6 times faster than the experimental space of Mesa's
+example), both plain per-agent Python. Four workloads (the grid epidemic, Schelling's model,
+Boltzmann wealth and Sugarscape) also have a \emph{mesa-frames} implementation
+\citep{mesaframes}, vectorised over polars data frames the way that library's examples write
+models: it is the vectorised Python competitor to \modelly{}'s columns. The \modelly{}
+implementation uses column state, \code{CellIndex}, KD-tree queries or cohorts. Four workloads
+have a further \modelly{} variant, \emph{cell lists}, which keeps Mesa's data structure (each
+cell holds the list of its agents) and vectorises only the obvious phases. Where a phase
+searches cells one agent at a time, as Sugarscape's foragers do, the Mesa implementations and
+the cell-list variant use the same single-pass algorithm, so that their comparison is between
+data structures; the column and mesa-frames variants rank every forager's visible cells in one
+array pass and keep only the walk to a free cell sequential. Every implementation agrees with
+Mesa~2.3 (\cref{sec:agreement}), and three Mesa~3.5 implementations, which draw the same
+random numbers in the same order, reproduce it run by run: flocking, the network contagion and
+the insect population. Each
+implementation is run twice from the same seed and must reproduce its own output exactly; all
+do. \Cref{tab:workloads} in the appendix gives every workload's parameters. All variants of all
+workloads were timed in one session, ten rounds each, on one performance core, the order of
+the variants rotating from round to round; each result file records the commit, the date, the
+load, the core and its power policy, and every package version.
+
+\begin{table}[tbp]
+  \centering
+  \small
+  \caption{The playbooks at their large size: median CPU time of building the model and of
+  running its steps over ten rounds, the speed-ups of \cref{eq:speedup} over Mesa~2.3, and the
+  speed-up of the steps over Mesa~3.5. Agents: the population at the end of the last round. Generated from
+  \code{benchmarks/playbooks/results/} by \code{paper/scripts/make\_figures.py}.}
+  \label{tab:playbooks}
+  \setlength{\tabcolsep}{4.5pt}
+  \input{tables/playbooks}
+\end{table}
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/speedups}
+  \caption{$S_{\mathrm{steps}}$ of Mesa~3.5 and of each \modelly{} variant over the Mesa~2.3
+  implementation of the same workload (\cref{tab:playbooks}); whiskers span the per-round
+  ratios, and bars left of 1 are slower than Mesa~2.3. Columns and cohorts are \modelly{}'s
+  array-based storage; cell lists keep Mesa's per-cell lists; mesa-frames is the vectorised
+  data-frame library built on Mesa.}
+  \label{fig:speedups}
+\end{figure}
+
+\Cref{tab:playbooks} and \cref{fig:speedups} give the results. Mesa~3.5 itself is faster than
+Mesa~2.3 on six workloads (1.1 to 3.5 times, most on the network), as fast on flocking, where
+both use the same continuous space, and slower on predator-prey (0.87 times). mesa-frames is
+2.3 to 6.0 times faster than Mesa~2.3 on three of its four workloads and slower on Sugarscape
+(0.73 times), where its per-forager search is a cross join and a sort over up to about 130,000 rows per step.
+Written with columns, the workloads run their steps 4.7 to 41 times faster than with
+Mesa~2.3, 2.6 to 33 times faster than with Mesa~3.5, and 2.9 to 9.8 times faster than with
+mesa-frames; including construction, 4.1 to 32 times faster than Mesa~2.3. \modelly{}'s
+construction is slower than Mesa~2.3's (it allocates the columns and indexes the space;
+Mesa~3.5's cell spaces cost about as much, 0.15 to 0.21~s on the three large grids and the
+network), which matters for short runs such as the network contagion (40 times per step, 9.8
+times in total). With cohorts, the insect population model runs 283 times faster per step
+than with Mesa~2.3 (251 in total) and 132 times faster than with Mesa~3.5, because about 26,000 insects become a few hundred counted classes
+(\cref{eq:cohorts}); it is the one workload with a cohort form. The cell-list variants give
+1.4 to 14 times over Mesa~2.3 and 1.3 to 11 over Mesa~3.5: large for Schelling's model,
+whose residents mostly count their neighbours, small for predator-prey and Sugarscape, where
+movement, predation and the foragers' search stay per-agent loops. The arguments that each vectorised phase has the
+law of its per-agent loop, including the predation matching and the cohort compression, are
+given in the documentation (\code{docs/vectorised\_phases.md}).
+
+\subsection{Do the faster forms compute the same model?}
+\label{sec:agreement}
+
+The implementations draw their random numbers in different orders, so their dynamics cannot
+agree run by run; they must agree in distribution. Where two implementations draw the initial
+state the same way, a seed gives both the same start: strongly in Sugarscape (correlation
+between the two implementations' outputs on a seed $r = 0.91$ to $0.99$) and Schelling's model
+($0.42$ to $0.70$), completely in flocking, whose dynamics are deterministic once it has
+started ($r = 1$). The comparisons are therefore paired, seed by seed. We ran the Mesa~2.3
+reference and every \modelly{} variant of every playbook on the same 100 seeds at the playbook's
+small size (2,100 runs), and compared each of the 67 pairs of a summary statistic and a \modelly{} variant (epidemic peak
+and final size, final populations, cluster counts, Gini coefficient, and so on) with the Mesa
+reference in three ways: a paired $t$-test on the seed-by-seed differences, the two-sample
+Kolmogorov--Smirnov test on the two marginal distributions, and paired two one-sided tests
+(TOST) of equivalence \citep{schuirmann1987comparison, lakens2017equivalence} with a margin of
+half a pooled standard deviation $s_p$, that is, against the null hypothesis
+$|\mu_{\mathrm{Modelly}} - \mu_{\mathrm{Mesa}}| \ge 0.5\, s_p$. We report the standardised
+difference $d = (\bar x_{\mathrm{Modelly}} - \bar x_{\mathrm{Mesa}}) / s_p$ with its paired 95\%
+interval, and correct for the 67 comparisons with Holm's procedure \citep{holm1979simple}.
+\Cref{tab:agreement-all} in the appendix lists every comparison.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Agreement with Mesa~2.3 over 100 shared seeds per variant, at the small size: the
+  largest standardised difference, the lowest paired $t$ and Kolmogorov--Smirnov $p$-values
+  (before correction), and the number of statistics equivalent within $0.5\,s_p$ (paired TOST
+  at 5\%, uncorrected).
+  Generated by \code{paper/scripts/agreement.py}.}
+  \label{tab:agreement}
+  \input{tables/agreement_small}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/agreement_small}
+  \caption{Standardised difference $d$ between each \modelly{} variant and Mesa~2.3 for every
+  summary statistic, with 95\% intervals, over 100 seeds; dashed lines: the equivalence margin
+  $\pm 0.5\,s_p$. Flocking is deterministic once its initial state is drawn, and both
+  implementations draw it from the same seeded \code{numpy} stream: it agrees run by run,
+  hence $d = 0$.}
+  \label{fig:agreement}
+\end{figure}
+
+\Cref{tab:agreement} and \cref{fig:agreement} give the results. The main evidence is the
+equivalence test: within the margin of $0.5\,s_p$, 63 of the 67 comparisons are equivalent at
+the 5\% level (60 of 64 outside flocking, whose three agree trivially), and 29 when the TOST
+$p$-values are Holm-corrected too; the count depends on the margin, 50 at $0.4\,s_p$, 27 at
+$0.3\,s_p$ and 19 at $0.25\,s_p$. No difference survives the Holm correction for either test
+(the smallest corrected paired $p$ is 0.21), but that is weak evidence on its own: at the
+corrected level a paired test on 100 seeds detects $d = 0.33$ with probability 0.13 and
+$d = 0.5$ with probability 0.52, for uncorrelated pairs (more where the shared initial state
+correlates them). Before correction, six paired $t$-tests and three
+Kolmogorov--Smirnov tests fall below 5\%, against 3.2 expected by chance among the 64
+comparisons outside flocking if the tests were independent (they are not: the statistics of a
+workload are related, such as its final S, I and R). Every $|d|$ is at most 0.33, and every
+difference of means at most 11\% of Mesa's; six intervals exclude zero, so
+these are small but, taken one at a time, detectable differences: three in Schelling's model
+($|d| \le 0.24$, at most 4.3\% of the mean, made detectable by the shared initial state), the mean
+sheep population of predator-prey with cell lists, the final adult count of the individual
+insect model and the share of agents without wealth in the Boltzmann model ($|d| \le 0.33$, at
+most 1.4\%). The spreads agree too: the ratio of the two implementations' standard deviations
+lies between 0.77 and 1.27, and one median-centred Levene test \citep{brown1974robust} of 67 falls below 5\%, none after the Holm
+correction, so no vectorised phase changes the variability of an outcome. The earlier check shipped with the benchmark harness, six seeds
+and an unpaired Welch test \citep{welch1947generalization} at 1\%, could not have shown any of
+this: its power to detect a difference of one standard deviation is 13\%.
+
+\paragraph{At the timed size.} We repeated the study at the large size used for the timings,
+with 50 seeds per variant (1,050 runs; \cref{tab:agreement-large}). Again no difference
+survives the Holm correction; before it, one paired $t$-test (Sugarscape with cell lists, mean
+wealth, $d = 0.11$, 0.3\% of the mean) and two Kolmogorov--Smirnov tests fall below 5\%, and
+53 of the 67 comparisons are equivalent within the margin, fewer than at the small size because
+half as many seeds give wider intervals. The largest differences were in the grid epidemic's
+peak time, about 11\% later in both \modelly{} variants ($d = 0.43$ and $0.40$, paired
+$p = 0.05$ and $0.07$). Rerun with 200 seeds, they vanish: no interval of the twelve grid
+epidemic comparisons excludes zero, the largest $|d|$ is 0.15 (the peak time's is 0.08 and
+0.10, 2\% of the mean), and all twelve are equivalent within $0.4\,s_p$, also after the Holm
+correction.
+
+\paragraph{The other baselines against Mesa~2.3.} The same study on the Mesa~3.5 and mesa-frames
+implementations, 100 seeds at the small size (2,000 runs), checks that the other baselines
+compute the same models (\cref{tab:agreement-baselines}). All 40 Mesa~3.5 statistics are
+equivalent within $0.5\,s_p$, no paired $t$-test or Kolmogorov--Smirnov test falls below 5\%
+even before correction, and the largest $|d|$ is 0.24. Of the 20 mesa-frames statistics 18 are
+equivalent and the largest $|d|$ is 0.31, but its Schelling implementation ends slightly more
+segregated than Mesa~2.3's. Rerun over 300 seeds (\cref{tab:agreement-schelling300}), the
+\modelly{} column variant and Mesa~3.5 show no difference ($|d| \le 0.13$, nothing below 5\%
+before correction), the cell-list variant one uncorrected $p = 0.02$, and mesa-frames a
+segregation higher by 0.4\% of the mean ($d = 0.18$, significant after the Holm correction):
+a small difference in our mesa-frames implementation, whose cause we have not found, that does
+not change its timing's order of magnitude. \Cref{tab:agreement-grid200} gives the grid
+epidemic over 200 seeds.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{As \cref{tab:agreement}, at the large size of the timings, over 50 shared seeds per
+  variant.}
+  \label{tab:agreement-large}
+  \input{tables/agreement_large}
+\end{table}
+
+\subsection{No measurable regression between releases}
+\label{sec:regressions}
+
+Performance work regresses easily: a clearer error message or a thread-safety guard on a hot
+path costs a few percent that no single test notices. From release 1.3.1 on, every release is
+benchmarked against the previous published one before it is tagged, using wheels built by the
+same toolchain and identical dependencies, on three measurements in paired alternating runs:
+16 core operations (agent sets, column reads and writes, agent removal, cell moves,
+neighbourhood walks, data collection, events, random draws) plus a \code{numpy}-only control
+that must read 1.00, the eight playbooks seed by seed, and the medfly notebook at 1/30 of its
+full scale, chunk by chunk. A release ships only if none shows a measurable regression, by the
+criterion below, whose 3\% tolerance lets a smaller slowdown pass. Release 1.3.1 was compared with 1.2.0, the last release before the
+regressions that 1.3.0 introduced. Between releases, a
+pre-commit hook (\cmd{python -m modelly.dev install-hooks}) times the core operations of the
+working tree against the last release in about ten seconds, and refuses a commit when an
+operation is measurably slower: its median time ratio above 1.03 and the lower quartile of the
+ratios above 1.00, confirmed by re-timing it with three times as many pairs.
+
+The release benchmark found real regressions. Release 1.3.0, published before the policy
+existed, had made a column read 2.5\% slower, below the hook's threshold but visible in the
+release benchmark's longer runs (the getter had started to capture the column's name for a clearer
+error), and, on regular builds, the neighbourhood walk and the cell move paid for
+free-threading safety they did not need; 1.3.1 removed both. Against 1.2.0, 1.3.1 takes 0.79
+of the time on \code{select}, 0.88 on \code{agg}, 0.94 on agent creation and removal and 0.97
+on \code{shuffle\_do}, 0.98 to 1.01 (within noise) on the other operations, 0.94 to 1.00 on the
+playbooks, and 1.00 on the medfly notebook at 1/30 scale (17.92~s and 17.92~s, identical
+records). Release 1.3.2, whose only change to the library is the ABC-SMC correction, passed
+the same gate against 1.3.1: no core operation slower by the criterion; playbook ratios between
+0.96 and 1.04 over five rounds, and 0.99, 1.01 and 1.07 for the three noisiest re-timed over 15
+rounds (lower quartiles 0.97 to 0.99, so not slower by the criterion), with identical outputs;
+and a paired ratio of 0.98 on the notebook with identical records. The playbooks run no code
+that changed: the compiled modules' machine code is identical to 1.3.1's.

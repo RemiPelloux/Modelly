@@ -1,0 +1,72 @@
+\begin{longtable}{lllrrrrrr}
+\caption{Every comparison of the agreement study at the small size (100 seeds): standardised difference $d$ with its paired 95\% interval, correlation $r$ between the implementations' runs on the same seed, and the paired $t$, Kolmogorov--Smirnov and paired TOST $p$-values, uncorrected.}\label{tab:agreement-all}\\
+\toprule
+Workload & Modelly variant & Statistic & $d$ & 95\% interval & $r$ & $p_t$ & $p_{\mathrm{KS}}$ & $p_{\mathrm{TOST}}$ \\
+\midrule
+\endfirsthead
+\toprule
+Workload & Modelly variant & Statistic & $d$ & 95\% interval & $r$ & $p_t$ & $p_{\mathrm{KS}}$ & $p_{\mathrm{TOST}}$ \\
+\midrule
+\endhead
+\bottomrule\endfoot
+Grid epidemic & Mesa 3.5 & \code{final\_S} & $+0.03$ & [$-0.23$, $+0.30$] & $+0.10$ & 0.80 & 0.37 & $<$0.001 \\
+Grid epidemic & Mesa 3.5 & \code{final\_I} & $+0.23$ & [$-0.03$, $+0.49$] & $+0.13$ & 0.09 & 0.15 & 0.022 \\
+Grid epidemic & Mesa 3.5 & \code{final\_R} & $-0.09$ & [$-0.37$, $+0.18$] & $+0.04$ & 0.51 & 0.58 & 0.002 \\
+Grid epidemic & Mesa 3.5 & \code{peak\_I} & $-0.11$ & [$-0.39$, $+0.18$] & $-0.02$ & 0.45 & 0.70 & 0.003 \\
+Grid epidemic & Mesa 3.5 & \code{peak\_step} & $+0.14$ & [$-0.14$, $+0.43$] & $-0.03$ & 0.32 & 0.11 & 0.007 \\
+Grid epidemic & Mesa 3.5 & \code{mean\_I} & $-0.06$ & [$-0.33$, $+0.21$] & $+0.07$ & 0.65 & 0.47 & 0.001 \\
+Grid epidemic & mesa-frames & \code{final\_S} & $+0.15$ & [$-0.13$, $+0.44$] & $-0.02$ & 0.29 & 0.58 & 0.008 \\
+Grid epidemic & mesa-frames & \code{final\_I} & $+0.12$ & [$-0.16$, $+0.41$] & $-0.02$ & 0.39 & 0.70 & 0.005 \\
+Grid epidemic & mesa-frames & \code{final\_R} & $-0.20$ & [$-0.48$, $+0.09$] & $-0.02$ & 0.17 & 0.37 & 0.019 \\
+Grid epidemic & mesa-frames & \code{peak\_I} & $-0.19$ & [$-0.48$, $+0.09$] & $-0.03$ & 0.19 & 0.28 & 0.017 \\
+Grid epidemic & mesa-frames & \code{peak\_step} & $+0.09$ & [$-0.17$, $+0.34$] & $+0.18$ & 0.49 & 0.91 & 0.001 \\
+Grid epidemic & mesa-frames & \code{mean\_I} & $-0.18$ & [$-0.46$, $+0.11$] & $-0.02$ & 0.22 & 0.37 & 0.013 \\
+Predator-prey & Mesa 3.5 & \code{final\_sheep} & $-0.09$ & [$-0.38$, $+0.21$] & $-0.11$ & 0.57 & 0.82 & 0.003 \\
+Predator-prey & Mesa 3.5 & \code{final\_wolves} & $+0.11$ & [$-0.19$, $+0.41$] & $-0.14$ & 0.49 & 0.91 & 0.005 \\
+Predator-prey & Mesa 3.5 & \code{mean\_sheep} & $-0.07$ & [$-0.35$, $+0.22$] & $-0.03$ & 0.63 & 0.58 & 0.002 \\
+Predator-prey & Mesa 3.5 & \code{mean\_wolves} & $+0.14$ & [$-0.16$, $+0.44$] & $-0.13$ & 0.36 & 0.82 & 0.009 \\
+Predator-prey & Mesa 3.5 & \code{mean\_grass} & $-0.01$ & [$-0.28$, $+0.27$] & $+0.05$ & 0.95 & 0.97 & $<$0.001 \\
+Flocking & Mesa 3.5 & \code{final\_polarisation} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Flocking & Mesa 3.5 & \code{mean\_polarisation} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Flocking & Mesa 3.5 & \code{mean\_neighbors} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Network contagion & Mesa 3.5 & \code{final\_S} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Network contagion & Mesa 3.5 & \code{final\_I} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Network contagion & Mesa 3.5 & \code{final\_R} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Network contagion & Mesa 3.5 & \code{peak\_I} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Network contagion & Mesa 3.5 & \code{peak\_step} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Network contagion & Mesa 3.5 & \code{mean\_I} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Insect population & Mesa 3.5 & \code{final\_eggs} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Insect population & Mesa 3.5 & \code{final\_larvae} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Insect population & Mesa 3.5 & \code{final\_pupae} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Insect population & Mesa 3.5 & \code{final\_adults} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Insect population & Mesa 3.5 & \code{mean\_adults} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Insect population & Mesa 3.5 & \code{peak\_adults} & $+0.00$ & [$+0.00$, $+0.00$] & $+1.00$ & 1.00 & 1.00 & $<$0.001 \\
+Schelling & Mesa 3.5 & \code{final\_happy} & $+0.14$ & [$-0.13$, $+0.41$] & $+0.07$ & 0.31 & 0.15 & 0.005 \\
+Schelling & Mesa 3.5 & \code{mean\_happy} & $+0.21$ & [$-0.05$, $+0.48$] & $+0.10$ & 0.12 & 0.58 & 0.018 \\
+Schelling & Mesa 3.5 & \code{total\_moves} & $-0.21$ & [$-0.48$, $+0.06$] & $+0.08$ & 0.12 & 0.47 & 0.018 \\
+Schelling & Mesa 3.5 & \code{segregation} & $+0.15$ & [$-0.14$, $+0.43$] & $-0.03$ & 0.31 & 0.37 & 0.008 \\
+Schelling & mesa-frames & \code{final\_happy} & $+0.29$ & [$+0.10$, $+0.48$] & $+0.57$ & $<$0.01 & 0.05 & 0.013 \\
+Schelling & mesa-frames & \code{mean\_happy} & $+0.26$ & [$+0.08$, $+0.44$] & $+0.59$ & 0.01 & 0.15 & 0.005 \\
+Schelling & mesa-frames & \code{total\_moves} & $-0.25$ & [$-0.43$, $-0.08$] & $+0.61$ & 0.01 & 0.15 & 0.003 \\
+Schelling & mesa-frames & \code{segregation} & $+0.31$ & [$+0.15$, $+0.47$] & $+0.68$ & $<$0.01 & 0.08 & 0.010 \\
+Boltzmann wealth & Mesa 3.5 & \code{final\_gini} & $-0.04$ & [$-0.25$, $+0.18$] & $+0.41$ & 0.73 & 0.70 & $<$0.001 \\
+Boltzmann wealth & Mesa 3.5 & \code{mean\_gini} & $-0.07$ & [$-0.25$, $+0.11$] & $+0.60$ & 0.44 & 0.82 & $<$0.001 \\
+Boltzmann wealth & Mesa 3.5 & \code{final\_zero\_share} & $-0.12$ & [$-0.35$, $+0.11$] & $+0.33$ & 0.31 & 0.70 & 0.001 \\
+Boltzmann wealth & Mesa 3.5 & \code{final\_max\_wealth} & $+0.24$ & [$-0.01$, $+0.49$] & $+0.21$ & 0.06 & 0.21 & 0.020 \\
+Boltzmann wealth & mesa-frames & \code{final\_gini} & $-0.26$ & [$-0.55$, $+0.03$] & $-0.05$ & 0.07 & 0.04 & 0.052 \\
+Boltzmann wealth & mesa-frames & \code{mean\_gini} & $-0.07$ & [$-0.35$, $+0.20$] & $+0.01$ & 0.60 & 0.58 & 0.002 \\
+Boltzmann wealth & mesa-frames & \code{final\_zero\_share} & $-0.31$ & [$-0.58$, $-0.03$] & $+0.05$ & 0.03 & 0.15 & 0.085 \\
+Boltzmann wealth & mesa-frames & \code{final\_max\_wealth} & $-0.13$ & [$-0.43$, $+0.16$] & $-0.09$ & 0.37 & 0.47 & 0.007 \\
+Sugarscape & Mesa 3.5 & \code{final\_population} & $+0.06$ & [$-0.21$, $+0.34$] & $+0.02$ & 0.65 & 0.97 & 0.001 \\
+Sugarscape & Mesa 3.5 & \code{mean\_population} & $+0.08$ & [$-0.19$, $+0.36$] & $+0.04$ & 0.56 & 0.82 & 0.002 \\
+Sugarscape & Mesa 3.5 & \code{mean\_vision} & $+0.05$ & [$-0.24$, $+0.34$] & $-0.09$ & 0.73 & 0.99 & 0.002 \\
+Sugarscape & Mesa 3.5 & \code{mean\_metabolism} & $-0.13$ & [$-0.40$, $+0.15$] & $+0.06$ & 0.36 & 0.58 & 0.004 \\
+Sugarscape & Mesa 3.5 & \code{mean\_wealth} & $+0.20$ & [$-0.06$, $+0.46$] & $+0.15$ & 0.14 & 0.21 & 0.011 \\
+Sugarscape & Mesa 3.5 & \code{sugar\_left} & $-0.12$ & [$-0.39$, $+0.15$] & $+0.08$ & 0.39 & 0.58 & 0.003 \\
+Sugarscape & mesa-frames & \code{final\_population} & $+0.00$ & [$-0.05$, $+0.06$] & $+0.96$ & 0.86 & 1.00 & $<$0.001 \\
+Sugarscape & mesa-frames & \code{mean\_population} & $+0.01$ & [$-0.03$, $+0.06$] & $+0.97$ & 0.55 & 0.99 & $<$0.001 \\
+Sugarscape & mesa-frames & \code{mean\_vision} & $-0.00$ & [$-0.03$, $+0.03$] & $+0.99$ & 0.92 & 1.00 & $<$0.001 \\
+Sugarscape & mesa-frames & \code{mean\_metabolism} & $+0.01$ & [$-0.04$, $+0.05$] & $+0.98$ & 0.78 & 1.00 & $<$0.001 \\
+Sugarscape & mesa-frames & \code{mean\_wealth} & $-0.01$ & [$-0.07$, $+0.05$] & $+0.95$ & 0.80 & 1.00 & $<$0.001 \\
+Sugarscape & mesa-frames & \code{sugar\_left} & $-0.02$ & [$-0.11$, $+0.07$] & $+0.89$ & 0.64 & 0.97 & $<$0.001 \\
+\end{longtable}

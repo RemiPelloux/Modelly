@@ -1,0 +1,48 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+\modelly{} keeps the agent-based programming model that Python modellers know and changes what
+it costs to use it in research: array-backed and counted populations for speed, compiled loops
+with pure-Python twins, and the experiment, calibration, sensitivity, provenance and
+publication steps built on one seeding discipline. Its claims are measured in the open: against
+Mesa~2.3, Mesa~3.5 and mesa-frames, with an agreement study over 100 seeds per variant; against its own previous release
+before every new one; and with methods checked on problems whose answers are known. The
+measurements also show where it does not help (a model written agent by agent runs between Mesa's speed and 4.5 times faster, depending on
+how much of its time the framework's calls take) and where its evidence is still thin (\cref{sec:threats}).
+
+\section{Availability}
+\label{sec:availability}
+
+\cmd{pip install modelly-abm} installs \modelly{} (Python 3.12 or later), which is imported as
+\code{modelly} and is free software under the Apache 2.0 licence. Compiled wheels are published
+for Linux, macOS and Windows, and a pure-Python wheel elsewhere. Source, issue tracker, the 2,274 tests (97.7\% line coverage, measured by the test suite's coverage job)
+and the benchmark harness are at
+\href{https://github.com/RemiPelloux/Modelly}{\nolinkurl{github.com/RemiPelloux/Modelly}};
+documentation, tutorials and the roadmap at
+\href{https://remipelloux.github.io/Modelly/}{\nolinkurl{remipelloux.github.io/Modelly}}. The version described here is 1.3.2, which
+contains the ABC-SMC correction of \cref{sec:validation}. The data and scripts behind every table and figure
+of this paper are in the repository's \code{paper/} folder (\cref{app:reproduce}). To cite
+\modelly{}, use the metadata in the repository's \code{CITATION.cff}.
+
+\section*{Declarations}
+\addcontentsline{toc}{section}{Declarations}
+
+\paragraph{Software availability.} Name: \modelly{} (\code{modelly-abm} on PyPI). Developer:
+R\'emi Pelloux, OpenPro (\href{mailto:rp@openpro.ai}{rp@openpro.ai}). First available: 2026.
+Version described: 1.3.2. Language: Python, with four C extension modules. Requirements:
+CPython 3.12 or later, \code{numpy}, \code{pandas}, \code{scipy} and \code{tqdm}; optional
+extras for visualisation, geography, networks and experiment storage. Hardware: any machine
+that runs CPython; compiled wheels for Linux, macOS and Windows on x86-64 and ARM64. Size:
+0.8 to 2.2~MB per wheel. Licence: Apache 2.0. Source:
+\href{https://github.com/RemiPelloux/Modelly}{\nolinkurl{github.com/RemiPelloux/Modelly}}.
+
+\paragraph{Data availability.} The data and scripts behind every measured table and figure are
+in the repository's \code{paper/} and \code{benchmarks/} folders (\cref{app:reproduce}).
+
+\paragraph{Competing interests.} The author develops \modelly{}, the software evaluated here.
+
+\paragraph{Use of generative AI.} The software, the benchmark implementations (for Mesa~2.3,
+Mesa~3.5, mesa-frames and \modelly{}) and this manuscript were written with the help of AI
+coding and writing assistants. The author directed the work, reviewed the code and the text,
+and takes responsibility for the content; every reported number comes from the scripts and
+data cited.
