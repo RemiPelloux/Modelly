@@ -189,7 +189,8 @@ speed-up, resampling the paired rounds.
 \end{figure}
 
 \paragraph{Where \modelly{} is fast, and why.} \modelly{}'s column form runs every workload
-faster than Mesa~2.3, Mesa~3.5 and mesa-frames (\cref{tab:playbooks,fig:speedups}): its steps run
+faster than Mesa~2.3 and Mesa~3.5, and faster than mesa-frames on the four it implements
+(\cref{tab:playbooks,fig:speedups}): its steps run
 4.6 to 45 times faster than Mesa~2.3, 2.9 to 33 times faster than Mesa~3.5 and 3.0 to 9.4 times
 faster than mesa-frames, and its cohort form runs the insect population 243 times faster than
 Mesa~2.3 and 133 times faster than Mesa~3.5. \Cref{tab:why} gives the reason workload by
@@ -202,7 +203,11 @@ The gain therefore grows with the share of a step that such a mechanism covers: 
 every phase becomes array work (flocking, the grid epidemic, Schelling's model, the network),
 smaller where a phase must stay sequential, as the foragers' walk to a free cell in Sugarscape,
 or where the step creates and removes many agents, as the births and deaths of predator-prey
-and of the individual insect model. The arguments that each vectorised phase has the law of its
+and of the individual insect model, or where a cost every implementation shares dominates the
+step, as Boltzmann wealth's data collector, which records the Gini coefficient and every
+agent's wealth after each step (\cref{sec:threats}). Code that gives up agent objects
+altogether goes further still: hand-written numpy is 1.8 to 4.4 times faster than the columns
+(below). The arguments that each vectorised phase has the law of its
 per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}), and
 \cref{sec:agreement} checks that the outputs agree.
 
@@ -210,30 +215,30 @@ per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}
   \centering
   \small
   \caption{Where \modelly{}'s speed comes from: the step-time speed-up of each workload's
-  fastest \modelly{} form over Mesa~3.5 and Mesa~2.3 (\cref{tab:playbooks}), and the mechanism
+  fastest \modelly{} form over Mesa~2.3 and Mesa~3.5 (\cref{tab:playbooks}), and the mechanism
   that replaces the per-agent Python loop.}
   \label{tab:why}
   \begin{tabularx}{\linewidth}{@{}l r r >{\raggedright\arraybackslash}X@{}}
     \toprule
     Workload & \multicolumn{2}{c}{faster than} & What \modelly{} does instead of a loop over agents \\
     \cmidrule(lr){2-3}
-     & Mesa~3.5 & Mesa~2.3 & \\
+     & Mesa~2.3 & Mesa~3.5 & \\
     \midrule
     Flocking & 33$\times$ & 33$\times$ & one periodic KD-tree query for the whole flock; the steering
       terms are pair sums scattered back with \code{bincount}; positions written in one call \\
-    Grid epidemic & 28$\times$ & 45$\times$ & positions are a column of cells: the walk is one
+    Grid epidemic & 45$\times$ & 27$\times$ & positions are a column of cells: the walk is one
       \code{random\_neighbor} call, the exposure one count of infected per cell \\
-    Schelling & 18$\times$ & 23$\times$ & happiness is two sparse products (residents per cell,
+    Schelling & 23$\times$ & 18$\times$ & happiness is two sparse products (residents per cell,
       summed over neighbours); all moves in one pass with the sequential rule's law \\
-    Network contagion & 13$\times$ & 39$\times$ & infected neighbours of every node in one sparse
+    Network contagion & 39$\times$ & 13$\times$ & infected neighbours of every node in one sparse
       matrix--vector product; infection and recovery are Bernoulli vectors \\
-    Predator-prey & 7.1$\times$ & 6.4$\times$ & movement, energy, grazing and predation
+    Predator-prey & 6.4$\times$ & 7.1$\times$ & movement, energy, grazing and predation
       (\code{claim}) are array operations; deaths and births are one call per species \\
-    Sugarscape & 4.5$\times$ & 4.6$\times$ & every forager's visible cells ranked in one array
+    Sugarscape & 4.6$\times$ & 4.5$\times$ & every forager's best visible cell found in one array
       pass; only the walk to a free cell stays sequential \\
-    Boltzmann wealth & 3.4$\times$ & 6.4$\times$ & the exchange is one array pass with the law of
-      the shuffled sequential order; the Gini coefficient is read from a column \\
-    Insect population & 133$\times$ & 243$\times$ & cohorts: a few dozen (stage, age, sex)
+    Boltzmann wealth & 6.4$\times$ & 3.4$\times$ & the exchange is a few array passes (a
+      fixed-point iteration) with the law of the shuffled sequential order \\
+    Insect population & 243$\times$ & 133$\times$ & cohorts: fewer than 200 (stage, age, sex)
       classes thinned by binomial draws replace about 26,000 agents \\
     \bottomrule
   \end{tabularx}
@@ -256,7 +261,8 @@ per step, 10 in total).
 \modelly{}'s columns on all three of its workloads: its steps take 0.035~s against 0.157~s on
 the grid epidemic (4.4 times faster, 95\% interval 4.3 to 4.6), 0.116~s against 0.205~s on
 Schelling's model (1.8 times, 1.7 to 1.8) and 0.121~s against 0.335~s on Boltzmann wealth (2.8
-times, 2.7 to 2.8). It pays for that with the model's structure: no agent has an identity,
+times, 2.7 to 2.8; there partly because it records the wealth as one array per step rather than
+as per-agent rows). It pays for that with the model's structure: no agent has an identity,
 methods or attributes of its own, the population cannot hold agents of several kinds, every
 neighbourhood is a hand-built index table, and every phase has to be rewritten as array
 operations before the model runs at all, whereas \modelly{} keeps agent objects, agent sets and

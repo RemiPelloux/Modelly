@@ -9,7 +9,7 @@ cohort is a Binomial draw too (``draw``). Each of those is the
 law of the corresponding independent per-insect draws, so the stage counts have
 the same distribution as the individual-level model (see
 docs/vectorised_phases.md, cohort compression). The number of rows is the
-number of distinct (stage, age, sex) classes, a few dozen, whatever the
+number of distinct (stage, age, sex) classes, fewer than two hundred, whatever the
 population.
 """
 

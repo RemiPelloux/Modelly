@@ -29,7 +29,7 @@ the search as well.
 
 \paragraph{What the timings include.} The timed region is the whole simulation, including the
 data collection and the summary statistics of each workload. In the Boltzmann wealth model the
-data collector (a Gini coefficient of 10,000 agents every step) is a large part of every
+data collector (the Gini coefficient and the wealth of each of 10,000 agents, every step) is a large part of every
 implementation's run, so that workload measures data collection as much as the exchange; all
 implementations compute the Gini coefficient with \code{numpy}, the per-agent Mesa ones after
 gathering the agents' wealth in a Python loop. The summaries computed after the last step are a
