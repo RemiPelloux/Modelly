@@ -335,7 +335,7 @@ results = run_grid(
 When individuals in the same state face the same probabilities (an insect's stage, age and
 sex), one row with a count replaces them all, and each per-individual draw becomes one
 binomial draw per row with exactly the same law. `CohortTable` holds such a population with no
-agent objects; the stage-structured playbook runs 239x faster than its individual Mesa 2.3
+agent objects; the stage-structured playbook runs 243x faster than its individual Mesa 2.3
 version and agrees with it statistically.
 
 ```python
@@ -496,9 +496,9 @@ codemod and nothing else changed, identical seeds, outputs checked bit-identical
 pinned and alternating: Modelly runs at Mesa's speed within a few percent (0.94 of Mesa's time
 seeded with `FastRandom`, 1.02 to 1.04 with `random.Random`); that model spends most of its
 time in its own code. Two public playbooks ported the same way (`benchmarks/ports/`), which
-spend most of theirs in framework calls, run at 0.22 and 0.38 of Mesa 2.3's time with
+spend most of theirs in framework calls, run at 0.22 and 0.37 of Mesa 2.3's time with
 bit-identical output. Five playbooks ported from their Mesa 3.5 versions by the codemod alone
-(`benchmarks/ports_mesa3/`) run at 0.46 to 0.99 of Mesa 3.5's time; they are not bit-identical
+(`benchmarks/ports_mesa3/`) run at 0.45 to 0.93 of Mesa 3.5's time; they are not bit-identical
 (the random streams differ) but agree in distribution over 100 seeds. The method and every
 round are in
 [docs/performance.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/performance.md).
@@ -510,32 +510,34 @@ KD-tree per step. The runner executes each in its own environment, pinned to one
 the order every round, checks that the implementations agree in distribution (over shared
 seeds, every statistic) and that each is deterministic, and records the machine and versions.
 CPU seconds of the steps at the large size, median of ten rounds in one session on a
-performance core, this machine:
+performance core, this machine, at a fixed 1.9 GHz base frequency (performance governor, turbo
+disabled; every per-round ratio within 15% of its median). Absolute seconds are therefore longer
+than with turbo; the ratios are the point:
 
 | Playbook | Mesa 2.3 | Mesa 3.5 | Mesa 3.5 + numpy | mesa-frames | Modelly, cell lists | Modelly | vs Mesa 2.3 | vs Mesa 3.5 | vs mesa-frames |
 |---|---|---|---|---|---|---|---|---|---|
-| Grid epidemic (SIR, random walk, synchronous) | 5.42 s | 3.72 s | 0.026 s | 0.98 s | 2.16 s | 0.122 s | 45x | 31x | 8.1x |
-| Predator-prey with grass (births and deaths every step) | 2.06 s | 2.24 s |  |  | 1.46 s | 0.360 s | 5.7x | 6.2x |  |
-| Flocking in continuous space | 20.65 s | 21.43 s |  |  |  | 0.683 s | 30x | 31x |  |
-| Virus on a random network | 3.50 s | 1.02 s |  |  |  | 0.086 s | 41x | 12x |  |
-| Stage-structured insect population, individuals | 2.73 s | 1.52 s |  |  |  | 0.476 s | 5.7x | 3.2x |  |
-| Same population as a `CohortTable` (binomial thinning) | 2.73 s | 1.52 s |  |  |  | 0.011 s | 239x | 133x |  |
-| Schelling segregation (moves to random empty cells) | 2.88 s | 2.27 s | 0.064 s | 1.09 s | 0.19 s | 0.115 s | 25x | 20x | 9.4x |
-| Boltzmann wealth exchange, Gini by a `DataCollector` | 1.13 s | 0.57 s | 0.062 s | 0.48 s |  | 0.163 s | 6.9x | 3.5x | 3.0x |
-| Sugarscape, constant growback (vision, best sugar in sight) | 1.16 s | 1.09 s |  | 1.67 s | 0.85 s | 0.232 s | 5.0x | 4.7x | 7.2x |
+| Grid epidemic (SIR, random walk, synchronous) | 7.10 s | 4.31 s | 0.035 s | 1.10 s | 2.87 s | 0.157 s | 45x | 27x | 7.0x |
+| Predator-prey with grass (births and deaths every step) | 3.39 s | 3.73 s |  |  | 2.19 s | 0.526 s | 6.4x | 7.1x |  |
+| Flocking in continuous space | 24.58 s | 24.66 s |  |  |  | 0.749 s | 33x | 33x |  |
+| Virus on a random network | 7.81 s | 2.51 s |  |  |  | 0.199 s | 39x | 13x |  |
+| Stage-structured insect population, individuals | 3.67 s | 2.01 s |  |  |  | 0.684 s | 5.4x | 2.9x |  |
+| Same population as a `CohortTable` (binomial thinning) | 3.67 s | 2.01 s |  |  |  | 0.015 s | 243x | 133x |  |
+| Schelling segregation (moves to random empty cells) | 4.65 s | 3.58 s | 0.116 s | 1.93 s | 0.32 s | 0.205 s | 23x | 18x | 9.4x |
+| Boltzmann wealth exchange, Gini by a `DataCollector` | 2.14 s | 1.14 s | 0.121 s | 1.00 s |  | 0.335 s | 6.4x | 3.4x | 3.0x |
+| Sugarscape, constant growback (vision, best sugar in sight) | 1.49 s | 1.46 s |  | 2.10 s | 1.13 s | 0.325 s | 4.6x | 4.5x | 6.5x |
 
 "Mesa 3.5 + numpy" (`mesa3np_model.py`) is what a Mesa modeller can write by giving up agent
 objects: a `mesa.Model` holding the population as numpy arrays over Mesa's grid and property
-layers, with the same vectorised phases as Modelly. It is faster than Modelly's columns (4.6x on
-the epidemic, 1.8x on Schelling, 2.6x on Boltzmann): Modelly keeps an `Agent` per individual,
+layers, with the same vectorised phases as Modelly. It is faster than Modelly's columns (4.4x on
+the epidemic, 1.8x on Schelling, 2.8x on Boltzmann): Modelly keeps an `Agent` per individual,
 with its `step()`, its identity and the agent-set API, and pays for that bookkeeping. With agents
-on both sides, Modelly columns are 3.2 to 31x faster than Mesa 3.5, 5.0 to 45x faster than
-Mesa 2.3 (4.3 to 30x including construction) and 3.0 to 9.4x faster than mesa-frames.
+on both sides, Modelly columns are 2.9 to 33x faster than Mesa 3.5, 4.6 to 45x faster than
+Mesa 2.3 (4.0 to 32x including construction) and 3.0 to 9.4x faster than mesa-frames.
 
 Where Modelly keeps Mesa's data structure (agents held in cell lists, `modelly-cells` in the
-results) the gap closes to 1.4 to 2.5x over Mesa 2.3 on the epidemic, predator-prey and
+results) the gap closes to 1.3 to 2.5x over Mesa 2.3 on the epidemic, predator-prey and
 Sugarscape models: the layout is where the time is, not the interpreter. (Schelling's model with
-cell lists stays 15x ahead of Mesa 2.3: it counts every resident's similar neighbours at once.)
+cell lists stays 14x ahead of Mesa 2.3: it counts every resident's similar neighbours at once.)
 Every vectorised phase rests on a stated equivalence argument, in
 [docs/vectorised_phases.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/vectorised_phases.md); the full tables with the agreement
 checks are in [benchmarks/playbooks/results/README.md](https://github.com/RemiPelloux/Modelly/blob/main/benchmarks/playbooks/results/README.md).

@@ -5,33 +5,51 @@ versioning.
 
 ## Unreleased
 
+### Fixed
+
+- migrate: `mesa.experimental.scenarios` and `mesa.experimental.data_collection` map to
+  `modelly.scenarios` and `modelly.data.recorders`; dotted names such as
+  `mesa.discrete_space.CellAgent` go through the module map; a Mesa module with no Modelly
+  equivalent is reported instead of silently rewritten.
+
 ### Benchmarks
 
+- `benchmarks/mesa_examples`: eight of Mesa 3.5's ten bundled examples ported by the codemod,
+  timed and compared against the originals.
+- Every playbook, the ports and the mesa-frames thread comparison re-measured at a fixed
+  frequency: performance governor, turbo disabled, the 1.9 GHz base clock, CPU 2, ten rounds at
+  `627459a`, every per-round ratio within 15% of its median. Absolute seconds are longer than
+  with turbo; the ratios are the point.
 - Fairer Sugarscape baselines: the Mesa 2.3 forager no longer builds a whole-grid mask with
   `select_cells` for every move (the cached neighbourhood gives the same runs, bit for bit,
   4 to 5x faster), and both Mesa versions run the same single-pass search as Modelly's cell-list
   variant. All variants re-timed in one session, ten rounds on a performance core, the order
-  rotating every round: columns run the steps 5.0 to 45x faster than Mesa 2.3 (4.3 to 30x
-  including construction) and 3.2 to 31x faster than Mesa 3.5, cohorts 239x and 133x; cell
-  lists 1.4 to 15x and 1.3 to 12x.
+  rotating every round: columns run the steps 4.6 to 45x faster than Mesa 2.3 (4.0 to 32x
+  including construction) and 2.9 to 33x faster than Mesa 3.5, cohorts 243x (217x including
+  construction) and 133x; cell lists 1.3 to 14x and 1.3 to 11x. Against Mesa 2.3, Mesa 3.5
+  runs the steps 0.91x (predator-prey) to 3.1x (network) as fast, mesa-frames 0.71x (Sugarscape)
+  to 6.5x (grid epidemic).
 - A hand-vectorised Mesa 3.5 baseline (`mesa3np_model.py`) for the grid epidemic, Schelling and
   Boltzmann wealth: Mesa's model, grids, property layers and seeding with the population in numpy
   arrays and no agent objects. It agrees with Mesa 2.3 over 100 seeds and is faster than
-  Modelly's columns (4.6x, 1.8x and 2.6x), which keep an agent per individual; the tables show it
+  Modelly's columns (4.4x, 1.8x and 2.8x), which keep an agent per individual; the tables show it
   as its own column.
 - The Mesa Boltzmann baselines compute the Gini coefficient with numpy, as Modelly's does; the
   statistics are unchanged.
 - A mesa-frames variant (`frames_model.py`) of four playbooks, run in `.venv-frames` with polars on
   one thread: Modelly columns are 3.0 to 9.4x faster. With all of polars' threads mesa-frames is
-  slower than on one on three of the four workloads (`paper/data/frames_threads.json`). Mesa 3.5's flocking uses
+  slower than on one on three of the four workloads (grid epidemic 1.73 s against 1.52 s,
+  Boltzmann 2.61 s against 1.46 s, Sugarscape 4.29 s against 2.96 s) and faster only on
+  Schelling (2.12 s against 2.90 s; `paper/data/frames_threads.json`). Mesa 3.5's flocking uses
   `mesa.space.ContinuousSpace`, 1.6x faster than its experimental space and bit-identical to Mesa
   2.3. Each result file records the commit, date, load, core, power policy and versions
   (`benchmarks/playbooks/environment.py`).
 - `benchmarks/ports/`: the two playbooks without a Mesa 2 grid, ported from Mesa 2.3 by the
-  codemod and the steps it reports, bit-identical to the originals, at 0.22 (insects) and 0.38
+  codemod and the steps it reports, bit-identical to the originals, at 0.22 (insects) and 0.37
   (Boltzmann) of Mesa 2.3's CPU time.
 - `benchmarks/ports_mesa3/`: five Mesa 3.5 playbooks ported by the codemod alone
-  (`python -m modelly.migrate --write`), at 0.46 to 0.99 of Mesa 3.5's CPU time. Not
+  (`python -m modelly.migrate --write`), at 0.45 (Boltzmann), 0.51 (insects), 0.74 (grid
+  epidemic), 0.86 (network) and 0.93 (Schelling) of Mesa 3.5's CPU time. Not
   bit-identical (the random streams differ); over 100 seeds 24 of 26 statistics are equivalent
   within half a standard deviation and nothing is significant after Holm. Flocking (legacy
   `ContinuousSpace`), predator-prey and Sugarscape (`PropertyLayer`) do not port this way.
