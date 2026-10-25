@@ -40,7 +40,7 @@ included, was written by the author of \modelly{} with the help of AI coding ass
 Mesa version follows Mesa's documented API and examples, and all of them are in the repository
 for inspection; corrections from Mesa developers are welcome. The one comparison whose
 baselines we did not write is that of Mesa~3.5's own examples (\cref{tab:mesa-examples}),
-which runs Mesa's code unmodified; it measures the same-code gain, not the gain of the faster
+whose Mesa arm runs Mesa's code unmodified; it measures the same-code gain, not the gain of the faster
 forms, which no Mesa-written model can show.
 
 \paragraph{Measurement.} All timings come from one laptop with a hybrid processor, in one
@@ -50,7 +50,7 @@ cores; the other twelve are efficiency cores), under the \code{intel\_pstate} dr
 Absolute times are therefore longer than on a turbo-enabled machine; the ratios are what we
 report. Other work shared the machine (one-minute load average 3.0 to 21.8 at the start of each
 workload), and the order of the implementations rotated from round to round: every per-round
-ratio lies within 15\% of its median, for 24 of the 28 non-reference variants within 10\%, and
+ratio over Mesa~2.3 lies within 15\% of its median (over Mesa~3.5, within 17\%), for 24 of the 28 non-reference variants within 10\%, and
 the bootstrap intervals of \cref{tab:speedup-ci} are a few percent wide (45.3 [44.2, 46.3] for
 the grid epidemic's columns over Mesa~2.3). An earlier session with turbo enabled and the
 \code{powersave} governor gave ratios up to 30\% different for some workloads and per-round

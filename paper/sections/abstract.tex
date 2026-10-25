@@ -2,22 +2,23 @@
 Agent-based models are used across epidemiology, ecology, economics and the social sciences,
 yet studies still meet three obstacles: simulations too slow for the sweeps a careful study
 needs, results that are hard to reproduce, and a gap between running a model and producing
-numbers a reviewer can check. \modelly{} is an open-source Python framework with a
+numbers a reviewer can check. \modelly{} is a Python framework with a
 Mesa-compatible programming model that addresses the three. It adds agent state held in
 model-owned arrays (columns), counted populations (cohorts), compiled inner loops with
 pure-Python twins and reproducible random streams, and it ships the steps of a study: parameter
 sweeps, calibration (ABC-SMC, simulated moments), global sensitivity analysis (Morris, Sobol,
 PAWN), run manifests and archivable bundles, and twelve reference models with validation tests.
-On eight workloads written idiomatically for Mesa~2.3, for the current Mesa~3.5 and for
+On eight workloads written idiomatically for Mesa~2.3, for Mesa~3.5 and for
 \modelly{}, and on four of them for the vectorised mesa-frames, vectorised \modelly{} code (the
 column form) runs the simulation steps 2.9 to 33 times faster than per-agent Mesa~3.5 code, 4.6
 to 45 times faster than Mesa~2.3 and 3.0 to 9.4 times faster than mesa-frames, and 1.8 to 4.4
-times slower than hand-written numpy without agent objects; on the one workload with a cohort
-form, that form runs 133 times faster than Mesa~3.5. Over 100 paired seeds, 63 of 67
+times slower than hand-written numpy without agent objects; the cohort form of the one
+workload that has one runs 133 times faster than Mesa~3.5. Over 100 paired seeds, 63 of 67
 comparisons of a summary statistic between a \modelly{} variant and Mesa~2.3 are equivalent
 within half a standard deviation at the 5\% level (29 after a Holm correction), and every
-difference of means is at most 11\%. Mesa models ported without changing their logic run at
-0.22 to 0.96 of Mesa's CPU time, with bit-identical output for three Mesa~2.3 models and
-equivalent distributions for thirteen Mesa~3.5 ones, eight of them Mesa's own examples. \modelly{} is on PyPI
+difference of means is at most 11\%. Public Mesa models ported without changing their logic
+run at 0.22 to 0.96 of Mesa's CPU time, with bit-identical output for three
+Mesa~2.3 models and, for thirteen Mesa~3.5 ones (eight of them Mesa's own examples), 59 of 61
+statistics equivalent, none different after correction. \modelly{} is on PyPI
 as \code{modelly-abm} under the Apache 2.0 licence.
 \end{abstract}

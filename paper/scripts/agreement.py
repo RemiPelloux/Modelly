@@ -181,7 +181,7 @@ def analyse(tag: str) -> None:
     )
     forest(rows, PAPER / "figures" / f"agreement_{tag}")
     (PAPER / "tables" / f"agreement_{tag}_all.tex").write_text(
-        full_table(rows, payload["seeds"]), encoding="utf-8"
+        full_table(rows, payload["seeds"], payload["size"], tag), encoding="utf-8"
     )
     summary = DATA_DIR / f"agreement_{tag}_summary.json"
     summary.write_text(json.dumps(rows, indent=1), encoding="utf-8")

@@ -149,16 +149,17 @@ COLUMNS = (
 )
 
 
-def full_table(rows: list[dict], seeds: int) -> str:
+def full_table(rows: list[dict], seeds: int, size: str, tag: str) -> str:
     """Every comparison: d with its paired 95% interval, r, and the p-values (longtable)."""
+    label = "tab:agreement-all" if tag == "small" else f"tab:agreement-all-{tag}"
     head = [
         "\\begin{longtable}{lllrrrrrr}",
         (
-            "\\caption{Every comparison of the agreement study at the small size"
+            f"\\caption{{Every comparison of the agreement study at the {size} size"
             f" ({seeds} seeds): standardised difference $d$ with its paired 95\\% interval,"
             " correlation $r$ between the implementations' runs on the same seed, and the"
             " paired $t$, Kolmogorov--Smirnov and paired TOST $p$-values, uncorrected.}"
-            "\\label{tab:agreement-all}\\\\"
+            f"\\label{{{label}}}\\\\"
         ),
         *COLUMNS,
         "\\endfirsthead",

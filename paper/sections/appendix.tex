@@ -45,7 +45,8 @@ NP="--variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth"
 .venv/bin/python paper/scripts/ports.py --rounds 10 --core 2
 .venv/bin/python paper/scripts/frames_threads.py
 # Mesa's own examples against their codemod ports, then their table
-.venv/bin/python benchmarks/mesa_examples/run.py --rounds 10 --seeds 100 --core 2
+.venv/bin/python benchmarks/mesa_examples/run.py --rounds 10 --seeds 100 --core 2 \
+    --agree-cores 8-15
 .venv/bin/python paper/scripts/mesa_examples_table.py
 # the core operations against the last release
 .venv/bin/python -m modelly.dev perf

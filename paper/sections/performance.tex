@@ -86,16 +86,17 @@ seeds at the small size, 24 of the 26 statistics are equivalent within $0.5\,s_p
 $t$-tests fall below 5\% before correction (the network's peak of infections and the Boltzmann
 model's largest wealth, $|d| \le 0.31$) and none after it, and no Kolmogorov--Smirnov test does.
 \paragraph{Mesa's own examples.} The ports above are of implementations we wrote. Mesa~3.5
-ships ten example models written by its developers, and we ported those too, unmodified
-(\code{benchmarks/mesa\_examples/}): eight run on \modelly{} after the codemod, seven with no
-manual step and the Epstein civil-violence model with the one its report asks for
-(\code{self.steps} becomes \code{self.time}); Sugarscape G1MT uses Mesa's property layers and
+ships ten example models written by its developers, and we ported copies of them,
+kept in \code{benchmarks/mesa\_examples/}: eight run on \modelly{} after the codemod and one more edit
+to each, the import of the example's own agents made relative (the codemod points it at
+\modelly{}'s bundled example of the same name), plus, for the Epstein civil-violence model, the
+one step its report asks for (\code{self.steps} becomes \code{self.time}); Sugarscape G1MT uses Mesa's property layers and
 alliance formation its meta-agent factory, which \modelly{} lacks. Porting them found a gap in
 the codemod, which rewrote three Mesa~3.5 module paths to \modelly{} paths that do not exist
 without reporting them; the codemod now maps them and reports any module without an
 equivalent (the fix is in the next release; the timed code does not import the codemod). We ran
-each original and its port at Mesa's default parameters, or on a larger grid at the same
-density where the defaults run in well under 0.2~s, for ten alternating rounds on the same
+each original and its port at Mesa's default parameters, or, where the defaults run in well
+under 0.2~s, on a larger grid at the same density (the virus model on 1,000 nodes), for ten alternating rounds on the same
 fixed-frequency core, and compared every model reporter, at the last step and averaged over
 the run, over 100 shared seeds. \Cref{tab:mesa-examples} gives the results: the ports take
 0.61 (wolf--sheep) to 0.96 (boid flockers) of Mesa~3.5's CPU time, and all 35 statistics are
@@ -157,8 +158,8 @@ do. \Cref{tab:workloads} in the appendix gives every workload's parameters. All 
 workloads were timed in one session, ten rounds each, on one performance core, the order of
 the variants rotating from round to round; each result file records the commit, the date, the
 load, the core and its power policy, and every package version. With the frequency fixed,
-every per-round ratio lies within 15\% of its median, and for 24 of the 28 timed variants within
-10\%, although other jobs shared the machine (one-minute load average 3.0 to 21.8 at the start of
+every per-round ratio over Mesa~2.3 lies within 15\% of its median (over Mesa~3.5, within
+17\%), and for 24 of the 28 timed variants within 10\%, although other jobs shared the machine (one-minute load average 3.0 to 21.8 at the start of
 each workload); \cref{tab:speedup-ci} in the appendix gives a bootstrap 95\% interval for every
 speed-up, resampling the paired rounds.
 
@@ -374,7 +375,8 @@ records). Release 1.3.2, whose only change to the library is the ABC-SMC correct
 the same gate against 1.3.1: no core operation slower by the criterion; playbook ratios between
 0.96 and 1.04 over five rounds, and 0.99, 1.01 and 1.07 for the three noisiest re-timed over 15
 rounds (lower quartiles 0.97 to 0.99, so not slower by the criterion), with identical outputs;
-and a paired ratio of 0.98 on the notebook with identical records. The playbooks run no code
+and a paired ratio of 0.98 on the notebook (per-round ratios 0.86 to 2.15, so that arm detects
+only large regressions) with identical records. The playbooks run no code
 that changed: the compiled modules' machine code is identical to 1.3.1's. The playbook arm therefore
 shows the gate's noise floor: its per-round ratios spread by more than 3\%, so a median of 1.07
 passes while its lower quartile is below 1, and slowdowns of a few percent are detected only

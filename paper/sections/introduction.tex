@@ -34,8 +34,8 @@ reproducible research:
   (\cref{sec:design}). On eight workloads the simulation steps run 2.9 to 33 times faster
   than their Mesa~3.5 counterparts and 3.0 to 9.4 times faster than mesa-frames in column
   form, and 133 times faster than Mesa~3.5 in cohort form on the workload that has one; a
-  hand-written numpy version without agent objects is 1.8 to 4.4 times faster still. The
-  column and cohort forms give summary statistics equivalent to Mesa~2.3's within half a standard
+  hand-written numpy version without agent objects is 1.8 to 4.4 times faster still. \modelly{}'s
+  variants (columns, cohorts and cell lists) give summary statistics equivalent to Mesa~2.3's within half a standard
   deviation in 63 of 67 comparisons (\cref{sec:performance}).
   \item \textbf{Reproducibility as a property of the framework.} Seeded generators reproduce
   the standard library's random stream, and a determinism suite checks that the bundled
