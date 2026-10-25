@@ -235,7 +235,7 @@ extend-ignore = [
 # `# noqa: MDL001` comments are for `python -m modelly.lint`, not ruff.
 external = ["MDL"]
 # Ignore all docstring errors in examples and tutorials
-per-file-ignores = {"modelly/examples/*"= ["D"], "benchmarks/playbooks/*" = ["D102", "D107", "E741"], "example.py" = ["D"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
+per-file-ignores = {"modelly/examples/*"= ["D"], "benchmarks/playbooks/*" = ["D102", "D107", "E741"], "benchmarks/ports/*" = ["D102", "D107"], "example.py" = ["D"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
