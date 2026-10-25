@@ -149,3 +149,29 @@ def test_help_and_missing_path(capsys):
     assert "examples:" in out and "exit status:" in out
     assert migrate.main(["does_not_exist.py"]) == migrate.EXIT_USAGE
     assert "modelly.migrate" in capsys.readouterr().err
+
+
+MESA35_IMPORTS = """import mesa
+from mesa.experimental.scenarios import Scenario
+from mesa.experimental.data_collection import DataRecorder
+from mesa.discrete_space.property_layer import PropertyLayer
+
+
+class Citizen(mesa.discrete_space.CellAgent):
+    pass
+"""
+
+
+def test_mesa35_experimental_modules_map_to_modelly_modules():
+    """Scenarios, recorders and dotted ``mesa.discrete_space`` names reach real modules."""
+    result = migrate.migrate_source(Path("model.py"), MESA35_IMPORTS)
+    assert "from modelly.scenarios import Scenario" in result.migrated
+    assert "from modelly.data.recorders import DataRecorder" in result.migrated
+    assert "class Citizen(modelly.space.CellAgent):" in result.migrated
+
+
+def test_a_module_modelly_lacks_is_reported_not_silently_rewritten():
+    """The property-layer import, which Modelly has no module for, is flagged."""
+    result = migrate.migrate_source(Path("model.py"), MESA35_IMPORTS)
+    flagged = [f.line for f in result.findings if "no Modelly equivalent" in f.reason]
+    assert flagged == [4]

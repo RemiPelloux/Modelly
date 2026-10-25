@@ -34,8 +34,16 @@ a Mesa 2 model needs the scheduler and grid sections.
 | `mesa.experimental.devs` (`ABMSimulator`, `DEVSimulator`) | methods on `Model`, see [Events](#events-and-simulators) |
 | `mesa.experimental.continuous_space` | `modelly.space.continuous` |
 | `mesa.experimental.signals`, `mesa.experimental.meta_agents` | `modelly.time.signals`, `modelly.behaviour.meta_agents` |
+| `mesa.experimental.scenarios` | `modelly.scenarios` |
+| `mesa.experimental.data_collection` | `modelly.data.recorders` |
 
-The codemod does all of these.
+The codemod does all of these, for import statements and for dotted names in code
+(`mesa.discrete_space.CellAgent` becomes `modelly.space.CellAgent`). A Mesa module with no
+Modelly equivalent is reported, not silently rewritten: the property-layer modules
+(`mesa.space.property_layer`, `mesa.discrete_space.property_layer`; use
+`grid.create_property_layer`, see [Grids](#grids-and-positions)) and every other
+`mesa.experimental.*` module, such as `mesa.experimental.devs` (see
+[Events](#events-and-simulators)).
 
 ## Agents
 
