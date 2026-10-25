@@ -87,8 +87,8 @@ If the benchmark results are rerun (for a new release, or on different hardware)
       (Mathematical Software) and, depending on the audience, **physics.soc-ph** or
       **q-bio.PE**. A first submission to cs.MA may need an endorsement.
 - [ ] Licence for the arXiv record (for example CC BY 4.0).
-- [x] For a journal: software-availability, funding, competing-interest, data-availability
-      and generative-AI declarations (Declarations, after Section 10).
+- [x] For a journal: software-availability, funding, competing-interest and data-availability
+      declarations (Declarations, after Section 10).
 - [x] Commit and push `paper/`; the repository is archived by Software Heritage (SWHID in
       Section 10).
 - [ ] Optional: archive the exact version on Zenodo (`modelly bundle`) and cite its DOI in

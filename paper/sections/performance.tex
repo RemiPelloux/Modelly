@@ -188,25 +188,69 @@ speed-up, resampling the paired rounds.
   \label{fig:speedups}
 \end{figure}
 
-\Cref{tab:playbooks} and \cref{fig:speedups} give the results. Mesa~3.5 itself is faster than
-Mesa~2.3 on five workloads (1.3 to 3.1 times, most on the network), as fast on flocking, where
-both use the same continuous space, and on Sugarscape (1.00 and 1.02 times), and slower on
-predator-prey (0.91 times). mesa-frames is 2.1 to 6.5 times faster than Mesa~2.3 on three of
-its four workloads and slower on Sugarscape (0.71 times), where its per-forager search is a
-cross join and a sort over up to about 130,000 rows per step. Written with columns, the
-workloads run their steps 4.6 to 45 times faster than with Mesa~2.3, 2.9 to 33 times faster
-than with Mesa~3.5, and 3.0 to 9.4 times faster than with mesa-frames; including construction,
-4.0 to 32 times faster than Mesa~2.3. \modelly{}'s construction is slower than Mesa~2.3's (it
+\paragraph{Where \modelly{} is fast, and why.} \modelly{}'s column form runs every workload
+faster than Mesa~2.3, Mesa~3.5 and mesa-frames (\cref{tab:playbooks,fig:speedups}): its steps run
+4.6 to 45 times faster than Mesa~2.3, 2.9 to 33 times faster than Mesa~3.5 and 3.0 to 9.4 times
+faster than mesa-frames, and its cohort form runs the insect population 243 times faster than
+Mesa~2.3 and 133 times faster than Mesa~3.5. \Cref{tab:why} gives the reason workload by
+workload. In each, one \modelly{} mechanism replaces a Python loop over the agents with a few
+array operations over the whole population: a column read or write instead of an attribute per
+agent, one count over the grid's adjacency instead of a neighbourhood walk per agent, one
+KD-tree query instead of a distance test per pair, one sparse product over a network instead of
+a loop over each node's neighbours, one binomial draw per class instead of one draw per insect.
+The gain therefore grows with the share of a step that such a mechanism covers: largest where
+every phase becomes array work (flocking, the grid epidemic, Schelling's model, the network),
+smaller where a phase must stay sequential, as the foragers' walk to a free cell in Sugarscape,
+or where the step creates and removes many agents, as the births and deaths of predator-prey
+and of the individual insect model. The arguments that each vectorised phase has the law of its
+per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}), and
+\cref{sec:agreement} checks that the outputs agree.
+
+\begin{table}[tbp]
+  \centering
+  \small
+  \caption{Where \modelly{}'s speed comes from: the step-time speed-up of each workload's
+  fastest \modelly{} form over Mesa~3.5 and Mesa~2.3 (\cref{tab:playbooks}), and the mechanism
+  that replaces the per-agent Python loop.}
+  \label{tab:why}
+  \begin{tabularx}{\linewidth}{@{}l r r >{\raggedright\arraybackslash}X@{}}
+    \toprule
+    Workload & \multicolumn{2}{c}{faster than} & What \modelly{} does instead of a loop over agents \\
+    \cmidrule(lr){2-3}
+     & Mesa~3.5 & Mesa~2.3 & \\
+    \midrule
+    Flocking & 33$\times$ & 33$\times$ & one periodic KD-tree query for the whole flock; the steering
+      terms are pair sums scattered back with \code{bincount}; positions written in one call \\
+    Grid epidemic & 28$\times$ & 45$\times$ & positions are a column of cells: the walk is one
+      \code{random\_neighbor} call, the exposure one count of infected per cell \\
+    Schelling & 18$\times$ & 23$\times$ & happiness is two sparse products (residents per cell,
+      summed over neighbours); all moves in one pass with the sequential rule's law \\
+    Network contagion & 13$\times$ & 39$\times$ & infected neighbours of every node in one sparse
+      matrix--vector product; infection and recovery are Bernoulli vectors \\
+    Predator-prey & 7.1$\times$ & 6.4$\times$ & movement, energy, grazing and predation
+      (\code{claim}) are array operations; deaths and births are one call per species \\
+    Sugarscape & 4.5$\times$ & 4.6$\times$ & every forager's visible cells ranked in one array
+      pass; only the walk to a free cell stays sequential \\
+    Boltzmann wealth & 3.4$\times$ & 6.4$\times$ & the exchange is one array pass with the law of
+      the shuffled sequential order; the Gini coefficient is read from a column \\
+    Insect population & 133$\times$ & 243$\times$ & cohorts: a few dozen (stage, age, sex)
+      classes thinned by binomial draws replace about 26,000 agents \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\paragraph{The other implementations.} Mesa~3.5 is faster than Mesa~2.3 on five workloads
+(1.3 to 3.1 times), as fast on flocking and Sugarscape, and slower on predator-prey (0.91
+times). mesa-frames is 2.1 to 6.5 times faster than Mesa~2.3 on three of its four workloads and
+slower on Sugarscape (0.71 times), where its per-forager search is a cross join and a sort over
+up to about 130,000 rows per step. \modelly{}'s cell-list variants, which keep Mesa's per-cell
+agent lists, give 1.3 to 14 times over Mesa~2.3 and 1.3 to 11 over Mesa~3.5: large for
+Schelling's model, whose residents mostly count their neighbours, small where movement and
+search stay per agent. Construction is where \modelly{} spends more than Mesa~2.3 (it
 allocates the columns and indexes the space; Mesa~3.5's cell spaces cost about as much, 0.31
-to 0.43~s on the three large grids and the network), which matters for short runs such as the
-network contagion (39 times per step, 10 times in total). With cohorts, the insect population
-model runs 243 times faster per step than with Mesa~2.3 (217 in total) and 133 times faster
-than with Mesa~3.5, because about 26,000 insects become a few hundred counted classes
-(\cref{eq:cohorts}); it is the one workload with a cohort form. The cell-list variants give
-1.3 to 14 times over Mesa~2.3 and 1.3 to 11 over Mesa~3.5: large for Schelling's model, whose
-residents mostly count their neighbours, small for predator-prey and Sugarscape, where movement, predation and the foragers' search stay per-agent loops. The arguments that each vectorised phase has the
-law of its per-agent loop, including the predation matching and the cohort compression, are
-given in the documentation (\code{docs/vectorised\_phases.md}).
+to 0.43~s on the three large grids and the network), so the gain including construction is
+4.0 to 32 times, and lower than per step on short runs such as the network contagion (39 times
+per step, 10 in total).
 
 \paragraph{Against hand-written numpy.} The Mesa~3.5 + numpy baseline is faster than
 \modelly{}'s columns on all three of its workloads: its steps take 0.035~s against 0.157~s on
