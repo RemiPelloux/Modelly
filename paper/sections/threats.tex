@@ -8,7 +8,7 @@ research model was written for, and the current Mesa~3.5.1; Mesa~2.3 runs here o
 3.15, which it does not officially support. The Mesa~3.5 and mesa-frames implementations were
 written for this paper, following each library's documentation and examples, and their
 developers might write them faster. mesa-frames was measured from its development branch
-(commit \code{ef92326}, polars~2.0, on one thread), on four of the eight workloads; writing
+(commit \code{ef92326}, reporting version 0.1.1.dev0, polars~2.0, on one thread), on four of the eight workloads; writing
 the others needs features it lacks (it has no continuous or network space), and working
 around three defects we met (neighbourhoods on a torus, the removal of agents, and
 neighbourhoods of radius above one) made its code longer than its examples. AgentPy,
@@ -43,8 +43,9 @@ baselines we did not write is that of Mesa~3.5's own examples (\cref{tab:mesa-ex
 whose Mesa arm runs Mesa's code unmodified; it measures the same-code gain, not the gain of the faster
 forms, which no Mesa-written model can show.
 
-\paragraph{Measurement.} All timings come from one laptop with a hybrid processor, in one
-45-minute session, pinned to one performance core (CPU 2, one of the processor's four 4.7~GHz
+\paragraph{Measurement.} The timings of the playbooks, the ports and Mesa's examples come from
+one laptop with a hybrid processor, in one session of under an hour, pinned to one performance
+core (CPU 2, one of the processor's four 4.7~GHz
 cores; the other twelve are efficiency cores), under the \code{intel\_pstate} driver with the
 \code{performance} governor and turbo disabled, so the core ran at its 1.9~GHz base frequency.
 Absolute times are therefore longer than on a turbo-enabled machine; the ratios are what we
