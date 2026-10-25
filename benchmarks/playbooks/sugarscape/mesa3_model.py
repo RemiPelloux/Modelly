@@ -32,19 +32,28 @@ class Forager(CellAgent):
         self.metabolism = metabolism
         self.wealth = initial_sugar
 
-    def move(self):
+    def best_cells(self):
+        """The nearest free cells in sight holding the most sugar, if more than here.
+
+        One pass over the cached neighbourhood, the same loop as the other variants.
+        """
         here = self.cell
-        free = [c for c in here.get_neighborhood(radius=self.vision) if c.is_empty]
-        if not free:
-            return
-        most = max(c.sugar for c in free)
-        if most <= here.sugar:
-            return
+        best, most, nearest = [], here.sugar, 0
         x, y = here.coordinate
-        best = [c for c in free if c.sugar == most]
-        distance = [abs(c.coordinate[0] - x) + abs(c.coordinate[1] - y) for c in best]
-        nearest = [c for c, d in zip(best, distance) if d == min(distance)]
-        self.cell = self.random.choice(nearest)
+        for cell in here.get_neighborhood(radius=self.vision):
+            if not cell.is_empty or cell.sugar < most:
+                continue
+            distance = abs(cell.coordinate[0] - x) + abs(cell.coordinate[1] - y)
+            if cell.sugar > most or distance < nearest:
+                best, most, nearest = [cell], cell.sugar, distance
+            elif distance == nearest:
+                best.append(cell)
+        return best
+
+    def move(self):
+        best = self.best_cells()
+        if best:
+            self.cell = self.random.choice(best)
 
     def eat(self):
         cell = self.cell

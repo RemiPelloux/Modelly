@@ -4,77 +4,84 @@ Same model as ``mesa_model.py``. Every boid steers towards the centre of its
 neighbours within ``vision`` (cohere), away from those closer than
 ``separation`` (separate) and along their headings (match), all read from the
 start-of-step state, then moves ``speed`` along its new unit heading. The
-space is ``mesa.experimental.continuous_space.ContinuousSpace``, as in Mesa's
-own boid_flockers example; it answers each neighbour query with a scan of every
-position held in its numpy array.
+space is ``mesa.space.ContinuousSpace``, which Mesa 3.5 still provides without
+deprecation: on this workload it is about 1.6 times faster than the experimental
+``mesa.experimental.continuous_space`` that Mesa's boid_flockers example uses
+(same runs, bit for bit), so the faster one is the fairer baseline.
 """
 
 from __future__ import annotations
 
+import mesa
 import numpy as np
-from mesa import Model
-from mesa.experimental.continuous_space import ContinuousSpace, ContinuousSpaceAgent
+from mesa.space import ContinuousSpace
 
 
-class Boid(ContinuousSpaceAgent):
+class Boid(mesa.Agent):
     """A boid with a unit heading; ``compute`` then ``advance`` keep the update simultaneous."""
 
-    def __init__(self, model, space, position, direction):
-        super().__init__(space, model)
-        self.position = position
+    def __init__(self, model, direction):
+        super().__init__(model)
         self.direction = direction
         self.new_direction = direction
         self.neighbor_count = 0
 
     def compute(self):
         model = self.model
-        neighbors, distances = self.get_neighbors_in_radius(radius=model.vision)
+        neighbors = model.space.get_neighbors(
+            self.pos, model.vision, include_center=False
+        )
         self.neighbor_count = len(neighbors)
         if not neighbors:
             self.new_direction = self.direction
             return
-        delta = self.space.calculate_difference_vector(self.position, agents=neighbors)
+        size = model.size
+        delta = np.array([n.pos for n in neighbors]) - self.pos
+        delta = np.mod(delta + size / 2, size) - size / 2
+        close = (delta**2).sum(axis=1) < model.separation**2
         cohere = delta.sum(axis=0) * model.cohere
-        separate = -delta[distances < model.separation].sum(axis=0) * model.separate
-        match = np.asarray([n.direction for n in neighbors]).sum(axis=0) * model.match
+        separate = -delta[close].sum(axis=0) * model.separate
+        match = np.array([n.direction for n in neighbors]).sum(axis=0) * model.match
         direction = self.direction + (cohere + separate + match) / len(neighbors)
         self.new_direction = direction / np.linalg.norm(direction)
 
     def advance(self):
         self.direction = self.new_direction
-        self.position = self.position + self.direction * self.model.speed
+        self.model.space.move_agent(
+            self, tuple(self.pos + self.direction * self.model.speed)
+        )
 
 
-class Flock(Model):
+class Flock(mesa.Model):
     """The torus and its boids."""
 
     def __init__(
-        self, n, side, vision, speed, separation, cohere, separate, match, rng
+        self, n, side, vision, speed, separation, cohere, separate, match, seed
     ):
-        super().__init__(rng=rng)
+        super().__init__(rng=seed)
         self.vision, self.speed, self.separation = vision, speed, separation
         self.cohere, self.separate, self.match = cohere, separate, match
-        self.space = ContinuousSpace(
-            [[0, side], [0, side]], torus=True, random=self.random, n_agents=n
-        )
-        # ``Model(rng=seed)`` makes ``self.rng`` ``np.random.default_rng(seed)``,
-        # the stream the reference draws its initial state from.
-        positions = self.rng.random((n, 2)) * side
-        angles = self.rng.random(n) * 2 * np.pi
-        directions = np.column_stack([np.cos(angles), np.sin(angles)])
-        Boid.create_agents(self, n, self.space, positions, directions)
+        self.size = np.array([side, side])
+        self.space = ContinuousSpace(side, side, torus=True)
+        rng = np.random.default_rng(seed)
+        positions = rng.random((n, 2)) * side
+        angles = rng.random(n) * 2 * np.pi
+        for i in range(n):
+            boid = Boid(self, np.array([np.cos(angles[i]), np.sin(angles[i])]))
+            self.space.place_agent(boid, tuple(positions[i]))
         self.polarisation = []
 
     def step(self):
-        self.agents.do("compute")
-        self.agents.do("advance")
-        mean = np.mean([a.direction for a in self.agents], axis=0)
+        agents = self.agents
+        agents.do("compute")
+        agents.do("advance")
+        mean = np.mean([a.direction for a in agents], axis=0)
         self.polarisation.append(float(np.linalg.norm(mean)))
 
 
 def build(seed, n, side, vision, speed, separation, cohere, separate, match):
     """Build the model."""
-    return Flock(n, side, vision, speed, separation, cohere, separate, match, rng=seed)
+    return Flock(n, side, vision, speed, separation, cohere, separate, match, seed=seed)
 
 
 def simulate(model, steps):

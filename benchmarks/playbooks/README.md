@@ -1,4 +1,4 @@
-# Playbooks: the same eight models on Mesa 2.3, Mesa 3.5 and Modelly
+# Playbooks: the same eight models on Mesa 2.3, Mesa 3.5, mesa-frames and Modelly
 
 Eight workloads, each written three times: for Mesa 2.3 the way its API intends
 (per-agent methods, `MultiGrid` / `SingleGrid` / `ContinuousSpace` /
@@ -49,6 +49,9 @@ needs Mesa 3.5 installed next to it:
 python -m venv .venv-mesa2
 .venv-mesa2/bin/pip install "mesa==2.3.2" numpy pandas networkx
 .venv/bin/pip install "mesa==3.5.1"
+python -m venv .venv-frames         # mesa-frames, for its four playbooks (frames_model.py)
+.venv-frames/bin/pip install "mesa-frames @ git+https://github.com/mesa/mesa-frames@ef92326" \
+    beartype numpy==2.5.4 pandas==3.0.6
 .venv/bin/python benchmarks/playbooks/compare.py --core 5          # everything, pinned
 .venv/bin/python benchmarks/playbooks/compare.py flocking --rounds 5
 .venv/bin/python benchmarks/playbooks/worker.py insect_cohorts modelly-cohorts 1 large

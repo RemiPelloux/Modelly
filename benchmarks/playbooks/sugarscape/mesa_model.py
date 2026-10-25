@@ -27,21 +27,30 @@ class Forager(mesa.Agent):
         self.metabolism = metabolism
         self.wealth = wealth
 
-    def move(self):
+    def best_cells(self):
+        """The nearest free cells in sight holding the most sugar, if more than here.
+
+        One pass over the cached neighbourhood, the same loop as the other variants.
+        """
         grid, sugar = self.model.grid, self.model.sugar.data
-        mask = grid.get_neighborhood_mask(
-            self.pos, moore=False, include_center=False, radius=self.vision
-        )
-        best = grid.select_cells(
-            extreme_values={"sugar": "highest"}, masks=mask, only_empty=True
-        )
-        if not best or sugar[best[0]] <= sugar[self.pos]:
-            return
+        best, most, nearest = [], sugar[self.pos], 0
         x, y = self.pos
-        distance = [abs(int(bx) - x) + abs(int(by) - y) for bx, by in best]
-        nearest = [cell for cell, d in zip(best, distance) if d == min(distance)]
-        bx, by = self.random.choice(nearest)
-        grid.move_agent(self, (int(bx), int(by)))
+        for cell in grid.get_neighborhood(
+            self.pos, moore=False, include_center=False, radius=self.vision
+        ):
+            if not grid.is_cell_empty(cell) or sugar[cell] < most:
+                continue
+            distance = abs(cell[0] - x) + abs(cell[1] - y)
+            if sugar[cell] > most or distance < nearest:
+                best, most, nearest = [cell], sugar[cell], distance
+            elif distance == nearest:
+                best.append(cell)
+        return sorted(best)  # ties in the order Mesa's select_cells returns them
+
+    def move(self):
+        best = self.best_cells()
+        if best:
+            self.model.grid.move_agent(self, self.random.choice(best))
 
     def eat(self):
         sugar = self.model.sugar.data

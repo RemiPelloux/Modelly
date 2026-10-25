@@ -33,11 +33,15 @@ ROOT = HERE.parent.parent
 RESULTS = HERE / "results"
 sys.path.insert(0, str(HERE))
 
+from environment import environment  # noqa: E402
 from registry import PLAYBOOKS  # noqa: E402
 
 PYTHONS = {
     "mesa": os.environ.get("MESA_PYTHON", str(ROOT / ".venv-mesa2" / "bin" / "python")),
     "modelly": os.environ.get("MODELLY_PYTHON", str(ROOT / ".venv" / "bin" / "python")),
+    "frames": os.environ.get(
+        "FRAMES_PYTHON", str(ROOT / ".venv-frames" / "bin" / "python")
+    ),
 }
 RESULT_PREFIX = "RESULT "
 REFERENCE = "mesa"
@@ -46,8 +50,8 @@ AGREEMENT_SEED_BASE = 1000
 
 
 def interpreter(variant: str) -> str:
-    """The interpreter a variant runs in: the Mesa venv for ``mesa``, Modelly's otherwise."""
-    return PYTHONS["mesa"] if variant == "mesa" else PYTHONS["modelly"]
+    """The interpreter a variant runs in: Mesa 2.3's, mesa-frames' or Modelly's (with Mesa 3.5)."""
+    return PYTHONS.get(variant, PYTHONS["modelly"])
 
 
 def run_once(
@@ -64,8 +68,10 @@ def run_once(
     ]
     if core is not None and shutil.which("taskset"):
         command = ["taskset", "-c", str(core), *command]
+    # Every implementation is timed on one core: polars (mesa-frames) gets one thread too.
+    env = os.environ | {"POLARS_MAX_THREADS": "1"}
     completed = subprocess.run(
-        command, capture_output=True, text=True, cwd=ROOT, check=False
+        command, capture_output=True, text=True, cwd=ROOT, check=False, env=env
     )
     for line in completed.stdout.splitlines():
         if line.startswith(RESULT_PREFIX):
@@ -78,12 +84,13 @@ def run_once(
 def time_playbook(
     name: str, variants: list[str], rounds: int, size: str, core: int | None
 ) -> dict:
-    """CPU seconds per round for every variant, rounds alternating the variants."""
+    """CPU seconds per round for every variant; each round rotates the order of the variants."""
     timings = {variant: [] for variant in variants}
     builds = {variant: [] for variant in variants}
     populations = {}
     for round_index in range(rounds):
-        for variant in variants:
+        shift = round_index % len(variants)
+        for variant in variants[shift:] + variants[:shift]:
             row = run_once(name, variant, round_index, size, core)
             timings[variant].append(row["run_seconds"])
             builds[variant].append(row["build_seconds"])
@@ -252,6 +259,7 @@ def main(argv: list[str]) -> int:
         variants = list(PLAYBOOKS[name]["variants"])
         sys.stdout.write(f"{name}\n")
         report = {
+            "environment": environment(ROOT, PYTHONS, options.core),
             "timing": time_playbook(
                 name, variants, options.rounds, options.size, options.core
             ),

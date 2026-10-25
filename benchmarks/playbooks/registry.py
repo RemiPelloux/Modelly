@@ -13,6 +13,7 @@ PLAYBOOKS = {
         "variants": {
             "mesa": "mesa_model",
             "mesa3": "mesa3_model",
+            "frames": "frames_model",
             "modelly-cells": "modelly_cells",
             "modelly": "modelly_model",
         },
@@ -111,6 +112,7 @@ PLAYBOOKS = {
         "variants": {
             "mesa": "mesa_model",
             "mesa3": "mesa3_model",
+            "frames": "frames_model",
             "modelly-cells": "modelly_cells",
             "modelly": "modelly_model",
         },
@@ -123,6 +125,7 @@ PLAYBOOKS = {
         "variants": {
             "mesa": "mesa_model",
             "mesa3": "mesa3_model",
+            "frames": "frames_model",
             "modelly": "modelly_model",
         },
         "steps": 100,
@@ -134,6 +137,7 @@ PLAYBOOKS = {
         "variants": {
             "mesa": "mesa_model",
             "mesa3": "mesa3_model",
+            "frames": "frames_model",
             "modelly-cells": "modelly_cells",
             "modelly": "modelly_model",
         },
