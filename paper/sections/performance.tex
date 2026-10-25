@@ -216,7 +216,8 @@ per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}
   \small
   \caption{Where \modelly{}'s speed comes from: the step-time speed-up of each workload's
   fastest \modelly{} form over Mesa~2.3 and Mesa~3.5 (\cref{tab:playbooks}), and the mechanism
-  that replaces the per-agent Python loop.}
+  that replaces the per-agent Python loop, as the code of each implementation shows (the
+  attribution comes from the code, not from per-workload profiles).}
   \label{tab:why}
   \begin{tabularx}{\linewidth}{@{}l r r >{\raggedright\arraybackslash}X@{}}
     \toprule
@@ -226,7 +227,7 @@ per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}
     \midrule
     Flocking & 33$\times$ & 33$\times$ & one periodic KD-tree query for the whole flock; the steering
       terms are pair sums scattered back with \code{bincount}; positions written in one call \\
-    Grid epidemic & 45$\times$ & 27$\times$ & positions are a column of cells: the walk is one
+    Grid epidemic & 45$\times$ & 27.5$\times$ & positions are a column of cells: the walk is one
       \code{random\_neighbor} call, the exposure one count of infected per cell \\
     Schelling & 23$\times$ & 18$\times$ & happiness is two sparse products (residents per cell,
       summed over neighbours); all moves in one pass with the sequential rule's law \\
@@ -280,7 +281,7 @@ lowest paired $p$ of the grid epidemic is 0.13, and over 100 seeds at the timed 
 Kolmogorov--Smirnov $p$ below 5\%, the largest $|d|$ is 0.20, and all six are equivalent
 within $0.5\,s_p$, so the flags came from six seeds. The gap is the
 price of the framework layer: \modelly{} sits between per-agent Mesa and hand-written arrays,
-2.9 to 33 times above the first and 1.8 to 4.4 times below the second on these workloads.
+3.4 to 27.5 times above the first and 1.8 to 4.4 times below the second on these three workloads.
 
 \paragraph{mesa-frames with more threads.} polars runs multi-threaded by default, while the
 timings above set \code{POLARS\_MAX\_THREADS=1} so that every implementation uses one core. We
@@ -346,7 +347,7 @@ $0.3\,s_p$ and 19 at $0.25\,s_p$. No difference survives the Holm correction for
 corrected level a paired test on 100 seeds detects $d = 0.33$ with probability 0.13 and
 $d = 0.5$ with probability 0.52, for uncorrelated pairs (more where the shared initial state
 correlates them). Before correction, six paired $t$-tests and three
-Kolmogorov--Smirnov tests fall below 5\%, against 3.2 expected by chance among the 64
+Kolmogorov--Smirnov tests fall below 5\%, against 3.2 expected by chance for each test among the 64
 comparisons outside flocking if the tests were independent (they are not: the statistics of a
 workload are related, such as its final S, I and R). Every $|d|$ is at most 0.33, and every
 difference of means at most 11\% of Mesa's; six intervals exclude zero, so

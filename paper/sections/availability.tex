@@ -25,7 +25,9 @@ contains the ABC-SMC correction of \cref{sec:validation}. The measurements used 
 measurement machine with GCC~16.2, and the benchmark code of commit \code{627459a}; Mesa's examples were ported and timed with the
 codemod fix of \cref{sec:portability}, which is not in 1.3.2, and the runner of
 \code{benchmarks/mesa\_examples/}, both committed unchanged afterwards (\code{19915bb},
-\code{1e36264}), and the mesa-frames thread timing ran while that fix was uncommitted; each
+\code{1e36264}), and the mesa-frames thread timing ran while that fix was uncommitted; the coverage study and
+the numpy grid epidemic at the timed size ran while benchmark files they do not use were
+uncommitted (since committed in \code{d45bbd3} and \code{0398c44}); each
 result file records the commit, the machine and the package versions. The data and scripts behind every table and figure
 of this paper are in the repository's \code{paper/} folder (\cref{app:reproduce}). The repository
 is archived by Software Heritage; the commit with the code, data and scripts of this paper is
