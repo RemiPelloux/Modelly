@@ -12,6 +12,7 @@ PLAYBOOKS = {
         "title": "Synchronous SIR epidemic on a torus grid",
         "variants": {
             "mesa": "mesa_model",
+            "mesa3": "mesa3_model",
             "modelly-cells": "modelly_cells",
             "modelly": "modelly_model",
         },
@@ -26,6 +27,7 @@ PLAYBOOKS = {
         "title": "Predator-prey with grass regrowth: births and deaths every step",
         "variants": {
             "mesa": "mesa_model",
+            "mesa3": "mesa3_model",
             "modelly-cells": "modelly_cells",
             "modelly": "modelly_model",
         },
@@ -44,7 +46,11 @@ PLAYBOOKS = {
     },
     "flocking": {
         "title": "Flocking in continuous space, simultaneous update",
-        "variants": {"mesa": "mesa_model", "modelly": "modelly_model"},
+        "variants": {
+            "mesa": "mesa_model",
+            "mesa3": "mesa3_model",
+            "modelly": "modelly_model",
+        },
         "steps": 50,
         "sizes": {
             "small": {"n": 500, "side": 100.0},
@@ -61,7 +67,11 @@ PLAYBOOKS = {
     },
     "network_contagion": {
         "title": "Virus on a random network with recovery and resistance",
-        "variants": {"mesa": "mesa_model", "modelly": "modelly_model"},
+        "variants": {
+            "mesa": "mesa_model",
+            "mesa3": "mesa3_model",
+            "modelly": "modelly_model",
+        },
         "steps": 100,
         "sizes": {"small": {"n": 2000}, "large": {"n": 30000}},
         "params": {
@@ -76,6 +86,7 @@ PLAYBOOKS = {
         "title": "Stage-structured insect population under sterile releases",
         "variants": {
             "mesa": "mesa_model",
+            "mesa3": "mesa3_model",
             "modelly": "modelly_model",
             "modelly-cohorts": "modelly_cohorts",
         },
@@ -99,6 +110,7 @@ PLAYBOOKS = {
         "title": "Schelling segregation: unhappy residents move to random empty cells",
         "variants": {
             "mesa": "mesa_model",
+            "mesa3": "mesa3_model",
             "modelly-cells": "modelly_cells",
             "modelly": "modelly_model",
         },
@@ -108,7 +120,11 @@ PLAYBOOKS = {
     },
     "boltzmann_wealth": {
         "title": "Boltzmann wealth exchange with random partners, Gini by a DataCollector",
-        "variants": {"mesa": "mesa_model", "modelly": "modelly_model"},
+        "variants": {
+            "mesa": "mesa_model",
+            "mesa3": "mesa3_model",
+            "modelly": "modelly_model",
+        },
         "steps": 100,
         "sizes": {"small": {"n": 500}, "large": {"n": 10000}},
         "params": {"initial_wealth": 1},
@@ -117,6 +133,7 @@ PLAYBOOKS = {
         "title": "Sugarscape, constant growback: foragers move to the best sugar in sight",
         "variants": {
             "mesa": "mesa_model",
+            "mesa3": "mesa3_model",
             "modelly-cells": "modelly_cells",
             "modelly": "modelly_model",
         },

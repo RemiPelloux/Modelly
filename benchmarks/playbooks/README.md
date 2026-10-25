@@ -1,9 +1,11 @@
-# Playbooks: the same eight models on Mesa 2.3 and Modelly
+# Playbooks: the same eight models on Mesa 2.3, Mesa 3.5 and Modelly
 
-Eight workloads, each written twice: once for Mesa 2.3 the way its API intends
+Eight workloads, each written three times: for Mesa 2.3 the way its API intends
 (per-agent methods, `MultiGrid` / `SingleGrid` / `ContinuousSpace` /
 `NetworkGrid`, the `PropertyLayer`, `RandomActivation`, the `DataCollector`),
-once for Modelly the way *its* API intends (`Column` state, vectorised phases,
+for the current Mesa 3.5 the same way (`mesa3_model.py`: its cell spaces, `CellAgent`,
+`Network`, the experimental continuous space, `AgentSet.shuffle_do`, as in Mesa's own
+examples), and for Modelly the way *its* API intends (`Column` state, vectorised phases,
 `CellIndex`, one KD-tree per step). The two are the same
 model in distribution, which the runner checks; they are different programs on
 purpose, which is the point: the comparison measures what each framework lets
@@ -40,11 +42,13 @@ moves to random empty cells, giving and foraging in a random order.
 ## Running
 
 Mesa 2.3 and Modelly cannot share an environment. The runner starts each run in
-the framework's own interpreter:
+the framework's own interpreter; the Mesa 3.5 variant runs in Modelly's environment, which
+needs Mesa 3.5 installed next to it:
 
 ```bash
 python -m venv .venv-mesa2
 .venv-mesa2/bin/pip install "mesa==2.3.2" numpy pandas networkx
+.venv/bin/pip install "mesa==3.5.1"
 .venv/bin/python benchmarks/playbooks/compare.py --core 5          # everything, pinned
 .venv/bin/python benchmarks/playbooks/compare.py flocking --rounds 5
 .venv/bin/python benchmarks/playbooks/worker.py insect_cohorts modelly-cohorts 1 large
