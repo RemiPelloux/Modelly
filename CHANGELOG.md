@@ -11,15 +11,31 @@ versioning.
   `select_cells` for every move (the cached neighbourhood gives the same runs, bit for bit,
   4 to 5x faster), and both Mesa versions run the same single-pass search as Modelly's cell-list
   variant. All variants re-timed in one session, ten rounds on a performance core, the order
-  rotating every round: columns run the steps 4.7 to 41x faster than Mesa 2.3 and 2.6 to 33x
-  faster than Mesa 3.5, cohorts 283x and 132x.
+  rotating every round: columns run the steps 5.0 to 45x faster than Mesa 2.3 (4.3 to 30x
+  including construction) and 3.2 to 31x faster than Mesa 3.5, cohorts 239x and 133x; cell
+  lists 1.4 to 15x and 1.3 to 12x.
+- A hand-vectorised Mesa 3.5 baseline (`mesa3np_model.py`) for the grid epidemic, Schelling and
+  Boltzmann wealth: Mesa's model, grids, property layers and seeding with the population in numpy
+  arrays and no agent objects. It agrees with Mesa 2.3 over 100 seeds and is faster than
+  Modelly's columns (4.6x, 1.8x and 2.6x), which keep an agent per individual; the tables show it
+  as its own column.
+- The Mesa Boltzmann baselines compute the Gini coefficient with numpy, as Modelly's does; the
+  statistics are unchanged.
 - A mesa-frames variant (`frames_model.py`) of four playbooks, run in `.venv-frames` with polars on
-  one thread: Modelly columns are 2.9 to 9.8x faster. Mesa 3.5's flocking uses
+  one thread: Modelly columns are 3.0 to 9.4x faster. With all of polars' threads mesa-frames is
+  slower than on one on three of the four workloads (`paper/data/frames_threads.json`). Mesa 3.5's flocking uses
   `mesa.space.ContinuousSpace`, 1.6x faster than its experimental space and bit-identical to Mesa
   2.3. Each result file records the commit, date, load, core, power policy and versions
   (`benchmarks/playbooks/environment.py`).
 - `benchmarks/ports/`: the two playbooks without a Mesa 2 grid, ported from Mesa 2.3 by the
-  codemod and the steps it reports, bit-identical to the originals and 2.5 to 4.5x faster.
+  codemod and the steps it reports, bit-identical to the originals, at 0.22 (insects) and 0.38
+  (Boltzmann) of Mesa 2.3's CPU time.
+- `benchmarks/ports_mesa3/`: five Mesa 3.5 playbooks ported by the codemod alone
+  (`python -m modelly.migrate --write`), at 0.46 to 0.99 of Mesa 3.5's CPU time. Not
+  bit-identical (the random streams differ); over 100 seeds 24 of 26 statistics are equivalent
+  within half a standard deviation and nothing is significant after Holm. Flocking (legacy
+  `ContinuousSpace`), predator-prey and Sugarscape (`PropertyLayer`) do not port this way.
+  Timings and agreement in `paper/data/port_public.json`.
 - The Mesa 3.5 implementations pass the 100-seed agreement study against Mesa 2.3 (all 40
   statistics equivalent within half a standard deviation).
 

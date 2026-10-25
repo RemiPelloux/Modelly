@@ -500,6 +500,18 @@ only, every line of model logic unchanged) against the unmodified Mesa notebook,
 A model written agent by agent runs at Mesa's speed: 6% faster with the compiled generator,
 about 2% slower with the standard library's.
 
+Models that spend most of their time in framework calls gain more from the same treatment.
+Two public playbooks without a Mesa 2 grid, ported from Mesa 2.3 by the codemod and the steps
+it reports (`benchmarks/ports/`), run at 0.22 (insects) and 0.38 (Boltzmann wealth) of Mesa
+2.3's CPU time, bit-identical. Five playbooks ported from their Mesa 3.5 versions by the codemod
+alone (`benchmarks/ports_mesa3/`) run at 0.46 (Boltzmann wealth), 0.55 (insects), 0.76 (grid
+epidemic), 0.82 (network) and 0.99 (Schelling) of Mesa 3.5's CPU time. They are not
+bit-identical, since Modelly derives `model.random` from the seed differently, but over 100
+seeds 24 of their 26 statistics are equivalent within half a standard deviation and no test is
+significant after a Holm correction. Flocking (Mesa's legacy `ContinuousSpace`) and
+predator-prey and Sugarscape (Mesa 3.5's `PropertyLayer`) do not port by the codemod alone.
+Timings and agreement: `paper/data/port_public.json`, ten alternating rounds, pinned.
+
 Measured and rejected on this workload: a `shuffle` that draws its random words in one call
 (it reproduces the permutation but leaves the stream in a different place for the next draw,
 and is 3x slower); a cheaper `Model` construction (it is 18 µs; 576 of them are 10 ms).
@@ -527,7 +539,7 @@ any discrete space plus their sparse adjacency), `Occupancy` / `claim`, `pairs_w
    Mesa side being unseeded when the seed was passed positionally: Mesa 2.3 reads it from the
    keyword arguments in `Model.__new__`.)
 4. CPU time of a fresh interpreter per run, build and steps timed separately, pinned to one
-   core, implementations alternating over five rounds, every round reported.
+   core, implementations alternating over ten rounds, every round reported.
 
 The Mesa 3.5 implementations agree with Mesa 2.3's: over 100 paired seeds all 40 summary
 statistics are equivalent within half a standard deviation, and no test falls below 5%
@@ -536,35 +548,46 @@ variants); flocking, the network and the insects draw the
 same numbers in the same order and reproduce Mesa 2.3 run for run. Where a phase searches cells
 one agent at a time (Sugarscape's foragers), every implementation uses the same single-pass
 loop. Median CPU seconds of the steps at the large size, all variants in one session, ten
-rounds, pinned to a performance core (CPU 2; load average about 5 on 16 cores, other jobs
-running):
+rounds, pinned to a performance core (CPU 2; one-minute load average 4.5 to 10 on 16 cores,
+other jobs running). "Mesa 3.5 + numpy" (`mesa3np_model.py`, three playbooks) is the
+hand-vectorised Mesa baseline: a `mesa.Model` that holds the population as numpy arrays over
+Mesa's grid and property layers, with no `Agent` objects:
 
-| Playbook | Mesa 2.3 | Mesa 3.5 | mesa-frames | Modelly, cell lists | Modelly | vs Mesa 2.3 | vs Mesa 3.5 | vs mesa-frames |
-|---|---|---|---|---|---|---|---|---|
-| Grid epidemic (SIR, random walk, synchronous) | 2.63 s | 1.60 s | 0.44 s | 1.21 s | 0.065 s | 41x | 25x | 6.8x |
-| Predator-prey with grass (births and deaths every step) | 1.37 s | 1.58 s |  | 0.97 s | 0.240 s | 5.7x | 6.6x |  |
-| Flocking in continuous space | 9.96 s | 9.94 s |  |  | 0.304 s | 33x | 33x |  |
-| Virus on a random network | 3.16 s | 0.90 s |  |  | 0.079 s | 40x | 11x |  |
-| Stage-structured insect population, individuals | 1.98 s | 0.92 s |  |  | 0.351 s | 5.7x | 2.6x |  |
-| Same population as a `CohortTable` (binomial thinning) | 1.98 s | 0.92 s |  |  | 0.007 s | 283x | 132x |  |
-| Schelling segregation (moves to random empty cells) | 2.41 s | 1.91 s | 1.03 s | 0.17 s | 0.106 s | 23x | 18x | 9.8x |
-| Boltzmann wealth exchange, Gini by a `DataCollector` | 1.14 s | 0.61 s | 0.47 s |  | 0.162 s | 7.0x | 3.8x | 2.9x |
-| Sugarscape, constant growback (vision, best sugar in sight) | 0.69 s | 0.64 s | 0.94 s | 0.50 s | 0.145 s | 4.7x | 4.4x | 6.4x |
+| Playbook | Mesa 2.3 | Mesa 3.5 | Mesa 3.5 + numpy | mesa-frames | Modelly, cell lists | Modelly | vs Mesa 2.3 | vs Mesa 3.5 | vs mesa-frames |
+|---|---|---|---|---|---|---|---|---|---|
+| Grid epidemic (SIR, random walk, synchronous) | 5.42 s | 3.72 s | 0.026 s | 0.98 s | 2.16 s | 0.122 s | 45x | 31x | 8.1x |
+| Predator-prey with grass (births and deaths every step) | 2.06 s | 2.24 s |  |  | 1.46 s | 0.360 s | 5.7x | 6.2x |  |
+| Flocking in continuous space | 20.65 s | 21.43 s |  |  |  | 0.683 s | 30x | 31x |  |
+| Virus on a random network | 3.50 s | 1.02 s |  |  |  | 0.086 s | 41x | 12x |  |
+| Stage-structured insect population, individuals | 2.73 s | 1.52 s |  |  |  | 0.476 s | 5.7x | 3.2x |  |
+| Same population as a `CohortTable` (binomial thinning) | 2.73 s | 1.52 s |  |  |  | 0.011 s | 239x | 133x |  |
+| Schelling segregation (moves to random empty cells) | 2.88 s | 2.27 s | 0.064 s | 1.09 s | 0.19 s | 0.115 s | 25x | 20x | 9.4x |
+| Boltzmann wealth exchange, Gini by a `DataCollector` | 1.13 s | 0.57 s | 0.062 s | 0.48 s |  | 0.163 s | 6.9x | 3.5x | 3.0x |
+| Sugarscape, constant growback (vision, best sugar in sight) | 1.16 s | 1.09 s |  | 1.67 s | 0.85 s | 0.232 s | 5.0x | 4.7x | 7.2x |
 
 The "cell lists" column is the same model with Mesa's data structure, every cell holding the
-list of its agents, so movement and predation stay per-agent loops: 1.4 to 2.2x over Mesa
-2.3 on the epidemic and predator-prey. The gap opens when the cell becomes a column of rows: the random walk is one
+list of its agents, so movement and predation stay per-agent loops: 1.4 to 2.5x over Mesa
+2.3 on the epidemic and predator-prey (1.3 to 12x over Mesa 3.5 across its four playbooks). The gap opens when the cell becomes a column of rows: the random walk is one
 `random_neighbor` call over the grid's CSR adjacency, the exposure count a `bincount`, the
 predation a vectorised matching with the law of the shuffled sequential rule. Construction is
 reported separately (a 180x180 Moore grid builds in 0.11 s, a 30,000-node network in 0.4 s,
 against milliseconds for Mesa 2.3's lazy structures, and about the same for Mesa 3.5's cell
-spaces); the build+run speed-ups over Mesa 2.3 in the results are correspondingly lower (20x,
-4.7x, 32x, 9.8x, 5.6x, 251x, 9.0x, 6.6x, 4.1x). Mesa 3.5 is itself faster than Mesa 2.3 on six
-playbooks (1.1x to 3.5x), as fast on flocking (both use `mesa.space.ContinuousSpace`, which runs
-it 1.6x faster than Mesa 3.5's experimental continuous space) and slower on predator-prey
-(0.87x). mesa-frames (development branch, commit `ef92326`, polars 2.0 on one thread) is 2.3x to
-6.0x faster than Mesa 2.3 on three of its four playbooks and slower on Sugarscape (0.73x); Modelly
-columns are 2.9x to 9.8x faster than mesa-frames.
+spaces); the build+run speed-ups over Mesa 2.3 in the results are correspondingly lower (22x,
+4.7x, 30x, 9.8x, 5.7x, 213x, 9.8x, 6.5x, 4.3x). Mesa 3.5 is itself faster than Mesa 2.3 on six
+playbooks (1.1x to 3.4x), about as fast on flocking (0.96x; both use `mesa.space.ContinuousSpace`,
+which runs it 1.6x faster than Mesa 3.5's experimental continuous space) and slower on
+predator-prey (0.92x). mesa-frames (development branch, commit `ef92326`, polars 2.0 on one
+thread) is 2.4x to 5.5x faster than Mesa 2.3 on three of its four playbooks and slower on
+Sugarscape (0.69x); Modelly columns are 3.0x to 9.4x faster than mesa-frames. One thread is
+mesa-frames' better setting here: with all of polars' threads it is slower on three of the four
+workloads (`paper/data/frames_threads.json`).
+
+The hand-vectorised Mesa 3.5 baseline is faster than Modelly's columns: 4.6x on the epidemic,
+1.8x on Schelling, 2.6x on Boltzmann wealth. It is the same arithmetic without the agents:
+Modelly keeps an `Agent` per individual, with its identity, its `step()` and the agent-set API,
+and that bookkeeping is the difference. It agrees with Mesa 2.3 in distribution
+(`paper/data/agreement_small_mesa3np_summary.json`; one statistic, Schelling's segregation
+index, differs by 0.24 sd, p = 0.045 after Holm).
 
 The last three playbooks have phases that are sequential by nature, and each still has an
 exact array form (`vectorised_phases.md`, §7 to §9). Schelling's unhappy residents move one at
@@ -580,7 +603,7 @@ sorted up front: the loop takes a forager's head when it is free and sorts the r
 when that cell is not free at its turn (under a third of the turns). That gives the same runs,
 bit for bit, as sorting every ranking, and is 2.5x faster (median of 5 paired runs, range 1.9
 to 2.6x, thread CPU time, large size, a loaded machine). Schelling's "cell lists" variant is
-far ahead of Mesa 2.3 (14x) because its happiness count, three quarters of Mesa's run, is an
+far ahead of Mesa 2.3 (15x) because its happiness count, three quarters of Mesa's run, is an
 array pass even there; Mesa's move to a random empty cell already runs in constant expected
 time. Sugarscape's is not (1.4x): it runs the same single-pass search as both Mesa versions.
 (An earlier Mesa 2.3 Sugarscape built a whole-grid mask per forager with `select_cells`; the
@@ -590,9 +613,9 @@ example does.)
 The insect playbook is a stage-structured population under sterile releases, an original
 model with the dynamics of the medfly workload (thousands of eggs a day, stage-specific
 mortality, density-dependent larval survival). Agent creation is at parity, so the
-individual-level gap is the per-agent loop only (5.7x over Mesa 2.3, 2.6x over Mesa 3.5). The cohort variant represents every
+individual-level gap is the per-agent loop only (5.7x over Mesa 2.3, 3.2x over Mesa 3.5). The cohort variant represents every
 insect in the same (stage, age, sex) class as one row and thins it with a binomial draw; it
-has the same law as the individual model (the agreement table shows it) and runs in 7 ms.
+has the same law as the individual model (the agreement table shows it) and runs in 11 ms.
 Absolute times vary by up to 2x between sessions on a shared machine; the ratios much less.
 
 ## Caches

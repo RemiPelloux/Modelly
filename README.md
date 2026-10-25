@@ -335,7 +335,7 @@ results = run_grid(
 When individuals in the same state face the same probabilities (an insect's stage, age and
 sex), one row with a count replaces them all, and each per-individual draw becomes one
 binomial draw per row with exactly the same law. `CohortTable` holds such a population with no
-agent objects; the stage-structured playbook runs 283x faster than its individual Mesa
+agent objects; the stage-structured playbook runs 239x faster than its individual Mesa 2.3
 version and agrees with it statistically.
 
 ```python
@@ -496,35 +496,46 @@ codemod and nothing else changed, identical seeds, outputs checked bit-identical
 pinned and alternating: Modelly runs at Mesa's speed within a few percent (0.94 of Mesa's time
 seeded with `FastRandom`, 1.02 to 1.04 with `random.Random`); that model spends most of its
 time in its own code. Two public playbooks ported the same way (`benchmarks/ports/`), which
-spend most of theirs in framework calls, run at 0.22 and 0.40 of Mesa 2.3's time with
-bit-identical output. The method and every round are in
+spend most of theirs in framework calls, run at 0.22 and 0.38 of Mesa 2.3's time with
+bit-identical output. Five playbooks ported from their Mesa 3.5 versions by the codemod alone
+(`benchmarks/ports_mesa3/`) run at 0.46 to 0.99 of Mesa 3.5's time; they are not bit-identical
+(the random streams differ) but agree in distribution over 100 seeds. The method and every
+round are in
 [docs/performance.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/performance.md).
 
 **Same model, each framework's own idiom.** `benchmarks/playbooks/` holds eight models written
 for Mesa 2.3 and for the current Mesa 3.5 the way their APIs intend, four of them also for the
-vectorised mesa-frames, and for Modelly with columns, vectorised phases, `CellIndex` and one
+vectorised mesa-frames, three also as a hand-vectorised Mesa 3.5 baseline, and for Modelly with columns, vectorised phases, `CellIndex` and one
 KD-tree per step. The runner executes each in its own environment, pinned to one core, rotating
 the order every round, checks that the implementations agree in distribution (over shared
 seeds, every statistic) and that each is deterministic, and records the machine and versions.
 CPU seconds of the steps at the large size, median of ten rounds in one session on a
 performance core, this machine:
 
-| Playbook | Mesa 2.3 | Mesa 3.5 | mesa-frames | Modelly, cell lists | Modelly | vs Mesa 2.3 | vs Mesa 3.5 | vs mesa-frames |
-|---|---|---|---|---|---|---|---|---|
-| Grid epidemic (SIR, random walk, synchronous) | 2.63 s | 1.60 s | 0.44 s | 1.21 s | 0.065 s | 41x | 25x | 6.8x |
-| Predator-prey with grass (births and deaths every step) | 1.37 s | 1.58 s |  | 0.97 s | 0.240 s | 5.7x | 6.6x |  |
-| Flocking in continuous space | 9.96 s | 9.94 s |  |  | 0.304 s | 33x | 33x |  |
-| Virus on a random network | 3.16 s | 0.90 s |  |  | 0.079 s | 40x | 11x |  |
-| Stage-structured insect population, individuals | 1.98 s | 0.92 s |  |  | 0.351 s | 5.7x | 2.6x |  |
-| Same population as a `CohortTable` (binomial thinning) | 1.98 s | 0.92 s |  |  | 0.007 s | 283x | 132x |  |
-| Schelling segregation (moves to random empty cells) | 2.41 s | 1.91 s | 1.03 s | 0.17 s | 0.106 s | 23x | 18x | 9.8x |
-| Boltzmann wealth exchange, Gini by a `DataCollector` | 1.14 s | 0.61 s | 0.47 s |  | 0.162 s | 7.0x | 3.8x | 2.9x |
-| Sugarscape, constant growback (vision, best sugar in sight) | 0.69 s | 0.64 s | 0.94 s | 0.50 s | 0.145 s | 4.7x | 4.4x | 6.4x |
+| Playbook | Mesa 2.3 | Mesa 3.5 | Mesa 3.5 + numpy | mesa-frames | Modelly, cell lists | Modelly | vs Mesa 2.3 | vs Mesa 3.5 | vs mesa-frames |
+|---|---|---|---|---|---|---|---|---|---|
+| Grid epidemic (SIR, random walk, synchronous) | 5.42 s | 3.72 s | 0.026 s | 0.98 s | 2.16 s | 0.122 s | 45x | 31x | 8.1x |
+| Predator-prey with grass (births and deaths every step) | 2.06 s | 2.24 s |  |  | 1.46 s | 0.360 s | 5.7x | 6.2x |  |
+| Flocking in continuous space | 20.65 s | 21.43 s |  |  |  | 0.683 s | 30x | 31x |  |
+| Virus on a random network | 3.50 s | 1.02 s |  |  |  | 0.086 s | 41x | 12x |  |
+| Stage-structured insect population, individuals | 2.73 s | 1.52 s |  |  |  | 0.476 s | 5.7x | 3.2x |  |
+| Same population as a `CohortTable` (binomial thinning) | 2.73 s | 1.52 s |  |  |  | 0.011 s | 239x | 133x |  |
+| Schelling segregation (moves to random empty cells) | 2.88 s | 2.27 s | 0.064 s | 1.09 s | 0.19 s | 0.115 s | 25x | 20x | 9.4x |
+| Boltzmann wealth exchange, Gini by a `DataCollector` | 1.13 s | 0.57 s | 0.062 s | 0.48 s |  | 0.163 s | 6.9x | 3.5x | 3.0x |
+| Sugarscape, constant growback (vision, best sugar in sight) | 1.16 s | 1.09 s |  | 1.67 s | 0.85 s | 0.232 s | 5.0x | 4.7x | 7.2x |
+
+"Mesa 3.5 + numpy" (`mesa3np_model.py`) is what a Mesa modeller can write by giving up agent
+objects: a `mesa.Model` holding the population as numpy arrays over Mesa's grid and property
+layers, with the same vectorised phases as Modelly. It is faster than Modelly's columns (4.6x on
+the epidemic, 1.8x on Schelling, 2.6x on Boltzmann): Modelly keeps an `Agent` per individual,
+with its `step()`, its identity and the agent-set API, and pays for that bookkeeping. With agents
+on both sides, Modelly columns are 3.2 to 31x faster than Mesa 3.5, 5.0 to 45x faster than
+Mesa 2.3 (4.3 to 30x including construction) and 3.0 to 9.4x faster than mesa-frames.
 
 Where Modelly keeps Mesa's data structure (agents held in cell lists, `modelly-cells` in the
-results) the gap closes to 1.4 to 2.2x over Mesa 2.3 on the epidemic, predator-prey and
+results) the gap closes to 1.4 to 2.5x over Mesa 2.3 on the epidemic, predator-prey and
 Sugarscape models: the layout is where the time is, not the interpreter. (Schelling's model with
-cell lists stays 14x ahead of Mesa 2.3: it counts every resident's similar neighbours at once.)
+cell lists stays 15x ahead of Mesa 2.3: it counts every resident's similar neighbours at once.)
 Every vectorised phase rests on a stated equivalence argument, in
 [docs/vectorised_phases.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/vectorised_phases.md); the full tables with the agreement
 checks are in [benchmarks/playbooks/results/README.md](https://github.com/RemiPelloux/Modelly/blob/main/benchmarks/playbooks/results/README.md).
