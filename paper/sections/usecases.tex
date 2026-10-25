@@ -15,8 +15,8 @@ most, and the part of the framework that does the work.
     Situation & What helps \\
     \midrule
     Large populations whose phases act on all agents alike (movement, infection, ageing,
-    mortality) & Columns turn those phases into array operations: 3.2 to 31 times faster than
-    Mesa~3.5 and 5.0 to 45 times faster than Mesa~2.3 on the playbooks (\cref{sec:playbooks}). \\ \addlinespace
+    mortality) & Columns turn those phases into array operations: 2.9 to 33 times faster than
+    Mesa~3.5 and 4.6 to 45 times faster than Mesa~2.3 on the playbooks (\cref{sec:playbooks}). \\ \addlinespace
     Populations with many identical individuals (insects, cohorts of patients, age classes)
     & Cohort tables with binomial draws keep the individual model's law
     (\cref{eq:cohorts}) at a fraction of the cost: 133 times faster than Mesa~3.5 on the insect model. \\ \addlinespace
@@ -28,7 +28,7 @@ most, and the part of the framework that does the work.
     A paper whose results a reviewer must be able to rerun & Run manifests, \cmd{modelly verify}, byte-identical bundles for archiving, ODD skeletons, golden digests checked on
     three operating systems. \\ \addlinespace
     An existing Mesa model that has become too slow & Port with the codemod (bit-identical results from
-    Mesa~2.3, equivalent ones from Mesa~3.5; from Mesa's speed to 4.5 times faster), then move the hot phases to columns one at a time. \\ \addlinespace
+    Mesa~2.3, equivalent ones from Mesa~3.5; from Mesa's speed to 4.6 times faster), then move the hot phases to columns one at a time. \\ \addlinespace
     Long or expensive runs & Checkpoints and time travel: resume, rewind, branch, and find
     where two runs diverge. \\ \addlinespace
     Generative agents driven by language models & Cached, budgeted calls that replay offline

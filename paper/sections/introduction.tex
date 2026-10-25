@@ -31,10 +31,10 @@ reproducible research:
   model-owned \code{numpy} arrays (\emph{columns}), identical agents can be counted rather
   than instantiated (\emph{cohorts}), and the framework's own inner loops run in small C
   modules, each with a pure-Python twin that gives the same results
-  (\cref{sec:design}). On eight workloads the simulation steps run 3.2 to 31 times faster
+  (\cref{sec:design}). On eight workloads the simulation steps run 2.9 to 33 times faster
   than their Mesa~3.5 counterparts and 3.0 to 9.4 times faster than mesa-frames in column
   form, and 133 times faster than Mesa~3.5 in cohort form on the workload that has one; a
-  hand-written numpy version without agent objects is 1.8 to 4.6 times faster still. The
+  hand-written numpy version without agent objects is 1.8 to 4.4 times faster still. The
   column and cohort forms give summary statistics equivalent to Mesa~2.3's within half a standard
   deviation in 63 of 67 comparisons (\cref{sec:performance}).
   \item \textbf{Reproducibility as a property of the framework.} Seeded generators reproduce

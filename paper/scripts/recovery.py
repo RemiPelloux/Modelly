@@ -159,6 +159,18 @@ def table(rows: list[dict]) -> str:
     return "\n".join([*lines, "\\bottomrule", "\\end{tabular}"]) + "\n"
 
 
+def peaks_at_end(point: int, replicates: int) -> float:
+    """Share of the SIR datasets at ``point`` whose infections peak at the last observed step."""
+    late = 0
+    for replicate in range(replicates):
+        observed = shared.synthetic(
+            SIR, TRUTHS["SIR"][point], ["infected"], seed=DATA_BASE + replicate
+        )
+        infected = np.asarray(observed["infected"])
+        late += int(np.argmax(infected)) == infected.shape[0] - 1
+    return late / replicates
+
+
 def analyse() -> None:
     """data/recovery.json to tables/recovery.tex and a summary on stdout."""
     payload = json.loads((PAPER / "data" / "recovery.json").read_text())
@@ -171,6 +183,9 @@ def analyse() -> None:
     (PAPER / "tables" / "recovery.tex").write_text(table(rows), encoding="utf-8")
     for row in rows:
         print(row)
+    for point in range(len(TRUTHS["SIR"])):
+        share = peaks_at_end(point, payload["replicates"])
+        print(f"SIR point {point}: infections peak at the last step in {share:.0%}")
 
 
 def main() -> None:

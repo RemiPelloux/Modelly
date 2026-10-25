@@ -21,6 +21,7 @@ in it comes from a file or a script in this repository.
 | `scripts/make_figures.py` | Regenerates the playbook table and the speed-up figure |
 | `scripts/bootstrap_ci.py` | Paired bootstrap 95% intervals of every step-time speed-up (appendix table) |
 | `scripts/ports.py` | Times the public ports against Mesa 2.3 and Mesa 3.5 and compares the Mesa 3.5 ports in distribution |
+| `scripts/mesa_examples_table.py` | Table of Mesa's own examples against their codemod ports |
 | `scripts/frames_threads.py` | Times mesa-frames with one polars thread and with all of them |
 | `scripts/agreement.py`, `scripts/agreement_tables.py` | Run the agreement study (`run`) and regenerate its tables and figure (`analyse`) |
 | `scripts/recovery.py` | Runs the ABC-SMC coverage study and regenerates its table |
@@ -42,13 +43,13 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 
 | Claim | Source | Regenerate with |
 |---|---|---|
-| Playbook speed-ups, build and step times, determinism (Table 2, Figure 1) | `benchmarks/playbooks/results/*.json` | `benchmarks/playbooks/compare.py`, then `make figures` |
-| Agreement with Mesa: 100 seeds at the small size (Table 3, Figure 2), 50 at the timed size (Table 4) | `data/agreement_small.json`, `data/agreement_large.json` | `scripts/agreement.py run --size small` (or `large`), then `analyse` |
+| Playbook speed-ups, build and step times, determinism (Table 3, Figure 1) | `benchmarks/playbooks/results/*.json` | `benchmarks/playbooks/compare.py`, then `make figures` |
+| Agreement with Mesa: 100 seeds at the small size (Table 4, Figure 2), 50 at the timed size (Table 5) | `data/agreement_small.json`, `data/agreement_large.json` | `scripts/agreement.py run --size small` (or `large`), then `analyse` |
 | Port bit-identical, CPU time ratios (Section 5.1) | the private medfly harness (`benchmarks/mesaVSmodelly/paired.py`, not in the repository) | paired runs of the plain codemod port against the unmodified Mesa notebook |
 | 1.3.1 against 1.2.0 (Section 5.4) | `docs/performance.md`, "No regression from release to release" | `python -m modelly.dev perf --against 1.2.0`, the playbook runner |
 | Ishigami indices (Section 6.2) | `tests/sensitivity`, `docs/sensitivity.md` | `pytest tests/sensitivity` |
-| ABC-SMC coverage over 200 datasets per model (Table 6) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
-| Every agreement comparison (appendix D) | `data/agreement_small_summary.json` | `scripts/agreement.py analyse` |
+| ABC-SMC coverage over 200 datasets per model (Table 7) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
+| Every agreement comparison (appendix E) | `data/agreement_small_summary.json` | `scripts/agreement.py analyse` |
 | Grid epidemic at the timed size, 200 seeds (Section 5.3) | `data/agreement_large_grid200.json` | `scripts/agreement.py run --size large --seeds 200 --playbooks grid_epidemic --tag large_grid200` |
 | Mesa 3.5 and mesa-frames against Mesa 2.3, 100 seeds (Section 5.3) | `data/agreement_small_baselines.json` | `scripts/agreement.py run --variants mesa3 frames --tag small_baselines` |
 | Schelling over 300 seeds, every implementation (Section 5.3) | `data/agreement_schelling300.json` | `scripts/agreement.py run --seeds 300 --playbooks schelling --variants mesa3 frames modelly modelly-cells --tag schelling300` |
@@ -56,9 +57,10 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Bootstrap intervals of the speed-ups (appendix) | `benchmarks/playbooks/results/*.json` | `scripts/bootstrap_ci.py` (part of `make figures`) |
 | Mesa 3.5 + numpy against Mesa 2.3, 100 seeds (Section 5.2, appendix) | `data/agreement_small_mesa3np.json` | `scripts/agreement.py run --variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth --tag small_mesa3np` |
 | Mesa 3.5 + numpy grid epidemic at the timed size, 100 seeds (Section 5.2) | `data/agreement_large_grid_mesa3np.json` | `scripts/agreement.py run --size large --playbooks grid_epidemic --variants mesa3np --tag large_grid_mesa3np` |
+| Mesa's own examples against their codemod ports: timing and agreement (Section 5.1) | `data/mesa_examples.json`, `benchmarks/mesa_examples/` | `benchmarks/mesa_examples/run.py --rounds 10 --seeds 100 --core 2 --agree-cores 8-15`, then `scripts/mesa_examples_table.py` |
 | mesa-frames with one thread and with all (Section 5.2) | `data/frames_threads.json` | `scripts/frames_threads.py` |
 | Workload parameters (appendix B) | `benchmarks/playbooks/registry.py` | `make figures` |
-| Determinism (Section 6.1, Table 5) | `tests/determinism`, `tests/determinism/golden.json` | `pytest tests/determinism` |
+| Determinism (Section 6.1, Table 6) | `tests/determinism`, `tests/determinism/golden.json` | `pytest tests/determinism` |
 | Feature comparison (Table 1) | each project's documentation and repository, October 2026 | by hand: check again before submitting |
 
 If the benchmark results are rerun (for a new release, or on different hardware), run
@@ -73,22 +75,21 @@ If the benchmark results are rerun (for a new release, or on different hardware)
       URL checked to resolve.
 - [x] Table 1 re-checked against each project's documentation and repository (October 2026).
 - [x] ABC-SMC weight correction released as 1.3.2; the paper describes 1.3.2.
-- [x] Compiled (Tectonic, no warnings beyond one underfull caption line); every page read.
+- [x] Compiled (Tectonic, no warnings); every page read.
+- [x] All timings re-run at a fixed frequency (performance governor, turbo off, CPU 2).
 - [x] Mesa 3.5 timed on all eight playbooks, mesa-frames on four, a hand-vectorised Mesa 3.5
-      (numpy) baseline on three (Table 2, Figure 1).
+      (numpy) baseline on three (Table 3, Figure 1).
 - [ ] Optional, for a journal: ask Mesa and mesa-frames maintainers to review the baselines,
       and report the three mesa-frames defects upstream.
-- [ ] Recommended: a public same-code result (the codemod applied to Mesa's own example
-      models, timed unchanged), since the medfly notebook cannot be distributed.
+- [x] A public same-code result on Mesa's own examples: eight of ten port (Table 2).
 - [ ] Decide whether to name the medfly model of Section 5.1 and cite its authors.
 - [ ] arXiv categories: primary **cs.MA** (Multiagent Systems); cross-list **cs.MS**
       (Mathematical Software) and, depending on the audience, **physics.soc-ph** or
       **q-bio.PE**. A first submission to cs.MA may need an endorsement.
 - [ ] Licence for the arXiv record (for example CC BY 4.0).
-- [ ] For a journal (JASSS, EMS, SoftwareX): a software-availability block and the funding,
-      competing-interest, data-availability and generative-AI declarations. Section 8 already
-      states that the playbook implementations were written with AI coding assistants.
-- [ ] Commit and push `paper/`, and archive that commit (Zenodo DOI): Section 10 and appendix A
-      say the data and scripts are in the repository.
+- [x] For a journal: software-availability, funding, competing-interest, data-availability
+      and generative-AI declarations (Declarations, after Section 10).
+- [x] Commit and push `paper/`; the repository is archived by Software Heritage (SWHID in
+      Section 10).
 - [ ] Optional: archive the exact version on Zenodo (`modelly bundle`) and cite its DOI in
       Section 10 (Availability).

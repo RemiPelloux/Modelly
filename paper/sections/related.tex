@@ -22,8 +22,9 @@ Cython acceleration; and mesa-frames \citep{mesaframes} represents agent sets as
 to vectorise Mesa models. \modelly{} implements a
 programming model compatible with Mesa's: its codemod (\cmd{python -m modelly.migrate})
 performs the mechanical rewrites of a Mesa model and reports what needs a decision
-(schedulers, legacy grids, batch runs), and a port that changes only the framework API
-produces bit-identical results (\cref{sec:portability}). Unlike a data-frame representation, \modelly{}'s columns keep
+(schedulers, legacy grids, batch runs), and a port of a Mesa~2.3 model that changes only the
+framework API produces bit-identical results, a port of a Mesa~3.5 model equivalent
+distributions (\cref{sec:portability}). Unlike a data-frame representation, \modelly{}'s columns keep
 the per-agent object: each agent reads and writes its row as an attribute, so a model can be
 vectorised one phase at a time (\cref{sec:storage}).
 

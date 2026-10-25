@@ -29,32 +29,34 @@ the search as well.
 
 \paragraph{What the timings include.} The timed region is the whole simulation, including the
 data collection and the summary statistics of each workload. In the Boltzmann wealth model the
-data collector (a Gini coefficient of 10,000 agents every step) takes about 70\% of
-the run on Mesa~2.3, two thirds on \modelly{} and about half on Mesa~3.5, so that workload
-measures data collection as much as the exchange; the Mesa implementations compute the Gini
-coefficient in Python, as Mesa's own example does, and \modelly{}'s with \code{numpy}. The summaries computed after the last step are a
+data collector (a Gini coefficient of 10,000 agents every step) is a large part of every
+implementation's run, so that workload measures data collection as much as the exchange; all
+implementations compute the Gini coefficient with \code{numpy}, the per-agent Mesa ones after
+gathering the agents' wealth in a Python loop. The summaries computed after the last step are a
 small part of each run (about 2\% of Mesa's Schelling run).
 
 \paragraph{Who wrote the implementations.} Every implementation of every playbook, the Mesa ones
 included, was written by the author of \modelly{} with the help of AI coding assistants. Each
 Mesa version follows Mesa's documented API and examples, and all of them are in the repository
-for inspection; corrections from Mesa developers are welcome.
+for inspection; corrections from Mesa developers are welcome. The one comparison whose
+baselines we did not write is that of Mesa~3.5's own examples (\cref{tab:mesa-examples}),
+which runs Mesa's code unmodified; it measures the same-code gain, not the gain of the faster
+forms, which no Mesa-written model can show.
 
 \paragraph{Measurement.} All timings come from one laptop with a hybrid processor, in one
-25-minute session, pinned to one performance core (CPU 2, one of the processor's four
-4.7~GHz cores; the other twelve are efficiency cores), under the \code{intel\_pstate} driver
-with its \code{powersave} governor, the performance energy preference and turbo enabled, while
-other work shared the machine (one-minute load average 4.5 to 10.3 at the start of each
-workload). Frequency could not be fixed without administrator rights. The speed-ups are ratios
-of medians over ten rounds, the order of the implementations rotating, which removes most of
-the drift but not all: every per-round ratio lies within 25\% of its median for 9 of the 28
-non-reference variants and within 40\% for 20, and single slow rounds of a reference widen a
-few ranges (up to $+94\%$ on the grid epidemic; \cref{fig:speedups}). The bootstrap intervals
-of \cref{tab:speedup-ci} are therefore wide for some workloads (30.6 [25.1, 38.4] for the
-grid epidemic's columns over Mesa~3.5), but none spans an order of magnitude, and every
-interval of a \modelly{} or mesa-frames variant lies on one side of 1. Earlier sessions, on an efficiency core and under more load, gave ratios up to 30\% different for some
-workloads, so the conclusions rest on the order of magnitude of each speed-up, not on its last
-digit.
+45-minute session, pinned to one performance core (CPU 2, one of the processor's four 4.7~GHz
+cores; the other twelve are efficiency cores), under the \code{intel\_pstate} driver with the
+\code{performance} governor and turbo disabled, so the core ran at its 1.9~GHz base frequency.
+Absolute times are therefore longer than on a turbo-enabled machine; the ratios are what we
+report. Other work shared the machine (one-minute load average 3.0 to 21.8 at the start of each
+workload), and the order of the implementations rotated from round to round: every per-round
+ratio lies within 15\% of its median, for 24 of the 28 non-reference variants within 10\%, and
+the bootstrap intervals of \cref{tab:speedup-ci} are a few percent wide (45.3 [44.2, 46.3] for
+the grid epidemic's columns over Mesa~2.3). An earlier session with turbo enabled and the
+\code{powersave} governor gave ratios up to 30\% different for some workloads and per-round
+spreads up to $+94\%$, so the conclusions rest on the order of magnitude of each speed-up, not
+on its last digit, and on one machine: other processors, with other cache sizes and
+vector units, will give other ratios.
 
 \paragraph{Agreement.} The agreement study (\cref{sec:agreement}) compares chosen summary
 statistics, not whole trajectories; six small differences are individually detectable at the
@@ -80,7 +82,7 @@ and its public names are marked provisional before 2.0.
 
 \begin{itemize}[leftmargin=*,itemsep=2pt]
   \item \textbf{Speed comes from the model's form.} A model written agent by agent gains only
-  where the framework's own calls take its time (none to 4.5 times, \cref{sec:portability}); the
+  where the framework's own calls take its time (none to 4.6 times, \cref{sec:portability}); the
   large gains of \cref{sec:playbooks} require phases that can be
   expressed over the whole population. Sequential decisions where each agent depends on the
   previous one's move remain per-agent loops.

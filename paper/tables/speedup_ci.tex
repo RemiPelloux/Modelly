@@ -2,40 +2,40 @@
 \toprule
 Workload & Variant & steps over Mesa 2.3 & steps over Mesa 3.5 \\
 \midrule
-Grid epidemic (SIR) & Mesa 3.5 & 1.5 [1.3, 1.8] & -- \\
- & Mesa 3.5 + numpy & 207 [152, 237] & 142 [117, 156] \\
- & mesa-frames & 5.5 [5.1, 7.0] & 3.8 [3.1, 4.8] \\
- & Modelly, cell lists & 2.5 [2.1, 2.8] & 1.7 [1.4, 2.0] \\
- & Modelly, columns & 44.6 [38.9, 52.7] & 30.6 [25.1, 38.4] \\
+Grid epidemic (SIR) & Mesa 3.5 & 1.6 [1.6, 1.7] & -- \\
+ & Mesa 3.5 + numpy & 200 [196, 202] & 122 [117, 126] \\
+ & mesa-frames & 6.5 [6.3, 6.6] & 3.9 [3.8, 4.0] \\
+ & Modelly, cell lists & 2.5 [2.3, 2.5] & 1.5 [1.4, 1.6] \\
+ & Modelly, columns & 45.3 [44.2, 46.3] & 27.5 [26.4, 28.4] \\
 \addlinespace
-Predator-prey & Mesa 3.5 & 0.9 [0.8, 1.0] & -- \\
- & Modelly, cell lists & 1.4 [1.1, 1.6] & 1.5 [1.2, 1.7] \\
- & Modelly, columns & 5.7 [4.9, 6.6] & 6.2 [5.3, 7.4] \\
+Predator-prey & Mesa 3.5 & 0.9 [0.9, 0.9] & -- \\
+ & Modelly, cell lists & 1.5 [1.5, 1.6] & 1.7 [1.7, 1.8] \\
+ & Modelly, columns & 6.4 [6.4, 6.7] & 7.1 [7.0, 7.2] \\
 \addlinespace
-Flocking (boids) & Mesa 3.5 & 1.0 [0.9, 1.1] & -- \\
- & Modelly, columns & 30.3 [26.3, 34.7] & 31.4 [25.8, 35.4] \\
+Flocking (boids) & Mesa 3.5 & 1.0 [1.0, 1.0] & -- \\
+ & Modelly, columns & 32.8 [32.5, 33.2] & 32.9 [32.3, 33.7] \\
 \addlinespace
-Network contagion & Mesa 3.5 & 3.4 [3.2, 3.5] & -- \\
- & Modelly, columns & 40.6 [39.8, 42.3] & 11.8 [11.6, 12.7] \\
+Network contagion & Mesa 3.5 & 3.1 [3.0, 3.1] & -- \\
+ & Modelly, columns & 39.3 [38.5, 39.6] & 12.6 [12.4, 13.0] \\
 \addlinespace
-Insect population & Mesa 3.5 & 1.8 [1.5, 2.0] & -- \\
- & Modelly, columns & 5.7 [4.6, 6.6] & 3.2 [2.7, 3.7] \\
- & Modelly, cohorts & 239 [230, 271] & 133 [119, 168] \\
+Insect population & Mesa 3.5 & 1.8 [1.8, 1.9] & -- \\
+ & Modelly, columns & 5.4 [5.2, 5.6] & 2.9 [2.8, 3.1] \\
+ & Modelly, cohorts & 243 [237, 254] & 133 [128, 140] \\
 \addlinespace
-Schelling segregation & Mesa 3.5 & 1.3 [1.2, 1.4] & -- \\
- & Mesa 3.5 + numpy & 44.8 [41.1, 50.6] & 35.3 [31.9, 39.2] \\
- & mesa-frames & 2.6 [2.5, 3.0] & 2.1 [1.9, 2.4] \\
- & Modelly, cell lists & 15.1 [14.3, 17.0] & 11.9 [10.6, 13.3] \\
- & Modelly, columns & 25.0 [22.7, 28.5] & 19.7 [17.3, 22.2] \\
+Schelling segregation & Mesa 3.5 & 1.3 [1.3, 1.3] & -- \\
+ & Mesa 3.5 + numpy & 40.0 [39.4, 40.6] & 30.9 [30.1, 31.6] \\
+ & mesa-frames & 2.4 [2.4, 2.4] & 1.9 [1.8, 1.9] \\
+ & Modelly, cell lists & 14.4 [14.1, 14.7] & 11.1 [10.9, 11.4] \\
+ & Modelly, columns & 22.7 [22.5, 22.9] & 17.5 [17.3, 17.8] \\
 \addlinespace
-Boltzmann wealth & Mesa 3.5 & 2.0 [1.8, 2.3] & -- \\
- & Mesa 3.5 + numpy & 18.3 [15.9, 20.8] & 9.3 [8.4, 10.8] \\
- & mesa-frames & 2.3 [2.0, 2.7] & 1.2 [1.1, 1.4] \\
- & Modelly, columns & 6.9 [6.0, 7.8] & 3.5 [3.2, 3.8] \\
+Boltzmann wealth & Mesa 3.5 & 1.9 [1.8, 1.9] & -- \\
+ & Mesa 3.5 + numpy & 17.6 [17.3, 18.1] & 9.4 [9.3, 9.4] \\
+ & mesa-frames & 2.1 [2.1, 2.2] & 1.1 [1.1, 1.2] \\
+ & Modelly, columns & 6.4 [6.3, 6.4] & 3.4 [3.3, 3.4] \\
 \addlinespace
-Sugarscape & Mesa 3.5 & 1.1 [0.9, 1.1] & -- \\
- & mesa-frames & 0.7 [0.6, 0.8] & 0.7 [0.6, 0.8] \\
- & Modelly, cell lists & 1.4 [1.2, 1.5] & 1.3 [1.2, 1.5] \\
- & Modelly, columns & 5.0 [4.4, 5.4] & 4.7 [4.4, 5.2] \\
+Sugarscape & Mesa 3.5 & 1.0 [1.0, 1.0] & -- \\
+ & mesa-frames & 0.7 [0.7, 0.7] & 0.7 [0.7, 0.7] \\
+ & Modelly, cell lists & 1.3 [1.3, 1.3] & 1.3 [1.3, 1.3] \\
+ & Modelly, columns & 4.6 [4.5, 4.7] & 4.5 [4.3, 4.6] \\
 \bottomrule
 \end{tabular}
