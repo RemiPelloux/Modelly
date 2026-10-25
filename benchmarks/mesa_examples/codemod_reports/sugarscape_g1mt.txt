@@ -1,0 +1,21 @@
+
+Migration report: 3 file(s), 2 rewritten, 6 line(s) to review.
+  sugarscape_g1mt/port/agents.py:224: legacy grid call: use cells
+      for cell in self.cell.get_neighborhood(self.vision, include_center=True)
+      see docs/migrating_from_mesa.md#grids-and-positions
+  sugarscape_g1mt/port/agents.py:286: legacy grid call: use cells
+      for a in self.cell.get_neighborhood(radius=self.vision).agents:
+      see docs/migrating_from_mesa.md#grids-and-positions
+  sugarscape_g1mt/port/model.py:7: Mesa module with no Modelly equivalent: see the guide
+      from modelly.space.property_layer import PropertyLayer
+      see docs/migrating_from_mesa.md#imports
+  sugarscape_g1mt/port/model.py:157: scheduler class: replace with AgentSet activation
+      modelly.RandomActivationByType.
+      see docs/migrating_from_mesa.md#activation-and-schedulers
+  sugarscape_g1mt/port/model.py:167: self.steps: use self.time
+      agent_trades = self.datacollector._agent_records[self.steps]
+      see docs/migrating_from_mesa.md#model
+  sugarscape_g1mt/port/model.py:171: self.steps: use self.time
+      self.datacollector._agent_records[self.steps] = agent_trades
+      see docs/migrating_from_mesa.md#model
+Wrote 2 file(s).

@@ -179,7 +179,7 @@ path = "modelly/__init__.py"
 # Hardcode to Python 3.12.
 # Reminder to update modelly-examples if the value below is changed.
 target-version = "py312"
-extend-exclude = ["build", "benchmarks/notebooks/*.ipynb", "benchmarks/mesaVSmodelly"]  # generated notebooks; local-only harness
+extend-exclude = ["build", "benchmarks/notebooks/*.ipynb", "benchmarks/mesaVSmodelly", "benchmarks/mesa_examples/*/original", "benchmarks/mesa_examples/*/port"]  # generated notebooks; local-only harness
 
 [tool.ruff.lint]
 # Preview only for the rules selected by code below (PLW1514), not whole groups.

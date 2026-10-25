@@ -1,0 +1,6 @@
+
+Migration report: 3 file(s), 2 rewritten, 1 line(s) to review.
+  boid_flockers/port/model.py:121: rewritten from schedule.step(): check the activation order you need
+      self.agents.shuffle_do("step")
+      see docs/migrating_from_mesa.md#activation-and-schedulers
+Wrote 2 file(s).

@@ -1,0 +1,9 @@
+
+Migration report: 3 file(s), 2 rewritten, 2 line(s) to review.
+  wolf_sheep/port/model.py:143: rewritten from schedule.step(): check the activation order you need
+      self.agents_by_type[Sheep].shuffle_do("step")
+      see docs/migrating_from_mesa.md#activation-and-schedulers
+  wolf_sheep/port/model.py:144: rewritten from schedule.step(): check the activation order you need
+      self.agents_by_type[Wolf].shuffle_do("step")
+      see docs/migrating_from_mesa.md#activation-and-schedulers
+Wrote 2 file(s).

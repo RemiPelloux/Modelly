@@ -1,0 +1,9 @@
+
+Migration report: 3 file(s), 2 rewritten, 2 line(s) to review.
+  schelling/port/agents.py:26: legacy grid call: use cells
+      neighbors = list(self.cell.get_neighborhood(radius=self.radius).agents)
+      see docs/migrating_from_mesa.md#grids-and-positions
+  schelling/port/model.py:93: rewritten from schedule.step(): check the activation order you need
+      self.agents.shuffle_do("step")  # Activate all agents in random order
+      see docs/migrating_from_mesa.md#activation-and-schedulers
+Wrote 2 file(s).
