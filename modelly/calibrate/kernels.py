@@ -129,21 +129,28 @@ class Kernel:
         return joint_logprior(self.priors, new) - mixture
 
     def propose(self, rng: np.random.Generator, count: int) -> dict[str, list[Any]]:
-        """``count`` particles: ancestors drawn by weight, moved until inside the prior."""
-        ancestors = rng.choice(len(self.weights), size=count, p=self.weights)
-        origin = {n: [v[i] for i in ancestors] for n, v in self.population.items()}
-        proposal = self.perturb(origin, rng)
+        """``count`` particles: ancestor drawn by weight and moved, both redrawn until inside.
+
+        Redrawing the ancestor too (Toni et al., 2009) makes the proposal the mixture
+        truncated to the prior's support, whose normalising constant is the same for every
+        particle; re-moving the same ancestor would over-weight particles near a bound.
+        """
+        proposal = self._draw(rng, count)
         for _ in range(MAX_REDRAWS):
             outside = np.flatnonzero(np.isneginf(joint_logprior(self.priors, proposal)))
             if not outside.size:
                 return proposal
-            retry = self.perturb(
-                {n: [v[i] for i in outside] for n, v in origin.items()}, rng
-            )
+            retry = self._draw(rng, outside.size)
             for name, values in retry.items():
                 for slot, value in zip(outside, values):
                     proposal[name][slot] = value
         raise RuntimeError("could not move particles inside the prior's support")
+
+    def _draw(self, rng: np.random.Generator, count: int) -> dict[str, list[Any]]:
+        """``count`` ancestors drawn by weight, each moved once."""
+        ancestors = rng.choice(len(self.weights), size=count, p=self.weights)
+        origin = {n: [v[i] for i in ancestors] for n, v in self.population.items()}
+        return self.perturb(origin, rng)
 
     def _choice_logpdf(
         self, name: str, new: Sequence[Any], old: Sequence[Any]

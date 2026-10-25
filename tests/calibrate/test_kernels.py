@@ -54,3 +54,19 @@ def test_kernel_logpdf_shape():
     """``logpdf`` is an array [new, population]."""
     kernel = Kernel.fit(PRIORS, POPULATION, WEIGHTS)
     assert kernel.logpdf({"a": [0.1, 0.2], "k": [1, 3]}).shape == (2, 4)
+
+
+def test_weighted_proposals_follow_the_prior_up_to_its_bound():
+    """Importance weights undo the proposal: weighted proposals are uniform, even at 0.
+
+    The population crowds the lower bound, so many moves leave the support; a proposal
+    that re-moved the same ancestor would over-weight the bins next to the bound.
+    """
+    priors = {"a": Prior.uniform(0.0, 1.0)}
+    population = {"a": list(np.random.default_rng(1).beta(1, 8, size=100))}
+    kernel = Kernel.fit(priors, population, np.full(100, 0.01))
+    proposal = kernel.propose(np.random.default_rng(2), 40_000)
+    weights = np.exp(kernel.importance(proposal))
+    mass, _ = np.histogram(proposal["a"], bins=5, range=(0.0, 0.5), weights=weights)
+    share = mass / mass.sum()
+    assert share == pytest.approx(np.full(5, 0.2), rel=0.08)

@@ -55,12 +55,12 @@ def prey_smc(seed=1, **settings):
     return ABCSMC(PreyPredator, priors, targets, **options)
 
 
-def recovered(posterior, truth, relative):
-    """Whether each posterior mean is within ``relative`` of the truth and inside the HDI."""
+def recovered(posterior, truth, relative, estimate="mean"):
+    """Whether each posterior ``estimate`` is within ``relative`` of the truth, inside the HDI."""
     summary = posterior.summary()
     for name, value in truth.items():
         row = summary.loc[name]
-        if abs(row["mean"] - value) > relative * value:
+        if abs(row[estimate] - value) > relative * value:
             return False
         if not row["hdi_low"] <= value <= row["hdi_high"]:
             return False
