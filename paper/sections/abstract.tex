@@ -10,13 +10,15 @@ sweeps, calibration (ABC-SMC, simulated moments), global sensitivity analysis (M
 PAWN), run manifests and archivable bundles, and twelve reference models with validation tests.
 On eight workloads written idiomatically for Mesa~2.3, for the current Mesa~3.5 and for
 \modelly{}, and on four of them for the vectorised mesa-frames, vectorised \modelly{} code (the
-column form) runs the simulation steps 2.6 to 33 times faster than per-agent Mesa~3.5 code, 4.7
-to 41 times faster than Mesa~2.3 and 2.9 to 9.8 times faster than mesa-frames; on the one
-workload with a cohort form, that form runs 132 times faster than Mesa~3.5. Over 100 paired seeds, 63 of 67 comparisons of a summary statistic
-between a \modelly{} variant and Mesa~2.3 are equivalent within half a standard deviation at the
-5\% level (29 after a Holm correction), and every difference of means is at most 11\%. Three Mesa~2.3 models that use no Mesa~2 grid, ported without changing
-their logic and seeded with \modelly{}'s compiled generator, give bit-identical output and run
-at 0.22 to 0.94 of Mesa's CPU time, depending on how much of it the framework's own calls
-take. \modelly{} is on PyPI
+column form) runs the simulation steps 3.2 to 31 times faster than per-agent Mesa~3.5 code, 5.0
+to 45 times faster than Mesa~2.3 and 3.0 to 9.4 times faster than mesa-frames, and 1.8 to 4.6
+times slower than hand-written numpy without agent objects; on the one workload with a cohort
+form, that form runs 133 times faster than Mesa~3.5. Over 100 paired seeds, 63 of 67
+comparisons of a summary statistic between a \modelly{} variant and Mesa~2.3 are equivalent
+within half a standard deviation at the 5\% level (29 after a Holm correction), and every
+difference of means is at most 11\%. Mesa models ported without changing their logic run at
+0.22 to 0.99 of Mesa's CPU time, depending on how much of it the framework's calls take,
+with bit-identical output for three Mesa~2.3 models and equivalent distributions for five
+Mesa~3.5 ones. \modelly{} is on PyPI
 as \code{modelly-abm} under the Apache 2.0 licence.
 \end{abstract}

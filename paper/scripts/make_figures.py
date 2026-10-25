@@ -145,7 +145,7 @@ def plot(summary: dict[str, list[dict]], out: Path) -> None:
                 capsize=2,
             )
             ax.text(
-                row["high"] * 1.08,
+                max(row["high"], 1.0) * 1.08,
                 y,
                 f"{row['speedup']:.1f}{TIMES}",
                 va="center",

@@ -1,0 +1,26 @@
+\begin{longtable}{lllrrrrrr}
+\caption{Every comparison of the agreement study at the small size (100 seeds): standardised difference $d$ with its paired 95\% interval, correlation $r$ between the implementations' runs on the same seed, and the paired $t$, Kolmogorov--Smirnov and paired TOST $p$-values, uncorrected.}\label{tab:agreement-all}\\
+\toprule
+Workload & Modelly variant & Statistic & $d$ & 95\% interval & $r$ & $p_t$ & $p_{\mathrm{KS}}$ & $p_{\mathrm{TOST}}$ \\
+\midrule
+\endfirsthead
+\toprule
+Workload & Modelly variant & Statistic & $d$ & 95\% interval & $r$ & $p_t$ & $p_{\mathrm{KS}}$ & $p_{\mathrm{TOST}}$ \\
+\midrule
+\endhead
+\bottomrule\endfoot
+Grid epidemic & Mesa 3.5 + numpy & \code{final\_S} & $+0.18$ & [$-0.09$, $+0.45$] & $+0.07$ & 0.19 & 0.21 & 0.011 \\
+Grid epidemic & Mesa 3.5 + numpy & \code{final\_I} & $+0.01$ & [$-0.28$, $+0.31$] & $-0.08$ & 0.92 & 0.58 & 0.001 \\
+Grid epidemic & Mesa 3.5 + numpy & \code{final\_R} & $-0.21$ & [$-0.47$, $+0.06$] & $+0.09$ & 0.13 & 0.47 & 0.016 \\
+Grid epidemic & Mesa 3.5 + numpy & \code{peak\_I} & $-0.15$ & [$-0.42$, $+0.12$] & $+0.08$ & 0.26 & 0.91 & 0.006 \\
+Grid epidemic & Mesa 3.5 + numpy & \code{peak\_step} & $+0.13$ & [$-0.16$, $+0.41$] & $-0.04$ & 0.38 & 0.28 & 0.006 \\
+Grid epidemic & Mesa 3.5 + numpy & \code{mean\_I} & $-0.20$ & [$-0.47$, $+0.07$] & $+0.08$ & 0.15 & 0.21 & 0.014 \\
+Schelling & Mesa 3.5 + numpy & \code{final\_happy} & $+0.17$ & [$-0.03$, $+0.36$] & $+0.54$ & 0.09 & 0.47 & $<$0.001 \\
+Schelling & Mesa 3.5 + numpy & \code{mean\_happy} & $+0.15$ & [$-0.03$, $+0.34$] & $+0.56$ & 0.11 & 0.28 & $<$0.001 \\
+Schelling & Mesa 3.5 + numpy & \code{total\_moves} & $-0.15$ & [$-0.34$, $+0.03$] & $+0.57$ & 0.10 & 0.28 & $<$0.001 \\
+Schelling & Mesa 3.5 + numpy & \code{segregation} & $+0.24$ & [$+0.08$, $+0.40$] & $+0.67$ & $<$0.01 & 0.37 & 0.001 \\
+Boltzmann wealth & Mesa 3.5 + numpy & \code{final\_gini} & $-0.26$ & [$-0.54$, $+0.01$] & $+0.04$ & 0.06 & 0.21 & 0.046 \\
+Boltzmann wealth & Mesa 3.5 + numpy & \code{mean\_gini} & $+0.13$ & [$-0.16$, $+0.41$] & $-0.04$ & 0.39 & 0.47 & 0.006 \\
+Boltzmann wealth & Mesa 3.5 + numpy & \code{final\_zero\_share} & $-0.29$ & [$-0.56$, $-0.03$] & $+0.09$ & 0.03 & 0.28 & 0.065 \\
+Boltzmann wealth & Mesa 3.5 + numpy & \code{final\_max\_wealth} & $+0.06$ & [$-0.24$, $+0.35$] & $-0.08$ & 0.71 & 1.00 & 0.002 \\
+\end{longtable}

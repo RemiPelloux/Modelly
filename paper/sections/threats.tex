@@ -41,16 +41,18 @@ Mesa version follows Mesa's documented API and examples, and all of them are in 
 for inspection; corrections from Mesa developers are welcome.
 
 \paragraph{Measurement.} All timings come from one laptop with a hybrid processor, in one
-twelve-minute session, pinned to one performance core (CPU 2, one of the processor's four
+25-minute session, pinned to one performance core (CPU 2, one of the processor's four
 4.7~GHz cores; the other twelve are efficiency cores), under the \code{intel\_pstate} driver
-with its performance energy preference and turbo enabled, while other work shared the machine
-(one-minute load average 1.3 to 5.7 at the start of each workload, 17 at the start of the first,
-right after the agreement study). Frequency could not be fixed without administrator rights.
-The speed-ups are ratios of medians over ten rounds, the order of the implementations
-rotating, which removes most of the drift but not all: the per-round ratios lie within 25\% of
-the median for 14 of the 25 non-reference variants and within 38\% for ten more, the widest
-being Mesa~3.5 on the insect population ($-44\%$ to $+35\%$; \cref{fig:speedups}). Earlier
-sessions, on an efficiency core and under more load, gave ratios up to 30\% different for some
+with its \code{powersave} governor, the performance energy preference and turbo enabled, while
+other work shared the machine (one-minute load average 4.5 to 10.3 at the start of each
+workload). Frequency could not be fixed without administrator rights. The speed-ups are ratios
+of medians over ten rounds, the order of the implementations rotating, which removes most of
+the drift but not all: every per-round ratio lies within 25\% of its median for 9 of the 28
+non-reference variants and within 40\% for 20, and single slow rounds of a reference widen a
+few ranges (up to $+94\%$ on the grid epidemic; \cref{fig:speedups}). The bootstrap intervals
+of \cref{tab:speedup-ci} are therefore wide for some workloads (30.6 [25.1, 38.4] for the
+grid epidemic's columns over Mesa~3.5), but none spans an order of magnitude, and every
+interval of a \modelly{} or mesa-frames variant lies on one side of 1. Earlier sessions, on an efficiency core and under more load, gave ratios up to 30\% different for some
 workloads, so the conclusions rest on the order of magnitude of each speed-up, not on its last
 digit.
 

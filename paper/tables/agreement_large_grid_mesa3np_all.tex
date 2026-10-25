@@ -1,0 +1,18 @@
+\begin{longtable}{lllrrrrrr}
+\caption{Every comparison of the agreement study at the small size (100 seeds): standardised difference $d$ with its paired 95\% interval, correlation $r$ between the implementations' runs on the same seed, and the paired $t$, Kolmogorov--Smirnov and paired TOST $p$-values, uncorrected.}\label{tab:agreement-all}\\
+\toprule
+Workload & Modelly variant & Statistic & $d$ & 95\% interval & $r$ & $p_t$ & $p_{\mathrm{KS}}$ & $p_{\mathrm{TOST}}$ \\
+\midrule
+\endfirsthead
+\toprule
+Workload & Modelly variant & Statistic & $d$ & 95\% interval & $r$ & $p_t$ & $p_{\mathrm{KS}}$ & $p_{\mathrm{TOST}}$ \\
+\midrule
+\endhead
+\bottomrule\endfoot
+Grid epidemic & Mesa 3.5 + numpy & \code{final\_S} & $+0.18$ & [$-0.12$, $+0.48$] & $-0.11$ & 0.23 & 0.21 & 0.017 \\
+Grid epidemic & Mesa 3.5 + numpy & \code{final\_I} & $-0.11$ & [$-0.40$, $+0.19$] & $-0.11$ & 0.48 & 0.37 & 0.005 \\
+Grid epidemic & Mesa 3.5 + numpy & \code{final\_R} & $-0.20$ & [$-0.49$, $+0.10$] & $-0.11$ & 0.19 & 0.15 & 0.022 \\
+Grid epidemic & Mesa 3.5 + numpy & \code{peak\_I} & $-0.15$ & [$-0.45$, $+0.15$] & $-0.15$ & 0.33 & 0.37 & 0.011 \\
+Grid epidemic & Mesa 3.5 + numpy & \code{peak\_step} & $+0.15$ & [$-0.13$, $+0.42$] & $+0.03$ & 0.30 & 0.70 & 0.006 \\
+Grid epidemic & Mesa 3.5 + numpy & \code{mean\_I} & $-0.19$ & [$-0.49$, $+0.10$] & $-0.11$ & 0.20 & 0.21 & 0.020 \\
+\end{longtable}

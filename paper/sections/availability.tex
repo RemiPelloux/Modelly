@@ -8,7 +8,8 @@ publication steps built on one seeding discipline. Its claims are measured in th
 Mesa~2.3, Mesa~3.5 and mesa-frames, with an agreement study over 100 seeds per variant; against its own previous release
 before every new one; and with methods checked on problems whose answers are known. The
 measurements also show where it does not help (a model written agent by agent runs between Mesa's speed and 4.5 times faster, depending on
-how much of its time the framework's calls take) and where its evidence is still thin (\cref{sec:threats}).
+how much of its time the framework's calls take, and hand-written numpy that gives up agent
+objects is 1.8 to 4.6 times faster than its columns) and where its evidence is still thin (\cref{sec:threats}).
 
 \section{Availability}
 \label{sec:availability}
@@ -21,7 +22,7 @@ and the benchmark harness are at
 documentation, tutorials and the roadmap at
 \href{https://remipelloux.github.io/Modelly/}{\nolinkurl{remipelloux.github.io/Modelly}}. The version described here is 1.3.2, which
 contains the ABC-SMC correction of \cref{sec:validation}. The measurements used its library code, compiled on the
-measurement machine with GCC~16.2, and the benchmark code of commit \code{320235e}; each
+measurement machine with GCC~16.2, and the benchmark code of commit \code{d45bbd3}; each
 result file records the commit, the machine and the package versions. The data and scripts behind every table and figure
 of this paper are in the repository's \code{paper/} folder (\cref{app:reproduce}). To cite
 \modelly{}, use the metadata in the repository's \code{CITATION.cff}.

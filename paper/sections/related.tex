@@ -17,8 +17,9 @@ these tools resolve in different ways.
 space and data-collection abstractions that most Python ABMs use, and a browser
 visualisation. AgentPy \citep{foramitti2021agentpy} combines a similar model with experiment
 and Sobol tooling built on SALib \citep{herman2017salib}, though it is no longer actively
-developed, and mesa-frames \citep{mesaframes}
-represents agent sets as data frames to vectorise Mesa models. \modelly{} implements a
+developed; Melodie \citep{yu2023melodie} adds calibration and scenario management with
+Cython acceleration; and mesa-frames \citep{mesaframes} represents agent sets as data frames
+to vectorise Mesa models. \modelly{} implements a
 programming model compatible with Mesa's: its codemod (\cmd{python -m modelly.migrate})
 performs the mechanical rewrites of a Mesa model and reports what needs a decision
 (schedulers, legacy grids, batch runs), and a port that changes only the framework API
@@ -50,14 +51,15 @@ grimm2010odd, grimm2020odd} and its extension to human decisions, ODD+D
 \citep{axtell1996aligning, wilensky2007making}. \modelly{} generates an ODD skeleton from the
 model's code and records each run in a manifest that a reviewer can rerun and verify.
 
-\Cref{tab:features} compares the built-in capabilities of the Python frameworks and of three
+\Cref{tab:features} compares the built-in capabilities of the Python frameworks and of two
 widely used platforms in other languages.
 
 \begin{table}[htbp]
   \centering
   \footnotesize
   \caption{Capabilities as documented by each project in October 2026 (Mesa 3.5.1,
-  mesa-frames 0.1.0a0 (an alpha release), AgentPy 0.1.5, NetLogo 7, Repast4Py 1.3, Agents.jl 7.1). \checkmark{}: built in;
+  mesa-frames 0.1.0a0, its only release, an alpha, while its development branch
+  \code{ef92326} (0.1.1.dev0) is the one measured in \cref{sec:playbooks}, AgentPy 0.1.5, NetLogo 7, Repast4Py 1.3, Agents.jl 7.1). \checkmark{}: built in;
   ext.: through a companion tool that the project or the tool documents for it (EMA Workbench for
   Mesa, nlrx for NetLogo, EMEWS \citep{ozik2016desktop} for Repast4Py); --: not documented. NetLogo's checkpoints are
   \code{export-world} and \code{import-world}. Licences from the projects' licence files.}

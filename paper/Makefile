@@ -15,6 +15,7 @@ all: figures main.pdf
 
 figures:
 	$(PYTHON) scripts/make_figures.py
+	$(PYTHON) scripts/bootstrap_ci.py
 
 main.pdf: main.tex sections/*.tex references.bib figures/speedups.pdf tables/playbooks.tex
 	latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
