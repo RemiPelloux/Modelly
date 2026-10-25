@@ -75,7 +75,8 @@ def environment(root: Path, pythons: dict[str, str], core: int | None) -> dict:
     ).stdout.strip()
     dirty = bool(
         subprocess.run(
-            [git, "status", "--porcelain", "--", "modelly", "benchmarks/playbooks"],
+            [git, "status", "--porcelain", "--", "modelly", "benchmarks/playbooks",
+             ":!benchmarks/playbooks/results"],
             cwd=root, capture_output=True, text=True, check=False,
         ).stdout.strip()
     )  # fmt: skip
