@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 from modelly.core.agentset import AgentSet, _resolve_per_agent_values
 from modelly.core.column_access import collect_column_specs, install_column_properties
 from modelly.core.columns import Column
+from modelly.core.streams import own_random, own_rng
 
 
 class Agent[M: Model]:
@@ -259,13 +260,19 @@ class Agent[M: Model]:
 
     @property
     def random(self) -> Random:
-        """Return a seeded stdlib rng."""
-        return self.model.random
+        """Return a seeded stdlib rng: the model's, or the agent's own with agent_streams."""
+        model = self.model
+        return own_random(self) if model.agent_streams else model.random
 
     @property
     def rng(self) -> np.random.Generator:
-        """Return a seeded np.random rng."""
-        return self.model.rng
+        """Return a seeded np.random rng: the model's, or the agent's own with agent_streams."""
+        model = self.model
+        return own_rng(self) if model.agent_streams else model.rng
+
+    def stream_key(self) -> int:
+        """Key of the agent's own streams (``agent_streams``): ``unique_id`` unless overridden."""
+        return self.unique_id
 
     @property
     def scenario(self):

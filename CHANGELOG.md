@@ -3,6 +3,22 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Added
+
+- Per-agent random streams (provisional): with `agent_streams = True` on a model class,
+  `agent.random` and `agent.rng` are generators of the agent's own, seeded from the model's
+  seed and `Agent.stream_key()` (`unique_id` by default). An agent draws the same numbers
+  whatever the activation order or the population, and checkpoints continue every stream.
+  Off by default; models without the flag draw exactly as before.
+- `modelly.distributed.partition` (provisional): `grid_blocks(rows, cols).layout(grid)` cuts a
+  2-D grid into balanced blocks and gives each cell's owner and each block's halo, on plain
+  grids and tori.
+- `modelly.stream` (provisional): `ReplaySource`, `CSVSource` (a growing file) and
+  `HTTPSource` hand out observations once each, in time order; `ObservationOperator` reads the
+  same quantities from a model, with residuals and a Gaussian log-likelihood.
+
 ## 1.3.3 - 2026-10-27
 
 A codemod release: `python -m modelly.migrate` ports Mesa 3.5's own examples. The library code
