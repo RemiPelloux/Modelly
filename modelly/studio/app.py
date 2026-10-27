@@ -11,8 +11,11 @@ import functools
 
 import solara
 
+from modelly.studio.analysis_views import AnalysisTab, ExperimentsTab
 from modelly.studio.config import StudioConfig
+from modelly.studio.ensemble_views import AssimilationTab, EnsembleTab
 from modelly.studio.loader import load_model_class, load_portrayal
+from modelly.studio.mapview import MapView
 from modelly.studio.panels import ExportPanel, ParameterPanel, RunControls
 from modelly.studio.session import StudioSession
 from modelly.studio.state import use_studio_state
@@ -52,7 +55,12 @@ def ModelTab(state):
 
 TABS = (
     ("Model", ModelTab),
+    ("Map", MapView),
     ("Agents", AgentTable),
+    ("Ensemble", EnsembleTab),
+    ("Assimilation", AssimilationTab),
+    ("Experiments", ExperimentsTab),
+    ("Analysis", AnalysisTab),
     ("Profiler", ProfilerPanel),
     ("Lint", LintPanel),
     ("Log", LogPanel),

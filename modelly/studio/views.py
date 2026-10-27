@@ -5,6 +5,7 @@ from __future__ import annotations
 import solara
 
 from modelly.studio import data
+from modelly.studio.scene import MATPLOTLIB_LIMIT, element_count
 from modelly.studio.state import StudioState
 from modelly.viz.mpl.figure import can_draw, space_figure
 
@@ -57,6 +58,13 @@ def SpaceView(state: StudioState):
     with solara.Card("Space"):
         if not can_draw(session.shown):
             solara.Text("This model has no grid or space Modelly can draw.")
+            return
+        count = element_count(session.shown)
+        if count > MATPLOTLIB_LIMIT:
+            solara.Text(
+                f"{count} agents and edges: too many to redraw with Matplotlib at every "
+                "step. The Map tab draws them with WebGL."
+            )
             return
         with session.lock:
             figure = space_figure(session.shown, session.portrayal)

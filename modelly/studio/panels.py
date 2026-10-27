@@ -7,7 +7,7 @@ from functools import partial
 
 import solara
 
-from modelly.studio import data
+from modelly.studio import data, exports
 from modelly.studio.params import (
     BOOL,
     CHOICE,
@@ -154,6 +154,27 @@ def _checkpoint(state: StudioState) -> bytes:
         return b""
 
 
+def _bundle(state: StudioState) -> bytes:
+    """The live run as a ``modelly bundle`` zip, or an empty file with the reason logged."""
+    try:
+        return exports.bundle_bytes(state.session)
+    except (ValueError, OSError) as error:  # a replayed run, or a model that won't load
+        state.session.say(f"bundle export failed: {error}".splitlines()[0])
+        return b""
+
+
+def _reproducible(state: StudioState) -> list[tuple]:
+    """The live run's session script and bundle."""
+    session = state.session
+    live = session.model
+    stamp = f"{type(live).__name__.lower()}-step{live.time:g}"
+    script = partial(exports.session_script, session)
+    return [
+        (script, exports.script_name(session), "Session script (live run, .py)"),
+        (partial(_bundle, state), f"{stamp}-bundle.zip", "Bundle (live run, zip)"),
+    ]
+
+
 def _locked(session, make):
     """``make`` run under the session lock; an empty file when it gives None."""
 
@@ -194,7 +215,13 @@ def downloads(state: StudioState) -> list[tuple]:
         "Checkpoint of this state",
     )
     animation = (partial(data.animation_bytes, session), f"{name}-run.gif", "Run (GIF)")
-    return [*_figures(state, stamp), *tables, checkpoint, animation]
+    return [
+        *_figures(state, stamp),
+        *tables,
+        checkpoint,
+        animation,
+        *_reproducible(state),
+    ]
 
 
 @solara.component

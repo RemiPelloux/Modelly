@@ -21,6 +21,7 @@ from modelly.lint import lint_paths
 from modelly.profile.loader import build_model
 from modelly.profile.profiler import DEFAULT_TOP, Profiler
 from modelly.studio.params import parameters_of
+from modelly.studio.recording import SessionRecording
 from modelly.studio.timeline import ReplayTimeline, fall_back, track
 from modelly.timetravel.recorder import reseed_model
 from modelly.viz.render.portrayal import ClassColours
@@ -78,6 +79,9 @@ class StudioSession:
         self.model: Model | None = None
         self.view: Model | None = None
         self.timeline = None
+        self.recording = SessionRecording(config.target)
+        # Posteriors and sensitivity results the Analysis tab shows, with their names.
+        self.analyses: list[tuple[str, Any]] = []
         self.reset()
 
     # --- the run --------------------------------------------------------------
@@ -122,7 +126,9 @@ class StudioSession:
         """Rebuild the model from the panel's values and seed, at step 0."""
         with self.lock:
             start = partial(self._build, dict(self.values), self.seed)
-            self._start(start(), start)
+            model = start()
+            self._start(model, start)
+            self.recording.new_run(self.values, self.seed, model.time)
             self.say(f"new run, seed {self.seed}: {self.values}")
 
     def step(self, n: int = 1) -> int:
@@ -184,6 +190,7 @@ class StudioSession:
             _apply(model, changes, seed)
             start = partial(_replayed, self.timeline, step, changes, seed)
             self._start(model, start)
+            self.recording.replayed(step, changes, seed)
             self.say(f"replayed from step {step:g} with {changes or 'no changes'}")
 
     # --- the panels -----------------------------------------------------------

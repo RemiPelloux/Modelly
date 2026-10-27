@@ -18,6 +18,7 @@ import warnings
 import webbrowser
 
 from modelly.profile.loader import TargetError
+from modelly.studio import assets
 from modelly.studio.config import (
     DEFAULT_BUDGET_MIB,
     DEFAULT_EVERY,
@@ -25,6 +26,7 @@ from modelly.studio.config import (
     DEFAULT_SEED,
     StudioConfig,
 )
+from modelly.studio.options import INPUT_OPTIONS, INPUT_PANELS, inputs_from
 
 EXIT_OK, EXIT_MODEL_ERROR, EXIT_USAGE = 0, 1, 2
 PROG = "python -m modelly.studio"
@@ -71,8 +73,9 @@ panels:
   agents         the first agents, filtered by class
   profiler       modelly profile over the last steps
   lint           modelly lint on the model's file, with --explain text
-  log            what happened in the run
-  export         figure (PNG, SVG), data (CSV, Parquet), checkpoint, GIF
+{INPUT_PANELS}  log            what happened in the run
+  export         figure (PNG, SVG), data (CSV, Parquet), checkpoint, GIF,
+                 the session as a script, a modelly bundle
 
 exit codes:
   0  the server stopped normally (Ctrl+C)
@@ -172,7 +175,7 @@ def build_parser(prog: str = PROG) -> argparse.ArgumentParser:
         epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    for flags, options in OPTIONS:
+    for flags, options in OPTIONS + INPUT_OPTIONS:
         parser.add_argument(*flags, **options)
     return parser
 
@@ -186,6 +189,7 @@ def config_from(args: argparse.Namespace) -> StudioConfig:
         every=args.every,
         profile_steps=args.profile_steps,
         memory_budget_mib=args.memory_budget,
+        **inputs_from(args),
     )
 
 
@@ -226,6 +230,7 @@ def serve(config: StudioConfig, host: str, port: int, browser: bool) -> None:
     )
     url = f"http://{host}:{port}"
     sys.stdout.write(f"Modelly Studio: {url} (Ctrl+C to stop)\n")
+    sys.stderr.write(assets.warning() or "")
     if browser:
         open_when_ready(server, url)
     server.run()
