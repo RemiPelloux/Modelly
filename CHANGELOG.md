@@ -3,7 +3,12 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
-## Unreleased
+## 1.3.3 - 2026-10-27
+
+A codemod release: `python -m modelly.migrate` ports Mesa 3.5's own examples. The library code
+the models run is 1.3.2's; only `modelly/migrate.py` and its rules changed. No score is slower
+than 1.3.2 (core operations, the playbooks seed by seed, and the notebooks; see
+`docs/performance.md`).
 
 ### Fixed
 

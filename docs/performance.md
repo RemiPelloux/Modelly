@@ -395,6 +395,18 @@ The playbooks and the timed operations import no module that changed: the compil
 machine code is identical to 1.3.1's (`objdump -d`), so the remaining spread is the
 machine's noise.
 
+1.3.3 against 1.3.2 (its only change is to the codemod, `modelly.migrate`): both built from
+their git tags with the same compiler and dependencies, timed with the performance governor
+and turbo off.
+
+| Measurement | Ratio, 1.3.3 / 1.3.2 | Results |
+|---|---|---|
+| Core operations (pre-commit guard, 17 timings) | 0.83 to 1.02 by median, none slower by the guard's criterion (cell move: median 1.14, lower quartile 0.93) | |
+| Playbooks, 13 Modelly variants, 5 rounds | 0.99 to 1.02 (median of the per-round ratios) | identical |
+| TIS notebook at 1/30, 5 alternating rounds | 1.00 (paired median; per round 0.88 to 1.02) | identical |
+
+The tutorials and benchmark notebooks (17) run against the 1.3.3 wheel.
+
 Between releases, a pre-commit hook (`python -m modelly.dev install-hooks`) refuses any
 commit that makes one of 17 core operations more than 3% slower than the last release, in
 about ten seconds; CONTRIBUTING.md describes it.
