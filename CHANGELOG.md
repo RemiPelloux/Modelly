@@ -23,6 +23,9 @@ versioning.
 - `DataCollector.to_xarray` (and `modelly.data.xarray_export.to_xarray`): model reporters as an
   `xarray.Dataset` over `time`, arrays such as a grid stacked into `(time, ...)`, agent
   reporters as a `(time, AgentID)` panel; xarray is the new optional `xarray` extra.
+- docs: From R and Julia, reading Modelly's Parquet, DuckDB and netCDF results with arrow,
+  duckdb, Parquet2.jl and DuckDB.jl, and running Modelly from R (reticulate) and Julia
+  (PythonCall); the Python side of every snippet runs in the test suite.
 
 ## 1.3.3 - 2026-10-27
 

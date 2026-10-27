@@ -184,6 +184,7 @@ Best practices <best-practices>
 Checking a model <lint>
 Profiling a model <profile>
 Experiments and sweeps <experiments>
+From R and Julia <r_and_julia>
 Language-model agents <llm_agents>
 Calibration <calibration>
 Sensitivity analysis <sensitivity>
