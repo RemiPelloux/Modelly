@@ -46,6 +46,7 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Playbook speed-ups, build and step times, determinism (Table 3, Figure 1) | `benchmarks/playbooks/results/*.json` | `benchmarks/playbooks/compare.py`, then `make figures` |
 | Agreement with Mesa: 100 seeds at the small size (Table 4, Figure 2), 50 at the timed size (Table 5) | `data/agreement_small.json`, `data/agreement_large.json` | `scripts/agreement.py run --size small` (or `large`), then `analyse` |
 | Port bit-identical, CPU time ratios (Section 5.1) | the private medfly harness (`benchmarks/mesaVSmodelly/paired.py`, not in the repository) | paired runs of the plain codemod port against the unmodified Mesa notebook |
+| 1.3.2 against 1.3.1 and 1.3.3 against 1.3.2 (Section 5.4) | `data/release_gates.json` | `python -m modelly.dev perf --against <previous>`, the paired playbook and notebook runs |
 | 1.3.1 against 1.2.0 (Section 5.4) | `docs/performance.md`, "No regression from release to release" | `python -m modelly.dev perf --against 1.2.0`, the playbook runner |
 | Ishigami indices (Section 6.2) | `tests/sensitivity`, `docs/sensitivity.md` | `pytest tests/sensitivity` |
 | ABC-SMC coverage over 200 datasets per model (Table 7) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
@@ -74,7 +75,8 @@ If the benchmark results are rerun (for a new release, or on different hardware)
       venue, volume, issue, pages, year); the two JASSS articles without DOI and the mesa-frames
       URL checked to resolve.
 - [x] Table 1 re-checked against each project's documentation and repository (October 2026).
-- [x] ABC-SMC weight correction released as 1.3.2; the paper describes 1.3.2.
+- [x] ABC-SMC weight correction released as 1.3.2 and the codemod fix as 1.3.3; the paper
+      describes 1.3.3, benchmarked against 1.3.2 (`data/release_gates.json`).
 - [x] Compiled (Tectonic, no warnings); every page read.
 - [x] All timings re-run at a fixed frequency (performance governor, turbo off, CPU 2).
 - [x] Mesa 3.5 timed on all eight playbooks, mesa-frames on four, a hand-vectorised Mesa 3.5

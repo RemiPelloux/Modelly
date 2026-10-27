@@ -429,10 +429,15 @@ the same gate against 1.3.1: no core operation slower by the criterion; playbook
 0.96 and 1.04 over five rounds, and 0.99, 1.01 and 1.07 for the three noisiest re-timed over 15
 rounds (lower quartiles 0.97 to 0.99, so not slower by the criterion), with identical outputs;
 and a paired ratio of 0.98 on the notebook (per-round ratios 0.87 to 2.15, so that arm detects
-only large regressions) with identical records. The playbooks run no code
-that changed: the compiled modules' machine code is identical to 1.3.1's. The playbook arm therefore
+only large regressions) with identical records. Release 1.3.3, whose only change is to the
+codemod, passed it against 1.3.2 at the fixed frequency of the other timings: no core operation
+slower by the criterion (the widest spread, a cell move, has a median ratio of 1.14 and a lower
+quartile of 0.93); playbook ratios between 0.99 and 1.02 over five rounds, with identical
+outputs; and a paired ratio of 1.00 on the notebook (per-round ratios 0.88 to 1.02), with
+identical records. In both releases the playbooks run no code
+that changed: 1.3.2's compiled modules have the same machine code as 1.3.1's. The playbook arm therefore
 shows the gate's noise floor: its per-round ratios spread by more than 3\%, so a median of 1.07
 passes while its lower quartile is below 1, and slowdowns of a few percent are detected only
-by the core operations' longer, tighter measurements. The raw numbers of both release
+by the core operations' longer, tighter measurements. The raw numbers of the three release
 comparisons are in \code{paper/data/release\_gates.json}, except the notebook timing of
 1.3.1 against 1.2.0, whose raw output was not kept.
