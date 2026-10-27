@@ -128,7 +128,9 @@ neighbours). Here the "observed" adoption curve is eight years of one run at the
 from modelly.calibrate import ABCSMC, Prior, Target
 from modelly.zoo.bass_diffusion.model import BassDiffusion, BassScenario
 
-truth = BassDiffusion(BassScenario(households=2000, innovation=0.03, imitation=0.38, rng=99))
+truth = BassDiffusion(
+    BassScenario(households=2000, innovation=0.03, imitation=0.38, rng=99)
+)
 adoption = [truth.adoption]
 for _ in range(80):  # eight years in steps of 0.1
     truth.step()
@@ -136,7 +138,10 @@ for _ in range(80):  # eight years in steps of 0.1
 
 calibration = ABCSMC(
     model=BassDiffusion,
-    priors={"innovation": Prior.uniform(0.005, 0.1), "imitation": Prior.uniform(0.05, 1.0)},
+    priors={
+        "innovation": Prior.uniform(0.005, 0.1),
+        "imitation": Prior.uniform(0.05, 1.0),
+    },
     targets=[Target("adoption", observed=adoption)],
     steps=80,
     particles=100,
@@ -328,7 +333,11 @@ from modelly.calibrate import ExternalBayesOpt
 search = ExternalBayesOpt(Epidemic, priors, targets, steps=40, replicates=4, seed=3)
 search.run(evaluations=40).best
 gp = ExternalBayesOpt(
-    Epidemic, priors, targets, steps=40, seed=3,
+    Epidemic,
+    priors,
+    targets,
+    steps=40,
+    seed=3,
     backend_options={"sampler": optuna.samplers.GPSampler(seed=3)},
 )
 ```
