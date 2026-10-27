@@ -98,7 +98,9 @@ class Event:
         """
         super().__init__()
         self.time = time
-        self.priority = priority.value
+        # The member's value as the enum stores it: ``.value`` is a Python-level
+        # property, about 40 ns more on every event created.
+        self.priority = priority._value_
         self._canceled = False
 
         weak_ref_fn = _create_callable_reference(function)
