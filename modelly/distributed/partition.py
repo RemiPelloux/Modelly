@@ -1,4 +1,11 @@
-"""Split a grid into rectangular blocks, one per worker, with their halos.
+"""Split a space into partitions, one per worker, with their halos.
+
+``grid_blocks`` cuts a grid into rectangles (below), ``graph`` a network into
+parts with few edges between them (``modelly.distributed.graphs``) and ``kd`` a
+continuous space into boxes (``modelly.distributed.kdtree``). Each gives a layout
+that names the owner of a location and the halo of a partition.
+
+Grid blocks, one per worker, with their halos.
 
 ``grid_blocks(rows, cols)`` describes the split; ``.layout(grid)`` applies it to a
 grid's dimensions and torus setting. A layout says which block owns a cell
@@ -19,6 +26,11 @@ from itertools import product
 from typing import Any
 
 import numpy as np
+
+# The other partitioners, so that ``partition.graph`` and ``partition.kd`` read
+# like ``partition.grid_blocks``.
+from modelly.distributed.graphs import GraphLayout, GraphPartition, graph  # noqa: F401
+from modelly.distributed.kdtree import Box, KDLayout, KDPartition, kd  # noqa: F401
 
 AXES = 2
 

@@ -98,6 +98,11 @@ ray = [
   "modelly-abm[experiments]",
   "ray",
 ]
+# Split runs over MPI (modelly.distributed, backend="mpi"); needs an MPI library
+# (Open MPI or MPICH on Linux and macOS, MS-MPI on Windows)
+distributed = [
+  "mpi4py",
+]
 # MP4 export of space views (modelly.viz.animation); imageio-ffmpeg bundles ffmpeg.
 video = [
   "imageio",

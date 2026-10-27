@@ -15,6 +15,29 @@ versioning.
 - `modelly.distributed.partition` (provisional): `grid_blocks(rows, cols).layout(grid)` cuts a
   2-D grid into balanced blocks and gives each cell's owner and each block's halo, on plain
   grids and tori.
+- Split runs (`modelly.distributed`, provisional): a model that declares
+  `partitionable = Partitionable(space=..., phases=...)` and uses per-agent streams is built
+  split across workers with `Cluster(backend=...).build(Model, scenario, partition)`, with ghost
+  agents exchanged at partition borders before a phase that looks across them and agents
+  migrating with their streams after a phase that moves them. Backends `local`, `mpi`
+  (mpi4py, new `distributed` extra), `dask` and `ray` (imported only when used). Results equal
+  one process for the same seed, byte for byte; a model that breaks the contract (model-level
+  draws in a phase, Column agents, own events, moves into cells with a capacity, agent
+  references in attributes, births keyed on `unique_id`) is refused with the reason, and
+  `owns()` lets a model build only its partition's agents.
+- Graph and k-d partitioners (provisional): `partition.graph(parts)` splits a `Network` by
+  breadth-first banding and greedy boundary refinement, `partition.kd(parts)` a
+  `ContinuousSpace` by recursive bisection at the population quantile; both deterministic,
+  pure numpy, with halos by hops or by distance.
+- Distributed collectors and checkpoints (provisional): `Sum`, `Min` and `Max` reporters reduced
+  across partitions (`collect()`), agent `snapshot()`s in stream-key order, and
+  `checkpoint(directory)` writing one file per partition plus an `index.json` with digests,
+  which `Cluster.restore` continues draw for draw.
+- Partition-independence check (provisional): `check_independence(Model, scenario, partitions,
+  steps)` runs one process and each split and raises at the first differing reporter or agent
+  state; the test suite runs it on a grid, a network and a continuous model at 1, 2, 4 and 16
+  partitions, and on MPI with 2 and 4 ranks. `benchmarks/distributed/weak_scaling.py` measures
+  weak scaling, with the guide "From laptop to cluster" (`docs/distributed.md`).
 - `modelly.stream` (provisional): `ReplaySource`, `CSVSource` (a growing file) and
   `HTTPSource` hand out observations once each, in time order; `ObservationOperator` reads the
   same quantities from a model, with residuals and a Gaussian log-likelihood.
