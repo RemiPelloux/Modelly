@@ -17,6 +17,15 @@ versioning.
   RTX 5050 the grid epidemic at 10 million agents keeps the CPU run's integer state bit for bit
   and runs its 60 steps 34x faster than the CPU column variant (`docs/performance.md`).
   Extras `gpu` (CuPy) and `diff` (JAX); `import modelly` loads neither.
+- diff: `modelly.diff` simulates column phases traced by JAX (`DiffModel`, `@phase` with a
+  `differentiable` flag) and differentiates their outputs with respect to parameters:
+  pathwise normal and uniform draws, Bernoulli choices through straight-through, Gumbel-softmax
+  or score-function estimators (each warns `GradientApproximationWarning`), `check_gradients`
+  against finite differences, and `GradientCalibration` (Adam on `modelly.calibrate` priors and
+  targets, deterministic for a seed). Differentiable twins of the Bass diffusion and
+  Bouchaud-Mezard zoo models recover known parameters; `docs/differentiable.md` says when the
+  gradients mean something.
+
 ## 1.3.3 - 2026-10-27
 
 A codemod release: `python -m modelly.migrate` ports Mesa 3.5's own examples. The library code
