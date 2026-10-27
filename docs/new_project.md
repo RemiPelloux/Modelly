@@ -41,6 +41,15 @@ command in its README is `python -m ...`, which runs the same everywhere.
 | `network` | an infection spreads over a random contact network (SIR) | `Network` from `networkx` (the `network` extra), a `Column` per state |
 | `continuous` | correlated random walkers in a wrapping space; their alignment is recorded | `ContinuousSpace`, `ContinuousSpaceAgent` |
 | `cohort` | colonies whose individuals are counted by age class, not one object each | `CohortTable` with binomial survival and births |
+| `geo` | news spreads among residents who walk a town of square districts, in metres | `GeoSpace`, `GeoAgent`, a `Column` (the `geo` extra) |
+| `llm` | citizens ask a language model what they now think of a proposal, after talking to a few others | `LLMAgent`, `decide_all`, a `Client` with an offline `FakeProvider` |
+
+The `geo` template builds its districts in code, so it runs offline; `districts()` in
+`model.py` is the one function to replace with `geopandas.read_file(...)` for a real town. The
+`llm` template asks a local function (`local_responder` in `model.py`) instead of a language
+model, so its test runs offline and costs nothing; pass `client=Client(AnthropicProvider(...))`
+or another provider to the model to ask a real one (see [Language-model agents](llm_agents.md)
+for keys, caching, replay and budgets).
 
 ## The seed
 

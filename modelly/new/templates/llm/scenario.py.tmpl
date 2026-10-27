@@ -1,0 +1,17 @@
+"""The parameters of one {title} run, and the seed that fixes every draw."""
+
+from modelly.scenarios import Scenario
+
+SEED = 42  # the default seed: pass rng=... for another, reproducible, run
+
+
+class {scenario_class}(Scenario):
+    """Parameters and their defaults; pass ``rng=`` or any of them to override."""
+
+    n: int = 40  # citizens
+    heard: int = 4  # other citizens each one talks to per step
+    initial_support: float = 0.4  # chance that a citizen starts in favour
+
+    def __init__(self, *, rng=None, **kwargs):
+        """Seed with ``SEED`` unless ``rng`` is given, so every run reproduces."""
+        super().__init__(rng=SEED if rng is None else rng, **kwargs)

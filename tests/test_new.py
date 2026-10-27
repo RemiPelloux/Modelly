@@ -44,6 +44,8 @@ def test_template_passes_its_test_and_lint(tmp_path, template):
     """The generated project's determinism test passes and modelly lint finds nothing."""
     if template == "network":
         pytest.importorskip("networkx")
+    if template == "geo":
+        pytest.importorskip("geopandas")
     project = tmp_path / f"demo-{template}"
     written = create_project(project, template)
     names = {path.relative_to(project).as_posix() for path in written}

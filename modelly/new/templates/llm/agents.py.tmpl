@@ -1,0 +1,38 @@
+"""The agents of {title}."""
+
+from collections import Counter
+
+from modelly import Agent
+from modelly.llm import LLMAgent
+
+OPINIONS = ("support", "oppose")
+PROPOSAL = "a new park in place of the car park"
+# The reply must be JSON of this shape; an invalid one is sent back once for repair.
+SCHEMA = {
+    "type": "object",
+    "required": ["opinion"],
+    "additionalProperties": False,
+    "properties": {"opinion": {"enum": list(OPINIONS)}},
+}
+
+
+class Citizen(LLMAgent, Agent):
+    """A citizen who asks a language model what it now thinks, as its persona would."""
+
+    def __init__(self, model, opinion):
+        """Create a citizen with a persona (the system prompt) and a first opinion."""
+        super().__init__(model)
+        self.persona = (
+            f"You are a resident of a town debating {PROPOSAL}. Answer as that resident."
+        )
+        self.opinion = opinion
+        self.heard = []  # the citizens talked to this step, chosen by the model
+
+    def prompt(self):
+        """What the citizen is asked: its own view and the views it heard."""
+        counts = Counter(other.opinion for other in self.heard)
+        heard = ", ".join(f"{counts[o]} {o}" for o in OPINIONS)
+        return (
+            f"Your current view of {PROPOSAL}: {self.opinion}. Of the people you "
+            f"talked to: {heard}. What is your opinion now?"
+        )

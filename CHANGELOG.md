@@ -17,6 +17,9 @@ versioning.
   `docs/lint.md`.
 - `.pre-commit-hooks.yaml`: `modelly-lint` and `modelly-lint-fix` hooks, so a project's
   pre-commit configuration runs `modelly lint` (or its safe fixes) on the staged files.
+- `modelly new --template geo` (residents of a town's districts in a `GeoSpace`) and
+  `--template llm` (citizens deciding through `modelly.llm`, offline by default); both pass
+  their determinism test and `modelly lint` as generated.
 
 ## 1.3.3 - 2026-10-27
 
