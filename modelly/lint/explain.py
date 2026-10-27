@@ -91,6 +91,14 @@ EXPLANATIONS = {
         "def run(task):   # module level: importable by every worker\n    return Sheep(task).run()\n\n"
         "def main():\n    run_batch(run, tasks)",
     ),
+    "MDL011": Explanation(
+        "A scipy.stats.qmc engine, a scipy distribution's .rvs() or a SALib sampler given "
+        "no seed scrambles from global or fresh OS state, so the design points, and every "
+        "result computed from them, change from one run of the study to the next.",
+        "sample = qmc.LatinHypercube(d=3).random(64)\nnoise = norm(0, 1).rvs(10)",
+        "rng = np.random.default_rng(seed)\nsample = qmc.LatinHypercube(d=3, rng=rng).random(64)\n"
+        "noise = norm(0, 1).rvs(10, random_state=rng)",
+    ),
     "MDL012": Explanation(
         "A reply from a web service or a language model differs from one call to the next "
         "and the service may change or vanish. Called through requests, httpx, urllib, or "
@@ -102,6 +110,20 @@ EXPLANATIONS = {
         "        self.vote = r.content[0].text",
         "class Voter(LLMAgent, Agent):\n    def step(self):\n"
         '        self.vote = self.decide(prompt, {"enum": ["yes", "no"]})',
+    ),
+    "MDL013": Explanation(
+        "A Scenario copies its class-level defaults into every instance by reference: a "
+        "list, dict, set or array default is one object shared by every scenario of the "
+        "class, so a change made through one run leaks into the next.",
+        "class Params(Scenario):\n    weights: list = [0.2, 0.8]",
+        "class Params(Scenario):\n    weights: tuple = (0.2, 0.8)",
+    ),
+    "MDL014": Explanation(
+        "A calibration Target reads the model through its output and summary functions. "
+        "A clock, a timer or OS entropy there makes the distance, and so the posterior, "
+        "depend on the machine and the moment instead of the seed.",
+        'Target("speed", observed=[1.0], output=lambda m: time.perf_counter())',
+        'Target("speed", observed=[1.0], output=lambda m: m.time)',
     ),
     "MDL101": Explanation(
         "A loop, comprehension, select, agg, groupby, sort or map over the whole population "

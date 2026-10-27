@@ -126,10 +126,28 @@ RULES = {
             "define the function or class at module level in an importable file (Windows and macOS start workers with spawn)",
         ),
         Rule(
+            "MDL011",
+            "error",
+            "sampler without a seed: the design changes from run to run",
+            "pass rng= (scipy.stats.qmc), random_state= (.rvs) or seed= (SALib) from the study's seed",
+        ),
+        Rule(
             "MDL012",
             "error",
             "network or language-model call outside modelly.llm: the run cannot be replayed",
             "call through modelly.llm (self.decide / self.model.llm), which caches every reply",
+        ),
+        Rule(
+            "MDL013",
+            "error",
+            "mutable default in a Scenario: every scenario shares one object",
+            "use an immutable default (a tuple, a frozenset, a number) and build the list in the model",
+        ),
+        Rule(
+            "MDL014",
+            "error",
+            "wall clock or OS entropy in a calibration target: the distance changes between runs",
+            "compute the target from the model's state and its time (model.time), never the clock",
         ),
         Rule(
             "MDL101",

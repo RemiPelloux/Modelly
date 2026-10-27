@@ -1,4 +1,4 @@
-"""The safe fixes behind ``modelly lint --fix``: MDL001, MDL002, MDL003 and MDL009.
+"""The safe fixes behind ``modelly lint --fix``: MDL001, MDL002, MDL003, MDL009 and MDL011.
 
 ``FixCollector`` is the linter's own visitor, so a fix is computed for exactly the node a
 finding points at. A fixer returns None when the rewrite is not unambiguous; the finding
@@ -13,6 +13,7 @@ from collections.abc import Callable
 
 from modelly.lint.checker import Checker, Hit
 from modelly.lint.edits import Edit, Source
+from modelly.lint.patterns import FROZEN_DRAW, QMC_MODULE, SAMPLER_SEEDS
 from modelly.lint.rules import dotted, is_set_expr
 
 # random.Random methods the model's FastRandom (self.random) has, same signature.
@@ -45,6 +46,7 @@ SUPER_ARGS = {
 MODEL_KEYWORDS = ("rng", "scenario")  # Model.__init__ takes one of them, not both
 AGENT_KEY = ", key=lambda a: a.unique_id"  # agents do not compare; their ids do
 SIMPLE = ast.Name | ast.Attribute | ast.Subscript | ast.Call
+MODEL_GENERATOR = "self.rng"  # the model's numpy Generator, which qmc and scipy accept
 
 
 class FixCollector(Checker):
@@ -168,9 +170,39 @@ def fix_registry(collector: FixCollector, node: ast.Call) -> Edit | None:
     return None  # add(): the agent registered itself when it was created
 
 
+def append_argument(source: Source, call: ast.Call, text: str) -> Edit:
+    """An edit that adds ``text`` as the last argument of ``call``."""
+    arguments = [*call.args, *call.keywords]
+    if arguments:
+        last = max(arguments, key=lambda a: (a.end_lineno, a.end_col_offset))
+        end = source.span(last)[1]
+        return Edit(end, end, f", {text}")
+    start, stop = source.span(call)
+    close = source.text.rindex(")", start, stop)
+    return Edit(close, close, text)
+
+
+def fix_sampler(collector: FixCollector, node: ast.Call) -> Edit | None:
+    """MDL011 in a method: seed a qmc engine (``rng=``) or ``.rvs`` (``random_state=``)."""
+    if not collector.in_method():
+        return None
+    name = collector.imports.resolve(node.func) or ""
+    if name.rpartition(".")[0] == QMC_MODULE:
+        keyword = "rng"
+    elif isinstance(node.func, ast.Attribute) and node.func.attr == FROZEN_DRAW:
+        keyword = "random_state"
+    else:
+        return None  # SALib takes an integer seed: which one is the study's choice
+    for given in node.keywords:
+        if given.arg in SAMPLER_SEEDS:  # passed explicitly as None
+            return collector.source.replace(given.value, MODEL_GENERATOR)
+    return append_argument(collector.source, node, f"{keyword}={MODEL_GENERATOR}")
+
+
 FIXERS: dict[str, Callable[[FixCollector, ast.AST], Edit | None]] = {
     "MDL001": fix_random,
     "MDL002": fix_super,
     "MDL003": fix_set_loop,
     "MDL009": fix_registry,
+    "MDL011": fix_sampler,
 }

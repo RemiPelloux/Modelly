@@ -93,7 +93,7 @@ def add_fixes(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--fix",
         action="store_true",
-        help="apply the safe fixes (MDL001, MDL002, MDL003, MDL009), then report the rest",
+        help="apply the safe fixes (MDL001-003, MDL009, MDL011), then report the rest",
     )
     parser.add_argument(
         "--diff",

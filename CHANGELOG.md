@@ -3,6 +3,15 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Added
+
+- lint: MDL011 (a scipy.stats.qmc engine, a `.rvs()` draw or a SALib sampler without a seed),
+  MDL013 (a mutable default in a `Scenario`, shared by every scenario of the class) and MDL014
+  (a clock, timer or OS entropy read in a calibration `Target`); `--fix` seeds a sampler in a
+  model or agent method from `self.rng`. 21 rules, five with a fix.
+
 ## 1.3.3 - 2026-10-27
 
 A codemod release: `python -m modelly.migrate` ports Mesa 3.5's own examples. The library code

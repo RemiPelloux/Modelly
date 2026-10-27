@@ -10,6 +10,7 @@ from modelly.lint.patterns import (
     declared_shared,
     is_global_random,
     is_network_call,
+    is_unseeded_sampler,
     removed_in_loop,
     sorts_by_id,
     writes_columns_only,
@@ -232,6 +233,7 @@ class Checker(ast.NodeVisitor):
             "MDL009": method in MUTATORS
             and not isinstance(owner, ast.Call)
             and is_population(owner, in_model),
+            "MDL011": is_unseeded_sampler(name, node),
             "MDL012": bool(self.kind) and is_network_call(name, func),
             "MDL101": method in SCANS
             and self.kind == "agent"

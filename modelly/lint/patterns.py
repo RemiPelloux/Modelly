@@ -12,6 +12,16 @@ from modelly.lint.rules import (
     dotted,
 )
 
+# scipy.stats.qmc engines: without rng= (or the older seed=) they scramble from global state.
+QMC_MODULE = "scipy.stats.qmc"
+QMC_ENGINES = frozenset(
+    {"LatinHypercube", "Sobol", "Halton", "PoissonDisk"}
+    | {"MultivariateNormalQMC", "MultinomialQMC"}
+)
+SALIB_SAMPLE = "SALib.sample."  # SALib.sample.<method>.sample(problem, n, seed=None)
+FROZEN_DRAW = "rvs"  # scipy.stats distributions: rvs(..., random_state=None)
+SAMPLER_SEEDS = frozenset({"rng", "seed", "random_state"})
+
 
 def unseeded(call: ast.Call) -> bool:
     """Whether ``call`` passes no seed: no argument at all, or an explicit None."""
@@ -34,6 +44,33 @@ def is_global_random(name: str, call: ast.Call) -> bool:
     if attr == "default_rng" or (attr in NUMPY_SEEDED and attr != "Generator"):
         return unseeded(call)
     return attr != "Generator"
+
+
+def passes_seed(call: ast.Call) -> bool:
+    """Whether ``call`` passes ``rng=``, ``seed=`` or ``random_state=`` (not None), or ``**kw``."""
+    return any(
+        keyword.arg is None
+        or (
+            keyword.arg in SAMPLER_SEEDS
+            and not (
+                isinstance(keyword.value, ast.Constant) and keyword.value.value is None
+            )
+        )
+        for keyword in call.keywords
+    )
+
+
+def is_unseeded_sampler(name: str, call: ast.Call) -> bool:
+    """MDL011: a qmc engine, a SALib sampler or a scipy ``.rvs`` draw given no seed.
+
+    ``name`` is the call's resolved dotted name, e.g. ``scipy.stats.qmc.Sobol``.
+    """
+    module, _, attr = name.rpartition(".")
+    sampler = (module == QMC_MODULE and attr in QMC_ENGINES) or (
+        name.startswith(SALIB_SAMPLE) and attr == "sample"
+    )
+    draws = isinstance(call.func, ast.Attribute) and call.func.attr == FROZEN_DRAW
+    return (sampler or draws) and not passes_seed(call)
 
 
 def is_network_call(name: str, func: ast.AST) -> bool:

@@ -92,12 +92,34 @@ BAD = {
         "run_batch(go, tasks, workers=[lambda: 1])",
         "sweep(model_factory=lambda s: M(s))",
     ],
+    "MDL011": [
+        "from scipy.stats import qmc\nx = qmc.LatinHypercube(d=3).random(8)",
+        "from scipy.stats import qmc\nx = qmc.Sobol(2, rng=None)",
+        "import scipy.stats.qmc as q\nx = q.Halton(2, seed=None)",
+        "from scipy.stats import norm\nx = norm(0, 1).rvs(5)",
+        "from scipy import stats\nx = stats.poisson.rvs(3, size=4, random_state=None)",
+        "from SALib.sample import saltelli\nx = saltelli.sample(problem, 64)",
+        "class M(Model):\n    def setup(self):\n        from scipy.stats import qmc\n        p = qmc.Sobol(2).random(4)",
+    ],
     "MDL012": [
         "import requests\nclass A(Agent):\n    def step(self):\n        r = requests.post(URL, json={})",
         "from urllib.request import urlopen\nclass M(Model):\n    def step(self):\n        urlopen(URL)",
         "import openai\nclass A(Agent):\n    def step(self):\n        c = openai.OpenAI()",
         "class A(Agent):\n    def step(self):\n        r = self.client.chat.completions.create(model=M)",
         "class A(Agent):\n    def step(self):\n        r = CLIENT.messages.create(model=M, messages=[])",
+    ],
+    "MDL013": [
+        "from modelly.scenarios import Scenario\nclass P(Scenario):\n    weights: list = [0.2, 0.8]",
+        "from modelly.scenarios import Scenario\nclass P(Scenario):\n    seen: dict = {}",
+        "from modelly.scenarios import Scenario\nclass P(Scenario):\n    grid: np.ndarray = np.zeros(3)",
+        "import modelly.scenarios as s\nclass P(s.Scenario):\n    n: int = 3\nclass Q(P):\n    tags: set = set()",
+        "from modelly.scenarios import Scenario\nfrom collections import deque\nclass P(Scenario):\n    q: deque = deque()",
+    ],
+    "MDL014": [
+        "from modelly.calibrate import Target\nt = Target('a', observed=[1.0], output=lambda m: time.time())",
+        "from modelly.calibrate import Target\ndef out(m):\n    return time.perf_counter()\nt = Target('a', [1.0], output=out)",
+        "import modelly.calibrate as cal\nt = cal.Target('a', [1.0], summary=lambda s: datetime.now().second)",
+        "from modelly.calibrate.targets import Target\nt = Target('a', [1.0], output=lambda m: uuid.uuid4().int)",
     ],
     "MDL101": [
         "class A(Agent):\n    def step(self):\n        for a in self.model.agents:\n            pass",
@@ -172,6 +194,17 @@ GOOD = [
     "import requests\ndef fetch_data():\n    return requests.get(URL)",
     "class A(Agent):\n    def step(self):\n        self.vote = self.decide(prompt, schema)",
     "class M(Model):\n    def step(self):\n        r = self.llm.complete('hi')",
+    "from scipy.stats import qmc\nx = qmc.LatinHypercube(d=3, rng=np.random.default_rng(1))",
+    "from scipy.stats import qmc\nx = qmc.Sobol(2, seed=7)",
+    "from scipy.stats import norm\nx = norm(0, 1).rvs(5, random_state=rng)",
+    "from SALib.sample import saltelli\nx = saltelli.sample(problem, 64, seed=3)",
+    "from scipy.stats import norm\nx = norm.rvs(**options)",
+    "from modelly.scenarios import Scenario\nclass P(Scenario):\n    weights: tuple = (0.2, 0.8)\n    _cache: dict = {}",
+    "from typing import ClassVar\nfrom modelly.scenarios import Scenario\nclass P(Scenario):\n    TABLE: ClassVar[dict] = {}",
+    "class Plain:\n    weights: list = []",
+    "from modelly.calibrate import Target\nt = Target('a', observed=[1.0], output=lambda m: m.time)",
+    "from modelly.calibrate import Target\nstart = time.time()\nt = Target('a', [1.0], output='infected')",
+    "class Target:\n    pass\nt = Target(lambda: time.time())",
 ]
 
 
