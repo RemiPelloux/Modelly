@@ -31,6 +31,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from modelly.core.storage import IN_MEMORY, InMemory, pickled, restored
+
 COUNT = "count"
 INITIAL_ROWS = 64
 GROWTH_FACTOR = 2
@@ -39,11 +41,15 @@ GROWTH_FACTOR = 2
 class CohortTable:
     """Rows of (state columns, count); every operation is one numpy call per column."""
 
-    def __init__(self, rng: np.random.Generator, **columns: Any) -> None:
+    def __init__(
+        self, rng: np.random.Generator, *, storage: InMemory = IN_MEMORY, **columns: Any
+    ) -> None:
         """Create an empty table with an int64 ``count`` and the given state columns.
 
         Args:
             rng: the model's seeded numpy generator (``model.rng``).
+            storage: where the columns live (``modelly.core.storage``); a
+                ``MemoryMapped`` keeps them in files, for more rows than memory.
             columns: state column names and their numpy dtypes.
         """
         if COUNT in columns:
@@ -52,11 +58,21 @@ class CohortTable:
         self._dtypes = {COUNT: np.dtype(np.int64)} | {
             name: np.dtype(dtype) for name, dtype in columns.items()
         }
-        self._data = {
-            name: np.zeros(INITIAL_ROWS, dtype=dtype)
-            for name, dtype in self._dtypes.items()
-        }
+        self._storage = storage
+        self._data = storage.allocate_all(self._layout(), INITIAL_ROWS)
         self._n = 0
+
+    def _layout(self) -> dict[str, tuple[np.dtype, int]]:
+        """Every column with its dtype; rows start at zero."""
+        return {name: (dtype, 0) for name, dtype in self._dtypes.items()}
+
+    def __getstate__(self) -> dict:
+        """Memory-mapped columns are pickled as their rows."""
+        return pickled(self.__dict__)
+
+    def __setstate__(self, state: dict) -> None:
+        """Columns come back into the table's storage (a new folder when memory-mapped)."""
+        self.__dict__.update(restored(state))
 
     def __len__(self) -> int:
         """Number of rows (cohorts), not individuals."""
@@ -174,10 +190,7 @@ class CohortTable:
             return
         while capacity < rows:
             capacity *= GROWTH_FACTOR
-        for name, column in self._data.items():
-            grown = np.zeros(capacity, dtype=column.dtype)
-            grown[: self._n] = column[: self._n]
-            self._data[name] = grown
+        self._data = self._storage.grow_all(self._data, self._layout(), capacity)
 
     def __repr__(self) -> str:
         """Rows, individuals and columns."""

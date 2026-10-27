@@ -31,6 +31,7 @@ import pandas as pd
 
 from modelly.core.agentset import AgentSet
 from modelly.core.column_access import fast_view
+from modelly.core.storage import IN_MEMORY, InMemory, layout, pickled, restored
 
 if TYPE_CHECKING:
     from modelly.core.agent import Agent
@@ -83,20 +84,19 @@ class ColumnTable:
     """
 
     def __init__(
-        self, specs: dict[str, Column], random: Random, rng: np.random.Generator
+        self,
+        specs: dict[str, Column],
+        random: Random,
+        rng: np.random.Generator,
+        storage: InMemory = IN_MEMORY,
     ) -> None:
-        """Allocate one array per column plus the unique_id column."""
+        """Allocate one array per column plus the unique_id column, in ``storage``."""
         self._specs = specs
         self.random = random
         self.rng = rng
         self._agents: list[Agent] = []
-        self._data: dict[str, np.ndarray] = {
-            ID_COLUMN: np.zeros(INITIAL_CAPACITY, dtype=np.int64),
-            **{
-                name: np.full(INITIAL_CAPACITY, spec.default, dtype=spec.dtype)
-                for name, spec in specs.items()
-            },
-        }
+        self._storage = storage
+        self._data = storage.allocate_all(layout(specs, ID_COLUMN), INITIAL_CAPACITY)
         self._refresh_views()
 
     def _refresh_views(self) -> None:
@@ -104,12 +104,12 @@ class ColumnTable:
         self.__dict__["_views"] = [fast_view(self._data[name]) for name in self._specs]
 
     def __getstate__(self) -> dict:
-        """Drop the memoryviews, which do not pickle."""
-        return {k: v for k, v in self.__dict__.items() if k != "_views"}
+        """Drop the memoryviews, which do not pickle; memory-mapped arrays go as rows."""
+        return pickled({k: v for k, v in self.__dict__.items() if k != "_views"})
 
     def __setstate__(self, state: dict) -> None:
-        """Restore the arrays and rebuild the views."""
-        self.__dict__.update(state)
+        """Restore the arrays into the table's storage and rebuild the views."""
+        self.__dict__.update(restored(state))
         self._refresh_views()
 
     def __len__(self) -> int:
@@ -181,9 +181,8 @@ class ColumnTable:
     def remove_where(self, mask: np.ndarray) -> int:
         """Remove every agent whose row is True in ``mask``; return how many.
 
-        The whole-population "die" phase of a step: ``table.remove_where(table.energy < 0)``.
-        Each agent is removed through ``agent.remove()``, so spaces and datasets
-        are updated as usual.
+        The "die" phase of a step: ``table.remove_where(table.energy < 0)``. Each
+        agent goes through ``agent.remove()``, so spaces and datasets are updated.
         """
         agents = self._agents
         doomed = [agents[row] for row in np.flatnonzero(mask).tolist()]
@@ -194,12 +193,10 @@ class ColumnTable:
     def thin(self, name: str, survival: float | np.ndarray) -> np.ndarray:
         """Replace the counts in column ``name`` by Binomial(count, survival) draws.
 
-        For a row that stands for ``count`` identical individuals, each surviving
-        independently with probability ``survival``, the number left is
-        Binomial(count, survival): the sum of ``count`` independent Bernoulli
-        draws has exactly that law. One draw per cohort therefore reproduces the
-        individual-level model's survivor counts in distribution. Returns the
-        live-rows view of the column after the draw.
+        For a row of ``count`` identical individuals, each surviving independently
+        with probability ``survival``, the number left is Binomial(count, survival)
+        (a sum of Bernoulli draws), so one draw per cohort has the individual
+        model's law. Returns the live-rows view of the column after the draw.
         """
         counts = self._data[name][: len(self._agents)]
         counts[:] = self.rng.binomial(counts, survival)
@@ -238,13 +235,9 @@ class ColumnTable:
         agent._column_row = -1
 
     def _grow(self) -> None:
-        old_capacity = self._data[ID_COLUMN].shape[0]
-        capacity = old_capacity * GROWTH_FACTOR
-        for name, arr in self._data.items():
-            default = self._specs[name].default if name in self._specs else 0
-            grown = np.full(capacity, default, dtype=arr.dtype)
-            grown[:old_capacity] = arr
-            self._data[name] = grown
+        capacity = self._data[ID_COLUMN].shape[0] * GROWTH_FACTOR
+        columns = layout(self._specs, ID_COLUMN)
+        self._data = self._storage.grow_all(self._data, columns, capacity)
         self._refresh_views()
 
     def __repr__(self) -> str:
@@ -257,6 +250,9 @@ class ColumnStore:
 
     Indexed by the concrete agent class: ``model.columns[MoneyAgent]``.
     """
+
+    # Where the tables made from now on keep their arrays (modelly.core.storage).
+    storage: InMemory = IN_MEMORY
 
     def __init__(self, random: Random, rng: np.random.Generator) -> None:
         """Create an empty store; tables appear when agents register."""
@@ -291,7 +287,8 @@ class ColumnStore:
         agent_class = type(agent)
         table = self._tables.get(agent_class)
         if table is None:
-            table = ColumnTable(agent_class._column_specs, self.random, self.rng)
+            specs = agent_class._column_specs
+            table = ColumnTable(specs, self.random, self.rng, self.storage)
             self._tables[agent_class] = table
         table.add(agent)
 
