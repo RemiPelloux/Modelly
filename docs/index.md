@@ -190,6 +190,7 @@ Sensitivity analysis <sensitivity>
 Checkpoints <checkpoints>
 Reproducible studies <provenance>
 Time travel <timetravel>
+Live data and assimilation <assimilation>
 Geospatial models <geospatial>
 Networks <networks>
 Model zoo <zoo/index>
