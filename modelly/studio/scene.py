@@ -11,8 +11,10 @@ uploads as they are:
 - ``segments``: ``(x0, y0, x1, y1)`` per line: a network's edges, a ``GeoSpace``'s region
   outlines.
 
-Coordinates are shifted so the scene's lower-left corner is the origin: projected metres
-(six or seven digits) lose no precision in the renderer's 32-bit floats that way.
+Coordinates are shifted so the space's lower-left corner (a continuous space's ranges, a
+grid's first cell, else the lowest node or agent) is the origin: projected metres (six or
+seven digits) lose no precision in the renderer's 32-bit floats that way, and the view does
+not jump as agents move.
 ``encode`` packs the arrays as base64 little-endian buffers for the browser.
 """
 
@@ -131,8 +133,26 @@ def _space_arrays(space: Any, agents: list) -> tuple[np.ndarray, list, dict]:
     return points, drawn, extras
 
 
-def _bounds(arrays: list[np.ndarray]) -> tuple[np.ndarray, np.ndarray]:
-    """The lower-left and upper-right corners of every coordinate in ``arrays``."""
+def _space_bounds(space: Any) -> tuple[np.ndarray, np.ndarray] | None:
+    """A space's own corners: a continuous space's ranges, a grid's first and last cell."""
+    dimensions = getattr(space, "dimensions", None)
+    if isinstance(dimensions, np.ndarray) and dimensions.shape[0] >= XY:
+        ranges = dimensions[:XY].astype(float)
+        return ranges[:, 0], ranges[:, 1]
+    if isinstance(dimensions, tuple | list) and len(dimensions) >= XY:
+        return np.zeros(XY), np.asarray(dimensions[:XY], dtype=float) - 1
+    return None
+
+
+def _bounds(space: Any, arrays: list[np.ndarray]) -> tuple[np.ndarray, np.ndarray]:
+    """The scene's corners: the space's own, else those of every coordinate drawn.
+
+    A space's own corners do not move as its agents do, so the view in the browser
+    stays put from one step to the next.
+    """
+    fixed = _space_bounds(space)
+    if fixed is not None:
+        return fixed
     found = [a.reshape(-1, XY) for a in arrays if a.size]
     if not found:
         return np.zeros(XY), np.ones(XY)
@@ -156,7 +176,7 @@ def scene_of(model: Model, portrayal: Callable | None = None) -> Scene | None:
         colours = portrayal_colours(drawn, portrayal)
     nodes = extras.get("nodes", np.zeros((0, XY)))
     segments = extras.get("segments", np.zeros((0, SEGMENT)))
-    low, high = _bounds([points, nodes, segments])
+    low, high = _bounds(space, [points, nodes, segments])
     shift = np.tile(low, SEGMENT // XY)
     return Scene(
         points=(points - low).astype(FLOAT),

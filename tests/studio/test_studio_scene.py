@@ -133,6 +133,17 @@ def test_region_outlines_of_a_geospace():
     assert scene.points.tolist() == [[50.0, 50.0]]
 
 
+def test_the_origin_stays_put_as_agents_move():
+    """A continuous space's own ranges set the origin, not where its agents are."""
+    model = Crowd(50)
+    before = scene_of(model)
+    for agent in model.space.active_agents:
+        agent.position = (OFFSET + SIDE / 2, OFFSET + SIDE / 2)
+    after = scene_of(model)
+    assert after.origin == before.origin == (OFFSET, OFFSET)
+    assert after.extent == before.extent == (SIDE, SIDE)
+
+
 def test_no_space():
     """A model without a space has no scene."""
     assert scene_of(Model(rng=1)) is None

@@ -120,6 +120,8 @@ module.exports = {
       const program = gl.createProgram();
       gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, POINT_VERTEX));
       gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, FRAGMENT));
+      // Attribute 0 must be an enabled array on some drivers: make it the positions.
+      gl.bindAttribLocation(program, 0, "a_position");
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
         throw new Error(gl.getProgramInfoLog(program));
@@ -201,6 +203,7 @@ module.exports = {
       const scale = FIT_MARGIN * Math.min(canvas.width / width, canvas.height / height);
       this.view = { x: width / 2, y: height / 2, scale: scale };
       this.lastExtent = extent.slice();
+      this.sized = canvas.clientWidth > 0;
     },
     draw() {
       if (!this.arrays || !this.view) return;
@@ -324,7 +327,10 @@ module.exports = {
       canvas.addEventListener("wheel", (event) => this.zoom(event), { passive: false });
       if (window.ResizeObserver) {
         if (this.resizer) this.resizer.disconnect();
-        this.resizer = new ResizeObserver(() => this.draw());
+        this.resizer = new ResizeObserver(() => {
+          if (this.arrays && !this.sized) this.fit(); // mounted before it had a size
+          this.draw();
+        });
         this.resizer.observe(canvas);
       }
     },
