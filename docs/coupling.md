@@ -199,7 +199,10 @@ def discharged(stocks, inputs):
 
 hospital = StockFlow(
     {"occupied": 0.0},
-    [Flow("admit", admitted, target="occupied"), Flow("discharge", discharged, source="occupied")],
+    [
+        Flow("admit", admitted, target="occupied"),
+        Flow("discharge", discharged, source="occupied"),
+    ],
     reads=["admissions"],
 )
 ```
