@@ -31,6 +31,8 @@ SOURCES = (
     NATIVE_DIR / "fastset.c",
 )
 OPTIMISE = ["-O3", "-fPIC", "-fno-strict-aliasing"]
+# In the EXT_SUFFIX of a WebAssembly build (cpython-314-wasm32-emscripten.so).
+EMSCRIPTEN = "emscripten"
 
 
 def compile_with_setuptools(root: Path, out_dir: Path, source: Path) -> Path | None:
@@ -56,6 +58,28 @@ def compile_with_setuptools(root: Path, out_dir: Path, source: Path) -> Path | N
     return Path(command.get_ext_fullpath(source.stem))
 
 
+def build_commands(ldshared: str, source: Path, out: Path) -> list[list[str]]:
+    """The commands that compile ``source`` into the extension module ``out``.
+
+    One compile-and-link command, except for WebAssembly (``pyodide build``, whose
+    EXT_SUFFIX names emscripten): its compiler wrapper adds the cross-compiled Python
+    headers to ``-c`` commands only and reads the exports from object files, so the
+    module is compiled to an object first and then linked with ``-shared``.
+    """
+    compiler = [
+        *shlex.split(ldshared),
+        *OPTIMISE,
+        f"-I{sysconfig.get_paths()['include']}",
+    ]
+    if EMSCRIPTEN not in out.name:
+        return [[*compiler, str(source), "-o", str(out)]]
+    obj = out.with_suffix(".o")
+    return [
+        [*compiler, "-c", str(source), "-o", str(obj)],
+        [*shlex.split(ldshared), "-shared", str(obj), "-o", str(out)],
+    ]
+
+
 def compile_extension(root: Path, out_dir: Path, source: Path) -> Path | None:
     """Compile one C module with the interpreter's linker (setuptools on Windows); None on failure."""
     if os.name == "nt":
@@ -65,18 +89,11 @@ def compile_extension(root: Path, out_dir: Path, source: Path) -> Path | None:
     if not ldshared or not suffix:
         return None
     out = out_dir / f"{source.stem}{suffix}"
-    cmd = [
-        *shlex.split(ldshared),
-        *OPTIMISE,
-        f"-I{sysconfig.get_paths()['include']}",
-        str(root / source),
-        "-o",
-        str(out),
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-    if result.returncode != 0:
-        sys.stderr.write(f"modelly: {source.name} not built:\n{result.stderr}\n")
-        return None
+    for cmd in build_commands(ldshared, root / source, out):
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        if result.returncode != 0:
+            sys.stderr.write(f"modelly: {source.name} not built:\n{result.stderr}\n")
+            return None
     return out
 
 
