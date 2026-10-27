@@ -40,6 +40,22 @@ model.datacollector.get_model_vars_dataframe()  # S, E, I, R per step
 
 The default contact matrix is illustrative, not survey data.
 
+To start from a synthetic population (people in households, schools and workplaces, built from
+census tables with `modelly.population`), `scenario_from_population` counts the age groups and
+measures the contact matrix on the population's contact network; see
+[Synthetic populations](../population.md#starting-the-age-structured-seir-model). The default
+scenario does not change.
+
+```python
+from modelly.population import contact_network
+from modelly.zoo.age_seir.model import AgeSEIR, scenario_from_population
+
+network = contact_network(people, model.rng)
+seir = AgeSEIR(
+    scenario_from_population(people, network, ("0-17", "18-64", "65+"), rng=5)
+)
+```
+
 ## Validation
 
 Summing the force of infection over the whole epidemic gives the final-size relation

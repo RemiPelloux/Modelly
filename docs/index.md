@@ -192,6 +192,7 @@ Reproducible studies <provenance>
 Time travel <timetravel>
 Live data and assimilation <assimilation>
 Geospatial models <geospatial>
+Synthetic populations <population>
 Networks <networks>
 Model zoo <zoo/index>
 Gallery <gallery>

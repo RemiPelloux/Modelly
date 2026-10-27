@@ -76,6 +76,15 @@ MODELS: tuple[ZooModel, ...] = (
         "outbreak size ordered like the Ross-Macdonald R0 as vector density grows",
     ),
     ZooModel(
+        "habitat_selection",
+        "Habitat selection on a real land-cover raster",
+        "ecology",
+        "HabitatSelection",
+        "HabitatScenario",
+        "Animals disperse over ESA WorldCover land cover and settle where it suits them.",
+        "occupancy per land-cover class against the Metropolis stationary law",
+    ),
+    ZooModel(
         "energy_budget",
         "Individual-based population with energy budgets",
         "ecology",
@@ -130,6 +139,15 @@ MODELS: tuple[ZooModel, ...] = (
         "consensus for a wide confidence bound, about 1/(2 eps) clusters for a narrow one",
     ),
     ZooModel(
+        "schelling_regions",
+        "Schelling segregation on real neighbourhoods",
+        "sociology",
+        "SchellingRegions",
+        "SchellingRegionsScenario",
+        "Two groups move between census tracts when too few neighbours are like them.",
+        "no moves without preference; dissimilarity far above random allocation",
+    ),
+    ZooModel(
         "hegselmann_krause",
         "Hegselmann-Krause bounded-confidence opinion dynamics",
         "sociology",
@@ -155,6 +173,15 @@ MODELS: tuple[ZooModel, ...] = (
         "TrafficScenario",
         "Cars on a ring road accelerate, brake to the gap ahead and dawdle at random.",
         "fundamental diagram: exact min(rho v, 1 - rho) without dawdling, rise then fall",
+    ),
+    ZooModel(
+        "road_traffic",
+        "Traffic assignment on a real street network",
+        "transport",
+        "RoadTraffic",
+        "RoadTrafficScenario",
+        "Random trips routed by shortest path over OpenStreetMap streets of Burlington.",
+        "street flows against the exact edge betweenness, within binomial bounds",
     ),
     ZooModel(
         "bass_diffusion",

@@ -28,6 +28,11 @@ the carrying capacity set by the energy balance.
 
 ![Population over time with its carrying capacity](images/gallery/energy_budget.png)
 
+**[Habitat selection](zoo/habitat_selection.md).** On real land cover, animals started
+uniformly settle in proportion to habitat preference (dashed: the stationary law).
+
+![Share of the animals per land-cover class over time](images/gallery/habitat_selection.png)
+
 ## Economics
 
 **[Order book](zoo/order_book.md).** Mid-price returns have fat tails compared with a
@@ -56,6 +61,11 @@ bound: many clusters, fewer, then consensus.
 
 ![Final opinions against the confidence bound](images/gallery/hegselmann_krause.png)
 
+**[Schelling on real neighbourhoods](zoo/schelling_regions.md).** On census tracts, households
+content to be a slight minority still end almost fully segregated.
+
+![Dissimilarity index over time for three thresholds](images/gallery/schelling_regions.png)
+
 **[Axelrod](zoo/axelrod.md).** More traits per feature leave more cultural regions.
 
 ![Cultural regions against traits per feature](images/gallery/axelrod.png)
@@ -66,6 +76,11 @@ bound: many clusters, fewer, then consensus.
 without random braking.
 
 ![Flow against density for three dawdling probabilities](images/gallery/nagel_schreckenberg.png)
+
+**[Traffic assignment](zoo/road_traffic.md).** On real streets, every segment's flow follows
+its edge betweenness.
+
+![Simulated against expected vehicles per street segment](images/gallery/road_traffic.png)
 
 **[Bass diffusion](zoo/bass_diffusion.md).** Adoption follows the Bass curve when mixing is
 complete, and lags on a sparse network.

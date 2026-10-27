@@ -11,6 +11,7 @@ gate.
 |---|---|---|
 | [Age-structured SEIR](age_seir.md) | epidemiology | final-size relation, within its central-limit bound |
 | [Vector-borne transmission](vector_borne.md) | epidemiology | outbreak size ordered like the Ross-Macdonald R0 |
+| [Habitat selection on real land cover](habitat_selection.md) | ecology | Metropolis stationary law of habitat use |
 | [Energy budgets](energy_budget.md) | ecology | carrying capacity from the energy balance |
 | [Forest fire and succession](forest_fire.md) | ecology | site-percolation threshold |
 | [Order book](order_book.md) | economics | fat tails: positive excess kurtosis of returns |
@@ -18,12 +19,16 @@ gate.
 | [Bouchaud-Mezard wealth](bouchaud_mezard.md) | economics | inverse-gamma law; Gini rising with the noise |
 | [Deffuant opinions](deffuant.md) | sociology | consensus versus cluster count by confidence bound |
 | [Hegselmann-Krause opinions](hegselmann_krause.md) | sociology | consensus versus cluster count by confidence bound |
+| [Schelling on real neighbourhoods](schelling_regions.md) | sociology | segregation far above random allocation |
 | [Axelrod culture](axelrod.md) | political science | cultural regions versus number of traits |
 | [Nagel-Schreckenberg traffic](nagel_schreckenberg.md) | transport | fundamental diagram |
+| [Traffic assignment on real streets](road_traffic.md) | transport | exact edge betweenness, binomial flows |
 | [Bass diffusion on a network](bass_diffusion.md) | energy | Bass ODE in the well-mixed limit |
 
 The [gallery](../gallery.md) shows a figure of each, and the
-[domain tutorials](../tutorials/domains/index.md) build on them.
+[domain tutorials](../tutorials/domains/index.md) build on them. Habitat selection, Schelling on
+real neighbourhoods and traffic assignment run on small real maps bundled with Modelly (see
+[Geospatial models](../geospatial.md#zoo-models-on-real-data)) and need the `geo` extra.
 
 ## Using a zoo model
 
@@ -60,8 +65,6 @@ as it is; change it as you like. Nothing is overwritten.
   population reconstruction, which needs the archaeological and paleo-environmental data of
   the original study. Building it with synthetic data would not validate anything, so it is
   not in the zoo.
-- **Schelling with real neighbourhoods** needs census geometries; the classic Schelling
-  model is in the [examples](../examples.md).
 
 ## Contributing a model
 
@@ -78,6 +81,7 @@ reference. Community models that do not belong in the zoo go to the
 
 age_seir
 vector_borne
+habitat_selection
 energy_budget
 forest_fire
 order_book
@@ -85,7 +89,9 @@ kinetic_wealth
 bouchaud_mezard
 deffuant
 hegselmann_krause
+schelling_regions
 axelrod
 nagel_schreckenberg
+road_traffic
 bass_diffusion
 ```

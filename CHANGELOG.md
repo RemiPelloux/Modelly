@@ -33,6 +33,24 @@ versioning.
 - `modelly.stream.MQTTSource` and `KafkaSource` (provisional): sources reading JSON records from
   an MQTT or a Kafka topic, through the new optional extras `mqtt` (paho-mqtt) and `kafka`
   (confluent-kafka), or through a client passed in.
+- population: `modelly.population`, synthetic populations from aggregate tables: `ipf` and
+  `trs` (truncate, replicate, sample) rounding in `synthesize_population`, `marginal_errors`
+  to check the fit, `anneal` (combinatorial optimisation of whole records by simulated
+  annealing), `assign_households` from a household-size table, `locate_households` and
+  `assign_places` (nearest school or workplace with room, within a distance limit), and
+  `contact_network` (household, school and work layers of a `MultilayerNetwork`). No bundled
+  personal data; `modelly.space.geo.ipf` and `synthesize_population` keep working.
+- zoo: `age_seir.model.scenario_from_population` starts the age-structured SEIR model from a
+  synthetic population (group sizes and contact matrix); the default scenario is unchanged.
+- geo: `modelly.space.geo.samples`, small real samples of Burlington, Vermont, bundled for
+  offline use with their licences in `NOTICE.md` (OpenStreetMap streets, ODbL; ESA WorldCover
+  land cover, CC BY 4.0; census tracts, public domain), and `scripts/geo_data.py` to download
+  the full sources, verify their SHA-256 and rebuild the samples.
+- zoo: `road_traffic`, traffic assignment on the OpenStreetMap streets, validated against the
+  exact edge betweenness.
+- zoo: `habitat_selection`, Metropolis dispersal over the WorldCover raster, validated against
+  its stationary law.
+- zoo: `schelling_regions`, Schelling segregation on the census tracts by contiguity.
 
 ## 1.3.3 - 2026-10-27
 
