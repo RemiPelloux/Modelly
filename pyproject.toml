@@ -88,6 +88,11 @@ experiments = [
   "pyarrow",
   "duckdb",
 ]
+# Bayesian optimisation by an outside library (modelly.calibrate.ExternalBayesOpt)
+calibrate = [
+  "modelly-abm[experiments]",
+  "optuna",
+]
 # Experiment executors
 dask = [
   "modelly-abm[experiments]",

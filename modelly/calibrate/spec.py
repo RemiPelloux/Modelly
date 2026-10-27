@@ -25,7 +25,7 @@ The file reuses the experiment format (``[experiment]``, ``[space]``,
     weight = 1.0
 
     [calibration]
-    method = "abc_smc"              # abc_rejection, simulated_moments, bayes_opt
+    method = "abc_smc"              # abc_rejection, simulated_moments, bayes_opt, external_bayes_opt
     particles = 100                 # the method's settings
     budget = 3000                   # and its run() arguments
 
@@ -45,6 +45,7 @@ import pandas as pd
 
 from modelly.calibrate.base import Calibration
 from modelly.calibrate.bayesopt import BayesOpt
+from modelly.calibrate.external import ExternalBayesOpt
 from modelly.calibrate.moments import SimulatedMoments
 from modelly.calibrate.priors import Prior
 from modelly.calibrate.rejection import ABCRejection
@@ -67,6 +68,7 @@ METHODS: dict[str, type[Calibration]] = {
     "abc_rejection": ABCRejection,
     "simulated_moments": SimulatedMoments,
     "bayes_opt": BayesOpt,
+    "external_bayes_opt": ExternalBayesOpt,
 }
 EXPERIMENT_KEYS = ("steps", "replicates", "seed")
 TARGET_KEYS = {

@@ -11,6 +11,7 @@ returns a posterior: weighted parameter samples, their summaries, plots and pred
 | `ABCRejection` | a posterior distribution | a quick first look, or a cheap model |
 | `SimulatedMoments` | the best point | you match moments (means, variances, autocorrelations) of series |
 | `BayesOpt` | the best point | each run is expensive and you can afford only tens of them |
+| `ExternalBayesOpt` | the best point | as `BayesOpt`, with an outside optimiser (optuna) |
 
 Every run is written to a Parquet store like an experiment's, so the store needs the
 `experiments` extra:
@@ -115,6 +116,49 @@ posterior.predict(
 `plot()` returns a Matplotlib figure: weighted histograms of each parameter, scatter plots of
 each pair, and for each target the observed values against the posterior median and the 95 %
 band of the particles' simulations.
+
+## A zoo model end to end
+
+The [Bass diffusion](zoo/bass_diffusion.md) model of the zoo has two parameters with a known
+meaning: `innovation` (Bass's `p`, adoption from advertising) and `imitation` (`q`, adoption from
+neighbours). Here the "observed" adoption curve is eight years of one run at the zoo's defaults,
+`p = 0.03` and `q = 0.38`, and ABC-SMC starts from priors ten times wider than either value:
+
+```python
+from modelly.calibrate import ABCSMC, Prior, Target
+from modelly.zoo.bass_diffusion.model import BassDiffusion, BassScenario
+
+truth = BassDiffusion(BassScenario(households=2000, innovation=0.03, imitation=0.38, rng=99))
+adoption = [truth.adoption]
+for _ in range(80):  # eight years in steps of 0.1
+    truth.step()
+    adoption.append(truth.adoption)
+
+calibration = ABCSMC(
+    model=BassDiffusion,
+    priors={"innovation": Prior.uniform(0.005, 0.1), "imitation": Prior.uniform(0.05, 1.0)},
+    targets=[Target("adoption", observed=adoption)],
+    steps=80,
+    particles=100,
+    seed=2027,
+    fixed={"households": 2000},
+)
+
+if __name__ == "__main__":
+    posterior = calibration.run(generations=7, executor="processes", max_parallel=4)
+    print(posterior.summary().round(3))
+```
+
+```text
+             mean  median     sd  hdi_low  hdi_high
+innovation  0.029   0.029  0.006    0.018     0.039
+imitation   0.386   0.382  0.053    0.303     0.481
+```
+
+Both true values are inside their 95 % highest-density intervals, which are about five times
+narrower than the priors, after seven generations and 2,600 runs.
+`tests/calibrate/test_zoo_end_to_end.py` runs the same calibration with 60 particles on three seeds and
+checks that every interval holds the truth and is at least three times narrower than its prior.
 
 ## Priors
 
@@ -270,6 +314,40 @@ search = BayesOpt(Epidemic, priors, targets, steps=40, replicates=4, seed=3)
 search.run(evaluations=40, initial=10).best
 ```
 
+`ExternalBayesOpt` searches the same box, with the same common random numbers, but lets an
+outside library choose the points. The built-in adapter is [optuna](https://optuna.org)
+(`pip install "modelly-abm[calibrate]"`, imported only when the search starts): a study in
+memory minimising the total distance, with optuna's TPE sampler seeded from the calibration's
+seed, or any optuna sampler you pass.
+
+```python
+import optuna
+
+from modelly.calibrate import ExternalBayesOpt
+
+search = ExternalBayesOpt(Epidemic, priors, targets, steps=40, replicates=4, seed=3)
+search.run(evaluations=40).best
+gp = ExternalBayesOpt(
+    Epidemic, priors, targets, steps=40, seed=3,
+    backend_options={"sampler": optuna.samplers.GPSampler(seed=3)},
+)
+```
+
+Any other optimiser plugs in as `backend=factory`, where `factory(dimensions, seed)` returns an
+object with `ask()`, the next point of the unit cube, and `tell(point, value)`, its total
+distance (lower is better). scikit-optimize's `Optimizer` has that interface already:
+
+```python
+from skopt import Optimizer
+
+
+def skopt_gp(dimensions, seed):
+    return Optimizer([(0.0, 1.0)] * dimensions, base_estimator="GP", random_state=seed)
+
+
+ExternalBayesOpt(Epidemic, priors, targets, steps=40, seed=3, backend=skopt_gp)
+```
+
 ## From the command line
 
 A calibration can live in a TOML file that reuses the [experiment format](experiments.md#from-the-command-line):
@@ -295,7 +373,8 @@ column = "cases"
 distance = "rmse"                # or mae, euclidean, wasserstein, module:function
 
 [calibration]
-method = "abc_smc"               # abc_rejection, simulated_moments, bayes_opt
+method = "abc_smc"               # abc_rejection, simulated_moments, bayes_opt,
+                                 # external_bayes_opt
 particles = 100                  # the method's settings
 generations = 6                  # and its run() arguments
 budget = 5000

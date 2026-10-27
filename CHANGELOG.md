@@ -127,6 +127,16 @@ versioning.
   A rule or view that fails to load or reuses a built-in code is skipped with a warning. A
   complete third-party package with one entry point in every group is in
   `examples/plugins/modelly-example-plugin`, tested in `tests/test_example_plugin.py`.
+- `modelly.calibrate.ExternalBayesOpt` (provisional): Bayesian optimisation by an outside
+  library over the same unit box and common random numbers as `BayesOpt`, through any optimiser
+  with `ask()` and `tell(point, value)`; the built-in backend is optuna (TPE seeded from the
+  calibration's seed, or any optuna sampler), from the new optional extra `calibrate` and
+  imported only when the search starts. Also `method = "external_bayes_opt"` in calibration
+  files.
+- calibrate: a zoo model calibrated end to end. ABC-SMC recovers the Bass diffusion model's
+  innovation and imitation inside their 95 % intervals on three seeds, from priors ten times
+  wider (`tests/calibrate/test_zoo_end_to_end.py`, "A zoo model end to end" in
+  `docs/calibration.md`).
 
 ### Deprecated
 
