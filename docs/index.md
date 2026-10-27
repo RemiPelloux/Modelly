@@ -188,6 +188,7 @@ Language-model agents <llm_agents>
 Calibration <calibration>
 Sensitivity analysis <sensitivity>
 Coupling fields and ODEs <coupling>
+Emulators <emulators>
 Checkpoints <checkpoints>
 Reproducible studies <provenance>
 Time travel <timetravel>

@@ -1,11 +1,9 @@
 # APIs
 
 One page per domain package of `modelly`: `core`, `space` (with `space.geo` and
-`space.networks`), `time`, `data`, `behaviour`, `scenarios`, `experiments`, `batch`, `viz`,
-`timetravel`, `couple`, `llm`, `zoo`, `distributed` and `stream`, plus the `log`, `migrate`,
-`lint`, `profile`, `provenance` and `plugins` modules.
-`scenarios`, `experiments`, `calibrate`, `sensitivity`, `batch` and `viz`, plus the `log`, `migrate`, `lint` and `profile` modules.
-`scenarios`, `batch`, `viz`, `timetravel` and `studio`, plus the `log`, `migrate`, `lint` and `profile` modules.
+`space.networks`), `population`, `time`, `data`, `behaviour`, `scenarios`, `experiments`, `calibrate`, `sensitivity`, `batch`, `viz`, `studio`,
+`timetravel`, `couple`, `llm`, `zoo`, `distributed`, `stream` and `emulate`, plus the `log`,
+`migrate`, `lint`, `profile`, `provenance` and `plugins` modules.
 
 ```{toctree}
 :maxdepth: 3
@@ -23,6 +21,7 @@ experiments
 calibrate
 sensitivity
 couple
+emulate
 batch
 viz
 timetravel

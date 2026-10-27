@@ -62,6 +62,27 @@ versioning.
   validated against the carrying capacity of the energy balance) and `hospital_epidemic` (SIR
   agents coupled to a hospital-capacity stock-flow ODE, validated against the final-size
   relation and the hospital's exact linear solution), both with mass-balance tests.
+- `modelly.emulate` emulators (provisional): `GaussianEmulator` (one Gaussian process per
+  output, fitted with restarts, with covariances and conditioning) and `NeuralEmulator` (a
+  numpy ensemble of small networks), fitted to unit-cube points or to an experiment's runs
+  (`from_results`), and usable in place of the model in `modelly.sensitivity`; `Simulation`
+  runs a model through the experiment executors (or a function) for several outputs, each
+  reduced by a statistic, optionally with common random numbers. `GaussianProcess.fit` takes
+  `restarts=True` and the process gains `covariance`, `condition` and `noise_variance`; the
+  default fit is unchanged, bit for bit.
+- `modelly.emulate.ActiveLearning` (provisional): designs that run next where the emulator is
+  least certain (integrated variance reduction, or the largest variance), chosen in batches by
+  conditioning on each pick, seeded and resumable. Against Latin hypercubes with the same
+  emulator (`benchmarks/emulate/active_vs_lhs.py`), it saves a factor of 1.6 to 2.7
+  of the runs on the zoo's Bass diffusion (2 or more at 20, 40 and 50+ runs, 1.3 at 30), but
+  only 1.1 to 1.4 on Branin below 80 runs and 0.8 to 1.4 on Ishigami: the roadmap's factor of 2 holds on
+  one of the two kinds of benchmark (table in `docs/emulators.md`).
+- `modelly.emulate.HistoryMatch` (provisional): history matching in waves, with the
+  implausibility `|z - E[f(x)]| / sqrt(Var_emulator + Var_obs + Var_discrepancy)`, a cutoff of
+  3, NROY tracked on a fixed sample and emulators refitted inside it every wave. On the zoo's
+  age-structured SEIR (truth at the default parameters, three outputs), four waves of 20 runs
+  leave 17 %, 4.4 %, 3.1 % and 2.5 % of the box, the truth inside every time. Guide:
+  `docs/emulators.md`.
 
 ## 1.3.3 - 2026-10-27
 
