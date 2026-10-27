@@ -8,9 +8,11 @@ environment, loads the model class once per server, and gives each browser tab a
 from __future__ import annotations
 
 import functools
+import warnings
 
 import solara
 
+from modelly.plugins import load_all
 from modelly.studio.config import StudioConfig
 from modelly.studio.loader import load_model_class, load_portrayal
 from modelly.studio.panels import ExportPanel, ParameterPanel, RunControls
@@ -37,10 +39,11 @@ def StudioApp(session: StudioSession):
     tab = solara.use_reactive(0)
     with solara.Column():
         Scrubber(state)
+        tabs = all_tabs()
         with solara.v.Tabs(v_model=tab.value, on_v_model=tab.set):
-            for name, _ in TABS:
+            for name, _ in tabs:
                 solara.v.Tab(children=[name])
-        TABS[tab.value][1](state)
+        tabs[tab.value][1](state)
 
 
 def ModelTab(state):
@@ -57,6 +60,20 @@ TABS = (
     ("Lint", LintPanel),
     ("Log", LogPanel),
 )
+# A plugin's entry point names a component taking the StudioState, like the TABS views.
+VIEWS_GROUP = "modelly.studio_views"
+
+
+@functools.cache
+def all_tabs() -> tuple:
+    """The built-in tabs, then one per ``modelly.studio_views`` plugin, named after it.
+
+    A view that fails to load is left out with a ``RuntimeWarning``.
+    """
+    loaded, errors = load_all(VIEWS_GROUP)
+    for error in errors.values():
+        warnings.warn(f"{error}; Studio shows the other views", RuntimeWarning, 2)
+    return TABS + tuple(loaded.items())
 
 
 @functools.cache

@@ -34,6 +34,11 @@ Manifests, verification, bundles and ODD skeletons behind `modelly run`, `modell
 ```
 
 ```{eval-rst}
+.. automodule:: modelly.provenance.llm
+   :members:
+```
+
+```{eval-rst}
 .. automodule:: modelly.provenance.odd
    :members: odd_markdown
 ```

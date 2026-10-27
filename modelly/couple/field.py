@@ -39,11 +39,11 @@ from modelly.couple.operator import (
     transport_matrix,
 )
 from modelly.couple.schedule import CouplingError
+from modelly.space.grid.base import Grid
 from modelly.space.grid.grids import HexGrid
 
 if TYPE_CHECKING:
     from modelly.couple.schedule import Coupling
-    from modelly.space.grid.base import Grid
 
 EXPLICIT, IMPLICIT = "explicit", "implicit"
 # The default explicit sub-step, as a share of the stability limit.

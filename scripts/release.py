@@ -17,7 +17,10 @@ Steps, in order; the first that fails stops the release:
 5. one commit ``chore(release): X.Y.Z`` of exactly those three files, with no trailers;
 6. the annotated tag ``vX.Y.Z``; with ``--push``, ``main`` and the tag are pushed.
 
-The release workflow builds the wheels and the docs from the pushed tag.
+The release workflow builds the wheels and the docs from the pushed tag. A GitHub release
+published for the tag is archived by the GitHub-Zenodo integration, which reads the
+deposit metadata (creators, licence, keywords) from ``.zenodo.json`` and takes the version
+from the tag; enabling the repository on Zenodo is a one-time step of the maintainer.
 """
 
 from __future__ import annotations

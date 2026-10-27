@@ -41,11 +41,10 @@ import numpy as np
 import pandas as pd
 
 from modelly.stream.ensemble import KALMAN_DOMAIN, Ensemble
-from modelly.stream.sources import due
+from modelly.stream.sources import Observation, due
 
 if TYPE_CHECKING:
     from modelly.stream.operators import ObservationOperator
-    from modelly.stream.sources import Observation
 
 # Degrees of freedom removed from the ensemble covariance (unbiased estimate).
 COVARIANCE_DDOF = 1

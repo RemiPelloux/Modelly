@@ -1,0 +1,128 @@
+name: platforms
+# Promises that need more than one machine to check.
+#
+#   bundle, verify-bundle   a study bundled on Linux verifies on macOS and Windows: the
+#                           ubuntu job runs and bundles three examples (one of them calls a
+#                           language model, so its replies travel in the bundle), uploads
+#                           the zips, and each other OS unpacks and runs `modelly verify`.
+#   slurm                   the SLURM executor submits a real job array to a single-node
+#                           SLURM cluster installed on the runner and waits for it; the
+#                           results must equal a serial run.
+
+on:
+  push:
+    branches:
+      - main
+      - release**
+    paths:
+      - "modelly/**"
+      - "tests/experiments/**"
+      - "pyproject.toml"
+      - ".github/workflows/platforms.yml"
+  pull_request:
+    paths:
+      - "modelly/provenance/**"
+      - "modelly/llm/**"
+      - "modelly/experiments/**"
+      - "tests/experiments/executors/**"
+      - ".github/workflows/platforms.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.head_ref || github.run_id }}"
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  STEPS: "20"
+  SEED: "7"
+
+jobs:
+  bundle:
+    name: Bundle on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: "pip"
+      - name: Install Modelly with the experiments extra
+        run: |
+          pip install uv
+          uv pip install --system ".[experiments,network]"
+      - name: Run and bundle three studies
+        run: |
+          set -euo pipefail
+          for spec in \
+            "boltzmann modelly.examples.basic.boltzmann_wealth_model.model:BoltzmannWealth" \
+            "schelling modelly.examples.basic.schelling.model:Schelling" \
+            "llm modelly.examples.llm.llm_opinions.model:LLMOpinions"; do
+            set -- $spec
+            modelly run "$2" --steps "$STEPS" --seed "$SEED" --out "runs/$1"
+            modelly bundle "runs/$1" --out "bundles/$1.zip"
+            modelly verify "runs/$1"
+          done
+          sha256sum bundles/*.zip
+      - uses: actions/upload-artifact@v7
+        with:
+          name: bundles-linux
+          path: bundles/*.zip
+
+  verify-bundle:
+    name: Verify on ${{ matrix.os }}
+    needs: bundle
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos, windows]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: "pip"
+      - name: Install Modelly with the experiments extra
+        run: |
+          pip install uv
+          uv pip install --system ".[experiments,network]"
+      - uses: actions/download-artifact@v8
+        with:
+          name: bundles-linux
+          path: bundles
+      - name: Unpack and verify every bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          for archive in bundles/*.zip; do
+            name="$(basename "$archive" .zip)"
+            python -m zipfile -e "$archive" "review/$name"
+            modelly verify "review/$name/manifest.json" | tee "review/$name.txt"
+            grep -q "outputs match" "review/$name.txt"
+          done
+
+  slurm:
+    name: SLURM job arrays
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: "pip"
+      - name: Install a single-node SLURM cluster
+        uses: koesterlab/setup-slurm-action@v1
+      - name: Install Modelly with the dev extras
+        run: |
+          pip install uv
+          uv pip install --system ".[dev]"
+      - name: Check the cluster answers
+        run: sinfo && srun --ntasks=1 hostname
+      - name: Submit the experiment's job array and compare with a serial run
+        env:
+          MODELLY_REAL_SCHEDULER: slurm
+        run: pytest -rs -Werror tests/experiments/executors/test_cluster_scripts.py

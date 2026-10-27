@@ -132,7 +132,7 @@ proportional fitting, keeping the seed's zeros; `synthesize_population` does it 
 and returns one row per person:
 
 ```python
-from modelly.space.geo import synthesize_population
+from modelly.population import synthesize_population
 
 people = synthesize_population(
     {"age": ["0-17", "18-64", "65+"], "car": [True, False]},

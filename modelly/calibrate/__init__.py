@@ -7,7 +7,8 @@ returns a :class:`Posterior`:
 * :class:`ABCRejection`: sample the priors, keep the closest runs;
 * :class:`ABCSMC`: sequential Monte Carlo ABC with adaptive tolerances;
 * :class:`SimulatedMoments`: the method of simulated moments;
-* :class:`BayesOpt`: a basic Gaussian-process Bayesian optimiser.
+* :class:`BayesOpt`: a basic Gaussian-process Bayesian optimiser;
+* :class:`ExternalBayesOpt`: Bayesian optimisation by an outside library (optuna).
 
 Every random draw comes from the calibration's seed, so a posterior is the
 same on every executor and after a resume (``save`` / ``load``). The runs are
@@ -17,6 +18,7 @@ written as Parquet files: ``pip install "modelly-abm[experiments]"``.
 from modelly.calibrate import distance
 from modelly.calibrate.base import Calibration, CalibrationError
 from modelly.calibrate.bayesopt import BayesOpt
+from modelly.calibrate.external import ExternalBayesOpt
 from modelly.calibrate.moments import SimulatedMoments
 from modelly.calibrate.posterior import Posterior
 from modelly.calibrate.priors import Prior
@@ -31,6 +33,7 @@ __all__ = [
     "BayesOpt",
     "Calibration",
     "CalibrationError",
+    "ExternalBayesOpt",
     "Posterior",
     "Prior",
     "SimulatedMoments",

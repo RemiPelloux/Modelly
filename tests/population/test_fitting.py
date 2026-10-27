@@ -3,8 +3,9 @@
 import numpy as np
 import pytest
 
-from modelly.population import marginal_errors, synthesize_population, trs
-from modelly.population.fitting import REGION
+from modelly._deprecation import ModellyDeprecationWarning
+from modelly.population import ipf, marginal_errors, synthesize_population, trs
+from modelly.population.fitting import REGION, TOLERANCE
 
 CATEGORIES = {"age": ["0-17", "18-64", "65+"], "sex": ["f", "m"]}
 MARGINALS = {
@@ -49,12 +50,17 @@ def test_marginal_errors_lists_every_level():
     assert (errors.error.abs() < len(CATEGORIES["age"])).all()
 
 
-def test_geo_population_names_still_work():
-    """``modelly.space.geo.population`` and ``modelly.space.geo`` keep the old names."""
+def test_geo_population_names_still_work_and_warn():
+    """The 1.3 names keep working until 2.0, each warning with its new home."""
     pytest.importorskip("geopandas")
     from modelly.space import geo  # noqa: PLC0415
     from modelly.space.geo import population  # noqa: PLC0415
 
-    assert population.ipf is geo.ipf
-    assert population.synthesize_population is synthesize_population
-    assert population.TOLERANCE > 0
+    with pytest.warns(ModellyDeprecationWarning, match=r"modelly\.population\.ipf"):
+        assert geo.ipf is ipf
+    with pytest.warns(ModellyDeprecationWarning, match="2.0"):
+        assert population.synthesize_population is synthesize_population
+    with pytest.warns(ModellyDeprecationWarning, match=r"fitting\.TOLERANCE"):
+        assert population.TOLERANCE == TOLERANCE
+    with pytest.raises(AttributeError, match="no_such_name"):
+        _ = geo.no_such_name

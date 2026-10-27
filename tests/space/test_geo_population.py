@@ -6,12 +6,8 @@ import pytest
 pytest.importorskip("geopandas")
 
 from modelly import Model
-from modelly.space.geo import (
-    GeoAgent,
-    GeoSpace,
-    ipf,
-    synthesize_population,
-)
+from modelly.population import ipf, synthesize_population
+from modelly.space.geo import GeoAgent, GeoSpace
 
 CATEGORIES = {"age": ["child", "adult", "senior"], "sex": ["f", "m"]}
 MARGINALS = {

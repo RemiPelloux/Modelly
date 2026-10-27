@@ -18,8 +18,9 @@ from modelly import Model
 from modelly.data.collector import DataCollector
 from modelly.examples.spatial.commuting_city.agents import Commuter
 from modelly.examples.spatial.commuting_city.city import city_zones, street_graph
+from modelly.population import synthesize_population
 from modelly.scenarios import Scenario
-from modelly.space.geo import GeoSpace, RoadNetwork, synthesize_population
+from modelly.space.geo import GeoSpace, RoadNetwork
 
 AGES = ["18-34", "35-64", "65+"]
 AGE_SHARES = [0.35, 0.45, 0.20]

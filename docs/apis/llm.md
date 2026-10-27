@@ -39,6 +39,11 @@ decisions. How to use them is in [Language-model agents](../llm_agents.md).
    :members:
 ```
 
+```{eval-rst}
+.. automodule:: modelly.llm.replay
+   :members: replaying, active_replay
+```
+
 ## Budgets and retries
 
 ```{eval-rst}

@@ -124,6 +124,77 @@ versioning.
   targets, deterministic for a seed). Differentiable twins of the Bass diffusion and
   Bouchaud-Mezard zoo models recover known parameters; `docs/differentiable.md` says when the
   gradients mean something.
+- quality: partition independence in the determinism suite. The three reference models of split
+  runs (`grid_epidemic`, `network_sir`, `continuous_sir`) are golden examples, and
+  `tests/determinism/test_determinism_partition.py` splits each from the golden seed (2, 4 and
+  16 partitions) and checks every output equals the single-process run, so a split run on any
+  platform gives the golden digest. A new `mpi` workflow runs the distributed tests under Open
+  MPI on Ubuntu and macOS and under MS-MPI on Windows (2 ranks only); `test_mpi.py` uses
+  `mpiexec` on Windows and reads the rank counts from `MODELLY_MPI_RANKS`.
+- provenance: the language-model response cache travels with the study. `modelly run` exports
+  the replies of the model's `modelly.llm.Client`s to `llm-responses.jsonl.gz` and records it in
+  the manifest (`llm_cache`, an optional field of manifest format 1); `modelly bundle` packs it
+  and refuses a run whose replies changed; `modelly verify` reruns inside the new
+  `modelly.llm.replay.replaying(path)` (provisional), where every client answers from the
+  recorded replies only, so a bundle verifies with no network and no API key. Runs without a
+  client write the same manifest and bundle as before.
+- plugins: Modelly now reads three more entry-point groups. `modelly.samplers` adds design kinds
+  (`[design] kind = "name"` in an experiment file, `designs.design_factory` and `design_kinds`,
+  provisional); `modelly.lint_rules` adds rules to `modelly lint` (an object with a `Rule` and a
+  `check(tree)`, `modelly.lint.plugins`, provisional); `modelly.studio_views` adds Studio tabs.
+  A rule or view that fails to load or reuses a built-in code is skipped with a warning. A
+  complete third-party package with one entry point in every group is in
+  `examples/plugins/modelly-example-plugin`, tested in `tests/test_example_plugin.py`.
+- `modelly.calibrate.ExternalBayesOpt` (provisional): Bayesian optimisation by an outside
+  library over the same unit box and common random numbers as `BayesOpt`, through any optimiser
+  with `ask()` and `tell(point, value)`; the built-in backend is optuna (TPE seeded from the
+  calibration's seed, or any optuna sampler), from the new optional extra `calibrate` and
+  imported only when the search starts. Also `method = "external_bayes_opt"` in calibration
+  files.
+- calibrate: a zoo model calibrated end to end. ABC-SMC recovers the Bass diffusion model's
+  innovation and imitation inside their 95 % intervals on three seeds, from priors ten times
+  wider (`tests/calibrate/test_zoo_end_to_end.py`, "A zoo model end to end" in
+  `docs/calibration.md`).
+- sensitivity: Morris stability across seeds on zoo models. The whole ranking of the Bass
+  diffusion model's three parameters, and the top parameter of the age-structured SEIR model,
+  are the same on five seeds (`tests/sensitivity/test_morris_stability.py`); the guide says
+  which parameters swap places and why.
+- docs: design reviews of calibration (E1), sensitivity analysis (E2) and language-model agents
+  (E7), each what was decided, what else was considered and why (`docs/design/`).
+- quality: WebAssembly in the release matrix. The release workflow's new `pyodide` job installs
+  the pure wheel with micropip in Pyodide under node, imports `modelly`, checks the pure-Python
+  twins are in use and runs the Boltzmann wealth example (`scripts/pyodide-smoke.mjs`); the
+  PyPI upload waits for it. In Pyodide `import modelly` needs Pyodide's `sqlite3` package, and
+  importing any bundled example needs `networkx`.
+- quality: SLURM and PBS job scripts run for real. `test_cluster_scripts.py` puts stand-in
+  `sbatch` and `qsub` executables on `PATH` that run the generated job script in `bash` once per
+  array element, so every element runs in a fresh shell and interpreter and must give the serial
+  numbers; the new `platforms` workflow's `slurm` job submits the same array to a single-node
+  SLURM cluster on the runner (`MODELLY_REAL_SCHEDULER=slurm`).
+- quality: a bundle made on Linux verified on macOS and Windows. The `platforms` workflow runs
+  and bundles three studies on Ubuntu (Boltzmann wealth, Schelling, and the language-model
+  opinions example, whose replies travel in the bundle), and macOS and Windows jobs unpack each
+  and run `modelly verify`.
+- release: `.zenodo.json` at the repository root, so the GitHub-Zenodo integration archives each
+  GitHub release with the same title, licence, keywords and creators as `CITATION.cff` (no
+  contact data; the version comes from the tag), checked by `tests/test_zenodo.py`.
+
+### Changed
+
+- docs: the build fails on warnings. `scripts/build-docs-version.sh` passes `-W --keep-going` by
+  default (`SPHINXOPTS=` builds an old tag that warns) and the docs workflow sets it. The build
+  was made warning-free first: a docstring formula read as a substitution, ambiguous `Grid` and
+  `Observation` type references from imports only made for type checking, and the "no lexer"
+  warnings of the text-notebook tutorials, which appear only when they are not executed and are
+  filtered in `conf.py`.
+
+### Deprecated
+
+- `modelly.space.geo.ipf` and `modelly.space.geo.synthesize_population` (also through
+  `modelly.space.geo.population`, with its constants) warn with a `ModellyDeprecationWarning`
+  and go in 2.0: import them from `modelly.population`. They are the same functions, so results
+  do not change. `docs/deprecations.md` gains "Announced for 2.0", every change 2.0 makes with
+  what to use today and when it starts to warn.
 
 ## 1.3.3 - 2026-10-27
 

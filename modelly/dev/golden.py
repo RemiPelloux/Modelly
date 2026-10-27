@@ -164,6 +164,25 @@ EXAMPLES = (
         "spatial.layered_epidemic.model:EpidemicScenario",
         float_digits=LIBM_DIGITS,
     ),
+    # The reference models of split runs: tests/determinism also splits each of them
+    # (test_determinism_partition.py) and checks the split runs equal these digests.
+    Example(
+        "grid_epidemic",
+        "distributed.grid_epidemic:GridEpidemic",
+        "distributed.grid_epidemic:EpidemicScenario",
+    ),
+    Example(
+        "network_sir",
+        "distributed.network_sir:NetworkSIR",
+        "distributed.network_sir:NetworkScenario",
+        requires=("networkx",),
+    ),
+    Example(
+        "continuous_sir",
+        "distributed.continuous_sir:ContinuousSIR",
+        "distributed.continuous_sir:WalkerScenario",
+        float_digits=LIBM_DIGITS,
+    ),
 )
 EXAMPLES_BY_NAME = {example.name: example for example in EXAMPLES}
 

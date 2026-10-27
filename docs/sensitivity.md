@@ -104,6 +104,14 @@ paths on a grid of `levels` values per parameter, each moving one parameter at a
 output divided by the step; `mu` is their mean, `mu_star` the mean of their absolute values and
 `sigma` their standard deviation. `plot()` draws `sigma` against `mu_star`.
 
+A ranking is only as stable as the gaps between the effects. On the zoo's Bass diffusion
+(innovation, imitation and the number of households) the whole ranking is the same on every seed
+with 12 trajectories, and on the age-structured SEIR model the transmission probability comes
+first on every seed, three times ahead of the others, while recovery and incubation, whose effects
+are of the same size, swap places from seed to seed (`tests/sensitivity/test_morris_stability.py`).
+Rerun a screen with two or three seeds before dropping a parameter: one whose rank changes with
+the seed is not clearly less important than its neighbour.
+
 ## Sobol indices
 
 `sobol(model, space, output, samples=1024, bootstrap=200, confidence=0.95, estimator="jansen")`

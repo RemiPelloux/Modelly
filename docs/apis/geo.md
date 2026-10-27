@@ -10,7 +10,7 @@
 | `modelly.space.geo.agents` | `GeoAgent` |
 | `modelly.space.geo.raster` | `RasterLayer`: a raster band as a grid property layer |
 | `modelly.space.geo.roads` | `RoadNetwork`, `download_osm` |
-| `modelly.space.geo.population` | `ipf`, `synthesize_population`, kept from `modelly.population` |
+| `modelly.space.geo.population` | `ipf`, `synthesize_population`: deprecated aliases of `modelly.population` |
 | `modelly.space.geo.samples` | the bundled Burlington streets, land cover and census tracts |
 | `modelly.space.geo.export` | GeoDataFrames of a space, GeoParquet and GeoJSON output |
 
@@ -53,7 +53,7 @@
 ## Synthetic populations
 
 `modelly.space.geo.population` keeps `ipf` and `synthesize_population` importable from their
-1.3 home; they are documented, with the rest of the toolkit, under
+1.3 home, with a deprecation warning (removed in 2.0); they are documented, with the rest of the toolkit, under
 [Synthetic populations](population.md).
 
 ## Bundled samples

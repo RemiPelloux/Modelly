@@ -127,6 +127,10 @@ nb_execution_mode = os.environ.get("MODELLY_NB_EXECUTION", "cache")
 nb_execution_show_tb = True  # log the failing cell's traceback, so CI says why
 nb_execution_allow_errors = False
 nb_execution_raise_on_error = True
+# The text notebooks (docs/tutorials/domains/*.md) name their kernel but carry no
+# language_info: the kernel reports it when they run. With MODELLY_NB_EXECUTION=off
+# nothing runs, so myst-nb finds no lexer for their cells; executed builds never warn.
+suppress_warnings = ["myst-nb.lexer"]
 
 # -- Options for HTML output ----------------------------------------------
 

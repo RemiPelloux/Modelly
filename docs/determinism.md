@@ -32,10 +32,18 @@ agents written by `unique_id`, sets and graphs sorted. The suite then checks tha
 1. a pure-Python interpreter (`MODELLY_PURE_PYTHON=1`) and a compiled one give the same exact
    digest for every example;
 2. a run saved at mid-run, loaded and finished gives the same exact digest as a straight run;
-3. every example reproduces the golden digest recorded in `tests/determinism/golden.json`.
+3. every example reproduces the golden digest recorded in `tests/determinism/golden.json`;
+4. the reference models of [split runs](distributed.md) (`modelly.examples.distributed`: a
+   grid epidemic, a network SIR model and walkers in continuous space, which are golden
+   examples too) give the single-process outputs when split from the golden seed: the grid
+   into 1, 2, 4 and 16 blocks, the network into 2, 4 and 16 parts, the plane into 2, 4 and 16
+   boxes. Every reporter row and every agent's attributes, location and random streams must be
+   equal byte for byte (`check_independence`), so a split run on any platform gives the golden
+   run. Under `mpirun`, `tests/distributed/test_mpi.py` checks the same on 2 and 4 MPI ranks.
 
 The `build` workflow runs the suite on Ubuntu, macOS and Windows, so check 3 compares the three
-platforms with each other through the golden file. A `modelly bundle` made on the test machine
+platforms with each other through the golden file. The `mpi` workflow runs the distributed
+tests under Open MPI on Ubuntu and macOS and under MS-MPI on Windows (2 ranks only there). A `modelly bundle` made on the test machine
 is also unpacked and verified with `modelly verify` in a fresh interpreter.
 
 ## Outputs compared with a tolerance

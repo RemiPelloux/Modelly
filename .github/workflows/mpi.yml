@@ -1,0 +1,73 @@
+name: mpi
+# Split runs (modelly.distributed) under a real MPI on all three platforms: Open MPI on
+# Ubuntu and macOS, MS-MPI on Windows. Windows runs a reduced matrix (2 ranks), since
+# MS-MPI on a hosted runner is slower to start and lags Open MPI (docs/roadmap/1.4.0.md,
+# Risks). Every job runs the whole distributed suite (local, Dask and MPI backends) and
+# the partition-independence part of the determinism suite.
+
+on:
+  push:
+    branches:
+      - main
+      - release**
+    paths:
+      - "modelly/**"
+      - "tests/distributed/**"
+      - "tests/determinism/**"
+      - "pyproject.toml"
+      - ".github/workflows/mpi.yml"
+  pull_request:
+    paths:
+      - "modelly/distributed/**"
+      - "modelly/examples/distributed/**"
+      - "tests/distributed/**"
+      - "tests/determinism/**"
+      - ".github/workflows/mpi.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.head_ref || github.run_id }}"
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  mpi:
+    name: MPI (${{ matrix.os }}, ${{ matrix.mpi }})
+    runs-on: ${{ matrix.os }}-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+            mpi: openmpi
+            ranks: "2,4"
+          - os: macos
+            mpi: openmpi
+            ranks: "2,4"
+          - os: windows
+            mpi: msmpi
+            ranks: "2"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - name: Install ${{ matrix.mpi }}
+        uses: mpi4py/setup-mpi@v1
+        with:
+          mpi: ${{ matrix.mpi }}
+      - name: Install Modelly with the MPI and Dask extras
+        run: |
+          pip install uv
+          uv pip install --system ".[dev,distributed,dask]"
+      # test_mpi.py skips without a launcher; here a missing one must fail the job.
+      - name: Show the MPI library and launcher
+        run: python -c "import shutil, sys; from mpi4py import MPI; print(MPI.Get_library_version()); launcher = shutil.which('mpiexec' if sys.platform == 'win32' else 'mpirun'); assert launcher, 'no MPI launcher'; print(launcher)"
+      - name: Distributed and partition-independence tests
+        env:
+          MODELLY_MPI_RANKS: ${{ matrix.ranks }}
+        run: pytest --durations=10 -Werror tests/distributed tests/determinism/test_determinism_partition.py
