@@ -34,7 +34,9 @@ def init(params, rng):
 @phase
 def returns(state, params, rng):
     sigma = params["volatility"]
-    w = state["wealth"] * jnp.exp(sigma * jnp.sqrt(DT) * rng.normal((N,)) - sigma**2 * DT / 2)
+    w = state["wealth"] * jnp.exp(
+        sigma * jnp.sqrt(DT) * rng.normal((N,)) - sigma**2 * DT / 2
+    )
     return {"wealth": w / w.mean()}
 
 
@@ -43,7 +45,9 @@ def census(state, params, rng):
     return {"rich": (state["wealth"] > 2).mean()}
 
 
-model = DiffModel(init, [returns, census], outputs={"top": lambda s, p: s["wealth"].max()})
+model = DiffModel(
+    init, [returns, census], outputs={"top": lambda s, p: s["wealth"].max()}
+)
 series = model.simulate({"volatility": 1.0}, steps=100, seed=1)
 grad = jax.grad(lambda p: model.simulate(p, 100, 1)["top"][-1])({"volatility": 1.0})
 ```
@@ -123,13 +127,16 @@ from modelly.zoo.bass_diffusion.differentiable import differentiable_model
 
 fit = GradientCalibration(
     differentiable_model(households=20_000),
-    priors={"innovation": Prior.log_uniform(0.001, 0.3), "imitation": Prior.uniform(0.05, 1.0)},
+    priors={
+        "innovation": Prior.log_uniform(0.001, 0.3),
+        "imitation": Prior.uniform(0.05, 1.0),
+    },
     targets=[Target("adoption", observed=curve)],
     options=GradientOptions(steps=100, iterations=150, learning_rate=0.05, seed=1),
 ).run()
-fit.params      # the estimate
-fit.gradient    # d loss / d parameter there: local sensitivities
-fit.history     # parameters and loss per iteration
+fit.params  # the estimate
+fit.gradient  # d loss / d parameter there: local sensitivities
+fit.history  # parameters and loss per iteration
 ```
 
 Distances are the built-in `rmse`, `mae` and `euclidean` (traced in JAX) or any function

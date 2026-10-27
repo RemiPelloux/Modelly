@@ -1,7 +1,7 @@
 """Backends for the GPU tests: numpy always, CuPy and JAX where they load.
 
-``other_backend`` runs a test once per non-numpy backend that loads here and
-skips when there is none. JAX runs with 64-bit types enabled for the duration
+``other_backend`` runs a test once per non-numpy backend and skips the
+backends that do not load here. JAX runs with 64-bit types enabled for the duration
 of the test (``jax.enable_x64``), so its floats can be compared bit for bit
 with numpy's; the 32-bit mode has its own tests. JAX does not preallocate most of the GPU
 here, so a GPU benchmark or the CuPy tests can run beside it.
@@ -19,16 +19,15 @@ from modelly.gpu.backend import CUPY, JAX, BackendUnavailableError, get_backend
 GPU_NAMES = (CUPY, JAX)
 
 
-def _loads(name):
-    """Whether the backend ``name`` loads on this machine."""
+def load(name):
+    """The backend ``name``, or a skip when it does not load here (checked per test).
+
+    Loading at collection would import CuPy and JAX into every test session.
+    """
     try:
-        get_backend(name, strict=True)
-    except BackendUnavailableError:
-        return False
-    return True
-
-
-AVAILABLE = [name for name in GPU_NAMES if _loads(name)]
+        return get_backend(name, strict=True)
+    except BackendUnavailableError as error:
+        pytest.skip(str(error))
 
 
 @contextlib.contextmanager
@@ -43,18 +42,14 @@ def wide(name):
         yield
 
 
-@pytest.fixture(params=AVAILABLE or [None], ids=AVAILABLE or ["none"])
+@pytest.fixture(params=GPU_NAMES)
 def other_backend(request):
-    """A loaded non-numpy backend (64-bit for JAX), or a skip when none loads."""
-    if request.param is None:
-        pytest.skip("neither CuPy nor JAX loads here")
+    """A non-numpy backend (64-bit for JAX), or a skip when it does not load."""
     with wide(request.param):
-        yield get_backend(request.param, strict=True)
+        yield load(request.param)
 
 
 @pytest.fixture
 def jax_backend():
     """The JAX backend in its default 32-bit mode, or a skip without JAX."""
-    if JAX not in AVAILABLE:
-        pytest.skip("JAX is not installed")
-    return get_backend(JAX, strict=True)
+    return load(JAX)

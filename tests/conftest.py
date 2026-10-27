@@ -13,6 +13,7 @@ fast, a deadline per example, and no example database written into the checkout.
 import os
 from datetime import timedelta
 
+import pytest
 from hypothesis import settings
 
 HYPOTHESIS_PROFILE = "modelly"
@@ -38,6 +39,17 @@ PORT_OPTIONS = {
 
 def _named_on_command_line(config, flag):
     return any(arg.split("=")[0] == flag for arg in config.invocation_params.args)
+
+
+# JAX warns at every os.fork() once it is imported (its threads could deadlock a child
+# that uses JAX). The forking tests never use JAX in the child; with -W error the
+# warning would fail whichever of them runs after a JAX test, so it is ignored.
+JAX_FORK_WARNING = "ignore:os.fork\\(\\) was called:RuntimeWarning"
+
+
+def pytest_collection_modifyitems(config, items):  # noqa: D103
+    for item in items:
+        item.add_marker(pytest.mark.filterwarnings(JAX_FORK_WARNING))
 
 
 def pytest_configure(config):  # noqa: D103

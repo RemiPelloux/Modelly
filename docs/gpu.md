@@ -19,7 +19,7 @@ backend has, but no Apple GPU was available to check it.
 ```python
 from modelly.gpu import get_backend
 
-backend = get_backend("cupy")    # or "jax", "numpy", "auto" (a GPU backend if one loads)
+backend = get_backend("cupy")  # or "jax", "numpy", "auto" (a GPU backend if one loads)
 ```
 
 `get_backend()` without a name reads the `MODELLY_BACKEND` environment variable (numpy when it
@@ -45,21 +45,21 @@ from modelly.gpu import DeviceCellIndex, DeviceTable, PhiloxStream, get_backend
 
 backend = get_backend()
 stream = PhiloxStream(seed, stream=0, backend=backend)
-cells = DeviceCellIndex(model.index, backend)           # the grid's adjacency, once
+cells = DeviceCellIndex(model.index, backend)  # the grid's adjacency, once
 people = DeviceTable.from_columns(model.columns[Person], stream)
 
 
 def step():
-    xp = people.xp                                       # numpy, cupy or jax.numpy
-    rows = cells.random_neighbor(people.row, stream)     # a random walk on the grid
+    xp = people.xp  # numpy, cupy or jax.numpy
+    rows = cells.random_neighbor(people.row, stream)  # a random walk on the grid
     people.row = rows
     infected = people.state == I
-    exposure = cells.counts(rows, infected)[rows]        # infected cellmates
+    exposure = cells.counts(rows, infected)[rows]  # infected cellmates
     catches = (people.state == S) & people.draw(infect[exposure])
     people.state = xp.where(catches, I, people.state)
 
 
-people.write_to(model.columns[Person])                  # back to the agents
+people.write_to(model.columns[Person])  # back to the agents
 ```
 
 Updates are functional: `people.state = ...` replaces the column, because JAX arrays cannot be
