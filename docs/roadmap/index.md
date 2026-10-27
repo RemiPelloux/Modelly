@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** proposed · **Current release:** 1.2.0
+**Status:** 1.3 released, 1.4.0 in progress (S1) · **Current release:** 1.3.3
 
 Four releases take Modelly from a fast agent-based modelling framework to the research platform
 people use to **build, calibrate, explain, scale, share and publish** a model, in any field, on
