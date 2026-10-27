@@ -157,6 +157,9 @@ versioning.
   and bundles three studies on Ubuntu (Boltzmann wealth, Schelling, and the language-model
   opinions example, whose replies travel in the bundle), and macOS and Windows jobs unpack each
   and run `modelly verify`.
+- release: `.zenodo.json` at the repository root, so the GitHub-Zenodo integration archives each
+  GitHub release with the same title, licence, keywords and creators as `CITATION.cff` (no
+  contact data; the version comes from the tag), checked by `tests/test_zenodo.py`.
 
 ### Deprecated
 
