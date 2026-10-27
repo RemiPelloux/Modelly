@@ -33,7 +33,9 @@ STEP = "Step"  # the time column of the agent frames
 KINDS = ("model", "agent", "agenttype")
 
 
-def stacked(name: str, values: list, dims: Sequence[str] | None) -> tuple:
+def stacked(
+    name: str, values: list[Any], dims: Sequence[str] | None
+) -> tuple[tuple[str, ...], np.ndarray]:
     """``(dimensions, array)`` of one model reporter's values, the first axis ``time``.
 
     Raises:

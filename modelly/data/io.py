@@ -25,7 +25,7 @@ KINDS = ("model", "agent", "agenttype", "table")
 TEMP_SUFFIX = ".tmp"
 
 
-def _frame(collector: Any, kind: str, name: Any = None):
+def _frame(collector: Any, kind: str, name: Any = None) -> Any:
     """The pandas DataFrame of one collection, with its index as columns."""
     if kind == "model":
         return collector.get_model_vars_dataframe()
@@ -42,7 +42,7 @@ def _frame(collector: Any, kind: str, name: Any = None):
     raise ValueError(f"kind must be one of {', '.join(KINDS)}, got {kind!r}")
 
 
-def to_arrow(collector: Any, kind: str = "model", name: Any = None):
+def to_arrow(collector: Any, kind: str = "model", name: Any = None) -> Any:
     """One collection of ``collector`` as a ``pyarrow.Table``.
 
     Args:
@@ -89,7 +89,7 @@ def to_parquet(
     return write_parquet_atomic(to_arrow(collector, kind, name), path)
 
 
-def query(sql: str, connection: Any = None, **tables: Any):
+def query(sql: str, connection: Any = None, **tables: Any) -> Any:
     """Run ``sql`` with DuckDB over named tables; return a DuckDB relation.
 
     Each keyword names a table in the query: a ``pyarrow.Table``, a pandas
@@ -120,7 +120,7 @@ def _register(connection: Any, table_name: str, source: Any) -> None:
 class ArrowExportMixin:
     """``to_arrow``, ``to_parquet`` and ``to_xarray`` on the DataCollector."""
 
-    def to_arrow(self, kind: str = "model", name: Any = None):
+    def to_arrow(self, kind: str = "model", name: Any = None) -> Any:
         """This collector's ``kind`` collection as a ``pyarrow.Table`` (see :func:`to_arrow`)."""
         return to_arrow(self, kind, name)
 
@@ -130,7 +130,7 @@ class ArrowExportMixin:
         """Write this collector's ``kind`` collection to Parquet (see :func:`to_parquet`)."""
         return to_parquet(self, path, kind, name)
 
-    def to_xarray(self, kind: str = "model", name: Any = None, dims: Any = None):
+    def to_xarray(self, kind: str = "model", name: Any = None, dims: Any = None) -> Any:
         """This collector's ``kind`` collection as an ``xarray.Dataset`` (see ``to_xarray``)."""
         return to_xarray(self, kind, name, dims)
 
