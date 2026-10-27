@@ -106,6 +106,13 @@ versioning.
   age-structured SEIR (truth at the default parameters, three outputs), four waves of 20 runs
   leave 17 %, 4.4 %, 3.1 % and 2.5 % of the box, the truth inside every time. Guide:
   `docs/emulators.md`.
+- quality: partition independence in the determinism suite. The three reference models of split
+  runs (`grid_epidemic`, `network_sir`, `continuous_sir`) are golden examples, and
+  `tests/determinism/test_determinism_partition.py` splits each from the golden seed (2, 4 and
+  16 partitions) and checks every output equals the single-process run, so a split run on any
+  platform gives the golden digest. A new `mpi` workflow runs the distributed tests under Open
+  MPI on Ubuntu and macOS and under MS-MPI on Windows (2 ranks only); `test_mpi.py` uses
+  `mpiexec` on Windows and reads the rank counts from `MODELLY_MPI_RANKS`.
 
 ## 1.3.3 - 2026-10-27
 

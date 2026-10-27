@@ -30,9 +30,10 @@ OTHER_SEED = SEED + 1
 
 
 def test_every_example_folder_is_in_the_suite():
-    """A new example folder must be added to modelly.dev.golden.EXAMPLES."""
+    """A new example folder or split-run model must be added to golden.EXAMPLES."""
     folders = {path.parent.name for path in EXAMPLES_DIR.glob("*/*/model.py")}
-    assert folders == set(EXAMPLES_BY_NAME)
+    split = {p.stem for p in (EXAMPLES_DIR / "distributed").glob("[!_]*.py")}
+    assert folders | split == set(EXAMPLES_BY_NAME)
 
 
 def test_golden_file_records_every_example_as_written():
