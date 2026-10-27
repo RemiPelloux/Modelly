@@ -35,7 +35,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from modelly.experiments.designs import DESIGNS, Design
+from modelly.experiments.designs import Design, design_factory, design_kinds
 from modelly.experiments.experiment import DEFAULT_EXECUTOR, DEFAULT_STORE, Experiment
 from modelly.experiments.space import Range, ScenarioSpace
 from modelly.experiments.tasks import REFERENCE
@@ -98,12 +98,13 @@ def _design(table: Mapping[str, Any]) -> Design:
     """The ``[design]`` table as a Design."""
     table = dict(table)
     kind = table.pop("kind", "full_factorial")
-    if kind not in DESIGNS:
-        raise SpecError(f"design.kind must be one of {sorted(DESIGNS)}, got {kind!r}")
+    if kind not in design_kinds():  # built in, or a modelly.samplers plugin
+        raise SpecError(f"design.kind must be one of {design_kinds()}, got {kind!r}")
     argument = DESIGN_ARGUMENTS.get(kind, DEFAULT_DESIGN_ARGUMENT)
     if set(table) - {argument}:
         raise SpecError(f"design {kind} takes {argument!r}, got {sorted(table)}")
-    return DESIGNS[kind](table[argument]) if argument in table else DESIGNS[kind]()
+    factory = design_factory(kind)
+    return factory(table[argument]) if argument in table else factory()
 
 
 def read_document(path: str | Path) -> tuple[dict[str, Any], Path]:

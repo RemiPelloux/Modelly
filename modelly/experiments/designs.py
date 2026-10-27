@@ -14,7 +14,7 @@ Example:
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from itertools import product
 from typing import Any
@@ -23,6 +23,7 @@ import numpy as np
 from scipy.stats import qmc
 
 from modelly.experiments.space import ScenarioSpace
+from modelly.plugins import discover
 
 DEFAULT_LEVELS = 5
 
@@ -169,3 +170,25 @@ DESIGNS = {
     "halton": halton,
     "custom": custom,
 }
+# A plugin's entry point names a factory like latin_hypercube: n -> Design.
+SAMPLERS_GROUP = "modelly.samplers"
+
+
+def design_kinds() -> list[str]:
+    """Every design kind: the built-in ones and the ``modelly.samplers`` plugins."""
+    return sorted(set(DESIGNS) | set(discover(SAMPLERS_GROUP)))
+
+
+def design_factory(kind: str) -> Callable[..., Design]:
+    """The factory of design ``kind``, built in or from a ``modelly.samplers`` plugin.
+
+    Raises:
+        KeyError: when no design has that kind.
+        PluginError: when the plugin fails to load.
+    """
+    if kind in DESIGNS:
+        return DESIGNS[kind]
+    plugin = discover(SAMPLERS_GROUP).get(kind)
+    if plugin is None:
+        raise KeyError(kind)
+    return plugin.load()

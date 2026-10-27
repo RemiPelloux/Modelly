@@ -1,0 +1,31 @@
+# A third-party Modelly plugin: one entry point in every group Modelly reads.
+# Install it into the environment that runs Modelly: pip install -e examples/plugins/modelly-example-plugin
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "modelly-example-plugin"
+version = "1.0.0"
+description = "An example plugin for Modelly: a space, a sampler, a collector, an executor, a lint rule and a Studio view"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = ["modelly-abm", "networkx"]
+
+[project.entry-points."modelly.spaces"]
+ring = "modelly_example_plugin.space:Ring"
+
+[project.entry-points."modelly.samplers"]
+uniform = "modelly_example_plugin.sampler:uniform"
+
+[project.entry-points."modelly.collectors"]
+share_of = "modelly_example_plugin.collector:share_of"
+
+[project.entry-points."modelly.executors"]
+in_order = "modelly_example_plugin.executor:InOrderExecutor"
+
+[project.entry-points."modelly.lint_rules"]
+no_print = "modelly_example_plugin.lint:NO_PRINT"
+
+[project.entry-points."modelly.studio_views"]
+Scenario = "modelly_example_plugin.studio:ScenarioView"

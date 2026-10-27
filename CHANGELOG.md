@@ -120,6 +120,13 @@ versioning.
   `modelly.llm.replay.replaying(path)` (provisional), where every client answers from the
   recorded replies only, so a bundle verifies with no network and no API key. Runs without a
   client write the same manifest and bundle as before.
+- plugins: Modelly now reads three more entry-point groups. `modelly.samplers` adds design kinds
+  (`[design] kind = "name"` in an experiment file, `designs.design_factory` and `design_kinds`,
+  provisional); `modelly.lint_rules` adds rules to `modelly lint` (an object with a `Rule` and a
+  `check(tree)`, `modelly.lint.plugins`, provisional); `modelly.studio_views` adds Studio tabs.
+  A rule or view that fails to load or reuses a built-in code is skipped with a warning. A
+  complete third-party package with one entry point in every group is in
+  `examples/plugins/modelly-example-plugin`, tested in `tests/test_example_plugin.py`.
 
 ### Deprecated
 

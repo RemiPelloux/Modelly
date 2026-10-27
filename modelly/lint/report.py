@@ -6,7 +6,8 @@ import json
 from collections import Counter
 from dataclasses import asdict
 
-from modelly.lint import RULES, Finding
+from modelly.lint import Finding
+from modelly.lint.plugins import all_rules
 
 FORMATS = ("text", "json", "github")
 # GitHub workflow commands: characters that must be escaped in the message and in properties.
@@ -47,9 +48,10 @@ def github(findings: list[Finding]) -> str:
 def statistics(findings: list[Finding], quiet: bool = False) -> str:
     """How many findings of each code, most frequent first."""
     counts = Counter(f.rule.code for f in findings)
+    rules = {f.rule.code: f.rule for f in findings}
     width = len(str(max(counts.values(), default=0)))
     lines = [
-        f"{count:>{width}}  {code}  {RULES[code].severity:<7}  {RULES[code].message}"
+        f"{count:>{width}}  {code}  {rules[code].severity:<7}  {rules[code].message}"
         for code, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))
     ]
     return "\n".join(lines if quiet else [*lines, summary(findings)])
@@ -65,5 +67,6 @@ def render(findings: list[Finding], output: str, quiet: bool = False) -> str:
 
 
 def list_rules() -> str:
-    """One line per rule: code, severity, message."""
-    return "\n".join(f"{r.code}  {r.severity:<7}  {r.message}" for r in RULES.values())
+    """One line per rule, plugin rules included: code, severity, message."""
+    rules = all_rules().values()
+    return "\n".join(f"{r.code}  {r.severity:<7}  {r.message}" for r in rules)
