@@ -15,6 +15,8 @@ versioning.
   publishing findings as diagnostics on open, change and save, with the safe fix and a
   `# noqa` comment as quick fixes; settings for Neovim, Helix, VS Code and PyCharm in
   `docs/lint.md`.
+- `.pre-commit-hooks.yaml`: `modelly-lint` and `modelly-lint-fix` hooks, so a project's
+  pre-commit configuration runs `modelly lint` (or its safe fixes) on the staged files.
 
 ## 1.3.3 - 2026-10-27
 

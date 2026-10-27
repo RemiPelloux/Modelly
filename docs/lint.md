@@ -502,6 +502,24 @@ not silently disable the configuration.
 With `--format github`, each finding shows as an annotation on the changed line of the pull
 request.
 
+## Before each commit
+
+Modelly ships two [pre-commit](https://pre-commit.com) hooks. Add one to your project's
+`.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: https://github.com/RemiPelloux/Modelly
+    rev: v1.4.0
+    hooks:
+      - id: modelly-lint          # fail the commit when a staged file has a finding
+      # - id: modelly-lint-fix    # or apply the safe fixes first, then report the rest
+```
+
+Both run `modelly lint` once with every staged Python file and read `[tool.modelly.lint]`
+from your `pyproject.toml`, so a commit is checked by the same rules as the command line.
+`pre-commit run --all-files` checks the whole project.
+
 ## In an editor
 
 `modelly lint --lsp` (or `python -m modelly.lint --lsp`) runs the linter as a language

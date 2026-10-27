@@ -1,0 +1,24 @@
+# Hooks this repository offers to other projects. In your .pre-commit-config.yaml:
+#
+#   - repo: https://github.com/RemiPelloux/Modelly
+#     rev: v1.4.0
+#     hooks:
+#       - id: modelly-lint        # report findings, fail the commit on any
+#       # - id: modelly-lint-fix  # or: apply the safe fixes first, then report the rest
+#
+# Both read [tool.modelly.lint] from your pyproject.toml (see docs/lint.md). They run once
+# with every staged Python file, so MDL107 sees the agent classes a model imports.
+- id: modelly-lint
+  name: modelly lint
+  description: Reproducibility bugs and O(N^2) loops in Modelly models
+  entry: modelly lint
+  language: python
+  types: [python]
+  require_serial: true
+- id: modelly-lint-fix
+  name: modelly lint --fix
+  description: Apply the safe fixes of modelly lint, then report the findings left
+  entry: modelly lint --fix
+  language: python
+  types: [python]
+  require_serial: true
