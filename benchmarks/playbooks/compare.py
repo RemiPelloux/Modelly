@@ -43,6 +43,8 @@ PYTHONS = {
         "FRAMES_PYTHON", str(ROOT / ".venv-frames" / "bin" / "python")
     ),
 }
+# The GPU variants run where CuPy or JAX is installed; Modelly's environment otherwise.
+PYTHONS["modelly-gpu"] = os.environ.get("MODELLY_GPU_PYTHON", PYTHONS["modelly"])
 RESULT_PREFIX = "RESULT "
 REFERENCE = "mesa"
 ALPHA = 0.01

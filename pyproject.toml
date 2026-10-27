@@ -103,6 +103,15 @@ ray = [
 distributed = [
   "mpi4py",
 ]
+# GPU arrays (modelly.gpu): CuPy on NVIDIA GPUs; the wheels bundle the CUDA runtime.
+# For JAX on a GPU instead, install "jax[cuda13]" (Linux, Windows) or jax-metal (macOS).
+gpu = [
+  "cupy-cuda13x",
+]
+# Differentiable models (modelly.diff) and the JAX backend of modelly.gpu: CPU on every OS
+diff = [
+  "jax",
+]
 # MP4 export of space views (modelly.viz.animation); imageio-ffmpeg bundles ffmpeg.
 video = [
   "imageio",

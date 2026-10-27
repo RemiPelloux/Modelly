@@ -106,6 +106,24 @@ versioning.
   age-structured SEIR (truth at the default parameters, three outputs), four waves of 20 runs
   leave 17 %, 4.4 %, 3.1 % and 2.5 % of the box, the truth inside every time. Guide:
   `docs/emulators.md`.
+- gpu: `modelly.gpu` runs column phases (`DeviceTable`), cohort tables (`DeviceCohortTable`,
+  binomial thinning included) and cell-space operators (`DeviceCellIndex`: counts, neighbour
+  sums, random-neighbour moves) on numpy, CuPy or JAX, chosen by `get_backend` or
+  `MODELLY_BACKEND` with a numpy fallback; `PhiloxStream`, a Philox4x32-10 stream keyed by
+  (seed, stream), draws the same numbers on every backend (Random123 known-answer vectors);
+  `plan_memory` / `run_batched` run populations larger than the GPU in batches, bit for bit;
+  `modelly-gpu` variants of the grid epidemic and insect cohorts playbooks. On a laptop
+  RTX 5050 the grid epidemic at 10 million agents keeps the CPU run's integer state bit for bit
+  and runs its 60 steps 34x faster than the CPU column variant (`docs/performance.md`).
+  Extras `gpu` (CuPy) and `diff` (JAX); `import modelly` loads neither.
+- diff: `modelly.diff` simulates column phases traced by JAX (`DiffModel`, `@phase` with a
+  `differentiable` flag) and differentiates their outputs with respect to parameters:
+  pathwise normal and uniform draws, Bernoulli choices through straight-through, Gumbel-softmax
+  or score-function estimators (each warns `GradientApproximationWarning`), `check_gradients`
+  against finite differences, and `GradientCalibration` (Adam on `modelly.calibrate` priors and
+  targets, deterministic for a seed). Differentiable twins of the Bass diffusion and
+  Bouchaud-Mezard zoo models recover known parameters; `docs/differentiable.md` says when the
+  gradients mean something.
 
 ## 1.3.3 - 2026-10-27
 

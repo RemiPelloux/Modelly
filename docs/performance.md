@@ -634,6 +634,52 @@ insect in the same (stage, age, sex) class as one row and thins it with a binomi
 has the same law as the individual model (the agreement table shows it) and runs in 11 ms.
 Absolute times vary by up to 2x between sessions on a shared machine; the ratios much less.
 
+## GPU backend
+
+The `modelly-gpu` variant of the grid epidemic (`benchmarks/playbooks/grid_epidemic/modelly_gpu.py`)
+is the column variant `modelly` with its step on CuPy: the same agents and grid, the columns as a
+`DeviceTable`, the adjacency as a `DeviceCellIndex`, the draws from a `PhiloxStream`
+([GPU arrays](gpu.md)). Measured by `benchmarks/playbooks/gpu_speedup.py` at 10 million agents
+on a 1000 x 1000 torus (ten agents per cell; the playbook's density would need 16 million Python
+cell objects), 60 steps, seed 1. Raw numbers: `benchmarks/playbooks/results/gpu_speedup.json`.
+
+**Machine.** A laptop: Intel Core Ultra 7 356H, 30 GB, and an NVIDIA GeForce RTX 5050 Laptop
+GPU (8 GB, driver 615.78, CUDA runtime 13.2 from the `cupy-cuda13x` 14.2.0 wheel); numpy 2.5.4.
+Shared with other jobs: every run was started through a guard that lets one heavy job run at a
+time, but the load from lighter work was not controlled and the CPU frequency was not pinned.
+
+**Method.** A fresh interpreter per run, the two variants alternating; the wall clock around the
+60 steps with the device synchronised before each reading (a GPU's time is not the process's CPU
+time); the build (agents, grid, upload) timed apart. One untimed GPU run first fills CuPy's
+kernel cache.
+
+| Steps of the grid epidemic, 10 million agents | CPU column variant `modelly` | `modelly-gpu` on CuPy | speed-up |
+|---|---|---|---|
+| CPU variant on Python 3.15.1 (Modelly's environment), 3 rounds | 20.65, 21.05, 21.39 s | 0.612, 0.608, 0.622 s | 33.7x, 34.6x, 34.4x (median 34.4x) |
+| CPU variant on Python 3.14.8 (the GPU environment's interpreter), 2 rounds | 23.91, 24.48 s | 0.722, 0.725 s | 33.1x, 33.8x |
+| Build (agents, grid and, for the GPU, the upload) | 22 to 42 s | 26 to 41 s | none |
+
+About 350 ms per step on one CPU core against 10 ms on the GPU. The building is the same Python
+work for both (10 million `Person` agents) and dominates a 60-step run: build plus steps is
+1.5 to 1.7x faster on the GPU (Python 3.15 rounds). The 10x target of the 1.4.0 roadmap is met on this mid-range laptop
+GPU for the steps; it is not a claim about construction, which the GPU does not touch.
+
+**Equality.** `gpu_speedup.py --equality` ran `modelly-gpu` with the same seed on numpy (69 s:
+the numpy fallback computes Philox numbers with array operations) and on CuPy (1.9 s, kernel
+compilation included): the infected series of the 60 steps is identical and so is the SHA-256 of
+the final `state`, `days` and `row` columns of all 10 million agents. The test suite checks the
+same on every backend that loads (`tests/gpu`), JAX with 64-bit types included. Against the CPU
+column variant, which draws from `model.rng`, the agreement is in distribution, as for every
+playbook variant.
+
+**Where the GPU does not pay.** At the playbook's own large size (20,000 agents) the steps take
+0.17 to 0.21 s on CuPy against 0.11 s for the CPU column variant (3 seeds each): kernel launches
+and synchronisations cost more than the arithmetic. The insect cohorts on a `DeviceCohortTable`
+take 1.9 to 2.1 s for 120 days against 10 ms for the host `CohortTable` (3 seeds): the table has
+fewer than two hundred rows. Both variants run on CuPy because the roadmap asks that they do, and
+give the numpy run's integers there; neither is a reason to use a GPU. Apple Metal (JAX) was not
+measured: no Apple GPU was available.
+
 ## Caches
 
 Two results are now reused instead of recomputed:

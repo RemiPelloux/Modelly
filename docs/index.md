@@ -205,6 +205,8 @@ Plugins <plugins>
 Studio <studio>
 Figures and animations <figures>
 Vectorised step phases <vectorised_phases>
+GPU arrays <gpu>
+Differentiable models <differentiable>
 Determinism and platforms <determinism>
 Deprecations <deprecations>
 Roadmap <roadmap/index>
