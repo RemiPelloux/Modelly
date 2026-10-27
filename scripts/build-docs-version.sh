@@ -9,11 +9,12 @@
 # the version switcher is built through scripts/docs-overlay/conf.py.
 # MODELLY_NB_EXECUTION=off skips running the tutorials. PYTHON picks the interpreter
 # (default: .venv/bin/python, else python3); it needs the docs extras installed.
-# SPHINXOPTS adds sphinx-build options, e.g. SPHINXOPTS="-W --keep-going".
+# Warnings fail the build (SPHINXOPTS defaults to "-W --keep-going": every warning is
+# reported, then the build exits 1); SPHINXOPTS= (empty) builds an old tag that warns.
 set -euo pipefail
 
 if [[ $# -ne 2 ]]; then
-  sed -n '2,12p' "$0" >&2
+  sed -n '2,13p' "$0" >&2
   exit 2
 fi
 REF="$1"
@@ -48,5 +49,6 @@ if ! grep -q apply_versioning "$TREE/docs/conf.py"; then
   CONF_ARGS=(-c "$ROOT/scripts/docs-overlay")
 fi
 echo "building $REF as /$MODELLY_DOCS_VERSION/ into $OUT"
-PYTHONPATH="$TREE${PYTHONPATH:+:$PYTHONPATH}" "$PYTHON" -m sphinx -b html -q ${SPHINXOPTS:-} \
+SPHINXOPTS="${SPHINXOPTS--W --keep-going}"
+PYTHONPATH="$TREE${PYTHONPATH:+:$PYTHONPATH}" "$PYTHON" -m sphinx -b html -q ${SPHINXOPTS} \
   -d "$WORK/doctrees" -D nb_execution_cache_path="$WORK/jupyter_cache" ${CONF_ARGS[@]+"${CONF_ARGS[@]}"} "$TREE/docs" "$OUT"

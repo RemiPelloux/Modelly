@@ -1,7 +1,7 @@
 """History matching: rule out, wave by wave, the parameters that cannot match the data.
 
 For an observed value ``z`` of an output, the implausibility of a point ``x``
-of the parameter space is
+of the parameter space is::
 
     I(x) = |z - E[f(x)]| / sqrt(Var[f(x)] + Var_obs + Var_discrepancy)
 

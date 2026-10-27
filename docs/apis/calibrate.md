@@ -31,6 +31,11 @@
 ```
 
 ```{eval-rst}
+.. automodule:: modelly.calibrate.external
+   :members:
+```
+
+```{eval-rst}
 .. automodule:: modelly.calibrate.optimize
    :members:
 ```

@@ -161,6 +161,15 @@ versioning.
   GitHub release with the same title, licence, keywords and creators as `CITATION.cff` (no
   contact data; the version comes from the tag), checked by `tests/test_zenodo.py`.
 
+### Changed
+
+- docs: the build fails on warnings. `scripts/build-docs-version.sh` passes `-W --keep-going` by
+  default (`SPHINXOPTS=` builds an old tag that warns) and the docs workflow sets it. The build
+  was made warning-free first: a docstring formula read as a substitution, ambiguous `Grid` and
+  `Observation` type references from imports only made for type checking, and the "no lexer"
+  warnings of the text-notebook tutorials, which appear only when they are not executed and are
+  filtered in `conf.py`.
+
 ### Deprecated
 
 - `modelly.space.geo.ipf` and `modelly.space.geo.synthesize_population` (also through

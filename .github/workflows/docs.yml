@@ -70,6 +70,8 @@ jobs:
         run: bash scripts/build-docs-version.sh "${{ steps.version.outputs.ref }}" _build/version
         env:
           PYTHON: python
+          # Any warning fails the build, after all of them are reported.
+          SPHINXOPTS: "-W --keep-going"
       - uses: actions/checkout@v7
         with:
           ref: ${{ env.SITE_BRANCH }}

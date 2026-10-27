@@ -42,11 +42,10 @@ import pandas as pd
 
 from modelly.stream.bands import DEFAULT_QUANTILES
 from modelly.stream.ensemble import RESAMPLE_DOMAIN, Ensemble
-from modelly.stream.sources import due
+from modelly.stream.sources import Observation, due
 
 if TYPE_CHECKING:
     from modelly.stream.operators import ObservationOperator
-    from modelly.stream.sources import Observation
 
 DEFAULT_THRESHOLD = 0.5  # resample when ESS < half the ensemble
 # The seed key of the generator drawing the systematic uniforms.
