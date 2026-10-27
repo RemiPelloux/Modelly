@@ -177,6 +177,7 @@ Your project <using_modelly_in_your_project>
 Starting a project <new_project>
 Examples <examples>
 From Mesa <migrating_from_mesa>
+From NetLogo <netlogo>
 Performance <performance>
 API <apis/api_main>
 Overview <overview>

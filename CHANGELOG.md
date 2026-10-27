@@ -26,6 +26,13 @@ versioning.
 - docs: From R and Julia, reading Modelly's Parquet, DuckDB and netCDF results with arrow,
   duckdb, Parquet2.jl and DuckDB.jl, and running Modelly from R (reticulate) and Julia
   (PythonCall); the Python side of every snippet runs in the test suite.
+- `modelly netlogo` (`python -m modelly.netlogo`): translate a NetLogo model (`.nlogo`) into a
+  runnable, seeded, lint-clean Modelly model for a documented subset (turtles, patches, breeds,
+  `ask`, `set`, `if`/`ifelse`, `repeat`, `create-`/`hatch`/`sprout`, movement, `neighbors`,
+  `one-of`, `random`, globals; sliders and switches become Scenario fields). Lines outside the
+  subset stay as `# NETLOGO` comments and are listed with their line numbers. Ships Fire and
+  Wolf Sheep Predation sources written from the published descriptions; the translated Fire
+  model shows the percolation threshold near 59% density. See `docs/netlogo.md`.
 
 ## 1.3.3 - 2026-10-27
 
