@@ -58,10 +58,19 @@ replicates averaged, each output reduced by a statistic of its series:
 ```python
 from modelly.experiments import Experiment, ScenarioSpace, designs
 
-experiment = Experiment(model=Epidemic, space=space, design=designs.latin_hypercube(80),
-                        replicates=4, steps=120, outputs=["infected"], store="runs/sir")
+experiment = Experiment(
+    model=Epidemic,
+    space=space,
+    design=designs.latin_hypercube(80),
+    replicates=4,
+    steps=120,
+    outputs=["infected"],
+    store="runs/sir",
+)
 experiment.run(executor="processes")
-emulator = GaussianEmulator.from_results(experiment.results(), space, {"infected": "max"})
+emulator = GaussianEmulator.from_results(
+    experiment.results(), space, {"infected": "max"}
+)
 ```
 
 ### In a sensitivity analysis
