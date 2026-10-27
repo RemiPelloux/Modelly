@@ -61,6 +61,9 @@ and geometry come from the PROJ and GEOS libraries bundled inside the pyproj and
 and those builds differ between platforms by more than the last digits. On every other
 platform its golden check is skipped with that reason; checks 1 and 2 still run everywhere.
 
+Models coupled with [`modelly.couple`](coupling.md) have two more such outputs: the decay of a
+field (`exp`) and the error norm `solve_ivp` uses to choose its steps.
+
 Every other example is compared bit for bit. Checks 1 and 2 are always exact: they run on one
 machine, where the maths library is the same. A last-bit difference can only change a
 discrete decision if a random draw falls exactly on it, which is negligible over the short
