@@ -142,3 +142,16 @@ class HTTPSource(_Buffered):
         self._seen.update(o.time for o in new)
         self._add(new)
         return self._take(until)
+
+
+def due(
+    source: Any | Iterable[Observation], until: float | None = None
+) -> list[Observation]:
+    """The observations of ``source`` up to ``until``, in the order it gives them.
+
+    ``source`` is a stream source (anything with ``poll(until)``) or an
+    iterable of observations, such as a list.
+    """
+    poll = getattr(source, "poll", None)
+    observations = poll(until) if poll is not None else source
+    return [o for o in observations if until is None or o.time <= until]
