@@ -195,7 +195,7 @@ RULES = {
 }
 
 
-def dotted(node: ast.AST) -> list[str]:
+def dotted(node: ast.AST | None) -> list[str]:
     """Return the names along an attribute chain: ``self.model.agents`` -> self, model, agents."""
     parts: list[str] = []
     while True:
@@ -213,7 +213,7 @@ def dotted(node: ast.AST) -> list[str]:
     return parts[::-1]
 
 
-def is_population(node: ast.AST, in_model: bool) -> bool:
+def is_population(node: ast.AST | None, in_model: bool) -> bool:
     """Whether ``node`` is the model's whole population or one type of it, not a cell's agents."""
     if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
         if node.func.attr in SCANS | {"shuffle", "to_list", "copy"}:
@@ -254,7 +254,7 @@ def is_mutable_literal(node: ast.AST | None) -> bool:
     )
 
 
-def calls_super_init(func: ast.FunctionDef) -> bool:
+def calls_super_init(func: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
     """Whether ``func`` calls ``super().__init__`` or ``<Base>.__init__(self, ...)``."""
     for node in ast.walk(func):
         if not (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)):
@@ -269,7 +269,7 @@ def calls_super_init(func: ast.FunctionDef) -> bool:
     return False
 
 
-def branches(func: ast.FunctionDef) -> int:
+def branches(func: ast.FunctionDef | ast.AsyncFunctionDef) -> int:
     """Count the decision points of ``func``: its cyclomatic complexity minus one."""
     count = 0
     for node in ast.walk(func):

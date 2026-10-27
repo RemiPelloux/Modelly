@@ -165,6 +165,7 @@ def column_write(statement: ast.stmt, agent: str, columns: set[str]) -> bool:
         return not has_call(statement.test) and all(
             column_write(s, agent, columns) for s in body
         )
+    targets: list[ast.expr]
     if isinstance(statement, ast.AugAssign):
         targets = [statement.target]
     elif isinstance(statement, ast.Assign):

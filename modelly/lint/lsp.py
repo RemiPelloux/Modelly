@@ -94,7 +94,8 @@ class Server:
 
     def dispatch(self, message: Params) -> None:
         """Run the handler of ``message``; reply when it is a request."""
-        method, params = message.get("method"), message.get("params") or {}
+        method: str = message.get("method") or ""
+        params = message.get("params") or {}
         if "id" not in message:
             handler = NOTIFICATIONS.get(method)
             if handler is not None:
@@ -160,7 +161,9 @@ class Server:
         return dict(collector.fixes)
 
     @staticmethod
-    def noqa_action(source: Source, uri: str, diag: Params, hit: tuple) -> list[Params]:
+    def noqa_action(
+        source: Source, uri: str, diag: Params, hit: tuple[int, int, str]
+    ) -> list[Params]:
         """``# noqa: CODE`` at the end of the finding's line, unless it has a noqa already."""
         line = hit[0]
         if line > len(source.lines):

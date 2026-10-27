@@ -49,7 +49,8 @@ def read_message(stream: BinaryIO) -> Message | None:
             length = int(value)
     if length is None:
         raise ValueError("a message without a Content-Length header")
-    return json.loads(stream.read(length).decode(ENCODING))
+    message: Message = json.loads(stream.read(length).decode(ENCODING))
+    return message
 
 
 def write_message(stream: BinaryIO, message: Message) -> None:

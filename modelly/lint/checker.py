@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 
+from modelly.lint.edits import Located
 from modelly.lint.imports import Imports
 from modelly.lint.patterns import (
     column_names,
@@ -32,6 +33,7 @@ from modelly.lint.rules import (
 )
 
 Hit = tuple[int, int, str]
+Comprehension = ast.ListComp | ast.SetComp | ast.DictComp | ast.GeneratorExp
 
 
 class Checker(ast.NodeVisitor):
@@ -54,7 +56,7 @@ class Checker(ast.NodeVisitor):
         self.imported_columns = imported_columns
         self.columns: set[str] = set()  # Column attributes declared here or imported
 
-    def hit(self, node: ast.AST, code: str) -> None:
+    def hit(self, node: Located, code: str) -> None:
         """Record ``code`` at ``node``."""
         self.hits.add((node.lineno, node.col_offset + 1, code))
 
@@ -116,7 +118,9 @@ class Checker(ast.NodeVisitor):
             if is_mutable_literal(value) and not declared_shared(statement):
                 self.hit(statement, "MDL004")
 
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # noqa: D102
+    def visit_FunctionDef(  # noqa: D102
+        self, node: ast.FunctionDef | ast.AsyncFunctionDef
+    ) -> None:
         if self.kind and node.name == "__init__" and not calls_super_init(node):
             self.hit(node, "MDL002")
         if self.kind and node.name == "step" and branches(node) > STEP_COMPLEXITY_LIMIT:
@@ -161,7 +165,9 @@ class Checker(ast.NodeVisitor):
         if self.kind == "model" and writes_columns_only(node, self.columns):
             self.hit(node, "MDL107")
 
-    def visit_loop(self, node: ast.AST, iterable: ast.AST, body: list[ast.AST]) -> None:
+    def visit_loop(
+        self, node: Located, iterable: ast.expr, body: list[ast.AST]
+    ) -> None:
         """Check ``iterable`` and visit ``body`` one population level deeper when it is one."""
         if is_set_expr(iterable):
             self.hit(node, "MDL003")
@@ -173,14 +179,14 @@ class Checker(ast.NodeVisitor):
             self.visit(child)
         self.population_depth -= scans
 
-    def check_scan(self, node: ast.AST) -> None:
+    def check_scan(self, node: Located) -> None:
         """MDL101 inside an agent, MDL102 when already inside a population loop."""
         if self.kind == "agent":
             self.hit(node, "MDL101")
         elif self.population_depth:
             self.hit(node, "MDL102")
 
-    def visit_comprehension_node(self, node: ast.AST) -> None:
+    def visit_comprehension_node(self, node: Comprehension) -> None:
         """Comprehensions loop too: each generator is one level."""
         generators = node.generators
         self.visit(generators[0].iter)
@@ -189,7 +195,7 @@ class Checker(ast.NodeVisitor):
         self.visit_loop(node, first.iter, rest)
 
     @staticmethod
-    def comprehension_bodies(node: ast.AST) -> list[ast.AST]:
+    def comprehension_bodies(node: Comprehension) -> list[ast.AST]:
         """The element expressions of a list, set, dict or generator comprehension."""
         if isinstance(node, ast.DictComp):
             return [node.key, node.value]

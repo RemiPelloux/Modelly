@@ -10,9 +10,10 @@ from __future__ import annotations
 
 import ast
 from collections.abc import Callable
+from typing import Any
 
 from modelly.lint.checker import Checker, Hit
-from modelly.lint.edits import Edit, Source
+from modelly.lint.edits import Edit, Located, Source
 from modelly.lint.patterns import FROZEN_DRAW, QMC_MODULE, SAMPLER_SEEDS
 from modelly.lint.rules import dotted, is_set_expr
 
@@ -57,10 +58,10 @@ class FixCollector(Checker):
         super().__init__()
         self.source = source
         self.classes: list[ast.ClassDef] = []
-        self.functions: list[ast.FunctionDef] = []
+        self.functions: list[ast.FunctionDef | ast.AsyncFunctionDef] = []
         self.fixes: list[tuple[Hit, Edit]] = []
 
-    def hit(self, node: ast.AST, code: str) -> None:
+    def hit(self, node: Located, code: str) -> None:
         """Record the hit and, when the rule has a safe fix here, the edit."""
         super().hit(node, code)
         fixer = FIXERS.get(code)
@@ -73,7 +74,9 @@ class FixCollector(Checker):
         super().visit_ClassDef(node)
         self.classes.pop()
 
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # noqa: D102
+    def visit_FunctionDef(  # noqa: D102
+        self, node: ast.FunctionDef | ast.AsyncFunctionDef
+    ) -> None:
         self.functions.append(node)
         super().visit_FunctionDef(node)
         self.functions.pop()
@@ -142,7 +145,7 @@ def mentions_agents(node: ast.AST) -> bool:
     return False
 
 
-def fix_set_loop(collector: FixCollector, node: ast.AST) -> Edit | None:
+def fix_set_loop(collector: FixCollector, node: Located) -> Edit | None:
     """MDL003: ``for x in set(s)`` -> ``for x in sorted(set(s))``, by unique_id for agents."""
     if isinstance(node, ast.For):
         node = node.iter
@@ -158,6 +161,8 @@ def fix_set_loop(collector: FixCollector, node: ast.AST) -> Edit | None:
 
 def fix_registry(collector: FixCollector, node: ast.Call) -> Edit | None:
     """MDL009: ``agents.discard(a)`` -> ``a.remove()``; ``agents.clear()`` -> ``do("remove")``."""
+    if not isinstance(node.func, ast.Attribute):
+        return None  # MDL009 is a method call: never reached
     method, owner = node.func.attr, node.func.value
     source = collector.source
     if method == "clear" and not (node.args or node.keywords):
@@ -172,9 +177,9 @@ def fix_registry(collector: FixCollector, node: ast.Call) -> Edit | None:
 
 def append_argument(source: Source, call: ast.Call, text: str) -> Edit:
     """An edit that adds ``text`` as the last argument of ``call``."""
-    arguments = [*call.args, *call.keywords]
+    arguments: list[ast.expr | ast.keyword] = [*call.args, *call.keywords]
     if arguments:
-        last = max(arguments, key=lambda a: (a.end_lineno, a.end_col_offset))
+        last = max(arguments, key=lambda a: (a.end_lineno or 0, a.end_col_offset or 0))
         end = source.span(last)[1]
         return Edit(end, end, f", {text}")
     start, stop = source.span(call)
@@ -199,7 +204,8 @@ def fix_sampler(collector: FixCollector, node: ast.Call) -> Edit | None:
     return append_argument(collector.source, node, f"{keyword}={MODEL_GENERATOR}")
 
 
-FIXERS: dict[str, Callable[[FixCollector, ast.AST], Edit | None]] = {
+# Each fixer takes the node type its rule reports (a Call, a FunctionDef, a For...).
+FIXERS: dict[str, Callable[[FixCollector, Any], Edit | None]] = {
     "MDL001": fix_random,
     "MDL002": fix_super,
     "MDL003": fix_set_loop,
