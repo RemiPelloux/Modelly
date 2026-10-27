@@ -17,6 +17,11 @@ in the order of the Ross-Macdonald R0.
 
 ![Infectious hosts for three mosquito densities](images/gallery/vector_borne.png)
 
+**[Epidemic and hospital capacity](zoo/hospital_epidemic.md).** When contacts fall with the
+pressure on the hospital, occupancy peaks lower and later, and fewer surge beds open.
+
+![Occupied and open beds over time, with and without the contact response](images/gallery/hospital_epidemic.png)
+
 ## Ecology
 
 **[Forest fire](zoo/forest_fire.md).** The burnt share jumps at the percolation threshold.
@@ -27,6 +32,11 @@ in the order of the Ross-Macdonald R0.
 the carrying capacity set by the energy balance.
 
 ![Population over time with its carrying capacity](images/gallery/energy_budget.png)
+
+**[Foragers on a nutrient field](zoo/nutrient_foragers.md).** The nutrient diffuses inland from
+the river bank, and the foragers follow it.
+
+![Foragers and nutrient per cell against the distance from the river](images/gallery/nutrient_foragers.png)
 
 ## Economics
 

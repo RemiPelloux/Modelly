@@ -11,7 +11,9 @@ gate.
 |---|---|---|
 | [Age-structured SEIR](age_seir.md) | epidemiology | final-size relation, within its central-limit bound |
 | [Vector-borne transmission](vector_borne.md) | epidemiology | outbreak size ordered like the Ross-Macdonald R0 |
+| [Epidemic and hospital capacity](hospital_epidemic.md) | epidemiology | final size; exact hospital solution; admissions mass balance |
 | [Energy budgets](energy_budget.md) | ecology | carrying capacity from the energy balance |
+| [Foragers on a nutrient field](nutrient_foragers.md) | ecology | carrying capacity; nutrient budget closed to round-off |
 | [Forest fire and succession](forest_fire.md) | ecology | site-percolation threshold |
 | [Order book](order_book.md) | economics | fat tails: positive excess kurtosis of returns |
 | [Boltzmann wealth exchange](kinetic_wealth.md) | economics | exact stationary distribution and Gini |
@@ -78,7 +80,9 @@ reference. Community models that do not belong in the zoo go to the
 
 age_seir
 vector_borne
+hospital_epidemic
 energy_budget
+nutrient_foragers
 forest_fire
 order_book
 kinetic_wealth

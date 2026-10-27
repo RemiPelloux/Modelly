@@ -18,6 +18,17 @@ versioning.
 - `modelly.stream` (provisional): `ReplaySource`, `CSVSource` (a growing file) and
   `HTTPSource` hand out observations once each, in time order; `ObservationOperator` reads the
   same quantities from a model, with residuals and a Gaussian log-likelihood.
+- `modelly.couple`: multi-scale coupling. `Field` makes a grid property layer diffuse, drift and
+  decay on its own sub-steps (finite volumes, explicit with a stability check or implicit;
+  closed, absorbing or periodic boundaries; mass conserved to round-off, with a budget of what
+  was added, left and decayed); `ODE` and `StockFlow` integrate continuous components with
+  scipy's `solve_ivp`; `Coupling` and `Phase` run them with the agents' step phases, checked at
+  build time for reads with no writer, two writers and cycles inside a phase. Coupled models
+  checkpoint and resume bit for bit. Guide: `docs/coupling.md`.
+- Two coupled zoo models: `nutrient_foragers` (foragers on a diffusing nutrient field,
+  validated against the carrying capacity of the energy balance) and `hospital_epidemic` (SIR
+  agents coupled to a hospital-capacity stock-flow ODE, validated against the final-size
+  relation and the hospital's exact linear solution), both with mass-balance tests.
 
 ## 1.3.3 - 2026-10-27
 
