@@ -1,7 +1,8 @@
 """Pack a recorded run into one deterministic zip a reviewer can verify.
 
 The archive holds the manifest (its paths rewritten for the archive layout), the
-outputs, the model's source files under ``code/``, the input files under ``inputs/``,
+outputs, the language-model replies the run recorded (if any), the model's source
+files under ``code/``, the input files under ``inputs/``,
 ``requirements.lock``, ``seeds.json``, Zenodo metadata (``.zenodo.json``) and a
 ``CITATION.cff`` stub. Entries are sorted, stored uncompressed and stamped with a fixed
 time and mode, so the same run gives the same bytes on every machine.
@@ -22,6 +23,7 @@ from modelly.provenance.files import (
     hash_file,
     write_bytes_atomic,
 )
+from modelly.provenance.llm import FIELD, cache_problem
 from modelly.provenance.manifest import MANIFEST_NAME, manifest_path, read_manifest
 from modelly.provenance.metadata import citation_cff, zenodo_metadata
 
@@ -43,6 +45,9 @@ def _check_unchanged(manifest: dict, folder: Path) -> None:
         path = from_posix(item["path"], folder)
         if not path.is_file() or hash_file(path) != item["hash"]:
             raise BundleError(f"output {item['path']} changed since the run: rerun it")
+    problem = cache_problem(manifest, folder)
+    if problem is not None:
+        raise BundleError(f"{problem}: rerun it")
     root = from_posix(manifest["code"]["root"], folder)
     changed = changed_files(root, manifest["code"]["files"])
     if changed:
@@ -75,6 +80,9 @@ def bundle_entries(folder: Path) -> dict[str, bytes]:
     entries: dict[str, bytes] = {}
     for item in manifest["outputs"]:
         entries[item["path"]] = from_posix(item["path"], folder).read_bytes()
+    if FIELD in manifest:  # the language-model replies, so verify needs no network
+        replies = manifest[FIELD]["path"]
+        entries[replies] = from_posix(replies, folder).read_bytes()
     root = from_posix(manifest["code"]["root"], folder)
     for name in manifest["code"]["files"]:
         entries[f"{CODE_DIR}/{name}"] = root.joinpath(*name.split("/")).read_bytes()

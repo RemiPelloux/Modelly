@@ -113,6 +113,13 @@ versioning.
   platform gives the golden digest. A new `mpi` workflow runs the distributed tests under Open
   MPI on Ubuntu and macOS and under MS-MPI on Windows (2 ranks only); `test_mpi.py` uses
   `mpiexec` on Windows and reads the rank counts from `MODELLY_MPI_RANKS`.
+- provenance: the language-model response cache travels with the study. `modelly run` exports
+  the replies of the model's `modelly.llm.Client`s to `llm-responses.jsonl.gz` and records it in
+  the manifest (`llm_cache`, an optional field of manifest format 1); `modelly bundle` packs it
+  and refuses a run whose replies changed; `modelly verify` reruns inside the new
+  `modelly.llm.replay.replaying(path)` (provisional), where every client answers from the
+  recorded replies only, so a bundle verifies with no network and no API key. Runs without a
+  client write the same manifest and bundle as before.
 
 ### Deprecated
 

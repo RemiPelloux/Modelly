@@ -16,6 +16,7 @@ from modelly.llm.budget import Budget, Usage
 from modelly.llm.cache import READ_ONLY, ResponseCache
 from modelly.llm.errors import BudgetExceeded, CacheMiss, ProviderError
 from modelly.llm.providers import Provider
+from modelly.llm.replay import active_replay
 from modelly.llm.request import USER, Message, Request, Response, freeze_params
 from modelly.llm.retry import RetryPolicy
 
@@ -34,7 +35,8 @@ class Client:
         provider: The adapter: ``AnthropicProvider``, ``OpenAICompatibleProvider`` or
             ``FakeProvider``.
         model: The model name; the provider's default when None.
-        cache: Where replies are kept; a fresh in-memory cache when None.
+        cache: Where replies are kept; a fresh in-memory cache when None. Inside
+            ``modelly.llm.replay.replaying``, the replayed cache instead.
         budget: Token and cost limits; no limit when None.
         retry: How failed calls are retried.
         max_concurrency: The most calls in flight at once.
@@ -71,6 +73,9 @@ class Client:
         if max_concurrency < 1:
             raise ValueError(f"max_concurrency must be >= 1, got {max_concurrency}")
         self.provider = provider
+        replay = active_replay()  # inside replaying(): the recorded replies, read-only
+        if replay is not None:
+            cache = replay
         self.cache = ResponseCache() if cache is None else cache
         self.budget = Budget() if budget is None else budget
         self.retry = RetryPolicy() if retry is None else retry

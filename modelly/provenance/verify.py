@@ -2,7 +2,8 @@
 
 The rerun uses the manifest's target, parameters, seed and step count, writes its
 outputs to a temporary folder in the recorded formats, reads both sets back and reports
-the first table, column and row where they differ. Changes that do not stop the rerun
+the first table, column and row where they differ. A run whose model called a
+language model is rerun from the replies it recorded (``llm_cache``), offline. Changes that do not stop the rerun
 (code files, input files or the environment differ from the record) are notes.
 """
 
@@ -18,6 +19,7 @@ from modelly.provenance.code import changed_files
 from modelly.provenance.compare import Difference, Tolerance, first_difference
 from modelly.provenance.environment import modelly_info, python_info
 from modelly.provenance.files import from_posix, hash_file
+from modelly.provenance.llm import cache_problem, replay_for
 from modelly.provenance.manifest import manifest_path, read_manifest
 from modelly.provenance.outputs import collected_tables, read_table, write_tables
 from modelly.provenance.runner import execute
@@ -62,6 +64,9 @@ def record_notes(manifest: dict, folder: Path) -> list[str]:
         path = from_posix(item["path"], folder)
         if not path.is_file() or hash_file(path) != item["hash"]:
             notes.append(f"input file changed or missing: {item['path']}")
+    problem = cache_problem(manifest, folder)
+    if problem is not None:
+        notes.append(f"{problem}: the rerun calls the model's provider")
     recorded = manifest["environment"]
     for label, now in (("modelly", modelly_info()), ("python", python_info())):
         if recorded[label]["version"] != now["version"]:
@@ -78,7 +83,8 @@ def rerun_tables(
     cls = target_class(manifest, folder)
     run = manifest["run"]
     params = dict(manifest["scenario"]["parameters"])
-    model = execute(cls, params, run["seed"], run["steps"])
+    with replay_for(manifest, folder):  # recorded language-model replies, no network
+        model = execute(cls, params, run["seed"], run["steps"])
     forms = {item["table"]: item["format"] for item in manifest["outputs"]}
     written = write_tables(collected_tables(model), scratch, forms)
     return {item["table"]: (scratch / item["path"], item["format"]) for item in written}

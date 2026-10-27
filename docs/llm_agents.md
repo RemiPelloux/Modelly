@@ -98,7 +98,11 @@ the model said.
 - **Bundles.** `client.cache.export("replies.jsonl.gz")` writes every reply, sorted by key,
   with the request it answered: plain JSON lines a reviewer can read (`.jsonl`), compressed
   (`.jsonl.gz`, the same content for the same calls) or SQLite (any other suffix). The file travels with the study;
-  `ResponseCache.from_file(path)` replays it without any network.
+  `ResponseCache.from_file(path)` replays it without any network. `modelly run` does this for
+  you: it exports the replies of the model's clients next to the outputs, `modelly bundle`
+  packs them and `modelly verify` replays them, so a reviewer verifies the study offline (see
+  [Provenance](provenance.md#bundle-for-an-archive)). Inside
+  `with modelly.llm.replay.replaying(path):` every `Client` created answers only from `path`.
 
 ```python
 replay = Client(AnthropicProvider(), cache=ResponseCache.from_file("replies.jsonl.gz"))

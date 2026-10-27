@@ -20,6 +20,11 @@ Top-level fields (all present in version 1)::
     inputs       [{"path", "hash"}]
     outputs      [{"table", "path", "format", "hash", "rows", "columns"}]
     timing       {"wall_seconds", "cpu_seconds"}
+
+Optional fields (added within version 1, absent when they do not apply)::
+
+    llm_cache    {"path", "hash", "responses"}: the replies of the model's
+                 language-model clients, replayed by ``modelly verify``
 """
 
 from __future__ import annotations

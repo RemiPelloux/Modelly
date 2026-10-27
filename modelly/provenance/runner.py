@@ -15,6 +15,7 @@ from modelly.profile.loader import TargetError, build_model, load_class
 from modelly.provenance.code import code_record
 from modelly.provenance.environment import environment
 from modelly.provenance.files import hash_file, relative_posix
+from modelly.provenance.llm import FIELD, cache_record
 from modelly.provenance.manifest import FORMAT, json_safe, write_manifest
 from modelly.provenance.outputs import collected_tables, write_tables
 
@@ -151,5 +152,8 @@ def run_study(spec: RunSpec) -> dict:
     run = timed_run(cls, *setup, spec.steps)
     run.outputs = write_tables(collected_tables(run.model), Path(spec.out))
     record = manifest_record(spec, cls, run, setup)
+    replies = cache_record(run.model, Path(spec.out))
+    if replies is not None:
+        record[FIELD] = replies
     write_manifest(spec.out, record)
     return record

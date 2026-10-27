@@ -81,6 +81,7 @@ modelly bundle runs/ --out epidemic-study.zip
 |---|---|
 | `manifest.json` | the manifest, its paths rewritten for the archive |
 | outputs | the recorded tables |
+| `llm-responses.jsonl.gz` | the language-model replies of the run, when its model has a `modelly.llm.Client` |
 | `code/` | the model's source files |
 | `inputs/` | the `--input` files and the scenario file |
 | `requirements.lock` | `name==version` of every package installed at run time (`pip install -r`) |
@@ -90,7 +91,15 @@ modelly bundle runs/ --out epidemic-study.zip
 
 Entries are sorted, stored uncompressed and carry a fixed date and mode, so the same run gives
 a byte-identical archive on any machine: the archive's hash identifies the study. Bundling
-refuses a run whose outputs or code changed since `modelly run`.
+refuses a run whose outputs, code or recorded replies changed since `modelly run`.
+
+A model that calls a language model through `modelly.llm` (a `Client` among its attributes,
+`self.llm` by convention) gets its replies recorded: `modelly run` exports every reply its
+clients hold to `llm-responses.jsonl.gz`, sorted by key, and the manifest names the file, its
+hash and the number of replies (`llm_cache`). The bundle packs the file, and `modelly verify`
+reruns the model with every client answering from it, read-only, whatever provider and cache
+the model builds: the study verifies with no network and no API key, and a call the record does
+not hold stops the rerun with `CacheMiss` instead of reaching the provider.
 
 `.zenodo.json` and `CITATION.cff` hold `TODO` where only you know the answer: the title, the
 creators, the licence. Fill them in, then upload the zip to [Zenodo](https://zenodo.org/),
