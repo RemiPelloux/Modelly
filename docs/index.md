@@ -187,6 +187,7 @@ Experiments and sweeps <experiments>
 Language-model agents <llm_agents>
 Calibration <calibration>
 Sensitivity analysis <sensitivity>
+Emulators <emulators>
 Checkpoints <checkpoints>
 Reproducible studies <provenance>
 Time travel <timetravel>
