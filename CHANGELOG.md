@@ -18,6 +18,21 @@ versioning.
 - `modelly.stream` (provisional): `ReplaySource`, `CSVSource` (a growing file) and
   `HTTPSource` hand out observations once each, in time order; `ObservationOperator` reads the
   same quantities from a model, with residuals and a Gaussian log-likelihood.
+- `modelly.stream.Ensemble` (provisional): `n` replicates of one scenario with spawned seeds,
+  advanced in lock step in this process, with starting values drawn from a `prior`; `band` and
+  `forecast` give the (weighted) mean and quantiles of an operator now and ahead as a
+  long-format DataFrame (`time`, `quantity`, `mean`, `q0.05`, ...), for plots and live views.
+- `modelly.stream.ParticleFilter` (provisional): the bootstrap particle filter (Gordon et al.
+  1993) over an ensemble, with the effective sample size tracked and systematic resampling
+  (Douc & Cappé 2005) below a threshold; duplicates are checkpoint copies reseeded from derived
+  keys, so a run is bit-identical for a seed with the compiled or the pure-Python core. The new
+  nowcasting tutorial (`docs/assimilation.md`) tracks a synthetic truth with it.
+- `modelly.stream.EnsembleKalmanFilter` (provisional): the stochastic ensemble Kalman filter
+  with perturbed observations (Evensen 1994, 2003) on named model attributes
+  (state/parameter augmentation), with optional bounds; deterministic for a seed.
+- `modelly.stream.MQTTSource` and `KafkaSource` (provisional): sources reading JSON records from
+  an MQTT or a Kafka topic, through the new optional extras `mqtt` (paho-mqtt) and `kafka`
+  (confluent-kafka), or through a client passed in.
 
 ## 1.3.3 - 2026-10-27
 

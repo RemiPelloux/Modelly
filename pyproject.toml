@@ -103,6 +103,13 @@ video = [
   "imageio",
   "imageio-ffmpeg",
 ]
+# Live data from message brokers (modelly.stream.connectors)
+mqtt = [
+  "paho-mqtt>=2",
+]
+kafka = [
+  "confluent-kafka",
+]
 # Dev and CI stuff
 dev = [
   "modelly-abm[rec,geo,bench]",
