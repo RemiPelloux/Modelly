@@ -28,7 +28,9 @@ model = BoltzmannWealth()
 for _ in range(20):
     model.step()
 model.datacollector.to_parquet("out/model.parquet")  # time, Gini
-model.datacollector.to_parquet("out/agents.parquet", kind="agent")  # Step, AgentID, Wealth
+model.datacollector.to_parquet(
+    "out/agents.parquet", kind="agent"
+)  # Step, AgentID, Wealth
 
 # A sweep: one Parquet file per run, with its parameters, seed and step on every row.
 experiment = Experiment(
@@ -46,7 +48,9 @@ experiment.run(executor="serial")
 # Optionally, one DuckDB database file holding every run as a table.
 Path("results.duckdb").unlink(missing_ok=True)
 with duckdb.connect("results.duckdb") as con:
-    con.sql("CREATE TABLE runs AS SELECT * FROM read_parquet('runs/boltzmann/run-*.parquet')")
+    con.sql(
+        "CREATE TABLE runs AS SELECT * FROM read_parquet('runs/boltzmann/run-*.parquet')"
+    )
 ```
 
 Each run file of the store has the columns `run_id`, `point`, `replicate`, `seed`, the
@@ -111,6 +115,7 @@ writes as netCDF, the format of gridded data in climate and ecology:
 import numpy as np
 
 from modelly import DataCollector, Model
+
 
 class Warming(Model):
     """A 4 x 4 grid that warms at random each step."""
