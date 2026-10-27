@@ -11,8 +11,13 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import wraps
-from time import perf_counter, thread_time
+from time import perf_counter
 from typing import TYPE_CHECKING, Any
+
+try:
+    from time import thread_time
+except ImportError:  # Pyodide: Emscripten has no per-thread CPU clock, one thread only
+    from time import process_time as thread_time
 
 from modelly.core.agentset import AgentSet, _HardKeyAgentSet
 from modelly.data.collector import DataCollector
