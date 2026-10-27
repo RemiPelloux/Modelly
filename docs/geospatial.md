@@ -145,9 +145,53 @@ for zone, group in people.groupby("region"):
 ```
 
 Each region gets exactly its total and its first attribute's counts; the other marginals are
-met in expectation (the fitted table is rounded to whole people at random, from `model.rng`,
-so a seed gives the same people). This is the small, census-style helper; a fuller toolkit is
-planned.
+met to within the rounding (the fitted table is rounded to whole people at random, from
+`model.rng`, so a seed gives the same people). The full toolkit, with households, homes,
+schools, workplaces and contact networks, is `modelly.population`: see
+[Synthetic populations](population.md). The two functions above are the same in both places.
+
+## Real-data samples
+
+`modelly.space.geo.samples` bundles three small extracts of Burlington, Vermont, so that models
+and tests on real data run offline. None holds personal data.
+
+| Call | Returns | Source and licence |
+|---|---|---|
+| `sample_roads()` | a `RoadNetwork` of the drivable streets of downtown: 255 junctions, one-way streets kept | OpenStreetMap, ODbL 1.0, © OpenStreetMap contributors |
+| `sample_landcover()` | a `RasterLayer` of 120 x 120 ESA WorldCover 2021 pixels (10 m) over the Intervale | ESA WorldCover, CC BY 4.0, © ESA WorldCover project 2021 |
+| `sample_neighbourhoods()` | the 41 census tracts of Chittenden County as a GeoDataFrame | U.S. Census Bureau, public domain |
+
+The files are in `modelly/space/geo/data`, with their sources, retrieval dates, changes and
+checksums in `NOTICE.md` there. The OpenStreetMap extract is a derived database under the
+ODbL: a database you make from it must be offered under the ODbL as well. To fetch the full
+sources, check their SHA-256 and cut the extracts again (the same commands in bash and
+PowerShell):
+
+```text
+python scripts/geo_data.py download data/raw    fetch and verify the full sources
+python scripts/geo_data.py verify data/raw      verify sources already downloaded
+python scripts/geo_data.py build data/raw       rebuild the bundled extracts (geo extra)
+```
+
+The full sources are the Census Bureau's 2023 tract boundaries of Vermont (112 KB), the
+WorldCover tile N42W075 (65 MB) and an Overpass query of the streets pinned to
+2026-10-01. The query's checksum is over its elements, sorted, so the server's own timestamp in
+the reply does not change it.
+
+## Zoo models on real data
+
+Three zoo models run on the samples by default and take your own data through their scenario:
+
+- [Traffic assignment](zoo/road_traffic.md) (`road_traffic`): random trips routed by shortest
+  path over the OpenStreetMap streets; flows match the exact edge betweenness.
+  `RoadTrafficScenario(roads=RoadNetwork(graph))` runs it on another street graph.
+- [Habitat selection](zoo/habitat_selection.md) (`habitat_selection`): animals disperse over
+  the WorldCover raster and settle in proportion to habitat preference.
+  `HabitatScenario(cover=RasterLayer.from_file(path).values)` runs it on another raster.
+- [Schelling on real neighbourhoods](zoo/schelling_regions.md) (`schelling_regions`): two
+  groups move between census tracts, neighbours by contiguity.
+  `SchellingRegionsScenario(adjacency=GeoSpace(regions).contiguity())` runs it on other
+  regions.
 
 ## Checkpoints
 

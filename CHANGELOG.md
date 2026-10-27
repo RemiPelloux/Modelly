@@ -20,6 +20,11 @@ versioning.
   offline use with their licences in `NOTICE.md` (OpenStreetMap streets, ODbL; ESA WorldCover
   land cover, CC BY 4.0; census tracts, public domain), and `scripts/geo_data.py` to download
   the full sources, verify their SHA-256 and rebuild the samples.
+- zoo: `road_traffic`, traffic assignment on the OpenStreetMap streets, validated against the
+  exact edge betweenness.
+- zoo: `habitat_selection`, Metropolis dispersal over the WorldCover raster, validated against
+  its stationary law.
+- zoo: `schelling_regions`, Schelling segregation on the census tracts by contiguity.
 
 ## 1.3.3 - 2026-10-27
 
