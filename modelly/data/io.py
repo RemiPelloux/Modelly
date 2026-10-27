@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 from modelly._optional import require
+from modelly.data.xarray_export import to_xarray
 
 EXTRA = "experiments"
 KINDS = ("model", "agent", "agenttype", "table")
@@ -117,7 +118,7 @@ def _register(connection: Any, table_name: str, source: Any) -> None:
 
 
 class ArrowExportMixin:
-    """``to_arrow`` and ``to_parquet`` on the DataCollector."""
+    """``to_arrow``, ``to_parquet`` and ``to_xarray`` on the DataCollector."""
 
     def to_arrow(self, kind: str = "model", name: Any = None):
         """This collector's ``kind`` collection as a ``pyarrow.Table`` (see :func:`to_arrow`)."""
@@ -128,6 +129,10 @@ class ArrowExportMixin:
     ) -> Path:
         """Write this collector's ``kind`` collection to Parquet (see :func:`to_parquet`)."""
         return to_parquet(self, path, kind, name)
+
+    def to_xarray(self, kind: str = "model", name: Any = None, dims: Any = None):
+        """This collector's ``kind`` collection as an ``xarray.Dataset`` (see ``to_xarray``)."""
+        return to_xarray(self, kind, name, dims)
 
 
 def tables_of(collector: Any) -> Mapping[str, Any]:

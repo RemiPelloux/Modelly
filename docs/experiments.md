@@ -303,3 +303,22 @@ query("SELECT count(*) FROM runs", runs="out/*.parquet").fetchall()
 
 `query` registers Arrow tables, DataFrames and Parquet paths or globs under the names you give
 and returns a DuckDB relation.
+
+For gridded time series, `to_xarray` gives an `xarray.Dataset` with a `time` dimension
+(`pip install "modelly-abm[xarray]"`; xarray is imported only then). A model reporter that
+returns a number is a series over `time`; one that returns an array of the same shape every
+step, such as a property layer's grid, is stacked into `(time, ...)`. Agent reporters become a
+`(time, AgentID)` panel, NaN where an agent did not exist, so the two datasets of one run merge:
+
+```python
+import xarray as xr
+
+grid = model.datacollector.to_xarray(dims={"heat": ("x", "y")})  # heat: (time, x, y)
+grid["heat"].isel(time=-1).plot()
+agents = model.datacollector.to_xarray("agent")  # (time, AgentID)
+xr.merge([grid, agents]).to_netcdf("run.nc")  # netCDF for R, Julia, Panoply, CDO
+```
+
+Without `dims`, the extra dimensions are named `heat_dim0`, `heat_dim1`; `kind="agenttype"`
+with `name=` the agent class gives one class's reporters. See [From R and Julia](r_and_julia.md)
+for reading the Parquet and netCDF files outside Python.

@@ -20,6 +20,9 @@ versioning.
 - `modelly new --template geo` (residents of a town's districts in a `GeoSpace`) and
   `--template llm` (citizens deciding through `modelly.llm`, offline by default); both pass
   their determinism test and `modelly lint` as generated.
+- `DataCollector.to_xarray` (and `modelly.data.xarray_export.to_xarray`): model reporters as an
+  `xarray.Dataset` over `time`, arrays such as a grid stacked into `(time, ...)`, agent
+  reporters as a `(time, AgentID)` panel; xarray is the new optional `xarray` extra.
 
 ## 1.3.3 - 2026-10-27
 
