@@ -10,6 +10,8 @@ const $ = (id) => document.getElementById(id);
 const manifest = await (await fetch("modelly.json")).json();
 const worker = new Worker("worker.js", { type: "module" });
 const series = {};
+// The panel's inputs by parameter name, not by form name: a parameter may be called steps.
+const fields = new Map();
 const RUN_BUTTONS = ["reset", "step", "run"];
 
 function setState(state, text) {
@@ -42,7 +44,7 @@ function buildPanel() {
   for (const parameter of manifest.parameters) {
     const label = document.createElement("label");
     const element = input(parameter);
-    element.name = parameter.name;
+    fields.set(parameter.name, element);
     label.append(parameter.name, element);
     if (parameter.kind === "fraction") {
       const shown = document.createElement("output");
@@ -59,7 +61,7 @@ function buildPanel() {
 function values() {
   const read = (p, e) => (p.kind === "bool" ? e.checked : p.kind === "text" ? e.value : Number(e.value));
   const editable = manifest.parameters.filter((p) => p.kind !== "fixed");
-  return Object.fromEntries(editable.map((p) => [p.name, read(p, $("panel").elements[p.name])]));
+  return Object.fromEntries(editable.map((p) => [p.name, read(p, fields.get(p.name))]));
 }
 
 function colourOptions(attributes) {
