@@ -179,6 +179,38 @@ versioning.
   GitHub release with the same title, licence, keywords and creators as `CITATION.cff` (no
   contact data; the version comes from the tag), checked by `tests/test_zenodo.py`.
 
+- lint: MDL011 (a scipy.stats.qmc engine, a `.rvs()` draw or a SALib sampler without a seed),
+  MDL013 (a mutable default in a `Scenario`, shared by every scenario of the class) and MDL014
+  (a clock, timer or OS entropy read in a calibration `Target`); `--fix` seeds a sampler in a
+  model or agent method from `self.rng`. 21 rules, five with a fix.
+- `modelly lint --lsp`: the linter as a language server over stdio (standard library only),
+  publishing findings as diagnostics on open, change and save, with the safe fix and a
+  `# noqa` comment as quick fixes; settings for Neovim, Helix, VS Code and PyCharm in
+  `docs/lint.md`.
+- `.pre-commit-hooks.yaml`: `modelly-lint` and `modelly-lint-fix` hooks, so a project's
+  pre-commit configuration runs `modelly lint` (or its safe fixes) on the staged files.
+- `modelly new --template geo` (residents of a town's districts in a `GeoSpace`) and
+  `--template llm` (citizens deciding through `modelly.llm`, offline by default); both pass
+  their determinism test and `modelly lint` as generated.
+- `DataCollector.to_xarray` (and `modelly.data.xarray_export.to_xarray`): model reporters as an
+  `xarray.Dataset` over `time`, arrays such as a grid stacked into `(time, ...)`, agent
+  reporters as a `(time, AgentID)` panel; xarray is the new optional `xarray` extra.
+- docs: From R and Julia, reading Modelly's Parquet, DuckDB and netCDF results with arrow,
+  duckdb, Parquet2.jl and DuckDB.jl, and running Modelly from R (reticulate) and Julia
+  (PythonCall); the Python side of every snippet runs in the test suite.
+- `modelly netlogo` (`python -m modelly.netlogo`): translate a NetLogo model (`.nlogo`) into a
+  runnable, seeded, lint-clean Modelly model for a documented subset (turtles, patches, breeds,
+  `ask`, `set`, `if`/`ifelse`, `repeat`, `create-`/`hatch`/`sprout`, movement, `neighbors`,
+  `one-of`, `random`, globals; sliders and switches become Scenario fields). Lines outside the
+  subset stay as `# NETLOGO` comments and are listed with their line numbers. Ships Fire and
+  Wolf Sheep Predation sources written from the published descriptions; the translated Fire
+  model shows the percolation threshold near 59% density. See `docs/netlogo.md`.
+- Strict type checking: `[tool.mypy]` in pyproject.toml runs mypy in strict mode on batch,
+  bench, calibrate, dev, experiments, lint, llm, netlogo, new, profile, provenance, scenarios,
+  sensitivity, timetravel, the data exports and the top-level modules (156 files); a new `types`
+  stage of `scripts/ci-local.sh` and `python -m modelly.dev gate` runs it with installed mypy,
+  else the pinned mypy through `uvx`, and is skipped with a message when neither is available.
+
 ### Changed
 
 - docs: the build fails on warnings. `scripts/build-docs-version.sh` passes `-W --keep-going` by

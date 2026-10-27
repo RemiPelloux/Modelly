@@ -14,6 +14,7 @@ import copy
 import io
 import zipfile
 from pathlib import Path
+from typing import Any
 
 from modelly.provenance.code import changed_files
 from modelly.provenance.environment import lock_text
@@ -39,7 +40,7 @@ class BundleError(ValueError):
     """The run folder does not hold what its manifest records."""
 
 
-def _check_unchanged(manifest: dict, folder: Path) -> None:
+def _check_unchanged(manifest: dict[str, Any], folder: Path) -> None:
     """Raise BundleError if outputs or code changed since the run."""
     for item in manifest["outputs"]:
         path = from_posix(item["path"], folder)
@@ -54,7 +55,9 @@ def _check_unchanged(manifest: dict, folder: Path) -> None:
         raise BundleError(f"code changed since the run: {', '.join(changed)}")
 
 
-def _input_entries(manifest: dict, folder: Path, entries: dict) -> dict:
+def _input_entries(
+    manifest: dict[str, Any], folder: Path, entries: dict[str, Any]
+) -> dict[str, Any]:
     """Copy inputs and the scenario file into ``inputs/``; the rewritten manifest."""
     packed = copy.deepcopy(manifest)
     items = list(packed["inputs"])

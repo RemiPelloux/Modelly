@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 from modelly.provenance.files import hash_bytes, hash_file, hash_mapping
 
@@ -57,7 +58,7 @@ def _git(root: Path, *args: str) -> bytes | None:
     return done.stdout if done.returncode == 0 else None
 
 
-def git_state(root: Path) -> dict | None:
+def git_state(root: Path) -> dict[str, Any] | None:
     """Commit, dirty flag and diff hash of the code root, or None outside a git tree."""
     commit = _git(root, "rev-parse", "HEAD")
     if commit is None:
@@ -71,7 +72,7 @@ def git_state(root: Path) -> dict | None:
     }
 
 
-def code_record(root: Path, root_text: str) -> dict:
+def code_record(root: Path, root_text: str) -> dict[str, Any]:
     """The manifest's code block; ``root_text`` is the root as the manifest stores it."""
     hashes = file_hashes(root, imported_sources(root))
     return {

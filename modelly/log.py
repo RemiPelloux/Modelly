@@ -7,9 +7,10 @@ It is modeled on the default `logging approach that comes with Python <https://d
 
 import logging
 import sys
+from collections.abc import Callable
 from functools import wraps
 from logging import DEBUG, INFO
-from typing import ClassVar
+from typing import Any, ClassVar
 
 __all__ = [
     "DEBUG",
@@ -25,8 +26,10 @@ __all__ = [
 LOGGER_NAME = "MODELLY"
 DEFAULT_LEVEL = DEBUG
 
+Decorator = Callable[[Callable[..., Any]], Callable[..., Any]]
 
-def create_module_logger(name: str | None = None):
+
+def create_module_logger(name: str | None = None) -> logging.Logger:
     """Helper function for creating a module logger.
 
     Args:
@@ -42,7 +45,7 @@ def create_module_logger(name: str | None = None):
     return logger
 
 
-def get_module_logger(name: str):
+def get_module_logger(name: str) -> logging.Logger:
     """Helper function for getting the module logger.
 
     Args:
@@ -57,9 +60,14 @@ def get_module_logger(name: str):
     return logger
 
 
-_rootlogger = None
-_module_loggers = {}
+_rootlogger: logging.Logger | None = None
+_module_loggers: dict[str, logging.Logger] = {}
 _logger = get_module_logger(__name__)
+
+
+_FORMAT = (
+    "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s [%(filename)s:%(lineno)d]"
+)
 
 
 class MODELLYColorFormatter(logging.Formatter):
@@ -71,26 +79,22 @@ class MODELLYColorFormatter(logging.Formatter):
     red = "\x1b[31;20m"
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
-    format = (
-        "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s [%(filename)s:%(lineno)d]"
-    )
-
     FORMATS: ClassVar[dict[int, str]] = {
-        logging.DEBUG: grey + format + reset,
-        logging.INFO: green + format + reset,
-        logging.WARNING: yellow + format + reset,
-        logging.ERROR: red + format + reset,
-        logging.CRITICAL: bold_red + format + reset,
+        logging.DEBUG: grey + _FORMAT + reset,
+        logging.INFO: green + _FORMAT + reset,
+        logging.WARNING: yellow + _FORMAT + reset,
+        logging.ERROR: red + _FORMAT + reset,
+        logging.CRITICAL: bold_red + _FORMAT + reset,
     }
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         """Format record."""
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
 
-def method_logger(name: str):
+def method_logger(name: str) -> Decorator:
     """Decorator for adding logging to a method.
 
     Args:
@@ -101,9 +105,9 @@ def method_logger(name: str):
     # Applied in a class body, so the calling frame is named after the class.
     classname = sys._getframe(1).f_code.co_name
 
-    def real_decorator(func):
+    def real_decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             # hack, because log is applied to methods, we can get
             # object instance as first arguments in args
             logger.debug(
@@ -117,7 +121,7 @@ def method_logger(name: str):
     return real_decorator
 
 
-def function_logger(name):
+def function_logger(name: str) -> Decorator:
     """Decorator for adding logging to a Function.
 
     Args:
@@ -126,9 +130,9 @@ def function_logger(name):
     """
     logger = get_module_logger(name)
 
-    def real_decorator(func):
+    def real_decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             logger.debug(f"calling {func.__name__} with {args} and {kwargs}")
             res = func(*args, **kwargs)
             return res
@@ -138,7 +142,7 @@ def function_logger(name):
     return real_decorator
 
 
-def get_rootlogger():
+def get_rootlogger() -> logging.Logger:
     """Returns root logger used by MODELLY.
 
     Returns:
@@ -160,7 +164,7 @@ def log_to_stderr(
     level: int | None = None,
     pass_root_logger_level: bool = False,
     propagate: bool = False,
-):
+) -> logging.Logger:
     """Turn on logging and add a handler which prints to stderr.
 
     Args:

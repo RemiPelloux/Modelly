@@ -11,7 +11,7 @@ import io
 import json
 from collections.abc import Iterable
 from pathlib import Path
-from typing import IO
+from typing import IO, Any
 
 COLUMNS = (
     "key",
@@ -54,7 +54,7 @@ class _Closing(io.TextIOWrapper):
         inner.close()
 
 
-def write_json_lines(path: Path, rows: Iterable[tuple]) -> None:
+def write_json_lines(path: Path, rows: Iterable[tuple[Any, ...]]) -> None:
     """One JSON object per row, keys sorted, the request as nested JSON."""
     with open_text(path, "w") as file:
         for row in rows:
@@ -63,7 +63,7 @@ def write_json_lines(path: Path, rows: Iterable[tuple]) -> None:
             file.write(json.dumps(record, sort_keys=True, ensure_ascii=False) + "\n")
 
 
-def read_json_lines(path: Path) -> list[tuple]:
+def read_json_lines(path: Path) -> list[tuple[Any, ...]]:
     """The rows of a JSON-lines export, in :data:`COLUMNS` order."""
     rows = []
     with open_text(path, "r") as file:

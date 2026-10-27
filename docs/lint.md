@@ -45,6 +45,7 @@ a hint.
 | `--exit-zero` | report, but exit 0 |
 | `--explain CODE` | print why a rule matters, a bad and a good example, and exit |
 | `--list-rules` | print every rule and exit |
+| `--lsp` | run as a language server for editors ([In an editor](#in-an-editor)) |
 
 Exit status: **0** no findings (or `--exit-zero`), **1** at least one finding (with `--diff`:
 at least one fix to apply), **2** a usage error
@@ -220,6 +221,31 @@ def run(task):  # module level: importable by every worker
     return Sheep(task).run()
 ```
 
+(mdl011)=
+### MDL011: sampler without a seed
+
+An experiment's design is part of its result: the same seed must give the same points. A
+`scipy.stats.qmc` engine (`LatinHypercube`, `Sobol`, `Halton`, `PoissonDisk`,
+`MultivariateNormalQMC`, `MultinomialQMC`) without `rng=` (or the older `seed=`), a scipy
+distribution's `.rvs()` without `random_state=`, and a SALib sampler
+(`SALib.sample.<method>.sample`) without `seed=` all scramble from global or fresh OS state,
+so the sample, and every result computed from it, changes from one run of the study to the
+next. Passing `None` counts as no seed. Modelly's own designs (`modelly.experiments.designs`,
+`modelly.sensitivity`) are seeded from the experiment's seed already.
+
+```python
+units = qmc.LatinHypercube(d=3).random(64)  # MDL011
+noise = norm(0, 1).rvs(10)  # MDL011
+
+rng = np.random.default_rng(seed)
+units = qmc.LatinHypercube(d=3, rng=rng).random(64)
+noise = norm(0, 1).rvs(10, random_state=rng)
+```
+
+Inside a model or agent method, `--fix` passes the model's generator: `rng=self.rng` to a qmc
+engine, `random_state=self.rng` to `.rvs()`. Elsewhere there is no generator to pass, and SALib
+takes an integer seed whose value is the study's choice, so those findings are left to you.
+
 (mdl012)=
 ### MDL012: network or language-model call outside `modelly.llm`
 
@@ -241,6 +267,52 @@ class Voter(LLMAgent, Agent):
     def step(self):
         self.vote = self.decide(prompt, {"enum": ["yes", "no"]})
 ```
+
+(mdl013)=
+### MDL013: mutable default in a `Scenario`
+
+A `Scenario` subclass's annotated class attributes are its fields' defaults, and every
+instance gets the default object itself, not a copy. A list, dict, set, deque or numpy array
+default is therefore one object shared by every scenario of the class: the scenario is frozen
+against assignment, but `scenario.weights.append(...)` or `scenario.grid[0] = 1` changes the
+default for every later run in the process, so a batch's results depend on its order.
+`ClassVar` fields and names starting with `_` are not scenario fields and are not reported.
+
+```python
+class Params(Scenario):
+    weights: list = [0.2, 0.8]  # MDL013
+    grid: np.ndarray = np.zeros(10)  # MDL013
+
+
+class Params(Scenario):
+    weights: tuple = (0.2, 0.8)
+    grid_size: int = 10  # build np.zeros(scenario.grid_size) in the model
+```
+
+There is no automatic fix: a tuple is not a list, and whether the code relies on the
+difference needs a reader.
+
+(mdl014)=
+### MDL014: wall clock or OS entropy in a calibration target
+
+A calibration compares the model's outputs to data through each `Target`'s `output` and
+`summary`. When one of them reads the clock (`time.time()`, `datetime.now()`), a timer
+(`time.perf_counter()`, `time.monotonic()`, `time.process_time()`) or OS entropy
+(`uuid.uuid4()`, `os.urandom()`, `secrets`), the distance, and so the posterior, depends on the
+machine and the moment instead of the seed, and the calibration does not reproduce. The rule
+looks at every argument of `modelly.calibrate.Target(...)`, lambdas included, and into the
+module-level functions passed to it by name.
+
+```python
+def runtime(model):
+    return time.perf_counter()  # MDL014: the target measures the machine
+
+
+Target("speed", observed=[1.0], output=runtime)
+Target("infected", observed=cases, output=lambda m: m.infected)
+```
+
+There is no automatic fix: what the target should measure instead is the modeller's call.
 
 ## Warnings
 
@@ -354,7 +426,7 @@ class Pasture(Model):
 (fixing-findings)=
 ## Fixing findings
 
-Four rules have a fix that is safe to apply without reading the code around it.
+Five rules have a fix that is safe to apply without reading the code around it.
 `--diff` shows what it would change; `--fix` writes it and then reports the findings that
 are left for you.
 
@@ -373,14 +445,17 @@ python -m modelly.lint --fix my_model/    # apply
 | MDL003 | `for a in set(self.cell.agents):` | `sorted(..., key=lambda a: a.unique_id)`: agents do not compare |
 | MDL009 | `self.model.agents.discard(self)` | `self.remove()` |
 | MDL009 | `self.agents_by_type[Sheep].clear()` | `self.agents_by_type[Sheep].do("remove")` |
+| MDL011 | `qmc.Sobol(2)` in an agent or model method | `qmc.Sobol(2, rng=self.rng)` |
+| MDL011 | `dist.rvs(5)` in an agent or model method | `dist.rvs(5, random_state=self.rng)` |
 
 Only the expression the finding points at is rewritten: formatting, comments and line endings
 around it are kept. A finding is left alone when the right rewrite is a guess: a draw outside a
 method (there is no `self`), a numpy function whose `Generator` method takes other arguments
-(`randint`, `rand`), a base class whose `__init__` signature is unknown, a model `__init__` that
-takes both `rng` and `scenario`, or `agents.add(...)` (an agent registers itself when it is
-created). Every fix removes its own finding, so a second `--fix` changes nothing. A finding
-silenced by `# noqa`, or dropped by `select`, `ignore` or `per-file-ignores`, is not fixed.
+(`randint`, `rand`), a base class whose `__init__` signature is unknown, a model `__init__`
+that takes both `rng` and `scenario`, `agents.add(...)` (an agent registers itself when it is
+created), or a sampler outside a method or from SALib. Every fix removes its own finding, so a
+second `--fix` changes nothing. A finding silenced by `# noqa`, or dropped by `select`,
+`ignore` or `per-file-ignores`, is not fixed.
 
 An imported name keeps its import (`from random import choice` stays when `choice(xs)` becomes
 `self.random.choice(xs)`); remove it with your formatter or `ruff check --fix`.
@@ -426,6 +501,66 @@ not silently disable the configuration.
 
 With `--format github`, each finding shows as an annotation on the changed line of the pull
 request.
+
+## Before each commit
+
+Modelly ships two [pre-commit](https://pre-commit.com) hooks. Add one to your project's
+`.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: https://github.com/RemiPelloux/Modelly
+    rev: v1.4.0
+    hooks:
+      - id: modelly-lint          # fail the commit when a staged file has a finding
+      # - id: modelly-lint-fix    # or apply the safe fixes first, then report the rest
+```
+
+Both run `modelly lint` once with every staged Python file and read `[tool.modelly.lint]`
+from your `pyproject.toml`, so a commit is checked by the same rules as the command line.
+`pre-commit run --all-files` checks the whole project.
+
+## In an editor
+
+`modelly lint --lsp` (or `python -m modelly.lint --lsp`) runs the linter as a language
+server on stdin and stdout. The editor sends each Python file as you open, edit and save it;
+the server answers with the findings as diagnostics (errors and warnings, each linking to its
+section of this page), and offers two quick fixes on a finding: the safe fix of `--fix` when
+the rule has one, and a `# noqa: CODE` comment for the line. `[tool.modelly.lint]` of the
+file's nearest `pyproject.toml` applies; a file that does not parse has no diagnostics until it
+does. Nothing beyond the standard library is needed.
+
+Neovim (0.11 or later), in `init.lua`:
+
+```lua
+vim.lsp.config("modelly", {
+  cmd = { "modelly", "lint", "--lsp" },
+  filetypes = { "python" },
+  root_markers = { "pyproject.toml", ".git" },
+})
+vim.lsp.enable("modelly")
+```
+
+Helix, in `languages.toml`:
+
+```toml
+[language-server.modelly]
+command = "modelly"
+args = ["lint", "--lsp"]
+
+[[language]]
+name = "python"
+language-servers = ["pyright", "modelly"]  # keep your usual server first
+```
+
+VS Code has no built-in client for an arbitrary server: install a generic LSP client
+extension and set its command to `modelly lint --lsp` for Python files. PyCharm does the same
+through the LSP4IJ plugin (Settings, Languages & Frameworks, Language Servers, a new server with
+the command `modelly lint --lsp` and the `python` language). Use the `modelly` of the
+environment your model runs in, so the server lints with the same Modelly version.
+
+The server is tested by driving it over pipes (`tests/test_lint_lsp.py`) and was checked by
+hand in Neovim 0.12; the VS Code, Helix and PyCharm settings above are not tested automatically.
 
 ## In a notebook
 

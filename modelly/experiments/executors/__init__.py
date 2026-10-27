@@ -89,7 +89,10 @@ def register_executor(name: str, factory: Callable[..., Executor]) -> None:
 def _load(ref: str) -> Callable[..., Executor]:
     """The class a ``module:name`` reference names."""
     module, _, attribute = ref.partition(":")
-    return getattr(importlib.import_module(module), attribute)
+    factory: Callable[..., Executor] = getattr(
+        importlib.import_module(module), attribute
+    )
+    return factory
 
 
 def _factory(name: str) -> Callable[..., Executor]:
@@ -100,7 +103,8 @@ def _factory(name: str) -> Callable[..., Executor]:
         return _load(BUILTIN[name])
     for point in entry_points(group=ENTRY_POINT_GROUP):
         if point.name == name:
-            return point.load()
+            loaded: Callable[..., Executor] = point.load()
+            return loaded
     raise ValueError(
         f"unknown executor {name!r}; available: {', '.join(available_executors())}"
     )

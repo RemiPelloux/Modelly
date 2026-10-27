@@ -66,6 +66,7 @@ def worker_context() -> mp.context.BaseContext:
 
 def _call_by_index(index: int) -> Any:
     """Run task ``index`` of the batch the forked worker inherited."""
+    assert _CURRENT is not None  # set by run_batch before any worker starts
     return _CURRENT(_TASKS[index])
 
 

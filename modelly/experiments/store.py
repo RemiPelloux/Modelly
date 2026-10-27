@@ -18,11 +18,15 @@ import json
 import os
 import uuid
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
 from modelly._optional import require
+
+if TYPE_CHECKING:
+    import duckdb
+    import pyarrow as pa
 from modelly.data.io import TEMP_SUFFIX, write_parquet_atomic
 
 EXTRA = "experiments"
@@ -147,12 +151,13 @@ class Results:
             f"read_parquet('{quoted}', union_by_name = true)"
         )
 
-    def query(self, sql: str):
+    def query(self, sql: str) -> duckdb.DuckDBPyRelation:
         """Run ``sql`` (which reads the view ``runs``); a DuckDB relation."""
-        return self.connection.sql(sql)
+        relation: duckdb.DuckDBPyRelation = self.connection.sql(sql)
+        return relation
 
     @property
-    def relation(self):
+    def relation(self) -> duckdb.DuckDBPyRelation:
         """Every row, ordered by point, replicate and step."""
         return self.query(f"SELECT * FROM {VIEW} ORDER BY {ORDER}")  # noqa: S608
 
@@ -160,10 +165,12 @@ class Results:
         """Every row as a pandas DataFrame, ordered by point, replicate and step."""
         return self.relation.df()
 
-    def arrow(self):
+    def arrow(self) -> pa.Table:
         """Every row as a ``pyarrow.Table``, ordered by point, replicate and step."""
         return self.relation.to_arrow_table()
 
     def __len__(self) -> int:
         """The number of rows (runs times steps)."""
-        return self.query(f"SELECT count(*) FROM {VIEW}").fetchall()[0][0]  # noqa: S608
+        rows = self.query(f"SELECT count(*) FROM {VIEW}").fetchall()  # noqa: S608
+        count: int = rows[0][0]
+        return count

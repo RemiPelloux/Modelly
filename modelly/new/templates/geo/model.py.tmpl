@@ -1,0 +1,69 @@
+"""{title}: news spreading among residents who walk a town of square districts."""
+
+import geopandas as gpd
+import numpy as np
+import shapely
+from modelly import DataCollector, Model
+from modelly.space.geo import GeoSpace
+
+from {package}.agents import INFORMED, Resident
+from {package}.scenario import {scenario_class}
+
+CRS = "EPSG:32631"  # UTM zone 31N: coordinates and distances in metres
+ORIGIN = (640_000.0, 5_070_000.0)  # the south-west corner of the town in that CRS
+
+
+def districts(per_side: int, size: float) -> gpd.GeoDataFrame:
+    """``per_side x per_side`` square districts of side ``size``, labelled ``d<i>_<j>``.
+
+    For a real town, return its polygons instead: ``geopandas.read_file("districts.gpkg")``
+    indexed by district name, in any CRS (the space reprojects them to metres).
+    """
+    x0, y0 = ORIGIN
+    boxes = {
+        f"d{i}_{j}": shapely.box(
+            x0 + i * size, y0 + j * size, x0 + (i + 1) * size, y0 + (j + 1) * size
+        )
+        for i in range(per_side)
+        for j in range(per_side)
+    }
+    return gpd.GeoDataFrame(geometry=list(boxes.values()), index=list(boxes), crs=CRS)
+
+
+class {model_class}(Model):
+    """Residents placed at random in each district; each step every resident acts."""
+
+    def __init__(
+        self,
+        scenario: {scenario_class} = {scenario_class},
+    ):
+        """Create the model from ``scenario``: an instance or the class itself."""
+        super().__init__(scenario=scenario)
+        params = self.scenario
+        town = districts(params.districts, params.district_size)
+        self.space = GeoSpace(
+            town, random=self.random, n_agents=len(town) * params.residents
+        )
+        for label in town.index:
+            for home in self.space.random_points(label, params.residents, self.rng):
+                Resident(self.space, self, home)
+        for resident in self.random.sample(list(self.agents), params.initially_informed):
+            resident.state = INFORMED
+        reporters = {"informed": "informed", "districts_reached": "districts_reached"}
+        self.datacollector = DataCollector(model_reporters=reporters)
+        self.datacollector.collect(self)
+
+    @property
+    def informed(self) -> int:
+        """Residents who have heard the news."""
+        return int(np.count_nonzero(self.columns[Resident].state == INFORMED))
+
+    @property
+    def districts_reached(self) -> int:
+        """Districts where at least one resident has heard the news."""
+        return len({r.region for r in self.agents if r.state == INFORMED})
+
+    def step(self):
+        """Every resident acts once, in a new random order; then the data is recorded."""
+        self.agents.shuffle_do("step")
+        self.datacollector.collect(self)

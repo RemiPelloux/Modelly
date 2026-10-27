@@ -196,17 +196,21 @@ class SlurmExecutor(ClusterExecutor):
     prefix = "#SBATCH"
     index_variable = "SLURM_ARRAY_TASK_ID"
 
-    def scheduler_lines(self, count, limit, folder):
+    def scheduler_lines(self, count: int, limit: int | None, folder: Path) -> list[str]:
         """--job-name, --array, --output and the resources set."""
         throttle = f"%{limit}" if limit else ""
         lines = [f"--job-name={self.job_name}", f"--array=0-{count - 1}{throttle}"]
         lines += [f"--output={(folder / 'slurm-%A_%a.out').as_posix()}"]
         lines += [f"--cpus-per-task={self.cpus}"]
-        options = (("partition", self.queue), ("account", self.account))
-        options += (("time", self.walltime), ("mem", self.memory))
+        options = (
+            ("partition", self.queue),
+            ("account", self.account),
+            ("time", self.walltime),
+            ("mem", self.memory),
+        )
         return lines + [f"--{key}={value}" for key, value in options if value]
 
-    def job_id_from(self, output):
+    def job_id_from(self, output: str) -> str:
         """``--parsable`` prints ``jobid[;cluster]``."""
         return output.strip().split(";")[0]
 
@@ -223,7 +227,7 @@ class PBSExecutor(ClusterExecutor):
     prefix = "#PBS"
     index_variable = "PBS_ARRAY_INDEX"
 
-    def scheduler_lines(self, count, limit, folder):
+    def scheduler_lines(self, count: int, limit: int | None, folder: Path) -> list[str]:
         """-N, -J, -j oe, -o and the resources set."""
         lines = [f"-N {self.job_name}", "-j oe", f"-o {folder.as_posix()}/"]
         if count > 1:  # PBS arrays need two subjobs or more; one runs as index 0

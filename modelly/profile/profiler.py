@@ -50,9 +50,11 @@ class StepRecord:
     cpu: float = 0.0
     births: int = 0
     deaths: int = 0
-    ops: dict[tuple[str, str, str], list] = field(default_factory=dict)
+    ops: dict[tuple[str, str, str], list[Any]] = field(default_factory=dict)
 
-    def add(self, key: tuple[str, str, str] | None, agents: int, times: tuple) -> None:
+    def add(
+        self, key: tuple[str, str, str] | None, agents: int, times: tuple[Any, ...]
+    ) -> None:
         """Add one timed call; ``key`` None is the step itself."""
         wall, cpu = times
         if key is None:
@@ -108,7 +110,7 @@ class Profiler:
 
     _active: Profiler | None = None
 
-    def __init__(self, model: Model, sample_every: int = 1) -> None:
+    def __init__(self, model: Model[Any, Any], sample_every: int = 1) -> None:
         """Prepare a profiler; nothing is patched until the ``with`` block starts."""
         if sample_every < 1:
             raise ValueError(f"sample_every must be at least 1, got {sample_every}")
@@ -161,25 +163,36 @@ class Profiler:
 
     # --- patching -------------------------------------------------------------
 
-    def _patch(self, owner: type, name: str, make: Callable) -> None:
+    def _patch(self, owner: type, name: str, make: Callable[..., Any]) -> None:
         """Replace ``owner.name`` by ``make(original)`` and remember how to undo it."""
         self._saved.append((owner, name, owner.__dict__.get(name, _MISSING)))
         setattr(owner, name, make(getattr(owner, name)))
 
-    def _timed(self, key: Any, agents: int, call: Callable, /, *args, **kwargs) -> Any:
+    def _timed(
+        self,
+        key: Any,
+        agents: int,
+        call: Callable[..., Any],
+        /,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Any:
         """Run ``call`` and add its wall and CPU time to the open record."""
         record = self._record
+        assert record is not None  # every caller checks for an open record
         wall, cpu = perf_counter(), thread_time()
         try:
             return call(*args, **kwargs)
         finally:
             record.add(key, agents, (perf_counter() - wall, thread_time() - cpu))
 
-    def _wrap_loop(self, name: str, original: Callable) -> Callable:
+    def _wrap_loop(self, name: str, original: Callable[..., Any]) -> Callable[..., Any]:
         """Time ``AgentSet.<name>`` per agent class and method."""
 
         @wraps(original)
-        def loop(agentset, method, *args, **kwargs):
+        def loop(
+            agentset: AgentSet[Any], method: Any, *args: Any, **kwargs: Any
+        ) -> Any:
             if self._record is None:
                 return original(agentset, method, *args, **kwargs)
             key = (name, agent_classes(agentset), callable_name(method))
@@ -189,11 +202,11 @@ class Profiler:
 
         return loop
 
-    def _wrap_collect(self, original: Callable) -> Callable:
+    def _wrap_collect(self, original: Callable[..., Any]) -> Callable[..., Any]:
         """Time ``DataCollector.collect``."""
 
         @wraps(original)
-        def collect(collector, model):
+        def collect(collector: DataCollector, model: Model[Any, Any]) -> Any:
             if self._record is None:
                 return original(collector, model)
             key = ("collect", type(collector).__name__, "collect")
@@ -201,12 +214,12 @@ class Profiler:
 
         return collect
 
-    def _wrap_event(self, original: Callable) -> Callable:
+    def _wrap_event(self, original: Callable[..., Any]) -> Callable[..., Any]:
         """Time the model's step event, and every other event as a callback."""
         driver = self.model._default_schedule
 
         @wraps(original)
-        def execute(event):
+        def execute(event: Event) -> Any:
             fn = event.fn() if event.fn is not None else None
             if getattr(fn, "__self__", None) is driver:
                 self._open_record()

@@ -86,18 +86,18 @@ def check_format(record: Any) -> None:
         raise ManifestError(f"manifest lacks {', '.join(missing)}")
 
 
-def read_manifest(path: Path) -> dict:
+def read_manifest(path: Path) -> dict[str, Any]:
     """The manifest at ``path`` (a file or a run folder), checked against the schema."""
     path = manifest_path(path)
     try:
-        record = read_json(path)
+        record: dict[str, Any] = read_json(path)
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
         raise ManifestError(f"cannot read {path}: {error}") from error
     check_format(record)
     return record
 
 
-def write_manifest(folder: Path, record: dict) -> Path:
+def write_manifest(folder: Path, record: dict[str, Any]) -> Path:
     """Check and write ``record`` as ``folder/manifest.json`` atomically; its path."""
     check_format(record)
     path = Path(folder) / MANIFEST_NAME

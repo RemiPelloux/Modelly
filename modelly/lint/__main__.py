@@ -10,6 +10,7 @@ from modelly.lint import GUIDE, lint_paths
 from modelly.lint.config import Config, load_config, prefixes
 from modelly.lint.explain import explain
 from modelly.lint.fix import FixReport, fix_paths
+from modelly.lint.lsp import serve
 from modelly.lint.report import FORMATS, list_rules, render, statistics
 
 EXIT_CLEAN = 0
@@ -35,6 +36,7 @@ examples:
   python -m modelly.lint --fix src/               apply them, then report what is left
   python -m modelly.lint --explain MDL101         why a rule matters, a bad and a good example
   python -m modelly.lint --list-rules             every rule, one line each
+  python -m modelly.lint --lsp                    serve findings and fixes to an editor (LSP, stdio)
 
 rule codes:
   MDL0xx  errors: the result is wrong or does not reproduce from the seed
@@ -93,12 +95,21 @@ def add_fixes(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--fix",
         action="store_true",
-        help="apply the safe fixes (MDL001, MDL002, MDL003, MDL009), then report the rest",
+        help="apply the safe fixes (MDL001-003, MDL009, MDL011), then report the rest",
     )
     parser.add_argument(
         "--diff",
         action="store_true",
         help="print the safe fixes as a unified diff without writing them",
+    )
+
+
+def add_server(parser: argparse.ArgumentParser) -> None:
+    """The option that serves the findings to an editor instead of printing them."""
+    parser.add_argument(
+        "--lsp",
+        action="store_true",
+        help="run as a language server on stdin/stdout for editors (see docs/lint.md)",
     )
 
 
@@ -125,6 +136,7 @@ def add_modes(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--list-rules", action="store_true", help="print the rules and exit"
     )
+    add_server(parser)
 
 
 def settings(args: argparse.Namespace) -> Config:
@@ -157,14 +169,24 @@ def run_fixes(args: argparse.Namespace, config: Config) -> FixReport:
     return report
 
 
-def main(argv: list[str] | None = None, prog: str = PROG) -> int:
-    """Run the checks and return the exit status; ``prog`` names the command in --help."""
-    args = build_parser(prog).parse_args(argv)
+def run_mode(args: argparse.Namespace) -> int | None:
+    """Run --list-rules, --explain or --lsp and return its status; None for a normal run."""
     if args.list_rules:
         sys.stdout.write(list_rules() + "\n")
         return EXIT_CLEAN
     if args.explain:
         return print_explanation(args.explain)
+    if args.lsp:
+        return serve(sys.stdin.buffer, sys.stdout.buffer)
+    return None
+
+
+def main(argv: list[str] | None = None, prog: str = PROG) -> int:
+    """Run the checks and return the exit status; ``prog`` names the command in --help."""
+    args = build_parser(prog).parse_args(argv)
+    status = run_mode(args)
+    if status is not None:
+        return status
     try:
         config = settings(args)
         report = run_fixes(args, config)

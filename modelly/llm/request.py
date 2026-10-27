@@ -52,7 +52,7 @@ class Request:
     scope: str = "model"
     call_index: int = 0
     seed: int | None = None
-    schema: dict | None = field(default=None, compare=False, hash=False)
+    schema: dict[str, Any] | None = field(default=None, compare=False, hash=False)
 
     @property
     def max_tokens(self) -> int | None:

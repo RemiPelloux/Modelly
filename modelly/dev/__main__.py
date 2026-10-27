@@ -29,11 +29,13 @@ from modelly.dev.perf import DEFAULT_PAIRS, DEFAULT_THRESHOLD
 
 PROG = "python -m modelly.dev"
 
+type Subparsers = argparse._SubParsersAction[argparse.ArgumentParser]
+
 DESCRIPTION = """\
 Contributor tools for a Modelly checkout.
 
-gate runs the stages of scripts/ci-local.sh (lint, format, test, audit) with this
-Python, so the same gate runs on Windows, macOS and Linux without bash.
+gate runs the stages of scripts/ci-local.sh (lint, format, types, test, audit) with
+this Python, so the same gate runs on Windows, macOS and Linux without bash.
 
 golden runs every bundled example and compares the digest of its data and final
 state with tests/determinism/golden.json (see docs/determinism.md).
@@ -59,7 +61,7 @@ exit status:
   {EXIT_USAGE}  usage error: unknown stage, or not a Modelly checkout"""
 
 
-def _add_golden(commands) -> None:
+def _add_golden(commands: Subparsers) -> None:
     golden = commands.add_parser("golden", help="check or update the golden digests")
     action = golden.add_mutually_exclusive_group()
     action.add_argument("--update", action="store_true", help="rewrite the golden file")
@@ -69,7 +71,7 @@ def _add_golden(commands) -> None:
     golden.add_argument("--file", type=Path, help=f"golden file (default: {GOLDEN})")
 
 
-def _add_perf(commands) -> None:
+def _add_perf(commands: Subparsers) -> None:
     perf = commands.add_parser("perf", help="core operations against the last release")
     perf.add_argument(
         "--against", help="release to compare with (default: last v* tag)"
@@ -99,7 +101,9 @@ def build_parser(prog: str = PROG) -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     commands = parser.add_subparsers(dest="command", required=True)
-    gate = commands.add_parser("gate", help="lint, format, test and audit, in order")
+    gate = commands.add_parser(
+        "gate", help="lint, format, types, test and audit, in order"
+    )
     gate.add_argument(
         "stages", nargs="*", help=f"stages to run (default: all of {', '.join(STAGES)})"
     )

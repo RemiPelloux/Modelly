@@ -1,4 +1,4 @@
-"""The safe fixes behind ``modelly lint --fix``: MDL001, MDL002, MDL003 and MDL009.
+"""The safe fixes behind ``modelly lint --fix``: MDL001, MDL002, MDL003, MDL009 and MDL011.
 
 ``FixCollector`` is the linter's own visitor, so a fix is computed for exactly the node a
 finding points at. A fixer returns None when the rewrite is not unambiguous; the finding
@@ -10,9 +10,11 @@ from __future__ import annotations
 
 import ast
 from collections.abc import Callable
+from typing import Any
 
 from modelly.lint.checker import Checker, Hit
-from modelly.lint.edits import Edit, Source
+from modelly.lint.edits import Edit, Located, Source
+from modelly.lint.patterns import FROZEN_DRAW, QMC_MODULE, SAMPLER_SEEDS
 from modelly.lint.rules import dotted, is_set_expr
 
 # random.Random methods the model's FastRandom (self.random) has, same signature.
@@ -45,6 +47,7 @@ SUPER_ARGS = {
 MODEL_KEYWORDS = ("rng", "scenario")  # Model.__init__ takes one of them, not both
 AGENT_KEY = ", key=lambda a: a.unique_id"  # agents do not compare; their ids do
 SIMPLE = ast.Name | ast.Attribute | ast.Subscript | ast.Call
+MODEL_GENERATOR = "self.rng"  # the model's numpy Generator, which qmc and scipy accept
 
 
 class FixCollector(Checker):
@@ -55,10 +58,10 @@ class FixCollector(Checker):
         super().__init__()
         self.source = source
         self.classes: list[ast.ClassDef] = []
-        self.functions: list[ast.FunctionDef] = []
+        self.functions: list[ast.FunctionDef | ast.AsyncFunctionDef] = []
         self.fixes: list[tuple[Hit, Edit]] = []
 
-    def hit(self, node: ast.AST, code: str) -> None:
+    def hit(self, node: Located, code: str) -> None:
         """Record the hit and, when the rule has a safe fix here, the edit."""
         super().hit(node, code)
         fixer = FIXERS.get(code)
@@ -71,7 +74,9 @@ class FixCollector(Checker):
         super().visit_ClassDef(node)
         self.classes.pop()
 
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # noqa: D102
+    def visit_FunctionDef(  # noqa: D102
+        self, node: ast.FunctionDef | ast.AsyncFunctionDef
+    ) -> None:
         self.functions.append(node)
         super().visit_FunctionDef(node)
         self.functions.pop()
@@ -140,7 +145,7 @@ def mentions_agents(node: ast.AST) -> bool:
     return False
 
 
-def fix_set_loop(collector: FixCollector, node: ast.AST) -> Edit | None:
+def fix_set_loop(collector: FixCollector, node: Located) -> Edit | None:
     """MDL003: ``for x in set(s)`` -> ``for x in sorted(set(s))``, by unique_id for agents."""
     if isinstance(node, ast.For):
         node = node.iter
@@ -156,6 +161,8 @@ def fix_set_loop(collector: FixCollector, node: ast.AST) -> Edit | None:
 
 def fix_registry(collector: FixCollector, node: ast.Call) -> Edit | None:
     """MDL009: ``agents.discard(a)`` -> ``a.remove()``; ``agents.clear()`` -> ``do("remove")``."""
+    if not isinstance(node.func, ast.Attribute):
+        return None  # MDL009 is a method call: never reached
     method, owner = node.func.attr, node.func.value
     source = collector.source
     if method == "clear" and not (node.args or node.keywords):
@@ -168,9 +175,40 @@ def fix_registry(collector: FixCollector, node: ast.Call) -> Edit | None:
     return None  # add(): the agent registered itself when it was created
 
 
-FIXERS: dict[str, Callable[[FixCollector, ast.AST], Edit | None]] = {
+def append_argument(source: Source, call: ast.Call, text: str) -> Edit:
+    """An edit that adds ``text`` as the last argument of ``call``."""
+    arguments: list[ast.expr | ast.keyword] = [*call.args, *call.keywords]
+    if arguments:
+        last = max(arguments, key=lambda a: (a.end_lineno or 0, a.end_col_offset or 0))
+        end = source.span(last)[1]
+        return Edit(end, end, f", {text}")
+    start, stop = source.span(call)
+    close = source.text.rindex(")", start, stop)
+    return Edit(close, close, text)
+
+
+def fix_sampler(collector: FixCollector, node: ast.Call) -> Edit | None:
+    """MDL011 in a method: seed a qmc engine (``rng=``) or ``.rvs`` (``random_state=``)."""
+    if not collector.in_method():
+        return None
+    name = collector.imports.resolve(node.func) or ""
+    if name.rpartition(".")[0] == QMC_MODULE:
+        keyword = "rng"
+    elif isinstance(node.func, ast.Attribute) and node.func.attr == FROZEN_DRAW:
+        keyword = "random_state"
+    else:
+        return None  # SALib takes an integer seed: which one is the study's choice
+    for given in node.keywords:
+        if given.arg in SAMPLER_SEEDS:  # passed explicitly as None
+            return collector.source.replace(given.value, MODEL_GENERATOR)
+    return append_argument(collector.source, node, f"{keyword}={MODEL_GENERATOR}")
+
+
+# Each fixer takes the node type its rule reports (a Call, a FunctionDef, a For...).
+FIXERS: dict[str, Callable[[FixCollector, Any], Edit | None]] = {
     "MDL001": fix_random,
     "MDL002": fix_super,
     "MDL003": fix_set_loop,
     "MDL009": fix_registry,
+    "MDL011": fix_sampler,
 }

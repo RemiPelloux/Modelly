@@ -34,6 +34,11 @@ COMMANDS = (
         "rewrite a Mesa model for Modelly and report what is left",
     ),
     (
+        "netlogo",
+        "modelly.netlogo.__main__",
+        "translate a NetLogo model (.nlogo) into a runnable Modelly model",
+    ),
+    (
         "lint",
         "modelly.lint.__main__",
         "find reproducibility bugs and O(N^2) patterns in a model",
@@ -100,6 +105,7 @@ examples:
   modelly new my-model --template grid  a new project, tested and linted
   modelly zoo copy age_seir my_model/   start a project from a zoo model
   modelly migrate my_mesa_model/        dry run of the Mesa codemod
+  modelly netlogo fire.nlogo -o fire.py translate a NetLogo model, report what is left
   modelly lint src/                     check a model (same as python -m modelly.lint src/)
   modelly lint --explain MDL101         why a rule matters, with a fix
   modelly studio model.py:MyModel       run, scrub and inspect it in the browser
@@ -147,7 +153,8 @@ def main(argv: list[str] | None = None) -> int:
     modules = {name: module for name, module, _ in COMMANDS}
     if argv and argv[0] in modules:
         command = importlib.import_module(modules[argv[0]])
-        return command.main(argv[1:], prog=f"modelly {argv[0]}")
+        status: int = command.main(argv[1:], prog=f"modelly {argv[0]}")
+        return status
     # Prints the help or the version and exits, or rejects the command (exit 2).
     build_parser().parse_args(argv)
     return EXIT_USAGE

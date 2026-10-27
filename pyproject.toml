@@ -117,6 +117,10 @@ gpu = [
 diff = [
   "jax",
 ]
+# xarray datasets of collected data (DataCollector.to_xarray), gridded series included
+xarray = [
+  "xarray",
+]
 # MP4 export of space views (modelly.viz.animation); imageio-ffmpeg bundles ffmpeg.
 video = [
   "imageio",
@@ -265,3 +269,73 @@ per-file-ignores = {"modelly/examples/*"= ["D"], "benchmarks/playbooks/*" = ["D1
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+# Strict type checking (pelloux-guidelines.md §8, the `types` stage of scripts/ci-local.sh).
+# `files` lists the packages that pass `strict`; add a package with one line once it
+# passes. The others are imported (follow_imports = "silent": their types are used, their
+# errors are not reported) and calls into them are allowed while they are untyped.
+[tool.mypy]
+python_version = "3.12"
+strict = true
+follow_imports = "silent"
+files = [
+  "modelly/batch",
+  "modelly/bench",
+  "modelly/calibrate",
+  "modelly/dev",
+  "modelly/experiments",
+  "modelly/llm",
+  "modelly/profile",
+  "modelly/provenance",
+  "modelly/scenarios",
+  "modelly/sensitivity",
+  "modelly/timetravel",
+  "modelly/__init__.py",
+  "modelly/_deprecation.py",
+  "modelly/_optional.py",
+  "modelly/ipython.py",
+  "modelly/log.py",
+  "modelly/migrate.py",
+  "modelly/migrate_rules.py",
+  "modelly/plugins.py",
+  "modelly/__main__.py",
+  "modelly/data/io.py",
+  "modelly/data/xarray_export.py",
+  "modelly/lint",
+  "modelly/netlogo",
+  "modelly/new",
+]
+# Not typed yet, so calling them from a strict module is allowed (no-untyped-call).
+untyped_calls_exclude = [
+  "modelly.behaviour",
+  "modelly.core",
+  "modelly.data",
+  "modelly.space",
+  "modelly.studio",
+  "modelly.time",
+  "modelly.viz",
+  "modelly.zoo",
+]
+
+# Optional and third-party libraries that ship no type information: their names are Any.
+[[tool.mypy.overrides]]
+module = [
+  "altair.*",
+  "dask.*",
+  "distributed.*",
+  "geopandas.*",
+  "IPython.*",
+  "matplotlib.*",
+  "networkx.*",
+  "pandas.*",
+  "psutil.*",
+  "pyarrow.*",
+  "pyproj.*",
+  "rasterio.*",
+  "ray.*",
+  "scipy.*",
+  "shapely.*",
+  "solara.*",
+  "tqdm.*",
+]
+ignore_missing_imports = true

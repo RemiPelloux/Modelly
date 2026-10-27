@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from pathlib import Path
 
 from modelly.new import TEMPLATES, ProjectError, create_project
 
@@ -64,7 +65,7 @@ def build_parser(prog: str = PROG) -> argparse.ArgumentParser:
     return parser
 
 
-def write(args: argparse.Namespace) -> list:
+def write(args: argparse.Namespace) -> list[Path]:
     """The files of the new project: a zoo model's copy, or a template's project."""
     if args.from_zoo:
         from modelly.zoo import copy_model  # noqa: PLC0415 - only this option needs the zoo

@@ -52,7 +52,11 @@ class DaskExecutor(Executor):
         if self.address is not None:
             client = distributed.Client(self.address)
             return client, [client]
-        options = {"n_workers": workers, "threads_per_worker": 1, "processes": True}
+        options: dict[str, Any] = {
+            "n_workers": workers,
+            "threads_per_worker": 1,
+            "processes": True,
+        }
         options |= {"dashboard_address": None, "host": LOCALHOST}
         cluster = distributed.LocalCluster(**(options | self.cluster_options))
         client = distributed.Client(cluster)

@@ -80,7 +80,8 @@ def rows(records: list[StepRecord]) -> list[Row]:
 def profiled_wall(records: list[StepRecord]) -> float:
     """Wall time of the steps plus the events run between them."""
     events = sum(v[2] for r in records for k, v in r.ops.items() if k[0] == "event")
-    return sum(r.wall for r in records) + events
+    wall: float = sum(r.wall for r in records) + events
+    return wall
 
 
 def _header(prof: Profiler) -> list[str]:

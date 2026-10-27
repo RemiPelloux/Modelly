@@ -1,0 +1,65 @@
+"""{title}: citizens who decide their opinion by asking a language model."""
+
+import json
+import re
+
+from modelly import DataCollector, Model
+from modelly.llm import Client, FakeProvider, decide_all
+
+from {package}.agents import SCHEMA, Citizen
+from {package}.scenario import {scenario_class}
+
+CURRENT = re.compile(r"current view of .*?: (\w+)\.")
+HEARD = re.compile(r"(\d+) (support|oppose)")
+
+
+def local_responder(request) -> str:
+    """A stand-in for a language model, so the project runs offline and costs nothing.
+
+    It follows the majority of the views heard and keeps its own on a tie. To ask a real
+    model, pass ``client=Client(AnthropicProvider(...))`` or another provider to the
+    model (see the README); every reply is then cached and the run can be replayed.
+    """
+    prompt = request.messages[0].content
+    current = CURRENT.search(prompt).group(1)
+    counts = {opinion: int(n) for n, opinion in HEARD.findall(prompt)}
+    support, oppose = counts.get("support", 0), counts.get("oppose", 0)
+    if support == oppose:
+        return json.dumps({"opinion": current})
+    return json.dumps({"opinion": "support" if support > oppose else "oppose"})
+
+
+class {model_class}(Model):
+    """Citizens talk to a few others, then all ask the language model at once."""
+
+    def __init__(
+        self,
+        scenario: {scenario_class} = {scenario_class},
+        client: Client | None = None,
+    ):
+        """Create the model from ``scenario``; ``client`` answers (default: offline)."""
+        super().__init__(scenario=scenario)
+        params = self.scenario
+        self.llm = client or Client(FakeProvider(local_responder))
+        for _ in range(params.n):
+            favour = self.random.random() < params.initial_support
+            Citizen(self, "support" if favour else "oppose")
+        self.citizens = list(self.agents)
+        self.datacollector = DataCollector(model_reporters={"support": "support"})
+        self.datacollector.collect(self)
+
+    @property
+    def support(self) -> float:
+        """The share of citizens in favour."""
+        return sum(c.opinion == "support" for c in self.citizens) / len(self.citizens)
+
+    def step(self):
+        """Each citizen hears a few others; everyone decides at once; the data is recorded."""
+        count = self.scenario.heard
+        for citizen in self.citizens:
+            picked = self.random.sample(self.citizens, count + 1)
+            citizen.heard = [other for other in picked if other is not citizen][:count]
+        decisions = decide_all(self.citizens, Citizen.prompt, SCHEMA)
+        for citizen, decision in zip(self.citizens, decisions):
+            citizen.opinion = decision["opinion"]
+        self.datacollector.collect(self)

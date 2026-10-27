@@ -1,0 +1,30 @@
+"""The agents of {title}."""
+
+import numpy as np
+from modelly import Column
+from modelly.space.geo import GeoAgent
+
+UNAWARE, INFORMED = 0, 1
+
+
+class Resident(GeoAgent):
+    """A resident at a point of the town, in metres; ``self.region`` is its district.
+
+    ``state`` is a Column: ``model.columns[Resident].state`` is a numpy view of every
+    resident's state at once.
+    """
+
+    state = Column(int, default=UNAWARE)
+
+    def step(self):
+        """Walk a few metres, staying in town, then tell the unaware residents nearby."""
+        params = self.model.scenario
+        bounds = self.space.dimensions
+        moved = self.position + self.rng.normal(0.0, params.walk, size=2)
+        self.move_to(np.clip(moved, bounds[:, 0], bounds[:, 1]))
+        if self.state != INFORMED:
+            return
+        near, _ = self.space.get_agents_in_radius(self.position, params.radius)
+        for other in near:
+            if other.state == UNAWARE and self.random.random() < params.transmission:
+                other.state = INFORMED

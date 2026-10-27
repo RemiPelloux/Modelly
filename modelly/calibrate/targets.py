@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 
@@ -93,7 +93,8 @@ class Target:
 
     def score(self, simulated: np.ndarray) -> float:
         """This target's weighted distance for one simulated summary."""
-        return self.weight * float(self.distance(simulated, self.observed))
+        distance = cast(Distance, self.distance)  # a name is resolved in __post_init__
+        return self.weight * float(distance(simulated, self.observed))
 
 
 def total_distance(

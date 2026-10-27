@@ -33,4 +33,5 @@ def rescale_samples(
         samples += mins
         return samples
 
-    return samples * scale + mins
+    rescaled: np.ndarray = samples * scale + mins
+    return rescaled

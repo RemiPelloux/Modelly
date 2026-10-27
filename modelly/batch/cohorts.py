@@ -117,7 +117,8 @@ class CohortTable:
     def draw(self, p: Any, where: np.ndarray | None = None) -> np.ndarray:
         """Binomial(count, p) events per row (or per selected row); counts are unchanged."""
         counts = self["count"] if where is None else self["count"][where]
-        return self.rng.binomial(counts, p)
+        events: np.ndarray = self.rng.binomial(counts, p)
+        return events
 
     def split(
         self, p: Any, where: np.ndarray | None = None, **changes: Any
@@ -157,7 +158,7 @@ class CohortTable:
         keys = np.rec.fromarrays([self[name] for name in names], names=names)
         unique, inverse = np.unique(keys, return_inverse=True)
         sums = np.bincount(inverse, weights=self["count"]).astype(np.int64)
-        removed = self._n - unique.shape[0]
+        removed = self._n - int(unique.shape[0])
         self._n = unique.shape[0]
         self["count"] = sums
         for name in names:
@@ -185,7 +186,7 @@ class CohortTable:
 
 
 def from_counts(
-    rng: np.random.Generator, counts: Mapping[tuple, int], **columns: Any
+    rng: np.random.Generator, counts: Mapping[tuple[Any, ...], int], **columns: Any
 ) -> CohortTable:
     """A table from ``{(state values...): count}``, the state in ``columns`` order."""
     table = CohortTable(rng, **columns)

@@ -18,8 +18,11 @@ def test_stages_match_the_bash_gate():
     assert f"STAGES=({' '.join(gate.STAGES)})" in script
 
 
-def test_stage_commands_use_this_interpreter():
+def test_stage_commands_use_this_interpreter(monkeypatch):
     """Every command runs with the current Python; the test stage refreshes the badge."""
+    monkeypatch.setattr(
+        gate.shutil, "which", lambda name: None
+    )  # no uvx: mypy or nothing
     for name in gate.STAGES:
         for command in gate.stage_commands(name):
             assert command[0] == sys.executable
@@ -36,6 +39,44 @@ def test_optional_tests_skipped_without_solara(monkeypatch):
     assert "--ignore=tests/viz" in gate.stage_commands("test")[0]
     monkeypatch.setattr(gate.importlib.util, "find_spec", lambda name: object())
     assert gate.optional_skips() == []
+
+
+def test_type_check_command_prefers_mypy_then_uvx(monkeypatch):
+    """Installed mypy runs as ``python -m mypy``; else the pinned mypy through uvx; else none."""
+    monkeypatch.setattr(gate.importlib.util, "find_spec", lambda name: object())
+    assert gate.type_check_command("py") == ["py", "-m", "mypy"]
+    monkeypatch.setattr(gate.importlib.util, "find_spec", lambda name: None)
+    monkeypatch.setattr(gate.shutil, "which", lambda name: "/bin/uvx")
+    assert gate.type_check_command("py") == [
+        "uvx",
+        gate.TYPE_CHECKER_PIN,
+        "--python-executable",
+        "py",
+    ]
+    assert gate.skip_reason("types") is None
+    monkeypatch.setattr(gate.shutil, "which", lambda name: None)
+    assert gate.type_check_command("py") is None
+    assert gate.stage_commands("types") == []
+    assert gate.skip_reason("types") == gate.NO_TYPE_CHECKER
+    assert gate.skip_reason("lint") is None
+
+
+def test_types_stage_skipped_without_mypy(monkeypatch):
+    """Without mypy or uvx the types stage is skipped, says why, and does not fail the gate."""
+    monkeypatch.setattr(gate.importlib.util, "find_spec", lambda name: None)
+    monkeypatch.setattr(gate.shutil, "which", lambda name: None)
+    out = io.StringIO()
+    status = gate.run_gate(["types", "lint"], ROOT, out, lambda command, cwd: 0)
+    text = out.getvalue()
+    assert status == gate.EXIT_PASSED
+    assert f"<== types: skipped ({gate.NO_TYPE_CHECKER})" in text
+    assert "  skipped  types" in text and "  passed  lint" in text
+
+
+def test_mypy_pin_matches_the_bash_gate():
+    """Both gates run the same mypy version through uvx."""
+    script = (ROOT / "scripts" / "ci-local.sh").read_text(encoding="utf-8")
+    assert f"MYPY_PIN={gate.TYPE_CHECKER_PIN}" in script
 
 
 def test_run_gate_reports_each_stage():

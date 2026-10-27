@@ -31,6 +31,12 @@ TEMPLATES = {
     "network": Template("an infection spreading over a contact network", "network"),
     "continuous": Template("random walkers in a continuous, wrapping space"),
     "cohort": Template("colonies counted by age class with CohortTable"),
+    "geo": Template(
+        "news spreading among residents of a town's districts, in metres", "geo"
+    ),
+    "llm": Template(
+        "citizens deciding their opinion by asking a language model, offline"
+    ),
 }
 
 # (file under templates/, path in the project); the template's own files come first.

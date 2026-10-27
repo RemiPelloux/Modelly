@@ -51,7 +51,9 @@ class FullFactorial(Design):
     levels: int | Mapping[str, int] = DEFAULT_LEVELS
     kind = "full_factorial"
 
-    def points(self, space, rng=None):
+    def points(
+        self, space: ScenarioSpace, rng: np.random.Generator | None = None
+    ) -> list[dict[str, Any]]:
         """The Cartesian product of every dimension's levels, the last varying fastest."""
         axes = [
             dim.levels(self._levels_of(name)) for name, dim in space.dimensions.items()
@@ -81,7 +83,9 @@ class _Sampled(Design):
         """The scipy engine drawing the unit-cube sample."""
         raise NotImplementedError
 
-    def points(self, space, rng=None):
+    def points(
+        self, space: ScenarioSpace, rng: np.random.Generator | None = None
+    ) -> list[dict[str, Any]]:
         """``n`` points, the same for the same ``rng`` state."""
         rng = np.random.default_rng() if rng is None else rng
         count = len(space.dimensions)
@@ -97,7 +101,7 @@ class LatinHypercube(_Sampled):
 
     kind = "latin_hypercube"
 
-    def sampler(self, dimensions, rng):
+    def sampler(self, dimensions: int, rng: np.random.Generator) -> qmc.QMCEngine:
         """The scipy LatinHypercube engine."""
         return qmc.LatinHypercube(dimensions, rng=rng)
 
@@ -108,7 +112,7 @@ class Sobol(_Sampled):
 
     kind = "sobol"
 
-    def sampler(self, dimensions, rng):
+    def sampler(self, dimensions: int, rng: np.random.Generator) -> qmc.QMCEngine:
         """The scrambled scipy Sobol engine."""
         return qmc.Sobol(dimensions, scramble=True, rng=rng)
 
@@ -119,7 +123,7 @@ class Halton(_Sampled):
 
     kind = "halton"
 
-    def sampler(self, dimensions, rng):
+    def sampler(self, dimensions: int, rng: np.random.Generator) -> qmc.QMCEngine:
         """The scrambled scipy Halton engine."""
         return qmc.Halton(dimensions, scramble=True, rng=rng)
 
@@ -131,7 +135,9 @@ class Custom(Design):
     rows: list[dict[str, Any]] = field(default_factory=list)
     kind = "custom"
 
-    def points(self, space, rng=None):
+    def points(
+        self, space: ScenarioSpace, rng: np.random.Generator | None = None
+    ) -> list[dict[str, Any]]:
         """The rows, completed with the fixed parameters and checked against the space."""
         if not self.rows:
             raise ValueError("a custom design needs at least one point")
@@ -163,7 +169,7 @@ def custom(rows: Sequence[Mapping[str, Any]]) -> Custom:
     return Custom([dict(row) for row in rows])
 
 
-DESIGNS = {
+DESIGNS: dict[str, Callable[..., Design]] = {
     "full_factorial": full_factorial,
     "latin_hypercube": latin_hypercube,
     "sobol": sobol,

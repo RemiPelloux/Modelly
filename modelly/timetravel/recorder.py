@@ -30,7 +30,7 @@ DEFAULT_BUDGET = 256 * MEBIBYTE
 HOOK = "_advance_time"
 
 
-def _plain_advance(model: Model) -> types.MethodType:
+def _plain_advance(model: Model[Any, Any]) -> types.MethodType:
     """The model's own ``_advance_time``, for a model pickled while recorded."""
     return types.MethodType(type(model)._advance_time, model)
 
@@ -51,13 +51,13 @@ class _Hook:
         return _plain_advance, (self.recorder.model,)
 
 
-def thaw(model: Model) -> Model:
+def thaw(model: Model[Any, Any]) -> Model[Any, Any]:
     """Let ``model.scenario`` be changed, as on a model returned by ``at``."""
     object.__setattr__(model.scenario, "_frozen", False)
     return model
 
 
-def reseed_model(model: Model, seed: np.random.SeedSequence) -> None:
+def reseed_model(model: Model[Any, Any], seed: np.random.SeedSequence) -> None:
     """Reseed both generators of ``model`` in place from ``seed``.
 
     ``model.rng`` gets a bit generator of its own class seeded with ``seed``
@@ -91,7 +91,7 @@ class Recorder:
 
     def __init__(
         self,
-        model: Model,
+        model: Model[Any, Any],
         every: float = DEFAULT_EVERY,
         *,
         memory_budget: int = DEFAULT_BUDGET,
@@ -165,7 +165,7 @@ class Recorder:
         """
         self._capture()
 
-    def at(self, step: float) -> Model:
+    def at(self, step: float) -> Model[Any, Any]:
         """A new model in the state of the recorded run at ``step``.
 
         The nearest checkpoint at or before ``step`` is restored and run on to
@@ -185,7 +185,9 @@ class Recorder:
             model._advance_time(step)
         return thaw(model)
 
-    def branch(self, step: float, n: int, *, reseed: bool = False) -> list[Model]:
+    def branch(
+        self, step: float, n: int, *, reseed: bool = False
+    ) -> list[Model[Any, Any]]:
         """``n`` independent models, all in the state of the run at ``step``.
 
         Without ``reseed`` every branch continues the same random streams, so

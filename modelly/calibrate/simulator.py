@@ -76,7 +76,8 @@ class Execution:
     def runner(self) -> Executor:
         """The executor to submit a batch to."""
         if self._pooled is not None:
-            return self._pooled
+            pooled: Executor = self._pooled
+            return pooled
         return get_executor(self.executor, **dict(self.options))
 
     def __enter__(self) -> Execution:
@@ -121,7 +122,11 @@ class Simulator:
     def tasks(self, batch: Batch) -> list[RunTask]:
         """One task per (point, replicate) of ``batch``."""
         stream = (Stream.COMMON,) if batch.common else (Stream.SIMULATION, *batch.key)
-        common = {"model": self.model, "steps": self.steps, "outputs": self.outputs}
+        common: dict[str, Any] = {
+            "model": self.model,
+            "steps": self.steps,
+            "outputs": self.outputs,
+        }
         common |= {
             "entropy": entropy(self.seed, *stream),
             "store": str(self.folder(batch)),

@@ -177,6 +177,7 @@ Your project <using_modelly_in_your_project>
 Starting a project <new_project>
 Examples <examples>
 From Mesa <migrating_from_mesa>
+From NetLogo <netlogo>
 Performance <performance>
 API <apis/api_main>
 Overview <overview>
@@ -185,6 +186,7 @@ Checking a model <lint>
 Profiling a model <profile>
 Experiments and sweeps <experiments>
 From laptop to cluster <distributed>
+From R and Julia <r_and_julia>
 Language-model agents <llm_agents>
 Calibration <calibration>
 Sensitivity analysis <sensitivity>

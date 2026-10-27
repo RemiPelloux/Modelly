@@ -1,0 +1,21 @@
+"""The parameters of one {title} run, and the seed that fixes every draw."""
+
+from modelly.scenarios import Scenario
+
+SEED = 42  # the default seed: pass rng=... for another, reproducible, run
+
+
+class {scenario_class}(Scenario):
+    """Parameters and their defaults; pass ``rng=`` or any of them to override."""
+
+    districts: int = 3  # districts per side of the square town
+    district_size: float = 500.0  # side of a district, in metres
+    residents: int = 20  # residents per district
+    initially_informed: int = 3
+    radius: float = 60.0  # metres within which news passes
+    transmission: float = 0.3  # chance per resident within the radius per step
+    walk: float = 40.0  # standard deviation of a step along each axis, in metres
+
+    def __init__(self, *, rng=None, **kwargs):
+        """Seed with ``SEED`` unless ``rng`` is given, so every run reproduces."""
+        super().__init__(rng=SEED if rng is None else rng, **kwargs)

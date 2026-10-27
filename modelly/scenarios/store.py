@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import astuple, dataclass, fields
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, cast, runtime_checkable
 
 import pandas as pd
 
@@ -55,7 +55,7 @@ class Writer(Protocol):
     This is the ONLY store capability a worker receives.
     """
 
-    def to_reference(self, run_id: RunId, outcome: dict) -> Reference:
+    def to_reference(self, run_id: RunId, outcome: dict[str, Any]) -> Reference:
         """Persist a run's outcome and return a reference to it."""
         ...
 
@@ -160,7 +160,7 @@ class InMemoryReference:
 class InMemoryWriter:
     """Writer for in-memory store."""
 
-    def to_reference(self, run_id: RunId, outcome: dict) -> InMemoryReference:
+    def to_reference(self, run_id: RunId, outcome: dict[str, Any]) -> InMemoryReference:
         """Persist a run's outcome and return a reference to it."""
         return InMemoryReference(run_id, outcome)
 
@@ -168,7 +168,7 @@ class InMemoryWriter:
 class InMemoryStore:
     """Implements in-memory store following the Store protocol."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize in-memory store."""
         self._runs: dict[RunId, RunRecord] = {}
 
@@ -194,7 +194,7 @@ class InMemoryStore:
             raise ScenarioAbortedException(run_id, record.failure)
         if record.status != Status.SUCCEEDED:
             raise ScenarioNotReadyException(run_id)
-        return record.output
+        return cast(dict[str, pd.DataFrame], record.output)  # set on success
 
     def write_scenarios(self, scenarios: list[Scenario]) -> None:
         """Record the full ensemble of scenarios before dispatch."""

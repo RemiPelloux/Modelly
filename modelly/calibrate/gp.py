@@ -179,4 +179,5 @@ def expected_improvement(mean: np.ndarray, sd: np.ndarray, best: float) -> np.nd
 
     sd = np.maximum(sd, JITTER)
     z = (best - mean) / sd
-    return (best - mean) * norm.cdf(z) + sd * norm.pdf(z)
+    improvement: np.ndarray = (best - mean) * norm.cdf(z) + sd * norm.pdf(z)
+    return improvement

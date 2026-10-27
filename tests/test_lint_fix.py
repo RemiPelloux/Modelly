@@ -124,10 +124,38 @@ FIXES = {
                     pass
         """,
     ),
+    "samplers in a model method": (
+        """
+        from scipy.stats import norm, qmc
+        class M(Model):
+            def setup(self):
+                units = qmc.LatinHypercube(d=2).random(8)
+                halton = qmc.Halton(
+                    3,
+                    scramble=True,
+                )
+                empty = qmc.Sobol()
+                noise = norm(0, 1).rvs(size=4, random_state=None)
+        """,
+        """
+        from scipy.stats import norm, qmc
+        class M(Model):
+            def setup(self):
+                units = qmc.LatinHypercube(d=2, rng=self.rng).random(8)
+                halton = qmc.Halton(
+                    3,
+                    scramble=True, rng=self.rng,
+                )
+                empty = qmc.Sobol(rng=self.rng)
+                noise = norm(0, 1).rvs(size=4, random_state=self.rng)
+        """,
+    ),
 }
 
 # Findings the fixer must leave alone: the rewrite would be a guess.
 UNFIXED = [
+    "from scipy.stats import qmc\nx = qmc.Sobol(2)",  # not in a method: no self.rng
+    "from SALib.sample import saltelli\nclass M(Model):\n    def setup(self):\n        x = saltelli.sample(p, 8)",
     "x = random.random()",  # not in a method: there is no self.random
     "class A(Agent):\n    def step(self):\n        r = random.Random()",
     "class A(Agent):\n    def step(self):\n        x = np.random.randint(3)",
@@ -159,7 +187,7 @@ def test_fix_is_idempotent(name):
     fixed, _ = fix_source(source(FIXES[name][0]))
     assert fix_source(fixed) == (fixed, 0)
     codes = {f.rule.code for f in lint_source(fixed)}
-    assert not codes & {"MDL001", "MDL002", "MDL003", "MDL009"}
+    assert not codes & {"MDL001", "MDL002", "MDL003", "MDL009", "MDL011"}
 
 
 @pytest.mark.parametrize("body", UNFIXED)

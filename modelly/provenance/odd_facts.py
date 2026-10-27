@@ -14,6 +14,7 @@ import textwrap
 from dataclasses import dataclass, field
 from typing import Any
 
+from modelly.core.agent import Agent
 from modelly.core.model import Model
 from modelly.provenance.outputs import find_collector
 from modelly.space import DiscreteSpace
@@ -47,8 +48,8 @@ class ModelFacts:
     doc: str
     agents: list[AgentFacts]
     globals: list[tuple[str, str]]
-    spaces: list[tuple[str, str, dict]]
-    scenario: tuple[str, dict, dict]
+    spaces: list[tuple[str, str, dict[str, Any]]]
+    scenario: tuple[str, dict[str, Any], dict[str, Any]]
     step: list[str]
     dispatched: list[str]
     reporters: dict[str, list[str]]
@@ -60,7 +61,7 @@ def summary(obj: Any) -> str:
     return " ".join(doc.split("\n\n")[0].split())
 
 
-def step_body(cls: type[Model]) -> list[ast.stmt]:
+def step_body(cls: type[Model[Any, Any]]) -> list[ast.stmt]:
     """The statements of ``cls.step``, docstring excluded; [] when unreadable."""
     try:
         source = textwrap.dedent(inspect.getsource(cls.step))
@@ -99,7 +100,7 @@ def _own_methods(cls: type) -> list[tuple[str, str]]:
     ]
 
 
-def agent_facts(cls: type, agents: Any) -> AgentFacts:
+def agent_facts(cls: type[Agent[Any]], agents: Any) -> AgentFacts:
     """Facts about one agent class from its declaration and a live instance."""
     columns = [(n, str(c.dtype), c.default) for n, c in cls.column_specs().items()]
     sample = next(iter(agents), None)
@@ -115,7 +116,7 @@ def agent_facts(cls: type, agents: Any) -> AgentFacts:
     )
 
 
-def space_facts(model: Model) -> list[tuple[str, str, dict]]:
+def space_facts(model: Model[Any, Any]) -> list[tuple[str, str, dict[str, Any]]]:
     """(attribute, class, traits) for each space the model holds."""
     found = []
     for name, value in vars(model).items():
@@ -125,7 +126,7 @@ def space_facts(model: Model) -> list[tuple[str, str, dict]]:
     return found
 
 
-def global_facts(model: Model) -> list[tuple[str, str]]:
+def global_facts(model: Model[Any, Any]) -> list[tuple[str, str]]:
     """Public scalar attributes of the model: its global state variables."""
     return [
         (name, type(value).__name__)
@@ -136,7 +137,7 @@ def global_facts(model: Model) -> list[tuple[str, str]]:
     ]
 
 
-def reporter_facts(model: Model) -> dict[str, list[str]]:
+def reporter_facts(model: Model[Any, Any]) -> dict[str, list[str]]:
     """The DataCollector's reporter names by level."""
     collector = find_collector(model)
     if collector is None:
@@ -148,7 +149,7 @@ def reporter_facts(model: Model) -> dict[str, list[str]]:
     }
 
 
-def model_facts(model: Model) -> ModelFacts:
+def model_facts(model: Model[Any, Any]) -> ModelFacts:
     """Inspect a built model."""
     cls = type(model)
     body = step_body(cls)

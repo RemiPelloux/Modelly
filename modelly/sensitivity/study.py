@@ -123,6 +123,7 @@ class Study:
         if self.store is None and self._temporary is None:
             self._temporary = scratch_folder(self, "modelly-sensitivity-")
         root = Path(self.store).resolve() if self.store else self._temporary
+        assert root is not None  # a store, or the scratch folder made above
         model = self.model if isinstance(self.model, str) else reference(self.model)
         output = self.output if isinstance(self.output, str) else reference(self.output)
         simulator = Simulator(
@@ -130,7 +131,11 @@ class Study:
         )
         execution = Execution(self.executor, self.max_parallel, self.options)
         results = simulator.run(Batch((key,), points), execution)
-        reduce = STATISTICS.get(self.statistic, self.statistic)
+        reduce = (
+            STATISTICS[self.statistic]
+            if isinstance(self.statistic, str)
+            else self.statistic
+        )
         return np.array(
             [
                 np.mean([reduce(row) for row in result[OUTPUT_COLUMN]])

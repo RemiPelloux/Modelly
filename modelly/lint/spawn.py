@@ -29,7 +29,9 @@ INLINE_WORKERS = 1  # workers=1 runs in this process: nothing is sent anywhere
 
 def is_factory_keyword(name: str | None) -> bool:
     """Whether a keyword argument names a model factory, class or run function."""
-    return bool(name) and (name in FACTORY_KEYWORDS or name.endswith(FACTORY_SUFFIX))
+    if not name:
+        return False
+    return name in FACTORY_KEYWORDS or name.endswith(FACTORY_SUFFIX)
 
 
 def runs_inline(call: ast.Call) -> bool:
@@ -50,7 +52,9 @@ class SpawnChecker(ast.NodeVisitor):
         self.hits: set[Hit] = set()
         self.local_names: list[set[str]] = []  # one set per enclosing function
 
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # noqa: D102
+    def visit_FunctionDef(  # noqa: D102
+        self, node: ast.FunctionDef | ast.AsyncFunctionDef
+    ) -> None:
         self.define(node.name)
         self.local_names.append(set())
         self.generic_visit(node)
@@ -82,7 +86,7 @@ class SpawnChecker(ast.NodeVisitor):
             self.check(value)
         self.generic_visit(node)
 
-    def check(self, value: ast.AST) -> None:
+    def check(self, value: ast.expr) -> None:
         """Report ``value`` when it, or an element of a literal holding it, is not importable."""
         if isinstance(value, ast.Lambda) or self.is_nested(value):
             self.hits.add((value.lineno, value.col_offset + 1, CODE))
@@ -98,7 +102,7 @@ class SpawnChecker(ast.NodeVisitor):
             for element in value.args[:1]:
                 self.check(element)
 
-    def is_nested(self, value: ast.AST) -> bool:
+    def is_nested(self, value: ast.expr) -> bool:
         """Whether ``value`` names a function or class defined inside an enclosing function."""
         return isinstance(value, ast.Name) and any(
             value.id in names for names in self.local_names

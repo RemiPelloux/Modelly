@@ -61,12 +61,12 @@ the Python rules for code under `modelly/` (layout and imports, public API, hot 
 determinism, native code, measuring performance).
 
 The whole gate runs locally and is what CI runs. It has two front ends with the same stages
-(lint, format, test, audit), the same skips when the optional `solara` extra is missing, and the
-same coverage badge refresh:
+(lint, format, types, test, audit), the same skips when the optional `solara` extra or mypy is
+missing, and the same coverage badge refresh:
 
 ```bash
 # Linux and macOS (bash)
-bash scripts/ci-local.sh                 # lint, format, tests, size audit
+bash scripts/ci-local.sh                 # lint, format, types, tests, size audit
 bash scripts/ci-local.sh --list          # stage names
 bash scripts/ci-local.sh lint test       # a subset while iterating
 bash scripts/audit-pelloux.sh            # size audit alone
@@ -74,7 +74,7 @@ bash scripts/audit-pelloux.sh            # size audit alone
 
 ```powershell
 # Any operating system, Windows included: no bash or WSL needed
-python -m modelly.dev gate               # lint, format, tests, size audit
+python -m modelly.dev gate               # lint, format, types, tests, size audit
 python -m modelly.dev gate --list        # stage names
 python -m modelly.dev gate lint test     # a subset while iterating
 python scripts/pelloux_audit.py audit    # size audit alone
@@ -82,6 +82,27 @@ python scripts/pelloux_audit.py audit    # size audit alone
 
 `python -m modelly.dev gate` runs every stage with the interpreter that starts it (`python -m
 ruff`, `python -m pytest`), so run it from the environment where you installed `.[dev]`.
+
+### Type checking
+
+The `types` stage runs [mypy](https://mypy.readthedocs.io) in strict mode. `[tool.mypy]` in
+`pyproject.toml` lists the packages that pass it (`files`): batch, bench, calibrate, dev,
+experiments, lint, llm, netlogo, new, profile, provenance, scenarios, sensitivity, timetravel,
+the Arrow, Parquet and xarray exports of data, and the top-level modules. Code in those
+packages needs complete annotations; a new package joins the check with one line in `files`
+once `mypy` reports nothing for it. The other packages (core, space, time, the rest of data,
+behaviour, viz, studio, zoo) are not strict yet: they are still read for their
+types, their own errors are not reported, and calling their unannotated functions is allowed.
+Libraries without type information (pandas, scipy, networkx and the optional extras) are
+treated as `Any`.
+
+```bash
+python -m mypy                           # with mypy installed (pip install mypy)
+uvx mypy==2.4.0 --python-executable .venv/bin/python   # or through uv, nothing installed
+```
+
+The gate uses installed mypy first, then the pinned mypy through `uvx`; with neither, the stage
+prints why it was skipped and does not fail.
 
 ### No commit makes Modelly slower
 

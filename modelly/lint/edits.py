@@ -14,6 +14,8 @@ from dataclasses import dataclass
 
 # A physical line with its ending, as the tokenizer counts lines.
 LINE = re.compile(r"[^\r\n]*(?:\r\n|\r|\n)|[^\r\n]+$")
+# The nodes that have a position in the source.
+Located = ast.expr | ast.stmt | ast.keyword | ast.arg
 
 
 @dataclass(frozen=True, order=True)
@@ -31,7 +33,7 @@ class Source:
     def __init__(self, text: str) -> None:
         """Split ``text`` into lines and record where each one starts."""
         self.text = text
-        self.lines = LINE.findall(text)
+        self.lines: list[str] = LINE.findall(text)
         self.starts = [0]
         for line in self.lines:
             self.starts.append(self.starts[-1] + len(line))
@@ -42,17 +44,20 @@ class Source:
         prefix = text.encode("utf-8")[:column].decode("utf-8", errors="ignore")
         return self.starts[line - 1] + len(prefix)
 
-    def span(self, node: ast.AST) -> tuple[int, int]:
-        """The start and end offsets of ``node``."""
+    def span(self, node: Located) -> tuple[int, int]:
+        """The start and end offsets of ``node`` (a parsed node always has both)."""
         start = self.offset(node.lineno, node.col_offset)
-        return start, self.offset(node.end_lineno, node.end_col_offset)
+        end_line, end_column = node.end_lineno, node.end_col_offset
+        if end_line is None or end_column is None:
+            return start, start
+        return start, self.offset(end_line, end_column)
 
-    def segment(self, node: ast.AST) -> str:
+    def segment(self, node: Located) -> str:
         """The exact source text of ``node``."""
         start, end = self.span(node)
         return self.text[start:end]
 
-    def replace(self, node: ast.AST, text: str) -> Edit:
+    def replace(self, node: Located, text: str) -> Edit:
         """An edit that replaces ``node`` with ``text``."""
         return Edit(*self.span(node), text)
 

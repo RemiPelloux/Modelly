@@ -8,10 +8,13 @@ import importlib.util
 import inspect
 import sys
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from modelly.core.model import Model
 from modelly.scenarios import Scenario
+
+if TYPE_CHECKING:
+    import numpy as np
 
 TARGET_MODULE = "_modelly_profile_target"
 # Parameter names tried, in order, for the population when --size-param is not given.
@@ -47,13 +50,14 @@ def _module(source: str) -> Any:
         raise TargetError(f"no such file: {source}")
     sys.path.insert(0, str(path.resolve().parent))
     spec = importlib.util.spec_from_file_location(TARGET_MODULE, path)
+    assert spec is not None and spec.loader is not None  # a .py path always has both
     module = importlib.util.module_from_spec(spec)
     sys.modules[TARGET_MODULE] = module
     spec.loader.exec_module(module)
     return module
 
 
-def load_class(target: str) -> type[Model]:
+def load_class(target: str) -> type[Model[Any, Any]]:
     """The Model subclass named by ``path/to/model.py:Class`` or ``package.module:Class``."""
     source, sep, name = target.rpartition(":")
     if not sep or not source or not name:
@@ -73,7 +77,11 @@ def scenario_class(parameters: dict[str, inspect.Parameter]) -> type[Scenario] |
     return None
 
 
-def build_model(cls: type[Model], params: dict[str, Any], seed: int | None) -> Model:
+def build_model(
+    cls: type[Model[Any, Any]],
+    params: dict[str, Any],
+    seed: int | np.random.SeedSequence | None,
+) -> Model[Any, Any]:
     """Build ``cls``: parameters it takes by name go to it, the others to its scenario.
 
     The seed goes to the scenario when the model takes one, else to ``rng``.
@@ -83,7 +91,7 @@ def build_model(cls: type[Model], params: dict[str, Any], seed: int | None) -> M
     rest = {k: v for k, v in params.items() if k not in kwargs}
     scenario = scenario_class(parameters)
     if scenario is not None and (rest or seed is not None):
-        seeded = {} if seed is None else {"rng": seed}
+        seeded: dict[str, Any] = {} if seed is None else {"rng": seed}
         kwargs["scenario"] = scenario(**seeded, **rest)
         rest = {}
     elif seed is not None:
@@ -93,7 +101,7 @@ def build_model(cls: type[Model], params: dict[str, Any], seed: int | None) -> M
     return cls(**kwargs)
 
 
-def parameter_names(cls: type[Model]) -> set[str]:
+def parameter_names(cls: type[Model[Any, Any]]) -> set[str]:
     """The parameters ``cls`` takes by name, and those its Scenario class declares."""
     parameters = dict(inspect.signature(cls).parameters)
     own = {k for k, p in parameters.items() if p.kind not in VARIADIC}
@@ -102,7 +110,7 @@ def parameter_names(cls: type[Model]) -> set[str]:
     return (own | declared) - {"scenario", "rng"}
 
 
-def size_param(cls: type[Model], name: str | None = None) -> str:
+def size_param(cls: type[Model[Any, Any]], name: str | None = None) -> str:
     """The parameter that sets the population: ``name``, else the first of SIZE_PARAMS taken."""
     if name is not None:
         return name

@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 import traceback
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from modelly.profile.loader import (
     SIZE_PARAMS,
@@ -165,12 +165,13 @@ def render(prof: Profiler | SizeComparison, args: argparse.Namespace) -> str:
     if args.format == "json":
         return json.dumps(prof.to_dict(), indent=2)
     if args.format == "csv":
-        return prof.to_dataframe().to_csv(index=False, lineterminator="\n").rstrip("\n")
+        table: str = prof.to_dataframe().to_csv(index=False, lineterminator="\n")
+        return table.rstrip("\n")
     return prof.report(top=args.top)
 
 
 def profile(
-    args: argparse.Namespace, cls: type[Model] | None = None
+    args: argparse.Namespace, cls: type[Model[Any, Any]] | None = None
 ) -> Profiler | SizeComparison:
     """Build the model and profile it, once per size with --sizes.
 
@@ -194,7 +195,9 @@ def profile(
 
 
 def main(
-    argv: list[str] | None = None, prog: str = PROG, cls: type[Model] | None = None
+    argv: list[str] | None = None,
+    prog: str = PROG,
+    cls: type[Model[Any, Any]] | None = None,
 ) -> int:
     """Build the model, run it under the profiler and write the report; the exit status.
 

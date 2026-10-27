@@ -47,7 +47,8 @@ class BayesOpt(PointEstimate):
         from scipy.stats import qmc  # noqa: PLC0415 - lazy import
 
         rng = generator(self.seed, Stream.DESIGN, self.key)
-        return qmc.LatinHypercube(len(self.names), rng=rng).random(count)
+        design: np.ndarray = qmc.LatinHypercube(len(self.names), rng=rng).random(count)
+        return design
 
     def _next(self, iteration: int) -> np.ndarray:
         """The candidate of largest expected improvement under the fitted process."""
@@ -57,9 +58,10 @@ class BayesOpt(PointEstimate):
         rng = generator(self.seed, Stream.PROPOSAL, self.key, iteration)
         candidates = rng.random((CANDIDATES, len(self.names)))
         mean, sd = process.predict(candidates)
-        return candidates[
+        best: np.ndarray = candidates[
             int(np.argmax(expected_improvement(mean, sd, float(y.min()))))
         ]
+        return best
 
     def run(
         self,

@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import warnings
 from collections import defaultdict
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from functools import partial
 from itertools import count
-from typing import Any, ClassVar
+from typing import Any, ClassVar, cast
 
 import numpy as np
 import pandas as pd
+from numpy.random import SeedSequence
 
 from modelly.scenarios.sampling import rescale_samples  # noqa: F401 (re-export)
 
@@ -54,7 +55,7 @@ class Scenario:
         To create replications with derived seeds, use spawn_replications().
     """
 
-    _ids: ClassVar[defaultdict] = defaultdict(partial(count, 0))
+    _ids: ClassVar[defaultdict[Any, Any]] = defaultdict(partial(count, 0))
     _scenario_defaults: ClassVar[dict[str, Any]] = {}
     __slots__ = (
         "__dict__",
@@ -67,7 +68,7 @@ class Scenario:
     )
 
     @classmethod
-    def __init_subclass__(cls):
+    def __init_subclass__(cls) -> None:
         """Called once when a subclass is created."""
         defaults = {}
         for base in reversed(cls.__mro__):
@@ -81,7 +82,7 @@ class Scenario:
         cls._scenario_defaults = defaults
 
     @classmethod
-    def _reset_counter(cls):
+    def _reset_counter(cls) -> None:
         """Reset the scenario counter for this class."""
         cls._ids[cls] = count(0)
 
@@ -91,8 +92,8 @@ class Scenario:
         rng: RNGLike | SeedLike | None = None,
         scenario_id: int | None = None,
         replication_id: int = PARENT_REPLICATION_ID,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         """Initialize a Scenario.
 
         Args:
@@ -112,7 +113,7 @@ class Scenario:
         )
         self.replication_id = replication_id
         self.rng = np.random.default_rng(rng)
-        self.seed_sequence = self.rng.bit_generator.seed_seq
+        self.seed_sequence = cast(SeedSequence, self.rng.bit_generator.seed_seq)
         self._generator_class = self.rng.bit_generator.__class__.__name__
 
         self.__dict__.update(self._scenario_defaults)
@@ -134,7 +135,7 @@ class Scenario:
             raise TypeError(f"Scenario is frozen; cannot delete '{name}'.")
         super().__delattr__(name)
 
-    def __getstate__(self):
+    def __getstate__(self) -> tuple[Any, ...]:
         """Return state for pickling."""
         return (
             self.__dict__.copy(),
@@ -145,7 +146,7 @@ class Scenario:
             self._generator_class,
         )
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple[Any, ...]) -> None:
         """Restore state when unpickling."""
         dict_state, scenario_id, replication_id, entropy, spawn_key, gen_class = state
         self._frozen = False
@@ -178,11 +179,11 @@ class Scenario:
         """
         return int(self.seed_sequence.generate_state(1, dtype=np.uint32)[0])
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[tuple[str, Any]]:
         """Iterate over (key, value) pairs of the user specified parameters (excluding rng)."""
         return iter(self.__dict__.items())
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return number of user defined parameters (excluding rng)."""
         return len(self.__dict__)
 

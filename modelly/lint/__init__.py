@@ -20,6 +20,7 @@ from modelly.lint.plugins import all_rules, plugin_hits
 from modelly.lint.rules import GUIDE, RULES, Rule
 from modelly.lint.siblings import SiblingColumns
 from modelly.lint.spawn import spawn_hits
+from modelly.lint.studies import study_hits
 
 __all__ = ["GUIDE", "RULES", "Finding", "Rule", "lint_paths", "lint_source"]
 
@@ -74,7 +75,7 @@ def lint_source(
     checker.visit(tree)
     lines = source.splitlines()
     rules = all_rules()  # Modelly's rules and those of modelly.lint_rules plugins
-    hits = checker.hits | spawn_hits(tree) | plugin_hits(tree)
+    hits = checker.hits | spawn_hits(tree) | study_hits(tree) | plugin_hits(tree)
     return [
         Finding(path, line, column, rules[code])
         for line, column, code in sorted(hits)

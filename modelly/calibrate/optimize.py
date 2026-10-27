@@ -45,7 +45,7 @@ class UnitBox:
             [math.log(b[1]) if log else b[1] for b, log in zip(bounds, self.logs)]
         )
 
-    def params(self, unit: Sequence[float]) -> dict[str, float]:
+    def params(self, unit: Sequence[float] | np.ndarray) -> dict[str, float]:
         """The parameters at ``unit`` (clipped to the cube)."""
         scaled = self.low + np.clip(np.asarray(unit, float), 0, 1) * (
             self.high - self.low
@@ -61,7 +61,10 @@ class UnitBox:
             math.log(params[n]) if log else params[n]
             for n, log in zip(self.names, self.logs)
         ]
-        return (np.asarray(values, float) - self.low) / (self.high - self.low)
+        unit: np.ndarray = (np.asarray(values, float) - self.low) / (
+            self.high - self.low
+        )
+        return unit
 
 
 class PointEstimate(Calibration):
@@ -76,7 +79,9 @@ class PointEstimate(Calibration):
         self.evaluations: list[dict[str, Any]] = []
 
     def simulate(
-        self, units: Sequence[Sequence[float]], execution: Execution
+        self,
+        units: Sequence[Sequence[float] | np.ndarray] | np.ndarray,
+        execution: Execution,
     ) -> list[dict[str, np.ndarray]]:
         """Run each unit-cube point as its own batch, with common random numbers."""
         start = len(self.evaluations)
@@ -91,7 +96,10 @@ class PointEstimate(Calibration):
         return [result[0] for result in self.simulator.run_many(batches, execution)]
 
     def record(
-        self, unit: Sequence[float], value: float, summaries: Mapping[str, np.ndarray]
+        self,
+        unit: Sequence[float] | np.ndarray,
+        value: float,
+        summaries: Mapping[str, np.ndarray],
     ) -> float:
         """Keep one evaluation (parameters, objective, summaries); return ``value``."""
         entry = {**self.box.params(unit), OBJECTIVE: float(value)}

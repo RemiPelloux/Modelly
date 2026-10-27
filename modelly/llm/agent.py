@@ -74,7 +74,7 @@ class LLMAgent:
         return index
 
     def llm_request(
-        self, prompt: str, *, schema: dict | None = None, **params: Any
+        self, prompt: str, *, schema: dict[str, Any] | None = None, **params: Any
     ) -> Request:
         """A request from this agent; with a schema, the prompt asks for JSON."""
         text = with_schema(prompt, schema) if schema is not None else prompt
@@ -95,7 +95,7 @@ class LLMAgent:
     def decide(
         self,
         prompt: str,
-        schema: dict,
+        schema: dict[str, Any],
         *,
         repairs: int = DEFAULT_REPAIRS,
         **params: Any,
@@ -111,7 +111,7 @@ class LLMAgent:
 def decide_all(
     agents: Sequence[LLMAgent],
     prompt: str | Callable[[Any], str],
-    schema: dict,
+    schema: dict[str, Any],
     *,
     repairs: int = DEFAULT_REPAIRS,
     **params: Any,

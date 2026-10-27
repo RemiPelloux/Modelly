@@ -8,6 +8,7 @@ import tomllib
 from pathlib import Path
 
 from modelly.calibrate.base import Calibration, CalibrationError
+from modelly.calibrate.posterior import Posterior
 from modelly.calibrate.simulator import SimulationError
 from modelly.calibrate.smc import ABCSMC
 from modelly.calibrate.spec import METHODS, load_calibration
@@ -102,7 +103,7 @@ def _calibrate(args: argparse.Namespace) -> int:
     return EXIT_OK
 
 
-def _report(calibration: Calibration, posterior, output: str | None) -> None:
+def _report(calibration: Calibration, posterior: Posterior, output: str | None) -> None:
     """Write the summary and the run's diagnostics; the samples to ``output``."""
     sys.stdout.write(f"{posterior!r}\n{posterior.summary().to_string()}\n")
     info = ", ".join(f"{key}={value}" for key, value in posterior.info.items())
