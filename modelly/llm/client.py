@@ -65,7 +65,7 @@ class Client:
         **params: Any,
     ) -> None:
         """Set the provider and the defaults of every call."""
-        self.model = model or provider.default_model
+        self.model: str = model or provider.default_model or ""
         if not self.model:
             raise ValueError(f"{type(provider).__name__} needs model=...")
         if max_concurrency < 1:
@@ -103,7 +103,7 @@ class Client:
         call_index: int | None = None,
         system: str | None = None,
         seed: int | None = None,
-        schema: dict | None = None,
+        schema: dict[str, Any] | None = None,
         **params: Any,
     ) -> Request:
         """Build a :class:`Request`; ``prompt`` is a user message or a list of messages."""
@@ -166,7 +166,7 @@ class Client:
         self, batch: list[Request], pending: list[int]
     ) -> tuple[list[int], BudgetExceeded | None]:
         """The pending calls the budget allows, and the refusal that stopped the rest."""
-        allowed = []
+        allowed: list[int] = []
         for index in pending:
             try:
                 self.budget.reserve(batch[index])
@@ -198,9 +198,9 @@ class Client:
         if failures:
             raise failures[0]
 
-    def send_here(self, request: Request) -> Future:
+    def send_here(self, request: Request) -> Future[Any]:
         """Send ``request`` in this thread; its outcome as a finished future."""
-        future: Future = Future()
+        future: Future[Any] = Future()
         try:
             future.set_result(self.retry.run(self.provider.complete, request))
         except ProviderError as error:
@@ -210,7 +210,7 @@ class Client:
     def collect(
         self,
         request: Request,
-        future: Future,
+        future: Future[Any],
         replies: list[Response | None],
         index: int,
     ) -> ProviderError | None:

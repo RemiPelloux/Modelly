@@ -21,7 +21,7 @@ from modelly.scenarios.exceptions import (
 from modelly.scenarios.store import InMemoryStore, RunId
 
 if TYPE_CHECKING:
-    from concurrent.futures import Executor
+    from concurrent.futures import Executor, Future
 
     from modelly.core.model import Model
     from modelly.scenarios.scenario import Scenario
@@ -47,13 +47,13 @@ class RunConfiguration:
 
     def __init__(
         self,
-        model_class: type[Model],
+        model_class: type[Model[Any, Any]],
         until: float | int,
         model_args: list[Any] | None = None,
         model_kwargs: dict[str, Any] | None = None,
         outcomes: str | list[str] | None = None,
-        data_recorder_attr_name="data_recorder",
-    ):
+        data_recorder_attr_name: str = "data_recorder",
+    ) -> None:
         """Initialize a RunConfiguration object.
 
         Args:
@@ -87,22 +87,23 @@ class RunConfiguration:
             outcomes = [outcomes]
         self.outcomes = outcomes
 
-    def instantiate_model(self, scenario: Scenario) -> Model:
+    def instantiate_model(self, scenario: Scenario) -> Model[Any, Any]:
         """Instantiate the model."""
         return self.model_class(
             *self.model_args, scenario=scenario, **self.model_kwargs
         )
 
-    def run_model(self, model: Model) -> None:
+    def run_model(self, model: Model[Any, Any]) -> None:
         """Run the model."""
         model.run_until(self.until)
 
-    def extract_output(self, model: Model) -> dict[str, pd.DataFrame]:
+    def extract_output(self, model: Model[Any, Any]) -> dict[str, pd.DataFrame]:
         """Extract output from model."""
         recorder = getattr(model, self.data_recorder_attr_name)
 
         if self.outcomes is None:
-            return recorder.get_all_dataframes()
+            frames: dict[str, pd.DataFrame] = recorder.get_all_dataframes()
+            return frames
         else:
             return {k: recorder.get_table_dataframe(k) for k in self.outcomes}
 
@@ -233,14 +234,15 @@ def run_scenarios(
     return store
 
 
-def _progress_bar(iterable: Iterable, progress: bool, total: int) -> Iterable:
+def _progress_bar(iterable: Iterable[Any], progress: bool, total: int) -> Iterable[Any]:
     """Wrap iterable in a tqdm progress bar when progress is on and tqdm is installed."""
     if not progress:
         return iterable
     try:
         from tqdm.auto import tqdm  # noqa: PLC0415
 
-        return tqdm(iterable, total=total, desc="Running scenarios")
+        bar: Iterable[Any] = tqdm(iterable, total=total, desc="Running scenarios")
+        return bar
     except ImportError:
         return iterable
 
@@ -253,6 +255,7 @@ def _record(
     """Mark the run of scenario as succeeded or failed in store."""
     ref, failure = result
     if failure is None:
+        assert ref is not None  # a run without a failure has its output's reference
         store.mark_succeeded(ref)
     else:
         run_id = RunId(scenario.scenario_id, scenario.replication_id)
@@ -271,7 +274,9 @@ def _failure_info(
     )
 
 
-def _collect_futures(futures: dict, store: Store, bar: Callable) -> None:
+def _collect_futures(
+    futures: dict[Future[Any], Scenario], store: Store, bar: Callable[..., Any]
+) -> None:
     """Record each future's result as it completes; a broken executor propagates."""
     for future in bar(as_completed(futures)):
         scenario = futures[future]

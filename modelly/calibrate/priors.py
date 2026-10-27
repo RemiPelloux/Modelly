@@ -154,7 +154,8 @@ class Prior:
         """The log density (log probability for a choice); ``-inf`` off the support."""
         if self.discrete:
             return self._log_probability(value)
-        return self.distribution().logpdf(value)
+        density: float | np.ndarray = self.distribution().logpdf(value)
+        return density
 
     def _log_probability(self, value: Any) -> float | np.ndarray:
         """Log probability of one value or an array of values of a choice."""

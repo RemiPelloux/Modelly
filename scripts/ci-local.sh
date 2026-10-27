@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Local CI gate (pelloux-guidelines.md §8): lint, format, test, audit — in order.
+# Local CI gate (pelloux-guidelines.md §8): lint, format, types, test, audit — in order.
 #
 #   bash scripts/ci-local.sh             # every stage
 #   bash scripts/ci-local.sh --list      # stage names
@@ -9,6 +9,9 @@
 # Uses .venv/bin when it exists, otherwise python3 and ruff from PATH.
 # tests/viz and tests/examples need the optional solara extra and
 # are skipped when it is missing; the hosted build workflow always runs them.
+# The types stage runs mypy in strict mode on the packages [tool.mypy] in
+# pyproject.toml lists: `python -m mypy` when it is installed, else the pinned
+# mypy through uvx, else it prints why it is skipped and passes.
 # The test stage rewrites docs/images/badges/coverage.svg: commit it with the
 # change.
 # python -m modelly.dev gate runs the same stages without bash (any OS);
@@ -26,7 +29,8 @@ else
   RUFF=ruff
 fi
 
-STAGES=(lint format test audit)
+STAGES=(lint format types test audit)
+MYPY_PIN=mypy==2.4.0  # keep in step with TYPE_CHECKER_PIN in modelly/dev/gate.py
 # The test stage measures coverage and refreshes the README badge from it.
 BADGE=docs/images/badges/coverage.svg
 OPTIONAL_SKIPS=()
@@ -38,6 +42,9 @@ run_stage() {
   case "$1" in
     lint)   "$RUFF" check . ;;
     format) "$RUFF" format --check . ;;
+    types)  if "$PYTHON" -c "import mypy" 2>/dev/null; then "$PYTHON" -m mypy
+            elif command -v uvx >/dev/null; then uvx "$MYPY_PIN" --python-executable "$PYTHON"
+            else echo "types: skipped (mypy not installed: pip install mypy or install uv)"; fi ;;
     test)   "$PYTHON" -m pytest -q -W error -W default::PendingDeprecationWarning -p pytest_cov --cov --cov-report=xml ${OPTIONAL_SKIPS[@]+"${OPTIONAL_SKIPS[@]}"} \
               && "$PYTHON" scripts/coverage_badge.py coverage.xml "$BADGE" ;;
     audit)  bash scripts/audit-pelloux.sh ;;

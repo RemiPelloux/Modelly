@@ -32,13 +32,13 @@ from modelly.timetravel.snapshot import (
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
-Run = Model | Recorder | DataCollector | pd.DataFrame
+type Run = Model[Any, Any] | Recorder | DataCollector | pd.DataFrame
 Rows = list[tuple[float, dict[str, Any]]]
 # Replay granularity between two checkpoints: one model step.
 STEP = 1.0
 
 
-def _final(run: Run) -> Model | None:
+def _final(run: Run) -> Model[Any, Any] | None:
     """The model a run ends with, or None for collected data alone."""
     if isinstance(run, Recorder):
         return run.at(run.span[1])
@@ -118,12 +118,12 @@ def data_difference(a: Run, b: Run) -> Difference | None:
     return _earliest([model_vars, _first_agent_record_difference(data_a, data_b)])
 
 
-def _compare(a: Model, b: Model) -> Difference | None:
+def _compare(a: Model[Any, Any], b: Model[Any, Any]) -> Difference | None:
     """The first state difference of two models, at the first one's time."""
     return first_state_difference(model_state(a), model_state(b), a.time)
 
 
-def _walk(rec: Recorder, start: float, stop: float) -> Iterator[Model]:
+def _walk(rec: Recorder, start: float, stop: float) -> Iterator[Model[Any, Any]]:
     """The recorded run at each step from ``start`` up to before ``stop``.
 
     One model is replayed forward, restoring a checkpoint instead wherever

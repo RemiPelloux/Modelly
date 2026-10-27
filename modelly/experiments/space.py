@@ -169,7 +169,7 @@ class ScenarioSpace:
             if isinstance(dim, Fixed)
         }
 
-    def point(self, unit: Sequence[float]) -> dict[str, Any]:
+    def point(self, unit: Sequence[float] | np.ndarray) -> dict[str, Any]:
         """The parameters at ``unit``, one coordinate in ``[0, 1)`` per dimension."""
         dims = self.dimensions
         if len(unit) != len(dims):

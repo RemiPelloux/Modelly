@@ -65,7 +65,7 @@ class Worker:
     """One interpreter running the timing loop of WORKER."""
 
     def __init__(
-        self, python: Path | str, ops_dir: Path, env: dict | None = None
+        self, python: Path | str, ops_dir: Path, env: dict[str, str] | None = None
     ) -> None:
         """Start ``python`` on the operations in ``ops_dir``, pinned to one core if possible."""
         self.process = subprocess.Popen(
@@ -76,20 +76,25 @@ class Worker:
             env=env,
             cwd=ops_dir,
         )
+        assert (
+            self.process.stdin is not None and self.process.stdout is not None
+        )  # PIPE
+        self.stdin, self.stdout = self.process.stdin, self.process.stdout
         _pin(self.process.pid)
-        self.names = json.loads(self.process.stdout.readline())
+        self.names: list[str] = json.loads(self.stdout.readline())
 
-    def ask(self, name: str, number: int) -> float:
+    def ask(self, name: str, number: float) -> float:
         """Nanoseconds per item of ``name`` over ``number`` calls (0: calibrate a burst)."""
-        self.process.stdin.write(json.dumps([name, number]) + "\n")
-        self.process.stdin.flush()
-        return json.loads(self.process.stdout.readline())
+        self.stdin.write(json.dumps([name, number]) + "\n")
+        self.stdin.flush()
+        answer: float = json.loads(self.stdout.readline())
+        return answer
 
     def close(self) -> None:
         """Stop the worker and close its pipes."""
-        self.process.stdin.close()
+        self.stdin.close()
         self.process.wait()
-        self.process.stdout.close()
+        self.stdout.close()
 
 
 def _pin(pid: int) -> None:
@@ -141,11 +146,20 @@ def _core() -> int:
 
 
 def _session(
-    release_python: Path, root: Path, env: dict, pairs: int, names=None, *, swap=False
+    release_python: Path,
+    root: Path,
+    env: dict[str, str],
+    pairs: int,
+    names: list[str] | None = None,
+    *,
+    swap: bool = False,
 ) -> dict[str, Timing]:
     """One session: fresh workers, ``names`` (default: all) timed ``pairs`` times each."""
     ops_dir = root / OPS_DIR
-    start = [(release_python, None), (sys.executable, env)]
+    start: list[tuple[Path | str, dict[str, str] | None]] = [
+        (release_python, None),
+        (sys.executable, env),
+    ]
     workers = [Worker(p, ops_dir, e) for p, e in (start[::-1] if swap else start)]
     release, checkout = workers[::-1] if swap else workers
     try:
@@ -157,7 +171,7 @@ def _session(
 
 
 def compare(
-    release_python: Path, root: Path, env: dict, pairs: int, threshold: float
+    release_python: Path, root: Path, env: dict[str, str], pairs: int, threshold: float
 ) -> list[Timing]:
     """Every operation, release against checkout; a suspect is confirmed or cleared.
 

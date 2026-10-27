@@ -176,7 +176,11 @@ class Experiment:
 
     def tasks(self) -> list[RunTask]:
         """One task per (design point, replicate), points first."""
-        common = {"model": self.model, "entropy": self.seed, "steps": self.steps}
+        common: dict[str, Any] = {
+            "model": self.model,
+            "entropy": self.seed,
+            "steps": self.steps,
+        }
         common |= {"outputs": self.outputs, "store": str(self.store.path)}
         common |= {"retries": self.retries, "record_failures": self.on_error != "skip"}
         return [

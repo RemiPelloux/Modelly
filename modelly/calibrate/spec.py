@@ -39,7 +39,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pandas as pd
 
@@ -103,7 +103,8 @@ def _declared_prior(name: str, table: Mapping[str, Any]) -> Prior:
             f"priors.{name}: kind must name a Prior class method, got {kind!r}"
         )
     try:
-        return factory(**arguments)
+        prior: Prior = factory(**arguments)
+        return prior
     except TypeError as error:
         raise SpecError(f"priors.{name}: {error}") from error
 
@@ -116,7 +117,7 @@ def priors_and_fixed(
     for name, dimension in read_space(document).parameters.items():
         prior = _prior(dimension)
         if prior is None:
-            fixed[name] = dimension.value
+            fixed[name] = cast(Fixed, dimension).value  # only a Fixed has no prior
         else:
             priors[name] = prior
     for name, table in document.get("priors", {}).items():
@@ -148,7 +149,9 @@ def _target(table: Mapping[str, Any], base: Path) -> Target:
     return Target(table["name"], observed, **settings)
 
 
-def _split(method: type[Calibration], table: Mapping[str, Any]) -> tuple[dict, dict]:
+def _split(
+    method: type[Calibration], table: Mapping[str, Any]
+) -> tuple[dict[str, Any], dict[str, Any]]:
     """``[calibration]`` keys as constructor settings and ``run()`` arguments."""
     run_keys = set(inspect.signature(method.run).parameters) - {
         "self",

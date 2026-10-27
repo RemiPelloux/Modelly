@@ -28,11 +28,12 @@ def joint_logprior(
     priors: Mapping[str, Prior], samples: Mapping[str, Sequence[Any]]
 ) -> np.ndarray:
     """The log prior density of every sample (independent priors)."""
-    total = None
+    total: np.ndarray | None = None
     for name, prior in priors.items():
         values = np.asarray(samples[name], dtype=object if prior.discrete else float)
         density = np.asarray(prior.logpdf(values), dtype=float)
         total = density if total is None else total + density
+    assert total is not None  # a calibration has at least one prior
     return total
 
 
@@ -126,7 +127,8 @@ class Kernel:
         from scipy.special import logsumexp  # noqa: PLC0415 - lazy import
 
         mixture = logsumexp(np.log(self.weights)[None, :] + self.logpdf(new), axis=1)
-        return joint_logprior(self.priors, new) - mixture
+        weights: np.ndarray = joint_logprior(self.priors, new) - mixture
+        return weights
 
     def propose(self, rng: np.random.Generator, count: int) -> dict[str, list[Any]]:
         """``count`` particles: ancestor drawn by weight and moved, both redrawn until inside.

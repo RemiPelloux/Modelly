@@ -8,6 +8,7 @@ against the last release and the commit is refused if one is slower. ``git commi
 
 from __future__ import annotations
 
+import argparse
 import os
 import sys
 from pathlib import Path
@@ -87,7 +88,7 @@ def install_hooks(root: Path, out: TextIO) -> int:
     return EXIT_PASSED
 
 
-def main_perf(root: Path, args) -> int:
+def main_perf(root: Path, args: argparse.Namespace) -> int:
     """The ``perf`` command's entry point."""
     return run_perf(
         root,

@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib.metadata as metadata
 import platform
 import re
+from typing import Any
 
 import modelly
 from modelly._native import cells, loops
@@ -33,13 +34,13 @@ def build_name(flags: dict[str, bool]) -> str:
     return "partial" if any(flags.values()) else "pure"
 
 
-def modelly_info() -> dict:
+def modelly_info() -> dict[str, Any]:
     """Modelly's version and build (compiled or pure Python)."""
     flags = native_flags()
     return {"version": modelly.__version__, "build": build_name(flags), "native": flags}
 
 
-def python_info() -> dict:
+def python_info() -> dict[str, Any]:
     """The interpreter: version and implementation."""
     return {
         "implementation": platform.python_implementation(),
@@ -47,7 +48,7 @@ def python_info() -> dict:
     }
 
 
-def platform_info() -> dict:
+def platform_info() -> dict[str, Any]:
     """The operating system and machine."""
     return {
         "machine": platform.machine(),
@@ -101,7 +102,7 @@ def lock_text(packages: dict[str, str]) -> str:
     return "".join(f"{name}=={version}\n" for name, version in sorted(packages.items()))
 
 
-def environment() -> dict:
+def environment() -> dict[str, Any]:
     """The manifest's environment block."""
     return {
         "dependencies": dependency_versions(),

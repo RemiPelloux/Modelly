@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 import tomllib
+from typing import Any
 
 from modelly.experiments.executors import available_executors
 from modelly.experiments.experiment import Experiment, ExperimentError, RunReport
@@ -61,7 +62,10 @@ guide: {GUIDE}"""
 
 def build_parser(prog: str = PROG) -> argparse.ArgumentParser:
     """The parser with the ``run`` and ``status`` subcommands."""
-    layout = {"epilog": EPILOG, "formatter_class": argparse.RawDescriptionHelpFormatter}
+    layout: dict[str, Any] = {
+        "epilog": EPILOG,
+        "formatter_class": argparse.RawDescriptionHelpFormatter,
+    }
     parser = argparse.ArgumentParser(prog=prog, description=DESCRIPTION, **layout)
     commands = parser.add_subparsers(dest="command", required=True, metavar="COMMAND")
     run = commands.add_parser(

@@ -6,13 +6,15 @@ answer (title, creators, licence choice). Edit them before uploading the bundle.
 
 from __future__ import annotations
 
+from typing import Any
+
 MODELLY_URL = "https://github.com/RemiPelloux/Modelly"
 CFF_VERSION = "1.2.0"
 DEFAULT_LICENSE = "cc-by-4.0"
 KEYWORDS = ("agent-based model", "Modelly", "reproducibility")
 
 
-def _summary(manifest: dict) -> str:
+def _summary(manifest: dict[str, Any]) -> str:
     """One sentence naming the model, the run and the Modelly build."""
     target = manifest["target"]
     run = manifest["run"]
@@ -24,7 +26,7 @@ def _summary(manifest: dict) -> str:
     )
 
 
-def zenodo_metadata(manifest: dict) -> dict:
+def zenodo_metadata(manifest: dict[str, Any]) -> dict[str, Any]:
     """The ``.zenodo.json`` deposit metadata, with TODO markers to fill in."""
     return {
         "creators": [{"affiliation": "TODO", "name": "TODO: Family name, Given names"}],
@@ -44,7 +46,7 @@ def zenodo_metadata(manifest: dict) -> dict:
     }
 
 
-def citation_cff(manifest: dict) -> str:
+def citation_cff(manifest: dict[str, Any]) -> str:
     """A ``CITATION.cff`` stub for the study that cites Modelly as a reference."""
     version = manifest["environment"]["modelly"]["version"]
     return (

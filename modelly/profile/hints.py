@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -25,7 +25,7 @@ LOOP_COVERAGE = 0.1
 LINT = "`python -m modelly.lint`"
 
 
-def growth_exponent(records: list[StepRecord], key: tuple) -> float | None:
+def growth_exponent(records: list[StepRecord], key: tuple[Any, ...]) -> float | None:
     """Slope of log(us per agent) on log(agents per call), or None if N barely varied."""
     points = [
         (entry[1] / entry[0], entry[2] / entry[1])

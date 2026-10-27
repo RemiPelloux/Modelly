@@ -9,6 +9,7 @@ from __future__ import annotations
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from typing import Any
 
 from modelly.llm.errors import ProviderError
 from modelly.llm.request import Request, Response
@@ -43,7 +44,8 @@ class RetryPolicy:
         """Seconds to wait before retry number ``attempt`` (counting from 0)."""
         if retry_after is not None:
             return min(retry_after, self.max_delay)
-        return min(self.base_delay * BACKOFF_FACTOR**attempt, self.max_delay)
+        delay: float = min(self.base_delay * BACKOFF_FACTOR**attempt, self.max_delay)
+        return delay
 
     def run(
         self, send: Callable[[Request], Response], request: Request
@@ -59,11 +61,11 @@ class RetryPolicy:
                 self.sleeper(self.delay(attempt, error.retry_after))
                 attempt += 1
 
-    def __getstate__(self) -> dict:
+    def __getstate__(self) -> dict[str, Any]:
         """The numbers; a custom sleeper is replaced by ``time.sleep`` on load."""
         return {k: v for k, v in vars(self).items() if k != "sleeper"}
 
-    def __setstate__(self, state: dict) -> None:
+    def __setstate__(self, state: dict[str, Any]) -> None:
         """Restore the numbers with ``time.sleep``."""
         vars(self).update(state)
         self.sleeper = time.sleep

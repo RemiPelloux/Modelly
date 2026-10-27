@@ -40,8 +40,8 @@ class RunSpec:
 class Run:
     """A finished run: the model, its outputs and how long it took."""
 
-    model: Model
-    outputs: list[dict]
+    model: Model[Any, Any]
+    outputs: list[dict[str, Any]]
     wall_seconds: float
     cpu_seconds: float
 
@@ -56,21 +56,27 @@ def read_scenario(path: Path | None) -> dict[str, Any]:
         raise TargetError(f"cannot read scenario {path}: {error}") from error
 
 
-def execute(cls: type[Model], params: dict, seed: int, steps: int) -> Model:
+def execute(
+    cls: type[Model[Any, Any]], params: dict[str, Any], seed: int, steps: int
+) -> Model[Any, Any]:
     """Build ``cls`` with ``params`` and ``seed`` and run it for ``steps`` steps."""
     model = build_model(cls, params, seed)
     model.run_for(steps)
     return model
 
 
-def timed_run(cls: type[Model], params: dict, seed: int, steps: int) -> Run:
+def timed_run(
+    cls: type[Model[Any, Any]], params: dict[str, Any], seed: int, steps: int
+) -> Run:
     """Run the model, collecting wall-clock and CPU time; outputs are not written yet."""
     wall, cpu = time.perf_counter(), time.process_time()
     model = execute(cls, params, seed, steps)
     return Run(model, [], time.perf_counter() - wall, time.process_time() - cpu)
 
 
-def target_record(spec_target: str, cls: type[Model]) -> tuple[dict, Path]:
+def target_record(
+    spec_target: str, cls: type[Model[Any, Any]]
+) -> tuple[dict[str, Any], Path]:
     """The manifest's target block and the code root (the class's folder)."""
     source = spec_target.rpartition(":")[0]
     root = Path(inspect.getfile(cls)).resolve().parent
@@ -83,7 +89,7 @@ def target_record(spec_target: str, cls: type[Model]) -> tuple[dict, Path]:
     return {"class": cls.__name__, "kind": "module", "source": source}, root
 
 
-def seeds_record(model: Model, seed: int) -> dict:
+def seeds_record(model: Model[Any, Any], seed: int) -> dict[str, Any]:
     """The seed and the seed sequence it expanded to, as the model's scenario holds them."""
     sequence = model.scenario.seed_sequence
     return {
@@ -94,9 +100,11 @@ def seeds_record(model: Model, seed: int) -> dict:
     }
 
 
-def scenario_record(spec: RunSpec, params: dict, model: Model, out: Path) -> dict:
+def scenario_record(
+    spec: RunSpec, params: dict[str, Any], model: Model[Any, Any], out: Path
+) -> dict[str, Any]:
     """The scenario file, its hash, the parameters given and the values the model used."""
-    record = {"file": None, "hash": None, "parameters": params}
+    record: dict[str, Any] = {"file": None, "hash": None, "parameters": params}
     if spec.scenario is not None:
         record["file"] = relative_posix(spec.scenario, out)
         record["hash"] = hash_file(spec.scenario)
@@ -104,7 +112,7 @@ def scenario_record(spec: RunSpec, params: dict, model: Model, out: Path) -> dic
     return record
 
 
-def resolve_parameters(spec: RunSpec) -> tuple[dict, int]:
+def resolve_parameters(spec: RunSpec) -> tuple[dict[str, Any], int]:
     """The run's parameters (scenario file, then --param) and its seed."""
     params = {**read_scenario(spec.scenario), **spec.params}
     file_seed = params.pop(SEED_KEY, None)
@@ -114,7 +122,9 @@ def resolve_parameters(spec: RunSpec) -> tuple[dict, int]:
     return params, int(seed)
 
 
-def manifest_record(spec: RunSpec, cls: type[Model], run: Run, setup: tuple) -> dict:
+def manifest_record(
+    spec: RunSpec, cls: type[Model[Any, Any]], run: Run, setup: tuple[Any, ...]
+) -> dict[str, Any]:
     """Assemble the manifest of a finished run; ``setup`` is ``(params, seed)``."""
     params, seed = setup
     out = Path(spec.out)
@@ -137,7 +147,7 @@ def manifest_record(spec: RunSpec, cls: type[Model], run: Run, setup: tuple) -> 
     }
 
 
-def run_study(spec: RunSpec) -> dict:
+def run_study(spec: RunSpec) -> dict[str, Any]:
     """Run the model ``spec`` names, write its outputs and manifest to ``spec.out``.
 
     Raises TargetError when the target, scenario or inputs cannot be used; anything

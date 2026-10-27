@@ -6,6 +6,8 @@ in the code; every place only the modeller can fill holds a ``TODO`` marker.
 
 from __future__ import annotations
 
+from typing import Any
+
 from modelly.core.model import Model
 from modelly.provenance.odd_facts import AgentFacts, ModelFacts, model_facts
 
@@ -34,7 +36,7 @@ DESIGN_CONCEPTS = (
 )
 
 
-def _table(header: tuple[str, ...], rows: list[tuple]) -> list[str]:
+def _table(header: tuple[str, ...], rows: list[tuple[Any, ...]]) -> list[str]:
     """A Markdown table; ``[]`` when there are no rows."""
     if not rows:
         return []
@@ -158,7 +160,7 @@ def submodels(facts: ModelFacts) -> list[str]:
 WRITERS = (purpose, entities, process, design, initialization, input_data, submodels)
 
 
-def odd_markdown(model: Model) -> str:
+def odd_markdown(model: Model[Any, Any]) -> str:
     """The ODD skeleton of a built model, as Markdown."""
     facts = model_facts(model)
     lines = [

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from collections.abc import Iterator, Sequence
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from typing import Any
 
 from modelly.batch.runs import default_workers, worker_context
 from modelly.experiments.executors.local import ProcessExecutor
@@ -20,7 +21,7 @@ from modelly.experiments.tasks import RunOutcome, RunTask, run_task
 class PooledProcessExecutor(ProcessExecutor):
     """``processes``, with one pool for every ``run`` call until ``close``."""
 
-    def __init__(self, **options) -> None:
+    def __init__(self, **options: Any) -> None:
         """No pool until the first batch."""
         super().__init__(**options)
         self._pool: ProcessPoolExecutor | None = None

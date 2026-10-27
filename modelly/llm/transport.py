@@ -44,7 +44,8 @@ def post_json(
         reason = getattr(error, "reason", error)
         raise ProviderError(f"POST {url} failed: {reason}") from None
     try:
-        return json.loads(body.decode("utf-8"))
+        parsed: dict[str, Any] = json.loads(body.decode("utf-8"))
+        return parsed
     except ValueError:
         raise ProviderError(f"POST {url} returned a reply that is not JSON") from None
 

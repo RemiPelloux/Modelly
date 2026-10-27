@@ -121,7 +121,7 @@ def digest(value: Any, digits: int | None = None) -> str:
     return hashlib.sha256(canonical_bytes(value, digits)).hexdigest()
 
 
-def collected_data(model: Model) -> dict[str, Any]:
+def collected_data(model: Model[Any, Any]) -> dict[str, Any]:
     """The model's ``datacollector`` tables: model variables, and agent variables if any."""
     collector = getattr(model, "datacollector", None)
     if collector is None:
@@ -132,11 +132,11 @@ def collected_data(model: Model) -> dict[str, Any]:
     return data
 
 
-def run_payload(model: Model) -> dict[str, Any]:
+def run_payload(model: Model[Any, Any]) -> dict[str, Any]:
     """What a run digest covers: collected data plus the final model and agent state."""
     return {"data": collected_data(model), "state": asdict(model_state(model))}
 
 
-def run_digest(model: Model, digits: int | None = None) -> str:
+def run_digest(model: Model[Any, Any], digits: int | None = None) -> str:
     """The digest of ``run_payload(model)``."""
     return digest(run_payload(model), digits)

@@ -25,12 +25,12 @@ REPAIR = (
 )
 
 
-def with_schema(prompt: str, schema: dict) -> str:
+def with_schema(prompt: str, schema: dict[str, Any]) -> str:
     """``prompt`` followed by the instruction to answer in JSON matching ``schema``."""
     return prompt + INSTRUCTION.format(schema=describe(schema))
 
 
-def check(text: str, schema: dict) -> tuple[Any, str | None]:
+def check(text: str, schema: dict[str, Any]) -> tuple[Any, str | None]:
     """The validated value of a reply, or None and the reason it is invalid."""
     try:
         return validate(parse_json(text), schema), None

@@ -50,16 +50,18 @@ def _numeric(series: pd.Series) -> bool:
 def _equal(expected: pd.Series, actual: pd.Series, tolerance: Tolerance) -> np.ndarray:
     """A boolean array: where the two columns agree."""
     if _numeric(expected) and _numeric(actual):
-        return np.isclose(
+        close: np.ndarray = np.isclose(
             actual.to_numpy(dtype=float),
             expected.to_numpy(dtype=float),
             rtol=tolerance.rtol,
             atol=tolerance.atol,
             equal_nan=True,
         )
+        return close
     both_missing = expected.isna().to_numpy() & actual.isna().to_numpy()
     same = expected.astype(object).to_numpy() == actual.astype(object).to_numpy()
-    return np.asarray(same, dtype=bool) | both_missing
+    equal: np.ndarray = np.asarray(same, dtype=bool) | both_missing
+    return equal
 
 
 def _shape_difference(

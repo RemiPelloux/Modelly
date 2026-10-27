@@ -9,6 +9,7 @@ from __future__ import annotations
 import importlib.util
 import io
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
@@ -21,7 +22,7 @@ PARQUET, CSV = "parquet", "csv"
 PARQUET_ERRORS = (ValueError, TypeError, NotImplementedError)
 
 
-def find_collector(model: Model) -> DataCollector | None:
+def find_collector(model: Model[Any, Any]) -> DataCollector | None:
     """The model's DataCollector: ``model.datacollector``, else the first attribute that is one."""
     collector = getattr(model, "datacollector", None)
     if isinstance(collector, DataCollector):
@@ -39,7 +40,7 @@ def _flat(frame: pd.DataFrame) -> pd.DataFrame:
     return frame.reset_index()
 
 
-def collected_tables(model: Model) -> dict[str, pd.DataFrame]:
+def collected_tables(model: Model[Any, Any]) -> dict[str, pd.DataFrame]:
     """Every non-empty table the model's DataCollector holds, by output name."""
     collector = find_collector(model)
     if collector is None:
@@ -68,10 +69,13 @@ def _encode(frame: pd.DataFrame, form: str) -> bytes:
         buffer = io.BytesIO()
         frame.to_parquet(buffer, index=False)
         return buffer.getvalue()
-    return frame.to_csv(index=False, lineterminator="\n").encode("utf-8")
+    text: str = frame.to_csv(index=False, lineterminator="\n")
+    return text.encode("utf-8")
 
 
-def write_table(frame: pd.DataFrame, folder: Path, name: str, form: str | None) -> dict:
+def write_table(
+    frame: pd.DataFrame, folder: Path, name: str, form: str | None
+) -> dict[str, Any]:
     """Write one table and return its output record; ``form`` None picks the best one."""
     form = form or (PARQUET if parquet_available() else CSV)
     try:
@@ -92,7 +96,11 @@ def write_table(frame: pd.DataFrame, folder: Path, name: str, form: str | None) 
     }
 
 
-def write_tables(tables: dict[str, pd.DataFrame], folder: Path, forms=None) -> list:
+def write_tables(
+    tables: dict[str, pd.DataFrame],
+    folder: Path,
+    forms: dict[str, str] | None = None,
+) -> list[Any]:
     """Write every table; ``forms`` maps a table name to the format to reuse."""
     forms = forms or {}
     return [

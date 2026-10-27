@@ -153,7 +153,8 @@ def main(argv: list[str] | None = None) -> int:
     modules = {name: module for name, module, _ in COMMANDS}
     if argv and argv[0] in modules:
         command = importlib.import_module(modules[argv[0]])
-        return command.main(argv[1:], prog=f"modelly {argv[0]}")
+        status: int = command.main(argv[1:], prog=f"modelly {argv[0]}")
+        return status
     # Prints the help or the version and exits, or rejects the command (exit 2).
     build_parser().parse_args(argv)
     return EXIT_USAGE

@@ -82,6 +82,7 @@ def _load_file(source: str) -> Any:
         return sys.modules[name]
     sys.path.insert(0, str(path.parent))
     spec = importlib.util.spec_from_file_location(name, path)
+    assert spec is not None and spec.loader is not None  # a .py path always has both
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
     spec.loader.exec_module(module)
@@ -149,7 +150,7 @@ class RunOutcome:
 def _reader(spec: str) -> Callable[[Any], Any]:
     """A function reading one output from a model: an attribute path or a reference."""
     if REFERENCE in spec:
-        function = resolve(spec)
+        function: Callable[[Any], Any] = resolve(spec)
         return function
 
     def read(model: Any) -> Any:

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
+from typing import Any
 
 GUIDE = "https://remipelloux.github.io/Modelly/provenance.html"
 EXIT_OK, EXIT_FAILED, EXIT_USAGE, EXIT_MODEL_ERROR = 0, 1, 2, 3
@@ -43,7 +44,7 @@ def make_parser(prog: str, description: str, epilog: str) -> argparse.ArgumentPa
     )
 
 
-def add_options(parser: argparse.ArgumentParser, options: tuple) -> None:
+def add_options(parser: argparse.ArgumentParser, options: tuple[Any, ...]) -> None:
     """Add ``(flags, keyword arguments)`` pairs to ``parser``."""
     for flags, kwargs in options:
         parser.add_argument(*flags, **kwargs)

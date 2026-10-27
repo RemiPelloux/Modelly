@@ -11,6 +11,7 @@ from __future__ import annotations
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 from modelly.core.model import Model
 from modelly.profile.loader import load_class
@@ -36,12 +37,12 @@ class Verification:
         return self.difference is None
 
 
-def code_root(manifest: dict, folder: Path) -> Path:
+def code_root(manifest: dict[str, Any], folder: Path) -> Path:
     """The folder the manifest's code paths are relative to."""
     return from_posix(manifest["code"]["root"], folder)
 
 
-def target_class(manifest: dict, folder: Path) -> type[Model]:
+def target_class(manifest: dict[str, Any], folder: Path) -> type[Model[Any, Any]]:
     """Load the model class the manifest records."""
     target = manifest["target"]
     source = target["source"]
@@ -50,7 +51,7 @@ def target_class(manifest: dict, folder: Path) -> type[Model]:
     return load_class(f"{source}:{target['class']}")
 
 
-def record_notes(manifest: dict, folder: Path) -> list[str]:
+def record_notes(manifest: dict[str, Any], folder: Path) -> list[str]:
     """What differs between the record and this machine, short of the outputs."""
     notes = [
         f"code file changed or missing: {name}"
@@ -72,7 +73,7 @@ def record_notes(manifest: dict, folder: Path) -> list[str]:
 
 
 def rerun_tables(
-    manifest: dict, folder: Path, scratch: Path
+    manifest: dict[str, Any], folder: Path, scratch: Path
 ) -> dict[str, tuple[Path, str]]:
     """Rerun the model and write its outputs to ``scratch``; table name to (file, format)."""
     cls = target_class(manifest, folder)
@@ -85,7 +86,7 @@ def rerun_tables(
 
 
 def compare_outputs(
-    manifest: dict, folder: Path, fresh: dict, tolerance: Tolerance
+    manifest: dict[str, Any], folder: Path, fresh: dict[str, Any], tolerance: Tolerance
 ) -> Difference | None:
     """The first difference between the recorded outputs and the fresh ones."""
     for item in manifest["outputs"]:

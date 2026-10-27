@@ -30,7 +30,8 @@ TYPES: dict[str, Callable[[Any], bool]] = {
     "null": lambda v: v is None,
 }
 # keyword -> (the type it applies to, how to measure, whether the bound holds, the problem)
-BOUNDS = {
+Bound = tuple[str, Callable[[Any], Any], Callable[[Any, Any], bool], str]
+BOUNDS: dict[str, Bound] = {
     "minimum": ("number", lambda v: v, lambda v, b: v >= b, "below the minimum"),
     "maximum": ("number", lambda v: v, lambda v, b: v <= b, "above the maximum"),
     "minLength": ("string", len, lambda v, b: v >= b, "shorter than minLength"),
@@ -47,7 +48,7 @@ FENCE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL)
 OPENERS = "{["
 
 
-def validate(value: Any, schema: dict, path: str = "$") -> Any:
+def validate(value: Any, schema: dict[str, Any], path: str = "$") -> Any:
     """Return ``value`` when it matches ``schema``; raise :class:`SchemaError` otherwise.
 
     Args:
@@ -70,7 +71,7 @@ def validate(value: Any, schema: dict, path: str = "$") -> Any:
     return value
 
 
-def check_type(value: Any, schema: dict, path: str) -> None:
+def check_type(value: Any, schema: dict[str, Any], path: str) -> None:
     """The ``type`` keyword: one name or a list of them."""
     if "type" not in schema:
         return
@@ -82,7 +83,7 @@ def check_type(value: Any, schema: dict, path: str) -> None:
         raise SchemaError(path, f"expected {' or '.join(names)}, got {value!r}")
 
 
-def check_bounds(value: Any, schema: dict, path: str) -> None:
+def check_bounds(value: Any, schema: dict[str, Any], path: str) -> None:
     """``minimum``, ``maximum`` and the length and item-count bounds."""
     for keyword, (kind, measure, holds, problem) in BOUNDS.items():
         applies = keyword in schema and TYPES[kind](value)
@@ -90,7 +91,7 @@ def check_bounds(value: Any, schema: dict, path: str) -> None:
             raise SchemaError(path, f"{value!r} is {problem} {schema[keyword]!r}")
 
 
-def check_object(value: dict, schema: dict, path: str) -> None:
+def check_object(value: dict[str, Any], schema: dict[str, Any], path: str) -> None:
     """``required``, ``properties`` and ``additionalProperties: false``."""
     properties = schema.get("properties", {})
     for name in schema.get("required", []):
@@ -126,6 +127,6 @@ def parse_json(text: str) -> Any:
     raise SchemaError("$", "the reply holds no JSON value")
 
 
-def describe(schema: dict) -> str:
+def describe(schema: dict[str, Any]) -> str:
     """The schema as compact JSON, to put in a prompt."""
     return json.dumps(schema, sort_keys=True, separators=(",", ":"))

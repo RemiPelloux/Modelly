@@ -11,7 +11,7 @@ from __future__ import annotations
 import os
 import pickle
 import uuid
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -59,6 +59,8 @@ class Calibration:
     """
 
     method = "calibration"
+    # Each method defines run(...) with its own options; it returns a Posterior.
+    run: Callable[..., Posterior]
 
     def __init__(
         self,
@@ -110,6 +112,7 @@ class Calibration:
         if self.store is None and self._temporary is None:
             self._temporary = scratch_folder(self, "modelly-calibrate-")
         root = self.store or self._temporary
+        assert root is not None  # a store, or the scratch folder made above
         outputs = {target.name: target.spec for target in self.targets}
         return Simulator(
             self.model, outputs, self.steps, self.replicates, self.seed, root

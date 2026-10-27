@@ -9,7 +9,7 @@ to a straight run; ``Recorder.branch`` returns several futures from one state;
 anything with ``steps``, ``span`` and ``at``. ``Recorder`` implements it.
 """
 
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING, Any, Protocol
 
 from modelly.timetravel.diff import diff
 from modelly.timetravel.recorder import Recorder
@@ -33,7 +33,7 @@ class Timeline(Protocol):
         """The first and last step ``at`` accepts."""
         ...
 
-    def at(self, step: float) -> "Model":
+    def at(self, step: float) -> "Model[Any, Any]":
         """A new, independent model in the state of the run at ``step``."""
         ...
 

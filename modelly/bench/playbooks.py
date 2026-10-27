@@ -51,9 +51,11 @@ def load_registry(directory: Path) -> dict[str, Any]:
             f"{directory} has no {REGISTRY_FILE} and {WORKER_FILE} (use --playbooks DIR)"
         )
     spec = importlib.util.spec_from_file_location("modelly_bench_registry", path)
+    assert spec is not None and spec.loader is not None  # a .py path always has both
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    return module.PLAYBOOKS
+    playbooks: dict[str, Any] = module.PLAYBOOKS
+    return playbooks
 
 
 def select_variants(
@@ -76,7 +78,7 @@ def select_variants(
             )
         for name in spec["variants"]:
             if _wanted(wanted, playbook, name):
-                python = mesa if name == MESA_VARIANT else sys.executable
+                python = mesa if name == MESA_VARIANT and mesa else sys.executable
                 if name.startswith(MODELLY_PREFIX) or (name == MESA_VARIANT and mesa):
                     chosen.append(Variant(playbook, name, python))
     return chosen
@@ -104,7 +106,8 @@ def run_once(directory: Path, variant: Variant, seed: int, size: str) -> dict[st
     )
     for line in done.stdout.splitlines():
         if line.startswith(RESULT_PREFIX):
-            return json.loads(line[len(RESULT_PREFIX) :])
+            result: dict[str, Any] = json.loads(line[len(RESULT_PREFIX) :])
+            return result
     raise PlaybookError(
         f"{variant.key} failed (exit {done.returncode}):\n{done.stderr.strip()}"
     )

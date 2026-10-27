@@ -31,7 +31,9 @@ def split(line: str) -> list[str]:
     return [word.strip(QUOTES) for word in shlex.split(line, posix=False)]
 
 
-def notebook_class(target: str, namespace: dict[str, Any]) -> type[Model] | None:
+def notebook_class(
+    target: str, namespace: dict[str, Any]
+) -> type[Model[Any, Any]] | None:
     """The Model subclass named ``target`` in the notebook, when it is one."""
     value = namespace.get(target)
     if isinstance(value, type) and issubclass(value, Model):

@@ -69,14 +69,16 @@ class Example:
         """Whether every optional module the example needs is installed."""
         return all(importlib.util.find_spec(name) for name in self.requires)
 
-    def build(self, seed: int = SEED) -> Model:
+    def build(self, seed: int = SEED) -> Model[Any, Any]:
         """A new model of this example, seeded with ``seed``."""
         model_class = _resolve(self.model)
         if self.scenario is None:
-            return model_class(rng=seed)
-        return model_class(scenario=_resolve(self.scenario)(rng=seed))
+            model: Model[Any, Any] = model_class(rng=seed)
+        else:
+            model = model_class(scenario=_resolve(self.scenario)(rng=seed))
+        return model
 
-    def run(self, seed: int = SEED) -> Model:
+    def run(self, seed: int = SEED) -> Model[Any, Any]:
         """A model of this example after ``steps`` steps."""
         model = self.build(seed)
         model.run_for(self.steps)
@@ -206,7 +208,8 @@ def read_golden(path: Path) -> dict[str, str]:
 
 def recorded_platform(path: Path) -> str:
     """The platform the golden file at ``path`` was written on."""
-    return json.loads(path.read_text(encoding=ENCODING))["recorded_on"]
+    platform_name: str = json.loads(path.read_text(encoding=ENCODING))["recorded_on"]
+    return platform_name
 
 
 def write_golden(path: Path, digests: dict[str, str]) -> None:

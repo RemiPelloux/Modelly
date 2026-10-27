@@ -55,7 +55,7 @@ def _scalars(namespace: dict[str, Any]) -> Iterator[tuple[str, Any]]:
             yield name, value
 
 
-def _place(agent: Agent) -> tuple[str, Any] | None:
+def _place(agent: Agent[Any]) -> tuple[str, Any] | None:
     """``("cell", coordinate)`` or ``("position", xy)``, or None."""
     cell = getattr(agent, "cell", None)
     if cell is not None:
@@ -68,7 +68,7 @@ def _place(agent: Agent) -> tuple[str, Any] | None:
     return None if value is _SKIP else (name, value)
 
 
-def agent_state(agent: Agent) -> dict[str, Any]:
+def agent_state(agent: Agent[Any]) -> dict[str, Any]:
     """The state of ``agent``: columns, ``__dict__`` scalars and place."""
     state = dict(_scalars(vars(agent)))
     for name in getattr(type(agent), "_column_specs", {}):
@@ -95,7 +95,7 @@ class ModelState:
     generators: dict[str, str]
 
 
-def model_state(model: Model) -> ModelState:
+def model_state(model: Model[Any, Any]) -> ModelState:
     """The snapshot of ``model`` and every agent it holds."""
     agents = {
         agent.unique_id: (type(agent).__qualname__, agent_state(agent))

@@ -61,7 +61,13 @@ class Growth:
         """Slope of log(us per agent) on log(N): about 1 for a per-agent scan, 0 for O(1)."""
         if not all(self.us_per_agent):
             return None
-        return float(np.polyfit(np.log(self.sizes), np.log(self.us_per_agent), 1)[0])
+        return float(
+            np.polyfit(
+                np.log(self.sizes),
+                np.log(np.asarray(self.us_per_agent, dtype=float)),
+                1,
+            )[0]
+        )
 
 
 def growth_hint(growth: Growth) -> str:
@@ -172,7 +178,7 @@ class SizeComparison:
 
 
 def compare_sizes(
-    factory: Callable[[int], Model],
+    factory: Callable[[int], Model[Any, Any]],
     sizes: Sequence[int],
     steps: int = DEFAULT_STEPS,
     sample_every: int = 1,

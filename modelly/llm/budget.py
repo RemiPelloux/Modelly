@@ -21,6 +21,7 @@ import math
 import threading
 from collections.abc import Mapping
 from dataclasses import dataclass, field
+from typing import Any
 
 from modelly.llm.errors import BudgetExceeded
 from modelly.llm.request import Request, Response
@@ -165,11 +166,11 @@ class Budget:
         with self._lock:
             self.usage.cache_hits += 1
 
-    def __getstate__(self) -> dict:
+    def __getstate__(self) -> dict[str, Any]:
         """Everything but the lock."""
         return {k: v for k, v in vars(self).items() if k != "_lock"}
 
-    def __setstate__(self, state: dict) -> None:
+    def __setstate__(self, state: dict[str, Any]) -> None:
         """Restore the fields and a fresh lock."""
         vars(self).update(state)
         self._lock = threading.Lock()

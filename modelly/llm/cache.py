@@ -116,12 +116,12 @@ class ResponseCache:
         )
         self.insert([row])
 
-    def insert(self, rows: list[tuple]) -> None:
+    def insert(self, rows: list[tuple[Any, ...]]) -> None:
         """Write ``rows`` (in :data:`COLUMNS` order) atomically."""
         with self._lock, self._conn:
             self._conn.executemany(INSERT, rows)
 
-    def rows(self) -> Iterator[tuple]:
+    def rows(self) -> Iterator[tuple[Any, ...]]:
         """Every stored row, sorted by key."""
         with self._lock:
             found = self._conn.execute(SELECT_ALL).fetchall()
@@ -130,7 +130,10 @@ class ResponseCache:
     def __len__(self) -> int:
         """The number of stored replies."""
         with self._lock:
-            return self._conn.execute("SELECT COUNT(*) FROM responses").fetchone()[0]
+            count: int = self._conn.execute(
+                "SELECT COUNT(*) FROM responses"
+            ).fetchone()[0]
+            return count
 
     def __contains__(self, key: object) -> bool:
         """Whether a reply is stored under ``key``."""
@@ -183,7 +186,7 @@ class ResponseCache:
         path = state["path"]
         if path is not None and not Path(path).parent.is_dir():
             path = None
-        self.__init__(path, state["mode"])
+        type(self).__init__(self, path, state["mode"])
         self.insert(state["rows"])
 
 

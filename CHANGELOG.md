@@ -33,6 +33,11 @@ versioning.
   subset stay as `# NETLOGO` comments and are listed with their line numbers. Ships Fire and
   Wolf Sheep Predation sources written from the published descriptions; the translated Fire
   model shows the percolation threshold near 59% density. See `docs/netlogo.md`.
+- Strict type checking: `[tool.mypy]` in pyproject.toml runs mypy in strict mode on batch,
+  bench, calibrate, dev, experiments, lint, llm, netlogo, new, profile, provenance, scenarios,
+  sensitivity, timetravel, the data exports and the top-level modules (156 files); a new `types`
+  stage of `scripts/ci-local.sh` and `python -m modelly.dev gate` runs it with installed mypy,
+  else the pinned mypy through `uvx`, and is skipped with a message when neither is available.
 
 ## 1.3.3 - 2026-10-27
 
