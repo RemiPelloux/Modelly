@@ -143,6 +143,20 @@ versioning.
   which parameters swap places and why.
 - docs: design reviews of calibration (E1), sensitivity analysis (E2) and language-model agents
   (E7), each what was decided, what else was considered and why (`docs/design/`).
+- quality: WebAssembly in the release matrix. The release workflow's new `pyodide` job installs
+  the pure wheel with micropip in Pyodide under node, imports `modelly`, checks the pure-Python
+  twins are in use and runs the Boltzmann wealth example (`scripts/pyodide-smoke.mjs`); the
+  PyPI upload waits for it. In Pyodide `import modelly` needs Pyodide's `sqlite3` package, and
+  importing any bundled example needs `networkx`.
+- quality: SLURM and PBS job scripts run for real. `test_cluster_scripts.py` puts stand-in
+  `sbatch` and `qsub` executables on `PATH` that run the generated job script in `bash` once per
+  array element, so every element runs in a fresh shell and interpreter and must give the serial
+  numbers; the new `platforms` workflow's `slurm` job submits the same array to a single-node
+  SLURM cluster on the runner (`MODELLY_REAL_SCHEDULER=slurm`).
+- quality: a bundle made on Linux verified on macOS and Windows. The `platforms` workflow runs
+  and bundles three studies on Ubuntu (Boltzmann wealth, Schelling, and the language-model
+  opinions example, whose replies travel in the bundle), and macOS and Windows jobs unpack each
+  and run `modelly verify`.
 
 ### Deprecated
 

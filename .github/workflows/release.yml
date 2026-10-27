@@ -62,9 +62,32 @@ jobs:
           name: pure
           path: dist/
 
+  pyodide:
+    # The WebAssembly row of the support matrix: the pure wheel installs with micropip in
+    # Pyodide (CPython compiled to WebAssembly) under node, imports, uses the pure-Python
+    # twins and runs a bundled example (scripts/pyodide-smoke.mjs).
+    name: Pyodide smoke test
+    needs: [pure]
+    runs-on: ubuntu-latest
+    env:
+      PYODIDE_VERSION: "0.29.0"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: pure
+          path: dist
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Install Pyodide
+        run: npm install --no-save --no-audit --no-fund "pyodide@${PYODIDE_VERSION}"
+      - name: Install the pure wheel in Pyodide and run an example
+        run: node scripts/pyodide-smoke.mjs dist/*-py3-none-any.whl
+
   release:
     name: Deploy release to PyPI
-    needs: [wheels, pure]
+    needs: [wheels, pure, pyodide]
     runs-on: ubuntu-latest
     # The PyPI trusted publisher is bound to this environment (Settings > Environments).
     environment:
