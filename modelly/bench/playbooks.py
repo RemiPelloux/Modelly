@@ -89,8 +89,14 @@ def _wanted(wanted: list[tuple[str, str, str]], playbook: str, name: str) -> boo
     return any(p == playbook and (not v or v == name) for p, _, v in wanted)
 
 
-def run_once(directory: Path, variant: Variant, seed: int, size: str) -> dict[str, Any]:
-    """Run ``variant`` once in a new interpreter and return its RESULT row."""
+def run_once(
+    directory: Path,
+    variant: Variant,
+    seed: int,
+    size: str,
+    env: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    """Run ``variant`` once in a new interpreter (environment ``env``) and return its RESULT row."""
     command = [
         variant.python,
         str(directory / WORKER_FILE),
@@ -100,7 +106,7 @@ def run_once(directory: Path, variant: Variant, seed: int, size: str) -> dict[st
         size,
     ]
     done = subprocess.run(
-        command, capture_output=True, text=True, encoding="utf-8", check=False
+        command, capture_output=True, text=True, encoding="utf-8", check=False, env=env
     )
     for line in done.stdout.splitlines():
         if line.startswith(RESULT_PREFIX):
