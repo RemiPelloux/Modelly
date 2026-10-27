@@ -24,12 +24,18 @@ Each model is in `modelly.zoo.<name>.model`.
 
 .. automodule:: modelly.zoo.vector_borne.model
    :members:
+
+.. automodule:: modelly.zoo.hospital_epidemic.model
+   :members:
 ```
 
 ## Ecology
 
 ```{eval-rst}
 .. automodule:: modelly.zoo.energy_budget.model
+   :members:
+
+.. automodule:: modelly.zoo.nutrient_foragers.model
    :members:
 
 .. automodule:: modelly.zoo.forest_fire.model

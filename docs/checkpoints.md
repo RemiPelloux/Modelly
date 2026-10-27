@@ -58,7 +58,9 @@ Everything the model refers to, through the ordinary pickle machinery, including
 - scheduled events, one-off and recurring, the default step schedule, and the counter that
   orders events scheduled at the same time with the same priority;
 - signal subscriptions, `DataCollector` history and `DataRecorder` datasets, `CohortTable`s,
-  the scenario.
+  the scenario;
+- [coupling](coupling.md) schedules, fields (their layer shared with the grid again after a
+  load), ODE and stock-flow states; implicit fields refactorise on their next step.
 
 Caches are not saved but rebuilt when next used: cell neighbourhoods and the continuous space's
 neighbour lists. Weak references (agent sets, subscribers, event callbacks) are saved as weak

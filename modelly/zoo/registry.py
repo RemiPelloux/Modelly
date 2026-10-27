@@ -85,6 +85,15 @@ MODELS: tuple[ZooModel, ...] = (
         "occupancy per land-cover class against the Metropolis stationary law",
     ),
     ZooModel(
+        "hospital_epidemic",
+        "Epidemic coupled to hospital capacity",
+        "epidemiology",
+        "HospitalEpidemic",
+        "HospitalScenario",
+        "SIR agents whose admissions drive a hospital stock-flow ODE that damps contacts.",
+        "final size; hospital against its exact linear solution; admissions mass balance",
+    ),
+    ZooModel(
         "energy_budget",
         "Individual-based population with energy budgets",
         "ecology",
@@ -92,6 +101,15 @@ MODELS: tuple[ZooModel, ...] = (
         "EnergyScenario",
         "Foragers that eat, pay a metabolic cost, reproduce and starve on a resource grid.",
         "mean density against the carrying capacity from the energy balance",
+    ),
+    ZooModel(
+        "nutrient_foragers",
+        "Foragers on a diffusing nutrient field",
+        "ecology",
+        "NutrientForagers",
+        "NutrientScenario",
+        "Foragers eat from a nutrient that enters at a river bank and diffuses inland.",
+        "carrying capacity from the energy balance; nutrient budget closed to round-off",
     ),
     ZooModel(
         "forest_fire",
