@@ -38,7 +38,9 @@ SEGMENTED_SHUFFLE_MIN = 64
 
 def _rebuild(state: tuple) -> random.Random:
     """A ``FastRandom`` at ``state``: compiled or pure, whichever this process runs."""
-    rng = FastRandom()
+    # __new__ skips __init__'s seeding from the OS (most of the cost of a load, and
+    # of every agent migrating with its stream); setstate sets the whole state.
+    rng = FastRandom.__new__(FastRandom)
     rng.setstate(state)
     return rng
 

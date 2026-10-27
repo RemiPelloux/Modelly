@@ -33,6 +33,8 @@ if TYPE_CHECKING:
 STREAM_DOMAIN = 0x4D444C59
 _RANDOM = "_stream_random"
 _RNG = "_stream_rng"
+# The instance attributes holding an agent's generators once it has drawn.
+STREAM_ATTRIBUTES = (_RANDOM, _RNG)
 
 
 def stream_seed(agent: Agent) -> np.random.SeedSequence:
