@@ -3,6 +3,15 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Added
+
+- geo: `modelly.space.geo.samples`, small real samples of Burlington, Vermont, bundled for
+  offline use with their licences in `NOTICE.md` (OpenStreetMap streets, ODbL; ESA WorldCover
+  land cover, CC BY 4.0; census tracts, public domain), and `scripts/geo_data.py` to download
+  the full sources, verify their SHA-256 and rebuild the samples.
+
 ## 1.3.3 - 2026-10-27
 
 A codemod release: `python -m modelly.migrate` ports Mesa 3.5's own examples. The library code
