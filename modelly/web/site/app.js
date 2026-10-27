@@ -100,8 +100,8 @@ const handlers = {
   ready: ({ seconds, native, missing, python }) => {
     const compiled = native.length ? `compiled: ${native.join(", ")}` : "pure Python";
     const absent = missing.length ? `; not in Pyodide: ${missing.join(", ")}` : "";
-    $("versions").textContent = `Modelly ${manifest.modelly} (${compiled}), Python ${python}, Pyodide ${manifest.pyodide.version}${absent}.`;
-    setState("ready", `ready in ${seconds.toFixed(1)} s`);
+    const loaded = `loaded in ${seconds.toFixed(1)} s`;
+    $("versions").textContent = `Modelly ${manifest.modelly} (${compiled}), Python ${python}, Pyodide ${manifest.pyodide.version}, ${loaded}${absent}.`;
     reset();
   },
   state: ({ state }) => show(state),

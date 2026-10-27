@@ -78,6 +78,8 @@ def needed_packages(target: str, steps: int, seed: int) -> list[str]:
     return json.loads(result.stdout.strip().splitlines()[-1])
 
 
+__all__ = ["CORE", "ModelRunError", "distributions_of", "needed_packages", "normalise"]
+
 if __name__ == "__main__":
     name, count, seed_text = sys.argv[1:]
     sys.stdout.write(json.dumps(probe(name, int(count), int(seed_text))) + "\n")

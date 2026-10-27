@@ -2,6 +2,7 @@
 
 import json
 import zipfile
+from pathlib import Path
 
 import pytest
 
@@ -160,3 +161,10 @@ def test_cli_model_error(tmp_path, capsys):
     )
     assert main([f"{path}:Failing", "--out", str(tmp_path / "site")]) == 1
     assert "step failed" in capsys.readouterr().err
+
+
+def test_ci_builds_against_the_pinned_pyodide():
+    """The browser CI job builds the wasm wheel for the Pyodide the sites load."""
+    root = Path(__file__).resolve().parents[2]
+    workflow = (root / ".github/workflows/build_lint.yml").read_text(encoding="utf-8")
+    assert f'PYODIDE_VERSION: "{PYODIDE_VERSION}"' in workflow
