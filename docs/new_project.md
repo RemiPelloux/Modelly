@@ -93,6 +93,28 @@ guard against a draw from the global `random` module or a loop over a set.
 `tests/`; see [Checking a model](lint.md) for the rules, `--fix` and `# noqa`. The profiler is
 described in [Profiling a model](profile.md).
 
+## How long it takes
+
+The path above, from an empty folder to a linted, tested and profiled model, was timed as a
+script on one Linux laptop (Python 3.15, a cold pip cache, a home internet connection), each
+command run once, in order:
+
+| Step | From PyPI (1.3.3) | From this branch's source |
+|---|---|---|
+| `python -m venv .venv` | 2.2 s | 1.7 s |
+| `pip install modelly-abm` (numpy, pandas, scipy downloaded) | 16.4 s | 16.1 s |
+| `modelly new forest-fire` | 0.5 s | 0.4 s |
+| `pip install -e ".[dev]"` (the project and pytest) | 4.4 s | 3.2 s |
+| `python -m pytest` (the determinism test) | 0.7 s | 0.6 s |
+| `python -m modelly lint forest_fire` (no findings) | 0.5 s | 0.4 s |
+| `python -m modelly profile forest_fire.model:ForestFireModel --steps 50` | 0.5 s | 0.4 s |
+| total | 25.1 s | 22.9 s |
+
+This is the machine's time only: reading the page and typing the commands come on top, and the
+download depends on the connection. The roadmap's goal of five minutes for a new user, timed with
+three volunteers, has not been measured with people yet; the machine part leaves about four and a
+half of the five minutes for them.
+
 ## The README and the ODD protocol
 
 The generated README ends with the outline of the ODD protocol (Overview, Design concepts,
