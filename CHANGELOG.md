@@ -137,6 +137,12 @@ versioning.
   innovation and imitation inside their 95 % intervals on three seeds, from priors ten times
   wider (`tests/calibrate/test_zoo_end_to_end.py`, "A zoo model end to end" in
   `docs/calibration.md`).
+- sensitivity: Morris stability across seeds on zoo models. The whole ranking of the Bass
+  diffusion model's three parameters, and the top parameter of the age-structured SEIR model,
+  are the same on five seeds (`tests/sensitivity/test_morris_stability.py`); the guide says
+  which parameters swap places and why.
+- docs: design reviews of calibration (E1), sensitivity analysis (E2) and language-model agents
+  (E7), each what was decided, what else was considered and why (`docs/design/`).
 
 ### Deprecated
 
