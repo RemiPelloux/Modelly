@@ -62,7 +62,10 @@ runs the model in one process and split, and raises at the first output that dif
 from modelly.distributed import check_independence, partition
 
 check_independence(
-    GridEpidemic, scenario, [partition.grid_blocks(2, 2), partition.grid_blocks(4, 4)], steps=20
+    GridEpidemic,
+    scenario,
+    [partition.grid_blocks(2, 2), partition.grid_blocks(4, 4)],
+    steps=20,
 )
 ```
 
@@ -85,7 +88,8 @@ S, I, R = 0, 1, 2
 class Person(CellAgent):
     def __init__(self, model, cell, state, key):
         super().__init__(model)
-        self.key, self.cell, self.state, self.next_state, self.days = key, cell, state, state, 0
+        self.key, self.cell, self.days = key, cell, 0
+        self.state = self.next_state = state
 
     def stream_key(self):
         return self.key  # the index in the creation order, whoever builds the person
@@ -123,7 +127,9 @@ class GridEpidemic(Model):
     def __init__(self, scenario):
         super().__init__(scenario=scenario)
         s = self.scenario
-        self.grid = OrthogonalMooreGrid((s.width, s.height), torus=True, random=self.random)
+        self.grid = OrthogonalMooreGrid(
+            (s.width, s.height), torus=True, random=self.random
+        )
         cells = list(self.grid.all_cells)
         for key, pick in enumerate(self.rng.integers(0, len(cells), s.people).tolist()):
             if owns(self, cells[pick].coordinate):
@@ -189,7 +195,7 @@ it on every rank, never inside `if cluster.is_root:`. All ranks get the same res
 from the root only:
 
 ```python
-with Cluster(backend="mpi") as cluster:          # mpirun -n 4 python run.py
+with Cluster(backend="mpi") as cluster:  # mpirun -n 4 python run.py
     model = cluster.build(GridEpidemic, scenario, partition.grid_blocks(2, 2))
     model.run_for(365)
     frame = cluster.collect()
