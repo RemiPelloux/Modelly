@@ -9,7 +9,7 @@ from __future__ import annotations
 import warnings
 from collections.abc import Callable
 
-from modelly.time.events.event import Event, Priority, _create_callable_reference
+from modelly.time.events.event import Event, Priority
 from modelly.time.events.generator import EventGenerator, Schedule
 from modelly.time.signals import ModelSignals, ObservableSignals, emit
 
@@ -43,18 +43,11 @@ class HasSchedule:
             )
 
             return
-        while True:
-            try:
-                event = self._event_list.pop_event()
-            except IndexError:
-                break
-
-            if event.time <= until:
-                self._set_time(event.time)
-                event.execute()
-            else:
-                self._event_list.add_event(event)
-                break
+        # The heap hands out the next live event only if it is due, so a later
+        # one stays where it is instead of being popped and pushed back.
+        while (event := self._event_list._heap.pop_due(until)) is not None:
+            self._set_time(event.time)
+            event.execute()
 
         self._set_time(until)
 
@@ -92,13 +85,14 @@ class HasSchedule:
                 f"Scheduled time is {time}, but current time is {self.time}"
             )
 
-        callback_ref = _create_callable_reference(function)
+        # The event holds its callback weakly: once this frame lets go of it, a
+        # temporary callback is dead, and is refused. One weak reference is
+        # built, the event's own (a WeakMethod costs about 0.5 us).
+        event = Event(time, function, priority=priority)
         function = None
-        function = callback_ref()
-        if function is None:
+        if event.fn() is None:
             raise ValueError("function must be alive at Event creation.")
 
-        event = Event(time, function, priority=priority)
         self._event_list.add_event(event)
         return event
 

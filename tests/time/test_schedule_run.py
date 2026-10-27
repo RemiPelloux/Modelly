@@ -7,7 +7,7 @@ from functools import partial
 import pytest
 
 from modelly import Agent, Model
-from modelly.time import Schedule
+from modelly.time import Priority, Schedule
 
 
 class StepAgent(Agent):
@@ -129,6 +129,31 @@ class TestScheduleEvent:
         event.cancel()
         model.run_for(5)
         assert log == []
+
+    def test_temporary_callback_is_refused(self):
+        """A partial made in the call dies with it: the event could never run."""
+
+        def fire(log):
+            log.append("fired")
+
+        model = SimpleModel()
+        with pytest.raises(ValueError, match="must be alive at Event creation"):
+            model.schedule_event(partial(fire, []), at=2.0)
+        assert len(model._event_list) == 1  # only the default step
+
+    def test_later_events_stay_queued_in_order(self):
+        """An event after the horizon waits; ties run by priority then insertion."""
+        model = SimpleModel()
+        log = []
+        calls = {name: partial(log.append, name) for name in "abcd"}
+        model.schedule_event(calls["a"], at=1.5)
+        model.schedule_event(calls["b"], at=4.0)
+        model.schedule_event(calls["c"], at=1.5)
+        model.schedule_event(calls["d"], at=1.5, priority=Priority.HIGH)
+        model.run_for(2)
+        assert log == ["d", "a", "c"]
+        model.run_for(3)
+        assert log == ["d", "a", "c", "b"]
 
     def test_at_and_after_exclusive(self):
         model = SimpleModel()

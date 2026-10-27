@@ -26,7 +26,7 @@ DEFAULT_THRESHOLD = 0.10
 
 def native_modules() -> dict[str, bool]:
     """Which compiled modules this interpreter uses (False: the pure-Python twin)."""
-    from modelly._native import cells, loops, sets  # noqa: PLC0415 - imports the core
+    from modelly._native import cells, events, loops, sets  # noqa: PLC0415 - the core
     from modelly.core import rng  # noqa: PLC0415
 
     return {
@@ -34,6 +34,7 @@ def native_modules() -> dict[str, bool]:
         "fastloop": loops.NATIVE,
         "fastcell": cells.NATIVE,
         "fastset": sets.NATIVE,
+        "fastevents": events.NATIVE,
     }
 
 
