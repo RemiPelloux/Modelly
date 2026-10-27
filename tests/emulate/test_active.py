@@ -150,8 +150,9 @@ def test_branin_benchmark():
     """Branin: 40 active runs match a hypercube of 50 (factor 1.25), not of 80.
 
     Measured with ``benchmarks/emulate/active_vs_lhs.py branin --runs 80``: the
-    factor is 1.2 to 1.8 between 20 and 80 runs (40 active runs: error 0.015,
-    the hypercube needs 51; 80: 0.0004, it needs 146), short of the roadmap's 2.
+    factor is 1.1 to 1.4 between 10 and 70 runs (40 active runs: error 0.014,
+    the hypercube needs 57), short of the roadmap's 2; only at 80 runs (error
+    0.0003) is the active design as good as hypercubes of 150 to 160.
     """
     simulation = Simulation(branin, BRANIN, seed=1)
     units = np.random.default_rng(TEST_SEED).random((TEST_POINTS, 2))
