@@ -97,4 +97,5 @@ release page says which of them each feature serves.
 1.5.0 <1.5.0>
 2.0.0 <2.0.0>
 Platforms <platforms>
+Design reviews <../design/index>
 ```
