@@ -114,6 +114,14 @@ versioning.
   MPI on Ubuntu and macOS and under MS-MPI on Windows (2 ranks only); `test_mpi.py` uses
   `mpiexec` on Windows and reads the rank counts from `MODELLY_MPI_RANKS`.
 
+### Deprecated
+
+- `modelly.space.geo.ipf` and `modelly.space.geo.synthesize_population` (also through
+  `modelly.space.geo.population`, with its constants) warn with a `ModellyDeprecationWarning`
+  and go in 2.0: import them from `modelly.population`. They are the same functions, so results
+  do not change. `docs/deprecations.md` gains "Announced for 2.0", every change 2.0 makes with
+  what to use today and when it starts to warn.
+
 ## 1.3.3 - 2026-10-27
 
 A codemod release: `python -m modelly.migrate` ports Mesa 3.5's own examples. The library code

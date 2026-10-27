@@ -50,8 +50,9 @@ met to within the rounding: each count is off by less than the number of levels 
 attribute, and `marginal_errors` shows by how much. The people are drawn from `model.rng`, so a
 seed gives the same population.
 
-`modelly.space.geo.ipf` and `modelly.space.geo.synthesize_population` are the same functions and
-keep working.
+`modelly.space.geo.ipf` and `modelly.space.geo.synthesize_population` are the same functions;
+they keep working through 1.x with a deprecation warning and go in 2.0
+(see [Deprecations](deprecations.md)).
 
 ## Whole households by combinatorial optimisation
 

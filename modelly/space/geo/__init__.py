@@ -13,7 +13,7 @@ Key components:
   agents as points (``GeoAgent``) and polygons as regions.
 - ``RasterLayer``: a raster as a property layer of a grid, sampled at agent positions.
 - ``RoadNetwork``: a road graph as a ``Network`` space, with shortest-path routing.
-- ``synthesize_population``: a synthetic population per region from marginal tables.
+- ``ipf`` and ``synthesize_population``: deprecated aliases of ``modelly.population``.
 """
 
 from modelly.space.geo._deps import require
@@ -23,7 +23,7 @@ require("shapely", "geo")
 require("pyproj", "geo")
 
 from modelly.space.geo.agents import GeoAgent  # noqa: E402
-from modelly.space.geo.population import ipf, synthesize_population  # noqa: E402
+from modelly.space.geo.population import FUNCTIONS, moved  # noqa: E402
 from modelly.space.geo.raster import RasterLayer  # noqa: E402
 from modelly.space.geo.roads import RoadNetwork, download_osm  # noqa: E402
 from modelly.space.geo.space import GeoSpace  # noqa: E402
@@ -34,6 +34,13 @@ __all__ = [
     "RasterLayer",
     "RoadNetwork",
     "download_osm",
-    "ipf",
-    "synthesize_population",
+    "ipf",  # noqa: F822 - deprecated, served by __getattr__ below
+    "synthesize_population",  # noqa: F822 - deprecated, as ipf
 ]
+
+
+def __getattr__(name: str):
+    """``ipf`` and ``synthesize_population``, deprecated: use ``modelly.population``."""
+    if name in FUNCTIONS:
+        return moved(__name__, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
