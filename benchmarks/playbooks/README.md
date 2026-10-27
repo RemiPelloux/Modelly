@@ -39,6 +39,19 @@ phase, for the predation matching and for the compression, and (§7 to §9) for
 the sequential phases of `schelling`, `boltzmann_wealth` and `sugarscape`:
 moves to random empty cells, giving and foraging in a random order.
 
+`grid_epidemic` and `insect_cohorts` also carry `modelly-gpu`: the column (and cohort) variant
+with its step phases on the backend `MODELLY_BACKEND` names (`cupy`, `jax`; `auto` by default,
+numpy when no GPU loads), through `modelly.gpu` (`DeviceTable`, `DeviceCohortTable`,
+`DeviceCellIndex`, `PhiloxStream`). With the same seed it gives the same integer state on numpy,
+CuPy and 64-bit JAX. `compare.py` runs it in `MODELLY_GPU_PYTHON` when that is set.
+`gpu_speedup.py` times it against the `modelly` column variant at 10 million agents by the wall
+clock, the device synchronised, and checks it against its own numpy run (`--equality`):
+
+```bash
+python benchmarks/playbooks/gpu_speedup.py --equality --n 10000000 --side 1000
+python benchmarks/playbooks/gpu_speedup.py --n 10000000 --side 1000 --rounds 3
+```
+
 ## Running
 
 Mesa 2.3 and Modelly cannot share an environment. The runner starts each run in

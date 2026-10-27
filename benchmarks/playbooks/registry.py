@@ -4,7 +4,9 @@ Every playbook directory holds one module per implementation. Each module
 exposes ``build(seed, **params) -> model`` and
 ``simulate(model, steps) -> {"population": int, "stats": {...}}`` and must be
 deterministic for a given seed. The ``mesa`` variant is the
-reference the others are checked against.
+reference the others are checked against. A ``modelly-gpu`` variant runs its
+steps on the backend ``MODELLY_BACKEND`` names (``cupy``, ``jax``; ``auto`` by
+default, numpy when no GPU loads).
 """
 
 PLAYBOOKS = {
@@ -17,6 +19,7 @@ PLAYBOOKS = {
             "frames": "frames_model",
             "modelly-cells": "modelly_cells",
             "modelly": "modelly_model",
+            "modelly-gpu": "modelly_gpu",
         },
         "steps": 60,
         "sizes": {
@@ -91,6 +94,7 @@ PLAYBOOKS = {
             "mesa3": "mesa3_model",
             "modelly": "modelly_model",
             "modelly-cohorts": "modelly_cohorts",
+            "modelly-gpu": "modelly_gpu",
         },
         "steps": 120,
         "sizes": {
