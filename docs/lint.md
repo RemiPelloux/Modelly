@@ -45,6 +45,7 @@ a hint.
 | `--exit-zero` | report, but exit 0 |
 | `--explain CODE` | print why a rule matters, a bad and a good example, and exit |
 | `--list-rules` | print every rule and exit |
+| `--lsp` | run as a language server for editors ([In an editor](#in-an-editor)) |
 
 Exit status: **0** no findings (or `--exit-zero`), **1** at least one finding (with `--diff`:
 at least one fix to apply), **2** a usage error
@@ -500,6 +501,48 @@ not silently disable the configuration.
 
 With `--format github`, each finding shows as an annotation on the changed line of the pull
 request.
+
+## In an editor
+
+`modelly lint --lsp` (or `python -m modelly.lint --lsp`) runs the linter as a language
+server on stdin and stdout. The editor sends each Python file as you open, edit and save it;
+the server answers with the findings as diagnostics (errors and warnings, each linking to its
+section of this page), and offers two quick fixes on a finding: the safe fix of `--fix` when
+the rule has one, and a `# noqa: CODE` comment for the line. `[tool.modelly.lint]` of the
+file's nearest `pyproject.toml` applies; a file that does not parse has no diagnostics until it
+does. Nothing beyond the standard library is needed.
+
+Neovim (0.11 or later), in `init.lua`:
+
+```lua
+vim.lsp.config("modelly", {
+  cmd = { "modelly", "lint", "--lsp" },
+  filetypes = { "python" },
+  root_markers = { "pyproject.toml", ".git" },
+})
+vim.lsp.enable("modelly")
+```
+
+Helix, in `languages.toml`:
+
+```toml
+[language-server.modelly]
+command = "modelly"
+args = ["lint", "--lsp"]
+
+[[language]]
+name = "python"
+language-servers = ["pyright", "modelly"]  # keep your usual server first
+```
+
+VS Code has no built-in client for an arbitrary server: install a generic LSP client
+extension and set its command to `modelly lint --lsp` for Python files. PyCharm does the same
+through the LSP4IJ plugin (Settings, Languages & Frameworks, Language Servers, a new server with
+the command `modelly lint --lsp` and the `python` language). Use the `modelly` of the
+environment your model runs in, so the server lints with the same Modelly version.
+
+The server is tested by driving it over pipes (`tests/test_lint_lsp.py`) and was checked by
+hand in Neovim 0.12; the VS Code, Helix and PyCharm settings above are not tested automatically.
 
 ## In a notebook
 

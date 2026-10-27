@@ -11,6 +11,10 @@ versioning.
   MDL013 (a mutable default in a `Scenario`, shared by every scenario of the class) and MDL014
   (a clock, timer or OS entropy read in a calibration `Target`); `--fix` seeds a sampler in a
   model or agent method from `self.rng`. 21 rules, five with a fix.
+- `modelly lint --lsp`: the linter as a language server over stdio (standard library only),
+  publishing findings as diagnostics on open, change and save, with the safe fix and a
+  `# noqa` comment as quick fixes; settings for Neovim, Helix, VS Code and PyCharm in
+  `docs/lint.md`.
 
 ## 1.3.3 - 2026-10-27
 
