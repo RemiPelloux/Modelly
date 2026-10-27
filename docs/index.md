@@ -191,6 +191,7 @@ Checkpoints <checkpoints>
 Reproducible studies <provenance>
 Time travel <timetravel>
 Geospatial models <geospatial>
+Synthetic populations <population>
 Networks <networks>
 Model zoo <zoo/index>
 Gallery <gallery>

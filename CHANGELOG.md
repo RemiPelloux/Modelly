@@ -7,6 +7,15 @@ versioning.
 
 ### Added
 
+- population: `modelly.population`, synthetic populations from aggregate tables: `ipf` and
+  `trs` (truncate, replicate, sample) rounding in `synthesize_population`, `marginal_errors`
+  to check the fit, `anneal` (combinatorial optimisation of whole records by simulated
+  annealing), `assign_households` from a household-size table, `locate_households` and
+  `assign_places` (nearest school or workplace with room, within a distance limit), and
+  `contact_network` (household, school and work layers of a `MultilayerNetwork`). No bundled
+  personal data; `modelly.space.geo.ipf` and `synthesize_population` keep working.
+- zoo: `age_seir.model.scenario_from_population` starts the age-structured SEIR model from a
+  synthetic population (group sizes and contact matrix); the default scenario is unchanged.
 - geo: `modelly.space.geo.samples`, small real samples of Burlington, Vermont, bundled for
   offline use with their licences in `NOTICE.md` (OpenStreetMap streets, ODbL; ESA WorldCover
   land cover, CC BY 4.0; census tracts, public domain), and `scripts/geo_data.py` to download

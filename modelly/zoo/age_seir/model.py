@@ -21,6 +21,11 @@ relation ``s = s0 * exp(-R0 * (1 - s))``. ``final_size()`` solves it and the tes
 it with the simulated epidemic. ``r0()`` is ``beta / recovery`` times the spectral radius
 of the next-generation matrix.
 
+Starting from a synthetic population: ``scenario_from_population(people, network, levels)``
+takes the group sizes from the people's age levels and the contact matrix from their
+contact network (``modelly.population``: households, schools and workplaces), so the
+model runs on a population built from census tables instead of the illustrative default.
+
 References:
     Kermack, W. O. and McKendrick, A. G. (1927). A contribution to the mathematical theory
     of epidemics. Proceedings of the Royal Society A, 115, 700-721.
@@ -34,8 +39,10 @@ References:
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from enum import IntEnum
 from functools import partial
+from typing import Any
 
 import numpy as np
 
@@ -43,6 +50,7 @@ from modelly.batch.cohorts import CohortTable
 from modelly.core.model import Model
 from modelly.data.collector import DataCollector
 from modelly.scenarios.scenario import Scenario
+from modelly.space.networks.contacts import contact_matrix
 
 
 class State(IntEnum):
@@ -166,6 +174,46 @@ class AgeSEIR(Model):
 
 # Iterating from "nobody escapes" converges monotonically to the epidemic root.
 _MAX_ITERATIONS = 10_000
+# The age column of a ``modelly.population`` DataFrame, and the default seeds per group.
+AGE = "age"
+SEEDS_PER_GROUP = 10
+
+
+def scenario_from_population(
+    people: Any, network: Any, levels: Sequence, **parameters: Any
+) -> SEIRScenario:
+    """A scenario whose age groups and contacts come from a synthetic population.
+
+    Args:
+        people: one row per person with an ``age`` column, as ``modelly.population``
+            builds it (``synthesize_population``, then ``assign_households`` and so on).
+        network: the people's contact network, node ``i`` the ``i``-th row
+            (``modelly.population.contact_network``); its weights are contacts per step.
+        levels: the age levels in group order, for example ``("0-17", "18-64", "65+")``.
+        **parameters: any other ``SEIRScenario`` field (``rng``, ``beta``, ...);
+            ``initial_infected`` defaults to 10 per group, or the whole group if smaller.
+
+    Returns:
+        an ``SEIRScenario`` with ``group_sizes`` counted from ``people`` and ``contacts``
+        from ``contact_matrix(network, groups)``.
+
+    Raises:
+        ValueError: if an age level has nobody in it.
+    """
+    lookup = {level: group for group, level in enumerate(levels)}
+    groups = np.fromiter((lookup[age] for age in people[AGE]), dtype=np.intp)
+    sizes = np.bincount(groups, minlength=len(levels))
+    if not sizes.all():
+        raise ValueError(f"Every age level needs people; counts are {sizes.tolist()}.")
+    contacts = contact_matrix(network, groups, n_groups=len(levels))
+    parameters.setdefault(
+        "initial_infected", tuple(int(n) for n in np.minimum(sizes, SEEDS_PER_GROUP))
+    )
+    return SEIRScenario(
+        group_sizes=tuple(int(n) for n in sizes),
+        contacts=tuple(tuple(float(c) for c in row) for row in contacts),
+        **parameters,
+    )
 
 
 def count_in(model: AgeSEIR, state: State) -> int:
