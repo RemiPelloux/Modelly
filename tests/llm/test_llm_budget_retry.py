@@ -168,3 +168,18 @@ def test_calls_really_run_concurrently():
     client = Client(FakeProvider(responder), max_concurrency=3)
     replies = client.complete_many([client.request(f"q{i}") for i in range(3)])
     assert [r.text for r in replies] == ["met"] * 3
+
+
+def test_without_threads_calls_run_in_this_thread(monkeypatch):
+    """Where threads cannot start (Pyodide), every call runs here, in request order."""
+    monkeypatch.setattr("modelly.llm.client.THREADS", False)
+    callers = set()
+
+    def responder(request):
+        callers.add(threading.get_ident())
+        return request.messages[0].content
+
+    client = Client(FakeProvider(responder), max_concurrency=4)
+    replies = client.complete_many([client.request(f"q{i}") for i in range(8)])
+    assert [r.text for r in replies] == [f"q{i}" for i in range(8)]
+    assert callers == {threading.get_ident()}

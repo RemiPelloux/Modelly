@@ -7,6 +7,7 @@ in the order they were asked for, whatever order the threads finish in.
 
 from __future__ import annotations
 
+import sys
 from collections.abc import Iterable, Sequence
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import replace
@@ -23,6 +24,8 @@ DEFAULT_CONCURRENCY = 4
 DEFAULT_MAX_TOKENS = 512
 DEFAULT_TEMPERATURE = 0.0
 MODEL_SCOPE = "model"
+# Pyodide (sys.platform "emscripten") cannot start threads: calls go one at a time.
+THREADS = sys.platform != "emscripten"
 
 Prompt = str | Sequence[Message]
 
@@ -181,7 +184,7 @@ class Client:
         """Send the ``allowed`` calls, then count and cache their replies in order."""
         if not allowed:
             return
-        workers = min(self.max_concurrency, len(allowed))
+        workers = min(self.max_concurrency, len(allowed)) if THREADS else 1
         if workers == 1:
             futures = [self.send_here(batch[i]) for i in allowed]
         else:
