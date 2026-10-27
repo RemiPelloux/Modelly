@@ -102,3 +102,23 @@ as soon as they can be saved:
 - Open text files with `encoding="utf-8"`, and write files you hash with `newline="\n"`.
 
 `modelly lint` finds most of these (see [Checking a model](lint.md)).
+
+## Streams of each agent's own
+
+By default every agent draws from the model's two generators, so what one agent draws depends
+on how many numbers the agents before it drew. A model can give each agent generators of its
+own instead (provisional, new in 1.4):
+
+```python
+class Epidemic(Model):
+    agent_streams = True  # agent.random and agent.rng are the agent's own
+```
+
+Each agent's seed is derived from the model's seed and the agent's `stream_key()`, its
+`unique_id` unless overridden. An agent then draws the same numbers whatever the activation
+order and however many agents there are, and checkpoints and pickles continue every stream.
+This is what a run split across processes needs, since an agent takes its stream with it.
+Override `stream_key()` when the creation order itself could change, for example to key
+agents on an identifier read from data. The model's own `self.random` and `self.rng`, and the
+bulk draws of columns and cohorts, still use the model's generators. Turning the flag on
+changes the numbers a model draws, so results differ from a run without it for the same seed.

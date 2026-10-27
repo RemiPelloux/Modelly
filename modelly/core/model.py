@@ -81,6 +81,10 @@ class Model[A: Agent, S: Scenario](AgentRegistry[A], HasSchedule, HasEmitters):
     # Agent.__init__ and Agent.remove inline them (see agent.py).
     _default_registry: bool = True
 
+    # True gives every agent random streams of its own (modelly.core.streams):
+    # agent.random and agent.rng no longer return the model's generators.
+    agent_streams: bool = False
+
     def __init_subclass__(cls, **kwargs):
         """Register ``time`` as an observable for every Model subclass."""
         super().__init_subclass__(**kwargs)
