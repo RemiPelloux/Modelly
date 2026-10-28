@@ -5,6 +5,9 @@
 // "stop" posted during a long run is handled after the current slice.
 
 const MODEL_DIR = "/home/pyodide/model";
+// Standard-library modules that some Pyodide releases ship as separate packages (sqlite3
+// before Pyodide 314; `import modelly` needs it): loaded when the lock file lists them.
+const UNVENDORED = ["sqlite3"];
 let py = null;
 let run = null;
 let stopping = false;
@@ -46,7 +49,9 @@ async function init({ manifest, base }) {
   post("progress", { text: "Starting Python…" });
   py = await loadPyodide({ indexURL: manifest.pyodide.url });
   post("progress", { text: `Loading ${manifest.packages.join(", ")}…` });
-  const { urls, missing } = packageUrls(py.lockfile, manifest.packages, manifest.pyodide.url);
+  const stdlib = UNVENDORED.filter((name) => py.lockfile.packages[name]);
+  const names = [...manifest.packages, ...stdlib];
+  const { urls, missing } = packageUrls(py.lockfile, names, manifest.pyodide.url);
   await py.loadPackage(urls, { messageCallback: () => {} });
   post("progress", { text: "Loading Modelly and the model…" });
   await installModel(manifest, base);
