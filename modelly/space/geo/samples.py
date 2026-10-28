@@ -11,6 +11,7 @@ extracts again. None of them holds personal data.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from random import Random
 from typing import TYPE_CHECKING, Any
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
 DATA = Path(__file__).resolve().parent / "data"
 ROADS = DATA / "burlington_roads.graphml"
 LANDCOVER = DATA / "burlington_landcover.tif"
+WGS84 = "EPSG:4326"  # the CRS of the tracts file
 TRACTS = DATA / "burlington_tracts.geojson"
 NOTICE = DATA / "NOTICE.md"
 TRACT_ID = "GEOID"
@@ -78,4 +80,9 @@ def sample_neighbourhoods() -> gpd.GeoDataFrame:
     """
     import geopandas as gpd  # noqa: PLC0415 - optional dependency
 
-    return gpd.read_file(TRACTS).set_index(TRACT_ID)
+    # from_features needs only shapely, so the sample also loads where geopandas has
+    # neither pyogrio nor fiona (Pyodide).
+    with TRACTS.open(encoding="utf-8") as handle:
+        features = json.load(handle)["features"]
+    frame = gpd.GeoDataFrame.from_features(features, crs=WGS84).set_index(TRACT_ID)
+    return frame[[*(c for c in frame.columns if c != "geometry"), "geometry"]]

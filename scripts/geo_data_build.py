@@ -57,7 +57,11 @@ def build_tracts(source: Path, target: Path) -> None:
 
 
 def build_landcover(source: Path, target: Path) -> None:
-    """A window of the WorldCover tile, unchanged pixels, as a compressed GeoTIFF."""
+    """A window of the WorldCover tile, unchanged pixels, as an uncompressed GeoTIFF.
+
+    Uncompressed because Pyodide's GDAL reads no Deflate; at 120 x 120 bytes the file
+    is small either way.
+    """
     with rasterio.open(source) as tile:
         row, column = tile.index(*LANDCOVER_ORIGIN)
         window = Window(column, row, LANDCOVER_PIXELS, LANDCOVER_PIXELS)
@@ -67,10 +71,9 @@ def build_landcover(source: Path, target: Path) -> None:
             "height": LANDCOVER_PIXELS,
             "transform": tile.window_transform(window),
             "tiled": False,
-            "compress": "deflate",
         }
-        profile.pop("blockxsize", None)
-        profile.pop("blockysize", None)
+        for key in ("blockxsize", "blockysize", "compress", "predictor"):
+            profile.pop(key, None)
     with rasterio.open(target, "w", **profile) as out:
         out.write(band, 1)
 
