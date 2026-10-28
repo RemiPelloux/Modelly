@@ -283,6 +283,194 @@ size `large`, `main` and this branch alternating in fresh pinned interpreters fo
 had a median ratio between 0.89 and 1.02 with every interquartile range containing 1.0, and
 the same results bit for bit on three seeds, compiled and pure.
 
+### Compiled event heap
+
+Every scheduled event (and every step, which is an event of the default schedule) went
+through `heapq` on `Event` objects, so each push and pop called `Event.__lt__`, a Python
+method, about log2(n) times. A fifth module, `modelly/_native/fastevents.c`, holds the
+event list's heap: `EventHeap` runs `heapq`'s own sift steps, in the same order, on entries
+that carry the event's time, priority and unique id, read once when it is pushed and compared
+as C numbers. That gives exactly what `Event.__lt__` gives for an `Event` whose time is a
+float, a numpy `float64` or an int of magnitude at most 2^53 (all exact as doubles); a
+subclass of `Event`, a `Fraction` time or a larger int is compared by calling `<` on the
+events, as `heapq` does. The twin, `PyEventHeap` in `modelly/_native/events.py`, is the
+previous list with `heapq`; `tests/native/test_event_heap.py` runs both on random schedules
+(ties, numpy times, huge ints, fractions, NaN, subclasses, cancellations, compactions) and
+checks every pop and the whole heap array after every operation. Both pickle through
+`EventList` as the events in heap order, the format of 1.3, so a checkpoint written with the
+compiled heap resumes under `MODELLY_PURE_PYTHON=1` and the reverse
+(`tests/native/test_event_heap_pickle.py`, wolf-sheep resumed bit for bit). The keys are read
+at push: an event's time and priority must not change while it is on a list, which they never
+could without breaking the heap.
+
+Two changes around it, both in Python and both in the twin too: time advance asks the heap for
+the next event *if it is due* (`pop_due`) instead of popping the first future event and pushing
+it back, and `schedule_event` builds one weak reference to the callback instead of two (a
+`WeakMethod` costs about 0.5 µs); the event still refuses a callback that dies with the call.
+
+Measured locally against the 1.3.3 release (built from its tag with the same compiler and
+dependencies), both sides in that environment's interpreter, CPU time in fresh interpreters,
+the two alternating, pinned with `taskset -c 3` on a shared 16-core laptop, every round's
+results hashed and compared (identical in every round):
+
+| Workload | rounds | 1.3.3 | 1.4 | 1.4 / 1.3.3, median (IQR; range) |
+|---|---|---|---|---|
+| Wolf-sheep (`modelly/examples/advanced/wolf_sheep`, 100x100, 1,000 sheep, 500 wolves, regrowth 10, 40 steps) | 15 | 0.409 s | 0.389 s | 0.95 (0.93 to 0.96; 0.90 to 0.99) |
+| 4,000 patches, 600 regrowth events a step, 60 steps | 15 | 0.129 s | 0.091 s | 0.70 (0.69 to 0.71; 0.68 to 0.71) |
+| wolf-sheep, both pure Python (`MODELLY_PURE_PYTHON=1`) | 9 | 0.461 s | 0.449 s | 0.97 (0.95 to 0.99; 0.90 to 1.01) |
+| the 4,000 patches, both pure Python | 9 | 0.130 s | 0.115 s | 0.89 (0.88 to 0.89; 0.87 to 0.90) |
+
+Wolf-sheep schedules one regrowth event per patch eaten (several hundred a step); the rest of
+its step is the agents' own Python, so the event list is a small share of it and the gain is
+5%: measurable (every one of 15 rounds faster), not large. The
+predator-prey playbook regrows its grass as a column and schedules no event but the step, so
+it has nothing for the heap to speed up (see the release comparison below).
+
+### Compiled column gather
+
+A `DataCollector` attribute reporter, `AgentSet.get` and `agg` read one attribute per agent
+through `operator.attrgetter`. For a `Column` attribute that calls its Python getter from C,
+a frame per agent, unless the collected agents are exactly one class's whole table (then the
+column is sliced). `fastset.attr_values` now runs the getter's three reads itself,
+`agent._column_table._views[position][agent._column_row]`, for any agent whose class's
+attribute is a Column property (the getter carries its position), caching each class's position
+(revalidated on the class's version tag) and its table's view; any error runs the getter, which
+raises what it raises (`ColumnMissingError` for a removed agent). Plain attributes are read as
+before. The collector uses it one attribute at a time, mixed reporter sets included; the rows
+are identical (`tests/native/test_column_gather.py`, every dtype, interleaved classes,
+overridden and replaced properties, grown tables).
+
+| Workload (paired as above) | rounds | 1.3.3 | 1.4 | 1.4 / 1.3.3, median (IQR; range) |
+|---|---|---|---|---|
+| `collect`, 20,000 agents of two Column classes interleaved, two attribute reporters, 40 collections | 15 | 0.239 s | 0.112 s | 0.47 (0.46 to 0.47; 0.44 to 0.48) |
+| the same, both pure Python | 9 | 0.239 s | 0.239 s | 1.00 (0.99 to 1.01; 0.96 to 1.01) |
+| `attr_values` alone, per agent, Python twin (1.3's code) against compiled, in one process, Column / plain attribute | 3 | 95 to 102 ns / 18 ns | 38 to 41 ns / 16 ns | 0.40 / 0.88 |
+
+### Profile-guided optimisation
+
+`benchmarks/pgo.py` builds the compiled modules twice from the same source: once with the
+build's flags (-O3), once with GCC 16's profile-guided optimisation (-fprofile-generate, a
+training run of every Modelly playbook at size small, the 17 core operations and an
+event-heavy schedule, `benchmarks/pgo_training.py`, then -fprofile-use), and times every
+Modelly playbook variant at size large in the two, paired as `modelly bench --against` does
+(7 rounds, pinned to core 3, results identical in every round, measured locally). The
+medians fall on both sides of 1 (0.993 to 1.003) and the interquartile ranges are within
+1.5% of it, two of them entirely below 1 by at most 0.7% and one entirely above it by at most
+0.5%: no playbook is measurably faster. What the compiled modules do per call
+is a handful of C operations around interpreter calls, and the branches a profile could
+reorder are already the predictable ones. The build does not use a profile, and
+`hatch_build.py` has no PGO option. Clang (which needs `llvm-profdata merge` between the two
+steps) and MSVC (`/GL` with `/LTCG:PGINSTRUMENT` and `/LTCG:PGOPTIMIZE`) were not tried: this
+machine has no MSVC, and the measurement above gives no reason to expect a different answer.
+
+| Variant (large) | -O3 | PGO | PGO / -O3, median (IQR) |
+|---|---|---|---|
+| grid_epidemic / modelly-cells | 1.252 s | 1.211 s | 1.002 (0.974 to 1.036) |
+| grid_epidemic / modelly | 0.135 s | 0.135 s | 1.000 (0.995 to 1.004) |
+| predator_prey / modelly-cells | 0.937 s | 0.934 s | 0.997 (0.992 to 1.003) |
+| predator_prey / modelly | 0.273 s | 0.272 s | 1.003 (0.993 to 1.007) |
+| flocking / modelly | 0.313 s | 0.311 s | 0.998 (0.995 to 1.004) |
+| network_contagion / modelly | 0.332 s | 0.330 s | 0.996 (0.985 to 0.999) |
+| insect_cohorts / modelly | 0.278 s | 0.280 s | 1.000 (0.984 to 1.008) |
+| insect_cohorts / modelly-cohorts | 0.007 s | 0.007 s | 1.000 (0.986 to 1.013) |
+| schelling / modelly-cells | 0.242 s | 0.243 s | 0.998 (0.991 to 1.017) |
+| schelling / modelly | 0.218 s | 0.219 s | 1.001 (0.999 to 1.005) |
+| boltzmann_wealth / modelly | 0.150 s | 0.149 s | 0.995 (0.989 to 1.008) |
+| sugarscape / modelly-cells | 0.461 s | 0.459 s | 0.993 (0.991 to 0.998) |
+| sugarscape / modelly | 0.152 s | 0.153 s | 1.003 (1.001 to 1.005) |
+
+An earlier, busier session (the same build, 7 rounds) gave medians from 0.94 to 1.08, every
+interquartile range containing 1.
+
+### 1.4 against 1.3.3, playbook by playbook
+
+`modelly bench --against 1.3.3 --size large --rounds 9 --core 3`, measured locally: every
+Modelly variant, this checkout and 1.3.3 built from its tag with the same compiler and
+dependencies, both in the 1.3.3 environment's interpreter, the sides alternating in fresh
+interpreters, results identical in every round, the machine otherwise quiet (load 1 to 2).
+Ratio is 1.4 / 1.3.3, below 1 is faster:
+
+| Variant (large) | 1.3.3 | 1.4 | ratio, median (IQR) |
+|---|---|---|---|
+| grid_epidemic / modelly-cells | 1.201 s | 1.196 s | 0.988 (0.984 to 1.009) |
+| grid_epidemic / modelly | 0.130 s | 0.131 s | 1.001 (0.996 to 1.004) |
+| predator_prey / modelly-cells | 0.926 s | 0.941 s | 0.998 (0.978 to 1.016) |
+| predator_prey / modelly | 0.270 s | 0.270 s | 1.003 (0.999 to 1.011) |
+| flocking / modelly | 0.310 s | 0.310 s | 0.999 (0.998 to 1.006) |
+| network_contagion / modelly | 0.325 s | 0.325 s | 1.002 (0.999 to 1.008) |
+| insect_cohorts / modelly | 0.277 s | 0.277 s | 0.998 (0.995 to 1.009) |
+| insect_cohorts / modelly-cohorts | 0.007 s | 0.007 s | 0.986 (0.972 to 1.000) |
+| schelling / modelly-cells | 0.240 s | 0.238 s | 0.997 (0.988 to 1.005) |
+| schelling / modelly | 0.216 s | 0.216 s | 1.003 (0.994 to 1.010) |
+| boltzmann_wealth / modelly | 0.150 s | 0.148 s | 0.990 (0.984 to 0.996) |
+| sugarscape / modelly-cells | 0.463 s | 0.463 s | 0.999 (0.993 to 1.003) |
+| sugarscape / modelly | 0.152 s | 0.152 s | 1.004 (1.001 to 1.008) |
+
+No variant is slower by the guard's criterion; the largest median, Sugarscape's 1.004, has its
+whole interquartile range within 1%. The playbooks are written with column phases and
+schedule no event but the step, so the event heap and the column gather have nothing to
+speed up in them; predator-prey in particular regrows its grass as a column, so it is not
+faster (the event-heavy wolf-sheep example above is). An earlier session that ran the
+checkout in a development interpreter with pyarrow installed measured the grid epidemic 2 to
+4% slower; split into build and run, the difference was all in the run's garbage collection,
+and with both sides in one interpreter it is 0.99 (20 rounds, IQR 0.96 to 1.03). That is why
+`--against` now runs both sides in the release environment's interpreter.
+
+The performance guard (`python -m modelly.dev perf`, 17 core operations, measured locally)
+finds no operation slower than 1.3.3: medians from 0.983 (creating and removing agents with
+columns) to 1.028 (creating and removing plain agents, IQR 0.994 to 1.034); the two
+neighbourhood walks read 1.016 and 1.019 with lower quartiles of 1.002 and 1.004, under the
+guard's 3% threshold and on code this release does not change; `schedule+run event` reads
+0.993, since its 500 events at distinct times make every heap comparison a single step.
+
+Measured on Linux only: Windows and macOS could not be measured on this machine, so the
+claim "no playbook slower than 1.3.3" holds for Linux x86-64 and is untested elsewhere.
+
+### Memory-mapped columns
+
+`modelly.core.storage` decides where a table's columns live. `InMemory` is the default and
+what 1.3 did. `MemoryMapped(directory)` keeps every numeric column in a `numpy.memmap` file
+in a fresh folder under `directory`; the operating system pages rows in and out, so a table
+can hold more rows than fit in memory, and a column that doubles is grown by extending its
+file, without copying the rows already written. Opt in with `model.columns.storage =
+MemoryMapped(...)` before the first agent of a class is created, or
+`CohortTable(rng, storage=MemoryMapped(...), ...)`. The folder is deleted by `close()`, at the
+end of a `with` block, or when the storage is garbage-collected. Object columns cannot be
+mapped and stay in memory. A checkpoint (or any pickle) carries the rows, not the file names,
+and loading it copies them into a new folder under the same directory; since a checkpoint is
+built in memory, saving and loading one needs as much memory as its columns.
+`tests/core/test_storage.py` checks that a memory-mapped run holds the same rows as an
+in-memory one (agents growing past several doublings, and a cohort table of three million
+rows on disk), that checkpoints resume bit for bit in a new folder, and that the folder goes.
+
+A row of a `ColumnTable` belongs to an `Agent` object, which stays in memory (225 bytes with
+its registry entries, "Memory per agent" below, before its row attributes), so a hundred
+million agents need over 22 GB for the objects alone, whatever the columns' storage. A hundred million rows do fit as
+a `CohortTable`, rows without objects. `benchmarks/large_columns.py` builds one (count, stage,
+age, patch and a float trait per row, 19 bytes) and runs a stage-structured life cycle on it:
+binomial thinning by stage, ageing, stage transitions and offspring draws.
+
+The run, measured locally: 100 million rows (2.55 GB of columns at the table's capacity of
+2^27 rows), three steps, each in its own systemd scope with a hard limit and no swap
+(`systemd-run --user --scope -p MemoryMax=... -p MemorySwapMax=0`); "cgroup peak" is the
+scope's `memory.peak`, which counts the mapped file pages it holds as well as anonymous
+memory. Results identical across the runs that finished (3,815,571,746 individuals, the same
+offspring count).
+
+| Storage | MemoryMax | finished | build | seconds per step | cgroup peak |
+|---|---|---|---|---|---|
+| memory-mapped | 16 GB | yes | 2.2 s | 10.4, 9.5, 9.3 | 3.61 GB |
+| in memory | 16 GB | yes | 3.1 s | 8.7, 8.4, 8.3 | 4.26 GB |
+| memory-mapped | 3 GB | yes | 2.7 s | 10.1, 9.6, 11.6 | 3.22 GB (the limit: file pages were reclaimed) |
+| in memory | 3 GB | no: killed by the limit | | | |
+
+A hundred million rows run well inside 16 GB either way; the file-backed table costs 10 to
+15% per step here (the page cache sat on a fast SSD and the whole file fit in memory). Under a
+limit smaller than the run needs in memory, the memory-mapped table finishes and the
+in-memory one is killed. The temporaries of a step (a 100-million-element survival array and
+the binomial draws, 800 MB each) stay in memory whatever the storage. A table whose columns
+exceed the machine's memory follows the same path, at the disk's speed.
+
 ### Free-threaded CPython
 
 All four modules load on free-threaded CPython (wheels for 3.14t and 3.15t; tested on 3.15t)
@@ -311,6 +499,12 @@ neighbourhood walk against `main` were within noise (medians 0.92 to 0.98). On C
 equal to serial runs, agents moved across a shared grid, `select` and `agg` while another
 thread adds and removes agents) passed 25 repeated runs at ten times its default rounds.
 ThreadSanitizer was not run: it needs an instrumented interpreter.
+
+`fastevents` (1.4) holds the heap's critical section in every method and declares
+`Py_MOD_GIL_NOT_USED`; the column gather in `fastset` reads items as new references and type
+version tags with relaxed loads. Both were built and tested on the GIL interpreter only: the
+machine they were written on has no free-threaded CPython, so the 3.15t build of these two is
+untested.
 
 ### Memory per agent
 
@@ -708,7 +902,22 @@ modelly bench --baseline v1.2.0                    # compare; exit 1 on a regres
 modelly bench --size small --rounds 5 --only grid_epidemic --only schelling:modelly
 modelly bench --history ~/bench/modelly.jsonl --core 3 --threshold 0.05
 MESA_PYTHON=.venv-mesa2/bin/python modelly bench   # the Mesa variants too
+modelly bench --against 1.3.3 --rounds 7 --core 3  # this checkout against a release, paired
 ```
+
+`--against VERSION` (or `release`, the last tag) builds that release from its tag in this
+repository with the performance guard's builder (same compiler, same numpy, pandas, scipy and
+networkx, cached in `.modelly-bench/`), then runs every Modelly variant once per side per
+round, the side order swapped every round, with the same seed. Both sides run in the release
+environment's interpreter, the checkout's with the checkout first on `PYTHONPATH`, so both
+import the same third-party packages: run from a development environment that has pyarrow
+installed, the checkout imported it and the release did not, which added about 10,000
+objects for the garbage collector and moved where its collections fall (the grid epidemic's
+60 steps spend more time collecting than computing). The two runs
+must give identical results; the report gives each variant's median per-round CPU ratio and
+its interquartile range, and exits 1 when a variant's median is above 1 + `--threshold` and
+even its lower quartile is above 1 (the performance guard's criterion), or when results
+differ. Nothing goes to the history.
 
 Each variant runs in a fresh interpreter; the order of the variants alternates from one round
 to the next. Runs are pinned to one core through `psutil` (`pip install modelly-abm[bench]`)
