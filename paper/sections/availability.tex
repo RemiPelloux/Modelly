@@ -6,33 +6,46 @@ it costs to use it in research: array-backed and counted populations for speed, 
 with pure-Python twins, and the experiment, calibration, sensitivity, provenance and
 publication steps built on one seeding discipline. Its claims are measured in the open: against
 Mesa~2.3, Mesa~3.5 and mesa-frames, with an agreement study over 100 seeds per variant; against its own previous release
-before every new one; and with methods checked on problems whose answers are known. The
+before every new one; and with methods checked on problems whose answers are known. Release
+1.4 extends it beyond one process (split runs, a GPU backend, differentiable models) and
+connects it to data, fields and the browser, each addition reported against the target its
+roadmap set (\cref{tab:targets}). The
 measurements also show where it does not help (a model written agent by agent runs between Mesa's speed and 4.6 times faster, depending on
-how much of its time the framework's calls take, and hand-written numpy that gives up agent
-objects is 1.8 to 4.4 times faster than its columns) and where its evidence is still thin (\cref{sec:threats}).
+how much of its time the framework's calls take; hand-written numpy that gives up agent
+objects is 1.8 to 4.4 times faster than its columns; a split run on one laptop and a GPU below
+tens of thousands of agents gain little) and where its evidence is still thin (\cref{sec:threats}).
 
 \section{Availability}
 \label{sec:availability}
 
 \cmd{pip install modelly-abm} installs \modelly{} (Python 3.12 or later), which is imported as
 \code{modelly} and is free software under the Apache 2.0 licence. Compiled wheels are published
-for Linux, macOS and Windows, and a pure-Python wheel elsewhere. Source, issue tracker, the 2,276 tests (97.8\% line coverage, measured by the test suite's coverage job)
+for Linux, macOS and Windows, and a pure-Python wheel elsewhere. Source, issue tracker, the 2,929 tests (97.5\% line coverage, measured by the test suite's coverage job)
 and the benchmark harness are at
 \href{https://github.com/RemiPelloux/Modelly}{\nolinkurl{github.com/RemiPelloux/Modelly}};
 documentation, tutorials and the roadmap at
-\href{https://remipelloux.github.io/Modelly/}{\nolinkurl{remipelloux.github.io/Modelly}}. The version described here is 1.3.3, which
-contains the ABC-SMC correction of \cref{sec:validation} and the codemod fix of
-\cref{sec:portability}; its library code is 1.3.2's. The measurements used that library code, compiled on the
-measurement machine with GCC~16.2, and the benchmark code of commit \code{627459a}; Mesa's examples were ported and timed with the
-codemod fix and the runner of
+\href{https://remipelloux.github.io/Modelly/}{\nolinkurl{remipelloux.github.io/Modelly}}. Fifty-five
+tests skip without an optional library (CuPy, Ray, optuna, xarray, a broker) or a browser.
+The version described here is 1.4.0. The
+measurements of \cref{sec:performance} ran on the library code of 1.3.2 and 1.3.3 (which
+1.4.0 keeps, apart from the changes gated in \cref{sec:regressions}), compiled on the
+measurement machine with GCC~16.2, with the benchmark code of commit \code{627459a}; Mesa's examples were ported and timed with the
+codemod fix of 1.3.3 and the runner of
 \code{benchmarks/mesa\_examples/} before they were committed, unchanged (\code{19915bb},
 \code{1e36264}), and the mesa-frames thread timing ran while the fix was uncommitted; the coverage study and
 the numpy grid epidemic at the timed size ran while benchmark files they do not use were
 uncommitted (since committed in \code{d45bbd3} and \code{0398c44}); each
-result file records the commit, the machine and the package versions. The data and scripts behind every table and figure
+result file records the commit, the machine and the package versions. The measurements of
+\cref{sec:scale,sec:connect} ran in the branch of each addition before it was merged into
+1.4.0, with the code committed unchanged; their result files record the environment and the
+package versions, and the tests that reproduce them run in the merged tree. The data and scripts behind every table and figure
 of this paper are in the repository's \code{paper/} folder (\cref{app:reproduce}). The repository
-is archived by Software Heritage; the commit with the code, data and scripts of this paper is
-\code{swh:1:rev:550458fe378d7f50147b}\allowbreak\code{1d6c4b5b1d49f3beddec}. To cite \modelly{}, use the
+is archived by Software Heritage; the commit with the code, data and scripts of the
+measurements of \cref{sec:performance,sec:reproducibility} is
+\code{swh:1:rev:550458fe378d7f50147b}\allowbreak\code{1d6c4b5b1d49f3beddec}, and the 1.4
+additions are in the commits that follow it.
+% SWHID-1.4.0: update to the archived release commit once Software Heritage has it
+To cite \modelly{}, use the
 metadata in the repository's \code{CITATION.cff}.
 
 \section*{Declarations}
@@ -40,11 +53,13 @@ metadata in the repository's \code{CITATION.cff}.
 
 \paragraph{Software availability.} Name: \modelly{} (\code{modelly-abm} on PyPI). Developer:
 R\'emi Pelloux, OpenPro (\href{mailto:rp@openpro.ai}{rp@openpro.ai}). First available: 2026.
-Version described: 1.3.3. Language: Python, with four C extension modules. Requirements:
+Version described: 1.4.0. Language: Python, with five C extension modules. Requirements:
 CPython 3.12 or later, \code{numpy}, \code{pandas}, \code{scipy} and \code{tqdm}; optional
-extras for visualisation, geography, networks and experiment storage. Hardware: any machine
-that runs CPython; compiled wheels for Linux, macOS and Windows on x86-64 and ARM64. Size:
-0.8 to 2.2~MB per wheel. Licence: Apache 2.0. Source:
+extras for visualisation, geography, networks, experiment storage, MPI (\code{mpi4py}), GPUs
+(CuPy), differentiable models (JAX), message brokers, an outside optimiser and xarray.
+Hardware: any machine that runs CPython; compiled wheels for Linux, macOS and Windows on
+x86-64 and ARM64, a pure-Python wheel elsewhere and for the browser. Size: about 1.1~MB for
+the Linux x86-64 and the pure wheel built from the release branch. Licence: Apache 2.0. Source:
 \href{https://github.com/RemiPelloux/Modelly}{\nolinkurl{github.com/RemiPelloux/Modelly}}.
 
 \paragraph{Data availability.} The data and scripts behind every measured table and figure are

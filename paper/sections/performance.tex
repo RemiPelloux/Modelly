@@ -404,7 +404,7 @@ Performance work regresses easily: a clearer error message or a thread-safety gu
 path costs a few percent that no single test notices. From release 1.3.1 on, every release is
 benchmarked against the previous published one before it is tagged, using wheels built by the
 same toolchain and identical dependencies, on three measurements in paired alternating runs:
-14 core operations (agent sets, column reads and writes, agent and column removal, cell
+16 core operations (agent sets, column reads and writes, agent and column removal, cell
 moves, data collection, events, random draws) plus a \code{numpy}-only control
 that must read 1.00, the eight playbooks seed by seed, and the medfly notebook at 1/30 of its
 full scale, chunk by chunk. A release ships only if none shows a measurable regression, by the
@@ -435,9 +435,17 @@ slower by the criterion (the widest spread, a cell move, has a median ratio of 1
 quartile of 0.93); playbook ratios between 0.99 and 1.02 over five rounds, with identical
 outputs; and a paired ratio of 1.00 on the notebook (per-round ratios 0.88 to 1.02), with
 identical records. In both releases the playbooks run no code
-that changed: 1.3.2's compiled modules have the same machine code as 1.3.1's. The playbook arm therefore
+that changed: 1.3.2's compiled modules have the same machine code as 1.3.1's.
+% GATE-1.4.0: replace with the fixed-frequency run
+Release 1.4.0, whose library changes are the compiled event heap, the C column gather and the
+per-agent streams (\cref{sec:scale}), was measured against 1.3.3 during integration on the
+shared machine without the fixed frequency: no core operation slower by the criterion
+(medians 0.983 to 1.028), playbook ratios between 0.986 and 1.004 over nine rounds with
+identical outputs, and the event-heavy wolf-sheep example at 0.95 (\cref{sec:perf2}); the
+fixed-frequency run of the full gate, the notebook arm included, precedes the tag. The playbook arm therefore
 shows the gate's noise floor: its per-round ratios spread by more than 3\%, so a median of 1.07
 passes while its lower quartile is below 1, and slowdowns of a few percent are detected only
-by the core operations' longer, tighter measurements. The raw numbers of the three release
+by the core operations' longer, tighter measurements. The raw numbers of the 1.3 release
 comparisons are in \code{paper/data/release\_gates.json}, except the notebook timing of
-1.3.1 against 1.2.0, whose raw output was not kept.
+1.3.1 against 1.2.0, whose raw output was not kept; the 1.4 comparison's tables are in
+\code{docs/performance.md}.

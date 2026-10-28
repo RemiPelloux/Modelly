@@ -35,8 +35,20 @@ most, and the part of the framework that does the work.
     and identically, so such a study can be reproduced. \\ \addlinespace
     Real geography, road networks, contact layers & Geographic space, rasters, road routing,
     synthetic populations, temporal and multilayer networks. \\ \addlinespace
-    Teaching & Twelve validated reference models, domain tutorials, a course outline, Studio
-    for live demonstration. \\ \addlinespace
+    Teaching & Seventeen validated reference models, domain tutorials, a course outline, Studio
+    for live demonstration, and a static export that runs a model in a browser tab
+    (\cref{sec:browser}). \\ \addlinespace
+    A population too large for one process & A split run over MPI or Dask workers, byte-identical
+    to one process under a stated contract; on one laptop the gain is small (\cref{sec:split}). \\ \addlinespace
+    Millions of agents whose phases are array operations & The GPU backend: the grid epidemic's
+    steps 34 times faster than columns at ten million agents, slower below tens of
+    thousands (\cref{sec:gpu}). \\ \addlinespace
+    A model kept in step with arriving data & Stream sources, a particle filter and an ensemble
+    Kalman filter over replicate ensembles, with forecast bands (\cref{sec:assimilation}). \\ \addlinespace
+    Agents on a diffusing resource or coupled to a stock-flow model & Fields with a checked
+    coupling schedule and mass balance (\cref{sec:couple}). \\ \addlinespace
+    An expensive model and few runs & Emulators, active learning and history matching in waves
+    (\cref{sec:emulate}). \\ \addlinespace
     \bottomrule
   \end{tabularx}
 \end{table}

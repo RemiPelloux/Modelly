@@ -3,42 +3,55 @@
 
 \subsection{Same seed, same digest}
 
-A determinism suite runs fourteen bundled examples for ten steps from a fixed seed and digests
-their collected data and final agent state (SHA-256 of a canonical serialisation). The digest
-must be identical between the compiled and the pure-Python builds, between a straight run and
-a run saved and resumed from a checkpoint at the midpoint (twelve of the fourteen examples can
-be checkpointed), and against reference digests stored in the repository. Eight examples are
-compared exactly. Six pass through functions whose last bit legitimately differs between
+A determinism suite runs seventeen bundled examples (the fourteen of release 1.3 and the
+three split-run reference models of \cref{sec:split}) for ten steps from a fixed seed and
+digests their collected data and final agent state (SHA-256 of a canonical serialisation).
+The digest must be identical between the compiled and the pure-Python builds, between a
+straight run and a run saved and resumed from a checkpoint at the midpoint (fifteen of the
+seventeen examples can be checkpointed), and against reference digests stored in the
+repository; the three split-run models must also give it split into 2, 4 and 16 partitions.
+Ten examples are compared exactly. Seven pass through functions whose last bit legitimately differs between
 platforms' maths libraries (\code{exp}, \code{log}, non-integer powers, \code{arctan2}, BLAS
 reductions) and are digested at ten significant digits; one of these depends on geographic
 libraries and is compared only on the platform that recorded it. Property-based tests check
 invariants of columns, cohorts, cell spaces, checkpoints and experiment designs on random
 inputs.
 
-\Cref{tab:determinism} states where each part of this is exercised. Continuous integration
-runs the suite on Linux, macOS and Windows; there it runs the pure-Python core, and a separate
-job forces the pure-Python path explicitly. The comparison between the compiled and the
-pure-Python core runs on the development machine (Linux, x86-64, CPython 3.15), and the
-published wheels for the other platforms are checked to import and load their compiled
-modules. Running the full suite on every wheel is the obvious next step (\cref{sec:threats}).
+\Cref{tab:determinism} states where each part of this is exercised, and how that changed
+with release 1.4. Up to release 1.3.3 a hosted workflow ran the suite with the pure-Python
+core on Linux, macOS and Windows at every push, and the published wheels for every platform
+were checked to import their compiled modules. From release 1.4 the hosted workflows other
+than the release build and the documentation are manual (the author triggers them), so the
+1.4.0 checks ran on the development machine only (Linux, x86-64, CPython 3.15), compiled
+core against pure-Python core, and the three-platform comparison through the golden file
+stands as last run for 1.3.3. Running the full suite on every wheel remains the obvious next
+step (\cref{sec:threats}).
 
 \begin{table}[htbp]
   \centering
   \small
-  \caption{Where the reproducibility checks run, for release 1.3.3.}
+  \caption{Where the reproducibility checks run: for release 1.3.3, and for 1.4.0, whose
+  hosted matrix is manual-only.}
   \label{tab:determinism}
-  \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.43\linewidth}X}
+  \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.34\linewidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
     \toprule
-    Check & Where it runs \\
+    Check & Release 1.3.3 & Release 1.4.0 \\
     \midrule
-    Golden digests, straight and resumed (pure-Python core) & CI: Linux (CPython 3.12, 3.13,
-    3.14), macOS and Windows (3.14) \\ \addlinespace
-    Compiled core against pure-Python core, same digests & Development machine: Linux
-    x86-64, CPython 3.15 (the compiled modules' own tests also on free-threaded 3.15t) \\ \addlinespace
+    Golden digests, straight and resumed (pure-Python core) & Hosted: Linux (CPython 3.12,
+    3.13, 3.14), macOS and Windows (3.14) & Development machine, Linux x86-64, CPython 3.15;
+    the three-platform run is a manual workflow, not run \\ \addlinespace
+    Compiled core against pure-Python core, same digests & Development machine (the
+    compiled modules' own tests also on free-threaded 3.15t) & Development machine; the
+    free-threaded build of the new event heap untested \\ \addlinespace
+    Split runs equal one process (2, 4, 16 partitions; MPI 2 and 4 ranks) & -- & Development
+    machine, Open MPI \\ \addlinespace
+    GPU backends give the \code{numpy} integers & -- & Development machine's GPU environment
+    (CuPy, CUDA JAX); Metal untested \\ \addlinespace
     Compiled wheels & Built for Linux (glibc, musl; x86-64, ARM64), macOS, Windows (x86-64,
-    ARM64); import test of the compiled modules \\ \addlinespace
-    Executor independence (serial, threads, processes) & CI, all three operating systems \\ \addlinespace
-    Calibration resumed from a checkpoint & CI, all three operating systems \\ \addlinespace
+    ARM64), with an import test & The release workflow builds them on the tag; Linux x86-64
+    built and imported locally \\ \addlinespace
+    Executor independence; calibration resumed from a checkpoint & Hosted, all three
+    operating systems & Development machine \\ \addlinespace
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -118,8 +131,9 @@ the compiled or the pure-Python core. A calibration stopped after a generation, 
 budget, and resumed from its checkpoint reaches the same final posterior as an uninterrupted
 one.
 
-\paragraph{Reference models.} Each of the twelve zoo models (\cref{sec:zoo}) has a test
-against an analytical or well-established result. For the age-structured SEIR and Bass
+\paragraph{Reference models.} Each of the seventeen zoo models (\cref{sec:zoo}) has a test
+against an analytical or well-established result; the five of release 1.4 are described
+with their criteria in \cref{sec:couple,sec:population}. For the age-structured SEIR and Bass
 diffusion models the tolerance is derived from the statistic's sampling variance; others use
 fixed tolerances (for example 3\% for the energy-budget population around its carrying
 capacity) or a heuristic expectation (the number of opinion clusters in the Deffuant model,

@@ -61,7 +61,7 @@ within a state, are not represented; a model that needs them stays at the object
 level.
 
 \begin{lstlisting}[float=tp,caption={A wealth-exchange model whose agents keep their wealth in a column;
-the step acts on the whole population at once. Run as shown with \modelly{} 1.3.3.},
+the step acts on the whole population at once. Run as shown with \modelly{} 1.4.0.},
 label={lst:columns}]
 import numpy as np
 from modelly import Agent, Column, Model
@@ -104,13 +104,18 @@ the numbers of Python's \code{random.Random} for the same seed (the Mersenne Twi
 \code{random.Random}, and a pure-Python implementation with the same stream is used when the C
 module is absent. A model ported from code that used \code{random.Random(seed)} therefore keeps
 its exact stream, which is what makes the bit-identical port of \cref{sec:portability}
-possible.
+possible. From release 1.4 a model can instead give every agent generators of its own
+(\code{agent\_streams = True}): each is seeded from the scenario's seed sequence and the
+agent's stream key, so what an agent draws no longer depends on the activation order or on
+the population, which is what lets a run split across workers reproduce the single-process
+run (\cref{sec:split}). The flag is off by default; turning it on changes a model's numbers.
 
 \subsection{Compiled loops with pure-Python twins}
 
-Four small C modules implement the framework's inner loops: the random core, per-agent method
-calls (\code{do}, \code{shuffle\_do}), the cell move and breadth-first neighbourhood walk, and
-set filtering and attribute gathering (\code{select}, \code{agg}). Each C function is a
+Five small C modules implement the framework's inner loops: the random core, per-agent method
+calls (\code{do}, \code{shuffle\_do}), the cell move and breadth-first neighbourhood walk,
+set filtering and attribute gathering (\code{select}, \code{agg}), and, from release 1.4, the
+event list's heap (\cref{sec:perf2}). Each C function is a
 line-for-line port of a Python function that stays in the source as its fallback; tests run the
 two side by side, and \code{MODELLY\_PURE\_PYTHON=1} forces the Python path. Results are
 identical either way. The modules build with GCC, Clang and MSVC and are shipped compiled for

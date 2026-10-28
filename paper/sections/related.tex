@@ -8,7 +8,9 @@ and a Python analysis reaches it through a bridge such as PyNetLogo
 models. Repast Simphony \citep{north2013repast} and MASON
 \citep{luke2005mason} are mature Java platforms built for performance and large simulations,
 and Repast4Py \citep{collier2020repast4py} distributes a single run over MPI processes from
-Python. Agents.jl \citep{datseris2024agents} brings a performant, concise framework to Julia,
+Python; \modelly{} does so from release 1.4, under a contract that makes the split run
+reproduce the single-process one byte for byte (\cref{sec:split}), and runs column phases on
+a GPU through CuPy or JAX rather than through a dedicated language (\cref{sec:gpu}). Agents.jl \citep{datseris2024agents} brings a performant, concise framework to Julia,
 and FLAME GPU \citep{richmond2023flamegpu} runs agent models on GPUs. Reviews of the field
 \citep{railsback2006agent, abar2017agent} have long noted the trade-off between ease of use and speed that
 these tools resolve in different ways.
@@ -39,7 +41,11 @@ pianosi2018distribution}. Libraries implement them for generic simulators
 tools connect them to ABM platforms: the EMA Workbench \citep{kwakkel2017ema}, OpenMOLE
 \citep{reuillon2013openmole} and nlrx for NetLogo \citep{salecker2019nlrx}; reviews and tutorials give
 guidance on which to use \citep{thiele2014facilitating, tenbroeke2016which, hartig2011statistical,
-lee2015complexities}. \modelly{}'s contribution here is integration rather than new methods:
+lee2015complexities}. The same holds for the methods release 1.4 adds: history matching with emulators
+\citep{vernon2010galaxy, andrianakis2015bayesian}, the bootstrap particle filter
+\citep{gordon1993novel} and the ensemble Kalman filter \citep{evensen2003ensemble}, and
+gradient estimators for discrete choices \citep{bengio2013estimating, jang2017categorical}.
+\modelly{}'s contribution here is integration rather than new methods:
 the samplers share the simulation's seeding and executors, so a calibration or a Sobol analysis
 of a model is reproducible, resumable and parallel without extra code.
 
@@ -75,7 +81,7 @@ widely used platforms in other languages.
     Per-agent objects & \checkmark & \checkmark & -- & \checkmark & \checkmark & \checkmark & \checkmark \\
     Array or table agent state & \checkmark & -- & \checkmark & -- & -- & -- & -- \\
     Counted cohorts & \checkmark & -- & -- & -- & -- & -- & -- \\
-    One run across processes & -- & -- & -- & -- & -- & \checkmark & -- \\
+    One run across processes & \checkmark & -- & -- & -- & -- & \checkmark & -- \\
     Parameter sweeps & \checkmark & \checkmark & -- & \checkmark & \checkmark & ext. & \checkmark \\
     Global sensitivity analysis & \checkmark & ext. & -- & \checkmark & ext. & ext. & -- \\
     Bayesian calibration & \checkmark & -- & -- & -- & ext. & ext. & -- \\

@@ -50,11 +50,22 @@ reproducible research:
   against the previous one and must show no measurable regression on any core operation or
   workload (a median slowdown above 3\% whose lower quartile is also a slowdown); a pre-commit hook checks the core operations between
   releases (\cref{sec:regressions}).
+  \item \textbf{Scale and connection, reported against their targets.} Release 1.4 adds
+  per-agent random streams and a run split across MPI or Dask workers that reproduces the
+  single-process run byte for byte at 1, 2, 4 and 16 partitions; a GPU backend whose steps
+  run 34 times faster than the column form at ten million agents, with identical integer
+  state; differentiable models that recover known parameters of two reference models; live
+  data with a particle filter and an ensemble Kalman filter; fields and differential
+  equations coupled to agents; emulators and history matching; synthetic populations; and a
+  static export that runs a model in a browser tab (\cref{sec:scale,sec:connect}). Each is
+  measured, and the targets it misses (weak scaling on a laptop, the browser's first load on a
+  slow line, active learning on analytic test functions) are stated.
 \end{itemize}
 
 The rest of the paper situates \modelly{} among existing tools (\cref{sec:related}),
 describes its design (\cref{sec:design}) and research workflow (\cref{sec:workflow}),
 evaluates its speed and its agreement with Mesa (\cref{sec:performance}) and the correctness
-of its methods (\cref{sec:reproducibility}), states for which studies it is a good choice
+of its methods (\cref{sec:reproducibility}), reports what release 1.4 adds against its own
+targets (\cref{sec:scale,sec:connect}), states for which studies it is a good choice
 (\cref{sec:usecases}), and ends with the threats to the validity of these measurements and the
 software's limitations (\cref{sec:threats}).

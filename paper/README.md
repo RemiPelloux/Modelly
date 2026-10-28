@@ -12,11 +12,12 @@ in it comes from a file or a script in this repository.
 | Path | What |
 |---|---|
 | `main.tex` | The paper; `\input`s the sections in order |
-| `sections/` | Abstract, introduction, related work (with the feature comparison), design, research workflow, performance (speed-ups and the agreement study), correctness and reproducibility, threats to validity, use cases and limitations, availability and conclusion, appendix |
+| `sections/` | Abstract, introduction, related work (with the feature comparison), design, research workflow, performance (speed-ups and the agreement study), correctness and reproducibility, release 1.4's scaling additions (`scale.tex`: split runs, GPU, differentiable models, performance II) and connections (`connect.tex`: assimilation, coupling, emulators, populations, browser, tools, the targets table), use cases, threats to validity and limitations, availability and conclusion, appendix |
 | `references.bib` | Bibliography (BibTeX, `plainnat`) |
 | `tables/playbooks.tex` | Results table, **generated** from `benchmarks/playbooks/results/*.json` |
 | `figures/speedups.pdf` | Speed-up figure, **generated** from the same results (PNG preview alongside) |
 | `data/agreement_small.json` | Raw summary statistics of the agreement study: 100 seeds, the Mesa 2.3 reference and every Modelly variant of every playbook |
+| `data/gpu_speedup.json`, `data/weak_*.json` | Copies of the GPU comparison (`benchmarks/playbooks/results/`) and the weak-scaling runs (`benchmarks/distributed/results/`) behind Section 7 |
 | `tables/agreement_small.tex`, `figures/agreement_small.pdf` | Agreement table and figure, **generated** from that data |
 | `scripts/make_figures.py` | Regenerates the playbook table and the speed-up figure |
 | `scripts/bootstrap_ci.py` | Paired bootstrap 95% intervals of every step-time speed-up (appendix table) |
@@ -44,12 +45,12 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Claim | Source | Regenerate with |
 |---|---|---|
 | Playbook speed-ups, build and step times, determinism (Table 3, Figure 1) | `benchmarks/playbooks/results/*.json` | `benchmarks/playbooks/compare.py`, then `make figures` |
-| Agreement with Mesa: 100 seeds at the small size (Table 4, Figure 2), 50 at the timed size (Table 5) | `data/agreement_small.json`, `data/agreement_large.json` | `scripts/agreement.py run --size small` (or `large`), then `analyse` |
+| Agreement with Mesa: 100 seeds at the small size (Table 5, Figure 2), 50 at the timed size (Table 6) | `data/agreement_small.json`, `data/agreement_large.json` | `scripts/agreement.py run --size small` (or `large`), then `analyse` |
 | Port bit-identical, CPU time ratios (Section 5.1) | the private medfly harness (`benchmarks/mesaVSmodelly/paired.py`, not in the repository) | paired runs of the plain codemod port against the unmodified Mesa notebook |
 | 1.3.2 against 1.3.1 and 1.3.3 against 1.3.2 (Section 5.4) | `data/release_gates.json` | `python -m modelly.dev perf --against <previous>`, the paired playbook and notebook runs |
 | 1.3.1 against 1.2.0 (Section 5.4) | `docs/performance.md`, "No regression from release to release" | `python -m modelly.dev perf --against 1.2.0`, the playbook runner |
 | Ishigami indices (Section 6.2) | `tests/sensitivity`, `docs/sensitivity.md` | `pytest tests/sensitivity` |
-| ABC-SMC coverage over 200 datasets per model (Table 7) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
+| ABC-SMC coverage over 200 datasets per model (Table 8) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
 | Every agreement comparison (appendix E) | `data/agreement_small_summary.json` | `scripts/agreement.py analyse` |
 | Grid epidemic at the timed size, 200 seeds (Section 5.3) | `data/agreement_large_grid200.json` | `scripts/agreement.py run --size large --seeds 200 --playbooks grid_epidemic --tag large_grid200` |
 | Mesa 3.5 and mesa-frames against Mesa 2.3, 100 seeds (Section 5.3) | `data/agreement_small_baselines.json` | `scripts/agreement.py run --variants mesa3 frames --tag small_baselines` |
@@ -61,7 +62,18 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Mesa's own examples against their codemod ports: timing and agreement (Section 5.1) | `data/mesa_examples.json`, `benchmarks/mesa_examples/` | `benchmarks/mesa_examples/run.py --rounds 10 --seeds 100 --core 2 --agree-cores 8-15`, then `scripts/mesa_examples_table.py` |
 | mesa-frames with one thread and with all (Section 5.2) | `data/frames_threads.json` | `scripts/frames_threads.py` |
 | Workload parameters (appendix B) | `benchmarks/playbooks/registry.py` | `make figures` |
-| Determinism (Section 6.1, Table 6) | `tests/determinism`, `tests/determinism/golden.json` | `pytest tests/determinism` |
+| Determinism (Section 6.1, Table 7) | `tests/determinism`, `tests/determinism/golden.json` | `pytest tests/determinism` |
+| Split runs equal one process; MPI 2 and 4 ranks (Section 7.1) | `tests/distributed/`, `tests/determinism/test_determinism_partition.py` | `pytest tests/distributed tests/determinism/test_determinism_partition.py` (needs mpi4py for the MPI cases) |
+| Weak scaling (Table 9) | `data/weak_mpi_10k.json`, `data/weak_mpi_40k.json`, `data/weak_dask_10k.json` | `benchmarks/distributed/weak_scaling.py` |
+| GPU speed-up and equality at 10 million agents (Section 7.2) | `data/gpu_speedup.json` | `benchmarks/playbooks/gpu_speedup.py` in a CUDA environment (`docs/gpu.md`) |
+| Differentiable recoveries and gradient checks (Section 7.3) | `tests/diff/`, `docs/differentiable.md` | `pytest tests/diff` (needs jax) |
+| Event heap, column gather, 1.4 against 1.3.3, memory-mapped 100 M rows, PGO (Section 7.4) | `docs/performance.md` | `modelly bench --against 1.3.3`, `benchmarks/large_columns.py`, `benchmarks/pgo.py` |
+| Nowcasting error and EnKF recovery (Section 8.1) | `docs/assimilation.md` run by `tests/stream/test_assimilation_tutorial.py` | `pytest tests/stream` |
+| Field numerics and the two coupled zoo models (Section 8.2) | `tests/couple/`, `tests/zoo/test_nutrient_foragers.py`, `test_hospital_epidemic.py` | `pytest tests/couple tests/zoo` |
+| History-matching volumes and active learning against LHS (Section 8.3) | `docs/emulators.md`, `tests/emulate/` | `pytest tests/emulate`; `benchmarks/emulate/active_vs_lhs.py` |
+| Synthetic population and the real-data zoo models (Section 8.4) | `tests/population/test_sample_region.py`, `tests/zoo/`, `modelly/space/geo/data/NOTICE.md` | `pytest tests/population tests/zoo` |
+| Browser runs and first load (Section 8.5) | `docs/browser.md` | `MODELLY_BROWSER_TESTS=1 pytest tests/web/test_browser.py`; `tools/web/measure_load.py` |
+| NetLogo fire threshold, lint rule count, strict typing (Section 8.6) | `docs/netlogo.md`, `modelly/lint`, the gate's `types` stage | `pytest tests/netlogo`; `bash scripts/ci-local.sh types` |
 | Feature comparison (Table 1) | each project's documentation and repository, October 2026 | by hand: check again before submitting |
 
 If the benchmark results are rerun (for a new release, or on different hardware), run
@@ -76,7 +88,14 @@ If the benchmark results are rerun (for a new release, or on different hardware)
       URL checked to resolve.
 - [x] Table 1 re-checked against each project's documentation and repository (October 2026).
 - [x] ABC-SMC weight correction released as 1.3.2 and the codemod fix as 1.3.3; the paper
-      describes 1.3.3, benchmarked against 1.3.2 (`data/release_gates.json`).
+      describes 1.4.0.
+- [ ] Release 1.4.0 tagged after the fixed-frequency gate against 1.3.3; replace the sentence
+      marked `% GATE-1.4.0` in `sections/performance.tex` with its numbers and add them to
+      `data/release_gates.json`.
+- [ ] The five zoo models added after the browser run (Section 8.5) run from their export in
+      the local release checks; update the "26 of 31" count.
+- [ ] Software Heritage archives the release commit; update the SWHID marked `% SWHID-1.4.0`
+      in `sections/availability.tex`.
 - [x] Compiled (Tectonic, no warnings); every page read.
 - [x] All timings re-run at a fixed frequency (performance governor, turbo off, CPU 2).
 - [x] Mesa 3.5 timed on all eight playbooks, mesa-frames on four, a hand-vectorised Mesa 3.5
@@ -90,8 +109,8 @@ If the benchmark results are rerun (for a new release, or on different hardware)
       **q-bio.PE**. A first submission to cs.MA may need an endorsement.
 - [ ] Licence for the arXiv record (for example CC BY 4.0).
 - [x] For a journal: software-availability, funding, competing-interest and data-availability
-      declarations (Declarations, after Section 10).
+      declarations (Declarations, after Section 12).
 - [x] Commit and push `paper/`; the repository is archived by Software Heritage (SWHID in
-      Section 10).
+      Section 12).
 - [ ] Optional: archive the exact version on Zenodo (`modelly bundle`) and cite its DOI in
-      Section 10 (Availability).
+      Section 12 (Availability).

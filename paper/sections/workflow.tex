@@ -143,7 +143,8 @@ These tools are part of the release and tested, but not evaluated in this paper.
   the model's generators, iteration over sets, wall-clock time, unpicklable callbacks sent to
   worker processes, network calls that bypass the cached language-model client) and quadratic
   patterns (agents scanning the whole population), explains each rule with a bad and a fixed
-  example, and fixes several automatically.
+  example, and fixes several automatically; from release 1.4 it also runs as a language server
+  for editors and as a pre-commit hook (\cref{sec:tools}).
   \item \textbf{A profiler} (\cmd{modelly profile}) reports where each step's time goes by
   agent class and method, and compares the cost per agent across population sizes to detect
   scans that grow with $N$.
@@ -155,13 +156,15 @@ These tools are part of the release and tested, but not evaluated in this paper.
   \item \textbf{Language-model agents} (\code{modelly.llm}) decide through a provider-agnostic
   client whose replies are cached under a key of the call and the run's seed: a cached study
   replays offline, identically, and travels with its bundle.
+  \item \textbf{A NetLogo translator} (\cmd{modelly netlogo}) rewrites a documented subset
+  of NetLogo into a runnable model and marks what it cannot translate (\cref{sec:tools}).
 \end{itemize}
 
 \subsection{A zoo of validated models}
 \label{sec:zoo}
 
-Twelve reference models, each with a validation test against an analytical or well-known
-result, serve as starting points and regression tests: an age-structured SEIR model checked
+Seventeen reference models, each with a validation test against an analytical or well-known
+result, serve as starting points and regression tests. Twelve date from release 1.3: an age-structured SEIR model checked
 against the final-size relation \citep{kermack1927contribution}, Nagel--Schreckenberg traffic
 \citep{nagel1992cellular} against its flow--density relation, Bass diffusion
 \citep{bass1969new} against the Bass equation, the Deffuant \citep{deffuant2000mixing} and
@@ -172,4 +175,7 @@ model \citep{axelrod1997dissemination}, a kinetic wealth-exchange model
 continuous double auction \citep{farmer2005predictive}, a Drossel--Schwabl forest fire
 \citep{drossel1992self} around the percolation threshold \citep{newman2000efficient}, an
 energy-budget population \citep{sibly2013representing} around its carrying capacity, and
-Ross--Macdonald vector-borne transmission \citep{smith2012ross} ordered by $R_0$.
+Ross--Macdonald vector-borne transmission \citep{smith2012ross} ordered by $R_0$. Release
+1.4 adds five: foragers on a diffusing nutrient field and an epidemic coupled to hospital
+capacity (\cref{sec:couple}), and traffic assignment, habitat selection and Schelling
+segregation on real street, land-cover and census-tract samples (\cref{sec:population}).
