@@ -14,6 +14,9 @@
 #   pyodide   the pure wheel imports and runs an example in Pyodide under node
 #   browser   every example and zoo model from its export-web site in headless Chromium
 #   docs      the documentation builds with warnings as errors
+#   native    the compiled modules and their pure-Python twins, a wheel that must compile
+#             them all, and the free-threaded build when FT_PYTHON names its interpreter
+#   bench     every playbook against the last release (or AGAINST=x.y.z), results identical
 # A stage whose tool is missing prints what to install and fails: a release needs them all.
 # macOS and Windows are not covered here; say so in the release notes.
 set -uo pipefail
@@ -22,7 +25,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT" || exit 1
 PYTHON="${PYTHON:-.venv/bin/python}"
 WORK="$ROOT/build/release-checks"
-STAGES=(mpi slurm bundles pyodide browser docs)
+STAGES=(native mpi slurm bundles pyodide browser docs bench)
 STEPS=20
 SEED=7
 PYODIDE_VERSION=314.0.7  # keep in step with modelly.web.export.PYODIDE_VERSION
@@ -34,6 +37,23 @@ STUDIES=(
 
 need() {
   command -v "$1" >/dev/null || { echo "missing: $1 ($2)"; return 1; }
+}
+
+stage_native() {
+  local suites=(tests/native tests/time)
+  "$PYTHON" -m pytest -q -W error "${suites[@]}" &&
+    MODELLY_PURE_PYTHON=1 "$PYTHON" -m pytest -q -W error "${suites[@]}" &&
+    MODELLY_REQUIRE_NATIVE=1 "$PYTHON" -m pip wheel --no-deps -q -w "$WORK/native" . || return 1
+  if [[ -n "${FT_PYTHON:-}" ]]; then
+    PYTHONPATH="$ROOT" "$FT_PYTHON" -m pytest -q "${suites[@]}"
+  else
+    echo "note: FT_PYTHON unset, the free-threaded build is not checked"
+  fi
+}
+
+stage_bench() {
+  local previous="${AGAINST:-$(git describe --tags --abbrev=0 | sed 's/^v//')}"
+  "$PYTHON" -m modelly bench --against "$previous" --rounds 9 --core 3 --no-record
 }
 
 stage_mpi() {
