@@ -1,6 +1,7 @@
 # Roadmap
 
-**Status:** 1.3 released, 1.4.0 in progress (S1) · **Current release:** 1.3.3
+**Status:** 1.3 released, 1.4.0 in release (every epic merged except F10 Studio II, release gate
+pending) · **Current release:** 1.3.3
 
 Four releases take Modelly from a fast agent-based modelling framework to the research platform
 people use to **build, calibrate, explain, scale, share and publish** a model, in any field, on
@@ -9,7 +10,7 @@ people use to **build, calibrate, explain, scale, share and publish** a model, i
 | Release | Theme | One line |
 |---|---|---|
 | [1.3.0](1.3.0.md) | Answers and trust | Calibrate, explain and publish a model: experiments, calibration, sensitivity, provenance, Studio, model zoo |
-| [1.4.0](1.4.0.md) | Scale out and connect | Distributed and GPU runs, differentiable models, live data and digital twins, Modelly in the browser |
+| [1.4.0](1.4.0.md) | Scale out and connect | Split runs over MPI and Dask, a GPU backend, differentiable models, data assimilation, coupled fields and ODEs, synthetic populations, emulators, Modelly in the browser |
 | [1.5.0](1.5.0.md) | Ecosystem and collaboration | Model hub, model cards, policy and causal tools, LLM agents II, R and Julia bindings |
 | [2.0.0](2.0.0.md) | Clean foundations | One space API, one clock, columns by default, typed scenarios, stable ABI and checkpoint format |
 
