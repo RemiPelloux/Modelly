@@ -60,7 +60,12 @@ commits without attribution trailers. Read it once before your first pull reques
 the Python rules for code under `modelly/` (layout and imports, public API, hot paths,
 determinism, native code, measuring performance).
 
-The whole gate runs locally and is what CI runs. It has two front ends with the same stages
+The whole gate runs locally: hosted CI runs only the Release workflow (on a tag: wheels and
+PyPI) and the docs workflow, and every other workflow is manual-only. Before a release,
+`bash scripts/release-checks.sh` adds what the gate does not cover: MPI split runs, SLURM job
+arrays, bundles verified unpacked, the pure wheel in Pyodide, every model in a headless
+browser, and the docs built with warnings as errors (Linux only; the release notes say so).
+The gate has two front ends with the same stages
 (lint, format, types, test, audit), the same skips when the optional `solara` extra or mypy is
 missing, and the same coverage badge refresh:
 

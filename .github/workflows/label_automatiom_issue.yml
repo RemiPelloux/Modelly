@@ -1,8 +1,8 @@
 name: Label Automation
 
+# Manual only: Modelly runs only the Release and docs workflows automatically; this
+# check runs locally (scripts/ci-local.sh, scripts/release-checks.sh).
 on:
-  issues:
-    types: [opened, reopened, edited]
   workflow_dispatch:
     inputs:
       state:

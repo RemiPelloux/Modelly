@@ -5,24 +5,9 @@ name: mpi
 # Risks). Every job runs the whole distributed suite (local, Dask and MPI backends) and
 # the partition-independence part of the determinism suite.
 
+# Manual only: Modelly runs only the Release and docs workflows automatically; this
+# check runs locally (scripts/ci-local.sh, scripts/release-checks.sh).
 on:
-  push:
-    branches:
-      - main
-      - release**
-    paths:
-      - "modelly/**"
-      - "tests/distributed/**"
-      - "tests/determinism/**"
-      - "pyproject.toml"
-      - ".github/workflows/mpi.yml"
-  pull_request:
-    paths:
-      - "modelly/distributed/**"
-      - "modelly/examples/distributed/**"
-      - "tests/distributed/**"
-      - "tests/determinism/**"
-      - ".github/workflows/mpi.yml"
   workflow_dispatch:
 
 concurrency:

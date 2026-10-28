@@ -41,10 +41,11 @@ agents written by `unique_id`, sets and graphs sorted. The suite then checks tha
    equal byte for byte (`check_independence`), so a split run on any platform gives the golden
    run. Under `mpirun`, `tests/distributed/test_mpi.py` checks the same on 2 and 4 MPI ranks.
 
-The `build` workflow runs the suite on Ubuntu, macOS and Windows, so check 3 compares the three
-platforms with each other through the golden file. The `mpi` workflow runs the distributed
-tests under Open MPI on Ubuntu and macOS and under MS-MPI on Windows (2 ranks only there). A `modelly bundle` made on the test machine
-is also unpacked and verified with `modelly verify` in a fresh interpreter.
+Before a release, `scripts/release-checks.sh` runs the distributed tests under Open MPI and
+makes, unpacks and verifies three `modelly bundle`s in a fresh interpreter, on Linux. The `build`,
+`mpi` and `platforms` workflows run the same checks on Ubuntu, macOS and Windows (MS-MPI there,
+2 ranks), and check 3 then compares the three platforms through the golden file; they are
+manual-only, so a release says which platforms its checks covered.
 
 ## Outputs compared with a tolerance
 

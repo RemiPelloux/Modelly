@@ -5,10 +5,11 @@
 #   bash scripts/ci-local.sh --list      # stage names
 #   bash scripts/ci-local.sh lint audit  # a subset
 #
-# Tests run with warnings as errors, as in the hosted build workflow.
+# Tests run with warnings as errors. Hosted CI runs only the Release and docs workflows;
+# the other checks a release needs are in scripts/release-checks.sh.
 # Uses .venv/bin when it exists, otherwise python3 and ruff from PATH.
 # tests/viz and tests/examples need the optional solara extra and
-# are skipped when it is missing; the hosted build workflow always runs them.
+# are skipped when it is missing; install it before a release.
 # The types stage runs mypy in strict mode on the packages [tool.mypy] in
 # pyproject.toml lists: `python -m mypy` when it is installed, else the pinned
 # mypy through uvx, else it prints why it is skipped and passes.

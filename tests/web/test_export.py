@@ -163,8 +163,10 @@ def test_cli_model_error(tmp_path, capsys):
     assert "step failed" in capsys.readouterr().err
 
 
-def test_ci_builds_against_the_pinned_pyodide():
-    """The browser CI job builds the wasm wheel for the Pyodide the sites load."""
+def test_checks_use_the_pinned_pyodide():
+    """The local release checks and the manual browser job use the Pyodide the sites load."""
     root = Path(__file__).resolve().parents[2]
     workflow = (root / ".github/workflows/build_lint.yml").read_text(encoding="utf-8")
+    checks = (root / "scripts/release-checks.sh").read_text(encoding="utf-8")
     assert f'PYODIDE_VERSION: "{PYODIDE_VERSION}"' in workflow
+    assert f"PYODIDE_VERSION={PYODIDE_VERSION}" in checks

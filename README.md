@@ -56,7 +56,7 @@ describe and hard to keep correct, reproducible and fast. Modelly exists to remo
 - **A research instrument, not a toy.** Every run is seeded, every parameter lives in a typed
   scenario, every dataset lands in pandas. A result you got once is a result you can get again.
 - **Fast by construction.** The hot paths of a simulation (activating agents, moving them,
-  looking up neighbours, recording data) are measured, benchmarked in CI, and written so the cost
+  looking up neighbours, recording data) are measured, benchmarked before every release, and written so the cost
   per agent-step stays flat as models grow. Performance is a feature with a test, not a hope.
 - **Small, readable modules.** A researcher should be able to open any file and understand it in
   one sitting. Files stay under 300 lines, functions under 25, and the rule is enforced by a script,

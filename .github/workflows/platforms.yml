@@ -9,23 +9,9 @@ name: platforms
 #                           SLURM cluster installed on the runner and waits for it; the
 #                           results must equal a serial run.
 
+# Manual only: Modelly runs only the Release and docs workflows automatically; this
+# check runs locally (scripts/ci-local.sh, scripts/release-checks.sh).
 on:
-  push:
-    branches:
-      - main
-      - release**
-    paths:
-      - "modelly/**"
-      - "tests/experiments/**"
-      - "pyproject.toml"
-      - ".github/workflows/platforms.yml"
-  pull_request:
-    paths:
-      - "modelly/provenance/**"
-      - "modelly/llm/**"
-      - "modelly/experiments/**"
-      - "tests/experiments/executors/**"
-      - ".github/workflows/platforms.yml"
   workflow_dispatch:
 
 concurrency:

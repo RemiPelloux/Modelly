@@ -1,18 +1,8 @@
 name: Label Automation
 
+# Manual only: Modelly runs only the Release and docs workflows automatically; this
+# check runs locally (scripts/ci-local.sh, scripts/release-checks.sh).
 on:
-  pull_request_target:
-    types:
-      [
-        opened,
-        reopened,
-        ready_for_review,
-        converted_to_draft,
-        review_requested,
-        review_request_removed,
-        synchronize,
-        closed,
-      ]
   workflow_dispatch:
     inputs:
       state:

@@ -90,15 +90,15 @@ modelly export-web model.py:Epidemic --out site/ --wheel dist/wasm/modelly_abm-*
 
 The page footer says which version runs: "pure Python" or "compiled: fastrng, fastloop,
 fastcell, fastset". The compiled wheel is the whole package (it is not trimmed), about
-830 KB against about 520 KB for the pure one, and the CI job `browser` runs every example
-with both.
+830 KB against about 520 KB for the pure one, and the browser checks run every example with
+both.
 
 ## What runs in the browser
 
 Every example of `modelly/examples` and every zoo model runs from its static export in a
 headless Chromium, with the pure wheel and with the compiled one
-(`tests/web/test_browser.py`, opt-in with `MODELLY_BROWSER_TESTS=1`; the hosted `browser`
-job runs it). That includes the language-model example (its replay client answers offline;
+(`tests/web/test_browser.py`, opt-in with `MODELLY_BROWSER_TESTS=1`; `scripts/release-checks.sh
+browser` runs it before a release). That includes the language-model example (its replay client answers offline;
 in Pyodide the calls go one at a time, since threads cannot start) and the geospatial
 commuting city (geopandas, shapely and pyproj come from Pyodide).
 

@@ -1,26 +1,10 @@
 name: build
 
+# Manual only: Modelly runs only the Release and docs workflows automatically; this
+# check runs locally (scripts/ci-local.sh, scripts/release-checks.sh).
 on:
-  push:
-    branches:
-      - main
-      - release**
-    paths-ignore:
-      - "**.md"
-      - "**.rst"
-      - "docs/**"
-  pull_request:
-    paths-ignore:
-      - "**.md"
-      - "**.rst"
-      - "docs/**"
   workflow_dispatch:
-  schedule:
-    - cron: "0 6 * * 1"
 
-# This will cancel previous run if a newer job that obsoletes the said previous
-# run, is started.
-# Based on https://github.com/zulip/zulip/commit/4a11642cee3c8aec976d305d51a86e60e5d70522
 concurrency:
   group: "${{ github.workflow }}-${{ github.head_ref || github.run_id }}"
   cancel-in-progress: true

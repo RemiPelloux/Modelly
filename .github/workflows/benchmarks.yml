@@ -1,13 +1,9 @@
 name: Performance benchmarks
 
+# Manual only: Modelly runs only the Release and docs workflows automatically; this
+# check runs locally (scripts/ci-local.sh, scripts/release-checks.sh).
 on:
-  pull_request:
-    types: [opened, ready_for_review, labeled]
-    branches:
-      - main
-    paths:
-      - '**.py'
-      - '.github/workflows/benchmarks.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
