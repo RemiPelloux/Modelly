@@ -15,57 +15,6 @@
 // WebGL draws them (hundreds of thousands at interactive rates); without WebGL, a Canvas 2D
 // context draws the same scene, slower; without either, the text below the canvas says so.
 // Everything is in this file: nothing is fetched from a CDN.
-const POINT_VERTEX = `
-attribute vec2 a_position;
-attribute vec4 a_colour;
-uniform vec2 u_scale;
-uniform vec2 u_offset;
-uniform float u_size;
-varying vec4 v_colour;
-void main() {
-  gl_Position = vec4(a_position * u_scale + u_offset, 0.0, 1.0);
-  gl_PointSize = u_size;
-  v_colour = a_colour;
-}`;
-const FRAGMENT = `
-precision mediump float;
-uniform float u_round;
-varying vec4 v_colour;
-void main() {
-  if (u_round > 0.5) {
-    vec2 d = gl_PointCoord - vec2(0.5);
-    if (dot(d, d) > 0.25) discard;
-  }
-  gl_FragColor = v_colour;
-}`;
-const LINE_COLOUR = [0.45, 0.45, 0.45, 0.6];
-const NODE_COLOUR = [0.6, 0.6, 0.6, 1.0];
-const FIT_MARGIN = 0.95;
-const ZOOM_STEP = 1.1;
-
-function decode(text, Type) {
-  if (!text) return new Type(0);
-  const binary = atob(text);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  return new Type(bytes.buffer);
-}
-
-function hexColour(hex) {
-  const value = parseInt(hex.slice(1, 7), 16);
-  return [(value >> 16) & 255, (value >> 8) & 255, value & 255, 255];
-}
-
-function compile(gl, type, source) {
-  const shader = gl.createShader(type);
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    throw new Error(gl.getShaderInfoLog(shader));
-  }
-  return shader;
-}
-
 module.exports = {
   mounted() {
     this.view = null;
@@ -88,7 +37,62 @@ module.exports = {
       this.draw();
     },
   },
+  // Only this exported object reaches the browser: helpers and constants are methods.
   methods: {
+    shaders() {
+      const vertex = `
+attribute vec2 a_position;
+attribute vec4 a_colour;
+uniform vec2 u_scale;
+uniform vec2 u_offset;
+uniform float u_size;
+varying vec4 v_colour;
+void main() {
+  gl_Position = vec4(a_position * u_scale + u_offset, 0.0, 1.0);
+  gl_PointSize = u_size;
+  v_colour = a_colour;
+}`;
+      const fragment = `
+precision mediump float;
+uniform float u_round;
+varying vec4 v_colour;
+void main() {
+  if (u_round > 0.5) {
+    vec2 d = gl_PointCoord - vec2(0.5);
+    if (dot(d, d) > 0.25) discard;
+  }
+  gl_FragColor = v_colour;
+}`;
+      return { vertex: vertex, fragment: fragment };
+    },
+    style() {
+      return {
+        line: [0.45, 0.45, 0.45, 0.6],
+        node: [0.6, 0.6, 0.6, 1.0],
+        fitMargin: 0.95,
+        zoomStep: 1.1,
+      };
+    },
+    decode(text, Type) {
+      if (!text) return new Type(0);
+      const binary = atob(text);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return new Type(bytes.buffer);
+    },
+    hexColour(hex) {
+      const value = parseInt(hex.slice(1, 7), 16);
+      return [(value >> 16) & 255, (value >> 8) & 255, value & 255, 255];
+    },
+    compile(gl, type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        throw new Error(gl.getShaderInfoLog(shader));
+      }
+      return shader;
+    },
     setup() {
       const canvas = this.$refs.canvas;
       this.gl = null;
@@ -118,8 +122,8 @@ module.exports = {
     program() {
       const gl = this.gl;
       const program = gl.createProgram();
-      gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, POINT_VERTEX));
-      gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, FRAGMENT));
+      gl.attachShader(program, this.compile(gl, gl.VERTEX_SHADER, this.shaders().vertex));
+      gl.attachShader(program, this.compile(gl, gl.FRAGMENT_SHADER, this.shaders().fragment));
       // Attribute 0 must be an enabled array on some drivers: make it the positions.
       gl.bindAttribLocation(program, 0, "a_position");
       gl.linkProgram(program);
@@ -140,7 +144,7 @@ module.exports = {
     },
     colours(classes, palette, given) {
       if (given.length) return given;
-      const rgba = palette.map(hexColour);
+      const rgba = palette.map((hex) => this.hexColour(hex));
       const out = new Uint8Array(classes.length * 4);
       for (let i = 0; i < classes.length; i++) {
         const colour = rgba[classes[i] % rgba.length] || [0, 0, 0, 255];
@@ -150,14 +154,14 @@ module.exports = {
     },
     load() {
       const scene = this.scene || {};
-      const points = decode(scene.points, Float32Array);
-      const classes = decode(scene.classes, Uint8Array);
-      const given = decode(scene.colours, Uint8Array);
+      const points = this.decode(scene.points, Float32Array);
+      const classes = this.decode(scene.classes, Uint8Array);
+      const given = this.decode(scene.colours, Uint8Array);
       this.arrays = {
         points: points,
         colours: this.colours(classes, scene.palette || [], given),
-        nodes: decode(scene.nodes, Float32Array),
-        segments: decode(scene.segments, Float32Array),
+        nodes: this.decode(scene.nodes, Float32Array),
+        segments: this.decode(scene.segments, Float32Array),
         extent: scene.extent || [1, 1],
       };
       if (this.gl) this.upload();
@@ -200,7 +204,7 @@ module.exports = {
       const extent = this.arrays.extent;
       const width = extent[0] || 1;
       const height = extent[1] || 1;
-      const scale = FIT_MARGIN * Math.min(canvas.width / width, canvas.height / height);
+      const scale = this.style().fitMargin * Math.min(canvas.width / width, canvas.height / height);
       this.view = { x: width / 2, y: height / 2, scale: scale };
       this.lastExtent = extent.slice();
       this.sized = canvas.clientWidth > 0;
@@ -252,13 +256,13 @@ module.exports = {
       gl.uniform2f(loc.offset, -view.x * sx, -view.y * sy);
       gl.disableVertexAttribArray(loc.colour);
       gl.uniform1f(loc.round, 0);
-      gl.vertexAttrib4f(loc.colour, ...LINE_COLOUR);
+      gl.vertexAttrib4f(loc.colour, ...this.style().line);
       this.attribute(this.buffers.segments, loc.position, 2, gl.FLOAT, false);
       gl.drawArrays(gl.LINES, 0, this.arrays.segments.length / 2);
       const ratio = window.devicePixelRatio || 1;
       gl.uniform1f(loc.round, 1);
       gl.uniform1f(loc.size, Math.max(1, this.point_size * ratio * 0.6));
-      gl.vertexAttrib4f(loc.colour, ...NODE_COLOUR);
+      gl.vertexAttrib4f(loc.colour, ...this.style().node);
       this.attribute(this.buffers.nodes, loc.position, 2, gl.FLOAT, false);
       gl.drawArrays(gl.POINTS, 0, this.arrays.nodes.length / 2);
       gl.uniform1f(loc.size, Math.max(1, this.point_size * ratio));
@@ -342,7 +346,7 @@ module.exports = {
       const ratio = window.devicePixelRatio || 1;
       const mx = (event.clientX - rect.left) * ratio - canvas.width / 2;
       const my = canvas.height / 2 - (event.clientY - rect.top) * ratio;
-      const factor = event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP;
+      const factor = event.deltaY < 0 ? this.style().zoomStep : 1 / this.style().zoomStep;
       const view = this.view;
       view.x += mx / view.scale - mx / (view.scale * factor);
       view.y += my / view.scale - my / (view.scale * factor);
