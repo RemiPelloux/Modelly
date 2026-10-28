@@ -197,4 +197,5 @@ def design_factory(kind: str) -> Callable[..., Design]:
     plugin = discover(SAMPLERS_GROUP).get(kind)
     if plugin is None:
         raise KeyError(kind)
-    return plugin.load()
+    factory: Callable[..., Design] = plugin.load()
+    return factory

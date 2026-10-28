@@ -25,15 +25,25 @@ EXAMPLES = [
     ("basic.conways_game_of_life.model", "ConwaysGameOfLife", ()),
     ("basic.schelling.model", "Schelling", ()),
     ("basic.virus_on_network.model", "VirusOnNetwork", ("networkx",)),
+    ("distributed.continuous_sir", "ContinuousSIR", ()),
+    ("distributed.grid_epidemic", "GridEpidemic", ()),
+    ("distributed.network_sir", "NetworkSIR", ("networkx",)),
     ("behaviour.tram_model.model", "TransitSystem", ()),
     ("llm.llm_opinions.model", "LLMOpinions", ()),
     ("spatial.commuting_city.model", "CommutingCity", ("geopandas", "networkx")),
     ("spatial.layered_epidemic.model", "LayeredEpidemic", ()),
 ]
-# Examples with no tabular data: Boids and Life collect nothing, and the alliance model's
-# collector holds only its networkx graph and is not called in step. The test records one
-# model reporter for each instead, so their runs write Parquet too.
-UNCOLLECTED = {"BoidFlockers", "ConwaysGameOfLife", "MultiLevelAllianceModel"}
+# Examples with no tabular data: Boids, Life and the split-run reference models collect
+# nothing, and the alliance model's collector holds only its networkx graph and is not called
+# in step. The test records one model reporter for each instead, so their runs write Parquet too.
+UNCOLLECTED = {
+    "BoidFlockers",
+    "ConwaysGameOfLife",
+    "ContinuousSIR",
+    "GridEpidemic",
+    "MultiLevelAllianceModel",
+    "NetworkSIR",
+}
 MODEL_CLASS = re.compile(r"^class (\w+)\((?:modelly\.)?Model\):", re.MULTILINE)
 
 

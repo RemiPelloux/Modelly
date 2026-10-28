@@ -146,7 +146,8 @@ class GaussianProcess:
             self.factor, _kernel(b, self.x, self.lengths).T, lower=True
         )
         prior = _kernel(a, b, self.lengths)
-        return self.scale**2 * (prior - left.T @ right)
+        covariance: np.ndarray = self.scale**2 * (prior - left.T @ right)
+        return covariance
 
     @property
     def noise_variance(self) -> float:

@@ -34,7 +34,7 @@ def model_clients(model: Any) -> list[Client]:
     return list(found.values())
 
 
-def cache_record(model: Any, out: Path) -> dict | None:
+def cache_record(model: Any, out: Path) -> dict[str, Any] | None:
     """Export the replies of the model's clients to ``out``; the manifest entry.
 
     Returns:
@@ -50,7 +50,7 @@ def cache_record(model: Any, out: Path) -> dict | None:
     return {"hash": hash_file(path), "path": CACHE_FILE, "responses": len(merged)}
 
 
-def cache_problem(manifest: dict, folder: Path) -> str | None:
+def cache_problem(manifest: dict[str, Any], folder: Path) -> str | None:
     """Why the recorded cache cannot be used as recorded, or None if it can."""
     record = manifest.get(FIELD)
     if record is None:
@@ -63,7 +63,9 @@ def cache_problem(manifest: dict, folder: Path) -> str | None:
     return None
 
 
-def replay_for(manifest: dict, folder: Path) -> AbstractContextManager:
+def replay_for(
+    manifest: dict[str, Any], folder: Path
+) -> AbstractContextManager[object]:
     """Replay the run's recorded replies, or nothing when there are none to replay."""
     record = manifest.get(FIELD)
     path = None if record is None else from_posix(record["path"], folder)
