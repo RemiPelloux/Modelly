@@ -29,9 +29,15 @@ f"modelly {modelly.__version__} in Pyodide: Boltzmann wealth, 10 steps, Gini {fr
 
 async function main(wheel) {
   const pyodide = await loadPyodide();
-  // sqlite3 is a separate package in Pyodide and `import modelly` needs it (the SQL
-  // recorder); networkx because importing any bundled example imports them all.
-  await pyodide.loadPackage(["micropip", "sqlite3", "networkx"]);
+  // networkx because the bundled examples import it. `import modelly` needs sqlite3
+  // (the SQL recorder), a separate package before Pyodide 314 and part of the standard
+  // library from then on, so a missing package is not an error.
+  await pyodide.loadPackage(["micropip", "networkx"]);
+  try {
+    await pyodide.loadPackage("sqlite3");
+  } catch (error) {
+    if (!/No known package/.test(String(error))) throw error;
+  }
   const target = `/tmp/${basename(wheel)}`;
   pyodide.FS.writeFile(target, readFileSync(wheel));
   const micropip = pyodide.pyimport("micropip");
