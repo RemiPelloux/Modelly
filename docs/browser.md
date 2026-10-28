@@ -77,8 +77,8 @@ export_web(WebExport("model.py:Epidemic", Path("site"), steps=50))
 
 ## Compiled modules in WebAssembly
 
-The four C modules of `modelly/_native` (`fastrng`, `fastloop`, `fastcell`, `fastset`) also
-build for WebAssembly with Emscripten, through `pyodide build`:
+The five C modules of `modelly/_native` (`fastrng`, `fastloop`, `fastcell`, `fastset` and,
+since 1.4, `fastevents`) also build for WebAssembly with Emscripten, through `pyodide build`:
 
 ```bash
 pip install pyodide-build                       # with Python 3.14, Pyodide 314's version
