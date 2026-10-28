@@ -5,6 +5,26 @@ fixed seed. The figures are drawn by `tools/gallery/make_figures.py`, one panel 
 `tools/gallery/panels/`; rerun it (`python tools/gallery/make_figures.py`, the same in bash
 and PowerShell) after changing a model.
 
+## Live models
+
+These three models run in your browser: Python, Modelly and the model load in the page
+with Pyodide when you press Start (about 15 MB the first time, cached afterwards), and
+nothing runs on a server. Each frame is a static export made by `modelly export-web` when
+the docs are built ([Modelly in the browser](browser.md)); open it in its own tab for more
+room.
+
+**[Forest fire](zoo/forest_fire.md)** (<a href="live/forest_fire/index.html">open</a>).
+
+<iframe class="ml-live-model" src="live/forest_fire/index.html?lazy=1" title="Forest fire, live" loading="lazy" width="100%" height="720"></iframe>
+
+**[Schelling segregation](examples/basic/schelling.md)** (<a href="live/schelling/index.html">open</a>).
+
+<iframe class="ml-live-model" src="live/schelling/index.html?lazy=1" title="Schelling segregation, live" loading="lazy" width="100%" height="720"></iframe>
+
+**[Wolf-sheep predation](examples/advanced/wolf_sheep.md)** (<a href="live/wolf_sheep/index.html">open</a>).
+
+<iframe class="ml-live-model" src="live/wolf_sheep/index.html?lazy=1" title="Wolf-sheep predation, live" loading="lazy" width="100%" height="720"></iframe>
+
 ## Epidemiology
 
 **[Age-structured SEIR](zoo/age_seir.md).** Children, with the most contacts, peak first and
