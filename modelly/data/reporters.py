@@ -23,6 +23,8 @@ from typing import Any
 
 import numpy as np
 
+from modelly._native import sets
+from modelly._native.sets import attr_values
 from modelly.core.columns import ID_COLUMN
 
 LIST_REPORTER_LENGTH = 2  # [function, [param_1, param_2]]
@@ -220,15 +222,34 @@ def _reporter_columns(
             return _attribute_columns(agents, attributes)
         except AttributeError:
             pass
-    return [list(map(rep, agents)) for rep in funcs]
+    return [_reporter_column(agents, *pair) for pair in zip(funcs, attributes)]
 
 
 def _attribute_columns(agents: list[Any], attributes: list[str]) -> list[list]:
-    """One list per attribute, gathered with a single attrgetter pass."""
-    if len(attributes) == 1:
-        return [list(map(attrgetter(attributes[0]), agents))]
+    """One list per attribute: compiled, one gather per attribute, else one attrgetter pass.
+
+    The compiled gather (``attr_values``) reads a Column attribute from its
+    table without calling its Python getter, and plain attributes as attrgetter does.
+    """
+    if sets.NATIVE or len(attributes) == 1:
+        return [attr_values(agents, name) for name in attributes]
     rows = map(attrgetter(*attributes), agents)
     return [list(column) for column in zip(*rows)]
+
+
+def _reporter_column(
+    agents: list[Any], reporter: Callable, attribute: str | None
+) -> list:
+    """The values of one reporter, an undotted attribute reporter by the compiled gather.
+
+    A missing attribute runs the reporter itself, for its descriptive error.
+    """
+    if sets.NATIVE and attribute is not None and "." not in attribute:
+        try:
+            return attr_values(agents, attribute)
+        except AttributeError:
+            pass
+    return list(map(reporter, agents))
 
 
 def _whole_column_table(agents: list[Any], attributes: list[str | None]):

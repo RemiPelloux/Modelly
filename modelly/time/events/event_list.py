@@ -2,14 +2,17 @@
 
 Events are kept in chronological order, respecting priorities. Cancellation is
 lazy, so the heap invariant is never broken, and the heap compacts itself once
-canceled events dominate it.
+canceled events dominate it. The heap itself is ``modelly._native.events.EventHeap``:
+compiled when available, with an identical pure-Python twin.
 """
 
 from __future__ import annotations
 
-from heapq import heapify, heappop, heappush, nsmallest
+from heapq import nsmallest
 from typing import TYPE_CHECKING, Any
 from weakref import ReferenceType, ref
+
+from modelly._native.events import EventHeap
 
 if TYPE_CHECKING:
     from modelly.time.events.event import Event
@@ -18,9 +21,9 @@ if TYPE_CHECKING:
 class EventList:
     """An event list.
 
-    This is a heap queue sorted list of events. Events are always removed from the left, so heapq is a performant and
-    appropriate data structure. Events are sorted based on their time stamp, their priority, and their unique_id
-    as a tie-breaker, guaranteeing a complete ordering.
+    This is a heap queue sorted list of events. Events are always removed from the left, so a binary heap is a
+    performant and appropriate data structure. Events are sorted based on their time stamp, their priority, and
+    their unique_id as a tie-breaker, guaranteeing a complete ordering.
 
     Canceling an event leaves it on the heap so the heap invariant is not broken.
     Models that repeatedly cancel and reschedule an event would therefore grow the
@@ -34,6 +37,7 @@ class EventList:
     Notes:
         An event belongs to one event list at a time. Adding the same event to a
         second list hands ownership over, and the first list's count goes stale.
+        An event's time and priority must not change while it is on a list.
 
     """
 
@@ -41,15 +45,26 @@ class EventList:
 
     def __init__(self):
         """Initialize an event list."""
-        self._events: list[Event] = []
-        self._n_canceled: int = 0
+        self._heap = EventHeap()
         # Built once and handed to every event, since creating it per push is costly.
         self._self_ref: ReferenceType[EventList] = ref(self)
-        heapify(self._events)
+
+    @property
+    def _events(self) -> list[Event]:
+        """The events on the heap, canceled ones included, in heap order (a copy)."""
+        return self._heap.events()
+
+    @property
+    def _n_canceled(self) -> int:
+        """The number of canceled events still on the heap."""
+        return self._heap.canceled
 
     def __getstate__(self) -> dict[str, Any]:
-        """Prepare state for pickling."""
+        """Prepare state for pickling: the events in heap order, whichever heap holds them."""
         state = self.__dict__.copy()
+        heap = state.pop("_heap")
+        state["_events"] = heap.events()
+        state["_n_canceled"] = heap.canceled
         state["_self_ref"] = None  # Weak references cannot be pickled
         return state
 
@@ -59,9 +74,12 @@ class EventList:
         Events drop their weak reference to this list when pickled, so it has to
         be re-established or later cancellations would go uncounted.
         """
+        state = dict(state)
+        self._heap = EventHeap(state.pop("_events"))
+        self._heap.canceled = state.pop("_n_canceled")
         self.__dict__.update(state)
         self._self_ref = ref(self)
-        for event in self._events:
+        for event in self._heap.events():
             event._owner = self._self_ref
 
     def add_event(self, event: Event):
@@ -82,7 +100,7 @@ class EventList:
             )
 
         event._owner = self._self_ref
-        heappush(self._events, event)
+        self._heap.push(event)
 
     def _on_cancellation(self) -> None:
         """Record a canceled event, compacting the heap once they dominate it.
@@ -91,9 +109,10 @@ class EventList:
         event grows the heap and popping one discards a tombstone. So this is
         the single place where compaction can become worthwhile.
         """
-        self._n_canceled += 1
+        heap = self._heap
+        heap.canceled += 1
 
-        if self._n_canceled > len(self._events) * self.COMPACTION_RATIO:
+        if heap.canceled > len(heap) * self.COMPACTION_RATIO:
             self.compact()
 
     def peek_ahead(self, n: int = 1) -> list[Event]:
@@ -118,30 +137,18 @@ class EventList:
             raise IndexError("event list is empty")
 
         # Filter out canceled events and get n smallest in correct chronological order
-        return nsmallest(n, (e for e in self._events if not e.CANCELED))
+        return nsmallest(n, (e for e in self._heap.events() if not e.CANCELED))
 
     def pop_event(self) -> Event:
         """Pop the first element from the event list."""
-        while self._events:
-            event = heappop(self._events)
-
-            if not event.CANCELED:
-                # No longer on the heap, so a later cancel() must not be counted here.
-                event._owner = None
-                return event
-
-            self._n_canceled -= 1
-
-        raise IndexError("Event list is empty")
+        return self._heap.pop()
 
     def compact(self) -> None:
         """Remove all canceled events from the heap and rebuild it.
 
         If there are many canceled events, compaction can speed up performance substantially.
         """
-        self._events = [e for e in self._events if not e.CANCELED]
-        self._n_canceled = 0
-        heapify(self._events)
+        self._heap.compact()
 
     def is_empty(self) -> bool:
         """Return whether the event list is empty."""
@@ -150,17 +157,18 @@ class EventList:
     def __contains__(self, event: Event) -> bool:  # noqa
         if event.CANCELED:
             return False
-        return event in self._events
+        return event in self._heap
 
     def __len__(self) -> int:  # noqa
-        return len(self._events) - self._n_canceled
+        heap = self._heap
+        return len(heap) - heap.canceled
 
     def __repr__(self) -> str:
         """Return a string representation of the event list."""
         events_str = ", ".join(
             [
                 f"Event(time={e.time}, priority={e.priority}, id={e.unique_id})"
-                for e in self._events
+                for e in self._heap.events()
                 if not e.CANCELED
             ]
         )
@@ -181,9 +189,5 @@ class EventList:
             event.cancel()
 
     def clear(self) -> None:
-        """Clear the event list."""
-        # Detach the events, so a later cancel() is not counted against this list.
-        for event in self._events:
-            event._owner = None
-        self._events.clear()
-        self._n_canceled = 0
+        """Clear the event list, detaching the events so a later cancel() is not counted."""
+        self._heap.clear()

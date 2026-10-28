@@ -53,6 +53,10 @@ def column_property(name: str, position: int, column: Column) -> property:
         except AttributeError:
             raise ColumnMissingError(agent, _column_name(agent, position)) from None
 
+    # The compiled attribute gather (modelly/_native/columnread.h) runs the getter's
+    # three reads itself when the getter carries its position.
+    get._modelly_column = position
+
     def set_(agent, value):
         try:
             agent._column_table._views[position][agent._column_row] = value

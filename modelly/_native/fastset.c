@@ -9,7 +9,9 @@
  * - make_refs:   AgentSet._make_refs, dict.fromkeys of one weakref per agent
  * - keep_type:   select's ``[a for a in agents if isinstance(a, agent_type)]``
  * - keep_if:     select's ``[a for a in agents if filter_func(a)]``
- * - attr_values: get / agg's ``list(map(operator.attrgetter(name), agents))``
+ * - attr_values: get / agg's ``list(map(operator.attrgetter(name), agents))``,
+ *                also the DataCollector's attribute reporters; a Column attribute
+ *                is read from its table in C, not through its Python getter
  *
  * Every loop walks a list it owns or a reference it holds to each item
  * (item_or_end), so it is safe on a free-threaded build too.
@@ -18,6 +20,8 @@
 #include <Python.h>
 
 #include "ftcompat.h"
+#include "typelookup.h" /* mro_lookup */
+#include "columnread.h" /* column_get: a Column attribute read without its Python getter */
 
 static PyObject *str_dot = NULL; /* "." */
 
@@ -93,6 +97,20 @@ dotted_get(PyObject *obj, PyObject *parts)
     return value;
 }
 
+/* ``agent.<parts[0]>`` (one name), reading a Column attribute through ``cache`` (columnread.h). */
+static PyObject *
+single_get(PyObject *agent, PyObject *parts, column_cache_t *cache)
+{
+    return column_get(agent, PyList_GET_ITEM(parts, 0), cache);
+}
+
+/* ``dotted_get`` with the signature of single_get; the cache is unused. */
+static PyObject *
+dotted_get_cached(PyObject *agent, PyObject *parts, column_cache_t *Py_UNUSED(cache))
+{
+    return dotted_get(agent, parts);
+}
+
 /* attr_values(agents: list, name: str) -> list: ``list(map(operator.attrgetter(name), agents))``. */
 static PyObject *
 attr_values(PyObject *Py_UNUSED(module), PyObject *const *argv, Py_ssize_t nargs)
@@ -105,13 +123,17 @@ attr_values(PyObject *Py_UNUSED(module), PyObject *const *argv, Py_ssize_t nargs
     }
     PyObject *agents = argv[0], *parts = PyUnicode_Split(argv[1], str_dot, -1);
     PyObject *out = parts == NULL ? NULL : PyList_New(0), *agent;
+    column_cache_t cache = {0};
+    PyObject *(*get)(PyObject *, PyObject *, column_cache_t *) =
+        parts != NULL && PyList_GET_SIZE(parts) == 1 ? single_get : dotted_get_cached;
     for (Py_ssize_t i = 0; out != NULL && (agent = item_or_end(agents, i)) != NULL; i++) {
-        PyObject *value = dotted_get(agent, parts);
+        PyObject *value = get(agent, parts, &cache);
         Py_DECREF(agent);
         if (value == NULL || PyList_Append(out, value) < 0)
             Py_CLEAR(out);
         Py_XDECREF(value);
     }
+    forget_columns(&cache);
     Py_XDECREF(parts);
     return out;
 }
@@ -207,7 +229,7 @@ PyMODINIT_FUNC
 PyInit_fastset(void)
 {
     str_dot = PyUnicode_InternFromString(".");
-    if (str_dot == NULL)
+    if (str_dot == NULL || columnread_init() < 0)
         return NULL;
     PyObject *module = PyModule_Create(&module_def);
     if (module != NULL && DECLARE_NO_GIL(module) < 0)

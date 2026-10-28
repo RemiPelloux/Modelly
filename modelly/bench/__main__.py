@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from modelly.bench import history, report
+from modelly.bench import against, history, report
 from modelly.bench.pinning import Pinning, choose, pinned
 from modelly.bench.playbooks import (
     PlaybookError,
@@ -16,6 +16,7 @@ from modelly.bench.playbooks import (
     run_once,
     select_variants,
 )
+from modelly.dev.perf_env import PerfEnvError
 
 EXIT_OK, EXIT_REGRESSION, EXIT_USAGE = 0, 1, 2
 PROG = "python -m modelly.bench"
@@ -40,6 +41,12 @@ latest entry at the same size. A variant slower than its baseline by more than
 
 With MESA_PYTHON set to the interpreter of a Mesa 2.3 environment, the Mesa
 variant of each playbook runs too (see benchmarks/playbooks/README.md).
+
+With --against VERSION (in a clone of the repository), each Modelly variant runs
+in this checkout and in that release, built from its git tag with the same
+compiler and dependencies, for the same seed, the two alternating; the results
+must be identical, and the report gives the median and interquartile range of
+the per-round CPU ratios. Nothing is written to the history.
 """
 
 EPILOG = f"""\
@@ -50,6 +57,7 @@ examples:
   modelly bench --baseline v1.2.0 --threshold 0.05
   modelly bench --history ~/bench/modelly.jsonl --core 3
   MESA_PYTHON=.venv-mesa2/bin/python modelly bench --size small
+  modelly bench --against 1.3.3 --rounds 7         this checkout against a release
 
 exit codes:
   {EXIT_OK}  every variant ran; none is slower than its baseline beyond --threshold
@@ -131,6 +139,14 @@ OPTIONS = (
         },
     ),
     (("--label",), {"help": "a name for this entry, to use as a --baseline later"}),
+    (
+        ("--against",),
+        {
+            "metavar": "VERSION",
+            "help": "time this checkout against a release built from its tag "
+            f"('{against.LATEST}': the last one) instead of the history",
+        },
+    ),
     (("--baseline",), {"metavar": "LABEL|INDEX", "help": "the entry to compare with"}),
     (
         ("--threshold",),
@@ -203,12 +219,25 @@ def bench(args: argparse.Namespace) -> tuple[str, bool]:
     return text, any(change.regression for change in changes)
 
 
+def bench_against(args: argparse.Namespace) -> tuple[str, bool]:
+    """Pair every Modelly variant with a release; the report and whether one failed."""
+    variants = select_variants(load_registry(args.playbooks), args.only, args.size)
+    if not variants:
+        raise PlaybookError("no Modelly variant matches --only")
+    pinning = choose(args.core, enabled=not args.no_pin)
+    sides = against.prepare(args.against, args.playbooks.resolve())
+    pairings = against.pair_rounds(args, variants, pinning, sides)
+    report_text = against.text(pairings, sides, args, pinning)
+    return report_text, against.failed(pairings, args.threshold)
+
+
 def main(argv: list[str] | None = None, prog: str = PROG) -> int:
     """Run the benchmark and write the report; the exit status."""
     args = parse_args(argv, prog)
+    run = bench_against if args.against else bench
     try:
-        text, regressed = bench(args)
-    except (PlaybookError, LookupError, ValueError, OSError) as error:
+        text, regressed = run(args)
+    except (PlaybookError, LookupError, ValueError, OSError, PerfEnvError) as error:
         sys.stderr.write(f"modelly bench: {error}\n")
         return EXIT_USAGE
     sys.stdout.write(text + "\n")

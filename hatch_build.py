@@ -29,6 +29,7 @@ SOURCES = (
     NATIVE_DIR / "fastloop.c",
     NATIVE_DIR / "fastcell.c",
     NATIVE_DIR / "fastset.c",
+    NATIVE_DIR / "fastevents.c",
 )
 OPTIMISE = ["-O3", "-fPIC", "-fno-strict-aliasing"]
 # In the EXT_SUFFIX of a WebAssembly build (cpython-314-wasm32-emscripten.so).

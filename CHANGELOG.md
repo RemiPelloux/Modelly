@@ -222,8 +222,27 @@ versioning.
 - native: the C modules build for WebAssembly with Emscripten (`pyodide build`,
   `scripts/build-wasm-wheel.sh`); `modelly export-web --wheel` ships that wheel.
 
+- Memory-mapped columns (`modelly.core.storage`): `model.columns.storage = MemoryMapped(dir)`
+  or `CohortTable(rng, storage=MemoryMapped(dir), ...)` keeps a table's columns in
+  `numpy.memmap` files, grown in place and deleted by `close()`, a `with` block or garbage
+  collection; checkpoints carry the rows and load them into a new folder.
+  `benchmarks/large_columns.py` runs a cohort population of any size on either storage.
+- `modelly bench --against VERSION`: every Modelly playbook variant in this checkout and in a
+  release built from its tag (same compiler and dependencies), alternating, results checked
+  identical, with the median and interquartile range of the per-round CPU ratios.
+- `benchmarks/pgo.py`: the compiled modules built with GCC profile-guided optimisation
+  (trained on the playbooks, `benchmarks/pgo_training.py`) and timed against -O3 on every
+  playbook. It measured no faster, so the build does not use it (`docs/performance.md`).
+
 ### Changed
 
+- The event list's heap is compiled (`modelly/_native/fastevents.c`): the same ordering (time,
+  then priority, then insertion order), the same heap array, a pure-Python twin, and
+  checkpoints that load in either; time advance no longer pops and re-pushes the first future
+  event, and `schedule_event` builds one weak reference instead of two.
+- The `DataCollector`'s attribute reporters, `AgentSet.get` and `agg` read `Column`
+  attributes from their table in C instead of calling the Python getter per agent; the rows
+  are identical.
 - docs: the build fails on warnings. `scripts/build-docs-version.sh` passes `-W --keep-going` by
   default (`SPHINXOPTS=` builds an old tag that warns) and the docs workflow sets it. The build
   was made warning-free first: a docstring formula read as a substitution, ambiguous `Grid` and
