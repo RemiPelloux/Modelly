@@ -106,6 +106,33 @@ versioning.
   age-structured SEIR (truth at the default parameters, three outputs), four waves of 20 runs
   leave 17 %, 4.4 %, 3.1 % and 2.5 % of the box, the truth inside every time. Guide:
   `docs/emulators.md`.
+- Studio Ensemble tab (provisional): replicates of the parameter panel's values, seeds spawned
+  from the panel's seed, and the mean, median and 5 to 95 % band of every numeric model
+  reporter across them step by step, as `modelly.stream` band frames (CSV download).
+- Studio Assimilation tab (provisional): `modelly studio --observations observed.csv` runs a
+  particle filter or an ensemble Kalman filter over the observations and shows the filtered
+  bands with the data, the effective sample size and every replicate's weight over time, or
+  the adjusted parameters' mean and spread over time.
+- Studio Experiments tab (provisional): `--results DIR` browses an experiment's results store:
+  one row per run, filters by parameter (ranges or values), an output against a parameter and
+  the selected runs step by step; `modelly.studio.browser.ExperimentBrowser` from Python.
+- Studio Analysis tab (provisional): `--analysis file.py:function` (or `session.analyses`)
+  shows calibration posteriors (marginals, pairs, fits, HDI summary) and sensitivity results
+  (the method's plot, the ranking).
+- Studio Map tab (provisional): the space drawn by WebGL in the browser (agents, network nodes
+  and edges, `GeoSpace` region outlines), with pan and zoom, falling back to Canvas 2D without
+  WebGL; the renderer ships inside Modelly. 100 000 agents and a 100 000-edge network draw in
+  headless Chromium, Firefox and WebKit on Linux; above 10 000 elements the Model tab leaves the
+  space to it.
+- Studio session script (provisional): Export → Session script downloads a Python script that
+  rebuilds the live run (new runs, steps, replays with changed values and seeds), checked to
+  give the same model state on six bundled examples.
+- Studio bundle export (provisional): Export → Bundle reruns the live run with `modelly run`'s
+  recorder and packs it as a `modelly bundle` zip that `modelly verify` checks.
+- `python -m modelly.studio.assets [--fetch]` (provisional): lists and downloads the front-end
+  files Solara's page needs into its cache, so Studio runs offline; `modelly studio` warns when
+  some are missing. The browser checks, run locally before a release one browser at a time
+  (`MODELLY_BROWSER=chromium|firefox|webkit`), serve the page with the CDN unreachable.
 
 ## 1.3.3 - 2026-10-27
 

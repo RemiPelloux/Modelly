@@ -29,9 +29,9 @@ from typing import TYPE_CHECKING
 import numpy as np
 import pandas as pd
 
+import modelly.stream.sources as sources
 from modelly.stream.kalman import EnsembleKalmanFilter
 from modelly.stream.particle import DEFAULT_THRESHOLD, ParticleFilter
-from modelly.stream.sources import CSVSource, Observation
 from modelly.studio.ensembles import (
     DEFAULT_REPLICATES,
     ensemble_of,
@@ -82,12 +82,12 @@ class Assimilation:
     weights: pd.DataFrame = field(default_factory=pd.DataFrame)
 
 
-def read_observations(path: str | Path) -> list[Observation]:
+def read_observations(path: str | Path) -> list[sources.Observation]:
     """Every observation of a CSV file with a ``time`` column, in time order."""
-    return CSVSource(path).poll()
+    return sources.CSVSource(path).poll()
 
 
-def observation_frame(observations: Sequence[Observation]) -> pd.DataFrame:
+def observation_frame(observations: Sequence[sources.Observation]) -> pd.DataFrame:
     """The observations long-format: one row per time and quantity (``value``)."""
     rows = [
         {"time": o.time, "quantity": name, "value": value}
@@ -97,7 +97,9 @@ def observation_frame(observations: Sequence[Observation]) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=["time", "quantity", "value"])
 
 
-def posterior_weights(pf: ParticleFilter, observation: Observation) -> np.ndarray:
+def posterior_weights(
+    pf: ParticleFilter, observation: sources.Observation
+) -> np.ndarray:
     """The weights ``pf`` gives its replicates for ``observation``, before resampling."""
     pf.ensemble.advance(observation.time)
     likelihood = np.array(
@@ -162,7 +164,7 @@ def _kalman(session, settings, observations) -> Assimilation:
 
 def assimilate(
     session: StudioSession,
-    observations: Sequence[Observation],
+    observations: Sequence[sources.Observation],
     settings: FilterSettings | None = None,
 ) -> Assimilation:
     """Run the filter ``settings`` names over ``observations``, from the panel's values.
