@@ -8,10 +8,10 @@ and PowerShell) after changing a model.
 ## Live models
 
 These three models run in your browser: Python, Modelly and the model load in the page
-with Pyodide when you press Start (about 15 MB the first time, cached afterwards), and
-nothing runs on a server. Each frame is a static export made by `modelly export-web` when
-the docs are built ([Modelly in the browser](browser.md)); open it in its own tab for more
-room.
+with Pyodide when you press Start (14 MB the first time, 28 MB for forest fire, which needs
+scipy; cached afterwards), and nothing runs on a server. Each frame is a static export made
+by `modelly export-web` when the docs are built ([Modelly in the browser](browser.md));
+open it in its own tab for more room.
 
 **[Forest fire](zoo/forest_fire.md)** (<a href="live/forest_fire/index.html">open</a>).
 

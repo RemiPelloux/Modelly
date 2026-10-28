@@ -198,6 +198,7 @@ Domain tutorials <tutorials/domains/index>
 Course <course/index>
 Plugins <plugins>
 Studio <studio>
+In the browser <browser>
 Figures and animations <figures>
 Vectorised step phases <vectorised_phases>
 Determinism and platforms <determinism>

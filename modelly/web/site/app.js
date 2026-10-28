@@ -130,7 +130,7 @@ if (new URLSearchParams(location.search).get("lazy") === "1") {
   $("start").hidden = false;
   $("start").disabled = false;
   $("start").addEventListener("click", boot);
-  $("status").textContent = "Press Start to download Python and the model (about 15 MB).";
+  $("status").textContent = "Press Start to download Python and the model (14 MB or more, cached afterwards).";
 } else {
   boot();
 }
