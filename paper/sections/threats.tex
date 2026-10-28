@@ -57,11 +57,13 @@ the grid epidemic's columns over Mesa~2.3). An earlier session with turbo enable
 \code{powersave} governor gave ratios up to 30\% different for some workloads and per-round
 spreads up to $+94\%$, so the conclusions rest on the order of magnitude of each speed-up, not
 on its last digit, and on one machine: other processors, with other cache sizes and
-vector units, will give other ratios. The measurements of \cref{sec:scale,sec:connect} were
+vector units, will give other ratios. The measurements of \cref{sec:release14} were
 made later, during the release's integration, on the same laptop shared with other jobs and
 without the fixed frequency; each states its rounds and spreads, and the claims that carry
-weight there (identical outputs, a 34-fold speed-up, targets missed by a factor) do not turn
-on a few percent.
+weight there (identical outputs, a 34-fold speed-up, shortfalls by a factor) do not turn
+on a few percent. The release gate of \cref{sec:regressions} compares two separately compiled
+builds, which differed by up to 17\% on an operation whose source did not change, so a ratio
+of that size in either direction is re-timed from one build before it is believed.
 
 \paragraph{Agreement.} The agreement study (\cref{sec:agreement}) compares chosen summary
 statistics, not whole trajectories; six small differences are individually detectable at the

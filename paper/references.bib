@@ -395,11 +395,11 @@
 @misc{mesaframes,
   author       = {Amer, Adam and {mesa-frames contributors}},
   title        = {{mesa-frames}},
-  version      = {0.1.0a0},
+  version      = {0.1.1.dev0},
   howpublished = {Software repository},
   url          = {https://github.com/mesa/mesa-frames},
-  year         = {2024},
-  note         = {Version 0.1.0a0; measured at development commit ef92326. Accessed 2026-10-25}
+  year         = {2026},
+  note         = {Development commit ef92326 of 6 October 2026 (version 0.1.1.dev0), accessed 2026-10-25}
 }
 
 @article{kwakkel2017ema,
@@ -1104,7 +1104,9 @@
   author = {Bengio, Yoshua and L{\'e}onard, Nicholas and Courville, Aaron},
   title  = {Estimating or propagating gradients through stochastic neurons for conditional computation},
   year   = {2013},
-  note   = {arXiv:1308.3432}
+  howpublished = {arXiv preprint},
+  note   = {arXiv:1308.3432},
+  url    = {https://arxiv.org/abs/1308.3432}
 }
 
 @inproceedings{jang2017categorical,
@@ -1112,7 +1114,8 @@
   title     = {Categorical reparameterization with {G}umbel-softmax},
   booktitle = {International Conference on Learning Representations (ICLR)},
   year      = {2017},
-  note      = {arXiv:1611.01144}
+  note      = {arXiv:1611.01144},
+  url       = {https://arxiv.org/abs/1611.01144}
 }
 
 @inproceedings{maddison2017concrete,
@@ -1120,7 +1123,8 @@
   title     = {The concrete distribution: a continuous relaxation of discrete random variables},
   booktitle = {International Conference on Learning Representations (ICLR)},
   year      = {2017},
-  note      = {arXiv:1611.00712}
+  note      = {arXiv:1611.00712},
+  url       = {https://arxiv.org/abs/1611.00712}
 }
 
 @inproceedings{kingma2015adam,
@@ -1128,21 +1132,26 @@
   title     = {Adam: a method for stochastic optimization},
   booktitle = {International Conference on Learning Representations (ICLR)},
   year      = {2015},
-  note      = {arXiv:1412.6980}
+  note      = {arXiv:1412.6980},
+  url       = {https://arxiv.org/abs/1412.6980}
 }
 
 @misc{bradbury2018jax,
   author = {Bradbury, James and Frostig, Roy and Hawkins, Peter and Johnson, Matthew James and Leary, Chris and Maclaurin, Dougal and Necula, George and Paszke, Adam and VanderPlas, Jake and Wanderman-Milne, Skye and Zhang, Qiao},
   title  = {{JAX}: composable transformations of {P}ython+{NumPy} programs},
   year   = {2018},
-  howpublished = {\url{https://github.com/jax-ml/jax}}
+  howpublished = {Software repository},
+  url    = {https://github.com/jax-ml/jax},
+  note   = {Version 0.12.0 used}
 }
 
 @inproceedings{okuta2017cupy,
   author    = {Okuta, Ryosuke and Unno, Yuya and Nishino, Daisuke and Hido, Shohei and Loomis, Crissman},
   title     = {{CuPy}: a {NumPy}-compatible library for {NVIDIA} {GPU} calculations},
   booktitle = {Proceedings of the Workshop on Machine Learning Systems (LearningSys) at the 31st Conference on Neural Information Processing Systems (NIPS)},
-  year      = {2017}
+  year      = {2017},
+  url       = {https://github.com/cupy/cupy},
+  note      = {Version 14.2.0 used}
 }
 
 @article{deming1940least,
@@ -1199,4 +1208,15 @@
   year   = {2026},
   howpublished = {\url{https://pyodide.org}},
   note   = {version 314.0.7 as loaded by \texttt{modelly export-web}}
+}
+
+@article{karypis1998fast,
+  author  = {Karypis, George and Kumar, Vipin},
+  title   = {A fast and high quality multilevel scheme for partitioning irregular graphs},
+  journal = {SIAM Journal on Scientific Computing},
+  volume  = {20},
+  number  = {1},
+  pages   = {359--392},
+  year    = {1998},
+  doi     = {10.1137/S1064827595287997}
 }

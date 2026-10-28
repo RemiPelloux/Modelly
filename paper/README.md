@@ -12,7 +12,7 @@ in it comes from a file or a script in this repository.
 | Path | What |
 |---|---|
 | `main.tex` | The paper; `\input`s the sections in order |
-| `sections/` | Abstract, introduction, related work (with the feature comparison), design, research workflow, performance (speed-ups and the agreement study), correctness and reproducibility, release 1.4's scaling additions (`scale.tex`: split runs, GPU, differentiable models, performance II) and connections (`connect.tex`: assimilation, coupling, emulators, populations, browser, tools, the targets table), use cases, threats to validity and limitations, availability and conclusion, appendix |
+| `sections/` | Abstract, introduction, related work (with the feature comparison), design, research workflow, performance (speed-ups and the agreement study), correctness and reproducibility, what release 1.4 adds, use cases, threats and limitations, conclusion and availability, appendix (reproduction, workloads, intervals, release comparisons, further agreement tables, release 1.4 in detail, every comparison) |
 | `references.bib` | Bibliography (BibTeX, `plainnat`) |
 | `tables/playbooks.tex` | Results table, **generated** from `benchmarks/playbooks/results/*.json` |
 | `figures/speedups.pdf` | Speed-up figure, **generated** from the same results (PNG preview alongside) |
@@ -26,6 +26,9 @@ in it comes from a file or a script in this repository.
 | `scripts/frames_threads.py` | Times mesa-frames with one polars thread and with all of them |
 | `scripts/agreement.py`, `scripts/agreement_tables.py` | Run the agreement study (`run`) and regenerate its tables and figure (`analyse`) |
 | `scripts/recovery.py` | Runs the ABC-SMC coverage study and regenerates its table |
+| `scripts/release_gates_table.py` | Table of every release comparison from `data/release_gates.json` (part of `make figures`) |
+| `scripts/ishigami.py` | Sobol indices of the Ishigami function as quoted (`data/ishigami.json`) |
+| `scripts/assimilation.py` | The nowcasting tutorial's numbers as quoted (`data/assimilation.json`) |
 | `scripts/package_arxiv.py` | Checks the sources without LaTeX; packs the arXiv archive |
 | `Makefile` | `make`, `make figures`, `make check`, `make arxiv`, `make clean` |
 
@@ -51,7 +54,7 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | 1.3.1 against 1.2.0 (Section 5.4) | `docs/performance.md`, "No regression from release to release" | `python -m modelly.dev perf --against 1.2.0`, the playbook runner |
 | Ishigami indices (Section 6.2) | `tests/sensitivity`, `docs/sensitivity.md` | `pytest tests/sensitivity` |
 | ABC-SMC coverage over 200 datasets per model (Table 8) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
-| Every agreement comparison (appendix E) | `data/agreement_small_summary.json` | `scripts/agreement.py analyse` |
+| Every agreement comparison (appendix G) | `data/agreement_small_summary.json` | `scripts/agreement.py analyse` |
 | Grid epidemic at the timed size, 200 seeds (Section 5.3) | `data/agreement_large_grid200.json` | `scripts/agreement.py run --size large --seeds 200 --playbooks grid_epidemic --tag large_grid200` |
 | Mesa 3.5 and mesa-frames against Mesa 2.3, 100 seeds (Section 5.3) | `data/agreement_small_baselines.json` | `scripts/agreement.py run --variants mesa3 frames --tag small_baselines` |
 | Schelling over 300 seeds, every implementation (Section 5.3) | `data/agreement_schelling300.json` | `scripts/agreement.py run --seeds 300 --playbooks schelling --variants mesa3 frames modelly modelly-cells --tag schelling300` |
@@ -63,17 +66,21 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | mesa-frames with one thread and with all (Section 5.2) | `data/frames_threads.json` | `scripts/frames_threads.py` |
 | Workload parameters (appendix B) | `benchmarks/playbooks/registry.py` | `make figures` |
 | Determinism (Section 6.1, Table 7) | `tests/determinism`, `tests/determinism/golden.json` | `pytest tests/determinism` |
-| Split runs equal one process; MPI 2 and 4 ranks (Section 7.1) | `tests/distributed/`, `tests/determinism/test_determinism_partition.py` | `pytest tests/distributed tests/determinism/test_determinism_partition.py` (needs mpi4py for the MPI cases) |
-| Weak scaling (Table 9) | `data/weak_mpi_10k.json`, `data/weak_mpi_40k.json`, `data/weak_dask_10k.json` | `benchmarks/distributed/weak_scaling.py` |
-| GPU speed-up and equality at 10 million agents (Section 7.2) | `data/gpu_speedup.json` | `benchmarks/playbooks/gpu_speedup.py` in a CUDA environment (`docs/gpu.md`) |
-| Differentiable recoveries and gradient checks (Section 7.3) | `tests/diff/`, `docs/differentiable.md` | `pytest tests/diff` (needs jax) |
-| Event heap, column gather, 1.4 against 1.3.3, memory-mapped 100 M rows, PGO (Section 7.4) | `docs/performance.md` | `modelly bench --against 1.3.3`, `benchmarks/large_columns.py`, `benchmarks/pgo.py` |
-| Nowcasting error and EnKF recovery (Section 8.1) | `docs/assimilation.md` run by `tests/stream/test_assimilation_tutorial.py` | `pytest tests/stream` |
-| Field numerics and the two coupled zoo models (Section 8.2) | `tests/couple/`, `tests/zoo/test_nutrient_foragers.py`, `test_hospital_epidemic.py` | `pytest tests/couple tests/zoo` |
-| History-matching volumes and active learning against LHS (Section 8.3) | `docs/emulators.md`, `tests/emulate/` | `pytest tests/emulate`; `benchmarks/emulate/active_vs_lhs.py` |
-| Synthetic population and the real-data zoo models (Section 8.4) | `tests/population/test_sample_region.py`, `tests/zoo/`, `modelly/space/geo/data/NOTICE.md` | `pytest tests/population tests/zoo` |
-| Browser runs and first load (Section 8.5) | `docs/browser.md` | `MODELLY_BROWSER_TESTS=1 pytest tests/web/test_browser.py`; `tools/web/measure_load.py` |
-| NetLogo fire threshold, lint rule count, strict typing (Section 8.6) | `docs/netlogo.md`, `modelly/lint`, the gate's `types` stage | `pytest tests/netlogo`; `bash scripts/ci-local.sh types` |
+| Split runs equal one process; MPI 2 and 4 ranks (Section 7, Appendix F.1) | `tests/distributed/`, `tests/determinism/test_determinism_partition.py` | `pytest tests/distributed tests/determinism/test_determinism_partition.py` (needs mpi4py for the MPI cases) |
+| Weak scaling (Table 18) | `data/weak_mpi_10k.json`, `data/weak_mpi_40k.json`, `data/weak_dask_10k.json` | `benchmarks/distributed/weak_scaling.py` |
+| GPU speed-up and equality at 10 million agents (Section 7, Appendix F.2) | `data/gpu_speedup.json` | `benchmarks/playbooks/gpu_speedup.py` in a CUDA environment (`docs/gpu.md`) |
+| Differentiable recoveries and gradient checks (Section 7, Appendix F.3) | `tests/diff/`, `docs/differentiable.md` | `pytest tests/diff` (needs jax) |
+| Event heap, column gather, 1.4 against 1.3.3, memory-mapped 100 M rows, PGO (Section 7, Appendix F.4) | `docs/performance.md` | `modelly bench --against 1.3.3`, `benchmarks/large_columns.py`, `benchmarks/pgo.py` |
+| Nowcasting error and EnKF recovery (Section 7, Appendix F.5) | `docs/assimilation.md` run by `tests/stream/test_assimilation_tutorial.py` | `pytest tests/stream` |
+| Field numerics and the two coupled zoo models (Section 7, Appendix F.6) | `tests/couple/`, `tests/zoo/test_nutrient_foragers.py`, `test_hospital_epidemic.py` | `pytest tests/couple tests/zoo` |
+| History-matching volumes and active learning against LHS (Section 7, Appendix F.7) | `docs/emulators.md`, `tests/emulate/` | `pytest tests/emulate`; `benchmarks/emulate/active_vs_lhs.py` |
+| Synthetic population and the real-data zoo models (Section 7, Appendix F.8) | `tests/population/test_sample_region.py`, `tests/zoo/`, `modelly/space/geo/data/NOTICE.md` | `pytest tests/population tests/zoo` |
+| Browser runs and first load (Section 7, Appendix F.9) | `docs/browser.md` | `MODELLY_BROWSER_TESTS=1 pytest tests/web/test_browser.py`; `tools/web/measure_load.py` |
+| NetLogo fire percolation threshold (Section 6.2) | `docs/netlogo.md` | `pytest tests/netlogo` |
+| Nowcasting error, resamplings and EnKF recovery as quoted (Section 7, Appendix F.5) | `data/assimilation.json` | `scripts/assimilation.py` |
+| Ishigami estimates as quoted (Section 6.2) | `data/ishigami.json` | `scripts/ishigami.py` |
+| Every release comparison (Table 13) | `data/release_gates.json` | `scripts/release_gates_table.py` (part of `make figures`) |
+| 105 GPU and differentiable tests on CuPy and CUDA JAX (Appendix F.3) | `tests/gpu`, `tests/diff` in the GPU environment (`docs/gpu.md`) | `pytest tests/gpu tests/diff` in `.gpu-venv` |
 | Feature comparison (Table 1) | each project's documentation and repository, October 2026 | by hand: check again before submitting |
 
 If the benchmark results are rerun (for a new release, or on different hardware), run
@@ -92,8 +99,14 @@ If the benchmark results are rerun (for a new release, or on different hardware)
 - [ ] Release 1.4.0 tagged after the fixed-frequency gate against 1.3.3; replace the sentence
       marked `% GATE-1.4.0` in `sections/performance.tex` with its numbers and add them to
       `data/release_gates.json`.
-- [ ] The five zoo models added after the browser run (Section 8.5) run from their export in
-      the local release checks; update the "26 of 31" count.
+- [ ] The five zoo models added after the browser run (Section 7, Appendix F.9) run from
+      their export in the local release checks (`scripts/release-checks.sh browser`); update
+      the "26 of 31" count in `sections/release14.tex` and `sections/appendix_release14.tex`.
+- [ ] Recount the tests and the strictly typed files at the tag (the sentence marked
+      `% COUNTS-1.4.0` in `sections/availability.tex`).
+- [ ] For a journal: Appendix G (every comparison of the agreement study) becomes a CSV
+      supplement generated from `data/agreement_small_summary.json`; Appendix F is the
+      supplementary material for Section 7.
 - [ ] Software Heritage archives the release commit; update the SWHID marked `% SWHID-1.4.0`
       in `sections/availability.tex`.
 - [x] Compiled (Tectonic, no warnings); every page read.
@@ -109,8 +122,8 @@ If the benchmark results are rerun (for a new release, or on different hardware)
       **q-bio.PE**. A first submission to cs.MA may need an endorsement.
 - [ ] Licence for the arXiv record (for example CC BY 4.0).
 - [x] For a journal: software-availability, funding, competing-interest and data-availability
-      declarations (Declarations, after Section 12).
+      declarations (Declarations, after Section 11).
 - [x] Commit and push `paper/`; the repository is archived by Software Heritage (SWHID in
-      Section 12).
+      Appendix A).
 - [ ] Optional: archive the exact version on Zenodo (`modelly bundle`) and cite its DOI in
-      Section 12 (Availability).
+      Section 11 (Availability).

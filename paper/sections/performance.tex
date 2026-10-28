@@ -10,8 +10,8 @@ Intel Core Ultra 7 356H laptop running Linux, CPython 3.15.0 and numpy 2.5.4 in 
 implementation's environment, against Mesa 2.3.2 and Mesa 3.5.1; the pre-commit guard of
 \cref{sec:regressions} times short bursts of wall-clock time instead. The core was held at
 its 1.9~GHz base frequency (the \code{performance} governor, turbo disabled) for every timing
-of this section except the medfly notebook and the release comparisons of
-\cref{sec:regressions}, which were timed with turbo enabled. Following
+of this section except the medfly notebook and the release comparisons of 1.3.1 and 1.3.2
+in \cref{sec:regressions}, which were timed with turbo enabled. Following
 \citet{kalibera2013rigorous}, every run is a fresh interpreter or a fresh model, the rounds are
 paired and their order varies, and we report medians with their spread and bootstrap intervals
 rather than single runs.
@@ -31,31 +31,52 @@ report
 where \emph{steps} is the simulation and \emph{build} the construction of the model and its
 agents. $S_{\mathrm{steps}}$ is the gain per simulated step, which dominates long runs;
 $S_{\mathrm{total}}$ is the gain for one run of the benchmark's length. Round $r$ runs every
-implementation on seed $r$, so the per-round ratios are paired.
+implementation on seed $r$, so the per-round ratios are paired. Where runs are paired chunk by chunk or round by round
+(\cref{sec:portability,tab:mesa-examples,sec:regressions,sec:gpu}) we report instead the
+median of the per-round ratios with its range or quartiles; on our data the two estimators
+differ by under 1\%.
 
 \subsection{Same code: a port that changes only the framework API}
 \label{sec:portability}
 
-A research notebook written for Mesa~2.3, a medfly population model whose main cell runs a
-576-season factorial experiment, was ported with \modelly{}'s codemod. The port changes only
-the framework API: imports, agent construction, the agent registries, the name of the model's
-step method and the seeding line; every line of model logic is unchanged. Both versions are
-seeded identically, and their output tables are bit-identical.
+\modelly{}'s codemod ports a Mesa model by rewriting its imports, agent construction, agent
+registries, the name of the model's step method and the seeding line, leaving every line of
+model logic unchanged, and reports the steps it cannot make. We timed such ports against
+their originals in three settings, beginning with models we did not write.
 
-The seasons were then run in 48 chunks alternating between two persistent processes, one per
-framework, pinned to one core, with every chunk's records hashed and compared (no mismatch in
-any run), at 1/30 of the model's full scale. With the port seeding \code{random.Random}, as
-Mesa does, \modelly{} took 1.04, 1.02 and 1.02 of Mesa's CPU time in three paired runs (median
-1.02, about 2\% slower); with \code{FastRandom}, \modelly{}'s compiled generator, which
-reproduces the same stream, it took 1.02, 0.94 and 0.94 (median 0.94, 6\% faster; the first
-of these runs shared the machine with other jobs). An early profile of the model, before
-its code was optimised (identically in both notebooks), put 68\% of its time in its own code
-and 7\% in the framework (\code{docs/performance.md}), so the framework
-has little to gain on it; this model is private, so this result can be checked only through the
-public ports below.
+\paragraph{Mesa's own examples.} Mesa~3.5 ships ten example models written by its
+developers, and we ported copies of them,
+kept in \code{benchmarks/mesa\_examples/}: eight run on \modelly{} after the codemod and one more edit
+to each, the import of the example's own agents made relative (the codemod points it at
+\modelly{}'s bundled example of the same name), plus, for the Epstein civil-violence model, the
+one step its report asks for (\code{self.steps} becomes \code{self.time}); Sugarscape G1MT uses Mesa's property layers and
+alliance formation its meta-agent factory, which \modelly{} lacks. Porting them found a gap in
+the codemod, which rewrote three Mesa~3.5 module paths to \modelly{} paths that do not exist
+without reporting them; the codemod now maps them and reports any module without an
+equivalent (the fix shipped as 1.3.3; the timed code does not import the codemod). We ran
+each original and its port at Mesa's default parameters, or, where the defaults run in well
+under 0.2~s, on a larger grid at the same density (the virus model on 1,000 nodes), for ten alternating rounds on the same
+fixed-frequency core, and compared every model reporter, at the last step and averaged over
+the run, over 100 shared seeds. \Cref{tab:mesa-examples} gives the results: the ports take
+0.61 (wolf--sheep) to 0.96 (boid flockers) of Mesa~3.5's CPU time, and all 35 statistics are
+equivalent within $0.5\,s_p$, with no paired $t$-test or Kolmogorov--Smirnov test below 5\%
+even before correction.
 
-\paragraph{Two public ports.} The medfly notebook is private, so we repeated the experiment on
-the two playbooks of \cref{sec:playbooks} whose Mesa~2.3 implementations use no Mesa~2 grid
+\begin{table}[tbp]
+  \centering
+  \small
+  \caption{Mesa~3.5's own examples against their codemod ports: median CPU time of the steps
+  over ten alternating rounds, the port's ratio and its per-round range, and the agreement of
+  the model reporters over 100 shared seeds (statistics compared, equivalent within
+  $0.5\,s_p$ by paired TOST, lowest Holm-corrected paired $p$). The script
+  \code{paper/scripts/mesa\_examples\_table.py} generates it from \code{data/mesa\_examples.json}.}
+  \label{tab:mesa-examples}
+  \setlength{\tabcolsep}{4pt}
+  \input{tables/mesa_examples}
+\end{table}
+
+\paragraph{Two public ports from Mesa~2.3.} We also ported our own Mesa~2.3
+implementations of the two playbooks of \cref{sec:playbooks} that use no Mesa~2 grid
 (\modelly{} provides cell spaces instead, and porting a grid means rewriting it): the insect
 population and Boltzmann wealth. The codemod rewrote imports and constructors; the steps it
 reported were done by hand, as its report says (the agents' identifier parameter removed, the
@@ -85,36 +106,24 @@ different way, so we compared them in distribution as in \cref{sec:agreement}: o
 seeds at the small size, 24 of the 26 statistics are equivalent within $0.5\,s_p$, two paired
 $t$-tests fall below 5\% before correction (the network's peak of infections and the Boltzmann
 model's largest wealth, $|d| \le 0.31$) and none after it, and no Kolmogorov--Smirnov test does.
-\paragraph{Mesa's own examples.} The ports above are of implementations we wrote. Mesa~3.5
-ships ten example models written by its developers, and we ported copies of them,
-kept in \code{benchmarks/mesa\_examples/}: eight run on \modelly{} after the codemod and one more edit
-to each, the import of the example's own agents made relative (the codemod points it at
-\modelly{}'s bundled example of the same name), plus, for the Epstein civil-violence model, the
-one step its report asks for (\code{self.steps} becomes \code{self.time}); Sugarscape G1MT uses Mesa's property layers and
-alliance formation its meta-agent factory, which \modelly{} lacks. Porting them found a gap in
-the codemod, which rewrote three Mesa~3.5 module paths to \modelly{} paths that do not exist
-without reporting them; the codemod now maps them and reports any module without an
-equivalent (the fix is in the next release; the timed code does not import the codemod). We ran
-each original and its port at Mesa's default parameters, or, where the defaults run in well
-under 0.2~s, on a larger grid at the same density (the virus model on 1,000 nodes), for ten alternating rounds on the same
-fixed-frequency core, and compared every model reporter, at the last step and averaged over
-the run, over 100 shared seeds. \Cref{tab:mesa-examples} gives the results: the ports take
-0.61 (wolf--sheep) to 0.96 (boid flockers) of Mesa~3.5's CPU time, and all 35 statistics are
-equivalent within $0.5\,s_p$, with no paired $t$-test or Kolmogorov--Smirnov test below 5\%
-even before correction.
 
-\begin{table}[tbp]
-  \centering
-  \small
-  \caption{Mesa~3.5's own examples against their codemod ports: median CPU time of the steps
-  over ten alternating rounds, the port's ratio and its per-round range, and the agreement of
-  the model reporters over 100 shared seeds (statistics compared, equivalent within
-  $0.5\,s_p$ by paired TOST, lowest Holm-corrected paired $p$). The script
-  \code{paper/scripts/mesa\_examples\_table.py} generates it from \code{data/mesa\_examples.json}.}
-  \label{tab:mesa-examples}
-  \setlength{\tabcolsep}{4pt}
-  \input{tables/mesa_examples}
-\end{table}
+\paragraph{A private research notebook.} A research notebook written for Mesa~2.3, a medfly population model whose main cell runs a
+576-season factorial experiment, was ported with \modelly{}'s codemod. The port changes only
+the framework API: imports, agent construction, the agent registries, the name of the model's
+step method and the seeding line; every line of model logic is unchanged. Both versions are
+seeded identically, and their output tables are bit-identical.
+
+The seasons were then run in 48 chunks alternating between two persistent processes, one per
+framework, pinned to one core, with every chunk's records hashed and compared (no mismatch in
+any run), at 1/30 of the model's full scale. With the port seeding \code{random.Random}, as
+Mesa does, \modelly{} took 1.04, 1.02 and 1.02 of Mesa's CPU time in three paired runs (median
+1.02, about 2\% slower); with \code{FastRandom}, \modelly{}'s compiled generator, which
+reproduces the same stream, it took 1.02, 0.94 and 0.94 (median 0.94, 6\% faster; the first
+of these runs shared the machine with other jobs). An early profile of the model, before
+its code was optimised (identically in both notebooks), put 68\% of its time in its own code
+and 7\% in the framework (\code{docs/performance.md}), so the framework
+has little to gain on it; this model is private, so this result can be checked only through the
+public ports above.
 
 Same-code gains therefore range from none, when the model's own code dominates as in the medfly
 notebook, to 1.6 times on Mesa~3.5's own examples and 2.7 and 4.6 times on Mesa~2.3 models,
@@ -124,7 +133,7 @@ whose framework calls are slower; the larger gains come from the forms of \cref{
 \label{sec:playbooks}
 
 Eight workloads, chosen to exercise different parts of an ABM framework, are each implemented
-at least twice: an SIR epidemic on a grid, predator-prey with grass, flocking
+at least twice: a susceptible--infected--recovered (SIR) epidemic on a grid, predator-prey with grass, flocking
 \citep{reynolds1987flocks}, a contagion on a network, a stage-structured insect population,
 Schelling's segregation model \citep{schelling1971dynamic}, Boltzmann wealth exchange
 \citep{dragulescu2000statistical} and Sugarscape \citep{epstein1996growing}. Each has two
@@ -225,13 +234,13 @@ per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}
     \cmidrule(lr){2-3}
      & Mesa~2.3 & Mesa~3.5 & \\
     \midrule
-    Flocking & 33$\times$ & 33$\times$ & one periodic KD-tree query for the whole flock; the steering
+    Flocking & 32.8$\times$ & 32.9$\times$ & one periodic KD-tree query for the whole flock; the steering
       terms are pair sums scattered back with \code{bincount}; positions written in one call \\
-    Grid epidemic & 45$\times$ & 27.5$\times$ & positions are a column of cells: the walk is one
+    Grid epidemic & 45.3$\times$ & 27.5$\times$ & positions are a column of cells: the walk is one
       \code{random\_neighbor} call, the exposure one count of infected per cell \\
-    Schelling & 23$\times$ & 18$\times$ & happiness is two sparse products (residents per cell,
+    Schelling & 22.7$\times$ & 17.5$\times$ & happiness is two sparse products (residents per cell,
       summed over neighbours); all moves in one pass with the sequential rule's law \\
-    Network contagion & 39$\times$ & 13$\times$ & infected neighbours of every node in one sparse
+    Network contagion & 39.3$\times$ & 12.6$\times$ & infected neighbours of every node in one sparse
       matrix--vector product; infection and recovery are Bernoulli vectors \\
     Predator-prey & 6.4$\times$ & 7.1$\times$ & movement, energy, grazing and predation
       (\code{claim}) are array operations; deaths and births are one call per species \\
@@ -239,7 +248,7 @@ per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}
       pass; only the walk to a free cell stays sequential \\
     Boltzmann wealth & 6.4$\times$ & 3.4$\times$ & the exchange is a few array passes (a
       fixed-point iteration) with the law of the shuffled sequential order \\
-    Insect population & 243$\times$ & 133$\times$ & cohorts: at most about 190 (stage, age, sex)
+    Insect population & 243.3$\times$ & 132.9$\times$ & cohorts: at most about 190 (stage, age, sex)
       classes thinned by binomial draws replace about 26,000 agents \\
     \bottomrule
   \end{tabularx}
@@ -271,8 +280,9 @@ spaces next to the columns, and lets a model be vectorised one phase at a time. 
 with Mesa~2.3 is that of the other implementations (\cref{tab:agreement-mesa3np}: 13 of 14
 statistics equivalent within $0.5\,s_p$). One paired $t$-test, Schelling's segregation
 ($d = 0.24$, 0.6\% of the mean), falls below 5\% after the Holm correction over its 14
-comparisons; but on these 100 seeds its Schelling runs give exactly the statistics of the
-column variant, whose same difference does not survive the correction over 67 comparisons and
+comparisons; but on these 100 seeds its Schelling and Boltzmann wealth runs give exactly the statistics
+of the column variant (the baseline is the column algorithm without the framework layer),
+whose same difference does not survive the correction over 67 comparisons and
 is absent at 300 seeds (\cref{tab:agreement-schelling300}), so it is a fluctuation of these
 seeds, not of the implementation. The harness's own six-seed check flags four of its six grid
 epidemic statistics (Welch $p = 0.005$ to $0.014$); over 100 seeds at the same small size the
@@ -357,7 +367,8 @@ sheep population of predator-prey with cell lists, the final adult count of the 
 insect model and the share of agents without wealth in the Boltzmann model ($|d| \le 0.33$, at
 most 1.4\%). The spreads agree too: the ratio of the two implementations' standard deviations
 lies between 0.77 and 1.27, and one median-centred Levene test \citep{brown1974robust} of 67 falls below 5\%, none after the Holm
-correction, so no vectorised phase changes the variability of an outcome. The earlier check shipped with the benchmark harness, six seeds
+correction, so we find no evidence, within the power of a Levene test on 100 seeds, that a
+vectorised phase changes the variability of an outcome. The earlier check shipped with the benchmark harness, six seeds
 and an unpaired Welch test \citep{welch1947generalization} at 1\%, could not have shown any of
 this: its power to detect a difference of one standard deviation is 13\%.
 
@@ -404,48 +415,37 @@ Performance work regresses easily: a clearer error message or a thread-safety gu
 path costs a few percent that no single test notices. From release 1.3.1 on, every release is
 benchmarked against the previous published one before it is tagged, using wheels built by the
 same toolchain and identical dependencies, on three measurements in paired alternating runs:
-16 core operations (agent sets, column reads and writes, agent and column removal, cell
-moves, data collection, events, random draws) plus a \code{numpy}-only control
-that must read 1.00, the eight playbooks seed by seed, and the medfly notebook at 1/30 of its
-full scale, chunk by chunk. A release ships only if none shows a measurable regression, by the
-criterion below, whose 3\% tolerance lets a smaller slowdown pass. Release 1.3.1 was compared with 1.2.0, the last release before the
-regressions that 1.3.0 introduced. Between releases, a
-pre-commit hook (\cmd{python -m modelly.dev install-hooks}) times the core operations of the
-working tree against the last release in about ten seconds, and refuses a commit when an
-operation is measurably slower: its median time ratio above 1.03 and the lower quartile of the
-ratios above 1.00, confirmed by re-timing it with three times as many pairs.
+the core operations (agent sets, column reads and writes, agent and column removal, cell
+moves, data collection, events, random draws; 15 for 1.3.1, and 16 plus a \code{numpy}-only
+control that must read 1.00 from 1.3.3), the eight playbooks seed by seed, and the medfly
+notebook at 1/30 of its full scale, chunk by chunk. A release ships only if none shows a
+measurable regression: a median time ratio above 1.03 whose lower quartile is also above
+1.00, confirmed by re-timing with three times as many pairs; a smaller slowdown passes.
+Between releases a pre-commit hook (\cmd{python -m modelly.dev install-hooks}) applies the
+same criterion to the core operations of the working tree in about ten seconds.
 
-The release benchmark found slowdowns. Release 1.3.0, published before the policy
-existed, had made a column read 2.5\% slower, below the gate's 3\% tolerance but visible in the
-release benchmark's longer runs, and removed anyway (the getter had started to capture the column's name for a clearer
-error), and, on regular builds, the neighbourhood walk and the cell move paid for
-free-threading safety they did not need; 1.3.1 removed both. Against 1.2.0, 1.3.1 takes 0.80
-of the time on \code{select}, 0.88 on \code{agg}, 0.94 on agent creation and removal and 0.98
-on \code{shuffle\_do}, 0.99 to 1.01 (within noise) on the other operations (medians of five
-paired sessions), 0.87 to 1.04 on the playbooks (medians of five paired rounds, identical
-outputs), and 1.00 on the medfly notebook at 1/30 scale (17.92~s and 17.92~s, identical
-records). Release 1.3.2, whose only change to the library is the ABC-SMC correction, passed
-the same gate against 1.3.1: no core operation slower by the criterion; playbook ratios between
-0.96 and 1.04 over five rounds, and 0.99, 1.01 and 1.07 for the three noisiest re-timed over 15
-rounds (lower quartiles 0.97 to 0.99, so not slower by the criterion), with identical outputs;
-and a paired ratio of 0.98 on the notebook (per-round ratios 0.87 to 2.15, so that arm detects
-only large regressions) with identical records. Release 1.3.3, whose only change is to the
-codemod, passed it against 1.3.2 at the fixed frequency of the other timings: no core operation
-slower by the criterion (the widest spread, a cell move, has a median ratio of 1.14 and a lower
-quartile of 0.93); playbook ratios between 0.99 and 1.02 over five rounds, with identical
-outputs; and a paired ratio of 1.00 on the notebook (per-round ratios 0.88 to 1.02), with
-identical records. In both releases the playbooks run no code
-that changed: 1.3.2's compiled modules have the same machine code as 1.3.1's.
+The benchmark found slowdowns before it was a gate: release 1.3.0, published before the policy
+existed, had made a column read 2.5\% slower (its getter captured the column's name for a
+clearer error) and, on regular builds, the neighbourhood walk and the cell move paid for
+free-threading safety they did not need; 1.3.1 removed both and was compared with 1.2.0, the
+last release before them. Release 1.3.2, whose only library change is the ABC-SMC correction,
+and release 1.3.3, whose only change is to the codemod, passed the gate against their
+predecessors with identical outputs, 1.3.3 at the fixed frequency of the other timings;
+\cref{tab:release-gates} gives every comparison's ranges. The gate compares two separately
+compiled builds, and that shows: 1.3.3 read 6 to 17\% faster than 1.3.2 on four operations
+(agent-set iteration 0.83, interquartile range 0.826 to 0.831) although no code they run
+changed, so the criterion compares builds, not sources, and a ratio of this size in either
+direction is re-timed from one build before it is believed. The playbook arm's per-round
+ratios spread by more than 3\% (a median of 1.07 passed with its lower quartile below 1), so
+that arm catches large regressions, not small ones.
 % GATE-1.4.0: replace with the fixed-frequency run
 Release 1.4.0, whose library changes are the compiled event heap, the C column gather and the
-per-agent streams (\cref{sec:scale}), was measured against 1.3.3 during integration on the
-shared machine without the fixed frequency: no core operation slower by the criterion
+per-agent streams (\cref{sec:release14}), was measured against 1.3.3 during integration on
+the shared machine without the fixed frequency: no core operation slower by the criterion
 (medians 0.983 to 1.028), playbook ratios between 0.986 and 1.004 over nine rounds with
 identical outputs, and the event-heavy wolf-sheep example at 0.95 (\cref{sec:perf2}); the
-fixed-frequency run of the full gate, the notebook arm included, precedes the tag. The playbook arm therefore
-shows the gate's noise floor: its per-round ratios spread by more than 3\%, so a median of 1.07
-passes while its lower quartile is below 1, and slowdowns of a few percent are detected only
-by the core operations' longer, tighter measurements. The raw numbers of the 1.3 release
-comparisons are in \code{paper/data/release\_gates.json}, except the notebook timing of
-1.3.1 against 1.2.0, whose raw output was not kept; the 1.4 comparison's tables are in
+fixed-frequency run of the full gate, the notebook arm included, precedes the tag. The raw
+numbers of the 1.3 comparisons are in \code{paper/data/release\_gates.json}, except the
+notebook timing of 1.3.1 against 1.2.0 and the core-operation report of 1.3.2 against 1.3.1,
+of which only the summaries were kept; the 1.4 comparison's tables are in
 \code{docs/performance.md}.

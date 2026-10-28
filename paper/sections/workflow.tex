@@ -136,35 +136,24 @@ archive with Zenodo metadata; \cmd{modelly odd} writes the skeleton of an ODD de
 
 \subsection{Tools for building and checking models}
 
-These tools are part of the release and tested, but not evaluated in this paper.
-
-\begin{itemize}[leftmargin=*,itemsep=2pt]
-  \item \textbf{A linter} (\cmd{modelly lint}) finds reproducibility bugs (random draws outside
-  the model's generators, iteration over sets, wall-clock time, unpicklable callbacks sent to
-  worker processes, network calls that bypass the cached language-model client) and quadratic
-  patterns (agents scanning the whole population), explains each rule with a bad and a fixed
-  example, and fixes several automatically; from release 1.4 it also runs as a language server
-  for editors and as a pre-commit hook (\cref{sec:tools}).
-  \item \textbf{A profiler} (\cmd{modelly profile}) reports where each step's time goes by
-  agent class and method, and compares the cost per agent across population sizes to detect
-  scans that grow with $N$.
-  \item \textbf{Time travel} rewinds a run to any step, replays it with changed parameters or
-  branches it into several futures, and finds the first step and agent where two runs diverge.
-  \item \textbf{Studio} (\cmd{modelly studio}) runs a model in the browser with a parameter
-  panel generated from its scenario, a timeline scrubber, and the profiler and linter beside
-  the plots.
-  \item \textbf{Language-model agents} (\code{modelly.llm}) decide through a provider-agnostic
-  client whose replies are cached under a key of the call and the run's seed: a cached study
-  replays offline, identically, and travels with its bundle.
-  \item \textbf{A NetLogo translator} (\cmd{modelly netlogo}) rewrites a documented subset
-  of NetLogo into a runnable model and marks what it cannot translate (\cref{sec:tools}).
-\end{itemize}
+Part of the release and tested, but not evaluated in this paper: a linter (\cmd{modelly
+lint}) for reproducibility bugs (random draws outside the model's generators, iteration over
+sets, wall-clock time, unpicklable callbacks sent to workers, network calls that bypass the
+cached language-model client) and quadratic patterns, with automatic fixes, a language-server
+mode and a pre-commit hook; a profiler (\cmd{modelly profile}) that locates the cost per agent
+class and method and the scans that grow with $N$; time travel, which rewinds a run, replays
+it with changed parameters, branches it and finds the first step where two runs diverge;
+Studio (\cmd{modelly studio}), a browser front end with a parameter panel generated from the
+scenario, a timeline scrubber, the profiler and the linter; language-model agents
+(\code{modelly.llm}) whose cached replies replay offline and travel with a bundle; and a
+NetLogo translator (\cmd{modelly netlogo}) for a documented subset, which marks what it cannot
+translate.
 
 \subsection{A zoo of validated models}
 \label{sec:zoo}
 
 Seventeen reference models, each with a validation test against an analytical or well-known
-result, serve as starting points and regression tests. Twelve date from release 1.3: an age-structured SEIR model checked
+result, serve as starting points and regression tests. Twelve date from release 1.3: an age-structured susceptible--exposed--infected--recovered (SEIR) model checked
 against the final-size relation \citep{kermack1927contribution}, Nagel--Schreckenberg traffic
 \citep{nagel1992cellular} against its flow--density relation, Bass diffusion
 \citep{bass1969new} against the Bass equation, the Deffuant \citep{deffuant2000mixing} and
@@ -177,5 +166,5 @@ continuous double auction \citep{farmer2005predictive}, a Drossel--Schwabl fores
 energy-budget population \citep{sibly2013representing} around its carrying capacity, and
 Ross--Macdonald vector-borne transmission \citep{smith2012ross} ordered by $R_0$. Release
 1.4 adds five: foragers on a diffusing nutrient field and an epidemic coupled to hospital
-capacity (\cref{sec:couple}), and traffic assignment, habitat selection and Schelling
-segregation on real street, land-cover and census-tract samples (\cref{sec:population}).
+capacity, and traffic assignment, habitat selection and Schelling segregation on real
+street, land-cover and census-tract samples (\cref{sec:release14}).

@@ -3,8 +3,9 @@
 
 Every measured table and figure of this paper is generated from data and scripts in the
 repository.
-The raw output of the agreement study, the GPU comparison and the weak-scaling runs is in the
-paper's \code{data/} folder, and the playbook timings are in \code{benchmarks/playbooks/results/}.
+The raw output of the agreement study, the release comparisons, the GPU comparison, the
+weak-scaling runs, the nowcasting tutorial and the Ishigami estimate is in the paper's
+\code{data/} folder, and the playbook timings are in \code{benchmarks/playbooks/results/}.
 
 \begin{lstlisting}[language=bash,keywordstyle=\color{black}]
 git clone https://github.com/RemiPelloux/Modelly && cd Modelly
@@ -77,6 +78,24 @@ rules a fair comparison must follow, are described in \code{docs/performance.md}
 notebook of \cref{sec:portability} is a private research model and is not distributed; its
 harness and the codemod that produced the port are described in the same document.
 
+\paragraph{Provenance of the measurements.} The measurements of \cref{sec:performance} ran on
+the library code of 1.3.2 and 1.3.3 (which 1.4.0 keeps, apart from the changes gated in
+\cref{sec:regressions}), compiled on the measurement machine with GCC~16.2, with the benchmark
+code of commit \code{627459a}; Mesa's examples were ported and timed with the codemod fix of
+1.3.3 and the runner of \code{benchmarks/mesa\_examples/} before they were committed, unchanged
+(\code{19915bb}, \code{1e36264}), and the mesa-frames thread timing ran while the fix was
+uncommitted; the coverage study and the numpy grid epidemic at the timed size ran while
+benchmark files they do not use were uncommitted (since committed in \code{d45bbd3} and
+\code{0398c44}); each result file records the commit, the machine and the package versions.
+The measurements of \cref{sec:release14} ran in the feature branch of each addition before it
+was merged into 1.4.0, with the code committed unchanged; their result files record the
+environment and the package versions, and the tests that reproduce them run in the merged
+tree. The repository is archived by Software Heritage; the commit with the code, data and
+scripts of the measurements of \cref{sec:performance,sec:reproducibility} is
+\code{swh:1:rev:550458fe378d7f50147b}\allowbreak\code{1d6c4b5b1d49f3beddec}, and the 1.4
+additions are in the commits that follow it.
+% SWHID-1.4.0: update to the archived release commit once Software Heritage has it
+
 \section{The workloads}
 \label{app:workloads}
 
@@ -103,6 +122,22 @@ harness and the codemod that produced the port are described in the same documen
   \code{paper/scripts/bootstrap\_ci.py}.}
   \label{tab:speedup-ci}
   \input{tables/speedup_ci}
+\end{table}
+
+\section{Every release comparison}
+\label{app:release-gates}
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{The release comparisons of \cref{sec:regressions}: ratios of the new release's time
+  to the previous one's (below 1 is faster), as the range of the per-operation and per-variant
+  medians and the notebook arm's paired median with its per-round range. The 1.3.1 and 1.3.2
+  comparisons ran with turbo enabled, the 1.3.3 one at the fixed frequency. Generated from
+  \code{paper/data/release\_gates.json} by \code{paper/scripts/release\_gates\_table.py}; where
+  only a summary of a run was kept, the cell says so.}
+  \label{tab:release-gates}
+  \input{tables/release_gates}
 \end{table}
 
 \section{Further agreement tables}
@@ -143,6 +178,8 @@ harness and the codemod that produced the port are described in the same documen
   \label{tab:agreement-grid200}
   \input{tables/agreement_large_grid200}
 \end{table}
+
+\input{sections/appendix_release14}
 
 \clearpage
 \section{Every comparison of the agreement study}

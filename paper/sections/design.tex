@@ -118,13 +118,13 @@ set filtering and attribute gathering (\code{select}, \code{agg}), and, from rel
 event list's heap (\cref{sec:perf2}). Each C function is a
 line-for-line port of a Python function that stays in the source as its fallback; tests run the
 two side by side, and \code{MODELLY\_PURE\_PYTHON=1} forces the Python path. Results are
-identical either way. The modules build with GCC, Clang and MSVC and are shipped compiled for
-Linux (glibc and musl, x86-64 and ARM64), macOS and Windows (x86-64 and ARM64). They also
-build for free-threaded CPython, where critical sections and cache generation counters replace
-the global interpreter lock; the release workflow builds those wheels and checks that they
-import with the lock off, and the compiled modules' tests run on them on the development
-machine
-(\cref{tab:determinism}).
+identical either way. The modules build with GCC, Clang and MSVC; the release workflow builds them on the tag
+for Linux (glibc and musl, x86-64 and ARM64), macOS and Windows (x86-64 and ARM64), and up
+to release 1.3.3 checked that every wheel imports them, a check not repeated for 1.4.0 beyond
+Linux x86-64 (\cref{tab:determinism}). They also build for free-threaded CPython, where
+critical sections and cache generation counters replace the global interpreter lock, and the
+compiled modules' tests run on that build on the development machine (not yet for the event
+heap of release 1.4).
 
 \subsection{Spaces}
 
@@ -142,4 +142,4 @@ temporal and multilayer networks represent contact structures that change over t
 event scheduler; a run resumed from it, in a new process, is the run it would have been.
 Agents are written flat, so the cost of a checkpoint does not grow with the depth of the
 agent--cell graph. Checkpoints are the basis of time travel, resumable experiments and
-calibrations, and the browser studio's timeline (\cref{sec:workflow}).
+calibrations, and Studio's timeline (\cref{sec:workflow}).

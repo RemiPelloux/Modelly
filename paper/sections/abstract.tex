@@ -14,11 +14,11 @@ code, 4.6 to 45 times faster than Mesa~2.3 and 3.0 to 9.4 times faster than mesa
 on three workloads 1.8 to 4.4 times slower than hand-written numpy without agent objects; the
 cohort form of the one workload that has one runs 133 times faster than Mesa~3.5. Over 100
 paired seeds, 63 of 67 summary statistics of a \modelly{} variant are equivalent to
-Mesa~2.3's within half a standard deviation (29 after a Holm correction). Public Mesa models
-ported without changing their logic run at 0.22 to 0.96 of Mesa's CPU time, with
-bit-identical (Mesa~2.3) or equivalent (Mesa~3.5) output. Release 1.4 adds a run split over
+Mesa~2.3's within half a standard deviation (29 after a Holm correction). Mesa models ported
+without changing their logic, Mesa's own examples among them, run at 0.22 to 0.96 of Mesa's
+CPU time, with bit-identical (Mesa~2.3) or equivalent (Mesa~3.5) output. Release 1.4 adds a run split over
 MPI or Dask workers that reproduces the single-process run byte for byte, a GPU backend 34
 times faster than the column form at ten million agents, and a model that runs in a browser
-tab; each is reported with the targets it misses. \modelly{} is on PyPI as \code{modelly-abm}
+tab, each with what it does not yet do. \modelly{} is on PyPI as \code{modelly-abm}
 under the Apache 2.0 licence.
 \end{abstract}

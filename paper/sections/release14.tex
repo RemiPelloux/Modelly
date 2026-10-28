@@ -1,0 +1,170 @@
+\section{What release 1.4 adds}
+\label{sec:release14}
+
+Release 1.4 removes the single-process ceiling of \cref{sec:limitations} and connects a model
+to arriving data, to continuous fields and to the browser. This section gives, for each
+addition, what was measured and where it falls short; \cref{tab:release14} collects both, and
+\cref{app:release14} has the designs, the measurement conditions and the files behind every
+number. These measurements were made on the laptop of \cref{sec:performance} while it was
+shared with other work and without the fixed frequency of \cref{sec:playbooks}; the
+conclusions that matter (byte-identical outputs, order-of-magnitude speed-ups, shortfalls by
+a factor) do not turn on the last digit of a timing.
+
+\paragraph{Per-agent random streams and split runs.}
+\label{sec:split}
+A model can give every agent random generators of its own, seeded from the scenario's seed
+and the agent's key, so that what an agent draws no longer depends on the activation order or
+on the population (the flag is off by default). On that basis one run can be split across
+workers: a grid into blocks with halos, a network by breadth-first banding, a continuous space
+by recursive bisection, with ghost agents exchanged before a phase that reads across a border
+and movers migrating after a phase that moves them, over local, MPI, Dask or Ray workers. On
+three reference models (a grid epidemic, a network SIR, a continuous SIR) every reporter and
+every agent's state is byte-identical to the single-process run at 1, 2, 4 and 16 partitions,
+under MPI with 2 and 4 ranks and on two Dask workers (\cref{app:split}). The aim of 70\%
+weak-scaling efficiency from 1 to 64 workers could not be measured on one laptop and is not
+met on it: 62\% at 2 workers, 20\% at 8 and 9\% at 16 (\cref{tab:scaling}), where eight to
+sixteen copies of the same work with no communication at all already run at 23 to 32\% of
+one, because beyond the four performance cores the copies land on efficiency cores; the
+protocol keeps 53 to 91\% of what the machine gives, and 79 to 109\% with 40,000 people per
+worker. The Ray backend is written but untested, as is MPI on macOS and Windows.
+
+\paragraph{A GPU backend.}
+\label{sec:gpu}
+Column phases, cohort tables and the cell-space operators run on CuPy or JAX with a
+\code{numpy} fallback, from counter-based (Philox) random streams that draw the same numbers
+on every backend. At ten million agents the grid epidemic's 60 steps take 0.61~s on an
+RTX~5050 laptop GPU against 21~s for the CPU column variant, 34.4 times faster (three rounds
+each), with the same infected series and the same digest of the final state on \code{numpy}
+and on CuPy; building ten million agent objects takes 22 to 42~s on either side, so build plus
+steps gains only 1.5 to 1.8 times (\cref{app:gpu}). Below tens of thousands of agents the GPU
+is slower than the CPU (0.17 to 0.21~s against 0.11~s at the playbook's own 20,000 agents), a
+cohort table of under 200 rows is 200 times slower, and Apple Metal was not measured.
+
+\paragraph{Differentiable models.}
+\label{sec:diff}
+Column phases traced by JAX give gradients of a model's outputs with respect to its
+parameters, exact through normal and uniform draws and approximate through Bernoulli choices
+(straight-through, Gumbel-softmax or score-function estimators, each warning that it is one).
+Gradient calibration recovers the Bass diffusion model's rates (0.0305 and 0.379 for 0.03 and
+0.38) and the Bouchaud--Mézard model's (1.448 and 0.937 for 1.5 and 1.0; 1.54 and 1.09 with
+four replicates) from runs of the agent-based zoo models, and pathwise gradients agree with
+finite differences to a relative error below $10^{-6}$ on a one-parameter test model and
+below $10^{-4}$ on the Bouchaud--Mézard twin (\cref{app:diff}); the straight-through estimator
+is biased and fails that check, by design.
+
+\paragraph{Live data and data assimilation.}
+\label{sec:assimilation}
+Observations arrive from a replayed table, a growing CSV file, an HTTP endpoint or a message
+broker; an ensemble of replicates advances in lock step, a bootstrap particle filter
+\citep{gordon1993novel} weights and resamples it, and an ensemble Kalman filter
+\citep{evensen2003ensemble} adjusts continuous parameters, both deterministic for a seed. On a
+synthetic town of 1,000 people the filtered nowcast of the unobserved number infected has a
+root-mean-square error of 5.07 people against 69.2 for the unfiltered ensemble over 50 days,
+and the Kalman filter recovers the contact rate as 0.451 for a truth of 0.45
+(\code{paper/data/assimilation.json}, \cref{app:assimilation}). Message brokers were tested
+against fake clients only, and stepping stays in one process.
+
+\paragraph{Fields and coupling.}
+\label{sec:couple}
+A field is a property layer with a solver (diffusion, upwind advection and decay, in explicit
+sub-steps that refuse an unstable time step, or backward Euler), coupled to differential
+equations and stock-flow components under a schedule that is checked when the model is built.
+Closed and periodic boundaries conserve mass to a relative $10^{-12}$, a spreading Gaussian
+matches the heat kernel to about $10^{-6}$, and two zoo models use it: foragers on a diffusing
+nutrient (a population within 1\% of the carrying capacity of its energy balance, the
+nutrient budget closed to round-off) and an epidemic coupled to hospital capacity (the
+final-size relation within five standard deviations, the hospital's exact matrix-exponential
+solution within $10^{-6}$) (\cref{app:couple}). Fields need orthogonal grids with uniform
+spacing, and upwind advection smears sharp fronts.
+
+\paragraph{Emulators, active learning and history matching.}
+\label{sec:emulate}
+A Gaussian-process or neural emulator trained on an experiment's runs, active learning that
+picks the next runs by integrated variance reduction, and history matching in waves
+\citep{vernon2010galaxy, andrianakis2015bayesian}. On the age-structured SEIR model four waves
+of 20 runs leave 17.1, 4.4, 3.1 and 2.5\% of the parameter box, with the true parameters
+inside after every wave (\cref{app:emulate}). Active learning needs half the runs of a Latin
+hypercube for the same emulator error on the Bass diffusion model at most budgets (factors of
+1.3 to 2.7) but not on the Branin (1.1 to 1.4) or Ishigami (0.8 to 1.4) functions, where a
+well-spread design is already close to the best that a variance criterion blind to the
+outputs can do.
+
+\paragraph{Synthetic populations and models on real data.}
+\label{sec:population}
+Iterative proportional fitting, integerisation, households, places within a distance limit and
+a contact network with household, school and work layers build a starting population from
+aggregate tables; no personal data is bundled, the marginals of the tests are made up, and
+three small real samples (OpenStreetMap streets, ESA WorldCover land cover, census tracts)
+ship with their licences. About 20,000 synthetic people reproduce their totals and age counts
+exactly in every tract and their sex counts within 1\%, the SEIR model started from them
+follows the final-size relation within 0.05, and three zoo models run on the real samples,
+each checked against a known answer (\cref{app:population}).
+
+\paragraph{\modelly{} in the browser.}
+\label{sec:browser}
+\cmd{modelly export-web} writes a static site that runs a model with Pyodide in a browser tab,
+with Studio's parameter panel, a space view and a reporter plot. The 14 bundled examples of
+release 1.3 and 12 zoo models each ran from their export in headless Chromium with the
+pure-Python wheel and with the compiled one (52 of 52 runs); the five zoo models added later
+had not run in a browser when this was written (\cref{app:browser}). A cold first visit is
+ready after 8.0~s on a 50~Mbit/s line for a model that needs no \code{scipy}, 12.3~s for one
+that does, and 21.4~s on a Fast~4G profile, so the aim of under ten seconds holds only on the
+faster line without \code{scipy}.
+
+\paragraph{Faster events and data collection, columns on disk.}
+\label{sec:perf2}
+The event list's heap is a fifth C module with a pure-Python twin, the data collector reads
+column attributes in C, and a table's columns can live in memory-mapped files. Against 1.3.3
+the event-heavy wolf-sheep example runs at 0.95 of the time, a schedule of 600 events a step
+at 0.70 and a collection over 20,000 column agents at 0.47, with identical results; the
+playbooks are unchanged (0.986 to 1.004), and a cohort table of 100 million rows ran within a
+16~GB memory limit at a peak of 3.6~GB (\cref{app:perf2}). The predator-prey playbook, which
+schedules no events, is not faster; profile-guided optimisation measured no gain and is not
+shipped; and 100 million agent objects do not fit in 16~GB.
+
+\begin{table}[htbp]
+  \centering
+  \footnotesize
+  \caption{Release 1.4: what was measured and where it falls short. Details and sources in
+  \cref{app:release14}.}
+  \label{tab:release14}
+  \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.17\linewidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+    \toprule
+    Capability & Measured & Falls short \\
+    \midrule
+    Split runs & Byte-identical to one process at 1, 2, 4 and 16 partitions on three models;
+    MPI with 2 and 4 ranks; Dask with 2 workers & Weak scaling 62, 20 and 9\% at 2, 8 and 16
+    workers with 10,000 people per worker (67 and 28\% at 2 and 8 with 40,000) on one laptop;
+    64 workers unmeasured; Ray, and MPI on macOS and Windows, untested \\
+    \addlinespace
+    GPU backend & Steps 34.4 times faster at 10 million agents, identical integer state &
+    Construction not faster (1.5 to 1.8 times in total); slower below tens of thousands of
+    agents; cohort tables 200 times slower; Metal untested \\ \addlinespace
+    Differentiable models & Two zoo models' parameters recovered within 2\% and 7\%; pathwise
+    gradients within $10^{-6}$ and $10^{-4}$ of finite differences & Gradients through discrete
+    choices are approximations; the straight-through estimator is biased \\ \addlinespace
+    Data assimilation & Nowcast error 5.07 against 69.2 unfiltered; contact rate 0.451 for
+    0.45; bit-identical for a seed & Brokers tested with fake clients; replicates step in one
+    process \\ \addlinespace
+    Fields and coupling & Mass conserved to $10^{-12}$; heat kernel to about $10^{-6}$; two
+    zoo models with closed budgets & Orthogonal grids with uniform spacing only; upwind
+    advection smears fronts \\ \addlinespace
+    Emulators & Parameter box reduced from 17.1 to 2.5\% in four waves, truth inside & Half the
+    runs of a hypercube only on the zoo model (factors 1.3 to 2.7); Branin 1.1 to 1.4, Ishigami
+    0.8 to 1.4 \\ \addlinespace
+    Synthetic populations & Totals and ages exact, sexes within 1\%; the SEIR model's final
+    size within 0.05; three real-data zoo models & Made-up marginals; no real joint
+    distribution to test against \\ \addlinespace
+    Browser & 52 of 52 runs of 26 models, two wheels & Five zoo models not yet run; first
+    load 8.0, 12.3 and 21.4~s by line and model, under 10~s only without \code{scipy} at
+    50~Mbit/s \\ \addlinespace
+    Events, collection, columns on disk & Wolf-sheep 0.95, events 0.70, collection 0.47 of
+    1.3.3's time; playbooks 0.986 to 1.004; 100 million rows within 16~GB & Predator-prey
+    unchanged; profile-guided optimisation no gain; 100 million agent objects need over 22~GB
+    \\ \addlinespace
+    Platforms & Every check on Linux x86-64 & Three-platform determinism run and the import
+    check of the macOS, Windows and ARM wheels not repeated for 1.4.0; free-threaded build of
+    the event heap untested \\
+    \bottomrule
+  \end{tabularx}
+\end{table}

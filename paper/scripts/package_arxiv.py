@@ -70,16 +70,23 @@ def problems(texts: dict[Path, str]) -> list[str]:
         k.strip() for group in PATTERNS["cite"].findall(allx) for k in group.split(",")
     }
     issues += [f"citation not in references.bib: {k}" for k in sorted(cited - keys)]
-    refs = {
-        r.strip() for group in PATTERNS["ref"].findall(allx) for r in group.split(",")
-    }
-    issues += [f"reference without a label: {r}" for r in sorted(refs - labels)]
+    issues += reference_problems(allx, labels)
     issues += [
         f"unbalanced environments in {path.relative_to(PAPER)}"
         for path, text in texts.items()
         if not balanced(text)
     ]
     return issues
+
+
+def reference_problems(allx: str, labels: set[str]) -> list[str]:
+    r"""\cref targets without a label, and targets LaTeX cannot resolve: with whitespace."""
+    groups = PATTERNS["ref"].findall(allx)
+    spaced = sorted({r for group in groups for r in group.split(",") if r != r.strip()})
+    refs = {r.strip() for group in groups for r in group.split(",")}
+    return [f"reference with whitespace, which LaTeX cannot resolve: {r!r}" for r in spaced] + [
+        f"reference without a label: {r}" for r in sorted(refs - labels)
+    ]
 
 
 def balanced(text: str) -> bool:

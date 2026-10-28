@@ -1,0 +1,332 @@
+\section{Release 1.4 in detail}
+\label{app:release14}
+
+This appendix is supplementary material for a journal submission: the design, the
+measurement conditions and the evidence behind each addition of \cref{sec:release14}, with
+the tests and result files that reproduce every number. The measurements were made on the
+laptop of \cref{sec:performance} during the release's integration, in each addition's feature
+branch before it was merged, with the machine shared and without the fixed frequency of
+\cref{sec:playbooks}.
+
+\subsection{Per-agent random streams and split runs}
+\label{app:split}
+
+\paragraph{Streams.} A model class that sets \code{agent\_streams = True} gives every agent
+generators of its own: \code{agent.random} and \code{agent.rng} are seeded from the
+scenario's seed sequence and the agent's \code{stream\_key()} (its \code{unique\_id} unless
+overridden), in a spawn-key domain that \code{SeedSequence.spawn} never reaches. An agent
+then draws the same numbers whatever the activation order and the population, and a
+checkpoint continues every stream. The flag is off by default, so a 1.3 model draws exactly
+as before (\code{tests/core/test\_streams.py}).
+
+\paragraph{Partitions and the contract.} \code{modelly.distributed} cuts a grid into balanced
+blocks with their halos (torus-aware), a network by breadth-first banding with greedy boundary
+refinement (not METIS \citep{karypis1998fast}: on a $30 \times 30$ lattice cut in four it cuts about twice the edges
+of the best split), and a continuous space by recursive bisection at the population's
+quantile. A model declares \code{partitionable = Partitionable(space, phases, reporters)}:
+each phase names how far it reads (\code{radius}) and whether it moves agents. Before a phase
+that reads across a border the workers exchange ghost copies of their border agents; after a
+phase that moves agents, the movers migrate to their new partition with their streams, in a
+deterministic order. The build refuses, with the reason, a model that draws from the model's
+generators inside a phase, holds \code{Column} or dataset agents, schedules events of its own,
+moves into cells with a capacity, keeps references to other agents in attributes, or creates
+agents keyed on \code{unique\_id} during a phase. Backends are \code{local}, \code{mpi}
+(\code{mpi4py}), \code{dask} and \code{ray}; \code{Sum}, \code{Min} and \code{Max} reporters
+reduce across partitions, and a checkpoint writes one file per partition with an index of
+digests that \code{Cluster.restore} continues draw for draw.
+
+\paragraph{Measured.} On three reference models (\code{modelly/examples/distributed}: a grid
+epidemic on blocks, a network SIR on graph parts, a continuous SIR on KD-tree boxes), every
+reporter row and every agent's attributes, location and stream state are byte-identical to a
+plain single-process run at 1, 2, 4 and 16 partitions on two seeds, with the compiled and the
+pure-Python core (\code{tests/distributed/test\_independence.py}, also in the determinism
+suite), under \code{mpirun} with 2 and 4 ranks on the grid and network models
+(\code{test\_mpi.py}), and on two Dask workers. Weak scaling of the grid epidemic
+(\code{benchmarks/distributed/weak\_scaling.py}, raw numbers in
+\code{paper/data/weak\_*.json}) is in \cref{tab:scaling}: next to each split run of $K$
+workers the script times $K$ independent copies of one block with no communication, which
+separates what the machine gives from what the protocol keeps of it.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Weak scaling of the split grid epidemic, 10,000 people per worker, 20 steps,
+  Open MPI 5.0.11 and mpi4py 4.1.2 (recorded from the environment after the runs), wall-clock
+  seconds per step after a warm-up step, build excluded, on the 16-core laptop of
+  \cref{sec:performance} shared with other jobs. ``Load'' is the one-minute load average at
+  the start of each run; ``machine'' is the efficiency of $K$ copies with no communication;
+  ``protocol'' is the split run's time relative to the copies'.}
+  \label{tab:scaling}
+  \begin{tabular}{rrrrrrrr}
+    \toprule
+    Workers & People & Split, s/step & Copies, s/step & Efficiency & Machine & Protocol & Load \\
+    \midrule
+    1  & 10,000  & 0.0151 & 0.0138 & 100\% & 100\% & 91\%& 8.4 \\
+    2  & 20,000  & 0.0244 & 0.0163 & 62\%  & 85\%  & 67\%& 8.5 \\
+    4  & 40,000  & 0.0421 & 0.0227 & 36\%  & 61\%  & 54\%& 8.1 \\
+    8  & 80,000  & 0.0745 & 0.0482 & 20\%  & 29\%  & 65\%& 7.6 \\
+    12 & 120,000 & 0.1113 & 0.0587 & 14\%  & 23\%  & 53\%& 7.7 \\
+    16 & 160,000 & 0.1723 & 0.0582 & 9\%   & 24\%  & 34\%& 21.7 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+With 40,000 people per worker the efficiency is 67\% at 2 and 28\% at 8 workers, against 62
+and 32\% for the copies, so the protocol keeps 79 to 109\% of what the machine gives: the
+exchange grows with a block's border, the work with its area. The Dask backend, which routes
+every exchange through its scheduler (eight per step), measured 26 to 42\% at 2 to 8 workers
+on a busier machine. The 16-worker run started at a load of 21.7 against about 8 for the
+others, so its 9\% is a lower bound on what the machine would give.
+
+\paragraph{Not met.} The aim set for this release, at least 70\% weak-scaling efficiency from
+1 to 64 workers, cannot be measured on one laptop, and the laptop's hybrid processor is the
+main limit: eight to sixteen copies of the same work with no communication at all already run
+at 23 to 32\% of one, because beyond the four performance cores the copies land on
+efficiency cores (their step times split into two groups, 0.028 to 0.039~s and 0.040 to
+0.059~s). The Ray backend is written but untested (Ray does not install on CPython 3.15); MPI on
+macOS and Windows is untested (\cref{sec:threats}); and the split-run suite runs on the three
+reference models, not on the zoo, whose models would change their numbers if moved to
+per-agent streams.
+
+\subsection{A GPU backend for column phases}
+\label{app:gpu}
+
+\code{modelly.gpu} runs column phases (\code{DeviceTable}), cohort tables
+(\code{DeviceCohortTable}, binomial thinning included) and the cell-space operators
+(\code{DeviceCellIndex}: counts, neighbour sums, random-neighbour moves) on \code{numpy},
+CuPy \citep{okuta2017cupy} or JAX \citep{bradbury2018jax}, chosen by \code{get\_backend} or
+\code{MODELLY\_BACKEND}; a backend that does not load falls back to \code{numpy} with a
+warning, and \cmd{import modelly} loads neither library. Random numbers come from
+\code{PhiloxStream}, a stateless Philox4x32-10 \citep{salmon2011parallel} keyed by seed and
+stream, checked against the Random123 known-answer vectors and identical on every backend;
+binomial draws use inversion below a mean of 10 and Hörmann's BTRS rejection sampler above it
+\citep{hormann1993generation}, both with the exact law (chi-square tests), inversion identical
+across backends and BTRS equal in every test and run (it uses \code{log}, so a last-bit
+difference is possible in principle). Without 64-bit types JAX draws single-precision
+uniforms, so its runs differ from \code{numpy}'s in value, not in law. Populations larger
+than the device run in batches, bit for bit the same as one batch.
+
+\paragraph{Measured.} The script is \code{gpu\_speedup.py} in \code{benchmarks/playbooks/},
+and the raw numbers are in \code{paper/data/gpu\_speedup.json}. The grid epidemic at 10
+million agents on a $1000 \times 1000$ torus, 60 steps, seed 1, in fresh interpreters, wall
+clock around the steps with the device synchronised, the build timed apart, one untimed run
+first to fill CuPy's kernel cache: the CPU column variant takes 20.65, 21.05 and 21.39~s for the steps and the CuPy variant 0.612,
+0.608 and 0.622~s, a median speed-up of 34.4 on an NVIDIA RTX~5050 laptop GPU (8~GB, CUDA
+runtime 13.2 from the \code{cupy-cuda13x} 14.2.0 wheel; 33.1 and 33.8 in two rounds with the
+CPU variant on the GPU environment's CPython 3.14; the CPU arm ran the 1.3.2 library on
+CPython 3.15 and the GPU arm the 1.3.3 library on 3.14, which differ only in the codemod). Run on \code{numpy} and on CuPy with the
+same seed, the variant gives the same infected series for all 60 steps and the same SHA-256 of
+the final state, days and row columns of all 10 million agents. Building 10 million agent
+objects takes 22 to 42~s on either side, so build plus steps is only 1.5 to 1.8 times
+faster: the aim of ten times faster than the column form at ten million agents on a mid-range
+GPU holds for the steps, not for construction.
+
+\paragraph{Where it does not pay.} At the playbook's own 20,000 agents the steps take 0.17
+to 0.21~s on CuPy against 0.11~s on the CPU (three seeds), and the insect cohorts, a table of
+under 200 rows, take 1.9 to 2.1~s on the GPU for 120 days against 10~ms on the CPU: kernel
+launches cost more than the arithmetic. JAX recompiles whenever a cohort table changes
+length. Apple Metal was not measured (no Apple GPU was available), and against the original
+CPU column variant, which draws from \code{model.rng}, the GPU variant agrees in distribution
+only, as every playbook variant does.
+
+\subsection{Differentiable models}
+\label{app:diff}
+
+\code{modelly.diff} simulates column phases that JAX traces (a \code{DiffModel} of phase
+functions, each with a \code{differentiable} flag) and differentiates their outputs with
+respect to the scenario's parameters. Normal and uniform draws are pathwise and exact; a Bernoulli choice
+goes through the straight-through estimator \citep{bengio2013estimating}, Gumbel-softmax
+\citep{jang2017categorical, maddison2017concrete} or the score function
+\citep{williams1992simple}, and each warns that the gradient is an approximation.
+\code{check\_gradients} compares a gradient with central finite differences in double
+precision, and \code{GradientCalibration} runs Adam \citep{kingma2015adam} over
+\code{modelly.calibrate}'s priors and targets, deterministic for a seed.
+
+\paragraph{Measured} (\code{tests/diff}, \code{docs/differentiable.md}), against runs of the
+agent-based zoo models at known parameters: the differentiable twin of Bass diffusion (20,000
+households, 100 steps, straight-through) recovers an innovation rate of 0.0305 and an
+imitation rate of 0.379 for a truth of 0.03 and 0.38, within 2\% (the test allows 5\%); the
+Bouchaud--Mézard twin (1,000 agents, 300 steps, two replicates, pathwise) recovers a
+volatility of 1.448 and an exchange rate of 0.937 for 1.5 and 1.0, within 7\% (the test allows
+10\%), and 1.54 and 1.09 with four replicates, so the error is the observed Gini series'
+noise, not the gradient's. A pathwise gradient agrees with finite differences to a relative error below $10^{-6}$ on a
+one-parameter test model and below $10^{-4}$ on the Bouchaud--Mézard twin, and the
+Gumbel-softmax Bass model within $10^{-3}$; the straight-through
+estimator fails the same check, by design, since it is biased. The tests skip without JAX;
+on the GPU environment all 105 GPU and differentiable tests pass on CuPy and CUDA JAX.
+
+\subsection{Compiled event heap, column gather and memory-mapped columns}
+\label{app:perf2}
+
+A fifth C module, \code{fastevents}, holds the event list's heap: the same sift steps as
+\code{heapq}, on keys (time, priority, insertion order) read once at push and compared as C
+numbers, with a line-for-line Python twin that gives the same pops and the same heap array on
+random schedules, and checkpoints that load in either (\code{tests/native/test\_event\_heap*.py}).
+The data collector's attribute reporters, \code{AgentSet.get} and \code{agg} read a
+\code{Column} attribute from its table in C instead of calling the Python getter per agent,
+with identical rows (\code{test\_column\_gather.py}). \code{MemoryMapped(dir)} keeps a
+table's columns in \code{numpy.memmap} files, grown in place, with checkpoints that carry the
+rows. Measured against 1.3.3 (both built from their tags with the same compiler and
+dependencies, fresh alternating interpreters pinned to one core, results hashed and identical
+in every round; \code{docs/performance.md}): the event-heavy wolf-sheep example runs at 0.95
+of 1.3.3's time (15 rounds, interquartile range 0.93 to 0.96), a schedule of 600 regrowth
+events a step at 0.70 (0.69 to 0.71), and a collection of two column attributes over 20,000
+agents of two classes at 0.47 (0.46 to 0.47); the predator-prey playbook, which regrows its
+grass as a column and schedules no event but the step, is unchanged (0.998 and 1.003). A
+cohort table of 100 million rows (19 bytes a row) ran three life-cycle steps inside a 16~GB
+\code{systemd} memory limit with a peak of 3.61~GB memory-mapped (4.26~GB in memory, 9 to
+10~s a step), and under a 3~GB limit the memory-mapped table finished while the in-memory one
+was killed (\code{benchmarks/large\_columns.py}); 100 million \emph{agent objects} cannot fit
+in 16~GB, since the objects alone need over 22~GB. Profile-guided optimisation of the C
+modules (GCC~16, trained on the playbooks) measured 0.993 to 1.003 of the plain build over
+seven paired rounds, so the build does not use it (\code{benchmarks/pgo.py}).
+
+\subsection{Live data and data assimilation}
+\label{app:assimilation}
+
+\code{modelly.stream} hands observations to a running model as they arrive: a replayed table,
+a CSV file that grows between polls, an HTTP endpoint, and MQTT or Kafka topics through
+optional extras (tested against fake clients only; no broker was available). An
+\code{ObservationOperator} reads the observed quantities from a model and scores an
+observation under independent Gaussian errors. An \code{Ensemble} advances $n$ replicates of
+one scenario in lock step in one process, with spawned seeds and starting values drawn from a
+prior; a \code{ParticleFilter} is the bootstrap filter of \citet{gordon1993novel}: it weights
+the replicates by the likelihood, tracks the effective sample size, and resamples
+systematically \citep{douc2005comparison} below a threshold, duplicating replicates through
+checkpoint copies reseeded from derived keys; an \code{EnsembleKalmanFilter} is the
+stochastic filter with perturbed observations \citep{evensen1994sequential, evensen2003ensemble}
+on named model attributes, with optional bounds. Both give the ensemble's mean and quantiles,
+now and ahead, as a long-format table.
+
+\paragraph{Measured} (the tutorial \code{docs/assimilation.md}, which a test in
+\code{tests/stream/} runs as a module): a town of 1,000 people with a true
+contact rate of 0.45 produces 50 days of noisy case counts; 40 replicates with contact rates
+drawn from a uniform prior track it. The root-mean-square error of the filtered nowcast of the
+unobserved number infected is 5.07 people, against 69.2 for the unfiltered ensemble (ratio
+0.073; the test requires below 0.2), with 24 resamplings; the ensemble Kalman filter
+recovers a contact rate of 0.451 (spread 0.030 across replicates) for the true 0.45 (the test
+allows $\pm 0.05$). On a linear-Gaussian case with 2,000 replicates the Kalman update
+reproduces the exact posterior. Two runs from one seed give identical weights, histories and
+replicate states, in one process and in a fresh interpreter, with the compiled and the
+pure-Python core. Stepping stays in one process (shipping every replicate to a worker for each
+observation would cost more than it saves), and in a model with per-agent streams a
+duplicate's agents keep the streams of the agents they were copied from, which the
+documentation states. The numbers of this paragraph are recorded in
+\code{paper/data/assimilation.json} by \code{paper/scripts/assimilation.py}.
+
+\subsection{Fields, differential equations and a coupling schedule}
+\label{app:couple}
+
+\code{modelly.couple} couples agents to continuous processes. A \code{Field} owns or adopts a
+float property layer of an orthogonal grid and updates it in place with diffusion, first-order
+upwind advection and exact decay, in explicit sub-steps that refuse a time step above the
+stability limit (pointing to the implicit scheme, backward Euler with a sparse LU solve), with
+closed, absorbing or periodic boundaries and a budget of what was added, flowed out and
+decayed. \code{ODE} and \code{StockFlow} components integrate with \code{solve\_ivp}. A
+\code{Coupling} orders components phase by phase, writers before readers, and \code{build()}
+rejects a read nobody writes (naming the closest quantity), two writers of one quantity, a
+cycle inside a phase, and a lagged read without an initial value.
+
+\paragraph{Measured} (\code{tests/couple}): closed and periodic boundaries conserve mass to a
+relative $10^{-12}$ in both schemes; a spreading pulse's variance grows by exactly $2Dt$ per
+axis; a Gaussian matches the analytic heat kernel, with an error near $10^{-6}$ at $D\,\Delta
+t/h^2 = 1/6$, where the explicit scheme is fourth-order; upwind drift moves the centre of mass
+by exactly $vt$; decay follows $e^{-kt}$; with absorbing boundaries what remains plus what
+flowed out equals the initial mass; logistic growth matches its closed form for four
+integrators; and a model with an implicit field and an ODE saves and loads bit for bit. Two
+zoo models use it. In \code{nutrient\_foragers} (a nutrient entering at a river bank and
+diffusing inland, eaten by foragers) the mean population is within 3\% of the carrying
+capacity from the energy balance, within 1\% once the measured decay and starvation losses
+are counted, the nutrient budget closes to round-off, and forager density falls with the
+distance from the river. In \code{hospital\_epidemic} (SIR agents whose admissions drive a
+hospital stock-flow ODE that damps contacts) the attack rate matches the final-size relation
+within five standard deviations without the contact response, occupancy and beds match the
+exact matrix-exponential solution within $10^{-6}$, admissions equal patients in hospital plus
+discharged to round-off, and a stronger response lowers both the peak and the attack rate.
+Fields work on orthogonal grids with uniform spacing and coefficients (a hexagonal grid is
+refused), the advection scheme smears sharp fronts, and since decay uses \code{exp} and
+\code{solve\_ivp} chooses its steps from an error norm, these two outputs are compared across
+platforms with a tolerance (\cref{sec:reproducibility}).
+
+\subsection{Emulators, active learning and history matching}
+\label{app:emulate}
+
+\code{modelly.emulate} trains a Gaussian-process emulator (the process of
+\code{modelly.calibrate}, with restarts, covariances and conditioning) or a \code{numpy}-only
+ensemble of small networks on an experiment's runs; \code{ActiveLearning} picks the next runs
+by integrated variance reduction (the default) or largest variance \citep{mackay1992information},
+in batches conditioned on each pick; \code{HistoryMatch} \citep{vernon2010galaxy,
+andrianakis2015bayesian} rules out the parameter space whose implausibility exceeds 3, in
+waves, refitting the emulators inside the space that remains.
+
+\paragraph{Measured} (\code{tests/emulate}, \code{docs/emulators.md}). History matching of the
+age-structured SEIR zoo model over three parameters, from three observed outputs (peak share
+infectious, its timing, final size) at the zoo defaults: four waves of 20 runs leave 0.1705,
+0.0444, 0.0307 and 0.0246 of the box, the truth inside after every wave (its largest
+implausibility 2.2), and \code{MODELLY\_PURE\_PYTHON=1} rules out exactly the same points.
+Active learning against a Latin hypercube (\code{benchmarks/emulate/active\_vs\_lhs.py}:
+normalised root-mean-square error on 500 test points, the hypercube's median of three seeds,
+the factor being the hypercube runs needed for the active design's error divided by the
+active runs): on the Bass diffusion zoo model the factor is 1.64, 2.64, 1.33 and 2.67 at 10
+to 40 runs and above 2.4 at 50 and 60; on Branin \citep{dixon1978towards} 1.13 to 1.43 below
+80 runs; on the Ishigami function 0.79 to 1.41. The aim, half the runs of a
+hypercube on two benchmarks, holds on the zoo model at most budgets and not on the two
+analytic functions, where a well-spread design is already close to the best a
+Gaussian-process variance, which does not depend on the outputs, can do; the variance
+criterion is worse than a hypercube on Ishigami at four of six budgets (0.20 to 0.40) and
+better at 20 runs (1.82). The tests assert what was
+measured (40 active Branin runs match a hypercube of 50; 20 active Bass runs match 40).
+
+\subsection{Synthetic populations and models on real data}
+\label{app:population}
+
+\code{modelly.population} builds a starting population from aggregate tables: iterative
+proportional fitting \citep{deming1940least} with truncate-replicate-sample integerisation
+\citep{lovelace2013truncate}, simulated annealing over whole records of a sample, households
+from a size table with an adult head, households placed in regions, schools and workplaces
+assigned to the nearest place with room within a distance limit, and a contact network with
+household, school and work layers; the age-structured SEIR zoo model can start from it. No
+personal data is bundled: the marginals of the tests are made up. Three small samples of
+Burlington, Vermont, ship with their licences in a \code{NOTICE} file: OpenStreetMap streets
+(ODbL 1.0, © OpenStreetMap contributors; 255 junctions, 607 directed segments), a $120
+\times 120$ window of ESA WorldCover 2021 \citep{zanaga2022worldcover} (CC BY 4.0) and 41
+census tracts (public domain), with a script that downloads the full sources, checks their
+SHA-256 and rebuilt the samples byte for byte.
+
+\paragraph{Measured} (\code{tests/population}, \code{tests/zoo}): about 20,000 synthetic people
+over the 41 tracts reproduce their totals and age counts exactly in every tract, their sex
+counts within fewer people than there are age levels (under 1\% in total), household-size
+shares within 0.02, every household with an adult, no school or workplace over its 600
+seats or beyond its distance, and the SEIR model started from them follows the final-size
+relation within 0.05. Three zoo models run on the real samples: \code{road\_traffic}, whose
+shortest-path flows equal NetworkX's edge betweenness on all 607 segments and stay within
+five binomial standard deviations over three seeds; \code{habitat\_selection}, whose
+occupancy per land-cover class reaches its Metropolis stationary law within five standard
+deviations and never enters water; and \code{schelling\_regions}, whose dissimilarity at a
+threshold of 0.45 ends more than five standard deviations above random allocation and rises
+with the threshold.
+
+\subsection{Modelly in the browser}
+\label{app:browser}
+
+\cmd{modelly export-web model.py:Model} writes a static site that runs the model with Pyodide
+\citep{pyodide} (pinned version 314.0.7, loaded from its content delivery network): the parameter panel of Studio,
+run controls, a space view, a reporter plot, the model in a Web Worker so the page answers
+during long runs, Modelly as a trimmed pure-Python wheel of about 0.5~MB, and only the
+packages the model was observed to import. The C modules also build for WebAssembly with
+Emscripten through \code{pyodide build}, and the export can ship that wheel.
+
+\paragraph{Measured} (\code{tests/web/test\_browser.py}, \code{docs/browser.md}). The 14
+bundled examples of release 1.3 (the three split-run reference models were not exported) and
+the 12 zoo models of the tree the export was built on, 26 models, each
+run from its export in headless Chromium with the pure wheel and with the compiled one, 52 of
+52 runs without error; the five zoo models added after that branch (\cref{app:couple,app:population}) have not run in a browser yet, and the local release
+checks run them before the tag. A cold first visit transfers 14.1~MB for the age-structured SEIR model
+(Pyodide, its standard library, \code{numpy} and \code{pandas} are 13.5~MB of it) and is
+ready at step 0 after 5.9~s unthrottled, 8.0~s on a 50~Mbit/s line with 40~ms round trips, and
+21.4~s on Chrome's ``Fast 4G'' profile (about 1~MB/s, 165~ms), where the transfer alone takes
+14~s; a model that needs \code{scipy} (the grid, continuous and network spaces) transfers
+28.0~MB and takes 12.3~s on the 50~Mbit/s line (median of three runs, two for the forest
+fire; \code{tools/web/measure\_load.py}). The aim, under 10~s on a typical
+connection, is met on the 50~Mbit/s line for a model without \code{scipy} and not otherwise.
+The documentation gallery embeds three live models.
