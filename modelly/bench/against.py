@@ -3,9 +3,13 @@
 The release is built from its git tag in this repository into a cached virtual
 environment with the same numpy, pandas, scipy and networkx as this interpreter
 (``modelly.dev.perf_env``, the builder of the performance guard), so both sides
-are compiled by the same toolchain and only Modelly's source differs. Every round
-runs each Modelly variant once in each interpreter, in fresh processes, the order
-swapped from one round to the next, with the same seed. The two runs must give
+are compiled by the same toolchain and only Modelly's source differs. Both sides
+run in that environment's interpreter, the checkout's side with the checkout first
+on ``PYTHONPATH``: the same third-party packages are then imported on both sides
+(an optional package such as pyarrow, imported by Modelly when it is installed,
+adds tens of thousands of objects for the garbage collector and moves where its
+collections fall). Every round runs each Modelly variant once per side, in fresh
+processes, the order swapped from one round to the next, with the same seed. The two runs must give
 the same results (the final population and every summary statistic) for their
 times to be comparable; the report gives, per variant, the median of the
 per-round ratios of CPU time (checkout / release) and its interquartile range.
@@ -60,10 +64,10 @@ class Pairing:
 
 @dataclass(frozen=True)
 class Sides:
-    """The two interpreters and their environments."""
+    """The interpreter both sides run in, and each side's environment."""
 
     version: str
-    release_python: str
+    python: str
     release_env: dict[str, str]
     checkout_env: dict[str, str]
 
@@ -73,16 +77,14 @@ def prepare(version: str, start: Path) -> Sides:
     root = Path(perf_env.git(start, "rev-parse", "--show-toplevel"))
     if version == LATEST:
         version = perf_env.baseline_version(root)
-    release_python = perf_env.ensure_baseline(root, version)
+    python = perf_env.ensure_baseline(root, version)
     perf_env.ensure_native(root)
     release_env = {
         k: v
         for k, v in os.environ.items()
         if k not in {"PYTHONPATH", "MODELLY_PURE_PYTHON"}
     }
-    return Sides(
-        version, str(release_python), release_env, perf_env.candidate_env(root)
-    )
+    return Sides(version, str(python), release_env, perf_env.candidate_env(root))
 
 
 def _results(row: dict[str, Any]) -> dict[str, Any]:
@@ -108,8 +110,8 @@ def _paired_run(
     args: Any, variant: Variant, sides: Sides, swap: bool
 ) -> tuple[dict, dict]:
     """One run on each side, the checkout's first when ``swap``: (release row, checkout row)."""
-    release = replace(variant, python=sides.release_python)
-    order = [(release, sides.release_env), (variant, sides.checkout_env)]
+    variant = replace(variant, python=sides.python)
+    order = [(variant, sides.release_env), (variant, sides.checkout_env)]
     if swap:
         order.reverse()
     rows = [run_once(args.playbooks, v, args.seed, args.size, env=e) for v, e in order]
