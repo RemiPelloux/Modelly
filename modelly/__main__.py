@@ -49,6 +49,11 @@ COMMANDS = (
         "open a model in Modelly Studio, a browser app to run and inspect it",
     ),
     (
+        "export-web",
+        "modelly.web.__main__",
+        "write a static site that runs a model in the browser (Pyodide)",
+    ),
+    (
         "run",
         "modelly.provenance.commands.run",
         "run a model once; write its outputs and a provenance manifest",
@@ -111,6 +116,8 @@ examples:
   modelly studio model.py:MyModel       run, scrub and inspect it in the browser
   modelly run model.py:MyModel --steps 100 --seed 1 --out runs/
                                         outputs and runs/manifest.json
+  modelly export-web model.py:MyModel --out site/
+                                        a static page that runs it in the browser
   modelly profile model.py:MyModel      where each step's time goes
   modelly experiment run study.toml     run a sweep (resumes where it stopped)
   modelly calibrate sir.toml            fit priors to data, print the posterior

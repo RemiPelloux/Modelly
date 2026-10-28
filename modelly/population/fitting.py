@@ -91,7 +91,9 @@ def synthesize_population(
     for region, margins in marginals.items():
         fitted = ipf(seed, [margins[name] for name in names])
         counts = np.concatenate([trs(part.ravel(), rng) for part in fitted])
-        cells = np.unravel_index(np.repeat(np.arange(counts.size), counts), shape)
+        # repeat takes intp counts: int32 on 32-bit platforms (Pyodide, wasm32).
+        repeats = counts.astype(np.intp)
+        cells = np.unravel_index(np.repeat(np.arange(counts.size), repeats), shape)
         columns = {
             name: np.asarray(categories[name], dtype=object)[idx]
             for name, idx in zip(names, cells)

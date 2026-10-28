@@ -27,7 +27,10 @@ HERE = osp.abspath(osp.dirname(__file__))
 # Modelly is imported from the installed package (pip install -e ".[docs]"), never from a
 # relative path: a relative entry depends on the working directory of sphinx-build.
 sys.path.insert(0, HERE)
+from sphinx.util import logging
 from versioning import SITE_URL, apply_versioning  # docs/versioning.py
+
+from modelly.web import WebExport, export_web
 
 # -- General configuration ------------------------------------------------
 
@@ -208,7 +211,8 @@ html_js_files = ["landing-sims.js", "landing.js"]
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
-# html_extra_path = []
+# The live models of the gallery (export_live_models below) are served from live/.
+html_extra_path = ["_live"]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -448,8 +452,33 @@ def setup_examples_pages():
         fh.write(content)
 
 
+# The gallery's live models: (folder under live/, target), each a static export that runs
+# in the reader's browser with Pyodide (modelly export-web, docs/browser.md).
+LIVE_MODELS = (
+    ("forest_fire", "modelly.zoo.forest_fire.model:ForestFire"),
+    ("schelling", "modelly.examples.basic.schelling.model:Schelling"),
+    ("wolf_sheep", "modelly.examples.advanced.wolf_sheep.model:WolfSheep"),
+)
+LIVE_STEPS = 50
+
+
+def export_live_models():
+    """Export the gallery's live models into _live/live/ (gitignored, copied to the site).
+
+    A model that fails to export is a warning, not a failed build: its frame stays empty.
+    """
+    logger = logging.getLogger(__name__)
+    for folder, target in LIVE_MODELS:
+        out = pathlib.Path(HERE, "_live", "live", folder)
+        try:
+            export_web(WebExport(target, out, steps=LIVE_STEPS))
+        except Exception as error:  # a broken export must not break the docs
+            logger.warning("live model %s not exported: %s", target, error)
+
+
 def setup(app):
     setup_examples_pages()
+    export_live_models()
 
 
 #

@@ -94,3 +94,30 @@ jobs:
       - run: playwright install chromium-headless-shell
       - run: pytest --durations=10 tests/ -Werror -Wdefault::PendingDeprecationWarning
 
+
+  browser:
+    # Every example and zoo model exported with modelly export-web and run in a headless
+    # Chromium with Pyodide (tests/web/test_browser.py, opt-in elsewhere): once with the
+    # pure-Python wheel, once with the wheel whose C modules Emscripten compiled.
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      MODELLY_BROWSER_TESTS: "1"
+      PYODIDE_VERSION: "314.0.7" # modelly.web.export.PYODIDE_VERSION
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14" # the Python of Pyodide 314, as pyodide build requires
+          cache: "pip"
+      - run: pip install uv
+      - run: uv pip install --system .[dev] pyodide-build
+      - run: playwright install chromium-headless-shell
+      - name: Build the WebAssembly wheel
+        run: |
+          pyodide xbuildenv install "$PYODIDE_VERSION"
+          pyodide xbuildenv install-emscripten
+          bash scripts/build-wasm-wheel.sh dist/wasm
+          echo "MODELLY_WASM_WHEEL=$(ls dist/wasm/*.whl)" >> "$GITHUB_ENV"
+      - name: Run the models in the browser
+        run: pytest --durations=10 tests/web/test_browser.py

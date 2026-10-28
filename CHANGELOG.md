@@ -211,6 +211,17 @@ versioning.
   stage of `scripts/ci-local.sh` and `python -m modelly.dev gate` runs it with installed mypy,
   else the pinned mypy through `uvx`, and is skipped with a message when neither is available.
 
+- web: `modelly export-web model.py:Model --out site/` writes a static site that runs the
+  model in the browser with Pyodide (pinned 314.0.7, from its CDN): Studio's parameter panel,
+  run controls, a space view and a reporter plot, the model in a Web Worker, Modelly as a
+  trimmed pure-Python wheel and only the packages the model imports; every example and zoo
+  model runs from its export (`tests/web/test_browser.py`, CI job `browser`), and the
+  gallery embeds three live models. A first visit transfers 14 MB (Pyodide, numpy, pandas)
+  and is ready in 8 s on a 50 Mbit/s line, 21 s on DevTools "Fast 4G"
+  (`tools/web/measure_load.py`). Guide: `docs/browser.md`.
+- native: the C modules build for WebAssembly with Emscripten (`pyodide build`,
+  `scripts/build-wasm-wheel.sh`); `modelly export-web --wheel` ships that wheel.
+
 ### Changed
 
 - docs: the build fails on warnings. `scripts/build-docs-version.sh` passes `-W --keep-going` by
@@ -227,6 +238,12 @@ versioning.
   and go in 2.0: import them from `modelly.population`. They are the same functions, so results
   do not change. `docs/deprecations.md` gains "Announced for 2.0", every change 2.0 makes with
   what to use today and when it starts to warn.
+### Fixed
+
+- Modelly imports and runs under Pyodide: the profiler falls back to `process_time` where
+  `thread_time` is missing, the LLM client sends calls one at a time where threads cannot
+  start, `synthesize_population` passes `intp` counts to `np.repeat` (32-bit numpy), and
+  `modelly.examples` imports each example on first use instead of all of them.
 
 ## 1.3.3 - 2026-10-27
 
