@@ -97,7 +97,9 @@ def pair_rounds(
 ) -> list[Pairing]:
     """Each Modelly variant once per side per round, the side order swapped every round."""
     chosen = [v for v in variants if v.name.startswith(MODELLY_PREFIX)]
-    runs: dict[str, list[tuple[dict, dict]]] = {v.key: [] for v in chosen}
+    runs: dict[str, list[tuple[dict[str, Any], dict[str, Any]]]] = {
+        v.key: [] for v in chosen
+    }
     with pinned(pinning):
         for index in range(args.rounds):
             swap = index % 2 == 1
@@ -108,7 +110,7 @@ def pair_rounds(
 
 def _paired_run(
     args: Any, variant: Variant, sides: Sides, swap: bool
-) -> tuple[dict, dict]:
+) -> tuple[dict[str, Any], dict[str, Any]]:
     """One run on each side, the checkout's first when ``swap``: (release row, checkout row)."""
     variant = replace(variant, python=sides.python)
     order = [(variant, sides.release_env), (variant, sides.checkout_env)]
@@ -118,7 +120,7 @@ def _paired_run(
     return (rows[1], rows[0]) if swap else (rows[0], rows[1])
 
 
-def _pairing(key: str, pairs: list[tuple[dict, dict]]) -> Pairing:
+def _pairing(key: str, pairs: list[tuple[dict[str, Any], dict[str, Any]]]) -> Pairing:
     """Collect one variant's rounds into a Pairing."""
     release = [r["cpu_seconds"] for r, _ in pairs]
     checkout = [c["cpu_seconds"] for _, c in pairs]

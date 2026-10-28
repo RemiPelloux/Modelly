@@ -66,11 +66,11 @@ class CohortTable:
         """Every column with its dtype; rows start at zero."""
         return {name: (dtype, 0) for name, dtype in self._dtypes.items()}
 
-    def __getstate__(self) -> dict:
+    def __getstate__(self) -> dict[str, Any]:
         """Memory-mapped columns are pickled as their rows."""
         return pickled(self.__dict__)
 
-    def __setstate__(self, state: dict) -> None:
+    def __setstate__(self, state: dict[str, Any]) -> None:
         """Columns come back into the table's storage (a new folder when memory-mapped)."""
         self.__dict__.update(restored(state))
 
