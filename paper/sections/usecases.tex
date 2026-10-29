@@ -16,19 +16,19 @@ most, and the part of the framework that does the work.
     \midrule
     Large populations whose phases act on all agents alike (movement, infection, ageing,
     mortality) & Columns turn those phases into array operations: 2.9 to 33 times faster than
-    Mesa~3.5 and 4.6 to 45 times faster than Mesa~2.3 on the playbooks (\cref{sec:playbooks}). \\ \addlinespace
+    Mesa~3.5 and 4.6 to 42 times faster than Mesa~2.3 on the playbooks (\cref{sec:playbooks}). \\ \addlinespace
     Populations with many identical individuals (insects, cohorts of patients, age classes)
     & Cohort tables with binomial draws keep the individual model's law
-    (\cref{eq:cohorts}) at a fraction of the cost: 133 times faster than Mesa~3.5 on the insect model. \\ \addlinespace
+    (\cref{eq:cohorts}) at a fraction of the cost: 132 times faster than Mesa~3.5 on the insect model. \\ \addlinespace
     Parameter sweeps, replicates and cluster runs & Experiments with resumable stores and
     executors from a laptop to SLURM, with results independent of the executor. \\ \addlinespace
     Fitting a model to data; knowing which parameters matter & ABC-SMC, simulated moments,
     Morris, Sobol and PAWN on the same seeded engine, checked on known answers
     (\cref{tab:recovery}). \\ \addlinespace
     A paper whose results a reviewer must be able to rerun & Run manifests, \cmd{modelly verify}, byte-identical bundles for archiving, ODD skeletons, golden digests checked
-    across builds and platforms (\cref{tab:determinism}). \\ \addlinespace
+    across builds (\cref{tab:determinism}). \\ \addlinespace
     An existing Mesa model that has become too slow & Port with the codemod (bit-identical results from
-    Mesa~2.3, equivalent ones from Mesa~3.5; from Mesa's speed to 4.6 times faster), then move the hot phases to columns one at a time. \\ \addlinespace
+    Mesa~2.3, equivalent ones from Mesa~3.5; 1.05 to 4.8 times faster), then move the hot phases to columns one at a time. \\ \addlinespace
     Long or expensive runs & Checkpoints and time travel: resume, rewind, branch, and find
     where two runs diverge. \\ \addlinespace
     Generative agents driven by language models & Cached, budgeted calls that replay offline

@@ -45,8 +45,8 @@ def rows(rng) -> list[str]:
         mesa3 = interval(runs[REFERENCE], runs[MESA3], rng)
         lines.append(f"{LABELS[name]} & Mesa 3.5 & {cell(mesa3)} & -- \\\\")
         for variant, own in runs.items():
-            if variant in (REFERENCE, MESA3):
-                continue
+            if variant in (REFERENCE, MESA3) or variant not in VARIANTS:
+                continue  # the GPU variants are reported with the GPU measurement
             over2 = interval(runs[REFERENCE], own, rng)
             over3 = interval(runs[MESA3], own, rng) if MESA3 in runs else None
             lines.append(f" & {VARIANTS[variant]} & {cell(over2)} & {cell(over3)} \\\\")

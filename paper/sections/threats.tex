@@ -44,15 +44,17 @@ whose Mesa arm runs Mesa's code unmodified; it measures the same-code gain, not 
 forms, which no Mesa-written model can show.
 
 \paragraph{Measurement.} The timings of the playbooks, the ports and Mesa's examples come from
-one laptop with a hybrid processor, in one session of under an hour, pinned to one performance
+one laptop with a hybrid processor, in one session of about an hour and a half, pinned to one performance
 core (CPU 2, one of the processor's four 4.7~GHz
 cores; the other twelve are efficiency cores), under the \code{intel\_pstate} driver with the
 \code{performance} governor and turbo disabled, so the core ran at its 1.9~GHz base frequency.
 Absolute times are therefore longer than on a turbo-enabled machine; the ratios are what we
-report. Other work shared the machine (one-minute load average 3.0 to 21.8 at the start of each
+report. Other work shared the machine (one-minute load average 2.8 to 28.5 at the start of each
 workload), and the order of the implementations rotated from round to round: every per-round
-ratio over Mesa~2.3 lies within 15\% of its median (over Mesa~3.5, within 17\%), for 24 of the 28 non-reference variants within 10\%, and
-the bootstrap intervals of \cref{tab:speedup-ci} are a few percent wide (45.3 [44.2, 46.3] for
+ratio over Mesa~2.3 lies within 19\% of its median (over Mesa~3.5, within 19\%), for 26 of the
+28 non-reference variants within 10\% (the two exceptions are the insect population's column
+and cohort forms, 18 and 11\%), and
+the bootstrap intervals of \cref{tab:speedup-ci} are a few percent wide (42.1 [41.4, 42.7] for
 the grid epidemic's columns over Mesa~2.3). An earlier session with turbo enabled and the
 \code{powersave} governor gave ratios up to 30\% different for some workloads and per-round
 spreads up to $+94\%$, so the conclusions rest on the order of magnitude of each speed-up, not
@@ -61,7 +63,7 @@ vector units, will give other ratios. The measurements of \cref{sec:scale} were
 made on the same laptop without the fixed frequency: the GPU comparison has three rounds and
 the browser's first load is a median of three, while the weak scaling (\cref{tab:scaling}),
 the 100-million-row run and the nowcast are single runs; the claims that carry weight there
-(identical outputs, a 34-fold speed-up, shortfalls by a factor) do not turn on a few percent.
+(identical outputs, a 35-fold speed-up, shortfalls by a factor) do not turn on a few percent.
 
 \paragraph{Agreement.} The agreement study (\cref{sec:agreement}) compares chosen summary
 statistics, not whole trajectories; six small differences are individually detectable at the

@@ -73,25 +73,22 @@ The playbook runner starts each run in a fresh interpreter, pins it to one core 
 results and a Markdown report to \code{benchmarks/playbooks/results/}. The methods, and the
 rules a fair comparison must follow, are described in \code{docs/performance.md}.
 
-\paragraph{The medfly notebook.} The private research notebook of \cref{sec:portability} is
-not distributed; its harness and the codemod that produced the port are described in
-\code{docs/performance.md}. Its 576 seasons were run in 48 chunks alternating between two
-persistent processes, one per framework, pinned to one core, with every chunk's records
-hashed and compared (no mismatch in any run), at 1/30 of the model's full scale and with
-turbo enabled. With the port seeding \code{random.Random}, as Mesa does, \modelly{} took 1.04,
-1.02 and 1.02 of Mesa's CPU time in three paired runs (median 1.02); with \code{FastRandom},
-which reproduces the same stream, 1.02, 0.94 and 0.94 (median 0.94; the first of these runs
-shared the machine with other jobs). An early profile of the model, before its code was
-optimised identically in both notebooks, put 68\% of its time in its own code and 7\% in the
-framework.
-
-\paragraph{Provenance of the measurements.} Every measurement ran on the code of the tagged
-release v1.4.0, compiled on the measurement machine with GCC~16.2. Each result file records
-what it ran with: the playbook, port, example and agreement files the commit, the machine and
-the package versions; \code{assimilation.json}, \code{ishigami.json} and \code{graph\_cut.json}
-the commit, date, interpreter and package versions; the \code{weak\_*.json} files the
-interpreter, the platform and the MPI or Dask versions; and \code{gpu\_speedup.json} the
-package versions of both arms.
+\paragraph{Provenance of the measurements.} The measurements ran on the code of the tagged
+release v1.4.0 (commit \code{a972492}), compiled on the measurement machine with GCC~16.2, in
+one session that ran the timings first, then the GPU, the weak scaling and the statistical
+studies. Three were not repeated on the tag and were made on the development code of their
+features shortly before it: the browser's first-load times, the 100-million-row run and the
+profile-guided-optimisation comparison (\cref{app:scale}). Each result file records what it ran with: the playbook, port, example and
+agreement files the commit, the machine, the load and the package versions;
+\code{assimilation.json}, \code{ishigami.json} and \code{graph\_cut.json} the commit, date,
+interpreter and package versions; the files written late in the session (the 300-seed
+Schelling study, the coverage study and these three) record commit \code{8925f96}, which adds
+only result files to the tag; the \code{weak\_*.json} files the interpreter, the platform and the load,
+with the commit and the MPI, mpi4py and Dask versions added from the environment afterwards and
+marked so; and \code{gpu\_speedup.json} the package versions of both arms. In these files the
+version recorded for \code{modelly-abm} is the metadata of the development environments'
+editable installs (1.3.2 and 1.3.3), not the code: both imported \modelly{} from the checkout
+at the tagged commit, which the commit field identifies.
 % SWHID-1.4.0: replace with the identifier of the archived tag once Software Heritage has it
 The tagged release v1.4.0 is archived by Software Heritage.
 
@@ -108,10 +105,10 @@ algorithm, so that their comparison is between data structures; the column and m
 variants find every forager's best visible cell in one array pass and keep only the walk to a
 free cell sequential. The four mesa-frames workloads were also timed in wall-clock time with
 one polars thread and with all 16 (\code{paper/scripts/frames\_threads.py},
-\code{paper/data/frames\_threads.json}): with all threads the grid epidemic takes 1.73~s
-against 1.52~s, Boltzmann wealth 2.61~s against 1.46~s and Sugarscape 4.29~s against 2.96~s,
-and only Schelling's model gains (2.12~s against 2.90~s); these runs were unpinned while other
-jobs loaded the machine (one-minute load average 23.7 at their start), which penalises the
+\code{paper/data/frames\_threads.json}): with all threads the grid epidemic takes 1.83~s
+against 1.53~s, Boltzmann wealth 2.72~s against 1.67~s and Sugarscape 5.78~s against 3.27~s,
+and Schelling's model is as fast either way (2.80~s against 2.82~s); these runs were unpinned
+while other jobs loaded the machine (one-minute load average 14.6 at their start), which penalises the
 multi-threaded arm, and with that caveat the data frames at these sizes appear too small for
 parallel execution to pay for its overhead.
 

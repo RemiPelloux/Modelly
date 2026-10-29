@@ -50,7 +50,6 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 |---|---|---|
 | Playbook speed-ups, build and step times, determinism (Table 3, Figure 1) | `benchmarks/playbooks/results/*.json` | `benchmarks/playbooks/compare.py`, then `make figures` |
 | Agreement with Mesa: 100 seeds at the small size (Table 5, Figure 2), 50 at the timed size (Table 6) | `data/agreement_small.json`, `data/agreement_large.json` | `scripts/agreement.py run --size small` (or `large`), then `analyse` |
-| Port bit-identical, CPU time ratios (Section 5.1) | the private medfly harness (`benchmarks/mesaVSmodelly/paired.py`, not in the repository) | paired runs of the plain codemod port against the unmodified Mesa notebook |
 | Ishigami indices (Section 6.2) | `tests/sensitivity`, `docs/sensitivity.md` | `pytest tests/sensitivity` |
 | ABC-SMC coverage over 200 datasets per model (Table 8) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
 | Every agreement comparison (appendix F) | `data/agreement_small_summary.json` | `scripts/agreement.py analyse` |
@@ -76,7 +75,7 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Synthetic population and the real-data zoo models (Section 7, Appendix E.8) | `tests/population/test_sample_region.py`, `tests/zoo/`, `modelly/space/geo/data/NOTICE.md` | `pytest tests/population tests/zoo` |
 | Browser runs (62 of 62: 14 examples and 17 zoo models, two wheels) and first load (Section 7, Appendix E.9) | `tests/web/test_browser.py` run by `scripts/release-checks.sh browser`; `docs/browser.md` | `MODELLY_BROWSER_TESTS=1 pytest tests/web/test_browser.py`; `tools/web/measure_load.py` |
 | Graph partitioner's edge cut on a lattice (Appendix E.1) | `data/graph_cut.json` | `scripts/graph_cut.py` |
-| Medfly notebook detail, implementation choices, mesa-frames threads (Appendix A, B) | `docs/performance.md`, `data/frames_threads.json` | `scripts/frames_threads.py` |
+| Implementation choices, mesa-frames threads (Appendix B) | `docs/performance.md`, `data/frames_threads.json` | `scripts/frames_threads.py` |
 | NetLogo fire percolation threshold (Section 6.2) | `docs/netlogo.md` | `pytest tests/netlogo` |
 | Nowcasting error, resamplings and EnKF recovery as quoted (Section 7, Appendix E.5) | `data/assimilation.json` | `scripts/assimilation.py` |
 | Ishigami estimates as quoted (Section 6.2) | `data/ishigami.json` | `scripts/ishigami.py` |
@@ -96,13 +95,14 @@ update the hardware line at the start of Section 5.
 - [x] Table 1 re-checked against each project's documentation and repository (October 2026).
 - [x] The paper describes one version, 1.4.0, and compares Modelly only with other
       frameworks, never with its own earlier versions.
-- [ ] Every measurement re-run on the 1.4.0 tree (`build/release/measure_140.sh`: timings at
-      the fixed frequency, GPU, weak scaling, agreement, coverage), then `make figures` and the
-      numbers in the text refreshed from the new files.
+- [x] Every measurement re-run on the tagged release v1.4.0 (`build/release/measure_140.sh`:
+      timings at the fixed frequency, GPU, weak scaling, agreement, coverage), `make figures`
+      run and every number in the text refreshed from the new files. Not re-run on the tag: the
+      browser's first-load times, the 100-million-row run and the PGO measurement, taken on the
+      same code before the tag (Appendix E).
 - [x] Every model, the five zoo models added last included, runs from its export in the
       local release checks (`scripts/release-checks.sh browser`, 62 of 62 with both wheels).
-- [ ] Recount the tests and the strictly typed files at the tag (the sentence marked
-      `% COUNTS-1.4.0` in `sections/availability.tex`).
+- [x] Tests and coverage counted at the tag's gate (3,038 tests, 2,980 pass, 58 skip; 97.3%).
 - [ ] For a journal: Appendix F (every comparison of the agreement study) becomes a CSV
       supplement generated from `data/agreement_small_summary.json`; Appendix E is the
       supplementary material for Section 7.
@@ -115,7 +115,6 @@ update the hardware line at the start of Section 5.
 - [ ] Optional, for a journal: ask Mesa and mesa-frames maintainers to review the baselines,
       and report the three mesa-frames defects upstream.
 - [x] A public same-code result on Mesa's own examples: eight of ten port (Table 2).
-- [ ] Decide whether to name the medfly model of Section 5.1 and cite its authors.
 - [ ] arXiv categories: primary **cs.MA** (Multiagent Systems); cross-list **cs.MS**
       (Mathematical Software) and, depending on the audience, **physics.soc-ph** or
       **q-bio.PE**. A first submission to cs.MA may need an endorsement.

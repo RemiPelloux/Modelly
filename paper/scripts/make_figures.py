@@ -87,6 +87,8 @@ def summarise(result: dict) -> list[dict]:
     mesa3 = statistics.median(timing["run_seconds"].get(MESA3, [float("nan")]))
     rows = []
     for variant, runs in timing["run_seconds"].items():
+        if variant not in VARIANTS and variant != REFERENCE:
+            continue  # the GPU variants are reported with the GPU measurement
         seconds = statistics.median(runs)
         build = statistics.median(timing["build_seconds"][variant])
         # Round r runs every variant on seed r, so per-round ratios are paired.

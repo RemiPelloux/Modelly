@@ -6,10 +6,11 @@ modeller write the same model in a faster form. We measure both, with methods ch
 the comparison fair and repeatable, and check separately that the faster forms compute the
 same model. All the comparisons with Mesa are CPU time (\code{time.process\_time}), measured
 in-process, pinned to one core with \code{taskset}, with the implementations alternating, on an
-Intel Core Ultra 7 356H laptop running Linux, CPython 3.15.0 and numpy 2.5.4 in each
-implementation's environment, against Mesa 2.3.2 and Mesa 3.5.1. The core was held at its 1.9~GHz base frequency (the
-\code{performance} governor, turbo disabled) for every timing of this section except the
-medfly notebook, which was timed with turbo enabled. Following
+Intel Core Ultra 7 356H laptop running Linux, CPython 3.15.1 (3.15.0 for mesa-frames) and
+numpy 2.5.4 in each implementation's environment, against Mesa 2.3.2 and Mesa 3.5.1, with
+\modelly{} at its tagged release v1.4.0 (commit \code{a972492}). The core was held at its 1.9~GHz
+base frequency (the \code{performance} governor, turbo disabled) for every timing of this
+section. Following
 \citet{kalibera2013rigorous}, every run is a fresh interpreter or a fresh model, the rounds are
 paired and their order varies, and we report medians with their spread and bootstrap intervals
 rather than single runs.
@@ -56,7 +57,7 @@ each original and its port at Mesa's default parameters, or, where the defaults 
 under 0.2~s, on a larger grid at the same density (the virus model on 1,000 nodes), for ten alternating rounds on the same
 fixed-frequency core, and compared every model reporter, at the last step and averaged over
 the run, over 100 shared seeds. \Cref{tab:mesa-examples} gives the results: the ports take
-0.61 (wolf--sheep) to 0.96 (boid flockers) of Mesa~3.5's CPU time, and all 35 statistics are
+0.60 (wolf--sheep) to 0.95 (the prisoner's dilemma grid and boid flockers) of Mesa~3.5's CPU time, and all 35 statistics are
 equivalent within $0.5\,s_p$, with no paired $t$-test or Kolmogorov--Smirnov test below 5\%
 even before correction.
 
@@ -80,8 +81,8 @@ population and Boltzmann wealth. The codemod rewrote imports and constructors; t
 steps it reported were done by hand, as its report says. The ports, in
 \code{benchmarks/ports/}, give the same statistics as the Mesa~2.3 originals on every seed
 tried (20 at the small size, 5 at the large), and over ten alternating rounds in fresh
-interpreters on one performance core they take 0.22 (insect population) and 0.37 (Boltzmann
-wealth) of Mesa~2.3's CPU time, every round within 0.21 to 0.23 and 0.36 to 0.37
+interpreters on one performance core they take 0.21 (insect population) and 0.36 (Boltzmann
+wealth) of Mesa~2.3's CPU time, every round within 0.20 to 0.22 and 0.35 to 0.38
 (\code{paper/scripts/ports.py}): these models spend most of their time in framework calls
 (Mesa~2.3 rebuilds its agent set each time \code{model.agents} is read and collects agent
 data in a Python loop), and those calls are \modelly{}'s compiled ones.
@@ -90,27 +91,20 @@ data in a Python loop), and those calls are \modelly{}'s compiled ones.
 the eight Mesa~3.5 playbooks run on \modelly{} after the codemod alone, with no manual step
 (\code{benchmarks/ports\_mesa3/}). The other three do not: flocking uses Mesa's legacy
 \code{mesa.space.ContinuousSpace}, and predator-prey and Sugarscape use Mesa~3.5's property
-layers, neither of which \modelly{} implements. The five ports take 0.45 (Boltzmann wealth),
-0.51 (insect population), 0.74 (grid epidemic), 0.86 (network contagion) and 0.93
+layers, neither of which \modelly{} implements. The five ports take 0.44 (Boltzmann wealth),
+0.53 (insect population), 0.79 (grid epidemic), 0.87 (network contagion) and 0.92
 (Schelling's model) of Mesa~3.5's CPU time, medians of ten alternating rounds whose per-round
-ratios span 0.42--0.46, 0.46--0.54, 0.68--0.78, 0.84--0.89 and 0.90--0.96. Their outputs are not
+ratios span 0.43--0.45, 0.46--0.57, 0.71--0.87, 0.84--0.93 and 0.90--0.94. Their outputs are not
 bit-identical to Mesa~3.5's, because \modelly{} derives \code{model.random} from the seed in a
 different way, so we compared them in distribution as in \cref{sec:agreement}: over 100 shared
 seeds at the small size, 24 of the 26 statistics are equivalent within $0.5\,s_p$, two paired
 $t$-tests fall below 5\% before correction (the network's peak of infections and the Boltzmann
 model's largest wealth, $|d| \le 0.31$) and none after it, and no Kolmogorov--Smirnov test does.
 
-\paragraph{A private research notebook.} A research notebook written for Mesa~2.3, a medfly
-population model running a 576-season factorial experiment, ported by the codemod with every
-line of model logic unchanged, gives bit-identical output tables and took 1.02 of Mesa's CPU
-time with \code{random.Random} and 0.94 with \code{FastRandom} (medians of three paired runs
-at 1/30 of its scale, chunk by chunk; \cref{app:reproduce}). Its own code takes most of its
-time, so the framework has little to gain on it, and the model is private, so this result can
-be checked only through the public ports above.
-
-Same-code gains therefore range from none, when the model's own code dominates as in the medfly
-notebook, to 1.6 times on Mesa~3.5's own examples and 2.7 and 4.6 times on Mesa~2.3 models,
-whose framework calls are slower; the larger gains come from the forms of \cref{sec:playbooks}.
+Same-code gains therefore range from 1.05 to 1.7 times on Mesa~3.5's own examples and 1.1
+to 2.3 times on the Mesa~3.5 ports of the playbooks to
+2.8 and 4.8 times on Mesa~2.3 models, whose framework calls are slower; the larger gains come
+from the forms of \cref{sec:playbooks}.
 
 \subsection{Each framework's own idiom: eight playbooks}
 \label{sec:playbooks}
@@ -177,9 +171,9 @@ bootstrap 95\% interval for every speed-up, resampling the paired rounds.
 \paragraph{Where \modelly{} is fast, and why.} \modelly{}'s column form runs every workload
 faster than Mesa~2.3 and Mesa~3.5, and faster than mesa-frames on the four it implements
 (\cref{tab:playbooks,fig:speedups}): its steps run
-4.6 to 45 times faster than Mesa~2.3, 2.9 to 33 times faster than Mesa~3.5 and 3.0 to 9.4 times
-faster than mesa-frames, and its cohort form runs the insect population 243 times faster than
-Mesa~2.3 and 133 times faster than Mesa~3.5. \Cref{tab:why} gives the reason workload by
+4.6 to 42 times faster than Mesa~2.3, 2.9 to 33 times faster than Mesa~3.5 and 3.0 to 9.5 times
+faster than mesa-frames, and its cohort form runs the insect population 249 times faster than
+Mesa~2.3 and 132 times faster than Mesa~3.5. \Cref{tab:why} gives the reason workload by
 workload. In each, one \modelly{} mechanism replaces a Python loop over the agents with a few
 array operations over the whole population: a column read or write instead of an attribute per
 agent, one count over the grid's adjacency instead of a neighbourhood walk per agent, one
@@ -192,7 +186,7 @@ or where the step creates and removes many agents, as the births and deaths of p
 and of the individual insect model, or where a cost every implementation shares dominates the
 step, as Boltzmann wealth's data collector, which records the Gini coefficient and every
 agent's wealth after each step (\cref{sec:threats}). Code that gives up agent objects
-altogether goes further still: hand-written numpy is 1.8 to 4.4 times faster than the columns
+altogether goes further still: hand-written numpy is 1.8 to 4.6 times faster than the columns
 (below). The arguments that each vectorised phase has the law of its
 per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}), and
 \cref{sec:agreement} checks that the outputs agree.
@@ -230,8 +224,8 @@ per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}
 \end{table}
 
 \paragraph{The other implementations.} Mesa~3.5 is faster than Mesa~2.3 on five workloads
-(1.3 to 3.1 times), as fast on flocking and Sugarscape, and slower on predator-prey (0.91
-times). mesa-frames is 2.1 to 6.5 times faster than Mesa~2.3 on three of its four workloads and
+(1.3 to 3.1 times), as fast on flocking and Sugarscape, and slower on predator-prey (0.89
+times). mesa-frames is 2.1 to 6.1 times faster than Mesa~2.3 on three of its four workloads and
 slower on Sugarscape (0.71 times), where its per-forager search is a cross join and a sort over
 up to about 130,000 rows per step. \modelly{}'s cell-list variants, which keep Mesa's per-cell
 agent lists, give 1.3 to 14 times over Mesa~2.3 and 1.3 to 11 over Mesa~3.5: large for
@@ -239,14 +233,14 @@ Schelling's model, whose residents mostly count their neighbours, small where mo
 search stay per agent. Construction is where \modelly{} spends more than Mesa~2.3 (it
 allocates the columns and indexes the space; Mesa~3.5's cell spaces cost about as much, 0.31
 to 0.43~s on the three large grids and the network), so the column form's gain including construction is
-4.0 to 32 times, and lower than per step on short runs such as the network contagion (39 times
+4.0 to 32 times, and lower than per step on short runs such as the network contagion (40 times
 per step, 10 in total).
 
 \paragraph{Against hand-written numpy.} The Mesa~3.5 + numpy baseline is faster than
-\modelly{}'s columns on all three of its workloads: its steps take 0.035~s against 0.157~s on
-the grid epidemic (4.4 times faster, 95\% interval 4.3 to 4.6), 0.116~s against 0.205~s on
-Schelling's model (1.8 times, 1.7 to 1.8) and 0.121~s against 0.335~s on Boltzmann wealth (2.8
-times, 2.7 to 2.8; there partly because it records the wealth as one array per step rather than
+\modelly{}'s columns on all three of its workloads: its steps take 0.034~s against 0.154~s on
+the grid epidemic (4.6 times faster, 95\% interval 4.5 to 4.7), 0.111~s against 0.201~s on
+Schelling's model (1.8 times, 1.8 to 1.8) and 0.121~s against 0.328~s on Boltzmann wealth (2.7
+times, 2.7 to 2.7; there partly because it records the wealth as one array per step rather than
 as per-agent rows). It pays for that with the model's structure: no agent has an identity,
 methods or attributes of its own, the population cannot hold agents of several kinds, every
 neighbourhood is a hand-built index table, and every phase has to be rewritten as array
@@ -258,16 +252,16 @@ correction, Schelling's segregation ($d = 0.24$, 0.6\% of the mean), is a fluctu
 100 seeds, since on them its Schelling and Boltzmann wealth runs give exactly the statistics
 of the column variant (the baseline is the column algorithm without the framework layer) and
 the difference is absent at 300 seeds (\cref{tab:agreement-schelling300}). The benchmark
-harness's own six-seed check flags four of its six grid epidemic statistics, flags that vanish
+harness's own six-seed check flags three of its six grid epidemic statistics, flags that vanish
 over 100 seeds at the small size and at the timed size (lowest paired $p$ 0.13 and above 5\%,
 largest $|d|$ 0.20, all six equivalent;
 \code{paper/data/agreement\_large\_grid\_mesa3np.json}). The gap is the price of the
 framework layer: \modelly{} sits between per-agent Mesa and hand-written arrays,
-3.4 to 27.5 times above the first and 1.8 to 4.4 times below the second on these three workloads.
+3.4 to 25.7 times above the first and 1.8 to 4.6 times below the second on these three workloads.
 
 \paragraph{mesa-frames with more threads.} polars runs multi-threaded by default, while the
 timings above set \code{POLARS\_MAX\_THREADS=1} so that every implementation uses one core;
-with all 16 threads mesa-frames was slower on three of its four workloads and faster only on
+with all 16 threads mesa-frames was slower on three of its four workloads and as fast on
 Schelling's model (wall-clock, unpinned, under load; \cref{app:workloads}), so the
 single-threaded comparison is unlikely to handicap it.
 

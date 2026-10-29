@@ -51,41 +51,45 @@ separates what the machine gives from what the protocol keeps of it.
   \centering
   \small
   \caption{Weak scaling of the split grid epidemic, one run per worker count, 10,000 people per
-  worker, 20 steps, Open MPI 5.0.11 and mpi4py 4.1.2 (recorded from the environment after the
-  runs), wall-clock seconds per step after a warm-up step, build excluded, on the 16-core
-  laptop of \cref{sec:performance} shared with other jobs. ``Load'' is the one-minute load average at
-  the start of each run; ``machine'' is the efficiency of $K$ copies with no communication;
-  ``protocol'' is the split run's time relative to the copies'.}
+  worker, 20 steps, Open MPI 5.0.11 and mpi4py 4.1.2, wall-clock seconds per step after a
+  warm-up step, build excluded, on the 16-core laptop of \cref{sec:performance} shared with
+  other jobs. ``Load'' is the one-minute load average at the start of each run; ``machine'' is
+  the efficiency of $K$ copies with no communication; ``protocol'' is the split run's time
+  relative to the copies'.}
   \label{tab:scaling}
   \begin{tabular}{rrrrrrrr}
     \toprule
     Workers & People & Split, s/step & Copies, s/step & Efficiency & Machine & Protocol & Load \\
     \midrule
-    1  & 10,000  & 0.0151 & 0.0138 & 100\% & 100\% & 91\%& 8.4 \\
-    2  & 20,000  & 0.0244 & 0.0163 & 62\%  & 85\%  & 67\%& 8.5 \\
-    4  & 40,000  & 0.0421 & 0.0227 & 36\%  & 61\%  & 54\%& 8.1 \\
-    8  & 80,000  & 0.0745 & 0.0482 & 20\%  & 29\%  & 65\%& 7.6 \\
-    12 & 120,000 & 0.1113 & 0.0587 & 14\%  & 23\%  & 53\%& 7.7 \\
-    16 & 160,000 & 0.1723 & 0.0582 & 9\%   & 24\%  & 34\%& 21.7 \\
+    1  & 10,000  & 0.0142 & 0.0116 & 100\% & 100\% & 82\% & 7.4 \\
+    2  & 20,000  & 0.0198 & 0.0151 & 72\%  & 77\%  & 76\% & 7.3 \\
+    4  & 40,000  & 0.0441 & 0.0227 & 32\%  & 51\%  & 51\% & 7.1 \\
+    8  & 80,000  & 0.0815 & 0.0483 & 17\%  & 24\%  & 59\% & 7.2 \\
+    12 & 120,000 & 10.1375 & 0.1507 & $<$1\% & 8\%  & 1\%  & 8.1 \\
+    16 & 160,000 & 5.3554 & 0.1955 & $<$1\% & 6\%  & 4\%  & 40.1 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-With 10,000 people per worker the protocol keeps 53 to 91\% of what the machine gives up to
-12 workers and 34\% at 16, where the run started at a load of 21.7 against about 8 for the
-others, so its 9\% is a lower bound on what the machine would give. With 40,000 people per
-worker the efficiency is 67\% at 2 and 28\% at 8 workers, against 62 and 32\% for the copies,
-so the protocol keeps 79 to 109\%: the exchange grows with a block's border, the work with its
-area. The Dask backend, which routes every exchange through its scheduler (eight per step),
-measured 26 to 42\% at 2 to 8 workers on a busier machine. Every efficiency here is a single
-run per worker count, not a median of repeats.
+With 10,000 people per worker the protocol keeps 51 to 82\% of what the machine gives up to
+eight workers. At 12 and 16 workers the split runs took 10.1 and 5.4~s a step, 70 and 30 times
+their copies and about a hundred times the eight-worker run; the 16-worker run started under a
+load of 40.1. A single run cannot separate the protocol's cost from contention with the other
+jobs (Open MPI's ranks busy-wait for messages, which degrades sharply on an oversubscribed
+machine), so no efficiency is claimed at 12 and 16 workers. With 40,000 people per worker,
+measured under loads of 37 to 45, the efficiency is 73, 46 and 9\% at 2, 4 and 8 workers
+against 93, 96 and 45\% for the copies, so the protocol keeps 92, 56 and 22\%. The Dask
+backend, which routes every exchange through its scheduler (eight per step), measured 56, 24
+and 13\% at 2, 4 and 8 workers under loads of 32 to 36, with each split step five to thirteen
+times slower than its copies: the scheduler's round trips, not the model, take its time. Every
+efficiency here is a single run per worker count, not a median of repeats.
 
 \paragraph{Not met.} The design target, at least 70\% weak-scaling efficiency from
 1 to 64 workers, cannot be measured on one laptop, and the laptop's hybrid processor is the
-main limit: eight to sixteen copies of the same work with no communication at all already run
-at 23 to 29\% of one (32\% with 40,000 people per worker), because beyond the four
-performance cores the copies land on efficiency cores (their step times split into two groups, 0.028 to 0.039~s and 0.040 to
-0.059~s). The Ray backend is written but untested (Ray does not install on CPython 3.15); MPI on
+main limit: eight copies of the same work with no communication at all already run at 24\%
+of one (45\% with 40,000 people per worker), because beyond the four performance cores the
+copies land on efficiency cores (at eight workers their step times split into two groups,
+0.028 to 0.029~s and 0.040 to 0.048~s). The Ray backend is written but untested (Ray does not install on CPython 3.15); MPI on
 macOS and Windows is untested (\cref{sec:threats}); and the split-run suite runs on the three
 reference models, not on the zoo, whose models would change their numbers if moved to
 per-agent streams.
@@ -112,20 +116,22 @@ than the device run in batches, bit for bit the same as one batch.
 and the raw numbers are in \code{paper/data/gpu\_speedup.json}. The grid epidemic at 10
 million agents on a $1000 \times 1000$ torus, 60 steps, seed 1, in fresh interpreters, wall
 clock around the steps with the device synchronised, the build timed apart, one untimed run
-first to fill CuPy's kernel cache: the CPU column variant takes 20.65, 21.05 and 21.39~s for the steps and the CuPy variant 0.612,
-0.608 and 0.622~s, a median speed-up of 34.4 on an NVIDIA RTX~5050 laptop GPU (8~GB, CUDA
-runtime 13.2 from the \code{cupy-cuda13x} 14.2.0 wheel; 33.1 and 33.8 in two rounds with the
-CPU variant on the GPU environment's CPython 3.14). Run on \code{numpy} and on CuPy with the
-same seed, the variant gives the same infected series for all 60 steps and the same SHA-256 of
-the final state, days and row columns of all 10 million agents. Building 10 million agent
-objects takes 22 to 42~s on either side, so build plus steps is only 1.5 to 1.8 times
-faster: the aim of ten times faster than the column form at ten million agents on a mid-range
-GPU holds for the steps, not for construction.
+first to fill CuPy's kernel cache: the CPU column variant (CPython 3.15) takes 23.47, 33.91
+and 22.97~s for the steps and the CuPy variant (CPython 3.14) 0.672, 0.666 and 0.720~s, per-round
+ratios of 34.9, 50.9 and 31.9 and a median of 34.9 on an NVIDIA RTX~5050 laptop GPU (8~GB, CUDA
+runtime 13.2 from the \code{cupy-cuda13x} 14.2.0 wheel); the second round's CPU arm ran while
+other jobs loaded the machine. Run on \code{numpy} and on CuPy with the same seed, the variant
+gives the same infected series for all 60 steps and the same SHA-256 of the final state, days
+and row columns of all 10 million agents. Building 10 million agent objects takes 28 to 48~s
+on either side, so build plus steps is only 1.3 to 2.3 times faster: the aim of ten times faster
+than the column form at ten million agents on a mid-range GPU holds for the steps, not for
+construction.
 
-\paragraph{Where it does not pay.} At the playbook's own 20,000 agents the steps take 0.17
-to 0.21~s on CuPy against 0.11~s on the CPU (three seeds), and the insect cohorts, a table of
-under 200 rows, take 1.9 to 2.1~s on the GPU for 120 days against 10~ms on the CPU: kernel
-launches cost more than the arithmetic. JAX recompiles whenever a cohort table changes
+\paragraph{Where it does not pay.} At the playbook's own 20,000 agents the steps take 0.16
+to 0.24~s on CuPy against 0.08 to 0.13~s on the CPU (three seeds), and the insect cohorts, a
+table of under 200 rows, take 1.7 to 2.0~s on the GPU for 120 days against 8 to 12~ms on the CPU
+(after a first run of 24~s that compiled the kernels): kernel launches cost more than the
+arithmetic. JAX recompiles whenever a cohort table changes
 length. Apple Metal was not measured (no Apple GPU was available), and against the original
 CPU column variant, which draws from \code{model.rng}, the GPU variant agrees in distribution
 only, as every playbook variant does.

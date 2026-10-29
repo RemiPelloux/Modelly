@@ -6,15 +6,15 @@ three: agent state in model-owned arrays (columns) or counted populations (cohor
 loops in C with pure-Python twins, and the steps of a study (sweeps, calibration, sensitivity
 analysis, emulators, data assimilation, manifests, bundles) and seventeen validated reference
 models. On eight workloads written idiomatically for each framework, the column
-form runs its steps 2.9 to 33 times faster than per-agent Mesa~3.5 code, 4.6 to 45 times
-faster than Mesa~2.3 and 3.0 to 9.4 times faster than mesa-frames (on its four), and 1.8 to
-4.4 times slower than hand-written numpy without agent objects (on three); the cohort form of
-the one workload that has one runs 133 times faster than Mesa~3.5. Over 100 paired seeds, 63
+form runs its steps 2.9 to 33 times faster than per-agent Mesa~3.5 code, 4.6 to 42 times
+faster than Mesa~2.3 and 3.0 to 9.5 times faster than mesa-frames (on its four), and 1.8 to
+4.6 times slower than hand-written numpy without agent objects (on three); the cohort form of
+the one workload that has one runs 132 times faster than Mesa~3.5. Over 100 paired seeds, 63
 of 67 summary statistics of a \modelly{} variant are equivalent to Mesa~2.3's within half a
 standard deviation (29 after Holm correction), with no mean differing by more than 11\%.
-Mesa models ported without changing their logic, Mesa's own examples among them, run between
-Mesa's speed and 4.6 times faster (0.22 to 1.02 of its CPU time). \modelly{} also splits a
-run across processes byte-identically, runs columns on a GPU (34 times faster at ten million
+Mesa models ported without changing their logic, Mesa's own examples among them, run 1.05 to
+4.8 times faster than on Mesa (0.21 to 0.95 of its CPU time). \modelly{} also splits a
+run across processes byte-identically, runs columns on a GPU (35 times faster at ten million
 agents), differentiates models, assimilates live data and exports a model to the browser, each
 with its stated shortfalls.
 \end{abstract}
