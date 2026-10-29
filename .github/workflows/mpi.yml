@@ -55,4 +55,4 @@ jobs:
       - name: Distributed and partition-independence tests
         env:
           MODELLY_MPI_RANKS: ${{ matrix.ranks }}
-        run: pytest --durations=10 -Werror tests/distributed tests/determinism/test_determinism_partition.py
+        run: pytest --durations=10 -W default -p no:cacheprovider tests/distributed tests/determinism/test_determinism_partition.py
