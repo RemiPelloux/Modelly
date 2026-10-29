@@ -71,9 +71,20 @@ class JSONDataRecorder(BaseDataRecorder):
             case list():
                 self.data[dataset_name].append({"time": time, "data": data})
             case np.ndarray():
-                self.data[dataset_name].append({"time": time, "data": data.tolist()})
+                rows = self._array_rows(dataset_name, data)
+                self.data[dataset_name].append({"time": time, "data": rows})
             case _:
                 self.data[dataset_name].append({"time": time, "data": data})
+
+    def _array_rows(self, dataset_name: str, data: np.ndarray) -> list[dict]:
+        """A NumPy snapshot as one record per agent, with its agent_id, as the other recorders."""
+        dataset = self.registry.datasets[dataset_name]
+        columns = list(dataset._attributes)
+        ids = dataset.agent_ids.tolist()
+        return [
+            {"agent_id": agent_id, **dict(zip(columns, row, strict=True))}
+            for agent_id, row in zip(ids, data.tolist(), strict=True)
+        ]
 
     def get_table_dataframe(self, name: str) -> pd.DataFrame:
         """Convert stored JSON-like data to DataFrame."""
@@ -84,9 +95,9 @@ class JSONDataRecorder(BaseDataRecorder):
         for snapshot in self.data[name]:
             time = snapshot["time"]
             data = snapshot["data"]
-            if isinstance(data, list) and data and isinstance(data[0], dict):
-                for row in data:
-                    records.append({**row, "time": time})
+            if isinstance(data, list) and (not data or isinstance(data[0], dict)):
+                # one record per agent; an empty snapshot has no rows
+                records.extend({**row, "time": time} for row in data)
             elif isinstance(data, dict):
                 records.append({**data, "time": time})
             else:
