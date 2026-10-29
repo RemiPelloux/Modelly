@@ -510,7 +510,7 @@ Modelly ships two [pre-commit](https://pre-commit.com) hooks. Add one to your pr
 ```yaml
 repos:
   - repo: https://github.com/RemiPelloux/Modelly
-    rev: v1.4.0
+    rev: v1.4.2
     hooks:
       - id: modelly-lint          # fail the commit when a staged file has a finding
       # - id: modelly-lint-fix    # or apply the safe fixes first, then report the rest

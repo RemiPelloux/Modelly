@@ -120,13 +120,14 @@ Measured with `tools/web/measure_load.py`: a cold first visit (fresh browser con
 cache off) in headless Chromium 1248 on Linux, the site served from localhost and Pyodide
 from `cdn.jsdelivr.net`, the clock running from navigation to the model built and drawn at
 step 0. The machine (16 cores) was shared with other jobs, which slows the WebAssembly
-start-up; three runs per row (two for forest fire), median shown.
+start-up; three runs per row, median shown (the pure-wheel rows measured on v1.4.2; reports in
+`paper/data/browser_load/`).
 
 | Site | Transferred | No throttling | 50 Mbit/s, 40 ms | DevTools "Fast 4G" |
 |---|---|---|---|---|
-| Age-structured SEIR (zoo), pure wheel | 14.1 MB | 5.9 s | 8.0 s | 21.4 s |
+| Age-structured SEIR (zoo), pure wheel | 14.3 MB | 4.4 s | 7.0 s | 20.0 s |
 | Age-structured SEIR (zoo), compiled wheel | 14.4 MB | | | 22.4 s |
-| Forest fire (zoo, needs scipy), pure wheel | 28.0 MB | | 12.3 s | 36.8 s |
+| Forest fire (zoo, needs scipy), pure wheel | 28.3 MB | 5.4 s | 10.1 s | 35.0 s |
 
 "Fast 4G" is Chrome DevTools' preset: 9 Mbit/s down at 90% efficiency (about 1 MB/s),
 165 ms round trip. At that speed the transfer alone takes 14 s, so no export can start in

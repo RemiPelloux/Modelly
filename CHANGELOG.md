@@ -3,6 +3,39 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+No change to the `modelly` package since 1.4.2; benchmarks, CI and documentation only.
+
+### Benchmarks
+
+- Flocking has a Mesa 3.5 + KD-tree implementation (`benchmarks/playbooks/flocking/mesa3kd_model.py`):
+  Mesa 3.5's model with its neighbour search replaced by one periodic `scipy.spatial.cKDTree`
+  per step. It gives Mesa 3.5's statistics on every seed and runs 2.7x faster than Mesa 3.5's own
+  search; Modelly's columns run 12x faster than it.
+- The grid epidemic, Schelling and Boltzmann wealth playbooks have a `huge` size, ten times the
+  timed one, and `paper/scripts/sizes.py` times them at three sizes, recording the load before
+  and after.
+- Mesa models run on Modelly are "migrated", in names and paths: `benchmarks/migrated_mesa2/`,
+  `benchmarks/migrated_mesa3/`, `paper/scripts/migrated.py`, and each Mesa example's `migrated/`
+  copy (formerly `ports`, `ports_mesa3`, `ports.py`, `port/`).
+- `benchmarks/mesa_examples/run.py --seed-base` replicates the agreement on new seeds.
+- `paper/scripts/frames_threads.py --cores` times mesa-frames with one thread and with one per
+  pinned core.
+- Result files record the version the imported `modelly` reports, besides the install metadata.
+
+### CI
+
+- The release workflow's wheel test checks all five compiled modules, the event heap's included.
+- A manual workflow runs the determinism suite and compares exact digests on nine
+  platform-interpreter builds, from the checkout or from the released wheels on PyPI.
+
+### Documentation
+
+- `README.md`, `docs/index.md`, `docs/performance.md`, `docs/distributed.md` and
+  `docs/browser.md` give the benchmark, GPU, weak-scaling, 100-million-row and browser numbers
+  measured on 1.4.2's code.
+
 ## 1.4.2 - 2026-10-29
 
 A patch release for numpy datasets (`DataRegistry.track_agents_numpy`): their fields now belong

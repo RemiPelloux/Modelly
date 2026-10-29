@@ -450,7 +450,7 @@ a `CohortTable`, rows without objects. `benchmarks/large_columns.py` builds one 
 age, patch and a float trait per row, 19 bytes) and runs a stage-structured life cycle on it:
 binomial thinning by stage, ageing, stage transitions and offspring draws.
 
-The run, measured locally: 100 million rows (2.55 GB of columns at the table's capacity of
+The run, measured locally on v1.4.2 (one JSON per run in `paper/data/large_columns/`): 100 million rows (2.55 GB of columns at the table's capacity of
 2^27 rows), three steps, each in its own systemd scope with a hard limit and no swap
 (`systemd-run --user --scope -p MemoryMax=... -p MemorySwapMax=0`); "cgroup peak" is the
 scope's `memory.peak`, which counts the mapped file pages it holds as well as anonymous
@@ -459,9 +459,9 @@ offspring count).
 
 | Storage | MemoryMax | finished | build | seconds per step | cgroup peak |
 |---|---|---|---|---|---|
-| memory-mapped | 16 GB | yes | 2.2 s | 10.4, 9.5, 9.3 | 3.61 GB |
-| in memory | 16 GB | yes | 3.1 s | 8.7, 8.4, 8.3 | 4.26 GB |
-| memory-mapped | 3 GB | yes | 2.7 s | 10.1, 9.6, 11.6 | 3.22 GB (the limit: file pages were reclaimed) |
+| memory-mapped | 16 GB | yes | 2.8 s | 12.0, 11.1, 10.4 | 3.61 GB |
+| in memory | 16 GB | yes | 4.8 s | 10.5, 9.9, 9.8 | 4.27 GB |
+| memory-mapped | 3 GB | yes | 2.9 s | 13.7, 10.5, 10.8 | 3.22 GB (the limit: file pages were reclaimed) |
 | in memory | 3 GB | no: killed by the limit | | | |
 
 A hundred million rows run well inside 16 GB either way; the file-backed table costs 10 to
@@ -708,10 +708,10 @@ about 2% slower with the standard library's.
 
 Models that spend most of their time in framework calls gain more from the same treatment.
 Two public playbooks without a Mesa 2 grid, migrated from Mesa 2.3 by the codemod and the steps
-it reports (`benchmarks/migrated_mesa2/`), run at 0.22 (insects) and 0.37 (Boltzmann wealth) of Mesa
+it reports (`benchmarks/migrated_mesa2/`), run at 0.21 (insects) and 0.37 (Boltzmann wealth) of Mesa
 2.3's CPU time, bit-identical. Five Mesa 3.5 playbooks migrated by the codemod
-alone (`benchmarks/migrated_mesa3/`) run at 0.45 (Boltzmann wealth), 0.51 (insects), 0.74 (grid
-epidemic), 0.86 (network) and 0.93 (Schelling) of Mesa 3.5's CPU time. They are not
+alone (`benchmarks/migrated_mesa3/`) run at 0.44 (Boltzmann wealth), 0.53 (insects), 0.73 (grid
+epidemic), 0.85 (network) and 0.91 (Schelling) of Mesa 3.5's CPU time (measured on v1.4.2). They are not
 bit-identical, since Modelly derives `model.random` from the seed differently, but over 100
 seeds 24 of their 26 statistics are equivalent within half a standard deviation and no test is
 significant after a Holm correction. Flocking (Mesa's legacy `ContinuousSpace`) and
@@ -755,45 +755,54 @@ same numbers in the same order and reproduce Mesa 2.3 run for run. Where a phase
 one agent at a time (Sugarscape's foragers), every implementation uses the same single-pass
 loop. Median CPU seconds of the steps at the large size, all variants in one session, ten
 rounds, pinned to a performance core (CPU 2, performance governor, turbo disabled, so the core runs at its fixed 1.9 GHz base
-frequency; every per-round ratio is within 15% of its median). Absolute seconds are longer than
+frequency; every per-round ratio is within 19% of its median, and a second session agrees with
+this one within 4% on every ratio, `paper/data/playbooks_session1/`). Measured on v1.4.2's
+code. Absolute seconds are longer than
 with turbo; the ratios are the point. "Mesa 3.5 + numpy" (`mesa3np_model.py`, three playbooks) is the
 hand-vectorised Mesa baseline: a `mesa.Model` that holds the population as numpy arrays over
 Mesa's grid and property layers, with no `Agent` objects:
 
 | Playbook | Mesa 2.3 | Mesa 3.5 | Mesa 3.5 + numpy | mesa-frames | Modelly, cell lists | Modelly | vs Mesa 2.3 | vs Mesa 3.5 | vs mesa-frames |
 |---|---|---|---|---|---|---|---|---|---|
-| Grid epidemic (SIR, random walk, synchronous) | 7.10 s | 4.31 s | 0.035 s | 1.10 s | 2.87 s | 0.157 s | 45x | 27x | 7.0x |
-| Predator-prey with grass (births and deaths every step) | 3.39 s | 3.73 s |  |  | 2.19 s | 0.526 s | 6.4x | 7.1x |  |
-| Flocking in continuous space | 24.58 s | 24.66 s |  |  |  | 0.749 s | 33x | 33x |  |
-| Virus on a random network | 7.81 s | 2.51 s |  |  |  | 0.199 s | 39x | 13x |  |
-| Stage-structured insect population, individuals | 3.67 s | 2.01 s |  |  |  | 0.684 s | 5.4x | 2.9x |  |
-| Same population as a `CohortTable` (binomial thinning) | 3.67 s | 2.01 s |  |  |  | 0.015 s | 243x | 133x |  |
-| Schelling segregation (moves to random empty cells) | 4.65 s | 3.58 s | 0.116 s | 1.93 s | 0.32 s | 0.205 s | 23x | 18x | 9.4x |
-| Boltzmann wealth exchange, Gini by a `DataCollector` | 2.14 s | 1.14 s | 0.121 s | 1.00 s |  | 0.335 s | 6.4x | 3.4x | 3.0x |
-| Sugarscape, constant growback (vision, best sugar in sight) | 1.49 s | 1.46 s |  | 2.10 s | 1.13 s | 0.325 s | 4.6x | 4.5x | 6.5x |
+| Grid epidemic (SIR, random walk, synchronous) | 6.52 s | 3.99 s | 0.034 s | 1.07 s | 2.67 s | 0.155 s | 42x | 26x | 6.9x |
+| Predator-prey with grass (births and deaths every step) | 3.33 s | 3.67 s |  |  | 2.17 s | 0.521 s | 6.4x | 7.1x |  |
+| Flocking in continuous space | 24.44 s | 24.49 s |  |  |  | 0.750 s | 33x | 33x |  |
+| Virus on a random network | 7.85 s | 2.52 s |  |  |  | 0.195 s | 40x | 13x |  |
+| Stage-structured insect population, individuals | 3.72 s | 2.00 s |  |  |  | 0.698 s | 5.3x | 2.9x |  |
+| Same population as a `CohortTable` (binomial thinning) | 3.72 s | 2.00 s |  |  |  | 0.015 s | 251x | 135x |  |
+| Schelling segregation (moves to random empty cells) | 4.55 s | 3.57 s | 0.112 s | 1.94 s | 0.322 s | 0.201 s | 23x | 18x | 9.6x |
+| Boltzmann wealth exchange, Gini by a `DataCollector` | 2.09 s | 1.14 s | 0.121 s | 1.00 s |  | 0.328 s | 6.4x | 3.5x | 3.0x |
+| Sugarscape, constant growback (vision, best sugar in sight) | 1.49 s | 1.44 s |  | 2.12 s | 1.12 s | 0.326 s | 4.6x | 4.4x | 6.5x |
 
 The "cell lists" column is the same model with Mesa's data structure, every cell holding the
-list of its agents, so movement and predation stay per-agent loops: 1.5 to 2.5x over Mesa
+list of its agents, so movement and predation stay per-agent loops: 1.5 to 2.4x over Mesa
 2.3 on the epidemic and predator-prey (1.3 to 14x over Mesa 2.3 and 1.3 to 11x over Mesa 3.5
 across its four playbooks). The gap opens when the cell becomes a column of rows: the random walk is one
 `random_neighbor` call over the grid's CSR adjacency, the exposure count a `bincount`, the
 predation a vectorised matching with the law of the shuffled sequential rule. Construction is
 reported separately (a 180x180 Moore grid builds in 0.11 s, a 30,000-node network in 0.4 s,
 against milliseconds for Mesa 2.3's lazy structures, and about the same for Mesa 3.5's cell
-spaces); the build+run speed-ups over Mesa 2.3 in the results are correspondingly lower (22x,
-5.2x, 32x, 10x, 5.4x, 217x, 9.3x, 5.9x, 4.0x). Mesa 3.5 is itself faster than Mesa 2.3 on five
-playbooks (1.3x to 3.1x), about as fast on Sugarscape (1.02x) and flocking (1.00x; both use `mesa.space.ContinuousSpace`,
+spaces); the build+run speed-ups over Mesa 2.3 in the results are correspondingly lower (20x,
+5.2x, 32x, 10x, 5.3x, 224x, 9.1x, 5.9x, 4.0x). Mesa 3.5 is itself faster than Mesa 2.3 on five
+playbooks (1.3x to 3.1x), about as fast on Sugarscape (1.03x) and flocking (1.00x; both use `mesa.space.ContinuousSpace`,
 which runs it 1.6x faster than Mesa 3.5's experimental continuous space) and slower on
-predator-prey (0.91x). mesa-frames (development branch, commit `ef92326`, polars 2.0 on one
-thread) is 2.1x to 6.5x faster than Mesa 2.3 on three of its four playbooks and slower on
-Sugarscape (0.71x); Modelly columns are 3.0x to 9.4x faster than mesa-frames. One thread is
-mesa-frames' better setting here: with all of polars' threads it is slower on three of the four
-workloads (grid epidemic 1.73 s against 1.52 s, Boltzmann wealth 2.61 s against 1.46 s,
-Sugarscape 4.29 s against 2.96 s) and faster only on Schelling (2.12 s against 2.90 s;
-`paper/data/frames_threads.json`).
+predator-prey (0.91x). On flocking, part of Modelly's gain is the neighbour search: Mesa 3.5 with one
+periodic `scipy.spatial.cKDTree` per step (`flocking/mesa3kd_model.py`, 9.20 s, the same
+statistics as Mesa 3.5 on 110 seeds, `paper/data/flocking_kdtree.json`) runs 2.7x faster than
+Mesa 3.5's own search, and Modelly's columns are 12x faster again. mesa-frames (development branch, commit `ef92326`, polars 2.0 on one
+thread) is 2.1x to 6.1x faster than Mesa 2.3 on three of its four playbooks and slower on
+Sugarscape (0.70x); Modelly columns are 3.0x to 9.6x faster than mesa-frames. One thread is
+mesa-frames' better setting on the cores a run would get: pinned to the four performance cores,
+four polars threads are slower than one on all four workloads, five alternating rounds (grid
+epidemic 1.98 s against 1.69 s, Schelling 3.41 s against 2.86 s, Boltzmann wealth 2.14 s
+against 1.82 s, Sugarscape 5.46 s against 3.78 s; `paper/data/frames_threads_pinned.json`).
+With all 16 threads, unpinned, single runs were slower on three workloads and 1.4x faster on
+Schelling (2.05 s against 2.84 s; `paper/data/frames_threads.json`).
 
-The hand-vectorised Mesa 3.5 baseline is faster than Modelly's columns: 4.4x on the epidemic,
-1.8x on Schelling, 2.8x on Boltzmann wealth. It is the same arithmetic without the agents:
+The hand-vectorised Mesa 3.5 baseline is faster than Modelly's columns: 4.5x on the epidemic,
+1.8x on Schelling, 2.7x on Boltzmann wealth; the gap shrinks with the population on the
+epidemic and Schelling's model (1.6x and 1.0x at ten times the timed size,
+`paper/scripts/sizes.py`). It is the same arithmetic without the agents:
 Modelly keeps an `Agent` per individual, with its identity, its `step()` and the agent-set API,
 and that bookkeeping is the difference. It agrees with Mesa 2.3 in distribution
 (`paper/data/agreement_small_mesa3np_summary.json`; one statistic, Schelling's segregation
@@ -835,7 +844,8 @@ is the column variant `modelly` with its step on CuPy: the same agents and grid,
 `DeviceTable`, the adjacency as a `DeviceCellIndex`, the draws from a `PhiloxStream`
 ([GPU arrays](gpu.md)). Measured by `benchmarks/playbooks/gpu_speedup.py` at 10 million agents
 on a 1000 x 1000 torus (ten agents per cell; the playbook's density would need 16 million Python
-cell objects), 60 steps, seed 1. Raw numbers: `benchmarks/playbooks/results/gpu_speedup.json`.
+cell objects), 60 steps, seed 1. Raw numbers: `benchmarks/playbooks/results/gpu_speedup.json` (the same file as
+`paper/data/gpu_speedup.json`), measured on v1.4.2's code.
 
 **Machine.** A laptop: Intel Core Ultra 7 356H, 30 GB, and an NVIDIA GeForce RTX 5050 Laptop
 GPU (8 GB, driver 615.78, CUDA runtime 13.2 from the `cupy-cuda13x` 14.2.0 wheel); numpy 2.5.4.
@@ -849,27 +859,27 @@ kernel cache.
 
 | Steps of the grid epidemic, 10 million agents | CPU column variant `modelly` | `modelly-gpu` on CuPy | speed-up |
 |---|---|---|---|
-| CPU variant on Python 3.15.1 (Modelly's environment), 3 rounds | 20.65, 21.05, 21.39 s | 0.612, 0.608, 0.622 s | 33.7x, 34.6x, 34.4x (median 34.4x) |
-| CPU variant on Python 3.14.8 (the GPU environment's interpreter), 2 rounds | 23.91, 24.48 s | 0.722, 0.725 s | 33.1x, 33.8x |
-| Build (agents, grid and, for the GPU, the upload) | 22 to 42 s | 26 to 41 s | none |
+| CPU variant on Python 3.15.1, GPU variant on Python 3.14.8 (the GPU environment), 5 rounds | 21.91, 24.42, 21.04, 19.82, 20.37 s | 0.591, 0.579, 0.619, 0.613, 0.615 s | 37.1x, 42.2x, 34.0x, 32.3x, 33.1x (median 34.0x) |
+| Build (agents, grid and, for the GPU, the upload) | 23 to 28 s | 26 to 28 s | none |
 
 About 350 ms per step on one CPU core against 10 ms on the GPU. The building is the same Python
 work for both (10 million `Person` agents) and dominates a 60-step run: build plus steps is
-1.5 to 1.7x faster on the GPU (Python 3.15 rounds). The 10x target of the 1.4.0 roadmap is met on this mid-range laptop
-GPU for the steps; it is not a claim about construction, which the GPU does not touch.
+1.6 to 1.8x faster on the GPU. The comparison is with one CPU core: a sweep can run one replicate
+per core instead, which narrows the GPU's lead in throughput (not measured). The 10x target of
+the 1.4.0 roadmap is met on this mid-range laptop GPU for the steps; it is not a claim about construction, which the GPU does not touch.
 
-**Equality.** `gpu_speedup.py --equality` ran `modelly-gpu` with the same seed on numpy (69 s:
-the numpy fallback computes Philox numbers with array operations) and on CuPy (1.9 s, kernel
-compilation included): the infected series of the 60 steps is identical and so is the SHA-256 of
+**Equality.** `gpu_speedup.py --equality` ran `modelly-gpu` with the same seed on numpy (56.1 s:
+the numpy fallback computes Philox numbers with array operations) and on CuPy (0.72 s, 78x
+faster): the infected series of the 60 steps is identical and so is the SHA-256 of
 the final `state`, `days` and `row` columns of all 10 million agents. The test suite checks the
 same on every backend that loads (`tests/gpu`), JAX with 64-bit types included. Against the CPU
 column variant, which draws from `model.rng`, the agreement is in distribution, as for every
 playbook variant.
 
 **Where the GPU does not pay.** At the playbook's own large size (20,000 agents) the steps take
-0.17 to 0.21 s on CuPy against 0.11 s for the CPU column variant (3 seeds each): kernel launches
+0.14 to 0.16 s on CuPy against 0.08 to 0.14 s for the CPU column variant (3 seeds each): kernel launches
 and synchronisations cost more than the arithmetic. The insect cohorts on a `DeviceCohortTable`
-take 1.9 to 2.1 s for 120 days against 10 ms for the host `CohortTable` (3 seeds): the table has
+take 1.52 to 1.53 s for 120 days against 7 to 8 ms for the host `CohortTable` (3 seeds): the table has
 fewer than two hundred rows. Both variants run on CuPy because the roadmap asks that they do, and
 give the numpy run's integers there; neither is a reason to use a GPU. Apple Metal (JAX) was not
 measured: no Apple GPU was available.

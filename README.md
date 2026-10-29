@@ -33,7 +33,7 @@ time, pandas data collection, browser visualization. Fast by construction, repro
 
 ---
 
-**Status:** stable, Python 3.12+, release 1.4.0. Every public name has a stability level
+**Status:** stable, Python 3.12+, release 1.4.2. Every public name has a stability level
 (`docs/api_stability.toml`): stable names follow semantic versioning and the deprecation policy;
 the newest packages are marked provisional. The current version is `modelly.__version__`.
 
@@ -340,7 +340,7 @@ results = run_grid(
 When individuals in the same state face the same probabilities (an insect's stage, age and
 sex), one row with a count replaces them all, and each per-individual draw becomes one
 binomial draw per row with exactly the same law. `CohortTable` holds such a population with no
-agent objects; the stage-structured playbook runs 243x faster than its individual Mesa 2.3
+agent objects; the stage-structured playbook runs 251x faster than its individual Mesa 2.3
 version and agrees with it statistically.
 
 ```python
@@ -360,7 +360,7 @@ in the docs it links to, shortfalls included.
 
 - **Split runs** (`modelly.distributed`): one model across processes with MPI, Dask or locally,
   byte-identical to a single process at 1, 2, 4 and 16 partitions; weak scaling on a 16-core
-  laptop stays far below a cluster's, 62% at 2 workers and 9% at 16 ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/distributed.md)).
+  laptop stays far below a cluster's, 85% at 2 workers and 5% at 16 ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/distributed.md)).
 - **GPU backend** (`modelly.gpu`): columns, cohorts and cell operations on CuPy or JAX, same
   integer state as numpy; 34x faster at 10 million agents on a laptop RTX 5050, slower at
   20,000 ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/gpu.md)).
@@ -551,9 +551,9 @@ the codemod and nothing else changed, identical seeds, outputs checked bit-ident
 pinned and alternating: Modelly runs at Mesa's speed within a few percent (0.94 of Mesa's time
 seeded with `FastRandom`, 1.02 to 1.04 with `random.Random`); that model spends most of its
 time in its own code. Two public playbooks migrated the same way (`benchmarks/migrated_mesa2/`), which
-spend most of theirs in framework calls, run at 0.22 and 0.37 of Mesa 2.3's time with
+spend most of theirs in framework calls, run at 0.21 and 0.37 of Mesa 2.3's time with
 bit-identical output. Five Mesa 3.5 playbooks migrated by the codemod alone
-(`benchmarks/migrated_mesa3/`) run at 0.45 to 0.93 of Mesa 3.5's time; they are not bit-identical
+(`benchmarks/migrated_mesa3/`) run at 0.44 to 0.91 of Mesa 3.5's time; they are not bit-identical
 (the random streams differ) but agree in distribution over 100 seeds. The method and every
 round are in
 [docs/performance.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/performance.md).
@@ -566,31 +566,36 @@ the order every round, checks that the implementations agree in distribution (ov
 seeds, every statistic) and that each is deterministic, and records the machine and versions.
 CPU seconds of the steps at the large size, median of ten rounds in one session on a
 performance core, this machine, at a fixed 1.9 GHz base frequency (performance governor, turbo
-disabled; every per-round ratio within 15% of its median). Absolute seconds are therefore longer
+disabled; every per-round ratio within 19% of its median, and a second session agrees within 4%). Absolute seconds are therefore longer
 than with turbo; the ratios are the point:
 
 | Playbook | Mesa 2.3 | Mesa 3.5 | Mesa 3.5 + numpy | mesa-frames | Modelly, cell lists | Modelly | vs Mesa 2.3 | vs Mesa 3.5 | vs mesa-frames |
 |---|---|---|---|---|---|---|---|---|---|
-| Grid epidemic (SIR, random walk, synchronous) | 7.10 s | 4.31 s | 0.035 s | 1.10 s | 2.87 s | 0.157 s | 45x | 27x | 7.0x |
-| Predator-prey with grass (births and deaths every step) | 3.39 s | 3.73 s |  |  | 2.19 s | 0.526 s | 6.4x | 7.1x |  |
-| Flocking in continuous space | 24.58 s | 24.66 s |  |  |  | 0.749 s | 33x | 33x |  |
-| Virus on a random network | 7.81 s | 2.51 s |  |  |  | 0.199 s | 39x | 13x |  |
-| Stage-structured insect population, individuals | 3.67 s | 2.01 s |  |  |  | 0.684 s | 5.4x | 2.9x |  |
-| Same population as a `CohortTable` (binomial thinning) | 3.67 s | 2.01 s |  |  |  | 0.015 s | 243x | 133x |  |
-| Schelling segregation (moves to random empty cells) | 4.65 s | 3.58 s | 0.116 s | 1.93 s | 0.32 s | 0.205 s | 23x | 18x | 9.4x |
-| Boltzmann wealth exchange, Gini by a `DataCollector` | 2.14 s | 1.14 s | 0.121 s | 1.00 s |  | 0.335 s | 6.4x | 3.4x | 3.0x |
-| Sugarscape, constant growback (vision, best sugar in sight) | 1.49 s | 1.46 s |  | 2.10 s | 1.13 s | 0.325 s | 4.6x | 4.5x | 6.5x |
+| Grid epidemic (SIR, random walk, synchronous) | 6.52 s | 3.99 s | 0.034 s | 1.07 s | 2.67 s | 0.155 s | 42x | 26x | 6.9x |
+| Predator-prey with grass (births and deaths every step) | 3.33 s | 3.67 s |  |  | 2.17 s | 0.52 s | 6.4x | 7.1x |  |
+| Flocking in continuous space | 24.44 s | 24.49 s |  |  |  | 0.75 s | 33x | 33x |  |
+| Virus on a random network | 7.85 s | 2.52 s |  |  |  | 0.195 s | 40x | 13x |  |
+| Stage-structured insect population, individuals | 3.72 s | 2.00 s |  |  |  | 0.70 s | 5.3x | 2.9x |  |
+| Same population as a `CohortTable` (binomial thinning) | 3.72 s | 2.00 s |  |  |  | 0.015 s | 251x | 135x |  |
+| Schelling segregation (moves to random empty cells) | 4.55 s | 3.57 s | 0.112 s | 1.94 s | 0.322 s | 0.201 s | 23x | 18x | 9.6x |
+| Boltzmann wealth exchange, Gini by a `DataCollector` | 2.09 s | 1.14 s | 0.121 s | 1.00 s |  | 0.328 s | 6.4x | 3.5x | 3.0x |
+| Sugarscape, constant growback (vision, best sugar in sight) | 1.49 s | 1.44 s |  | 2.12 s | 1.12 s | 0.326 s | 4.6x | 4.4x | 6.5x |
 
 "Mesa 3.5 + numpy" (`mesa3np_model.py`) is what a Mesa modeller can write by giving up agent
 objects: a `mesa.Model` holding the population as numpy arrays over Mesa's grid and property
-layers, with the same vectorised phases as Modelly. It is faster than Modelly's columns (4.4x on
-the epidemic, 1.8x on Schelling, 2.8x on Boltzmann): Modelly keeps an `Agent` per individual,
+layers, with the same vectorised phases as Modelly. It is faster than Modelly's columns (4.5x on
+the epidemic, 1.8x on Schelling, 2.7x on Boltzmann): Modelly keeps an `Agent` per individual,
 with its `step()`, its identity and the agent-set API, and pays for that bookkeeping. With agents
-on both sides, Modelly columns are 2.9 to 33x faster than Mesa 3.5, 4.6 to 45x faster than
-Mesa 2.3 (4.0 to 32x including construction) and 3.0 to 9.4x faster than mesa-frames.
+on both sides, Modelly columns are 2.9 to 33x faster than Mesa 3.5, 4.6 to 42x faster than
+Mesa 2.3 (4.0 to 32x including construction) and 3.0 to 9.6x faster than mesa-frames, and the
+lead grows with the population on the epidemic and Schelling's model (119x over Mesa 2.3 at
+200,000 agents; `paper/scripts/sizes.py`). On flocking, part of the gain is the neighbour
+search: Mesa 3.5 with one `scipy.spatial.cKDTree` per step (`flocking/mesa3kd_model.py`, same
+statistics as Mesa 3.5 on every seed) runs 2.7x faster than Mesa 3.5's own search, and Modelly
+is 12x faster again.
 
 Where Modelly keeps Mesa's data structure (agents held in cell lists, `modelly-cells` in the
-results) the gap closes to 1.3 to 2.5x over Mesa 2.3 on the epidemic, predator-prey and
+results) the gap closes to 1.3 to 2.4x over Mesa 2.3 on the epidemic, predator-prey and
 Sugarscape models: the layout is where the time is, not the interpreter. (Schelling's model with
 cell lists stays 14x ahead of Mesa 2.3: it counts every resident's similar neighbours at once.)
 Every vectorised phase rests on a stated equivalence argument, in
@@ -697,7 +702,7 @@ our [Code of Conduct](https://github.com/RemiPelloux/Modelly/blob/main/CODE_OF_C
 
 If Modelly contributes to a publication, cite it with the metadata in [CITATION.cff](https://github.com/RemiPelloux/Modelly/blob/main/CITATION.cff)
 (GitHub shows a "Cite this repository" button that formats it for you). The paper in
-[paper/](https://github.com/RemiPelloux/Modelly/tree/main/paper) describes release 1.4.0, with every number traced to a file in this repository.
+[paper/](https://github.com/RemiPelloux/Modelly/tree/main/paper) describes release 1.4.2, with every number traced to a file in this repository.
 
 ## License
 

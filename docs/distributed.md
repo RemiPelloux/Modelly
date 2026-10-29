@@ -237,44 +237,45 @@ it (`T_copies(K) / T(K)`, the protocol's efficiency).
 Measured on one laptop (Intel Core Ultra 7 356H, 16 cores of three kinds, Linux, Python
 3.15, Open MPI 5.0, mpi4py 4.1) shared with other jobs: the load average before each run is in
 the table. Wall-clock seconds per step after a warm-up step, the build excluded; the raw
-numbers, with every copy's time, are in `benchmarks/distributed/results/`.
+numbers, with every copy's time, are in `benchmarks/distributed/results/` (measured on v1.4.2's
+code; the same files as `paper/data/weak_*.json`).
 
 MPI, 10,000 people per worker (20 steps):
 
 | workers | people | s/step split | s/step K copies | efficiency T(1)/T(K) | machine | protocol | load |
 |---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 10,000 | 0.0151 | 0.0138 | 100% | 100% | 91% | 8.4 |
-| 2 | 20,000 | 0.0244 | 0.0163 | 62% | 85% | 67% | 8.5 |
-| 4 | 40,000 | 0.0421 | 0.0227 | 36% | 61% | 54% | 8.1 |
-| 8 | 80,000 | 0.0745 | 0.0482 | 20% | 29% | 65% | 7.6 |
-| 12 | 120,000 | 0.1113 | 0.0587 | 14% | 23% | 53% | 7.7 |
-| 16 | 160,000 | 0.1723 | 0.0582 | 9% | 24% | 34% | 21.7 |
+| 1 | 10,000 | 0.0150 | 0.0110 | 100% | 100% | 74% | 3.4 |
+| 2 | 20,000 | 0.0176 | 0.0190 | 85% | 58% | 108% | 3.5 |
+| 4 | 40,000 | 0.0491 | 0.0206 | 30% | 53% | 42% | 3.9 |
+| 8 | 80,000 | 0.0775 | 0.0435 | 19% | 25% | 56% | 4.3 |
+| 12 | 120,000 | 0.1389 | 0.0592 | 11% | 19% | 43% | 5.3 |
+| 16 | 160,000 | 0.2732 | 0.1174 | 5% | 9% | 43% | 8.7 |
 
 MPI, 40,000 people per worker (10 steps):
 
 | workers | people | s/step split | s/step K copies | efficiency T(1)/T(K) | machine | protocol | load |
 |---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 40,000 | 0.0993 | 0.1006 | 100% | 100% | 101% | 4.7 |
-| 2 | 80,000 | 0.1492 | 0.1623 | 67% | 62% | 109% | 4.4 |
-| 4 | 160,000 | 0.2218 | 0.1759 | 45% | 57% | 79% | 4.4 |
-| 8 | 320,000 | 0.3603 | 0.3139 | 28% | 32% | 87% | 4.6 |
+| 1 | 40,000 | 0.1556 | 0.1359 | 100% | 100% | 87% | 16.1 |
+| 2 | 80,000 | 0.1711 | 0.1307 | 91% | 104% | 76% | 14.5 |
+| 4 | 160,000 | 0.2287 | 0.1682 | 68% | 81% | 74% | 12.7 |
+| 8 | 320,000 | 0.3432 | 0.2731 | 45% | 50% | 80% | 11.4 |
 
-Dask, 10,000 people per worker (20 steps), on a busier machine:
+Dask, 10,000 people per worker (20 steps):
 
 | workers | people | s/step split | s/step K copies | efficiency T(1)/T(K) | machine | protocol | load |
 |---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 10,000 | 0.0572 | 0.0422 | 100% | 100% | 74% | 14.1 |
-| 2 | 20,000 | 0.1875 | 0.0591 | 31% | 71% | 32% | 14.8 |
-| 4 | 40,000 | 0.2161 | 0.0381 | 26% | 111% | 18% | 17.4 |
-| 8 | 80,000 | 0.1374 | 0.0455 | 42% | 93% | 33% | 17.1 |
+| 1 | 10,000 | 0.0230 | 0.0100 | 100% | 100% | 43% | 10.6 |
+| 2 | 20,000 | 0.0331 | 0.0116 | 69% | 86% | 35% | 9.9 |
+| 4 | 40,000 | 0.0661 | 0.0166 | 35% | 60% | 25% | 9.6 |
+| 8 | 80,000 | 0.1048 | 0.0510 | 22% | 20% | 49% | 9.3 |
 
 What this shows, and what it does not:
 
 - **This laptop is not a cluster.** K copies of the same model with no communication already
-  slow down to 24-32% of one copy at 8 to 16 processes (cores of different speeds, a shared
+  slow down to 9-25% of one copy at 8 to 16 processes (cores of different speeds, a shared
   memory bus, a lower all-core clock, other jobs). No split run can do better than that here.
-- **The protocol keeps 53-91% of the machine with 10,000 people per worker** (34% at 16
-  workers, when the load from other jobs tripled during the run) **and 79-109% with 40,000**:
+- **The protocol keeps 42-56% of the machine with 10,000 people per worker** from four workers
+  on **and 74-87% with 40,000**:
   the exchange grows with a block's border, the work with its area, so larger blocks scale
   better. A step of this model costs about 1.5 microseconds per person, so the border
   traffic weighs heavily at small blocks; a model with more work per agent hides it better.
