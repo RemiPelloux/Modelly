@@ -94,7 +94,10 @@ when $\rho(\theta^\ast) \le \varepsilon_t$, and the accepted particles are weigh
   \label{eq:abc-weights}
 \end{equation}
 \citep{toni2009approximate}, where $K_t$ is the kernel's density; the truncation's normalising
-constant is the same for every particle and cancels when the weights are normalised. The run
+constant is the same for every particle and cancels when the weights are normalised. That
+cancellation holds because the mixture is truncated as a whole (both the ancestor and the
+move are redrawn), not each ancestor's kernel on its own, which would leave a constant per
+ancestor in the denominator; \cref{sec:validation} checks that the code does the former. The run
 stops after the requested generations, at $\varepsilon_{\min}$, when the acceptance rate falls
 below 1\%, or before exceeding a budget of model runs. The posterior is summarised by weighted
 means and medians and by the shortest interval holding 95\% of the weight, and its effective

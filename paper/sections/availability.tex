@@ -5,16 +5,21 @@
 what it costs to do research with it. A model keeps its agents as objects and has its
 population-wide phases written as array operations, one at a time; on eight workloads those
 phases run 2.9 to 33 times faster than per-agent Mesa~3.5 code, the lead growing with the
-population, within 1.8 to 4.5 times of hand-written numpy that gives agents up, and counted
+population on two of the three workloads timed at three sizes, within 1.8 to 4.5 times of hand-written numpy that gives agents up, and counted
 populations two orders of magnitude faster; an ablation attributes the gain to the array
-form of the phases. Whether the faster forms are the same model is tested: 63 of 67
-summary statistics meet a half-standard-deviation equivalence margin over 100 paired seeds
+form of the phases. Whether the faster forms are the same model is tested: against the author's Mesa~2.3
+reference implementations, 63 of 67 summary statistics meet a half-standard-deviation
+equivalence margin over 100 paired seeds
 (29 after Holm correction, 48 within $\pm 5\%$ of Mesa's mean), and on three workloads the
 whole curves, the spatial patterns and the rare events of the faster forms are as close to
-Mesa~2.3 as Mesa~3.5's are, which is evidence of the same dynamics within what 100 seeds
-resolve, not a proof of identity: 34 of 52 scalar quantities are shown equivalent after
-Holm correction, the rest are undecided, and one difference is shown (an epidemic peak 3
-steps earlier in one form). Around that model, the
+Mesa~2.3 as Mesa~3.5's are. What this establishes is close agreement on the dynamics
+tested, at the tolerances stated for each quantity, not a general scientific equivalence
+across all behaviours: 34 of 52 scalar quantities are shown equivalent after Holm
+correction, the rest are undecided at 100 seeds, and one difference is shown, the column
+form's epidemic peak 3.3 steps earlier than Mesa~2.3's ($[-6.6, -0.1]$), so a study for
+which a peak's timing matters to that precision should set its own tolerance and test it
+as \cref{sec:trajectories} does; and Mesa's own examples, migrated with the codemod, give all 35 of
+their statistics within the same margin. Around that model, the
 steps of a study (sweeps, calibration, sensitivity analysis, emulation, provenance and
 archiving) are part of the framework, built on one seeding discipline and checked against
 problems whose answers are known, and the reproducibility guarantees are stated by scope:

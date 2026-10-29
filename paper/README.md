@@ -70,12 +70,12 @@ Tables and figures are named by their LaTeX labels.
 | Weak scaling (`tab:scaling`) | `data/weak_mpi_10k.json`, `data/weak_mpi_40k.json`, `data/weak_dask_10k.json` | `benchmarks/distributed/weak_scaling.py` |
 | GPU speed-up and equality at 10 million agents (Section 7, Appendix E.2) | `data/gpu_speedup.json` | `benchmarks/playbooks/gpu_speedup.py` in a CUDA environment (`docs/gpu.md`) |
 | Differentiable recoveries and gradient checks (Section 7, Appendix E.3) | `tests/diff/`, `docs/differentiable.md` | `pytest tests/diff` (needs jax) |
-| Event heap, column gather, memory-mapped 100 M rows (Appendix E.4) | `tests/native/`, `build/logs` of the measurement run | `benchmarks/large_columns.py` under `systemd-run -p MemoryMax=16G` and `3G` |
+| Event heap, column gather, memory-mapped 100 M rows (Appendix E.4) | `tests/native/`, `data/large_columns/` (one JSON per run) | `benchmarks/large_columns.py` under `systemd-run -p MemoryMax=16G` and `3G` |
 | Nowcasting error and EnKF recovery (Section 7, Appendix E.5) | `docs/assimilation.md` run by `tests/stream/test_assimilation_tutorial.py` | `pytest tests/stream` |
 | Field numerics and the two coupled zoo models (Section 7, Appendix E.6) | `tests/couple/`, `tests/zoo/test_nutrient_foragers.py`, `test_hospital_epidemic.py` | `pytest tests/couple tests/zoo` |
 | History-matching volumes and active learning against LHS (Section 7, Appendix E.7) | `docs/emulators.md`, `tests/emulate/` | `pytest tests/emulate`; `benchmarks/emulate/active_vs_lhs.py` |
 | Synthetic population and the real-data zoo models (Section 7, Appendix E.8) | `tests/population/test_sample_region.py`, `tests/zoo/`, `modelly/space/geo/data/NOTICE.md` | `pytest tests/population tests/zoo` |
-| Browser runs (62 of 62: 14 examples and 17 zoo models, two wheels) and first load (Section 7, Appendix E.9) | `tests/web/test_browser.py` run by `scripts/release-checks.sh browser`; `docs/browser.md` | `MODELLY_BROWSER_TESTS=1 pytest tests/web/test_browser.py`; `tools/web/measure_load.py` |
+| Browser runs (62 of 62: 14 examples and 17 zoo models, two wheels) and first load (Section 7, Appendix E.9) | `tests/web/test_browser.py` run by `scripts/release-checks.sh browser`; first load in `data/browser_load/` | `MODELLY_BROWSER_TESTS=1 pytest tests/web/test_browser.py`; `tools/web/measure_load.py` |
 | Graph partitioner's edge cut on a lattice (Appendix E.1) | `data/graph_cut.json` | `scripts/graph_cut.py` |
 | Implementation choices, mesa-frames threads (Appendix B) | `docs/performance.md`, `data/frames_threads.json` | `scripts/frames_threads.py` |
 | NetLogo fire percolation threshold (Section 6.2) | `docs/netlogo.md` | `pytest tests/netlogo` |
@@ -98,7 +98,8 @@ Tables and figures are named by their LaTeX labels.
 | Sobol indices across 32 scramblings (`tab:sobol-scramblings`) | `data/sobol_scramblings.json` | `scripts/sobol_scramblings.py` |
 | The cohort proposition's positive case and two counterexamples (Section 3.2) | `data/cohort_counterexample.json` | `scripts/cohort_counterexample.py` |
 | The determinism suite and exact digests on hosted builds: the checkout on 9 and on 15 (five architectures), the released 1.4.2 wheels from PyPI on 15; MPI on three systems; bundles verified across systems (`tab:determinism`, `tab:platform-digests`) | `data/platform_runs.json`, `data/platform_digests/`, `data/platform_digests_15/`, `data/platform_digests_wheels/` (artifacts of `.github/workflows/platform-digests.yml`) | `gh workflow run platform-digests.yml -f source=checkout` and `-f source=pypi -f version=1.4.2`, `gh workflow run mpi.yml`, download the artifacts, then `scripts/platform_digests_table.py` |
-| Every table and figure regenerates from the data; every listing runs as printed | all of the above | `scripts/verify_artifacts.py`; `scripts/check_listings.py` |
+| Every table and figure regenerates from the data; every listing runs as printed; the same from a fresh clone and environment | all of the above; `data/clean_checkout_check.json` | `scripts/verify_artifacts.py`; `scripts/check_listings.py` |
+| The ABC-SMC weights against their equation: the proposal density and a closed-form posterior (Section 6.2) | `data/abc_weights_check.json` | `scripts/abc_weights_check.py` |
 
 If the benchmark results are rerun (on different hardware, say), run `make figures` and
 update the hardware line at the start of Section 5.
@@ -138,6 +139,10 @@ update the hardware line at the start of Section 5.
       files regenerate identically) and `scripts/check_listings.py` (the three listings
       run as printed) pass; `docs/sensitivity.md` explains the row bootstrap against
       scramblings and shows how to report the latter.
+- [x] Third round: the SMC weights verified against the whole-mixture truncation (the
+      proposal density and a closed-form posterior); the artifact checks rerun from a fresh
+      clone with dependencies resolved from PyPI; the conclusion bounded to the dynamics
+      tested, with the peak-timing difference kept.
 - [ ] Still open from the review: a second CPU architecture for the timings; an
       independent review or rerun of the benchmark implementations (not by the author);
       the trajectory study at the timed size and on the other five playbooks; multi-node

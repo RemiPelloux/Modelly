@@ -8,8 +8,9 @@ and a Python analysis reaches it through a bridge such as PyNetLogo
 models. Repast Simphony \citep{north2013repast} and MASON
 \citep{luke2005mason} are mature Java platforms built for performance and large simulations,
 and Repast4Py \citep{collier2020repast4py} distributes a single run over MPI processes from
-Python; \modelly{} does so too, under a contract that makes the split run
-reproduce the single-process one byte for byte (\cref{sec:split}), and runs column phases on
+Python, with scaling reported on a cluster; \modelly{} also splits a run, under a contract
+that makes the split run reproduce the single-process one byte for byte (\cref{sec:split}),
+but its parallel speed-up has been measured only on one laptop, and runs column phases on
 a GPU through CuPy or JAX rather than through a dedicated language (\cref{sec:gpu}). Agents.jl \citep{datseris2024agents} brings a performant, concise framework to Julia,
 and FLAME GPU \citep{richmond2023flamegpu} runs agent models on GPUs. Reviews of the field
 \citep{railsback2006agent, abar2017agent} have long noted the trade-off between ease of use and speed that
@@ -21,8 +22,8 @@ visualisation. AgentPy \citep{foramitti2021agentpy} combines a similar model wit
 and Sobol tooling built on SALib \citep{herman2017salib}, though its last release (0.1.5) dates from
 December 2021; Melodie \citep{yu2023melodie} adds calibration and scenario management with
 Cython acceleration; and mesa-frames \citep{mesaframes} represents agent sets as data frames
-to vectorise Mesa models. \modelly{} is written from
-scratch and shares no code with Mesa, but its programming model is compatible with Mesa's: its
+to vectorise Mesa models. \modelly{} shares no code with
+Mesa, but its programming model is compatible with Mesa's: its
 codemod (\cmd{python -m modelly.migrate})
 performs the mechanical rewrites of a Mesa model and reports what needs a decision
 (schedulers, legacy grids, batch runs); the two Mesa~2.3 models migrated this way, changing only
@@ -46,7 +47,14 @@ lee2015complexities}. The same holds for history matching with emulators
 \citep{vernon2010galaxy, andrianakis2015bayesian}, the bootstrap particle filter
 \citep{gordon1993novel} and the ensemble Kalman filter \citep{evensen2003ensemble}, and
 gradient estimators for discrete choices \citep{bengio2013estimating, jang2017categorical}.
-\modelly{}'s contribution here is integration rather than new methods:
+Data assimilation has been applied to agent-based models with particle filters, for
+calibration on line and for crowds in real time \citep{ward2016dynamic, malleson2020simulating};
+differentiable agent-based models have been built for simulation-based optimisation and for
+epidemiology \citep{andelfinger2021differentiable, chopra2023differentiable}, with tooling for
+gradient-based Bayesian inference on them \citep{querabofarull2023blackbirds}; and black-box
+Bayesian inference for agent-based models, including neural approaches, has been compared on
+economic models \citep{dyer2024blackbox}. \modelly{}'s contribution here is integration rather
+than new methods:
 the samplers share the simulation's seeding and executors, so a calibration or a Sobol analysis
 of a model is reproducible, resumable and parallel without extra code.
 
@@ -85,11 +93,13 @@ widely used platforms in other languages.
     & \modelly{} & Mesa 3 & mesa-frames & AgentPy & NetLogo & Repast4Py & Agents.jl \\
     \midrule
     Language & Python & Python & Python & Python & NetLogo & Python & Julia \\
+    First release & 2026 & 2014 & 2024 & 2020 & 1999 & 2021 & 2018 \\
     Licence & Apache-2.0 & Apache-2.0 & Apache-2.0 & BSD-3 & GPL-2.0+ & BSD-3 & MIT \\
     Per-agent objects & \checkmark & \checkmark & -- & \checkmark & \checkmark & \checkmark & \checkmark \\
     Array or table agent state & \checkmark & -- & \checkmark & -- & -- & -- & -- \\
     Counted cohorts & \checkmark & -- & -- & -- & -- & -- & -- \\
     One run across processes & \checkmark & -- & -- & -- & -- & \checkmark & -- \\
+    \quad shown at cluster scale & -- & -- & -- & -- & -- & \checkmark & -- \\
     Parameter sweeps & \checkmark & \checkmark & -- & \checkmark & \checkmark & ext. & \checkmark \\
     Global sensitivity analysis & \checkmark & ext. & -- & \checkmark & ext. & -- & -- \\
     Bayesian calibration & \checkmark & -- & -- & -- & -- & -- & -- \\

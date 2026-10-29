@@ -90,7 +90,9 @@ RTX~5050 laptop GPU against 21~s for the CPU column variant on one core, 34 time
 of five rounds, 32 to 42), and 78 times faster than the same GPU variant run on \code{numpy}. The GPU variant draws from Philox streams rather than the model's
 generator, so it is a different variant of the model from the CPU column one, agreeing with it
 in distribution; run on \code{numpy} and on CuPy it gives the same infected series and the same
-digest of the final state (\cref{app:gpu}). Building ten million agent objects takes 23 to
+digest of the final state (\cref{app:gpu}). The comparison is with one CPU core: a sweep of independent replicates can instead run one
+per core, which on this 16-core laptop would narrow the GPU's lead in throughput by up to that
+factor (not measured). Building ten million agent objects takes 23 to
 28~s on either side, so build plus steps gains only 1.6 to 1.8 times; at 20,000 agents the GPU
 is slower than the CPU (0.14 to 0.16~s against 0.08 to 0.14~s) and the crossover was not
 measured; a cohort

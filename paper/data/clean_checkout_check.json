@@ -1,0 +1,21 @@
+{
+ "what": "paper/scripts/verify_artifacts.py and paper/scripts/check_listings.py run from a fresh clone, in a fresh virtual environment whose dependencies were resolved from PyPI at that moment (uv venv --python 3.14; uv pip install -e '.[dev]' 'mesa==3.5.1'), on the development laptop",
+ "date": "2026-10-29T22:13:55+00:00",
+ "commit": "b0ebfcbb03883db6b101ffc7688eb4935d06e229",
+ "python": "3.14.8",
+ "platform": "Linux-7.2.8-9-omarchy-x86_64-with-glibc2.44",
+ "packages": {
+  "modelly-abm": "1.4.2",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "pandas": "3.1.0",
+  "matplotlib": "3.11.2",
+  "mesa": "3.5.1",
+  "pyarrow": "26.0.0",
+  "duckdb": "2.0.0",
+  "networkx": "3.7"
+ },
+ "verify_artifacts": "29 tables byte for byte, 9 figures pixel for pixel, 5 recomputed data files on their numbers: all identical (1 min 40 s)",
+ "check_listings": "lst:columns, lst:experiment, lst:abc run; the ABC listing's posterior: beta mean 0.4227 HDI [0.3318, 0.5531], gamma mean 0.0979 HDI [0.0673, 0.1389], identical to the development environment's",
+ "note": "a non-editable install (pip install .) run from the repository root imports the checkout's modelly/ directory, which has no compiled modules, instead of the installed wheel; the appendix's editable install (-e) compiles them in place, and the installed wheel is what runs from any other directory"
+}

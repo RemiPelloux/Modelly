@@ -178,7 +178,8 @@ rows. A cohort table of 100 million rows (19 bytes a row) ran three life-cycle s
 \code{systemd} memory limit with a peak of 3.61~GB memory-mapped (4.27~GB in memory); a step
 took 10.4 to 12.0~s memory-mapped and 9.8 to 10.5~s in memory (one run of three steps each);
 and under a 3~GB limit the memory-mapped table finished, its steps taking 10.5 to 13.7~s,
-while the in-memory one was killed (\code{benchmarks/large\_columns.py}); 100 million \emph{agent objects} cannot fit
+while the in-memory one was killed (\code{benchmarks/large\_columns.py}; the four runs in
+\code{paper/data/large\_columns/}); 100 million \emph{agent objects} cannot fit
 in 16~GB, since the objects alone need over 22~GB.
 
 \subsection{Live data and data assimilation}
@@ -331,7 +332,8 @@ ready at step 0 after 4.4~s unthrottled, 7.0~s on a 50~Mbit/s line with 40~ms ro
 20.0~s on Chrome's ``Fast 4G'' profile (about 1~MB/s, 165~ms), where the transfer alone takes
 14~s; the forest fire, a model that needs \code{scipy} (as the grid, continuous and network
 spaces do), transfers 28.3~MB and takes 5.4~s unthrottled, 10.1~s on the 50~Mbit/s line and
-35.0~s on Fast 4G (medians of three runs; \code{tools/web/measure\_load.py}). A first load
+35.0~s on Fast 4G (medians of three runs; \code{tools/web/measure\_load.py}, reports in
+\code{paper/data/browser\_load/}). A first load
 under ten seconds on a good home connection is reached without \code{scipy}, missed narrowly
 with it, and not reached on a mobile profile.
 The documentation gallery embeds three live models.

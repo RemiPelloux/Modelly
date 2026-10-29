@@ -62,7 +62,7 @@ NP="--variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth"
 .venv/bin/python benchmarks/mesa_examples/run.py --only virus_on_network --rounds 1 \
     --seeds 300 --seed-base 10000 --output paper/data/mesa_examples_virus300_new.json
 .venv/bin/python paper/scripts/sizes.py run --rounds 5 --core 2
-# the revision's studies: trajectories and patterns (1,200 runs), the ablation ladder,
+# further studies: trajectories and patterns (1,200 runs), the ablation ladder,
 # three CPython versions (.venv-py312 and .venv-py314 built like .venv), a sweep end to end
 .venv/bin/python paper/scripts/trajectories.py run --seeds 100 --jobs 8
 .venv/bin/python paper/scripts/trajectories.py analyse
@@ -74,6 +74,7 @@ NP="--variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth"
 .venv/bin/python paper/scripts/abc_sweep.py run --particles 30 60 100 200 --replicates 500
 .venv/bin/python paper/scripts/sobol_scramblings.py
 .venv/bin/python paper/scripts/cohort_counterexample.py
+.venv/bin/python paper/scripts/abc_weights_check.py   # the SMC weights vs their equation
 # the determinism suite and exact digests on hosted builds (the checkout, then the
 # released wheels from PyPI), MPI on three systems; then the artifacts
 gh workflow run platform-digests.yml -f source=checkout
@@ -109,8 +110,17 @@ byte, the 9 figures pixel for pixel, the 5 data files on their numbers. \code{ch
 extracts the three Python listings of the paper and runs each as printed (the ABC listing
 against the model module of \code{docs/calibration.md}, which it writes from the
 documentation's own code blocks); the ABC listing's output is the posterior quoted in
-\cref{sec:validation}. Both pass at the commit of this version; what they do not do is
-rerun a timing, an agreement study or a hosted workflow, which the commands above do.
+\cref{sec:validation}. Both pass at the commit of this version, in the development
+environment and from a fresh clone in a fresh environment whose dependencies were resolved
+from PyPI at the time (CPython 3.14.8, numpy 2.5.4, scipy 1.18.1, pandas 3.1.0, matplotlib
+3.11.2; \code{data/clean\_checkout\_check.json}), where every table, figure and data file
+regenerated identically and the ABC listing gave the same posterior to four decimals.
+These are the author's runs, not an independent party's. One pitfall for a reader: the
+editable install of the listing above compiles the C modules into the checkout; a plain
+\cmd{pip install .} run from the repository root imports the checkout's uncompiled
+sources rather than the installed wheel, so install editable, or run from another
+directory. What the two scripts do not do is rerun a timing, an agreement study or a
+hosted workflow, which the commands above do.
 
 The playbook runner starts each run in a fresh interpreter, pins it to one core with
 \code{taskset}, alternates the implementations over rounds, checks determinism, and writes JSON
@@ -143,10 +153,10 @@ environment afterwards and marked so; and \code{gpu\_speedup.json} the package v
 both arms. In these files the package version recorded for \code{modelly-abm} is the stale
 metadata of the development environments' editable installs, not the code: every environment
 imported \modelly{} from the checkout, which the commit field identifies.
-A revision session, on 29 October 2026, ran from commits after \code{069f9b4}, whose
+A further session, on 29 October 2026, ran from commits after \code{069f9b4}, whose
 \code{modelly} package and determinism tests are still the tag's (no file under
 \code{modelly/} or \code{tests/determinism/} has changed since it) and which add the
-revision's scripts and two workflow files: the trajectory study, the ablation, the
+scripts of these studies and two workflow files: the trajectory study, the ablation, the
 interpreter comparison, the end-to-end sweep, the particle-count sweep, the Sobol
 scramblings and the cohort counterexample on the same laptop (the three timing scripts at
 its default frequency policy, under a load average of 11 to 51), and the hosted runs of
@@ -174,7 +184,11 @@ while Schelling's model is 1.4 times faster (2.05~s against 2.84~s); these are s
 unpinned, while other jobs loaded the machine (one-minute load average 8.6 at their start),
 which penalises the multi-threaded arm. With that caveat, three of the four workloads' data
 frames appear too small for parallel execution to pay for its overhead, and Schelling's is
-not.
+not. Pinned to the four performance cores, five alternating rounds each
+(\code{frames\_threads.py --cores 0-3}, \code{paper/data/frames\_threads\_pinned.json}), four
+threads were slower than one on every workload: 1.98~s against 1.69~s on the grid epidemic,
+3.41~s against 2.86~s on Schelling's model, 2.14~s against 1.82~s on Boltzmann wealth and
+5.46~s against 3.78~s on Sugarscape.
 
 \begin{table}[htbp]
   \centering
@@ -263,8 +277,8 @@ not.
 \input{tables/trajectories_small_all}
 }
 
-\section{Further measurements of the revision}
-\label{app:revision}
+\section{Further measurements}
+\label{app:further}
 
 \begin{table}[htbp]
   \centering

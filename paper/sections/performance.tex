@@ -41,7 +41,7 @@ estimators differ by at most 1.6\%.
 \subsection{The same model code on both frameworks}
 \label{sec:samecode}
 
-\modelly{} is written from scratch and shares no code with Mesa; what the two share is a
+\modelly{} shares no code with Mesa; what the two share is a
 programming model, so a model written for Mesa can run on \modelly{} once its calls to the
 framework are rewritten. \modelly{}'s codemod (\cmd{python -m modelly.migrate}) rewrites a Mesa
 model's imports, its agent constructors and the old scheduler calls (\code{schedule.agents},
@@ -59,8 +59,9 @@ to each, the import of the example's own agents made relative (the codemod point
 agents module next to it), plus, for the Epstein civil-violence model, the
 one step its report asks for (\code{self.steps} becomes \code{self.time}); Sugarscape G1MT uses
 Mesa's property layers and alliance formation its meta-agent factory, which \modelly{} lacks.
-The codemod maps Mesa~3.5's module paths and reports the Mesa modules it knows \modelly{} lacks
-(\code{mesa.experimental} and the property-layer module); the timed code does not import the
+The codemod maps Mesa~3.5's module paths, the experimental cell space, continuous space,
+meta-agents, signals, scenarios and data collection among them, and reports the other
+\code{mesa.experimental} modules and the property-layer module, which \modelly{} lacks; the timed code does not import the
 codemod. We ran each original on Mesa and its migrated copy on \modelly{} at Mesa's default
 parameters, except four whose defaults run too briefly to time reliably: Boltzmann wealth with
 2,500 agents on a $50 \times 50$ grid, Schelling's model on $50 \times 50$, wolf--sheep on
@@ -75,8 +76,12 @@ pattern is in the virus model, seven of whose eight statistics lean the same way
 \modelly{} (fewer resistant and more susceptible nodes, $|d| = 0.22$ to $0.25$, paired
 $p \ge 0.10$; the eighth, the final number infected, is zero in every run). Run again on 300
 new seeds (\code{paper/data/mesa\_examples\_virus300\_new.json}), the pattern keeps its direction
-but shrinks ($|d| \le 0.15$, paired $p \ge 0.07$): every interval includes zero and all eight
-statistics are equivalent within $0.5\,s_p$, so any difference is below what 300 seeds resolve.
+but shrinks ($|d| \le 0.15$, paired $p \ge 0.07$), every interval including zero and all eight
+statistics equivalent within $0.5\,s_p$. Pooled over the 400 seeds by inverse variance, the
+difference is small but consistent: $d \approx 0.17$ $[0.03, 0.32]$ (paired $p \approx 0.02$
+uncorrected), about 14\% more susceptible and 6\% fewer resistant nodes at the end. We have not
+found its cause, and report it as an open difference between the example on Mesa and its
+migrated copy on \modelly{}.
 
 \begin{table}[tbp]
   \centering
@@ -368,11 +373,13 @@ The session ran at the machine's default frequency policy under a load average o
 
 \paragraph{mesa-frames with more threads.} polars runs multi-threaded by default, while the
 timings above set \code{POLARS\_MAX\_THREADS=1} so that every implementation uses one core;
-with all 16 threads mesa-frames was slower on three of its four workloads and 1.4 times
-faster on Schelling's model (wall-clock, single unpinned runs under load;
-\cref{app:workloads}). On Schelling's model the one-thread comparison may therefore overstate
-the columns' lead over mesa-frames by up to that factor; on the other three we found no
-evidence that one thread handicaps it.
+pinned to the four performance cores, five alternating rounds in wall-clock time, mesa-frames
+with four threads was slower than with one on all four of its workloads (Schelling's model
+3.41~s against 2.86~s; \code{paper/data/frames\_threads\_pinned.json}), so on those cores the
+one-thread comparison does not handicap it. With all 16 threads, unpinned, single runs gave
+Schelling's model 1.4 times faster and the other three slower (\cref{app:workloads}): on the
+whole machine the one-thread comparison may overstate the columns' lead on Schelling's model
+by up to that factor.
 
 \subsection{Where the gain comes from: an ablation}
 \label{sec:ablation}
@@ -667,6 +674,9 @@ out in 1 of 100 runs on Mesa~2.3 and Mesa~3.5 and in 0 of 100 on either \modelly
 is bounded: on these three workloads, at this size, the faster forms follow the same
 dynamics as Mesa~2.3 to within what 100 seeds resolve, and no closer than Mesa~3.5 does;
 for the six quantities whose margins 100 seeds cannot decide, the point estimates lie
-within the margins but equivalence is not shown, and one timing difference is shown. A run
-of this study at the timed size, and on the other five playbooks, was not made; the three
+within the margins but equivalence is not shown, and one timing difference is shown. The
+variants are therefore not interchangeable for every scientific question: one whose answer
+turns on the timing of an epidemic peak to within a few steps should treat the column form
+as a different implementation and test it at its own tolerance. A run of this study at
+the timed size, and on the other five playbooks, was not made; the three
 chosen are the ones with spatial structure, a convergence process and a cycle.
