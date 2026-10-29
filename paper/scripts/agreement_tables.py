@@ -37,6 +37,7 @@ KINDS = {
     "modelly-cohorts": "cohorts",
     "mesa3": "Mesa 3.5",
     "mesa3np": "Mesa 3.5 + numpy",
+    "mesa3kd": "Mesa 3.5 + KD-tree",
     "frames": "mesa-frames",
 }
 
@@ -84,6 +85,7 @@ def forest(rows: list[dict], out: Path) -> None:
         "cohorts": "#009E73",
         "Mesa 3.5": "#9A9A9A",
         "Mesa 3.5 + numpy": "#555555",
+        "Mesa 3.5 + KD-tree": "#777777",
         "mesa-frames": "#D55E00",
     }
     fig, ax = plt.subplots(figsize=(6.8, 3.0))

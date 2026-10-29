@@ -49,6 +49,7 @@ MESA3 = "mesa3"
 VARIANTS = {
     MESA3: "Mesa 3.5",
     "mesa3np": "Mesa 3.5 + numpy",
+    "mesa3kd": "Mesa 3.5 + KD-tree",
     "frames": "mesa-frames",
     "modelly-cells": "Modelly, cell lists",
     "modelly": "Modelly, columns",
@@ -57,6 +58,7 @@ VARIANTS = {
 COLOURS = {
     "Mesa 3.5": "#9A9A9A",
     "Mesa 3.5 + numpy": "#555555",
+    "Mesa 3.5 + KD-tree": "#777777",
     "mesa-frames": "#D55E00",
     "Modelly, cell lists": "#56B4E9",
     "Modelly, columns": "#0072B2",

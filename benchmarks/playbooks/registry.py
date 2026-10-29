@@ -25,6 +25,8 @@ PLAYBOOKS = {
         "sizes": {
             "small": {"n": 2000, "side": 60},
             "large": {"n": 20000, "side": 180},
+            # ten times the timed size at the same density (paper/scripts/sizes.py)
+            "huge": {"n": 200000, "side": 570},
         },
         "params": {"beta": 0.25, "recovery": 10, "initially_infected": 20},
     },
@@ -54,6 +56,7 @@ PLAYBOOKS = {
         "variants": {
             "mesa": "mesa_model",
             "mesa3": "mesa3_model",
+            "mesa3kd": "mesa3kd_model",
             "modelly": "modelly_model",
         },
         "steps": 50,
@@ -123,7 +126,7 @@ PLAYBOOKS = {
             "modelly": "modelly_model",
         },
         "steps": 40,
-        "sizes": {"small": {"side": 40}, "large": {"side": 200}},
+        "sizes": {"small": {"side": 40}, "large": {"side": 200}, "huge": {"side": 632}},
         "params": {"density": 0.8, "minority": 0.3, "homophily": 3},
     },
     "boltzmann_wealth": {
@@ -136,7 +139,7 @@ PLAYBOOKS = {
             "modelly": "modelly_model",
         },
         "steps": 100,
-        "sizes": {"small": {"n": 500}, "large": {"n": 10000}},
+        "sizes": {"small": {"n": 500}, "large": {"n": 10000}, "huge": {"n": 100000}},
         "params": {"initial_wealth": 1},
     },
     "sugarscape": {
