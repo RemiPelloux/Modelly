@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import weakref
 from contextlib import suppress
 from typing import TYPE_CHECKING
 
@@ -20,6 +21,11 @@ class NumpyAgentDataSet[A: Agent]:
 
     Uses swap-with-last removal to keep data contiguous, allowing views.
 
+    The fields become properties of the agent class. Each agent keeps a reference
+    to its own dataset next to its row index, and the properties read through it,
+    so models of the same agent class alive at once (or a model and its copy from
+    ``Model.load``) each read and write their own array.
+
     Note:
         This class does not inherit from BaseDataSet because it doesn't
         use the attrgetter-based collection mechanism.
@@ -28,6 +34,9 @@ class NumpyAgentDataSet[A: Agent]:
 
     _GROWTH_FACTOR = 2.0
     _MIN_GROWTH = 100
+    # Open datasets per agent class and dataset name, held weakly: a class keeps the
+    # properties while one is open (several models, or a model and its loaded copy).
+    _OPEN = "_numpy_datasets_open"
 
     def __init__(
         self,
@@ -60,15 +69,36 @@ class NumpyAgentDataSet[A: Agent]:
         self._closed = False
         self.dtype = dtype
         self._index_in_table = f"_index_datatable_{name}"
+        self._dataset_in_agent = f"_datatable_{name}"
         self._init_storage(n)
 
         self.agent_type = agent_type
+        self._attach_to_class()
+
+    def _attach_to_class(self) -> None:
+        """Register the dataset on its agent class and install the field properties."""
+        agent_type = self.agent_type
         if not hasattr(agent_type, "_datasets"):
             agent_type._datasets = set()
         agent_type._datasets.add(self.name)
         agent_type._extra_hooks = True
-
+        opened = vars(agent_type).get(self._OPEN)
+        if opened is None:
+            opened = {}
+            setattr(agent_type, self._OPEN, opened)
+        opened.setdefault(self.name, weakref.WeakSet()).add(self)
         self._install_properties()
+
+    def __setstate__(self, state: dict) -> None:
+        """Restore a pickled dataset; an open one puts its properties back on the class."""
+        self.__dict__.update(state)
+        if "_dataset_in_agent" not in state:
+            # A checkpoint of 1.4.1 or earlier: its agents hold only their row index.
+            self._dataset_in_agent = f"_datatable_{self.name}"
+            for agent in self._index_to_agent.values():
+                agent.__dict__[self._dataset_in_agent] = self
+        if not self._closed:
+            self._attach_to_class()
 
     def _init_storage(self, n: int) -> None:
         """Allocate the data and id arrays with capacity n, and the index mappings."""
@@ -90,13 +120,15 @@ class NumpyAgentDataSet[A: Agent]:
         """Generate getter and setter for the specified attribute."""
         j = self._attribute_to_index[attribute_name]
         index_attr = self._index_in_table
-        data = self._agent_data
+        dataset_attr = self._dataset_in_agent
 
         def getter(agent: A):
-            return data[agent.__dict__[index_attr], j]
+            state = agent.__dict__
+            return state[dataset_attr]._agent_data[state[index_attr], j]
 
         def setter(agent: A, value):
-            data[agent.__dict__[index_attr], j] = value
+            state = agent.__dict__
+            state[dataset_attr]._agent_data[state[index_attr], j] = value
 
         return getter, setter
 
@@ -118,9 +150,6 @@ class NumpyAgentDataSet[A: Agent]:
         new_ids = np.zeros(new_size, dtype=int)
         new_ids[:current_size] = self._agent_ids
         self._agent_ids = new_ids
-
-        # Reinstall properties to capture new array reference
-        self._install_properties()
 
     def _check_closed(self) -> None:
         """Raise if dataset has been closed."""
@@ -147,7 +176,8 @@ class NumpyAgentDataSet[A: Agent]:
         if index >= self._agent_data.shape[0]:
             self._expand_storage()
 
-        # Store index on agent
+        # Store the dataset and the index on the agent, for its field properties
+        agent.__dict__[self._dataset_in_agent] = self
         agent.__dict__[self._index_in_table] = index
 
         # Update mappings
@@ -192,6 +222,7 @@ class NumpyAgentDataSet[A: Agent]:
         del self._agent_to_index[agent]
         del self._index_to_agent[last_index]
         agent.__dict__.pop(self._index_in_table, None)
+        agent.__dict__.pop(self._dataset_in_agent, None)
         self._n_active -= 1
 
     @property
@@ -241,16 +272,20 @@ class NumpyAgentDataSet[A: Agent]:
         )
 
     def close(self) -> None:
-        """Close the dataset and remove properties from agent class."""
+        """Close the dataset; the last open one of its name removes the class properties."""
         if self._closed:
             return
 
         self._reset()
-        # Remove properties from agent class
+        self._closed = True
+        opened = vars(self.agent_type).get(self._OPEN, {}).get(self.name)
+        if opened is not None:
+            opened.discard(self)
+            if opened:
+                return  # another model's dataset still reads through the properties
         for attr in self._attributes:
             with suppress(AttributeError):
                 delattr(self.agent_type, attr)
-        self._closed = True
 
     def record(
         self, recorder: BaseDataRecorder, configuration: DatasetConfig | None = None
