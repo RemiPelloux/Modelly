@@ -16,8 +16,8 @@ framework that does the work, and the evidence for it.
     Situation & What helps \\
     \midrule
     Large populations whose phases act on all agents alike (movement, infection, ageing,
-    mortality) & Columns turn those phases into array operations: 2.9 to 33 times faster than
-    Mesa~3.5 and 4.6 to 42 times faster than Mesa~2.3 on the playbooks (\cref{sec:playbooks}). \\ \addlinespace
+    mortality) & Columns turn those phases into array operations: 2.9 to 31 times faster than
+    Mesa~3.5 and 4.5 to 42 times faster than Mesa~2.3 on the playbooks (\cref{sec:playbooks}). \\ \addlinespace
     Populations with many identical individuals (insects, cohorts of patients, age classes)
     & Cohort tables with binomial draws keep the individual model's law
     (\cref{eq:cohorts}) at a fraction of the cost: 132 times faster than Mesa~3.5 on the insect model. \\ \addlinespace
@@ -29,7 +29,7 @@ framework that does the work, and the evidence for it.
     A paper whose results a reviewer must be able to rerun & Run manifests, \cmd{modelly verify}, byte-identical bundles for archiving, ODD skeletons, golden digests checked
     across builds (\cref{tab:determinism}). \\ \addlinespace
     An existing Mesa model that has become too slow & Port with the codemod (bit-identical results on the
-    two Mesa~2.3 models ported, equivalent ones from Mesa~3.5; 1.05 to 4.8 times faster), then move the hot phases to columns one at a time. \\ \addlinespace
+    two Mesa~2.3 models ported, equivalent ones from Mesa~3.5; 1.05 to 2.3 times faster than Mesa~3.5), then move the hot phases to columns one at a time. \\ \addlinespace
     A model others should try without installing anything & A static export that runs the
     model in a browser tab (\cref{sec:browser}). \\
     \bottomrule

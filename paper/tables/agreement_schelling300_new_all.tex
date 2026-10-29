@@ -1,0 +1,28 @@
+\begin{longtable}{lllrrrrrr}
+\caption{Every comparison of the agreement study at the small size (300 seeds): standardised difference $d$ with its paired 95\% interval, correlation $r$ between the implementations' runs on the same seed, and the paired $t$, Kolmogorov--Smirnov and paired TOST $p$-values, uncorrected.}\label{tab:agreement-all-schelling300_new}\\
+\toprule
+Workload & Modelly variant & Statistic & $d$ & 95\% interval & $r$ & $p_t$ & $p_{\mathrm{KS}}$ & $p_{\mathrm{TOST}}$ \\
+\midrule
+\endfirsthead
+\toprule
+Workload & Modelly variant & Statistic & $d$ & 95\% interval & $r$ & $p_t$ & $p_{\mathrm{KS}}$ & $p_{\mathrm{TOST}}$ \\
+\midrule
+\endhead
+\bottomrule\endfoot
+Schelling & Mesa 3.5 & \code{final\_happy} & $+0.23$ & [$+0.07$, $+0.38$] & $+0.06$ & $<$0.01 & 0.18 & $<$0.001 \\
+Schelling & Mesa 3.5 & \code{mean\_happy} & $+0.20$ & [$+0.05$, $+0.35$] & $+0.10$ & 0.01 & 0.12 & $<$0.001 \\
+Schelling & Mesa 3.5 & \code{total\_moves} & $-0.20$ & [$-0.35$, $-0.04$] & $+0.10$ & 0.01 & 0.15 & $<$0.001 \\
+Schelling & Mesa 3.5 & \code{segregation} & $+0.15$ & [$-0.01$, $+0.31$] & $+0.04$ & 0.06 & 0.58 & $<$0.001 \\
+Schelling & mesa-frames & \code{final\_happy} & $+0.08$ & [$-0.02$, $+0.18$] & $+0.64$ & 0.11 & 0.52 & $<$0.001 \\
+Schelling & mesa-frames & \code{mean\_happy} & $+0.05$ & [$-0.05$, $+0.14$] & $+0.64$ & 0.34 & 0.65 & $<$0.001 \\
+Schelling & mesa-frames & \code{total\_moves} & $-0.05$ & [$-0.14$, $+0.05$] & $+0.66$ & 0.34 & 0.58 & $<$0.001 \\
+Schelling & mesa-frames & \code{segregation} & $+0.10$ & [$+0.01$, $+0.18$] & $+0.72$ & 0.02 & 0.52 & $<$0.001 \\
+Schelling & cell lists & \code{final\_happy} & $+0.09$ & [$-0.01$, $+0.19$] & $+0.60$ & 0.08 & 0.85 & $<$0.001 \\
+Schelling & cell lists & \code{mean\_happy} & $+0.07$ & [$-0.03$, $+0.18$] & $+0.60$ & 0.15 & 0.72 & $<$0.001 \\
+Schelling & cell lists & \code{total\_moves} & $-0.07$ & [$-0.17$, $+0.03$] & $+0.61$ & 0.15 & 0.94 & $<$0.001 \\
+Schelling & cell lists & \code{segregation} & $+0.08$ & [$-0.01$, $+0.16$] & $+0.73$ & 0.07 & 0.79 & $<$0.001 \\
+Schelling & columns & \code{final\_happy} & $+0.08$ & [$-0.02$, $+0.18$] & $+0.62$ & 0.11 & 0.99 & $<$0.001 \\
+Schelling & columns & \code{mean\_happy} & $+0.05$ & [$-0.05$, $+0.15$] & $+0.61$ & 0.32 & 0.72 & $<$0.001 \\
+Schelling & columns & \code{total\_moves} & $-0.05$ & [$-0.15$, $+0.05$] & $+0.62$ & 0.30 & 0.79 & $<$0.001 \\
+Schelling & columns & \code{segregation} & $+0.07$ & [$-0.02$, $+0.15$] & $+0.72$ & 0.11 & 0.99 & $<$0.001 \\
+\end{longtable}

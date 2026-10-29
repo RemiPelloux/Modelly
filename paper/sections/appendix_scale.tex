@@ -49,46 +49,48 @@ separates what the machine gives from what the protocol keeps of it.
 \begin{table}[htbp]
   \centering
   \small
-  \caption{Weak scaling of the split grid epidemic, one run per worker count, 10,000 people per
-  worker, 20 steps, Open MPI 5.0.11 and mpi4py 4.1.2, wall-clock seconds per step after a
+  \caption{Weak scaling of the split grid epidemic under MPI, one run per worker count, 10,000
+  people per worker, 20 steps, Open MPI 5.0.11 and mpi4py 4.1.2, wall-clock seconds per step after a
   warm-up step, build excluded, on the 16-core laptop of \cref{sec:performance} shared with
   other jobs. ``Load'' is the one-minute load average at the start of each run; ``machine'' is
-  the efficiency of $K$ copies with no communication; ``protocol'' is the split run's time
+  the efficiency of $K$ copies with no communication, timed by the slowest copy; ``protocol'' is the split run's time
   relative to the copies'.}
   \label{tab:scaling}
   \begin{tabular}{rrrrrrrr}
     \toprule
     Workers & People & Split, s/step & Copies, s/step & Efficiency & Machine & Protocol & Load \\
     \midrule
-    1  & 10,000  & 0.0142 & 0.0116 & 100\% & 100\% & 82\% & 7.4 \\
-    2  & 20,000  & 0.0198 & 0.0151 & 72\%  & 77\%  & 76\% & 7.3 \\
-    4  & 40,000  & 0.0441 & 0.0227 & 32\%  & 51\%  & 51\% & 7.1 \\
-    8  & 80,000  & 0.0815 & 0.0483 & 17\%  & 24\%  & 59\% & 7.2 \\
-    12 & 120,000 & 10.1375 & 0.1507 & $<$1\% & 8\%  & 1\%  & 8.1 \\
-    16 & 160,000 & 5.3554 & 0.1955 & $<$1\% & 6\%  & 4\%  & 40.1 \\
+    1  & 10,000  & 0.0150 & 0.0110 & 100\% & 100\% & 74\%  & 3.4 \\
+    2  & 20,000  & 0.0176 & 0.0190 & 85\%  & 58\%  & 108\% & 3.5 \\
+    4  & 40,000  & 0.0491 & 0.0206 & 30\%  & 53\%  & 42\%  & 3.9 \\
+    8  & 80,000  & 0.0775 & 0.0435 & 19\%  & 25\%  & 56\%  & 4.3 \\
+    12 & 120,000 & 0.1389 & 0.0592 & 11\%  & 19\%  & 43\%  & 5.3 \\
+    16 & 160,000 & 0.2732 & 0.1174 & 5\%   & 9\%   & 43\%  & 8.7 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-With 10,000 people per worker the protocol keeps 51 to 82\% of what the machine gives up to
-eight workers. At 12 and 16 workers the split runs took 10.1 and 5.4~s a step, 70 and 30 times
-their copies and about a hundred times the eight-worker run; the 16-worker run started under a
-load of 40.1. A single run cannot separate the protocol's cost from contention with the other
-jobs (Open MPI's ranks busy-wait for messages, which degrades sharply on an oversubscribed
-machine), so no efficiency is claimed at 12 and 16 workers. With 40,000 people per worker,
-measured under loads of 37 to 45, the efficiency is 73, 46 and 9\% at 2, 4 and 8 workers
-against 93, 96 and 45\% for the copies, so the protocol keeps 92, 56 and 22\%. The Dask
-backend, which routes every exchange through its scheduler (eight per step), measured 56, 24
-and 13\% at 2, 4 and 8 workers under loads of 32 to 36, with each split step five to thirteen
-times slower than its copies: the scheduler's round trips, not the model, take its time. Every
-efficiency here is a single run per worker count, not a median of repeats.
+With 10,000 people per worker the split run takes 0.9 to 2.4 times as long per step as its
+slowest copy, so the protocol keeps 42 to 56\% of what the machine gives from four workers on
+(the 108\% at two workers, a split run faster than its copies, is within a single run's
+noise). Under MPI the efficiency falls from 85\% at two workers to 30\% at four and 5\% at
+sixteen, with the machine itself, the copies, at 53\% and 9\%. With 40,000 people per worker
+(10 steps, loads of 11 to 16), the efficiency is 91, 68 and 45\% at 2, 4 and 8 workers against
+104, 81 and 50\% for the copies, so the protocol keeps 76 to 80\%: a larger block has more
+work per exchanged border. The Dask backend, which routes every exchange through its
+scheduler (eight per step), measured 69, 35 and 22\% at 2, 4 and 8 workers (loads of 9 to 11),
+each split step 2.1 to 4.0 times its copies: the scheduler's round trips, not the model, take
+its time. Every efficiency here is a single run per worker count, not a median of repeats,
+and a single run varies by tens of percent on this shared machine (the split run faster than
+its copies at two workers shows it), so the table supports the shape of the curve and the
+byte-identity claims, not the last digit of an efficiency.
 
-\paragraph{Not met.} The design target, at least 70\% weak-scaling efficiency from
-1 to 64 workers, cannot be measured on one laptop, and the laptop's hybrid processor is the
-main limit: eight copies of the same work with no communication at all already run at 24\%
-of one (45\% with 40,000 people per worker), because beyond the four performance cores the
-copies land on efficiency cores (at eight workers their step times split into two groups,
-0.028 to 0.029~s and 0.040 to 0.048~s). The Ray backend is written but untested (Ray does not install on CPython 3.15); MPI on
+\paragraph{Not met.} Efficiency at 70\% or more from 1 to 64 workers, the level a
+cluster code would aim for, cannot be measured on one laptop, and the laptop's hybrid
+processor is the main limit: eight copies of the same work with no communication at all
+already run at 25\% of one (50\% with 40,000 people per worker), because beyond the four
+performance cores the copies land on efficiency cores (at eight workers their step times
+split into two groups, 0.022~s and 0.029 to 0.044~s). The Ray backend is written but untested (Ray does not install on CPython 3.15); MPI on
 macOS and Windows is untested (\cref{sec:threats}); and the split-run suite runs on the three
 reference models, not on the zoo, whose models would change their numbers if moved to
 per-agent streams.
@@ -115,22 +117,22 @@ than the device run in batches, bit for bit the same as one batch.
 and the raw numbers are in \code{paper/data/gpu\_speedup.json}. The grid epidemic at 10
 million agents on a $1000 \times 1000$ torus, 60 steps, seed 1, in fresh interpreters, wall
 clock around the steps with the device synchronised, the build timed apart, one untimed run
-first to fill CuPy's kernel cache: the CPU column variant (CPython 3.15) takes 23.47, 33.91
-and 22.97~s for the steps and the CuPy variant (CPython 3.14) 0.672, 0.666 and 0.720~s, per-round
-ratios of 34.9, 50.9 and 31.9 and a median of 34.9 on an NVIDIA RTX~5050 laptop GPU (8~GB, CUDA
-runtime 13.2 from the \code{cupy-cuda13x} 14.2.0 wheel); the second round's CPU arm ran while
-other jobs loaded the machine. Run on \code{numpy} and on CuPy with the same seed, the variant
+first to fill CuPy's kernel cache: the CPU column variant (CPython 3.15) takes 20.72, 27.03
+and 20.69~s for the steps and the CuPy variant (CPython 3.14, the GPU environment's interpreter;
+the two interpreters differ, but the steps are dominated by numpy and CuPy kernels) 0.589, 0.673 and 0.622~s,
+per-round ratios of 35.2, 40.2 and 33.3 and a median of 35.2 on an NVIDIA RTX~5050 laptop GPU
+(8~GB, CUDA runtime 13.2 from the \code{cupy-cuda13x} 14.2.0 wheel). Run on \code{numpy} and on CuPy with the same seed, the variant
 gives the same infected series for all 60 steps and the same SHA-256 of the final state, days
-and row columns of all 10 million agents. Building 10 million agent objects takes 28 to 48~s
-on either side, so build plus steps is only 1.3 to 2.3 times faster: the aim of ten times faster
-than the column form at ten million agents on a mid-range GPU holds for the steps, not for
-construction.
+and row columns of all 10 million agents; on \code{numpy} its steps take 56.1~s, more than the
+column variant's because Philox draws cost more than \code{numpy}'s generator, and 78 times its
+0.72~s on CuPy. Building 10 million agent objects takes 25 to 33~s on either side, so build
+plus steps is only 1.5 to 1.9 times faster: a GPU an order of magnitude faster than the
+column form at ten million agents is what the steps show, not what a whole run shows.
 
-\paragraph{Where it does not pay.} At the playbook's own 20,000 agents the steps take 0.16
-to 0.24~s on CuPy against 0.08 to 0.13~s on the CPU (three seeds), and the insect cohorts, a
-table of under 200 rows, take 1.7 to 2.0~s on the GPU for 120 days against 8 to 12~ms on the CPU
-(after a first run of 24~s that compiled the kernels): kernel launches cost more than the
-arithmetic. JAX recompiles whenever a cohort table changes
+\paragraph{Where it does not pay.} At the playbook's own 20,000 agents the steps take 0.14
+to 0.16~s on CuPy against 0.08 to 0.14~s on the CPU (three seeds), and the insect cohorts, a
+table of under 200 rows, take 1.52 to 1.53~s on the GPU for 120 days against 7 to 8~ms on the
+CPU: kernel launches cost more than the arithmetic. JAX recompiles whenever a cohort table changes
 length. Apple Metal was not measured (no Apple GPU was available), and against the original
 CPU column variant, which draws from \code{model.rng}, the GPU variant agrees in distribution
 only, as every playbook variant does.
@@ -173,9 +175,10 @@ The data collector's attribute reporters, \code{AgentSet.get} and \code{agg} rea
 with identical rows (\code{test\_column\_gather.py}). \code{MemoryMapped(dir)} keeps a
 table's columns in \code{numpy.memmap} files, grown in place, with checkpoints that carry the
 rows. A cohort table of 100 million rows (19 bytes a row) ran three life-cycle steps inside a 16~GB
-\code{systemd} memory limit with a peak of 3.61~GB memory-mapped (4.26~GB in memory); a step
-took 9.3 to 10.4~s memory-mapped and 8.3 to 8.7~s in memory; and under a 3~GB limit the memory-mapped table finished while the in-memory one
-was killed (\code{benchmarks/large\_columns.py}); 100 million \emph{agent objects} cannot fit
+\code{systemd} memory limit with a peak of 3.61~GB memory-mapped (4.27~GB in memory); a step
+took 10.4 to 12.0~s memory-mapped and 9.8 to 10.5~s in memory (one run of three steps each);
+and under a 3~GB limit the memory-mapped table finished, its steps taking 10.5 to 13.7~s,
+while the in-memory one was killed (\code{benchmarks/large\_columns.py}); 100 million \emph{agent objects} cannot fit
 in 16~GB, since the objects alone need over 22~GB.
 
 \subsection{Live data and data assimilation}
@@ -268,8 +271,8 @@ normalised root-mean-square error on 500 test points, the hypercube's median of 
 the factor being the hypercube runs needed for the active design's error divided by the
 active runs): on the Bass diffusion zoo model the factor is 1.64, 2.64, 1.33 and 2.67 at 10
 to 40 runs and above 2.4 at 50 and 60; on Branin \citep{dixon1978towards} 1.13 to 1.43 below
-80 runs; on the Ishigami function 0.79 to 1.41. The aim, half the runs of a
-hypercube on two benchmarks, holds on the zoo model at most budgets and not on the two
+80 runs; on the Ishigami function 0.79 to 1.41. Active learning halves the runs a
+hypercube needs (a factor of 2) on the zoo model at most budgets, and not on the two
 analytic functions, where a well-spread design is already close to the best a
 Gaussian-process variance, which does not depend on the outputs, can do; the largest-variance
 criterion (the alternative to integrated variance reduction) is worse than a hypercube on
@@ -321,12 +324,13 @@ the 17 zoo models, 31 models, each run from its export in headless Chromium with
 wheel and with the compiled one, 62 of 62 runs without error. Because Pyodide's GDAL reads no Deflate-compressed GeoTIFF and
 its geopandas has neither pyogrio nor fiona, the bundled land-cover window is stored
 uncompressed and the tracts are read through \code{GeoDataFrame.from\_features}. A cold
-first visit transfers 14.1~MB for the age-structured SEIR model
-(Pyodide, its standard library, \code{numpy} and \code{pandas} are 13.5~MB of it) and is
-ready at step 0 after 5.9~s unthrottled, 8.0~s on a 50~Mbit/s line with 40~ms round trips, and
-21.4~s on Chrome's ``Fast 4G'' profile (about 1~MB/s, 165~ms), where the transfer alone takes
-14~s; a model that needs \code{scipy} (the grid, continuous and network spaces) transfers
-28.0~MB and takes 12.3~s on the 50~Mbit/s line (median of three runs, two for the forest
-fire; \code{tools/web/measure\_load.py}). The aim, under 10~s on a typical
-connection, is met on the 50~Mbit/s line for a model without \code{scipy} and not otherwise.
+first visit transfers 14.3~MB for the age-structured SEIR model
+(Pyodide, its standard library, \code{numpy} and \code{pandas} are 13.6~MB of it) and is
+ready at step 0 after 4.4~s unthrottled, 7.0~s on a 50~Mbit/s line with 40~ms round trips, and
+20.0~s on Chrome's ``Fast 4G'' profile (about 1~MB/s, 165~ms), where the transfer alone takes
+14~s; the forest fire, a model that needs \code{scipy} (as the grid, continuous and network
+spaces do), transfers 28.3~MB and takes 5.4~s unthrottled, 10.1~s on the 50~Mbit/s line and
+35.0~s on Fast 4G (medians of three runs; \code{tools/web/measure\_load.py}). A first load
+under ten seconds on a good home connection is reached without \code{scipy}, missed narrowly
+with it, and not reached on a mobile profile.
 The documentation gallery embeds three live models.

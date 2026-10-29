@@ -53,9 +53,9 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Ishigami indices (Section 6.2) | `tests/sensitivity`, `docs/sensitivity.md` | `pytest tests/sensitivity` |
 | ABC-SMC coverage over 200 datasets per model (Table 8) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
 | Every agreement comparison (appendix F) | `data/agreement_small_summary.json` | `scripts/agreement.py analyse` |
-| Grid epidemic at the timed size, 200 seeds (Section 5.3) | `data/agreement_large_grid200.json` | `scripts/agreement.py run --size large --seeds 200 --playbooks grid_epidemic --tag large_grid200` |
+| Grid epidemic at the timed size, replication on 200 new seeds (Section 5.3) | `data/agreement_large_grid200_new.json` | `scripts/agreement.py run --seed-base 10000 --size large --seeds 200 --playbooks grid_epidemic --tag large_grid200_new` |
 | Mesa 3.5 and mesa-frames against Mesa 2.3, 100 seeds (Section 5.3) | `data/agreement_small_baselines.json` | `scripts/agreement.py run --variants mesa3 frames --tag small_baselines` |
-| Schelling over 300 seeds, every implementation (Section 5.3) | `data/agreement_schelling300.json` | `scripts/agreement.py run --seeds 300 --playbooks schelling --variants mesa3 frames modelly modelly-cells --tag schelling300` |
+| Schelling, replication on 300 new seeds, every implementation (Section 5.3) | `data/agreement_schelling300_new.json` | `scripts/agreement.py run --seed-base 10000 --seeds 300 --playbooks schelling --variants mesa3 frames modelly modelly-cells --tag schelling300_new` |
 | Same code: two public ports against Mesa 2.3 and five against Mesa 3.5, with the Mesa 3.5 ports' agreement over 100 seeds (Section 5.1) | `data/port_public.json`, `benchmarks/ports/`, `benchmarks/ports_mesa3/` | `scripts/ports.py --rounds 10 --core 2` |
 | Bootstrap intervals of the speed-ups (appendix) | `benchmarks/playbooks/results/*.json` | `scripts/bootstrap_ci.py` (part of `make figures`) |
 | Mesa 3.5 + numpy against Mesa 2.3, 100 seeds (Section 5.2, appendix) | `data/agreement_small_mesa3np.json` | `scripts/agreement.py run --variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth --tag small_mesa3np` |
@@ -93,22 +93,23 @@ update the hardware line at the start of Section 5.
       venue, volume, issue, pages, year); the two JASSS articles without DOI and the mesa-frames
       URL checked to resolve.
 - [x] Table 1 re-checked against each project's documentation and repository (October 2026).
-- [x] The paper describes one version, 1.4.0, and compares Modelly only with other
+- [x] The paper describes one version, 1.4.2, and compares Modelly only with other
       frameworks, never with its own earlier versions.
-- [x] Every measurement re-run on the tagged release v1.4.0 (`build/release/measure_140.sh`:
-      timings at the fixed frequency, GPU, weak scaling, agreement, coverage), `make figures`
-      run and every number in the text refreshed from the new files. Not re-run on the tag: the
-      browser's first-load times, the 100-million-row run and the PGO measurement, taken on the
-      same code before the tag (Appendix E).
-- [x] Every model, the five zoo models added last included, runs from its export in the
-      local release checks (`scripts/release-checks.sh browser`, 62 of 62 with both wheels).
-- [x] Tests and coverage counted at the tag's gate (3,038 tests, 2,980 pass, 58 skip; 97.3%).
+- [x] Every measurement run on the tagged release v1.4.2 (`build/release/measure_142*.sh`:
+      timings at the fixed frequency, GPU, weak scaling, agreement, coverage, 100-million-row
+      run, browser first load, active learning, GPU and differentiable tests, browser runs,
+      test suite; the agreement scripts' follow-up studies from the paper branch, whose code is
+      the tag's), `make figures` run and every number in the text refreshed from the new files.
+- [x] Follow-up agreement studies are replications on new seeds (`--seed-base 10000`),
+      disjoint from the primary studies' seeds.
+- [x] Every model runs from its export in the browser with the pure and the compiled wheel
+      (`scripts/release-checks.sh browser`, then `MODELLY_WASM_WHEEL=... pytest -k wasm`).
+- [x] Tests and coverage counted on the tag (see Section 11).
 - [ ] For a journal: Appendix F (every comparison of the agreement study) becomes a CSV
       supplement generated from `data/agreement_small_summary.json`; Appendix E is the
       supplementary material for Section 7.
-- [ ] Software Heritage archives the tag v1.4.0; add its identifier at the comment marked `% SWHID-1.4.0`
-      in `sections/appendix.tex` (Appendix A).
-- [x] Compiled (Tectonic, no warnings); every page read.
+- [x] Software Heritage archives the tag v1.4.2 (`swh:1:rel:661000598425e7a9b958b5a679ca1281aa6f6cc3`, Appendix A).
+- [x] Compiled with Tectonic and with pdfLaTeX (the engine arXiv uses), no warnings; every page read.
 - [x] All timings re-run at a fixed frequency (performance governor, turbo off, CPU 2).
 - [x] Mesa 3.5 timed on all eight playbooks, mesa-frames on four, a hand-vectorised Mesa 3.5
       (numpy) baseline on three (Table 3, Figure 1).

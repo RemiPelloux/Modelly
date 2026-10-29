@@ -4,18 +4,18 @@
   "gpu": "NVIDIA GeForce RTX 5050 Laptop GPU, 8 GB, driver 615.78.08, CUDA runtime 13.2 (CuPy wheel)",
   "method": "fresh interpreter per run; wall clock around the 60 steps, device synchronised; started through the heavy-run guard (one heavy job at a time on the machine)"
  },
- "version": "modelly-abm 1.4.0 (tag v1.4.0, commit a972492), CPU arm in .venv (CPython 3.15), GPU arm in .gpu-venv (CPython 3.14, cupy-cuda13x 14.2.0, jax 0.12.0.1)",
+ "version": "modelly-abm 1.4.2 (tag v1.4.2, commit bf7a225), CPU arm in .venv (CPython 3.15), GPU arm in .gpu-venv (CPython 3.14, cupy-cuda13x 14.2.0, jax 0.12.0.1)",
  "grid_epidemic_10M_equality": {
   "numpy": {
    "backend": "numpy",
    "device": "cpu",
-   "run_seconds": 89.305,
+   "run_seconds": 56.0648,
    "digest": "5756c43cb0d555e53a9421ad26b432b9634f85fd5ce6e6c1c74b791a60c91334"
   },
   "cupy": {
    "backend": "cupy",
    "device": "NVIDIA GeForce RTX 5050 Laptop GPU",
-   "run_seconds": 9.0604,
+   "run_seconds": 0.7182,
    "digest": "5756c43cb0d555e53a9421ad26b432b9634f85fd5ce6e6c1c74b791a60c91334"
   },
   "same_history": true,
@@ -32,9 +32,9 @@
      "n": 10000000,
      "side": 1000,
      "steps": 60,
-     "build_seconds": 40.797,
-     "run_seconds": 23.4709,
-     "run_cpu_seconds": 23.3389,
+     "build_seconds": 32.625,
+     "run_seconds": 20.7182,
+     "run_cpu_seconds": 20.6181,
      "digest": "ff6361e662f2cea60759a39499e7bf0ab8f4da19331f3b89bf62b2535db05b73",
      "versions": {
       "python": "3.15.1",
@@ -50,9 +50,9 @@
      "n": 10000000,
      "side": 1000,
      "steps": 60,
-     "build_seconds": 29.916,
-     "run_seconds": 0.6719,
-     "run_cpu_seconds": 0.6619,
+     "build_seconds": 28.944,
+     "run_seconds": 0.5893,
+     "run_cpu_seconds": 0.5858,
      "digest": "5756c43cb0d555e53a9421ad26b432b9634f85fd5ce6e6c1c74b791a60c91334",
      "versions": {
       "python": "3.14.8",
@@ -63,7 +63,7 @@
       "jax-cuda13-plugin": "0.12.0.1"
      }
     },
-    "ratio": 34.93
+    "ratio": 35.16
    },
    {
     "modelly-gpu": {
@@ -73,9 +73,9 @@
      "n": 10000000,
      "side": 1000,
      "steps": 60,
-     "build_seconds": 28.487,
-     "run_seconds": 0.6662,
-     "run_cpu_seconds": 0.6605,
+     "build_seconds": 28.419,
+     "run_seconds": 0.6727,
+     "run_cpu_seconds": 0.6676,
      "digest": "5756c43cb0d555e53a9421ad26b432b9634f85fd5ce6e6c1c74b791a60c91334",
      "versions": {
       "python": "3.14.8",
@@ -93,9 +93,9 @@
      "n": 10000000,
      "side": 1000,
      "steps": 60,
-     "build_seconds": 33.468,
-     "run_seconds": 33.9138,
-     "run_cpu_seconds": 33.7518,
+     "build_seconds": 29.33,
+     "run_seconds": 27.0326,
+     "run_cpu_seconds": 26.9058,
      "digest": "ff6361e662f2cea60759a39499e7bf0ab8f4da19331f3b89bf62b2535db05b73",
      "versions": {
       "python": "3.15.1",
@@ -104,7 +104,7 @@
       "jax": "0.12.0.1"
      }
     },
-    "ratio": 50.91
+    "ratio": 40.19
    },
    {
     "modelly": {
@@ -114,9 +114,9 @@
      "n": 10000000,
      "side": 1000,
      "steps": 60,
-     "build_seconds": 39.181,
-     "run_seconds": 22.9735,
-     "run_cpu_seconds": 22.8894,
+     "build_seconds": 24.826,
+     "run_seconds": 20.6933,
+     "run_cpu_seconds": 20.6068,
      "digest": "ff6361e662f2cea60759a39499e7bf0ab8f4da19331f3b89bf62b2535db05b73",
      "versions": {
       "python": "3.15.1",
@@ -132,9 +132,9 @@
      "n": 10000000,
      "side": 1000,
      "steps": 60,
-     "build_seconds": 47.931,
-     "run_seconds": 0.7195,
-     "run_cpu_seconds": 0.7112,
+     "build_seconds": 29.141,
+     "run_seconds": 0.6219,
+     "run_cpu_seconds": 0.6177,
      "digest": "5756c43cb0d555e53a9421ad26b432b9634f85fd5ce6e6c1c74b791a60c91334",
      "versions": {
       "python": "3.14.8",
@@ -145,16 +145,16 @@
       "jax-cuda13-plugin": "0.12.0.1"
      }
     },
-    "ratio": 31.93
+    "ratio": 33.27
    }
   ],
-  "median_ratio": 34.93,
+  "median_ratio": 35.16,
   "ratios": [
-   34.93,
-   50.91,
-   31.93
+   35.16,
+   40.19,
+   33.27
   ],
-  "warmup_seconds": 0.737
+  "warmup_seconds": 0.6071
  },
  "large_size_3_seeds": [
   {
@@ -163,10 +163,10 @@
    "seed": 1,
    "size": "large",
    "steps": 60,
-   "build_seconds": 0.148,
-   "run_seconds": 0.133,
-   "cpu_seconds": 0.281,
-   "wall_seconds": 0.285,
+   "build_seconds": 0.1347,
+   "run_seconds": 0.137,
+   "cpu_seconds": 0.2717,
+   "wall_seconds": 0.2795,
    "population": 20000,
    "stats": {
     "final_S": 19234,
@@ -183,10 +183,10 @@
    "seed": 1,
    "size": "large",
    "steps": 60,
-   "build_seconds": 0.5458,
-   "run_seconds": 0.2413,
-   "cpu_seconds": 0.7871,
-   "wall_seconds": 0.7954,
+   "build_seconds": 0.4821,
+   "run_seconds": 0.1634,
+   "cpu_seconds": 0.6454,
+   "wall_seconds": 0.6646,
    "population": 20000,
    "stats": {
     "final_S": 19346,
@@ -203,10 +203,10 @@
    "seed": 1,
    "size": "large",
    "steps": 120,
-   "build_seconds": 0.0016,
-   "run_seconds": 0.0123,
-   "cpu_seconds": 0.0139,
-   "wall_seconds": 0.0139,
+   "build_seconds": 0.0011,
+   "run_seconds": 0.0083,
+   "cpu_seconds": 0.0094,
+   "wall_seconds": 0.0108,
    "population": 26660,
    "stats": {
     "final_eggs": 9277,
@@ -223,10 +223,10 @@
    "seed": 1,
    "size": "large",
    "steps": 120,
-   "build_seconds": 0.8188,
-   "run_seconds": 23.942,
-   "cpu_seconds": 24.7608,
-   "wall_seconds": 24.9187,
+   "build_seconds": 0.2696,
+   "run_seconds": 1.5232,
+   "cpu_seconds": 1.7928,
+   "wall_seconds": 1.837,
    "population": 26476,
    "stats": {
     "final_eggs": 9291,
@@ -243,10 +243,10 @@
    "seed": 2,
    "size": "large",
    "steps": 60,
-   "build_seconds": 0.1184,
-   "run_seconds": 0.1093,
-   "cpu_seconds": 0.2277,
-   "wall_seconds": 0.2287,
+   "build_seconds": 0.0885,
+   "run_seconds": 0.0795,
+   "cpu_seconds": 0.168,
+   "wall_seconds": 0.1687,
    "population": 20000,
    "stats": {
     "final_S": 19282,
@@ -263,10 +263,10 @@
    "seed": 2,
    "size": "large",
    "steps": 60,
-   "build_seconds": 0.5204,
-   "run_seconds": 0.1934,
-   "cpu_seconds": 0.7138,
-   "wall_seconds": 0.7221,
+   "build_seconds": 0.4081,
+   "run_seconds": 0.1579,
+   "cpu_seconds": 0.566,
+   "wall_seconds": 0.5762,
    "population": 20000,
    "stats": {
     "final_S": 19080,
@@ -283,10 +283,10 @@
    "seed": 2,
    "size": "large",
    "steps": 120,
-   "build_seconds": 0.0014,
-   "run_seconds": 0.0106,
-   "cpu_seconds": 0.0119,
-   "wall_seconds": 0.012,
+   "build_seconds": 0.0011,
+   "run_seconds": 0.0075,
+   "cpu_seconds": 0.0087,
+   "wall_seconds": 0.0087,
    "population": 26239,
    "stats": {
     "final_eggs": 9319,
@@ -303,10 +303,10 @@
    "seed": 2,
    "size": "large",
    "steps": 120,
-   "build_seconds": 0.2982,
-   "run_seconds": 1.9876,
-   "cpu_seconds": 2.2858,
-   "wall_seconds": 2.2974,
+   "build_seconds": 0.2638,
+   "run_seconds": 1.529,
+   "cpu_seconds": 1.7928,
+   "wall_seconds": 1.8061,
    "population": 26227,
    "stats": {
     "final_eggs": 9116,
@@ -323,10 +323,10 @@
    "seed": 3,
    "size": "large",
    "steps": 60,
-   "build_seconds": 0.0872,
-   "run_seconds": 0.0795,
-   "cpu_seconds": 0.1667,
-   "wall_seconds": 0.1676,
+   "build_seconds": 0.0905,
+   "run_seconds": 0.0804,
+   "cpu_seconds": 0.1709,
+   "wall_seconds": 0.173,
    "population": 20000,
    "stats": {
     "final_S": 19470,
@@ -343,10 +343,10 @@
    "seed": 3,
    "size": "large",
    "steps": 60,
-   "build_seconds": 0.4056,
-   "run_seconds": 0.162,
-   "cpu_seconds": 0.5676,
-   "wall_seconds": 0.5763,
+   "build_seconds": 0.3803,
+   "run_seconds": 0.1427,
+   "cpu_seconds": 0.523,
+   "wall_seconds": 0.5309,
    "population": 20000,
    "stats": {
     "final_S": 19527,
@@ -363,10 +363,10 @@
    "seed": 3,
    "size": "large",
    "steps": 120,
-   "build_seconds": 0.0011,
-   "run_seconds": 0.0077,
-   "cpu_seconds": 0.0088,
-   "wall_seconds": 0.0088,
+   "build_seconds": 0.001,
+   "run_seconds": 0.0071,
+   "cpu_seconds": 0.0081,
+   "wall_seconds": 0.0081,
    "population": 27255,
    "stats": {
     "final_eggs": 9615,
@@ -383,10 +383,10 @@
    "seed": 3,
    "size": "large",
    "steps": 120,
-   "build_seconds": 0.2638,
-   "run_seconds": 1.6774,
-   "cpu_seconds": 1.9412,
-   "wall_seconds": 1.9556,
+   "build_seconds": 0.2575,
+   "run_seconds": 1.5232,
+   "cpu_seconds": 1.7807,
+   "wall_seconds": 1.7913,
    "population": 27247,
    "stats": {
     "final_eggs": 9684,
@@ -398,5 +398,5 @@
    }
   }
  ],
- "note": "insect_cohorts modelly-gpu seed 1 includes the CUDA kernel compilation of the first run in a fresh cache"
+ "note": "modelly-abm in 'versions' is the editable installs' stale metadata; both arms import the checkout at the tag"
 }

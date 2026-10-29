@@ -26,15 +26,17 @@ python3.15 -m venv .venv-frames && .venv-frames/bin/pip install beartype $PINS \
 # the same at the timed size, 50 seeds
 .venv/bin/python paper/scripts/agreement.py run --size large --seeds 50 --jobs 8
 .venv/bin/python paper/scripts/agreement.py analyse --size large
-# the grid epidemic at the timed size over 200 seeds, and Mesa 3.5 against Mesa 2.3
-.venv/bin/python paper/scripts/agreement.py run --size large --seeds 200 \
-    --playbooks grid_epidemic --tag large_grid200
+# Mesa 3.5 and mesa-frames against Mesa 2.3
 .venv/bin/python paper/scripts/agreement.py run --variants mesa3 frames --tag small_baselines
-.venv/bin/python paper/scripts/agreement.py run --seeds 300 --playbooks schelling \
-    --variants mesa3 frames modelly modelly-cells --tag schelling300
-.venv/bin/python paper/scripts/agreement.py analyse --tag large_grid200
 .venv/bin/python paper/scripts/agreement.py analyse --tag small_baselines
-.venv/bin/python paper/scripts/agreement.py analyse --tag schelling300
+# replications on new seeds: the grid epidemic at the timed size, Schelling's model
+NEW="--seed-base 10000"
+.venv/bin/python paper/scripts/agreement.py run $NEW --size large --seeds 200 \
+    --playbooks grid_epidemic --tag large_grid200_new
+.venv/bin/python paper/scripts/agreement.py run $NEW --seeds 300 --playbooks schelling \
+    --variants mesa3 frames modelly modelly-cells --tag schelling300_new
+.venv/bin/python paper/scripts/agreement.py analyse --tag large_grid200_new
+.venv/bin/python paper/scripts/agreement.py analyse --tag schelling300_new
 # Mesa 3.5 + numpy against Mesa 2.3, at the small size and the timed size
 NP="--variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth"
 .venv/bin/python paper/scripts/agreement.py run $NP --tag small_mesa3np
@@ -73,24 +75,26 @@ The playbook runner starts each run in a fresh interpreter, pins it to one core 
 results and a Markdown report to \code{benchmarks/playbooks/results/}. The methods, and the
 rules a fair comparison must follow, are described in \code{docs/performance.md}.
 
-\paragraph{Provenance of the measurements.} The measurements ran on the code of the tagged
-release v1.4.0 (commit \code{a972492}), compiled on the measurement machine with GCC~16.2, in
-one session that ran the timings first, then the GPU, the weak scaling and the statistical
-studies. Three were not repeated on the tag and were made on the development code of their
-features shortly before it: the browser's first-load times, the 100-million-row run and the
-profile-guided-optimisation comparison (\cref{app:scale}). Each result file records what it ran with: the playbook, port, example and
-agreement files the commit, the machine, the load and the package versions;
-\code{assimilation.json}, \code{ishigami.json} and \code{graph\_cut.json} the commit, date,
-interpreter and package versions; the files written late in the session (the 300-seed
-Schelling study, the coverage study and these three) record commit \code{8925f96}, which adds
-only result files to the tag; the \code{weak\_*.json} files the interpreter, the platform and the load,
-with the commit and the MPI, mpi4py and Dask versions added from the environment afterwards and
-marked so; and \code{gpu\_speedup.json} the package versions of both arms. In these files the
-package version recorded for \code{modelly-abm} is the stale metadata of the development
-environments' editable installs, not the code: both imported \modelly{} from the checkout at
-the tagged commit, which the commit field identifies.
-% SWHID-1.4.0: replace with the identifier of the archived tag once Software Heritage has it
-The tagged release v1.4.0 is archived by Software Heritage.
+\paragraph{Provenance of the measurements.} Every measurement of this paper ran on the code of
+the tagged release v1.4.2 (commit \code{bf7a225}), compiled on the measurement machine with
+GCC~16.2. One session ran, in this order, the timings at the fixed frequency, the GPU, the weak
+scaling, the primary agreement studies, the coverage study, the three data scripts, the
+100-million-row run, the browser's first load, the active-learning comparison, the GPU and
+differentiable tests, the browser runs and the test suite, from the checkout at the tag. The
+studies run with \code{paper/scripts/agreement.py} after it (the Mesa~3.5 + numpy and baseline
+studies and the two replications on new seeds) ran from commit \code{e3cfb74}, which differs
+from the tag only in the paper's own files. Each result file records what it ran with: the
+playbook, port, example and agreement files the commit, the machine, the load and the package
+versions; \code{assimilation.json}, \code{ishigami.json} and \code{graph\_cut.json} the commit,
+date, interpreter and package versions, their \code{+dirty} marking the benchmark results
+written earlier in the session, not code; the \code{weak\_*.json} files the interpreter, the
+platform and the load, with the commit and the MPI, mpi4py and Dask versions added from the
+environment afterwards and marked so; and \code{gpu\_speedup.json} the package versions of
+both arms. In these files the package version recorded for \code{modelly-abm} is the stale
+metadata of the development environments' editable installs, not the code: every environment
+imported \modelly{} from the checkout, which the commit field identifies.
+The tagged release v1.4.2 is archived by Software Heritage as
+\code{swh:1:rel:661000598425e7a9b958b5a679ca1281aa6f6cc3}.
 
 \section{The workloads}
 \label{app:workloads}
@@ -105,12 +109,13 @@ algorithm, so that their comparison is between data structures; the column and m
 variants find every forager's best visible cell in one array pass and keep only the walk to a
 free cell sequential. The four mesa-frames workloads were also timed in wall-clock time with
 one polars thread and with all 16 (\code{paper/scripts/frames\_threads.py},
-\code{paper/data/frames\_threads.json}): with all threads the grid epidemic takes 1.83~s
-against 1.53~s, Boltzmann wealth 2.72~s against 1.67~s and Sugarscape 5.78~s against 3.27~s,
-and Schelling's model is as fast either way (2.80~s against 2.82~s); these runs were unpinned
-while other jobs loaded the machine (one-minute load average 14.6 at their start), which penalises the
-multi-threaded arm, and with that caveat the data frames at these sizes appear too small for
-parallel execution to pay for its overhead.
+\code{paper/data/frames\_threads.json}): with all threads the grid epidemic takes 1.88~s
+against 1.57~s, Boltzmann wealth 1.69~s against 1.44~s and Sugarscape 3.83~s against 2.86~s,
+while Schelling's model is 1.4 times faster (2.05~s against 2.84~s); these are single runs,
+unpinned, while other jobs loaded the machine (one-minute load average 8.6 at their start),
+which penalises the multi-threaded arm. With that caveat, three of the four workloads' data
+frames appear too small for parallel execution to pay for its overhead, and Schelling's is
+not.
 
 \begin{table}[htbp]
   \centering
@@ -161,19 +166,20 @@ parallel execution to pay for its overhead.
 \begin{table}[htbp]
   \centering
   \small
-  \caption{As \cref{tab:agreement}, for Schelling's model over 300 shared seeds at the small
-  size, every implementation against Mesa~2.3.}
+  \caption{As \cref{tab:agreement}, for Schelling's model at the small size: a replication on
+  300 new seeds (10,000 to 10,299, disjoint from the primary study's), every implementation
+  against Mesa~2.3.}
   \label{tab:agreement-schelling300}
-  \input{tables/agreement_schelling300}
+  \input{tables/agreement_schelling300_new}
 \end{table}
 
 \begin{table}[htbp]
   \centering
   \small
-  \caption{As \cref{tab:agreement-large}, for the grid epidemic over 200 shared seeds at the
-  large size.}
+  \caption{As \cref{tab:agreement-large}, for the grid epidemic at the large size: a replication
+  on 200 new seeds (10,000 to 10,199, disjoint from the primary study's).}
   \label{tab:agreement-grid200}
-  \input{tables/agreement_large_grid200}
+  \input{tables/agreement_large_grid200_new}
 \end{table}
 
 \input{sections/appendix_scale}

@@ -43,18 +43,21 @@ whose Mesa arm runs Mesa's code unmodified; it measures the same-code gain, not 
 forms, which no Mesa-written model can show.
 
 \paragraph{Measurement.} The timings of the playbooks, the ports and Mesa's examples come from
-one laptop with a hybrid processor, in one session of about an hour and a half, pinned to one performance
+one laptop with a hybrid processor, in one session of about an hour and ten minutes, pinned to one performance
 core (CPU 2, one of the processor's four 4.7~GHz
 cores; the other twelve are efficiency cores), under the \code{intel\_pstate} driver with the
 \code{performance} governor and turbo disabled, so the core ran at its 1.9~GHz base frequency.
 Absolute times are therefore longer than on a turbo-enabled machine; the ratios are what we
-report. Other work shared the machine (one-minute load average 2.8 to 28.5 at the start of each
-workload), and the order of the implementations rotated from round to round: every per-round
-ratio over Mesa~2.3 lies within 19\% of its median (over Mesa~3.5, within 19\%), for 26 of the
-28 non-reference variants within 10\% (the two exceptions are the insect population's column
-and cohort forms, 18 and 11\%), and
-the bootstrap intervals of \cref{tab:speedup-ci} are a few percent wide (42.1 [41.4, 42.7] for
-the grid epidemic's columns over Mesa~2.3). Without a fixed frequency (turbo and a power-saving governor), ratios move by tens of percent
+report. The core was pinned but not isolated: other work shared the machine (one-minute load
+average 3.3 to 28.8 at the start of each workload), and while it cannot take the pinned core's
+CPU time it competes for the shared cache and memory bandwidth, which may weigh more on the
+memory-bound array code than on interpreter-bound per-agent code. The order of the
+implementations rotated from round to round: every per-round ratio over Mesa~2.3 lies within
+18\% of its median (over Mesa~3.5, within 15\%), for 26 of the 28 non-reference variants
+within 10\% (the two exceptions are the insect population's column and cohort forms, 18 and
+11\%), and the bootstrap intervals of \cref{tab:speedup-ci} are a few percent wide (41.8
+[41.3, 42.5] for the grid epidemic's columns over Mesa~2.3); they are within-session
+intervals and do not include the variation between sessions. Without a fixed frequency (turbo and a power-saving governor), ratios move by tens of percent
 from one session to the next, so the conclusions rest on the order of magnitude of each speed-up, not
 on its last digit, and on one machine: other processors, with other cache sizes and
 vector units, will give other ratios. The measurements of \cref{sec:scale} were
@@ -99,7 +102,7 @@ yet by a study outside the repository.
 
 \begin{itemize}[leftmargin=*,itemsep=2pt]
   \item \textbf{Speed comes from the model's form.} A model written agent by agent gains only
-  where the framework's own calls take its time (1.05 to 4.8 times, \cref{sec:portability}); the
+  where the framework's own calls take its time (1.05 to 2.3 times over Mesa~3.5, 2.7 and 4.8 over Mesa~2.3, \cref{sec:portability}); the
   large gains of \cref{sec:playbooks} require phases that can be
   expressed over the whole population. Sequential decisions where each agent depends on the
   previous one's move remain per-agent loops.

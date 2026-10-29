@@ -9,10 +9,10 @@ with methods checked on problems whose answers are known. It also runs beyond on
 (split runs, a GPU backend, differentiable models) and connects a model to data, fields and
 the browser, each capability reported with what it measures and where it falls short
 (\cref{tab:scale}). The
-measurements also show where it does not help (a model written agent by agent runs 1.05 to 4.8 times faster than on Mesa, depending on
+measurements also show where it does not help (a model written agent by agent runs 1.05 to 2.3 times faster than on Mesa~3.5, depending on
 how much of its time the framework's calls take; hand-written numpy that gives up agent
-objects is 1.8 to 4.6 times faster than its columns; a split run on one laptop and a GPU at
-20,000 agents gain little) and where its evidence is still thin (\cref{sec:threats}).
+objects is 1.8 to 4.6 times faster than its columns; a split run on one laptop gains little,
+and a GPU at 20,000 agents is slower than the CPU) and where its evidence is still thin (\cref{sec:threats}).
 
 \section{Availability}
 \label{sec:availability}

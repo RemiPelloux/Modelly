@@ -123,7 +123,9 @@ line-for-line port of a Python function that stays in the source as its fallback
 two side by side, and \code{MODELLY\_PURE\_PYTHON=1} forces the Python path. Results are
 identical either way. The modules build with GCC, Clang and MSVC; the release workflow builds
 them on the tag for Linux (glibc and musl, x86-64 and ARM64), macOS and Windows (x86-64 and
-ARM64), checked as \cref{tab:determinism} states. They also build for free-threaded CPython,
+ARM64), where a module that fails to compile fails the
+build and each wheel's test imports four of the five compiled (all but the event heap), checked
+as \cref{tab:determinism} states. They also build for free-threaded CPython,
 where critical sections and cache generation counters replace the global interpreter lock,
 and the compiled modules' tests, except the event heap's, run on that build on the development
 machine.

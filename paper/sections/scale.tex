@@ -22,13 +22,14 @@ shortfalls by a factor) do not turn on the last digit of a timing.
     Capability & Measured & Falls short \\
     \midrule
     Split runs & Byte-identical to one process at 1, 2, 4 and 16 partitions on three models;
-    MPI with 2 and 4 ranks; Dask with 2 workers & Weak scaling 72, 32 and 17\% at 2, 4 and 8
-    workers with 10,000 people per worker, 73, 46 and 9\% with 40,000 (single runs on a loaded
-    laptop); runs at 12 and 16 workers swamped by contention; 64 workers unmeasured; Ray, and
-    MPI on macOS and Windows, untested \\
+    MPI with 2 and 4 ranks; Dask with 2 workers & Weak scaling 85, 30, 19 and 5\% at 2, 4, 8
+    and 16 workers with 10,000 people per worker, 91, 68 and 45\% at 2, 4 and 8 with 40,000
+    (single runs on a shared laptop whose copies without communication already fall to 25\% at
+    eight); 64 workers unmeasured; Ray, and MPI on macOS and Windows, untested \\
     \addlinespace
-    GPU backend & Steps 34.9 times faster at 10 million agents, identical integer state &
-    Construction not faster (1.3 to 2.3 times in total); slower at 20,000 agents, the
+    GPU backend & Steps 35 times faster than the CPU column variant at 10 million agents; the GPU variant's
+    integer state identical on \code{numpy} and CuPy &
+    Construction not faster (1.5 to 1.9 times in total); slower at 20,000 agents, the
     crossover unmeasured; cohort tables 200 times slower; Metal untested \\ \addlinespace
     Differentiable models & Two zoo models' parameters recovered within 2\% and 7\%; pathwise
     gradients within $10^{-6}$ and $10^{-4}$ of finite differences & Gradients through discrete
@@ -45,8 +46,8 @@ shortfalls by a factor) do not turn on the last digit of a timing.
     Synthetic populations & Totals and ages exact, sexes within 1\%; the SEIR model's final
     size within 0.05; three real-data zoo models & Made-up marginals; no real joint
     distribution to test against \\ \addlinespace
-    Browser & 62 of 62 runs: 31 models, two wheels & First load 8.0, 12.3 and 21.4~s by line
-    and model, under 10~s only without \code{scipy} at 50~Mbit/s \\
+    Browser & 62 of 62 runs: 31 models, two wheels & First load 7.0 and 10.1~s at 50~Mbit/s
+    without and with \code{scipy}, 20.0 and 35.0~s on Fast 4G \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -64,25 +65,27 @@ models every reporter and every agent's state is byte-identical to the single-pr
 1, 2, 4 and 16 partitions, under MPI with 2 and 4 ranks and on two Dask workers
 (\cref{app:split}). The weak scaling of \cref{tab:scale} comes from single runs on a laptop
 shared with other jobs, whose hybrid processor is the main limit: eight copies of the same
-work with no communication at all already run at 24\% of one, because beyond the four
-performance cores the copies land on efficiency cores, and the protocol keeps 51 to 82\% of
-what the machine gives up to eight workers; at 12 and 16 workers the split runs took about a
-hundred times longer per step, under contention a single run cannot separate from the
-protocol's cost, so no efficiency is claimed there (\cref{tab:scaling}). The aim of 70\% efficiency at 64
-workers could not be measured here; the Ray backend, and MPI on macOS and Windows, are
-untested.
+work with no communication at all already run at 25\% of one, because beyond the four
+performance cores the copies land on efficiency cores, and with 10,000 people per worker the
+protocol keeps 42 to 56\% of what the machine gives from four workers on, 76 to 80\% with
+40,000 (\cref{tab:scaling}). A split run on one laptop is therefore a check of correctness
+more than a speed-up; scaling to the 64 workers of a cluster was not measured, and the Ray
+backend, and MPI on macOS and Windows, are untested.
 
 \subsection{A GPU backend}
 \label{sec:gpu}
 
 Column phases, cohort tables and the cell-space operators run on CuPy or JAX with a
 \code{numpy} fallback, from counter-based (Philox) random streams that draw the same numbers
-on every backend. At ten million agents the grid epidemic's 60 steps take 0.67~s on an
-RTX~5050 laptop GPU against 23~s for the CPU column variant, 34.9 times faster (median of three
-rounds, 31.9 to 50.9), with the same infected series and the same digest of the final state on \code{numpy}
-and on CuPy (\cref{app:gpu}). Building ten million agent objects takes 28 to 48~s on either
-side, so build plus steps gains only 1.3 to 2.3 times; at 20,000 agents the GPU is slower
-than the CPU (0.16 to 0.24~s against 0.08 to 0.13~s) and the crossover was not measured; a cohort
+on every backend. At ten million agents the grid epidemic's 60 steps take 0.62~s on an
+RTX~5050 laptop GPU against 21~s for the CPU column variant, 35 times faster (median of three
+rounds, 33 to 40). The GPU variant draws from Philox streams rather than the model's
+generator, so it is a different variant of the model from the CPU column one, agreeing with it
+in distribution; run on \code{numpy} and on CuPy it gives the same infected series and the same
+digest of the final state (\cref{app:gpu}). Building ten million agent objects takes 25 to
+33~s on either side, so build plus steps gains only 1.5 to 1.9 times; at 20,000 agents the GPU
+is slower than the CPU (0.14 to 0.16~s against 0.08 to 0.14~s) and the crossover was not
+measured; a cohort
 table of under 200 rows is about 200 times slower, because kernel launches cost more than its
 arithmetic; and Apple Metal was not measured.
 
@@ -151,7 +154,7 @@ marginals are made up, so no real joint distribution was tested against.
 with Studio's parameter panel, a space view and a reporter plot. The 14 bundled examples
 and the 17 zoo models each ran from their export in headless Chromium with the
 pure-Python wheel and with the compiled one, 62 of 62 runs (\cref{app:browser}). A cold first
-visit is ready after 8.0~s on a 50~Mbit/s line for a model that needs no \code{scipy}, 12.3~s
-for one that does, and 21.4~s on a Fast~4G profile, so the aim of under ten seconds holds only
-on the faster line without \code{scipy}: Pyodide, \code{numpy} and \code{pandas} alone are
-13.5~MB.
+visit is ready after 7.0~s on a 50~Mbit/s line for a model that needs no \code{scipy}, 10.1~s
+for one that does, and 20.0 and 35.0~s on a Fast~4G profile, so a first load under ten
+seconds is reached only on the faster line and without \code{scipy}: Pyodide, \code{numpy}
+and \code{pandas} alone are 13.6~MB.
