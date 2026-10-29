@@ -228,3 +228,28 @@ div.highlight:hover button.copybtn { opacity: 1; }
 .bd-sidebar-secondary .nav-link code, .bd-sidebar-secondary code.literal {
   background: transparent !important; border: 0 !important; padding: 0 !important; color: inherit;
 }
+
+/* Section hub pages (guides.md, scale.md, models.md, releases.md): an index to scan, one row
+   per page, its title in the heading colour and one muted line on what it does. */
+.bd-content .ml-hub ul { list-style: none; padding: 0; margin: 1rem 0 0; border-top: 1px solid var(--pst-color-border); }
+.bd-content .ml-hub li { margin: 0; padding: 0.85rem 0 0.9rem; border-bottom: 1px solid var(--pst-color-border); }
+.bd-content .ml-hub li > p {
+  margin: 0; color: var(--pst-color-text-muted); font-size: 0.94rem; line-height: 1.55; max-width: 68ch;
+}
+.bd-content .ml-hub li > p > a:first-child {
+  display: inline-block; margin-bottom: 0.2rem; font-family: var(--pst-font-family-heading);
+  font-size: 1.08rem; font-weight: 700; letter-spacing: -0.01em; color: var(--pst-color-heading); text-decoration: none;
+}
+.bd-content .ml-hub li > p > a:first-child:hover { color: var(--pst-color-link-hover); text-decoration: underline; }
+.bd-content .ml-hub li > p > a:first-child:focus-visible { border-radius: 0.25rem; }
+.bd-content .ml-hub + h2, .bd-content section > h2 + .ml-hub { margin-top: 0.5rem; }
+
+/* Sidebar captions of a section with several groups (Guides, Get started). */
+.bd-sidebar-primary .bd-links p.caption {
+  margin: 1.4rem 0 0.35rem; padding: 0 0.6rem; font-size: 0.75rem; font-weight: 600;
+  text-transform: none; letter-spacing: 0; color: var(--pst-color-text-muted);
+}
+.bd-sidebar-primary .bd-links p.caption:first-child { margin-top: 0.4rem; }
+
+/* A header dropdown never runs past the bottom of the window. */
+.bd-header .dropdown-menu { max-height: calc(100vh - var(--pst-header-height) - 1rem); overflow-y: auto; overscroll-behavior: contain; }

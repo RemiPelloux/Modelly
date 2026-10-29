@@ -223,20 +223,9 @@ html_extra_path = ["_live"]
 # html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-# Pages without children get no section navigation, so no empty sidebar.
-html_sidebars = {
-    page: []
-    for page in (
-        "index",
-        "getting_started",
-        "using_modelly_in_your_project",
-        "migrating_from_mesa",
-        "performance",
-        "vectorised_phases",
-        "best-practices",
-        "overview",
-    )
-}
+# Every page sits in one of the six header sections and gets that section's navigation;
+# the landing page has none.
+html_sidebars = {"index": []}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

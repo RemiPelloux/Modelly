@@ -25,14 +25,25 @@ If you want to learn how to build agent-based models step by step using Modelly,
 - [Discrete Event Simulation](tutorials/11_discrete_event_simulation): Learn how to build a pure event-driven model with `schedule_event` and validate it against queuing theory.
 - [Hybrid ABM-DEVS Models](tutorials/12_hybrid_abm_devs): Learn how to combine `step()`-based agent activation with scheduled events in a spatial epidemic model.
 
+## Your own project
+- [Using Modelly in your project](using_modelly_in_your_project): from an empty folder to a reproducible, measured model that lives in its own repository.
+- [Starting a project](new_project): `modelly new` writes a project that is seeded, tested and linted from its first commit.
+- [Modelly best practices](best-practices): an overview of tips and guidelines for using Modelly.
+
+## Courses and domain tutorials
+- [Course](course/index): eight sessions that take a class from a first model to a validated, reproducible study of its own.
+- [Domain tutorials](tutorials/domains/index): one tutorial per field, each built on a model of the zoo.
+
+## Coming from another tool
+- [Migrating from Mesa](migrating_from_mesa): a construct-by-construct map and a codemod, `python -m modelly.migrate`, that rewrites the mechanical parts and reports the rest.
+- [From NetLogo](netlogo): `python -m modelly.netlogo` translates a `.nlogo` model into a Python module you can run, test and lint.
+- [From R and Julia](r_and_julia): read Modelly's Parquet results from R and Julia, and drive a model from R.
+
 ## Examples
 Modelly ships with a collection of example models. These are classic ABMs, so if you are familiar with ABMs and want to get a quick sense of how MODELLY works, these examples are great place to start. You can find them [here](examples).
 
 ## Further resources
 To further explore Modelly and its features, we have the following resources available:
-
-### Best practices
-- [Modelly best practices](best-practices): an overview of tips and guidelines for using MODELLY.
 
 ### API documentation
 - [Modelly API reference](apis/api_main.md): Detailed documentation of Modelly's classes and functions, one page per package (`modelly.core`, `modelly.space`, `modelly.time`, `modelly.data`, `modelly.behaviour`, `modelly.scenarios`, `modelly.batch`, `modelly.viz`).
@@ -46,5 +57,29 @@ To further explore Modelly and its features, we have the following resources ava
 
 Enjoy modelling with Modelly, and feel free to reach out!
 
-### Coming from Mesa
-- [Migrating from Mesa](migrating_from_mesa): a construct-by-construct map and a codemod, `python -m modelly.migrate`, that rewrites the mechanical parts and reports the rest.
+```{toctree}
+:hidden: true
+:caption: Learn
+
+Overview and tutorials <overview>
+Course <course/index>
+Domain tutorials <tutorials/domains/index>
+```
+
+```{toctree}
+:hidden: true
+:caption: Your own project
+
+Using Modelly in your project <using_modelly_in_your_project>
+Starting a project <new_project>
+Best practices <best-practices>
+```
+
+```{toctree}
+:hidden: true
+:caption: Coming from another tool
+
+From Mesa <migrating_from_mesa>
+From NetLogo <netlogo>
+From R and Julia <r_and_julia>
+```

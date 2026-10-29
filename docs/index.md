@@ -173,45 +173,10 @@ for _ in range(100):
 :maxdepth: 2
 
 Get started <getting_started>
-Your project <using_modelly_in_your_project>
-Starting a project <new_project>
-Examples <examples>
-From Mesa <migrating_from_mesa>
-From NetLogo <netlogo>
-Performance <performance>
+Examples <models>
+Guides <guides>
+Performance <scale>
 API <apis/api_main>
-Overview <overview>
-Best practices <best-practices>
-Checking a model <lint>
-Profiling a model <profile>
-Experiments and sweeps <experiments>
-From laptop to cluster <distributed>
-From R and Julia <r_and_julia>
-Language-model agents <llm_agents>
-Calibration <calibration>
-Sensitivity analysis <sensitivity>
-Coupling fields and ODEs <coupling>
-Emulators <emulators>
-Checkpoints <checkpoints>
-Reproducible studies <provenance>
-Time travel <timetravel>
-Live data and assimilation <assimilation>
-Geospatial models <geospatial>
-Synthetic populations <population>
-Networks <networks>
-Model zoo <zoo/index>
-Gallery <gallery>
-Domain tutorials <tutorials/domains/index>
-Course <course/index>
-Plugins <plugins>
-Studio <studio>
-In the browser <browser>
-Figures and animations <figures>
-Vectorised step phases <vectorised_phases>
-GPU arrays <gpu>
-Differentiable models <differentiable>
-Determinism and platforms <determinism>
-Deprecations <deprecations>
-Roadmap <roadmap/index>
+Releases <releases>
 ```
 

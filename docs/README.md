@@ -8,8 +8,9 @@ updates `/dev/`, a release tag `vX.Y.Z` updates `/X.Y/` (and the root, when it i
 
 | Path | Content |
 |---|---|
-| `index.md` | the landing page |
-| `getting_started.md` | concepts and the tutorial index |
+| `index.md` | the landing page; its toctree is the six header sections below |
+| `getting_started.md` | Get started: concepts, the tutorial index, your own project, coming from another tool |
+| `models.md`, `guides.md`, `scale.md`, `releases.md` | the Examples, Guides, Performance and Releases sections: each page indexes its section and holds its toctree |
 | `tutorials/*.ipynb` | twelve executable notebooks, run during the build |
 | `using_modelly_in_your_project.md` | from an empty folder to a tested, replicated model |
 | `migrating_from_mesa.md` | construct-by-construct map and the codemod |
