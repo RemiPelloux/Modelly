@@ -138,14 +138,14 @@ def measure(name: str, params: dict, rounds: int, core: str) -> dict:
     }  # fmt: skip
 
 
-def collect(name: str, params: dict, seeds: int, jobs: int, core: str | None) -> list:
-    """The statistics of both arms on seeds ``SEED_BASE`` and up, as (original, migrated) pairs."""
+def collect(name: str, params: dict, seeds: range, jobs: int, core: str | None) -> list:
+    """The statistics of both arms on ``seeds``, as (original, migrated) pairs."""
 
     def both(seed: int) -> tuple[dict, dict]:
         return tuple(run(name, arm, seed, params, core)["stats"] for arm in ARMS)
 
     with ThreadPoolExecutor(max_workers=jobs) as pool:
-        return list(pool.map(both, range(SEED_BASE, SEED_BASE + seeds)))
+        return list(pool.map(both, seeds))
 
 
 def agree(name: str, pairs: list) -> list[dict]:
@@ -174,6 +174,12 @@ def parse() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--rounds", type=int, default=10)
     parser.add_argument("--seeds", type=int, default=100, help="0 skips the agreement")
+    parser.add_argument(
+        "--seed-base",
+        type=int,
+        default=SEED_BASE,
+        help="first seed (10000: a replication)",
+    )
     parser.add_argument("--core", default="2", help="taskset CPU list for the timings")
     parser.add_argument("--jobs", type=int, default=4, help="parallel agreement runs")
     parser.add_argument("--agree-cores", help="taskset CPU list for the agreement runs")
@@ -190,7 +196,8 @@ def example(name: str, options: argparse.Namespace, rows: list) -> dict:
     entry = {"params": params, "steps": spec["steps"], "class": spec["cls"]}
     entry["timing"] = measure(name, params, options.rounds, options.core)
     if options.seeds > 1:
-        pairs = collect(name, params, options.seeds, options.jobs, options.agree_cores)
+        seeds = range(options.seed_base, options.seed_base + options.seeds)
+        pairs = collect(name, params, seeds, options.jobs, options.agree_cores)
         entry["stats"] = [{"original": o, "migrated": p} for o, p in pairs]
         rows += agree(name, pairs)
     shown = {k: v for k, v in entry["timing"].items() if k != "times"}
@@ -204,7 +211,7 @@ def main() -> None:
     core = options.core.split(",")[0].split("-")[0]
     out = {
         "environment": environment(ROOT, {"modelly": str(PYTHON)}, int(core)),
-        "smoke": options.smoke, "seed_base": SEED_BASE, "examples": {},
+        "smoke": options.smoke, "seed_base": options.seed_base, "examples": {},
     }  # fmt: skip
     rows = []
     for name in options.only:
