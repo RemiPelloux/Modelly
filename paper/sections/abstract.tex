@@ -5,17 +5,17 @@ programming model is compatible with Mesa's. It stores agent state in model-owne
 (columns) or counted populations (cohorts), runs its inner loops in C with pure-Python twins,
 and includes the steps of a study (sweeps, calibration, sensitivity analysis, emulators, data
 assimilation, manifests, bundles) and seventeen tested reference models. On eight workloads
-written idiomatically for each framework, the column form runs its steps 2.9 to 31 times
-faster than per-agent Mesa~3.5 code (at most 25 without flocking, where part of the gain is a
-KD-tree replacing an all-pairs search), 4.5 to 42 times faster than Mesa~2.3 and 3.1 to 9.5
-times faster than mesa-frames (on its four), and 1.8 to 4.6 times slower than hand-written
+written idiomatically for each framework, the column form runs its steps 2.9 to 33 times
+faster than per-agent Mesa~3.5 code (12 times faster than Mesa~3.5 with a KD-tree on flocking),
+4.6 to 42 times faster than Mesa~2.3 and 3.0 to 9.6 times faster than mesa-frames (on its
+four), and 1.8 to 4.5 times slower than hand-written
 numpy without agent objects (on three); the cohort form of the one workload that has one runs
-132 times faster than Mesa~3.5. Over 100 paired seeds, no difference between a statistic of a
+135 times faster than Mesa~3.5. Over 100 paired seeds, no difference between a statistic of a
 \modelly{} variant and of Mesa~2.3 survives Holm correction, and 63 of 67 comparisons are
 equivalent within half a standard deviation (29 with Holm-corrected equivalence tests).
-Mesa~3.5 models ported without changing their logic, Mesa's own examples among them, run 1.05
-to 2.3 times faster, two Mesa~2.3 models 2.7 and 4.8 times. \modelly{} also splits a run
+Mesa~3.5 models migrated by a codemod without changing their logic, Mesa's own examples among
+them, run 1.05 to 2.3 times faster on \modelly{}, two Mesa~2.3 models 2.7 and 4.8 times. \modelly{} also splits a run
 across processes byte-identically, runs columns on a GPU (steps 35 times faster at ten million
 agents, 1.5 to 1.9 times including construction), differentiates models, assimilates live
-data and exports a model to the browser, each with its stated shortfalls.
+data and exports a model to a web page that runs in any browser.
 \end{abstract}

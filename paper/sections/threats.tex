@@ -17,8 +17,13 @@ to them.
 \paragraph{Framework or algorithm.} The playbook speed-ups measure what a modeller gains by
 writing each model in the form the framework offers, not the framework's overhead alone. Part
 of a gain can be algorithmic: the Mesa flocking implementation scans every agent for
-neighbours, as Mesa's continuous space does, while the \modelly{} one queries a KD-tree; a
-Mesa model could call \code{scipy.spatial.cKDTree} itself. The cell-list variants keep Mesa's
+neighbours, as Mesa's continuous space does, while the \modelly{} one queries a KD-tree. We
+measured how much of the flocking gain that is: a Mesa~3.5 implementation that finds
+neighbours with one periodic \code{scipy.spatial.cKDTree} per step and keeps everything else
+per agent (\code{mesa3kd\_model.py}) gives the same statistics as Mesa~3.5's own search on all
+110 seeds compared and runs 2.7 times faster than it, and \modelly{}'s columns run 12 times
+faster again (\cref{tab:playbooks}): the algorithm accounts for a factor of 2.7, the
+framework for the remaining factor of 12. The cell-list variants keep Mesa's
 data structure but not all of its loops: in Schelling's model most of their gain comes from
 counting every resident's similar neighbours at once, which takes three quarters of Mesa's run
 time, while Mesa's move to a random empty cell already runs in constant expected time. In
@@ -42,35 +47,37 @@ baselines we did not write is that of Mesa~3.5's own examples (\cref{tab:mesa-ex
 whose Mesa arm runs Mesa's code unmodified; it measures the same-code gain, not the gain of the faster
 forms, which no Mesa-written model can show.
 
-\paragraph{Measurement.} The timings of the playbooks, the ports and Mesa's examples come from
-one laptop with a hybrid processor, in one session of about an hour and ten minutes, pinned to one performance
+\paragraph{Measurement.} The timings of the playbooks, the migrated models and Mesa's examples come from
+one laptop with a hybrid processor, pinned to one performance
 core (CPU 2, one of the processor's four 4.7~GHz
 cores; the other twelve are efficiency cores), under the \code{intel\_pstate} driver with the
 \code{performance} governor and turbo disabled, so the core ran at its 1.9~GHz base frequency.
 Absolute times are therefore longer than on a turbo-enabled machine; the ratios are what we
 report. The core was pinned but not isolated: other work shared the machine (one-minute load
-average 3.3 to 28.8 at the start of each workload), and while it cannot take the pinned core's
+average 5.3 to 28.8 at the start of each workload), and while it cannot take the pinned core's
 CPU time it competes for the shared cache and memory bandwidth, which may weigh more on the
 memory-bound array code than on interpreter-bound per-agent code. The order of the
 implementations rotated from round to round: every per-round ratio over Mesa~2.3 lies within
-18\% of its median (over Mesa~3.5, within 15\%), for 26 of the 28 non-reference variants
-within 10\% (the two exceptions are the insect population's column and cohort forms, 18 and
-11\%), and the bootstrap intervals of \cref{tab:speedup-ci} are a few percent wide (41.8
-[41.3, 42.5] for the grid epidemic's columns over Mesa~2.3); they are within-session
-intervals and do not include the variation between sessions. Without a fixed frequency (turbo and a power-saving governor), ratios move by tens of percent
-from one session to the next, so the conclusions rest on the order of magnitude of each speed-up, not
-on its last digit, and on one machine: other processors, with other cache sizes and
+18\% of its median (over Mesa~3.5, within 19\%), for 26 of the 29 non-reference variants
+within 10\% (the exceptions are the insect population's column and cohort forms and the grid
+epidemic's numpy baseline, 18, 12 and 12\%), and the bootstrap intervals of
+\cref{tab:speedup-ci} are a few percent wide (42.0 [41.4, 44.8] for the grid epidemic's
+columns over Mesa~2.3). Those are within-session intervals; between sessions we timed all
+eight playbooks twice, in two sessions on the same core and settings
+(\code{paper/data/playbooks\_session1/} and \cref{tab:playbooks}), and every one of the 48 speed-ups the two
+sessions share agrees within 4\% (median 0.9\%). The conclusions rest on that one machine: other processors, with other cache sizes and
 vector units, will give other ratios. The measurements of \cref{sec:scale} were
 made on the same laptop without the fixed frequency: the GPU comparison has three rounds and
 the browser's first load is a median of three, while the weak scaling (\cref{tab:scaling}),
 the 100-million-row run and the nowcast are single runs; the claims that carry weight there
 (identical outputs, a 35-fold speed-up, shortfalls by a factor) do not turn on a few percent.
 
-\paragraph{One interpreter, one size.} Every timing and every digest of this paper ran on
+\paragraph{One interpreter, few sizes.} Every timing and every digest of this paper ran on
 CPython~3.15; \modelly{} supports 3.12 and later, and its speed on 3.12 to 3.14 was not
-measured. Each playbook is timed at one population size (\cref{tab:workloads}); the GPU
-measurement shows how strongly a speed-up can depend on the size (\cref{sec:gpu}), and the
-ratios of \cref{tab:playbooks} should not be extrapolated far from the sizes timed.
+measured. The playbooks are timed at one population size each, and three of them at three sizes
+(\cref{tab:sizes}), where the columns' lead grows with the population; the other five were not
+timed at other sizes, and the GPU measurement shows how strongly a speed-up can depend on the
+size (\cref{sec:gpu}).
 
 \paragraph{Agreement.} The agreement study (\cref{sec:agreement}) compares chosen summary
 statistics, not whole trajectories; six small differences are individually detectable at the
@@ -102,7 +109,7 @@ yet by a study outside the repository.
 
 \begin{itemize}[leftmargin=*,itemsep=2pt]
   \item \textbf{Speed comes from the model's form.} A model written agent by agent gains only
-  where the framework's own calls take its time (1.05 to 2.3 times over Mesa~3.5, 2.7 and 4.8 over Mesa~2.3, \cref{sec:portability}); the
+  where the framework's own calls take its time (1.05 to 2.3 times over Mesa~3.5, 2.7 and 4.8 over Mesa~2.3, \cref{sec:samecode}); the
   large gains of \cref{sec:playbooks} require phases that can be
   expressed over the whole population. Sequential decisions where each agent depends on the
   previous one's move remain per-agent loops.
@@ -113,7 +120,8 @@ yet by a study outside the repository.
   crossover unmeasured, and does not pay for cohort tables or for construction; gradients through discrete choices are approximations; fields
   need orthogonal grids with uniform spacing; the Ray backend and Apple Metal are untested.
   \item \textbf{Checkpoints and closures.} Checkpoints pickle the model; models that hold
-  lambdas, nested functions or classes created at run time cannot be saved, and the framework
-  refuses them with an error naming the object. Checkpoints load only under the \modelly{} and the
+  lambdas, nested functions, classes created at run time or open files cannot be saved: lambdas
+  and nested functions are refused with an error naming them, other unpicklable objects fail
+  with pickle's own error. Checkpoints load only under the \modelly{} and the
   Python minor versions that wrote them.
 \end{itemize}

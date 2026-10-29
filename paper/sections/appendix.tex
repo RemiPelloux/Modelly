@@ -44,16 +44,19 @@ NP="--variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth"
     --playbooks grid_epidemic --tag large_grid_mesa3np
 .venv/bin/python paper/scripts/agreement.py analyse --tag small_mesa3np
 .venv/bin/python paper/scripts/agreement.py analyse --tag large_grid_mesa3np
-# the public same-code ports (Mesa 2.3 and Mesa 3.5); mesa-frames with more threads
-.venv/bin/python paper/scripts/ports.py --rounds 10 --core 2
+# the same model code on both frameworks (Mesa 2.3 and Mesa 3.5); mesa-frames threads
+.venv/bin/python paper/scripts/migrated.py --rounds 10 --core 2
 .venv/bin/python paper/scripts/frames_threads.py
-# Mesa's own examples against their codemod ports, then their table
+# Mesa's own examples on Mesa and, migrated by the codemod, on Modelly; then their table
 .venv/bin/python benchmarks/mesa_examples/run.py --rounds 10 --seeds 100 --core 2 \
     --agree-cores 8-15
 .venv/bin/python paper/scripts/mesa_examples_table.py
 # ABC-SMC coverage over 200 datasets per model
 .venv/bin/python paper/scripts/recovery.py run --replicates 200 --jobs 8
 .venv/bin/python paper/scripts/recovery.py analyse
+# coverage with the true parameters drawn from the prior; speed-ups at three sizes
+.venv/bin/python paper/scripts/prior_coverage.py run --replicates 500 --jobs 8
+.venv/bin/python paper/scripts/sizes.py run --rounds 5 --core 2
 # determinism, calibration and sensitivity checks
 .venv/bin/python -m pytest tests/determinism tests/calibrate tests/sensitivity
 # scaling out and connecting to data: split runs, assimilation, coupling, emulators, ...
@@ -84,8 +87,13 @@ browser runs with the pure wheel and the browser's first load, from the checkout
 then the Mesa~3.5 + numpy and baseline agreement studies and the two replications on new
 seeds, from commit \code{e3cfb74}, which differs from the tag only in the paper's own files;
 then, at the tag again, the test suite, and the WebAssembly wheel built and every model run
-with it in the browser. Each result file records what it ran with: the
-playbook, port, example and agreement files the commit, the machine, the load and the package
+with it in the browser. A last session ran from commit \code{63e7bd9}, whose \code{modelly}
+package is the tag's and which adds the Mesa~3.5 + KD-tree flocking implementation and the
+scripts for the size sweep and the prior-drawn coverage: the second timing session of every
+playbook, which gives \cref{tab:playbooks} (the first, at the tag, is in
+\code{paper/data/playbooks\_session1/}), the size sweep, the run-by-run comparison of the
+KD-tree implementation with Mesa~3.5, and the prior-drawn coverage study. Each result file records what it ran with: the
+playbook, migrated-model, example and agreement files the commit, the machine, the load and the package
 versions; \code{assimilation.json}, \code{ishigami.json} and \code{graph\_cut.json} the commit,
 date, interpreter and package versions, their \code{+dirty} marking the benchmark results
 written earlier in the session, not code; the \code{weak\_*.json} files the interpreter, the

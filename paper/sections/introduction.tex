@@ -22,35 +22,44 @@ klinger2018pyabc, kwakkel2017ema}. Faster platforms exist in Java and Julia
 vectorised speed \citep{mesaframes}, and Repast4Py distributes a run over MPI processes
 \citep{collier2020repast4py}.
 
-\modelly{} implements a programming model compatible with Mesa's, so that a Mesa user is at
-home and the mechanical part of porting a Mesa model is done by a codemod, and adds what is needed for speed and for
-reproducible research:
+\modelly{} is a new framework, written from scratch, that removes this cost without asking the
+modeller to leave Python or to give up agents. Its programming model is compatible with
+Mesa's, so a Mesa user is at home from the first line and a codemod migrates an existing Mesa
+model's framework calls. A researcher writes the model once, as plain Python with agents as
+objects, and gets:
 
 \begin{itemize}[leftmargin=*,itemsep=2pt]
-  \item \textbf{Performance without leaving Python.} Agent attributes can live in
-  model-owned \code{numpy} arrays (\emph{columns}), identical agents can be counted rather
-  than instantiated (\emph{cohorts}), and the framework's own inner loops run in small C
-  modules, each with a pure-Python twin that gives the same results
-  (\cref{sec:design}). \Cref{sec:performance} measures the gain on eight workloads against
-  Mesa~2.3, Mesa~3.5, mesa-frames and hand-written numpy, says where it comes from, and checks
-  that the faster forms compute the same model.
-  \item \textbf{Reproducibility as a property of the framework.} Seeded generators reproduce
-  the standard library's random stream, and a determinism suite checks that the bundled
-  examples give the same digests compiled or in pure Python and straight or resumed from a
-  checkpoint (\cref{sec:reproducibility}).
-  \item \textbf{The study, not only the simulation.} Experiments, calibration, sensitivity
-  analysis, provenance manifests, verifiable bundles and ODD skeletons \citep{grimm2006odd,
-  grimm2020odd} are part of the package and share one seeding discipline, so their results do
-  not depend on the executor or the number of workers (\cref{sec:workflow}).
-  \item \textbf{Beyond one process, and towards data.} Per-agent random streams and
-  split runs, a GPU backend, differentiable models, data assimilation, fields coupled to
-  agents, emulators, synthetic populations and a browser export, each measured and each
-  reported with what it does not yet do (\cref{sec:scale}).
+  \item \textbf{Speed without leaving Python.} Agent attributes can live in model-owned
+  \code{numpy} arrays (\emph{columns}), identical agents can be counted rather than
+  instantiated (\emph{cohorts}), and the framework's inner loops run in compiled C, each with a
+  pure-Python twin that gives the same results (\cref{sec:design}). On eight workloads the
+  column form runs 4.6 to 42 times faster than Mesa~2.3 and 2.9 to 33 times faster than
+  Mesa~3.5, the cohort form 251 and 135 times, and an unchanged Mesa model runs up to 4.8 times
+  faster; a study of 100 seeds per variant shows that the faster forms compute the same model
+  (\cref{sec:performance}).
+  \item \textbf{The whole study in one package.} Parameter sweeps, approximate Bayesian
+  calibration, Morris, Sobol and PAWN sensitivity analysis, emulators and history matching,
+  provenance manifests, verifiable archive bundles and ODD descriptions \citep{grimm2006odd,
+  grimm2020odd} are part of the framework, each a few lines of code, and share one seeding
+  discipline, so a study's results do not depend on the executor, the number of workers or the
+  order in which runs finish (\cref{sec:workflow}). Each method is checked against problems
+  whose answers are known (\cref{sec:reproducibility}).
+  \item \textbf{Results others can rerun.} Seeded generators reproduce the standard library's
+  random stream; a run's manifest records everything needed to repeat it, and
+  \cmd{modelly verify} repeats it and names the first output that differs; a determinism suite
+  checks that the bundled examples give the same digests compiled or in pure Python and
+  straight or resumed from a checkpoint (\cref{sec:reproducibility}).
+  \item \textbf{From one laptop to large and data-driven studies.} The same model can be split
+  across processes with byte-identical results, run its array phases on a GPU (35 times faster
+  at ten million agents), be differentiated for gradient calibration, assimilate live
+  observations, couple agents to diffusing fields, be emulated when runs are expensive, start
+  from a synthetic population, and be shared as a page that runs in any browser
+  (\cref{sec:scale}).
 \end{itemize}
 
 The rest of the paper situates \modelly{} among existing tools (\cref{sec:related}),
 describes its design (\cref{sec:design}) and research workflow (\cref{sec:workflow}),
 evaluates its speed and its agreement with Mesa (\cref{sec:performance}) and the correctness
 of its methods (\cref{sec:reproducibility}), measures how it scales out and connects to data
-and where that falls short (\cref{sec:scale}), delimits the studies it suits (\cref{sec:usecases}), and ends with the threats to the validity of these measurements and the
+(\cref{sec:scale}), sets out the studies it serves (\cref{sec:usecases}), and ends with the threats to the validity of these measurements and the
 software's limitations (\cref{sec:threats}).

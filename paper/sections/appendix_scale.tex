@@ -34,17 +34,17 @@ agents keyed on \code{unique\_id} during a phase. Backends are \code{local}, \co
 reduce across partitions, and a checkpoint writes one file per partition with an index of
 digests that \code{Cluster.restore} continues draw for draw.
 
-\paragraph{Measured.} On three reference models (\code{modelly/examples/distributed}: a grid
-epidemic on blocks, a network SIR on graph parts, a continuous SIR on KD-tree boxes), every
+\paragraph{Measured.} On three reference models in \code{modelly/examples/distributed} (a
+grid epidemic on blocks, a network SIR on graph parts, a continuous SIR on KD-tree boxes), every
 reporter row and every agent's attributes, location and stream state are byte-identical to a
-plain single-process run at 1, 2, 4 and 16 partitions on two seeds, with the compiled and the
-pure-Python core (\code{tests/distributed/test\_independence.py}, also in the determinism
-suite), under \code{mpirun} with 2 and 4 ranks on the grid and network models
-(\code{test\_mpi.py}), and on two Dask workers. Weak scaling of the grid epidemic
-(\code{benchmarks/distributed/weak\_scaling.py}, raw numbers in
-\code{paper/data/weak\_*.json}) is in \cref{tab:scaling}: next to each split run of $K$
-workers the script times $K$ independent copies of one block with no communication, which
-separates what the machine gives from what the protocol keeps of it.
+plain single-process run at 1, 2, 4 and 16 partitions on two seeds; the test is
+\code{test\_independence.py} in \code{tests/distributed/}, also in the determinism suite, whose
+single-process digests are the same with the compiled and the pure-Python core. The same holds
+under \code{mpirun} with 2 and 4 ranks on the grid and network models (\code{test\_mpi.py}) and
+on two Dask workers. Weak scaling of the grid epidemic is in \cref{tab:scaling}; the
+script is \code{weak\_scaling.py} in \code{benchmarks/distributed/}, and the raw numbers are in
+\code{paper/data/weak\_*.json}. Next to each split run of $K$ workers the script times $K$ independent copies of one block with
+no communication, which separates what the machine gives from what the protocol keeps of it.
 
 \begin{table}[htbp]
   \centering
@@ -290,7 +290,7 @@ from a size table with an adult head, households placed in regions, schools and 
 assigned to the nearest place with room within a distance limit, and a contact network with
 household, school and work layers; the age-structured SEIR zoo model can start from it. No
 personal data is bundled: the marginals of the tests are made up. Three small samples of
-Burlington, Vermont, ship with their licences in a \code{NOTICE} file: OpenStreetMap streets
+Burlington, Vermont, ship with their licences in a \code{NOTICE.md} file: OpenStreetMap streets
 (ODbL 1.0, © OpenStreetMap contributors; 255 junctions, 607 directed segments), a $120
 \times 120$ window of ESA WorldCover 2021 \citep{zanaga2022worldcover} (CC BY 4.0) and 41
 census tracts (public domain), with a script that downloads the full sources, checks their
@@ -315,7 +315,7 @@ with the threshold.
 \cmd{modelly export-web model.py:Model} writes a static site that runs the model with Pyodide
 \citep{pyodide} (pinned version 314.0.7, loaded from its content delivery network): the parameter panel of Studio,
 run controls, a space view, a reporter plot, the model in a Web Worker so the page answers
-during long runs, Modelly as a trimmed pure-Python wheel of about 0.5~MB, and only the
+during long runs, Modelly as a trimmed pure-Python wheel of about 0.8~MB, and only the
 packages the model was observed to import. The C modules also build for WebAssembly with
 Emscripten through \code{pyodide build}, and the export can ship that wheel.
 

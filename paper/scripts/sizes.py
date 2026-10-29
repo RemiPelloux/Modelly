@@ -93,8 +93,10 @@ def table(timing: dict) -> str:
         "\\begin{tabular}{llrrrrrr}",
         "\\toprule",
         (
-            "Workload & Size & Agents & Mesa 2.3, s & over Mesa 2.3 & over Mesa 3.5 "
-            "& over mesa-frames & numpy over columns \\\\"
+            " & & & & \\multicolumn{3}{c}{columns faster than} & numpy faster \\\\ "
+            "\\cmidrule(lr){5-7} "
+            "Workload & Size & Agents & Mesa 2.3, s & Mesa 2.3 & Mesa 3.5 "
+            "& mesa-frames & than columns \\\\"
         ),
         "\\midrule",
     ]

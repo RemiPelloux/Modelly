@@ -1,18 +1,20 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-\modelly{} keeps the agent-based programming model that Python modellers know and lowers the
-cost of using it in research: array-backed and counted populations for speed, compiled loops
-with pure-Python twins, and the experiment, calibration, sensitivity, provenance and
-publication steps built on one seeding discipline. Its claims are measured against Mesa~2.3, Mesa~3.5 and mesa-frames, with an agreement study over 100 seeds per variant, and
-with methods checked on problems whose answers are known. It also runs beyond one process
-(split runs, a GPU backend, differentiable models) and connects a model to data, fields and
-the browser, each capability reported with what it measures and where it falls short
-(\cref{tab:scale}). The
-measurements also show where it does not help (a model written agent by agent runs 1.05 to 2.3 times faster than on Mesa~3.5, depending on
-how much of its time the framework's calls take; hand-written numpy that gives up agent
-objects is 1.8 to 4.6 times faster than its columns; a split run on one laptop gains little,
-and a GPU at 20,000 agents is slower than the CPU) and where its evidence is still thin (\cref{sec:threats}).
+\modelly{} gives Python modellers the agent-based programming model they know and removes
+most of what it costs to do research with it. A model written once, with agents as objects,
+runs its population-wide phases as array operations, 4.6 to 42 times faster than Mesa~2.3 and
+2.9 to 33 times faster than Mesa~3.5 on eight workloads, and its counted populations two orders
+of magnitude faster, while computing the same model: over 100 paired seeds no difference from
+Mesa survives correction. Around that model, the steps of a study (sweeps, calibration,
+sensitivity analysis, emulation, provenance and archiving) are part of the framework, built on
+one seeding discipline and checked against problems whose answers are known, so a study's
+numbers can be rerun and verified by anyone. The same model scales out to processes and GPUs,
+connects to live data and continuous fields, and can be shared as a web page
+(\cref{tab:scale}). For a researcher who needs many runs, large populations or results that
+others can check, \modelly{} replaces the tools usually assembled by hand around a simulation
+library with one package, one seed and one record. The conditions under which these results
+hold, and the evidence still to gather, are set out in \cref{sec:threats}.
 
 \section{Availability}
 \label{sec:availability}
@@ -37,13 +39,14 @@ repository's \code{CITATION.cff}.
 \paragraph{Software availability.} Name: \modelly{} (\code{modelly-abm} on PyPI). Developer:
 R\'emi Pelloux, OpenPro (\href{mailto:rp@openpro.ai}{rp@openpro.ai}). First available: 2026.
 Version described: 1.4.2. Language: Python, with five C extension modules. Requirements:
-CPython 3.12 or later, \code{numpy}, \code{pandas}, \code{scipy} and \code{tqdm}; optional
-extras for visualisation, geography, networks, experiment storage, MPI (\code{mpi4py}), GPUs
-(CuPy), differentiable models (JAX), message brokers, an outside optimiser and xarray.
+CPython 3.12 or later, \code{numpy}, \code{pandas}, \code{scipy} and \code{tqdm} (and
+\code{pythran} on macOS); optional extras for visualisation, geography, networks, experiment
+storage, Dask and Ray executors, MPI (\code{mpi4py}), GPUs (CuPy), differentiable models (JAX),
+message brokers, an outside optimiser and xarray.
 Hardware: any machine that runs CPython; the release workflow builds compiled wheels for
 Linux, macOS and Windows on x86-64 and ARM64 and a pure-Python wheel for everything else and
-for the browser. Size: about 1.1~MB for
-the Linux x86-64 and the pure wheel. Licence: Apache 2.0. Source:
+for the browser. Size: 1.17~MB for the
+Linux x86-64 wheel and 1.12~MB for the pure one. Licence: Apache 2.0. Source:
 \href{https://github.com/RemiPelloux/Modelly}{\nolinkurl{github.com/RemiPelloux/Modelly}}.
 
 \paragraph{Data availability.} The data and scripts behind every measured table and figure are

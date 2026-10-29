@@ -5,7 +5,7 @@
 
 \modelly{} is an independent implementation: it contains no Mesa code and does not depend on
 Mesa. Its compatibility with Mesa is at the level of the programming model and the API's
-names, which is what lets a codemod port a Mesa model (\cref{sec:portability}).
+names, which is what lets a codemod migrate a Mesa model (\cref{sec:samecode}).
 A \modelly{} model is a \code{Model} subclass that owns its agents, its spaces, its clock and
 its random generators; an agent is an \code{Agent} subclass with a \code{step} method or
 whatever behaviour the model calls. Parameters live in a typed \code{Scenario} that also
@@ -105,8 +105,8 @@ the numbers of Python's \code{random.Random} for the same seed (the Mersenne Twi
 \code{FastRandom}'s hot methods (\code{randint}, \code{choice}, \code{shuffle},
 \code{sample}) run in C on CPython's own generator state; at import it is checked against
 \code{random.Random}, and a pure-Python implementation with the same stream is used when the C
-module is absent. A model ported from code that used \code{random.Random(seed)} therefore keeps
-its exact stream, which is what makes the bit-identical port of \cref{sec:portability}
+module is absent. A model migrated from code that used \code{random.Random(seed)} therefore keeps
+its exact stream, which is what makes the bit-identical results of \cref{sec:samecode}
 possible. A model can instead give every agent generators of its own
 (\code{agent\_streams = True}): each is seeded from the scenario's seed sequence and the
 agent's stream key, so what an agent draws no longer depends on the activation order or on
@@ -115,11 +115,11 @@ run (\cref{sec:split}). The flag is off by default; turning it on changes a mode
 
 \subsection{Compiled loops with pure-Python twins}
 
-Five small C modules implement the framework's inner loops: the random core, per-agent method
-calls (\code{do}, \code{shuffle\_do}), the cell move and breadth-first neighbourhood walk,
-set filtering and attribute gathering (\code{select}, \code{agg}), and the
-event list's heap (\cref{app:perf2}). Each C function is a
-line-for-line port of a Python function that stays in the source as its fallback; tests run the
+Five small C modules implement the framework's inner loops: the random core; per-agent method
+calls (\code{do}, \code{shuffle\_do}) and the breadth-first neighbourhood walk; the cell move;
+set filtering and attribute gathering (\code{select}, \code{agg}); and the event list's heap (\cref{app:perf2}). Each C function is a
+line-for-line translation of a \modelly{} Python function that stays in the source as its
+fallback; tests run the
 two side by side, and \code{MODELLY\_PURE\_PYTHON=1} forces the Python path. Results are
 identical either way. The modules build with GCC, Clang and MSVC; the release workflow builds
 them on the tag for Linux (glibc and musl, x86-64 and ARM64), macOS and Windows (x86-64 and

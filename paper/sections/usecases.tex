@@ -1,10 +1,9 @@
-\section{Scope}
+\section{Studies that \modelly{} serves}
 \label{sec:usecases}
 
-The measurements of \cref{sec:performance,sec:reproducibility,sec:scale} delimit the studies
-for which \modelly{} helps: those that need many runs, large populations, or results that
-others must be able to check. \Cref{tab:usecases} lists these situations, the part of the
-framework that does the work, and the evidence for it.
+\modelly{} is built for studies that need many runs, large populations, or results that others
+must be able to check. \Cref{tab:usecases} lists these situations, the part of the framework
+that does the work, and the evidence for it in this paper.
 
 \begin{table}[htbp]
   \centering
@@ -16,11 +15,11 @@ framework that does the work, and the evidence for it.
     Situation & What helps \\
     \midrule
     Large populations whose phases act on all agents alike (movement, infection, ageing,
-    mortality) & Columns turn those phases into array operations: 2.9 to 31 times faster than
-    Mesa~3.5 and 4.5 to 42 times faster than Mesa~2.3 on the playbooks (\cref{sec:playbooks}). \\ \addlinespace
+    mortality) & Columns turn those phases into array operations: 2.9 to 33 times faster than
+    Mesa~3.5 and 4.6 to 42 times faster than Mesa~2.3 on the playbooks (\cref{sec:playbooks}). \\ \addlinespace
     Populations with many identical individuals (insects, cohorts of patients, age classes)
     & Cohort tables with binomial draws keep the individual model's law
-    (\cref{eq:cohorts}) at a fraction of the cost: 132 times faster than Mesa~3.5 on the insect model. \\ \addlinespace
+    (\cref{eq:cohorts}) at a fraction of the cost: 135 times faster than Mesa~3.5 on the insect model. \\ \addlinespace
     Parameter sweeps, replicates and cluster runs & Experiments with resumable stores and
     executors from a laptop to SLURM, with results independent of the executor (\cref{sec:workflow}). \\ \addlinespace
     Fitting a model to data; knowing which parameters matter & ABC-SMC, simulated moments,
@@ -28,8 +27,8 @@ framework that does the work, and the evidence for it.
     (\cref{tab:recovery}). \\ \addlinespace
     A paper whose results a reviewer must be able to rerun & Run manifests, \cmd{modelly verify}, byte-identical bundles for archiving, ODD skeletons, golden digests checked
     across builds (\cref{tab:determinism}). \\ \addlinespace
-    An existing Mesa model that has become too slow & Port with the codemod (bit-identical results on the
-    two Mesa~2.3 models ported, equivalent ones from Mesa~3.5; 1.05 to 2.3 times faster than Mesa~3.5), then move the hot phases to columns one at a time. \\ \addlinespace
+    An existing Mesa model that has become too slow & Migrate it with the codemod (bit-identical results on
+    the two Mesa~2.3 models migrated, equivalent ones from Mesa~3.5; 1.05 to 2.3 times faster than Mesa~3.5), then move the hot phases to columns one at a time. \\ \addlinespace
     A model others should try without installing anything & A static export that runs the
     model in a browser tab (\cref{sec:browser}). \\
     \bottomrule
@@ -38,5 +37,21 @@ framework that does the work, and the evidence for it.
 
 A population too large for one process, millions of agents whose phases are array
 operations, a model kept in step with arriving data, agents on a diffusing resource, or an
-expensive model and few runs are the situations of \cref{sec:scale}, whose capabilities come
-with the conditions of \cref{sec:scale,tab:scale}.
+expensive model and few runs are the situations of \cref{sec:scale}.
+
+\paragraph{Starting points by field.} Each of the seventeen reference models comes with its
+validation test and can be copied into a new project with \cmd{python -m modelly.zoo copy}, so
+a study starts from a working, tested model rather than a blank file. An epidemiologist starts
+from the age-structured SEIR model, fits its rates to case counts with ABC-SMC, ranks the
+interventions by Sobol index and narrows the parameter space by history matching; or from the
+epidemic coupled to hospital capacity, or Ross--Macdonald vector-borne transmission. An
+ecologist starts from the energy-budget population, the foragers on a diffusing nutrient or
+habitat selection on real land cover, and runs a stage-structured population as cohorts over a
+factorial of scenarios. An economist starts from kinetic wealth exchange, the Bouchaud--M\'ezard
+model or the zero-intelligence order book, and sweeps exchange rules over a Latin hypercube on
+a cluster. A social scientist starts from Schelling's model on census tracts, Axelrod's culture
+model or the Deffuant and Hegselmann--Krause opinion models on a synthetic population's
+household, school and work networks. A transport researcher starts from Nagel--Schreckenberg
+traffic or from traffic assignment on a city's street graph. In each case the model stays
+ordinary Python, and the study's runs, fit and sensitivity analysis share one seed and one
+record that a reviewer can rerun with \cmd{modelly verify}.

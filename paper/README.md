@@ -21,8 +21,8 @@ in it comes from a file or a script in this repository.
 | `tables/agreement_small.tex`, `figures/agreement_small.pdf` | Agreement table and figure, **generated** from that data |
 | `scripts/make_figures.py` | Regenerates the playbook table and the speed-up figure |
 | `scripts/bootstrap_ci.py` | Paired bootstrap 95% intervals of every step-time speed-up (appendix table) |
-| `scripts/ports.py` | Times the public ports against Mesa 2.3 and Mesa 3.5 and compares the Mesa 3.5 ports in distribution |
-| `scripts/mesa_examples_table.py` | Table of Mesa's own examples against their codemod ports |
+| `scripts/migrated.py` | Times Mesa 2.3 and Mesa 3.5 models on Mesa and, migrated by the codemod, on Modelly, and compares the Mesa 3.5 ones in distribution |
+| `scripts/mesa_examples_table.py` | Table of Mesa's own examples on Mesa and, migrated by the codemod, on Modelly |
 | `scripts/frames_threads.py` | Times mesa-frames with one polars thread and with all of them |
 | `scripts/agreement.py`, `scripts/agreement_tables.py` | Run the agreement study (`run`) and regenerate its tables and figure (`analyse`) |
 | `scripts/recovery.py` | Runs the ABC-SMC coverage study and regenerates its table |
@@ -56,11 +56,11 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Grid epidemic at the timed size, replication on 200 new seeds (Section 5.3) | `data/agreement_large_grid200_new.json` | `scripts/agreement.py run --seed-base 10000 --size large --seeds 200 --playbooks grid_epidemic --tag large_grid200_new` |
 | Mesa 3.5 and mesa-frames against Mesa 2.3, 100 seeds (Section 5.3) | `data/agreement_small_baselines.json` | `scripts/agreement.py run --variants mesa3 frames --tag small_baselines` |
 | Schelling, replication on 300 new seeds, every implementation (Section 5.3) | `data/agreement_schelling300_new.json` | `scripts/agreement.py run --seed-base 10000 --seeds 300 --playbooks schelling --variants mesa3 frames modelly modelly-cells --tag schelling300_new` |
-| Same code: two public ports against Mesa 2.3 and five against Mesa 3.5, with the Mesa 3.5 ports' agreement over 100 seeds (Section 5.1) | `data/port_public.json`, `benchmarks/ports/`, `benchmarks/ports_mesa3/` | `scripts/ports.py --rounds 10 --core 2` |
+| The same model code on both frameworks: two Mesa 2.3 and five Mesa 3.5 models migrated by the codemod, with the Mesa 3.5 ones' agreement over 100 seeds (Section 5.1) | `data/migrated.json`, `benchmarks/migrated_mesa2/`, `benchmarks/migrated_mesa3/` | `scripts/migrated.py --rounds 10 --core 2` |
 | Bootstrap intervals of the speed-ups (appendix) | `benchmarks/playbooks/results/*.json` | `scripts/bootstrap_ci.py` (part of `make figures`) |
 | Mesa 3.5 + numpy against Mesa 2.3, 100 seeds (Section 5.2, appendix) | `data/agreement_small_mesa3np.json` | `scripts/agreement.py run --variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth --tag small_mesa3np` |
 | Mesa 3.5 + numpy grid epidemic at the timed size, 100 seeds (Section 5.2) | `data/agreement_large_grid_mesa3np.json` | `scripts/agreement.py run --size large --playbooks grid_epidemic --variants mesa3np --tag large_grid_mesa3np` |
-| Mesa's own examples against their codemod ports: timing and agreement (Section 5.1) | `data/mesa_examples.json`, `benchmarks/mesa_examples/` | `benchmarks/mesa_examples/run.py --rounds 10 --seeds 100 --core 2 --agree-cores 8-15`, then `scripts/mesa_examples_table.py` |
+| Mesa's own examples on Mesa and, migrated by the codemod, on Modelly: timing and agreement (Section 5.1) | `data/mesa_examples.json`, `benchmarks/mesa_examples/` | `benchmarks/mesa_examples/run.py --rounds 10 --seeds 100 --core 2 --agree-cores 8-15`, then `scripts/mesa_examples_table.py` |
 | mesa-frames with one thread and with all (Section 5.2) | `data/frames_threads.json` | `scripts/frames_threads.py` |
 | Workload parameters (appendix B) | `benchmarks/playbooks/registry.py` | `make figures` |
 | Determinism (Section 6.1, Table 7) | `tests/determinism`, `tests/determinism/golden.json` | `pytest tests/determinism` |
@@ -80,7 +80,10 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Nowcasting error, resamplings and EnKF recovery as quoted (Section 7, Appendix E.5) | `data/assimilation.json` | `scripts/assimilation.py` |
 | Ishigami estimates as quoted (Section 6.2) | `data/ishigami.json` | `scripts/ishigami.py` |
 | 105 GPU and differentiable tests on CuPy and CUDA JAX (Appendix E.3) | `tests/gpu`, `tests/diff` in the GPU environment (`docs/gpu.md`) | `pytest tests/gpu tests/diff` in `.gpu-venv` |
-| Feature comparison (Table 1) | each project's documentation and repository, October 2026 | by hand: check again before submitting |
+| Speed-ups at three population sizes (Section 5.2, Table `tab:sizes`) | `data/sizes.json` | `scripts/sizes.py run --rounds 5 --core 2` |
+| ABC-SMC coverage with true parameters drawn from the prior (Section 6) | `data/prior_coverage.json` | `scripts/prior_coverage.py run --replicates 500` |
+| The first timing session of the playbooks, for the between-session check (Section 9) | `data/playbooks_session1/` | `benchmarks/playbooks/compare.py --rounds 10 --core 2` |
+| Feature comparison (Table 1) | `data/features_sources.md`: the page or file behind every cell, October 2026 | by hand: check again before submitting |
 
 If the benchmark results are rerun (on different hardware, say), run `make figures` and
 update the hardware line at the start of Section 5.
@@ -115,7 +118,7 @@ update the hardware line at the start of Section 5.
       (numpy) baseline on three (Table 3, Figure 1).
 - [ ] Optional, for a journal: ask Mesa and mesa-frames maintainers to review the baselines,
       and report the three mesa-frames defects upstream.
-- [x] A public same-code result on Mesa's own examples: eight of ten port (Table 2).
+- [x] A public same-code result on Mesa's own examples: eight of ten migrate (Table 2).
 - [ ] arXiv categories: primary **cs.MA** (Multiagent Systems); cross-list **cs.MS**
       (Mathematical Software) and, depending on the audience, **physics.soc-ph** or
       **q-bio.PE**. A first submission to cs.MA may need an endorsement.

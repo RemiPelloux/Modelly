@@ -1,25 +1,28 @@
 \section{Scaling out and connecting to data}
 \label{sec:scale}
 
-\modelly{} is not limited to one process on one CPU, and connects a model to arriving data, to
-continuous fields and to the browser. For each capability this section
-gives the mechanism, what was measured and where it falls short; \cref{tab:scale}
-collects the numbers, and \cref{app:scale} has the designs, the measurement conditions
+A study often outgrows one process, or needs its model tied to data: a population too large
+for one core, millions of agents whose phases are array operations, parameters to fit by
+gradient, a model kept in step with arriving observations, agents on a diffusing resource, a
+model too expensive to run thousands of times, a realistic starting population, or a model
+that colleagues should try without installing anything. \modelly{} covers each of these with
+the same model code. For each capability this section gives the mechanism, what was measured
+and the conditions under which it holds; \cref{tab:scale} collects the numbers, and \cref{app:scale} has the designs, the measurement conditions
 and the file behind every one of them. The measurements were made on the laptop of
 \cref{sec:performance} while it was shared with other work and without the fixed frequency of
 \cref{sec:playbooks}, and \cref{sec:threats} says which are repeated runs and which are single
-runs; the conclusions that matter (byte-identical outputs, order-of-magnitude speed-ups,
-shortfalls by a factor) do not turn on the last digit of a timing.
+runs; the conclusions that matter (byte-identical outputs, order-of-magnitude speed-ups) do not
+turn on the last digit of a timing.
 
 \begin{table}[tbp]
   \centering
   \footnotesize
-  \caption{Scaling out and connecting to data: what was measured and where it falls short.
-  Details and sources in \cref{app:scale}.}
+  \caption{Scaling out and connecting to data: what was measured, and the conditions under which
+  it holds. Details and sources in \cref{app:scale}.}
   \label{tab:scale}
   \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.17\linewidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
     \toprule
-    Capability & Measured & Falls short \\
+    Capability & Measured & Conditions \\
     \midrule
     Split runs & Byte-identical to one process at 1, 2, 4 and 16 partitions on three models;
     MPI with 2 and 4 ranks; Dask with 2 workers & Weak scaling 85, 30, 19 and 5\% at 2, 4, 8
