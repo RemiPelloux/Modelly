@@ -34,6 +34,7 @@ import pandas as pd
 
 WORKERS_ENV = "MODELLY_WORKERS"
 DEFAULT_MAX_WORKERS = 8
+_HANDOFFS_PER_WORKER = 16  # chunks per worker in a batch (see _chunksize)
 
 _CAN_FORK = sys.platform.startswith("linux") and "fork" in mp.get_all_start_methods()
 # Importable functions go to workers that start clean (no inherited threads).
@@ -90,7 +91,7 @@ def run_batch(
         return [run(task) for task in tasks]
     if _importable(run):
         with worker_context().Pool(workers) as pool:
-            return pool.map(run, tasks, chunksize=1)
+            return pool.map(run, tasks, chunksize=_chunksize(len(tasks), workers))
     if not _CAN_FORK:
         raise TypeError(
             f"{run!r} cannot be sent to worker processes on this platform: define it "
@@ -104,9 +105,19 @@ def run_batch(
             warnings.filterwarnings("ignore", _FORK_WARNING, DeprecationWarning)
             pool = mp.get_context("fork").Pool(workers)
         with pool:
-            return pool.map(_call_by_index, range(len(tasks)), chunksize=1)
+            chunksize = _chunksize(len(tasks), workers)
+            return pool.map(_call_by_index, range(len(tasks)), chunksize=chunksize)
     finally:
         _CURRENT, _TASKS = None, []
+
+
+def _chunksize(tasks: int, workers: int) -> int:
+    """Tasks handed to a worker at a time: a sixteenth of its share, at least one.
+
+    One task per hand-off costs a round trip each, which dominates many short runs;
+    sixteen hand-offs per worker still let the last ones even out long, uneven runs.
+    """
+    return max(1, tasks // (workers * _HANDOFFS_PER_WORKER))
 
 
 def _importable(run: Callable[[Any], Any]) -> bool:
