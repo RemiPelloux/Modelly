@@ -3,7 +3,7 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
-## Unreleased
+## 1.4.0 - 2026-10-29
 
 The scale-out release: split runs across processes, a GPU backend, differentiable models,
 live data and assimilation, fields and ODEs coupled to agents, emulators and history matching,
