@@ -112,6 +112,11 @@ class DiscreteSpace[T: Cell](ABC):
 
     def _reset_empties(self) -> None:
         """Forget the empties index; it is rebuilt on the next request."""
+        # Cells point at the index only once it is built. Before that there is
+        # nothing to detach, so adding or removing a cell stays O(1) instead of a
+        # walk over every cell.
+        if not self._empties.enabled:
+            return
         for cell in self._cells.values():
             cell._empties_index = None
         self._empties = _EmptiesIndex()
@@ -137,6 +142,7 @@ class DiscreteSpace[T: Cell](ABC):
         """
         self.__dict__.pop("all_cells", None)
         self._cells[cell.coordinate] = cell
+        cell._empties_index = None  # it may come from another space's index
         self._reset_empties()
 
     def remove_cell(self, cell: T):

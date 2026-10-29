@@ -207,3 +207,37 @@ def test_all_spaces():
 
         found_cell = space.find_nearest_cell(pos)
         assert cell == found_cell
+
+
+def test_network_removing_many_cells_keeps_lookups_right():
+    """Removed cells leave the KD-tree at its next rebuild, never found again."""
+    graph = nx.path_graph(200)
+    net = Network(
+        graph, layout={i: (float(i), 0.0) for i in graph}, random=random.Random(1)
+    )
+    removed = [net._cells[i] for i in range(0, 200, 2)]
+    for cell in removed:
+        net.remove_cell(cell)
+
+    for x in range(200):
+        found = net.find_nearest_cell([float(x), 0.0])
+        assert found.coordinate % 2 == 1
+        assert abs(found.coordinate - x) <= 1
+    assert len(net._kdtree_cells) == 100
+
+
+def test_network_empty_cell_picks_follow_removals_before_and_after_the_index():
+    """Removing cells before the empties index exists, or after, never picks a removed cell."""
+    graph = nx.path_graph(50)
+    net = Network(graph, layout={i: (i, 0) for i in graph}, random=random.Random(3))
+    net._try_random = False
+    for i in range(10):  # before the index is built
+        net.remove_cell(net._cells[i])
+    assert not net._empties.enabled
+    assert net.select_random_empty_cell().coordinate >= 10
+    assert net._empties.enabled
+
+    for i in range(10, 45):  # after: each removal forgets the index
+        net.remove_cell(net._cells[i])
+    picks = {net.select_random_empty_cell().coordinate for _ in range(100)}
+    assert picks <= set(range(45, 50))

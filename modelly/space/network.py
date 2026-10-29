@@ -96,7 +96,13 @@ class Network(DiscreteSpace[Cell]):
         return positions_for_tree
 
     def _rebuild_kdtree(self) -> None:
-        """Rebuild the KD-Tree."""
+        """Rebuild the KD-Tree over the positioned cells still in the space."""
+        # remove_cell only marks the tree dirty; dropping removed cells here, in one
+        # pass, keeps removing many cells linear instead of one list scan per cell.
+        cells = self._cells
+        self._kdtree_cells = [
+            c for c in self._kdtree_cells if cells.get(c.coordinate) is c
+        ]
         if self._kdtree_cells:
             from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
                 KDTree,
@@ -160,8 +166,7 @@ class Network(DiscreteSpace[Cell]):
         super().remove_cell(cell)
         self.G.remove_node(cell.coordinate)
 
-        if cell._position is not None and cell in self._kdtree_cells:
-            self._kdtree_cells.remove(cell)
+        if cell._position is not None:
             self._kdtree_dirty = True
 
     def add_connection(self, cell1: Cell, cell2: Cell):
