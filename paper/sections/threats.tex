@@ -59,15 +59,19 @@ spreads up to $+94\%$, so the conclusions rest on the order of magnitude of each
 on its last digit, and on one machine: other processors, with other cache sizes and
 vector units, will give other ratios. The measurements of \cref{sec:release14} were
 made later, during the release's integration, on the same laptop shared with other jobs and
-without the fixed frequency; each states its rounds and spreads, and the claims that carry
-weight there (identical outputs, a 34-fold speed-up, shortfalls by a factor) do not turn
-on a few percent. The release gate of \cref{sec:regressions} compares two separately compiled
-builds, which differed by up to 17\% on an operation whose source did not change, so a ratio
-of that size in either direction is re-timed from one build before it is believed.
+without the fixed frequency: the GPU comparison has three rounds, the comparison of 1.4
+against 1.3.3 nine to fifteen, and the browser's first load is a median of three, while the
+weak scaling (\cref{tab:scaling}), the 100-million-row run and the nowcast are single runs;
+the claims that carry weight there (identical outputs, a 34-fold speed-up, shortfalls by a
+factor) do not turn on a few percent. The release gate compares separately compiled builds,
+with the noise \cref{sec:regressions} states.
 
 \paragraph{Agreement.} The agreement study (\cref{sec:agreement}) compares chosen summary
 statistics, not whole trajectories; six small differences are individually detectable at the
-small size, though none survives the correction; at the timed size it uses 50 seeds (200 for
+small size, though none survives the correction, which is weak evidence on its own: at the
+corrected level a paired test on 100 seeds detects $d = 0.33$ with probability 0.13 and
+$d = 0.5$ with probability 0.52 for uncorrelated pairs (more where the shared initial state
+correlates them); at the timed size it uses 50 seeds (200 for
 the grid epidemic), whose intervals are wider; and an equivalence margin of half a standard
 deviation is a choice: it is a medium effect by the usual convention, the margin is estimated
 from the same data, which makes the test slightly liberal, and stricter margins give fewer
@@ -78,7 +82,8 @@ with the pure-Python core on all three operating systems; for 1.4.0 the hosted w
 other than the release build and the documentation are manual-only, so every check of this
 paper's 1.4 additions ran on Linux x86-64 (\cref{tab:determinism}), the three-platform
 comparison was not repeated, MPI on macOS and Windows and the free-threaded build of the new
-event heap are untested, and the golden digests cover ten steps of seventeen examples. Running
+event heap are untested, and the golden digests cover ten steps of seventeen examples (the
+fourteen bundled examples of 1.3 and three split-run models, distinct from the zoo). Running
 the suite on every published wheel, for more steps, is planned.
 
 \paragraph{A young project.} \modelly{} was first released on 24 October 2026, by one developer;
@@ -101,8 +106,8 @@ and tutorials, not yet by a study outside the repository.
   \item \textbf{Scaling out has conditions.} A split run needs per-agent streams and a model
   that meets the contract of \cref{sec:split} (phases with a declared radius, no model-level
   draws, no column or dataset agents, no events of its own), and on one laptop it gains
-  little; the GPU backend pays only above tens of thousands of agents and not for cohort
-  tables or for construction; gradients through discrete choices are approximations; fields
+  little; the GPU backend is slower at 20,000 agents and faster at ten million, the
+  crossover unmeasured, and does not pay for cohort tables or for construction; gradients through discrete choices are approximations; fields
   need orthogonal grids with uniform spacing; the Ray backend and Apple Metal are untested.
   \item \textbf{Checkpoints and closures.} Checkpoints pickle the model; models that hold
   lambdas, nested functions or classes created at run time cannot be saved, and the framework

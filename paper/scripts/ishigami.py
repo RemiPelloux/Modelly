@@ -14,6 +14,7 @@ import math
 from pathlib import Path
 
 import numpy as np
+from environment import environment
 
 from modelly.experiments import ScenarioSpace
 from modelly.sensitivity import sobol
@@ -45,6 +46,7 @@ def main() -> None:
     table = result.table
     exact = analytical()
     out = {
+        "environment": environment(),
         "samples": SAMPLES,
         "seed": SEED,
         "evaluations": result.info["evaluations"],
@@ -54,7 +56,9 @@ def main() -> None:
         "estimate": {c: [float(v) for v in table[c]] for c in table.columns},
         "inside_intervals": bool(
             ((table["S1_low"] <= exact["S1"]) & (exact["S1"] <= table["S1_high"])).all()
-            and ((table["ST_low"] <= exact["ST"]) & (exact["ST"] <= table["ST_high"])).all()
+            and (
+                (table["ST_low"] <= exact["ST"]) & (exact["ST"] <= table["ST_high"])
+            ).all()
         ),
     }
     (PAPER / "data" / "ishigami.json").write_text(json.dumps(out, indent=1) + "\n")

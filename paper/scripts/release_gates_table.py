@@ -68,7 +68,9 @@ def notebook_cell(entry: dict) -> str:
     ratios = [b / a for a, b in zip(old, new, strict=True)]
     identical = entry.get("notebook_outputs_identical")
     tail = "; identical" if identical else ""
-    return f"{statistics.median(ratios):.2f} ({span(ratios)}, {len(ratios)} rounds){tail}"
+    return (
+        f"{statistics.median(ratios):.2f} ({span(ratios)}, {len(ratios)} rounds){tail}"
+    )
 
 
 def rows(data: dict) -> list[str]:
@@ -89,8 +91,11 @@ def main() -> None:
     """Write the table and print it."""
     data = json.loads((PAPER / "data" / "release_gates.json").read_text())
     head = [
-        "\\begin{tabular}{ll>{\\raggedright\\arraybackslash}p{0.2\\linewidth}"
-        ">{\\raggedright\\arraybackslash}p{0.3\\linewidth}>{\\raggedright\\arraybackslash}p{0.2\\linewidth}}",
+        (
+            "\\begin{tabular}{ll>{\\raggedright\\arraybackslash}p{0.2\\linewidth}"
+            ">{\\raggedright\\arraybackslash}p{0.3\\linewidth}"
+            ">{\\raggedright\\arraybackslash}p{0.2\\linewidth}}"
+        ),
         "\\toprule",
         "Release & Against & Core operations & Playbooks & Notebook \\\\",
         "\\midrule",

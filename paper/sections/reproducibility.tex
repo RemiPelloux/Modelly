@@ -4,7 +4,8 @@
 \subsection{Same seed, same digest}
 
 A determinism suite runs seventeen examples (the fourteen bundled examples of release 1.3
-and the three split-run reference models of \cref{sec:split}) for ten steps from a fixed seed and
+and the three split-run reference models of \cref{sec:split}, distinct from the seventeen
+zoo models of \cref{sec:zoo}) for ten steps from a fixed seed and
 digests their collected data and final agent state (SHA-256 of a canonical serialisation).
 The digest must be identical between the compiled and the pure-Python builds, between a
 straight run and a run saved and resumed from a checkpoint at the midpoint (fifteen of the
@@ -17,15 +18,12 @@ libraries and is compared only on the platform that recorded it. Property-based 
 invariants of columns, cohorts, cell spaces, checkpoints and experiment designs on random
 inputs.
 
-\Cref{tab:determinism} states where each part of this is exercised, and how that changed
-with release 1.4. Up to release 1.3.3 a hosted workflow ran the suite with the pure-Python
-core on Linux, macOS and Windows at every push, and the published wheels for every platform
-were checked to import their compiled modules. From release 1.4 the hosted workflows other
-than the release build and the documentation are manual (the author triggers them), so the
-1.4.0 checks ran on the development machine only (Linux, x86-64, CPython 3.15), compiled
-core against pure-Python core, and the three-platform comparison through the golden file
-stands as last run for 1.3.3. Running the full suite on every wheel remains the obvious next
-step (\cref{sec:threats}).
+\Cref{tab:determinism} states where each part of this is exercised and how that changed with
+release 1.4: up to 1.3.3 a hosted workflow ran the suite with the pure-Python core on Linux,
+macOS and Windows and checked that every published wheel imports its compiled modules; the
+1.4.0 checks ran on the development machine only (Linux x86-64, CPython 3.15), so the
+three-platform comparison through the golden file stands as last run for 1.3.3
+(\cref{sec:threats}).
 
 \begin{table}[htbp]
   \centering

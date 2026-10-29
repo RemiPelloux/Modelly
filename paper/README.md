@@ -29,6 +29,8 @@ in it comes from a file or a script in this repository.
 | `scripts/release_gates_table.py` | Table of every release comparison from `data/release_gates.json` (part of `make figures`) |
 | `scripts/ishigami.py` | Sobol indices of the Ishigami function as quoted (`data/ishigami.json`) |
 | `scripts/assimilation.py` | The nowcasting tutorial's numbers as quoted (`data/assimilation.json`) |
+| `scripts/graph_cut.py` | The graph partitioner's edge cut on a 30 x 30 lattice (`data/graph_cut.json`) |
+| `scripts/environment.py` | The commit, date and package versions the three scripts above record |
 | `scripts/package_arxiv.py` | Checks the sources without LaTeX; packs the arXiv archive |
 | `Makefile` | `make`, `make figures`, `make check`, `make arxiv`, `make clean` |
 
@@ -75,7 +77,9 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Field numerics and the two coupled zoo models (Section 7, Appendix F.6) | `tests/couple/`, `tests/zoo/test_nutrient_foragers.py`, `test_hospital_epidemic.py` | `pytest tests/couple tests/zoo` |
 | History-matching volumes and active learning against LHS (Section 7, Appendix F.7) | `docs/emulators.md`, `tests/emulate/` | `pytest tests/emulate`; `benchmarks/emulate/active_vs_lhs.py` |
 | Synthetic population and the real-data zoo models (Section 7, Appendix F.8) | `tests/population/test_sample_region.py`, `tests/zoo/`, `modelly/space/geo/data/NOTICE.md` | `pytest tests/population tests/zoo` |
-| Browser runs and first load (Section 7, Appendix F.9) | `docs/browser.md` | `MODELLY_BROWSER_TESTS=1 pytest tests/web/test_browser.py`; `tools/web/measure_load.py` |
+| Browser runs (62 of 62: 14 examples and 17 zoo models, two wheels) and first load (Section 7, Appendix F.9) | `tests/web/test_browser.py` run by `scripts/release-checks.sh browser`; `docs/browser.md` | `MODELLY_BROWSER_TESTS=1 pytest tests/web/test_browser.py`; `tools/web/measure_load.py` |
+| Graph partitioner's edge cut on a lattice (Appendix F.1) | `data/graph_cut.json` | `scripts/graph_cut.py` |
+| Medfly notebook detail, implementation choices, mesa-frames threads (Appendix A, B) | `docs/performance.md`, `data/frames_threads.json` | `scripts/frames_threads.py` |
 | NetLogo fire percolation threshold (Section 6.2) | `docs/netlogo.md` | `pytest tests/netlogo` |
 | Nowcasting error, resamplings and EnKF recovery as quoted (Section 7, Appendix F.5) | `data/assimilation.json` | `scripts/assimilation.py` |
 | Ishigami estimates as quoted (Section 6.2) | `data/ishigami.json` | `scripts/ishigami.py` |
@@ -99,16 +103,15 @@ If the benchmark results are rerun (for a new release, or on different hardware)
 - [ ] Release 1.4.0 tagged after the fixed-frequency gate against 1.3.3; replace the sentence
       marked `% GATE-1.4.0` in `sections/performance.tex` with its numbers and add them to
       `data/release_gates.json`.
-- [ ] The five zoo models added after the browser run (Section 7, Appendix F.9) run from
-      their export in the local release checks (`scripts/release-checks.sh browser`); update
-      the "26 of 31" count in `sections/release14.tex` and `sections/appendix_release14.tex`.
+- [x] Every model, the five zoo models added last included, runs from its export in the
+      local release checks (`scripts/release-checks.sh browser`, 62 of 62 with both wheels).
 - [ ] Recount the tests and the strictly typed files at the tag (the sentence marked
       `% COUNTS-1.4.0` in `sections/availability.tex`).
 - [ ] For a journal: Appendix G (every comparison of the agreement study) becomes a CSV
       supplement generated from `data/agreement_small_summary.json`; Appendix F is the
       supplementary material for Section 7.
 - [ ] Software Heritage archives the release commit; update the SWHID marked `% SWHID-1.4.0`
-      in `sections/availability.tex`.
+      in `sections/appendix.tex` (Appendix A).
 - [x] Compiled (Tectonic, no warnings); every page read.
 - [x] All timings re-run at a fixed frequency (performance governor, turbo off, CPU 2).
 - [x] Mesa 3.5 timed on all eight playbooks, mesa-frames on four, a hand-vectorised Mesa 3.5

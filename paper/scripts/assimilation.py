@@ -5,8 +5,8 @@
 Runs every Python block of docs/assimilation.md that needs no broker, as the test
 ``tests/stream/test_assimilation_tutorial.py`` does, and records the particle filter's
 nowcast error against the free ensemble's, its resamplings, and the ensemble Kalman
-filter's estimate of the contact rate with its spread. The paper's text is rounded from
-this file.
+filter's estimate of the contact rate with its spread, for the tutorial's one synthetic
+dataset (truth seed 1, ensemble seeds 2 and 3). The paper's text is rounded from this file.
 """
 
 from __future__ import annotations
@@ -16,6 +16,8 @@ import re
 import sys
 import types
 from pathlib import Path
+
+from environment import environment
 
 PAPER = Path(__file__).resolve().parents[1]
 TUTORIAL = PAPER.parent / "docs" / "assimilation.md"
@@ -38,6 +40,9 @@ def record(t: types.ModuleType) -> dict[str, object]:
     """The quantities the paper reports, with the settings they came from."""
     enkf_last = t.enkf.history.iloc[-1].to_dict()
     return {
+        "environment": environment(),
+        "seeds": {"truth": 1, "filtered_and_free_ensembles": 2, "kalman_ensemble": 3},
+        "datasets": 1,
         "days": int(t.DAYS),
         "replicates": int(t.REPLICATES),
         "true_beta": float(getattr(t, "TRUE_BETA", getattr(t, "BETA", 0.45))),

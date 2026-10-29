@@ -21,9 +21,10 @@ as before (\code{tests/core/test\_streams.py}).
 
 \paragraph{Partitions and the contract.} \code{modelly.distributed} cuts a grid into balanced
 blocks with their halos (torus-aware), a network by breadth-first banding with greedy boundary
-refinement (not METIS \citep{karypis1998fast}: on a $30 \times 30$ lattice cut in four it cuts about twice the edges
-of the best split), and a continuous space by recursive bisection at the population's
-quantile. A model declares \code{partitionable = Partitionable(space, phases, reporters)}:
+refinement (not METIS \citep{karypis1998fast}: on a $30 \times 30$ lattice cut in four it cuts 134
+edges against the 60 of the best split, 2.2 times it, and a tenth of a random assignment's
+1,315, \code{paper/data/graph\_cut.json}; the test asserts at most three times the best), and
+a continuous space by recursive bisection at the population's quantile. A model declares \code{partitionable = Partitionable(space, phases, reporters)}:
 each phase names how far it reads (\code{radius}) and whether it moves agents. Before a phase
 that reads across a border the workers exchange ghost copies of their border agents; after a
 phase that moves agents, the movers migrate to their new partition with their streams, in a
@@ -50,10 +51,10 @@ separates what the machine gives from what the protocol keeps of it.
 \begin{table}[htbp]
   \centering
   \small
-  \caption{Weak scaling of the split grid epidemic, 10,000 people per worker, 20 steps,
-  Open MPI 5.0.11 and mpi4py 4.1.2 (recorded from the environment after the runs), wall-clock
-  seconds per step after a warm-up step, build excluded, on the 16-core laptop of
-  \cref{sec:performance} shared with other jobs. ``Load'' is the one-minute load average at
+  \caption{Weak scaling of the split grid epidemic, one run per worker count, 10,000 people per
+  worker, 20 steps, Open MPI 5.0.11 and mpi4py 4.1.2 (recorded from the environment after the
+  runs), wall-clock seconds per step after a warm-up step, build excluded, on the 16-core
+  laptop of \cref{sec:performance} shared with other jobs. ``Load'' is the one-minute load average at
   the start of each run; ``machine'' is the efficiency of $K$ copies with no communication;
   ``protocol'' is the split run's time relative to the copies'.}
   \label{tab:scaling}
@@ -71,18 +72,20 @@ separates what the machine gives from what the protocol keeps of it.
   \end{tabular}
 \end{table}
 
-With 40,000 people per worker the efficiency is 67\% at 2 and 28\% at 8 workers, against 62
-and 32\% for the copies, so the protocol keeps 79 to 109\% of what the machine gives: the
-exchange grows with a block's border, the work with its area. The Dask backend, which routes
-every exchange through its scheduler (eight per step), measured 26 to 42\% at 2 to 8 workers
-on a busier machine. The 16-worker run started at a load of 21.7 against about 8 for the
-others, so its 9\% is a lower bound on what the machine would give.
+With 10,000 people per worker the protocol keeps 53 to 91\% of what the machine gives up to
+12 workers and 34\% at 16, where the run started at a load of 21.7 against about 8 for the
+others, so its 9\% is a lower bound on what the machine would give. With 40,000 people per
+worker the efficiency is 67\% at 2 and 28\% at 8 workers, against 62 and 32\% for the copies,
+so the protocol keeps 79 to 109\%: the exchange grows with a block's border, the work with its
+area. The Dask backend, which routes every exchange through its scheduler (eight per step),
+measured 26 to 42\% at 2 to 8 workers on a busier machine. Every efficiency here is a single
+run per worker count, not a median of repeats.
 
 \paragraph{Not met.} The aim set for this release, at least 70\% weak-scaling efficiency from
 1 to 64 workers, cannot be measured on one laptop, and the laptop's hybrid processor is the
 main limit: eight to sixteen copies of the same work with no communication at all already run
-at 23 to 32\% of one, because beyond the four performance cores the copies land on
-efficiency cores (their step times split into two groups, 0.028 to 0.039~s and 0.040 to
+at 23 to 29\% of one (32\% with 40,000 people per worker), because beyond the four
+performance cores the copies land on efficiency cores (their step times split into two groups, 0.028 to 0.039~s and 0.040 to
 0.059~s). The Ray backend is written but untested (Ray does not install on CPython 3.15); MPI on
 macOS and Windows is untested (\cref{sec:threats}); and the split-run suite runs on the three
 reference models, not on the zoo, whose models would change their numbers if moved to
@@ -174,8 +177,8 @@ events a step at 0.70 (0.69 to 0.71), and a collection of two column attributes 
 agents of two classes at 0.47 (0.46 to 0.47); the predator-prey playbook, which regrows its
 grass as a column and schedules no event but the step, is unchanged (0.998 and 1.003). A
 cohort table of 100 million rows (19 bytes a row) ran three life-cycle steps inside a 16~GB
-\code{systemd} memory limit with a peak of 3.61~GB memory-mapped (4.26~GB in memory, 9 to
-10~s a step), and under a 3~GB limit the memory-mapped table finished while the in-memory one
+\code{systemd} memory limit with a peak of 3.61~GB memory-mapped (4.26~GB in memory); a step
+took 9.3 to 10.4~s memory-mapped and 8.3 to 8.7~s in memory; and under a 3~GB limit the memory-mapped table finished while the in-memory one
 was killed (\code{benchmarks/large\_columns.py}); 100 million \emph{agent objects} cannot fit
 in 16~GB, since the objects alone need over 22~GB. Profile-guided optimisation of the C
 modules (GCC~16, trained on the playbooks) measured 0.993 to 1.003 of the plain build over
@@ -206,7 +209,9 @@ unobserved number infected is 5.07 people, against 69.2 for the unfiltered ensem
 0.073; the test requires below 0.2), with 24 resamplings; the ensemble Kalman filter
 recovers a contact rate of 0.451 (spread 0.030 across replicates) for the true 0.45 (the test
 allows $\pm 0.05$). On a linear-Gaussian case with 2,000 replicates the Kalman update
-reproduces the exact posterior. Two runs from one seed give identical weights, histories and
+reproduces the exact posterior. The tutorial uses one synthetic dataset (truth seed 1,
+ensemble seeds 2 and 3); a coverage study over datasets was not done. Two runs from one seed
+give identical weights, histories and
 replicate states, in one process and in a fresh interpreter, with the compiled and the
 pure-Python core. Stepping stays in one process (shipping every replicate to a worker for each
 observation would cost more than it saves), and in a model with per-agent streams a
@@ -272,9 +277,9 @@ to 40 runs and above 2.4 at 50 and 60; on Branin \citep{dixon1978towards} 1.13 t
 80 runs; on the Ishigami function 0.79 to 1.41. The aim, half the runs of a
 hypercube on two benchmarks, holds on the zoo model at most budgets and not on the two
 analytic functions, where a well-spread design is already close to the best a
-Gaussian-process variance, which does not depend on the outputs, can do; the variance
-criterion is worse than a hypercube on Ishigami at four of six budgets (0.20 to 0.40) and
-better at 20 runs (1.82). The tests assert what was
+Gaussian-process variance, which does not depend on the outputs, can do; the largest-variance
+criterion (the alternative to integrated variance reduction) is worse than a hypercube on
+Ishigami at four of six budgets (0.20 to 0.40) and better at 20 runs (1.82). The tests assert what was
 measured (40 active Branin runs match a hypercube of 50; 20 active Bass runs match 40).
 
 \subsection{Synthetic populations and models on real data}
@@ -318,10 +323,13 @@ Emscripten through \code{pyodide build}, and the export can ship that wheel.
 
 \paragraph{Measured} (\code{tests/web/test\_browser.py}, \code{docs/browser.md}). The 14
 bundled examples of release 1.3 (the three split-run reference models were not exported) and
-the 12 zoo models of the tree the export was built on, 26 models, each
-run from its export in headless Chromium with the pure wheel and with the compiled one, 52 of
-52 runs without error; the five zoo models added after that branch (\cref{app:couple,app:population}) have not run in a browser yet, and the local release
-checks run them before the tag. A cold first visit transfers 14.1~MB for the age-structured SEIR model
+the 17 zoo models, 31 models, each run from its export in headless Chromium with the pure
+wheel and with the compiled one, 62 of 62 runs without error. Two zoo models first failed in
+the browser, because Pyodide's GDAL reads no Deflate-compressed GeoTIFF and its geopandas has
+neither pyogrio nor fiona; the bundled samples were changed to load without either (the
+land-cover window written uncompressed, the tracts read through
+\code{GeoDataFrame.from\_features}), with the same pixels and the same geometries. A cold
+first visit transfers 14.1~MB for the age-structured SEIR model
 (Pyodide, its standard library, \code{numpy} and \code{pandas} are 13.5~MB of it) and is
 ready at step 0 after 5.9~s unthrottled, 8.0~s on a 50~Mbit/s line with 40~ms round trips, and
 21.4~s on Chrome's ``Fast 4G'' profile (about 1~MB/s, 165~ms), where the transfer alone takes

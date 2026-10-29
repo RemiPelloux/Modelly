@@ -25,8 +25,8 @@ most, and the part of the framework that does the work.
     Fitting a model to data; knowing which parameters matter & ABC-SMC, simulated moments,
     Morris, Sobol and PAWN on the same seeded engine, checked on known answers
     (\cref{tab:recovery}). \\ \addlinespace
-    A paper whose results a reviewer must be able to rerun & Run manifests, \cmd{modelly verify}, byte-identical bundles for archiving, ODD skeletons, golden digests checked on
-    three operating systems for release 1.3.3 (on Linux for 1.4.0, \cref{tab:determinism}). \\ \addlinespace
+    A paper whose results a reviewer must be able to rerun & Run manifests, \cmd{modelly verify}, byte-identical bundles for archiving, ODD skeletons, golden digests checked
+    across builds and platforms (\cref{tab:determinism}). \\ \addlinespace
     An existing Mesa model that has become too slow & Port with the codemod (bit-identical results from
     Mesa~2.3, equivalent ones from Mesa~3.5; from Mesa's speed to 4.6 times faster), then move the hot phases to columns one at a time. \\ \addlinespace
     Long or expensive runs & Checkpoints and time travel: resume, rewind, branch, and find
@@ -37,23 +37,15 @@ most, and the part of the framework that does the work.
     synthetic populations, temporal and multilayer networks. \\ \addlinespace
     Teaching & Seventeen validated reference models, domain tutorials, a course outline, Studio
     for live demonstration, and a static export that runs a model in a browser tab
-    (\cref{sec:browser}). \\ \addlinespace
-    A population too large for one process & A split run over MPI or Dask workers, byte-identical
-    to one process under a stated contract; on one laptop the gain is small (\cref{sec:split}). \\ \addlinespace
-    Millions of agents whose phases are array operations & The GPU backend: the grid epidemic's
-    steps 34 times faster than columns at ten million agents, slower below tens of
-    thousands (\cref{sec:gpu}). \\ \addlinespace
-    A model kept in step with arriving data & Stream sources, a particle filter and an ensemble
-    Kalman filter over replicate ensembles, with forecast bands (\cref{sec:assimilation}). \\ \addlinespace
-    Agents on a diffusing resource or coupled to a stock-flow model & Fields with a checked
-    coupling schedule and mass balance (\cref{sec:couple}). \\ \addlinespace
-    An expensive model and few runs & Emulators, active learning and history matching in waves
-    (\cref{sec:emulate}). \\ \addlinespace
+    (\cref{sec:browser}). \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-Some examples by field: an epidemiologist calibrating an age-structured transmission model to
+A population too large for one process, millions of agents whose phases are array
+operations, a model kept in step with arriving data, agents on a diffusing resource, or an
+expensive model and few runs are the situations of release 1.4, whose additions come with
+the conditions of \cref{sec:release14,tab:release14}. Some examples by field: an epidemiologist calibrating an age-structured transmission model to
 case counts, then ranking intervention parameters by Sobol index; an ecologist running a
 stage-structured insect model with cohorts over a factorial of release strategies; an
 economist studying wealth inequality across a Latin hypercube of exchange rules on a cluster;

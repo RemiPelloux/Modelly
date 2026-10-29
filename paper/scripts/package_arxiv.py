@@ -84,9 +84,9 @@ def reference_problems(allx: str, labels: set[str]) -> list[str]:
     groups = PATTERNS["ref"].findall(allx)
     spaced = sorted({r for group in groups for r in group.split(",") if r != r.strip()})
     refs = {r.strip() for group in groups for r in group.split(",")}
-    return [f"reference with whitespace, which LaTeX cannot resolve: {r!r}" for r in spaced] + [
-        f"reference without a label: {r}" for r in sorted(refs - labels)
-    ]
+    return [
+        f"reference with whitespace, which LaTeX cannot resolve: {r!r}" for r in spaced
+    ] + [f"reference without a label: {r}" for r in sorted(refs - labels)]
 
 
 def balanced(text: str) -> bool:

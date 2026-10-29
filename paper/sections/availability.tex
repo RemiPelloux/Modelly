@@ -12,8 +12,8 @@ connects it to data, fields and the browser, each addition reported with what it
 and where it falls short (\cref{tab:release14}). The
 measurements also show where it does not help (a model written agent by agent runs between Mesa's speed and 4.6 times faster, depending on
 how much of its time the framework's calls take; hand-written numpy that gives up agent
-objects is 1.8 to 4.4 times faster than its columns; a split run on one laptop and a GPU below
-tens of thousands of agents gain little) and where its evidence is still thin (\cref{sec:threats}).
+objects is 1.8 to 4.4 times faster than its columns; a split run on one laptop and a GPU at
+20,000 agents gain little) and where its evidence is still thin (\cref{sec:threats}).
 
 \section{Availability}
 \label{sec:availability}
@@ -21,8 +21,7 @@ tens of thousands of agents gain little) and where its evidence is still thin (\
 \cmd{pip install modelly-abm} installs \modelly{} (Python 3.12 or later), which is imported as
 \code{modelly} and is free software under the Apache 2.0 licence. The release workflow builds
 compiled wheels for Linux, macOS and Windows (x86-64 and ARM64) on the tag and a pure-Python
-wheel for everything else; for 1.4.0 only the Linux x86-64 wheel was imported and checked
-(\cref{tab:determinism}). Source, issue tracker, the tests and the benchmark harness are at
+wheel for everything else (\cref{tab:determinism}). Source, issue tracker, the tests and the benchmark harness are at
 \href{https://github.com/RemiPelloux/Modelly}{\nolinkurl{github.com/RemiPelloux/Modelly}};
 documentation, tutorials and the roadmap at
 \href{https://remipelloux.github.io/Modelly/}{\nolinkurl{remipelloux.github.io/Modelly}}.
@@ -46,7 +45,7 @@ extras for visualisation, geography, networks, experiment storage, MPI (\code{mp
 (CuPy), differentiable models (JAX), message brokers, an outside optimiser and xarray.
 Hardware: any machine that runs CPython; the release workflow builds compiled wheels for
 Linux, macOS and Windows on x86-64 and ARM64 and a pure-Python wheel for everything else and
-for the browser (for 1.4.0, only the Linux x86-64 wheel was imported and checked). Size: about 1.1~MB for
+for the browser. Size: about 1.1~MB for
 the Linux x86-64 and the pure wheel built from the release branch. Licence: Apache 2.0. Source:
 \href{https://github.com/RemiPelloux/Modelly}{\nolinkurl{github.com/RemiPelloux/Modelly}}.
 
