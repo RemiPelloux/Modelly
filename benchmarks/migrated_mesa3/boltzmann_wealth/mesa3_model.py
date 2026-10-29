@@ -1,4 +1,4 @@
-"""Boltzmann wealth exchange, ported from Mesa 3.5 to Modelly by the codemod alone (see ../README.md).
+"""Boltzmann wealth exchange, migrated from Mesa 3.5 to Modelly by the codemod alone (see ../README.md).
 
 Everyone starts with ``initial_wealth`` coins. Every step the agents act one
 at a time in a random order (``model.agents.shuffle_do``); an agent with at

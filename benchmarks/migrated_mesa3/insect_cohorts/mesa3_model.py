@@ -1,4 +1,4 @@
-"""Stage-structured insect population under sterile releases, ported from Mesa 3.5 to Modelly by the codemod alone (see ../README.md).
+"""Stage-structured insect population under sterile releases, migrated from Mesa 3.5 to Modelly by the codemod alone (see ../README.md).
 
 Same model as ``mesa_model.py``, one ``modelly.Agent`` per insect. Each insect is
 an egg, larva, pupa or adult. Every day: it survives with its stage's daily

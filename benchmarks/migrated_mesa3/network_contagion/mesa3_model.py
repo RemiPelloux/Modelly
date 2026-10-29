@@ -1,4 +1,4 @@
-"""Virus on a random network, ported from Mesa 3.5 to Modelly by the codemod alone (see ../README.md).
+"""Virus on a random network, migrated from Mesa 3.5 to Modelly by the codemod alone (see ../README.md).
 
 Same model as ``mesa_model.py``. One ``FixedAgent`` per cell of a
 ``modelly.discrete_space.Network`` built on an Erdos-Renyi graph. Every step,

@@ -1,4 +1,4 @@
-"""Stage-structured insect population, ported from Mesa 2.3 to Modelly (see ../README.md).
+"""Stage-structured insect population, migrated from Mesa 2.3 to Modelly (see ../README.md).
 
 Each insect is an egg, larva, pupa or adult. Every day: it survives with its
 stage's daily probability (larval survival is scaled by exp(-L / capacity),

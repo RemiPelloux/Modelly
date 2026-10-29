@@ -1,12 +1,12 @@
-"""Same code on both frameworks: Mesa's own bundled examples against their codemod ports.
+"""Same code on both frameworks: Mesa's own bundled examples against their codemod migrations.
 
     python benchmarks/mesa_examples/run.py --rounds 10 --seeds 100 --core 2
         # paper/data/mesa_examples.json
 
 The models are written by Mesa's developers (copied unmodified from Mesa 3.5.1 into
-``<example>/original``); ``<example>/port`` is the output of ``python -m modelly.migrate
+``<example>/original``); ``<example>/migrated`` is the output of ``python -m modelly.migrate
 --write`` plus the steps listed in this directory's README. Each round runs the original and
-its port in fresh interpreters, alternating which goes first, pinned to one core, on the
+its migrated copy in fresh interpreters, alternating which goes first, pinned to one core, on the
 round's seed, and records the CPU time of the steps (``time.process_time``) and the summary
 statistics at the last step. The agreement mode runs both on shared seeds at the same size and
 compares each statistic by a paired t-test, a Kolmogorov-Smirnov test and a TOST at half a
@@ -34,7 +34,7 @@ from environment import environment  # noqa: E402
 
 PYTHON = ROOT / ".venv" / "bin" / "python"
 OUTPUT = ROOT / "paper" / "data" / "mesa_examples.json"
-ARMS = ("original", "port")
+ARMS = ("original", "migrated")
 # Each model reporter at the last step and averaged over the run (populations can die out).
 COLLECTED = (
     "{**{'final ' + k: v[-1] for k, v in model.datacollector.model_vars.items()}, "
@@ -126,12 +126,12 @@ def measure(name: str, params: dict, rounds: int, core: str) -> dict:
         out = {arm: run(name, arm, seed, params, core) for arm in order}
         for arm, result in out.items():
             times[arm].append(result["run"])
-        same += out["original"]["stats"] == out["port"]["stats"]
-    ratios = [p / o for o, p in zip(times["original"], times["port"], strict=True)]
+        same += out["original"]["stats"] == out["migrated"]["stats"]
+    ratios = [p / o for o, p in zip(times["original"], times["migrated"], strict=True)]
     low, high = statistics.quantiles(ratios, n=4)[::2] if rounds > 1 else ratios * 2
     return {
         "original": statistics.median(times["original"]),
-        "port": statistics.median(times["port"]),
+        "migrated": statistics.median(times["migrated"]),
         "ratio": statistics.median(ratios), "lq": low, "uq": high,
         "min": min(ratios), "max": max(ratios), "identical_rounds": same,
         "rounds": rounds, "times": times,
@@ -139,7 +139,7 @@ def measure(name: str, params: dict, rounds: int, core: str) -> dict:
 
 
 def collect(name: str, params: dict, seeds: int, jobs: int, core: str | None) -> list:
-    """The statistics of both arms on seeds ``SEED_BASE`` and up, as (original, port) pairs."""
+    """The statistics of both arms on seeds ``SEED_BASE`` and up, as (original, migrated) pairs."""
 
     def both(seed: int) -> tuple[dict, dict]:
         return tuple(run(name, arm, seed, params, core)["stats"] for arm in ARMS)
@@ -149,7 +149,7 @@ def collect(name: str, params: dict, seeds: int, jobs: int, core: str | None) ->
 
 
 def agree(name: str, pairs: list) -> list[dict]:
-    """Each statistic of the port against the original over the shared seeds."""
+    """Each statistic of the migrated copy against the original over the shared seeds."""
     rows = []
     for stat in pairs[0][0]:
         a = [o[stat] for o, _ in pairs]
@@ -191,7 +191,7 @@ def example(name: str, options: argparse.Namespace, rows: list) -> dict:
     entry["timing"] = measure(name, params, options.rounds, options.core)
     if options.seeds > 1:
         pairs = collect(name, params, options.seeds, options.jobs, options.agree_cores)
-        entry["stats"] = [{"original": o, "port": p} for o, p in pairs]
+        entry["stats"] = [{"original": o, "migrated": p} for o, p in pairs]
         rows += agree(name, pairs)
     shown = {k: v for k, v in entry["timing"].items() if k != "times"}
     print(name, json.dumps(shown), flush=True)

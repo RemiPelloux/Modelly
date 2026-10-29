@@ -90,7 +90,7 @@ modelly export-web model.py:Epidemic --out site/ --wheel dist/wasm/modelly_abm-*
 
 The page footer says which version runs: "pure Python" or "compiled: fastrng, fastloop,
 fastcell, fastset". The compiled wheel is the whole package (it is not trimmed), about
-830 KB against about 520 KB for the pure one, and the browser checks run every example with
+1.1 MB against about 770 KB for the pure one, and the browser checks run every example with
 both.
 
 ## What runs in the browser

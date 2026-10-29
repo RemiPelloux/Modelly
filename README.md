@@ -546,14 +546,14 @@ is backed by a measurement in [docs/performance.md](https://github.com/RemiPello
 
 Two questions, two methods, both in the repository.
 
-**Same code on both frameworks.** A research notebook written for Mesa 2.3, ported with the
-codemod and nothing else changed, identical seeds, outputs checked bit-identical, CPU time
+**Same code on both frameworks.** A research notebook written for Mesa 2.3, migrated with
+the codemod and nothing else changed, identical seeds, outputs checked bit-identical, CPU time
 pinned and alternating: Modelly runs at Mesa's speed within a few percent (0.94 of Mesa's time
 seeded with `FastRandom`, 1.02 to 1.04 with `random.Random`); that model spends most of its
-time in its own code. Two public playbooks ported the same way (`benchmarks/ports/`), which
+time in its own code. Two public playbooks migrated the same way (`benchmarks/migrated_mesa2/`), which
 spend most of theirs in framework calls, run at 0.22 and 0.37 of Mesa 2.3's time with
-bit-identical output. Five playbooks ported from their Mesa 3.5 versions by the codemod alone
-(`benchmarks/ports_mesa3/`) run at 0.45 to 0.93 of Mesa 3.5's time; they are not bit-identical
+bit-identical output. Five Mesa 3.5 playbooks migrated by the codemod alone
+(`benchmarks/migrated_mesa3/`) run at 0.45 to 0.93 of Mesa 3.5's time; they are not bit-identical
 (the random streams differ) but agree in distribution over 100 seeds. The method and every
 round are in
 [docs/performance.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/performance.md).

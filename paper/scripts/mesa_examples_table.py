@@ -1,4 +1,4 @@
-"""Table of Mesa's own examples against their codemod ports, from data/mesa_examples.json.
+"""Table of Mesa's own examples migrated by the codemod, from data/mesa_examples.json.
 
     python paper/scripts/mesa_examples_table.py    # tables/mesa_examples.tex
 
@@ -40,11 +40,11 @@ def agreement(rows: list[dict]) -> str:
 
 
 def line(name: str, entry: dict, rows: list[dict]) -> str:
-    """One example: step times, the port's ratio and its range, then the agreement."""
+    """One example: step times, the migrated copy's ratio and its range, then the agreement."""
     t = entry["timing"]
     span = f"{t['min']:.2f}--{t['max']:.2f}"
     return (
-        f"{LABELS[name]} & {entry['steps']} & {t['original']:.3f} & {t['port']:.3f} & "
+        f"{LABELS[name]} & {entry['steps']} & {t['original']:.3f} & {t['migrated']:.3f} & "
         f"{t['ratio']:.2f} & {span} & {agreement(rows)} \\\\"
     )
 
@@ -57,18 +57,18 @@ def main() -> None:
         rows = [r for r in data["agreement"] if r["example"] == name]
         body.append(line(name, entry, rows))
     body += [
-        f"{label} & \\multicolumn{{8}}{{l}}{{does not port}} \\\\"
+        f"{label} & \\multicolumn{{8}}{{l}}{{not migrated: a Mesa API Modelly lacks}} \\\\"
         for label in MISSING.values()
     ]
     head = [
         "\\begin{tabular}{lrrrrlrrr}",
         "\\toprule",
         (
-            " & & \\multicolumn{2}{c}{steps (s)} & \\multicolumn{2}{c}{port / Mesa} & "
+            " & & \\multicolumn{2}{c}{steps (s)} & \\multicolumn{2}{c}{Modelly / Mesa} & "
             "\\multicolumn{3}{c}{agreement} \\\\"
         ),
         "\\cmidrule(lr){3-4}\\cmidrule(lr){5-6}\\cmidrule(lr){7-9}",
-        "Example & Steps & Mesa & port & median & range & stats & equiv. & min $p_{\\mathrm{Holm}}$ \\\\",
+        "Example & Steps & Mesa & Modelly & median & range & stats & equiv. & min $p_{\\mathrm{Holm}}$ \\\\",
         "\\midrule",
     ]
     text = "\n".join([*head, *body, "\\bottomrule", "\\end{tabular}"]) + "\n"

@@ -251,7 +251,7 @@ random draw, the column writes, the property-layer `empty` setter) is unchanged.
 ### Compiled `select` and `agg`
 
 A fourth module, `modelly/_native/fastset.c`, runs the loops behind `AgentSet.select`, `get`
-and `agg`, and the two loops every weak `AgentSet` view is made of. Each function ports one
+and `agg`, and the two loops every weak `AgentSet` view is made of. Each function translates one
 function of `modelly/_native/sets.py`, which is the reference and the fallback, and
 `tests/native/test_sets.py` runs the pairs side by side (order, calls, exceptions, dotted
 attribute names, dead references, reference counts):
@@ -616,10 +616,10 @@ Micro-benchmarks say where time goes; whether a framework is faster for a resear
 decided on a real model. The method we use, and recommend for any comparison:
 
 1. **Same model, same seeds.** Take a research notebook written for the other framework and
-   port it with `python -m modelly.migrate`, changing nothing but the framework API. Seed both
+   migrate it with `python -m modelly.migrate`, changing nothing but the framework API. Seed both
    from the same value so the random streams match.
 2. **Prove equivalence before timing.** Run both to completion and compare every output table
-   by checksum. Only bit-identical outputs make the timings comparable; a port that changes
+   by checksum. Only bit-identical outputs make the timings comparable; a migration that changes
    the activation order or the random stream is a different model.
 3. **Time CPU, pinned, alternating.** Wall-clock on a shared machine swings by 2x; CPU time of
    the experiment cell, in-process, pinned to one core, with the two frameworks alternating
@@ -681,7 +681,7 @@ Result at the default settings, experiment cell, separate processes, pinned, alt
 | 4 | 12.98 s | 12.49 s | 3.8% |
 
 The paired instrument agrees (Modelly/Mesa 0.985 to 0.994 total; 0.969 to 0.983 outside the
-collector). The win depends on Modelly's generator: with the port's seeding line left as
+collector). The win depends on Modelly's generator: with the migrated model's seeding line left as
 `random.Random(seed)`, the same instrument puts Modelly 1.5 to 2% behind, mostly collector
 timing. Using `FastRandom` there is fair in the sense this page uses: it is `model.random`'s
 own type, and it reproduces the identical stream, so every output is bit-identical.
@@ -690,11 +690,11 @@ own type, and it reproduces the identical stream, so every output is bit-identic
 (0.877 to 0.884 of Mesa's time). That pairing ran the reference notebook against the
 *optimised* Modelly notebook, whose model code had changes the Mesa notebook did not (the
 incremental rot score among them), so the ratio mixed the framework with the model
-optimisations. Re-measured with the plain codemod port (`port_to_modelly.py`: framework API
+optimisations. Re-measured with the plain codemod migration (`port_to_modelly.py`: framework API
 only, every line of model logic unchanged) against the unmodified Mesa notebook, at 1/30 scale,
 48 chunks per run, same records in every chunk:
 
-| Paired run | Port seeded with | Mesa 2.3 | Modelly | Modelly / Mesa | median chunk |
+| Paired run | Modelly seeded with | Mesa 2.3 | Modelly | Modelly / Mesa | median chunk |
 |---|---|---|---|---|---|
 | 1 | `FastRandom` | 27.17 s | 27.62 s | 1.017 (machine shared with other jobs) | 0.895 |
 | 2 | `FastRandom` | 23.37 s | 21.86 s | 0.936 | 0.893 |
@@ -707,16 +707,16 @@ A model written agent by agent runs at Mesa's speed: 6% faster with the compiled
 about 2% slower with the standard library's.
 
 Models that spend most of their time in framework calls gain more from the same treatment.
-Two public playbooks without a Mesa 2 grid, ported from Mesa 2.3 by the codemod and the steps
-it reports (`benchmarks/ports/`), run at 0.22 (insects) and 0.37 (Boltzmann wealth) of Mesa
-2.3's CPU time, bit-identical. Five playbooks ported from their Mesa 3.5 versions by the codemod
-alone (`benchmarks/ports_mesa3/`) run at 0.45 (Boltzmann wealth), 0.51 (insects), 0.74 (grid
+Two public playbooks without a Mesa 2 grid, migrated from Mesa 2.3 by the codemod and the steps
+it reports (`benchmarks/migrated_mesa2/`), run at 0.22 (insects) and 0.37 (Boltzmann wealth) of Mesa
+2.3's CPU time, bit-identical. Five Mesa 3.5 playbooks migrated by the codemod
+alone (`benchmarks/migrated_mesa3/`) run at 0.45 (Boltzmann wealth), 0.51 (insects), 0.74 (grid
 epidemic), 0.86 (network) and 0.93 (Schelling) of Mesa 3.5's CPU time. They are not
 bit-identical, since Modelly derives `model.random` from the seed differently, but over 100
 seeds 24 of their 26 statistics are equivalent within half a standard deviation and no test is
 significant after a Holm correction. Flocking (Mesa's legacy `ContinuousSpace`) and
-predator-prey and Sugarscape (Mesa 3.5's `PropertyLayer`) do not port by the codemod alone.
-Timings and agreement: `paper/data/port_public.json`, ten alternating rounds, pinned.
+predator-prey and Sugarscape (Mesa 3.5's `PropertyLayer`) do not migrate by the codemod alone.
+Timings and agreement: `paper/data/migrated.json`, ten alternating rounds, pinned.
 
 Measured and rejected on this workload: a `shuffle` that draws its random words in one call
 (it reproduces the permutation but leaves the stream in a different place for the next draw,
@@ -724,7 +724,7 @@ and is 3x slower); a cheaper `Model` construction (it is 18 µs; 576 of them are
 
 ### The playbooks: same model, each framework's own idiom
 
-The port above answers "what does identical code cost". The second question is what each
+The migration above answers "what does identical code cost". The second question is what each
 framework lets a modeller write. `benchmarks/playbooks/` holds eight models, each implemented
 for Mesa 2.3 with per-agent methods on `MultiGrid`, `SingleGrid`, `ContinuousSpace` and
 `NetworkGrid`, for the current Mesa 3.5 with its cell spaces (`OrthogonalMooreGrid`,

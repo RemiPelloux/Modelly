@@ -232,5 +232,5 @@ It also runs the first seed twice per implementation to confirm determinism.
 The distributions, not the samples, are what the theorems above say must
 match: the implementations draw their random numbers in different orders and
 from different generators, so their outputs differ run by run and agree in
-law. Timing a port that matches the random stream bit for bit is a separate
+law. Timing a migrated model that matches the random stream bit for bit is a separate
 method, described in [performance.md](performance.md).

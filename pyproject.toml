@@ -209,7 +209,7 @@ path = "modelly/__init__.py"
 # Hardcode to Python 3.12.
 # Reminder to update modelly-examples if the value below is changed.
 target-version = "py312"
-extend-exclude = ["build", "benchmarks/notebooks/*.ipynb", "benchmarks/mesaVSmodelly", "benchmarks/mesa_examples/*/original", "benchmarks/mesa_examples/*/port"]  # generated notebooks; local-only harness
+extend-exclude = ["build", "benchmarks/notebooks/*.ipynb", "benchmarks/mesaVSmodelly", "benchmarks/mesa_examples/*/original", "benchmarks/mesa_examples/*/migrated"]  # generated notebooks; local-only harness
 
 [tool.ruff.lint]
 # Preview only for the rules selected by code below (PLW1514), not whole groups.
@@ -265,7 +265,7 @@ extend-ignore = [
 # `# noqa: MDL001` comments are for `python -m modelly.lint`, not ruff.
 external = ["MDL"]
 # Ignore all docstring errors in examples and tutorials
-per-file-ignores = {"modelly/examples/*"= ["D"], "benchmarks/playbooks/*" = ["D102", "D107", "E741"], "benchmarks/ports/*" = ["D102", "D107"], "benchmarks/ports_mesa3/*" = ["D102", "D107", "E741"], "example.py" = ["D"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
+per-file-ignores = {"modelly/examples/*"= ["D"], "benchmarks/playbooks/*" = ["D102", "D107", "E741"], "benchmarks/migrated_mesa2/*" = ["D102", "D107"], "benchmarks/migrated_mesa3/*" = ["D102", "D107", "E741"], "example.py" = ["D"], "docs/tutorials/*" = ["D", "E", "F", "N"], "docs/conf.py"=["C", "D", "DTZ011", "E"]}
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

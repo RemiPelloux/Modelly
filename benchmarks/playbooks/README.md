@@ -10,7 +10,7 @@ examples), and for Modelly the way *its* API intends (`Column` state, vectorised
 model in distribution, which the runner checks; they are different programs on
 purpose, which is the point: the comparison measures what each framework lets
 a modeller write, not interpreter overhead on identical code. For that other
-question (a line-by-line port), see `docs/performance.md`.
+question (the same model code migrated by the codemod), see `docs/performance.md`.
 
 | playbook | Modelly variant `modelly`: what is an array operation | what stays per agent |
 |---|---|---|

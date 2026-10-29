@@ -1,4 +1,4 @@
-"""Synchronous SIR on a torus grid, ported from Mesa 3.5 to Modelly by the codemod alone (see ../README.md).
+"""Synchronous SIR on a torus grid, migrated from Mesa 3.5 to Modelly by the codemod alone (see ../README.md).
 
 Every step: each person moves to a random Moore neighbour cell; each
 susceptible then catches the infection from each infected cellmate

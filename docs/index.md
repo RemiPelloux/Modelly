@@ -51,7 +51,7 @@ myst:
 <div class="ml-proof">
 <p><strong>Same answers</strong>Every variant runs the same seeds. Over 100 paired seeds, no summary statistic differs from Mesa's after a Holm correction.</p>
 <p><strong>Same seed, same run</strong>The first seed runs twice per implementation and must reproduce exactly.</p>
-<p><strong>Same code, too</strong>A research model ported line for line from Mesa 2.3, with nothing vectorised, gives bit-identical output and runs from Mesa's speed to 4.5 times faster, depending on how much of its time goes to framework calls. Five Mesa 3.5 playbooks ported by the codemod alone run at 0.45 to 0.93 of Mesa 3.5's time and agree with it in distribution.</p>
+<p><strong>Same code, too</strong>A research model migrated line for line from Mesa 2.3, with nothing vectorised, gives bit-identical output and runs from Mesa's speed to 4.5 times faster, depending on how much of its time goes to framework calls. Five Mesa 3.5 playbooks migrated by the codemod alone run at 0.45 to 0.93 of Mesa 3.5's time and agree with it in distribution.</p>
 <p><strong>Re-run it yourself</strong>The playbooks and the runner are in <a href="https://github.com/RemiPelloux/Modelly/tree/main/benchmarks/playbooks">benchmarks/playbooks</a>; the method is on the <a href="performance.html">performance page</a>.</p>
 </div>
 </div>

@@ -1,4 +1,4 @@
-"""Schelling segregation on a torus grid, ported from Mesa 3.5 to Modelly by the codemod alone (see ../README.md).
+"""Schelling segregation on a torus grid, migrated from Mesa 3.5 to Modelly by the codemod alone (see ../README.md).
 
 At most one resident per cell (an ``OrthogonalMooreGrid`` with capacity one).
 Every step: each resident counts the residents of its own kind among its eight

@@ -1,14 +1,15 @@
-"""Same code on both frameworks: the public ports against the Mesa originals.
+"""Same model code on both frameworks: Mesa models migrated by the codemod, against the originals.
 
-    python paper/scripts/ports.py --rounds 10 --core 2    # data/port_public.json
+    python paper/scripts/migrated.py --rounds 10 --core 2    # data/migrated.json
 
-Two sets of ports. ``benchmarks/ports`` holds two Mesa 2.3 playbooks ported line for line
-(codemod plus the steps it reports); ``benchmarks/ports_mesa3`` holds five Mesa 3.5 playbooks
-ported by the codemod alone. Each round runs an original and its port in fresh interpreters,
-alternating which goes first, pinned to one core, on the round's seed at the large size, and
-records the CPU time of the steps and whether the statistics are identical. For the Mesa 3.5
-ports, whose random stream differs (Modelly derives ``model.random`` from the seed differently),
-the statistics are also compared over shared seeds at the small size.
+Two sets of migrated models. ``benchmarks/migrated_mesa2`` holds two Mesa 2.3 playbooks
+migrated line for line (codemod plus the steps it reports); ``benchmarks/migrated_mesa3``
+holds five Mesa 3.5 playbooks migrated by the codemod alone. Each round runs an original and
+its migrated copy in fresh interpreters, alternating which goes first, pinned to one core, on
+the round's seed at the large size, and records the CPU time of the steps and whether the
+statistics are identical. For the Mesa 3.5 migrations, whose random stream differs (Modelly
+derives ``model.random`` from the seed differently), the statistics are also compared over
+shared seeds at the small size.
 """
 
 from __future__ import annotations
@@ -34,13 +35,13 @@ SETS = {
     "mesa2": {
         "module": "mesa_model",
         "original": (ROOT / ".venv-mesa2" / "bin" / "python", PLAYBOOKS),
-        "port": (ROOT / ".venv" / "bin" / "python", ROOT / "benchmarks" / "ports"),
+        "migrated": (ROOT / ".venv" / "bin" / "python", ROOT / "benchmarks" / "migrated_mesa2"),
         "playbooks": ("insect_cohorts", "boltzmann_wealth"),
     },
     "mesa3": {
         "module": "mesa3_model",
         "original": (ROOT / ".venv" / "bin" / "python", PLAYBOOKS),
-        "port": (ROOT / ".venv" / "bin" / "python", ROOT / "benchmarks" / "ports_mesa3"),
+        "migrated": (ROOT / ".venv" / "bin" / "python", ROOT / "benchmarks" / "migrated_mesa3"),
         "playbooks": (
             "grid_epidemic", "network_contagion", "insect_cohorts", "schelling",
             "boltzmann_wealth",
@@ -77,33 +78,33 @@ def run(
 
 def measure(kind: dict, name: str, rounds: int, core: str) -> dict:
     """Paired rounds of one playbook: median times, ratio quartiles, identical statistics."""
-    times, same = {"original": [], "port": []}, True
+    times, same = {"original": [], "migrated": []}, True
     for seed in range(rounds):
-        order = ("original", "port") if seed % 2 == 0 else ("port", "original")
+        order = ("original", "migrated") if seed % 2 == 0 else ("migrated", "original")
         out = {
             a: run(kind[a], name, kind["module"], seed, "large", core) for a in order
         }
         for arm, result in out.items():
             times[arm].append(result["run"])
-        same &= out["original"]["stats"] == out["port"]["stats"]
-    ratios = [p / o for o, p in zip(times["original"], times["port"], strict=True)]
+        same &= out["original"]["stats"] == out["migrated"]["stats"]
+    ratios = [p / o for o, p in zip(times["original"], times["migrated"], strict=True)]
     low, _, high = statistics.quantiles(ratios, n=4)
     return {
         "original": statistics.median(times["original"]),
-        "port": statistics.median(times["port"]),
+        "migrated": statistics.median(times["migrated"]),
         "ratio": statistics.median(ratios), "lq": low, "uq": high,
         "min": min(ratios), "max": max(ratios), "identical": same, "rounds": rounds,
     }  # fmt: skip
 
 
 def agree(kind: dict, name: str, jobs: int) -> list[dict]:
-    """Each statistic of the port against the original over shared seeds, small size."""
+    """Each statistic of the migrated model against the original over shared seeds, small size."""
     seeds = range(SEED_BASE, SEED_BASE + AGREEMENT_SEEDS)
 
     def both(seed: int) -> tuple[dict, dict]:
         return tuple(
             run(kind[arm], name, kind["module"], seed, "small", None)["stats"]
-            for arm in ("original", "port")
+            for arm in ("original", "migrated")
         )
 
     with ThreadPoolExecutor(max_workers=jobs) as pool:
@@ -118,7 +119,7 @@ def agree(kind: dict, name: str, jobs: int) -> list[dict]:
 
 
 def main() -> None:
-    """Time both sets of ports, compare the Mesa 3.5 ports, write data/port_public.json."""
+    """Time both sets, compare the Mesa 3.5 migrations, write data/migrated.json."""
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--rounds", type=int, default=10)
     parser.add_argument("--core", default="2")
@@ -126,7 +127,7 @@ def main() -> None:
     options = parser.parse_args()
     pythons = {
         "mesa2": str(SETS["mesa2"]["original"][0]),
-        "modelly": str(SETS["mesa3"]["port"][0]),
+        "modelly": str(SETS["mesa3"]["migrated"][0]),
     }
     out = {"environment": environment(ROOT, pythons, int(options.core))}
     for label, kind in SETS.items():
@@ -142,7 +143,7 @@ def main() -> None:
         for row, p in zip(rows, holm([r[key] for r in rows]), strict=True):
             row[f"{key}_holm"] = p
     out["mesa3_agreement"] = rows
-    (PAPER / "data" / "port_public.json").write_text(json.dumps(out, indent=1))
+    (PAPER / "data" / "migrated.json").write_text(json.dumps(out, indent=1))
     for label in SETS:
         for name, row in out[label].items():
             print(label, name, json.dumps(row))
