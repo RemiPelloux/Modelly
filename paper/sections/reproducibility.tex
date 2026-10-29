@@ -105,10 +105,12 @@ bound is 0.90), so the intervals are not too narrow and, for $\gamma$ at 0.1 and
 predator-prey parameters, conservative (lower bound at least 0.96), as expected of ABC: a non-zero tolerance widens the posterior. With the true parameters drawn
 from the prior instead, 500 datasets per model (\code{paper/scripts/prior\_coverage.py},
 \code{paper/data/prior\_coverage.json}), coverage is 94.2\% [91.8, 96.1] for $\gamma$, 98.4\%
-and 96.8\% for the two predator-prey rates, and 91.2\% [88.4, 93.5] for $\beta$: nominal or
-conservative for three of the four parameters, and for the SIR model's $\beta$ slightly below
-nominal, its 95\% intervals missing the truth in about one dataset in eleven instead of one in
-twenty. Accuracy depends
+and 96.8\% for the two predator-prey rates, and 91.2\% [88.4, 93.5] for $\beta$, which is below nominal at
+these small test settings. At the 100 particles of the documented example
+(\cref{lst:abc}; \code{prior\_coverage.py --particles 100}), coverage is nominal or conservative
+for all four parameters: 95.8\% [93.7, 97.4] for $\beta$, 96.4\% [94.4, 97.9] for $\gamma$, 99.0\%
+and 97.2\% for the predator-prey rates. A study should therefore run ABC-SMC with at least the
+documented number of particles, not the test suite's. Accuracy depends
 on how well 30 steps identify the parameters. At four of the six points the mean signed error of the posterior mean is within 10\% of the
 truth (its mean absolute error is 6 to 14\%); for the predation rate at 0.01 they overestimate it by
 16\% (its posterior is right-skewed under the log-uniform prior; the median errs by 15\%), and

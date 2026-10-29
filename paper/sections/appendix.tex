@@ -56,6 +56,11 @@ NP="--variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth"
 .venv/bin/python paper/scripts/recovery.py analyse
 # coverage with the true parameters drawn from the prior; speed-ups at three sizes
 .venv/bin/python paper/scripts/prior_coverage.py run --replicates 500 --jobs 8
+.venv/bin/python paper/scripts/prior_coverage.py run --replicates 500 --particles 100
+# the KD-tree flocking against Mesa 3.5 run by run; the virus example on 300 new seeds
+.venv/bin/python paper/scripts/kdtree_equality.py --small 100 --large 10
+.venv/bin/python benchmarks/mesa_examples/run.py --only virus_on_network --rounds 1 \
+    --seeds 300 --seed-base 10000 --output paper/data/mesa_examples_virus300_new.json
 .venv/bin/python paper/scripts/sizes.py run --rounds 5 --core 2
 # determinism, calibration and sensitivity checks
 .venv/bin/python -m pytest tests/determinism tests/calibrate tests/sensitivity
@@ -91,8 +96,10 @@ with it in the browser. A last session ran from commit \code{63e7bd9}, whose \co
 package is the tag's and which adds the Mesa~3.5 + KD-tree flocking implementation and the
 scripts for the size sweep and the prior-drawn coverage: the second timing session of every
 playbook, which gives \cref{tab:playbooks} (the first, at the tag, is in
-\code{paper/data/playbooks\_session1/}), the size sweep, the run-by-run comparison of the
-KD-tree implementation with Mesa~3.5, and the prior-drawn coverage study. Each result file records what it ran with: the
+\code{paper/data/playbooks\_session1/}), the size sweep and the prior-drawn coverage study; and the commits after it, whose
+\code{modelly} package is still the tag's and which add only options to the paper's scripts, ran
+the GPU comparison over five rounds, the coverage study at 100 particles, the virus example on
+new seeds and the run-by-run comparison of the KD-tree implementation with Mesa~3.5. Each result file records what it ran with: the
 playbook, migrated-model, example and agreement files the commit, the machine, the load and the package
 versions; \code{assimilation.json}, \code{ishigami.json} and \code{graph\_cut.json} the commit,
 date, interpreter and package versions, their \code{+dirty} marking the benchmark results

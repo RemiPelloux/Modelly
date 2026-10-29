@@ -30,9 +30,10 @@ turn on the last digit of a timing.
     (single runs on a shared laptop whose copies without communication already fall to 25\% at
     eight); 64 workers unmeasured; Ray, and MPI on macOS and Windows, untested \\
     \addlinespace
-    GPU backend & Steps 35 times faster than the CPU column variant at 10 million agents; the GPU variant's
+    GPU backend & Steps 34 times faster than the CPU column variant on one core at 10 million agents (78 times
+    the same GPU variant on \code{numpy}); the GPU variant's
     integer state identical on \code{numpy} and CuPy &
-    Construction not faster (1.5 to 1.9 times in total); slower at 20,000 agents, the
+    Construction not faster (1.6 to 1.8 times in total); slower at 20,000 agents, the
     crossover unmeasured; cohort tables 200 times slower; Metal untested \\ \addlinespace
     Differentiable models & Two zoo models' parameters recovered within 2\% and 7\%; pathwise
     gradients within $10^{-6}$ and $10^{-4}$ of finite differences & Gradients through discrete
@@ -40,7 +41,7 @@ turn on the last digit of a timing.
     Data assimilation & Nowcast error 5.07 against 69.2 unfiltered; contact rate 0.451 for
     0.45; bit-identical for a seed & One dataset and one seed; brokers tested with fake
     clients; replicates step in one process \\ \addlinespace
-    Fields and coupling & Mass conserved to $10^{-12}$; heat kernel to about $10^{-6}$; two
+    Fields and coupling & Mass conserved to $10^{-12}$; 1D heat kernel to about $10^{-6}$; two
     zoo models with closed budgets & Orthogonal grids with uniform spacing only; upwind
     advection smears fronts \\ \addlinespace
     Emulators & Parameter box reduced from 17.1 to 2.5\% in four waves, truth inside & Half the
@@ -80,13 +81,13 @@ backend, and MPI on macOS and Windows, are untested.
 
 Column phases, cohort tables and the cell-space operators run on CuPy or JAX with a
 \code{numpy} fallback, from counter-based (Philox) random streams that draw the same numbers
-on every backend. At ten million agents the grid epidemic's 60 steps take 0.62~s on an
-RTX~5050 laptop GPU against 21~s for the CPU column variant, 35 times faster (median of three
-rounds, 33 to 40). The GPU variant draws from Philox streams rather than the model's
+on every backend. At ten million agents the grid epidemic's 60 steps take 0.61~s on an
+RTX~5050 laptop GPU against 21~s for the CPU column variant on one core, 34 times faster (median
+of five rounds, 32 to 42), and 78 times faster than the same GPU variant run on \code{numpy}. The GPU variant draws from Philox streams rather than the model's
 generator, so it is a different variant of the model from the CPU column one, agreeing with it
 in distribution; run on \code{numpy} and on CuPy it gives the same infected series and the same
-digest of the final state (\cref{app:gpu}). Building ten million agent objects takes 25 to
-33~s on either side, so build plus steps gains only 1.5 to 1.9 times; at 20,000 agents the GPU
+digest of the final state (\cref{app:gpu}). Building ten million agent objects takes 23 to
+28~s on either side, so build plus steps gains only 1.6 to 1.8 times; at 20,000 agents the GPU
 is slower than the CPU (0.14 to 0.16~s against 0.08 to 0.14~s) and the crossover was not
 measured; a cohort
 table of under 200 rows is about 200 times slower, because kernel launches cost more than its
@@ -123,7 +124,7 @@ A field is a property layer with a solver (diffusion, upwind advection and decay
 sub-steps that refuse an unstable time step, or backward Euler), coupled to differential
 equations and stock-flow components under a schedule that is checked when the model is built.
 Closed and periodic boundaries conserve mass to a relative $10^{-12}$ and a spreading Gaussian
-matches the heat kernel to about $10^{-6}$; two zoo models, foragers on a diffusing nutrient
+matches the one-dimensional heat kernel to about $10^{-6}$; two zoo models, foragers on a diffusing nutrient
 and an epidemic coupled to hospital capacity, close their budgets to round-off and match their
 analytical checks (\cref{app:couple}). Fields need orthogonal grids with uniform spacing, and
 upwind advection smears sharp fronts.

@@ -8,7 +8,9 @@ same model. All the comparisons with Mesa are CPU time (\code{time.process\_time
 in-process, pinned to one core with \code{taskset}, with the implementations alternating, on an
 Intel Core Ultra 7 356H laptop running Linux, CPython 3.15.1 (3.15.0 for mesa-frames) and
 numpy 2.5.4 in each implementation's environment, against Mesa 2.3.2 and Mesa 3.5.1, with
-\modelly{} at its tagged release v1.4.2 (commit \code{bf7a225}). The core was held at its 1.9~GHz
+\modelly{} at its tagged release v1.4.2 (commit \code{bf7a225}); \cref{tab:playbooks} comes from
+the second of two timing sessions, run at commit \code{63e7bd9}, whose \code{modelly} package is
+the tag's and which adds the Mesa~3.5 + KD-tree flocking implementation. The core was held at its 1.9~GHz
 base frequency (the \code{performance} governor, turbo disabled) for every timing of this
 section. Following
 \citet{kalibera2013rigorous}, every timed run of the playbooks, the migrated models and Mesa's examples is
@@ -53,7 +55,8 @@ beginning with models we did not write.
 developers. We migrated copies of them with the codemod, kept in
 \code{benchmarks/mesa\_examples/}: eight run on \modelly{} after the codemod and one more edit
 to each, the import of the example's own agents made relative (the codemod points it at
-\modelly{}'s bundled example of the same name), plus, for the Epstein civil-violence model, the
+\modelly{}'s bundled example of the same name; the relative import makes each copy load the
+agents module next to it), plus, for the Epstein civil-violence model, the
 one step its report asks for (\code{self.steps} becomes \code{self.time}); Sugarscape G1MT uses
 Mesa's property layers and alliance formation its meta-agent factory, which \modelly{} lacks.
 The codemod maps Mesa~3.5's module paths and reports the Mesa modules it knows \modelly{} lacks
@@ -67,7 +70,13 @@ fixed-frequency core, and compared every model reporter, at the last step and av
 the run, over 100 shared seeds. \Cref{tab:mesa-examples} gives the results: on \modelly{} the
 examples take 0.60 (wolf--sheep) to 0.95 (the prisoner's dilemma grid and boid flockers) of
 Mesa~3.5's CPU time, and all 35 statistics are equivalent within $0.5\,s_p$, with no paired
-$t$-test or Kolmogorov--Smirnov test below 5\% even before correction.
+$t$-test or Kolmogorov--Smirnov test below 5\% even before correction. The one consistent
+pattern is in the virus model, seven of whose eight statistics lean the same way on
+\modelly{} (fewer resistant and more susceptible nodes, $|d| = 0.22$ to $0.25$, paired
+$p \ge 0.10$; the eighth, the final number infected, is zero in every run). Run again on 300
+new seeds (\code{paper/data/mesa\_examples\_virus300\_new.json}), the pattern keeps its direction
+but shrinks ($|d| \le 0.15$, paired $p \ge 0.07$): every interval includes zero and all eight
+statistics are equivalent within $0.5\,s_p$, so any difference is below what 300 seeds resolve.
 
 \begin{table}[tbp]
   \centering
@@ -86,14 +95,17 @@ $t$-test or Kolmogorov--Smirnov test below 5\% even before correction.
 playbooks of \cref{sec:playbooks} that use no Mesa~2 grid (\modelly{} provides cell spaces
 instead, so a model on a Mesa~2 grid needs its space rewritten): the insect population and
 Boltzmann wealth. The codemod rewrote imports and constructors; the three steps it reported
-were done by hand, as its report says. On \modelly{} (\code{benchmarks/migrated\_mesa2/}) these
-models give the same statistics as on Mesa~2.3 on every seed tried (20 at the small size, 5 at
+were done by hand, as its report says (the agents' \code{unique\_id}, the seeding keyword and,
+for Boltzmann wealth, the activation order). On \modelly{} (\code{benchmarks/migrated\_mesa2/})
+these models give the same statistics as on Mesa~2.3 on every seed tried (20 at the small size, 5 at
 the large), and over ten alternating rounds in fresh interpreters on one performance core they
 take 0.21 (insect population) and 0.37 (Boltzmann wealth) of Mesa~2.3's CPU time, every round
 within 0.20 to 0.22 and 0.37 to 0.38 (\code{paper/scripts/migrated.py}): these models spend
 most of their time in framework calls (Mesa~2.3 rebuilds its agent set each time
 \code{model.agents} is read and collects agent data in a Python loop), and on \modelly{} those
-calls are its compiled ones.
+calls are its compiled ones; upgrading the same models to Mesa~3.5 instead gives 1.9 and 1.8
+times (\cref{tab:playbooks}). Models built on a Mesa~2 grid need their space rewritten before
+they run on \modelly{}, and their migration was not evaluated.
 
 \paragraph{Five Mesa~3.5 models.} Code written for current Mesa migrates with less effort:
 five of the eight Mesa~3.5 playbooks run on \modelly{} after the codemod alone, with no manual
@@ -280,17 +292,19 @@ framework layer: \modelly{} sits between per-agent Mesa and hand-written arrays,
 \paragraph{How the gain changes with population size.} The playbooks are timed at one size;
 \cref{tab:sizes} times three of them, whose populations scale with one parameter, at the
 playbook's small size, its timed size and ten times that, five rounds each on the same
-fixed-frequency core (\code{paper/scripts/sizes.py}, \code{paper/data/sizes.json}). The
-columns' lead grows with the population. On the grid epidemic it goes from 4.0 to 42 and 119
+fixed-frequency core (\code{paper/scripts/sizes.py}, \code{paper/data/sizes.json}). On the
+grid epidemic and Schelling's model the columns' lead grows with the population: on the grid
+epidemic it goes from 4.0 to 42 and 119
 times over Mesa~2.3 and from 2.4 to 26 and 67 times over Mesa~3.5 as the population goes from
 2,000 to 20,000 and 200,000 agents; on Schelling's model from 1.3 to 22 and 44 times over
 Mesa~2.3 and from 1.0 to 18 and 32 times over Mesa~3.5; on Boltzmann wealth, whose data
-collector records every agent's wealth each step, from 4.0 to 6.4 and 10 times over Mesa~2.3.
-At the smallest sizes the framework's fixed cost per step weighs most: on Schelling's model with
+collector records every agent's wealth each step, it grows over Mesa~2.3 (4.0, 6.4 and 10
+times) but stays at 2.8 to 3.6 times over Mesa~3.5, and shrinks over mesa-frames (14, 3.0 and
+2.0 times). At the smallest sizes the framework's fixed cost per step weighs most: on Schelling's model with
 1,282 residents the columns are as fast as Mesa~3.5. Hand-written numpy's lead over the columns
-shrinks the other way, from 17 to 4.6 and 1.6 times on the grid epidemic and from 13.5 to 1.8
-and 1.0 times on Schelling's model, so at large populations the columns run at nearly the
-speed of code without agents while keeping them.
+shrinks the other way on the grid epidemic (17, 4.6 and 1.6 times) and Schelling's model (13.5,
+1.8 and 1.0 times), where at large populations the columns run at nearly the speed of code
+without agents while keeping them; on Boltzmann wealth it stays at 1.9 to 2.8 times.
 
 \begin{table}[tbp]
   \centering
@@ -310,8 +324,8 @@ timings above set \code{POLARS\_MAX\_THREADS=1} so that every implementation use
 with all 16 threads mesa-frames was slower on three of its four workloads and 1.4 times
 faster on Schelling's model (wall-clock, single unpinned runs under load;
 \cref{app:workloads}). On Schelling's model the one-thread comparison may therefore overstate
-the columns' lead over mesa-frames by up to that factor; on the other three it does not
-handicap mesa-frames.
+the columns' lead over mesa-frames by up to that factor; on the other three we found no
+evidence that one thread handicaps it.
 
 \subsection{Do the faster forms compute the same model?}
 \label{sec:agreement}
@@ -326,8 +340,9 @@ reference and every \modelly{} variant of every playbook on the same 100 seeds a
 small size (2,100 runs), and compared each of the 67 pairs of a summary statistic and a \modelly{} variant (epidemic peak
 and final size, final populations, cluster counts, Gini coefficient, and so on) with the Mesa
 reference in three ways: a paired $t$-test on the seed-by-seed differences, the two-sample
-Kolmogorov--Smirnov test on the two marginal distributions (conservative for the
-integer-valued statistics, whose values tie), and paired two one-sided tests
+Kolmogorov--Smirnov test on the two marginal distributions (an unpaired test, conservative
+here because the shared seeds correlate the samples, and more so for the integer-valued
+statistics, whose values tie, so it serves as a coarse check only), and paired two one-sided tests
 (TOST) of equivalence \citep{schuirmann1987comparison, lakens2017equivalence} with a margin of
 half a pooled standard deviation $s_p$, that is, against the null hypothesis
 $|\mu_{\mathrm{Modelly}} - \mu_{\mathrm{Mesa}}| \ge 0.5\, s_p$. We report the standardised
@@ -361,10 +376,17 @@ interval, and correct for the 67 comparisons with Holm's procedure \citep{holm19
 \Cref{tab:agreement} and \cref{fig:agreement} give the results. The main evidence is the
 equivalence test: within the margin of $0.5\,s_p$, 63 of the 67 comparisons are equivalent at
 the 5\% level (60 of 64 outside flocking, whose three agree trivially), and 29 when the TOST
-$p$-values are Holm-corrected too; the count depends on the margin, 50 at $0.4\,s_p$, 27 at
-$0.3\,s_p$ and 19 at $0.25\,s_p$. No difference survives the Holm correction for either test
+$p$-values are Holm-corrected too. The four comparisons not shown equivalent are the mean
+sheep population of predator-prey with cell lists, the final and the peak adult counts of the
+individual insect model, and the share of agents without wealth in the Boltzmann model
+($|d| \le 0.33$, at most 1.4\% of the mean). The count depends on the margin: 50 at
+$0.4\,s_p$, 27 at $0.3\,s_p$ and 19 at $0.25\,s_p$; with a margin relative to Mesa's mean
+instead, 48 of 67 are shown equivalent within $\pm 5\%$ and 56 within $\pm 10\%$, the others
+being the noisiest statistics at this small size (the grid epidemic's counts with 2,000
+agents, predator-prey's wolves), whose 100-seed intervals are wider than those margins. No
+difference survives the Holm correction for either test
 (the smallest corrected paired $p$ is 0.21), which is weak evidence on its own given the
-tests' power (\cref{sec:threats}). Before correction, six paired $t$-tests and three
+tests' power (\cref{sec:threats}); the equivalence counts above are the main evidence. Before correction, six paired $t$-tests and three
 Kolmogorov--Smirnov tests fall below 5\%, against 3.2 expected by chance for each test among the 64
 comparisons outside flocking if the tests were independent (they are not: the statistics of a
 workload are related, such as its final S, I and R). Every $|d|$ is at most 0.33, and every
@@ -375,8 +397,8 @@ sheep population of predator-prey with cell lists, the final adult count of the 
 insect model and the share of agents without wealth in the Boltzmann model ($|d| \le 0.33$, at
 most 1.4\%). The spreads agree too: the ratio of the two implementations' standard deviations
 lies between 0.77 and 1.27, and one median-centred Levene test \citep{brown1974robust} of 67 falls below 5\%, none after the Holm
-correction, so we find no evidence, within the power of a Levene test on 100 seeds, that a
-vectorised phase changes the variability of an outcome. The benchmark harness's own quick check, six seeds
+correction, so we find no evidence, within the power of a Levene test on 100 seeds (unpaired,
+and so conservative here), that a vectorised phase changes the variability of an outcome. The benchmark harness's own quick check, six seeds
 and an unpaired Welch test \citep{welch1947generalization} at 1\%, could not have shown any of
 this: its power to detect a difference of one standard deviation is 13\%.
 

@@ -117,16 +117,16 @@ than the device run in batches, bit for bit the same as one batch.
 and the raw numbers are in \code{paper/data/gpu\_speedup.json}. The grid epidemic at 10
 million agents on a $1000 \times 1000$ torus, 60 steps, seed 1, in fresh interpreters, wall
 clock around the steps with the device synchronised, the build timed apart, one untimed run
-first to fill CuPy's kernel cache: the CPU column variant (CPython 3.15) takes 20.72, 27.03
-and 20.69~s for the steps and the CuPy variant (CPython 3.14, the GPU environment's interpreter;
-the two interpreters differ, but the steps are dominated by numpy and CuPy kernels) 0.589, 0.673 and 0.622~s,
-per-round ratios of 35.2, 40.2 and 33.3 and a median of 35.2 on an NVIDIA RTX~5050 laptop GPU
+first to fill CuPy's kernel cache: over five rounds (commit \code{5c67a59}, whose \code{modelly} package is the tag's), the CPU
+column variant (CPython 3.15, one core) takes 21.91, 24.42, 21.04, 19.82 and 20.37~s for the steps and the CuPy variant (CPython 3.14, the GPU environment's interpreter;
+the two interpreters differ, but the steps are dominated by numpy and CuPy kernels) 0.591, 0.579, 0.619, 0.613 and
+0.615~s, per-round ratios of 37.1, 42.2, 34.0, 32.3 and 33.1 and a median of 34.0 on an NVIDIA RTX~5050 laptop GPU
 (8~GB, CUDA runtime 13.2 from the \code{cupy-cuda13x} 14.2.0 wheel). Run on \code{numpy} and on CuPy with the same seed, the variant
 gives the same infected series for all 60 steps and the same SHA-256 of the final state, days
 and row columns of all 10 million agents; on \code{numpy} its steps take 56.1~s, more than the
 column variant's because Philox draws cost more than \code{numpy}'s generator, and 78 times its
-0.72~s on CuPy. Building 10 million agent objects takes 25 to 33~s on either side, so build
-plus steps is only 1.5 to 1.9 times faster: a GPU an order of magnitude faster than the
+0.72~s on CuPy. Building 10 million agent objects takes 23 to 28~s on either side, so build
+plus steps is only 1.6 to 1.8 times faster: a GPU an order of magnitude faster than the
 column form at ten million agents is what the steps show, not what a whole run shows.
 
 \paragraph{Where it does not pay.} At the playbook's own 20,000 agents the steps take 0.14
@@ -231,8 +231,8 @@ cycle inside a phase, and a lagged read without an initial value.
 
 \paragraph{Measured} (\code{tests/couple}): closed and periodic boundaries conserve mass to a
 relative $10^{-12}$ in both schemes; a spreading pulse's variance grows by exactly $2Dt$ per
-axis; a Gaussian matches the analytic heat kernel, with an error near $10^{-6}$ at $D\,\Delta
-t/h^2 = 1/6$, where the explicit scheme is fourth-order; upwind drift moves the centre of mass
+axis; a one-dimensional Gaussian matches the analytic heat kernel, with an error near $10^{-6}$ at
+$D\,\Delta t/h^2 = 1/6$, where the explicit scheme is fourth-order in one dimension; upwind drift moves the centre of mass
 by exactly $vt$; decay follows $e^{-kt}$; with absorbing boundaries what remains plus what
 flowed out equals the initial mass; logistic growth matches its closed form for four
 integrators; and a model with an implicit field and an ODE saves and loads bit for bit. Two

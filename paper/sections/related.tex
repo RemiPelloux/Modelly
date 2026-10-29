@@ -65,12 +65,13 @@ widely used platforms in other languages.
 \begin{table}[htbp]
   \centering
   \footnotesize
-  \caption{Capabilities as documented by each project in October 2026 (Mesa 3.5.1,
+  \caption{Capabilities built in or documented by each project in October 2026 (Mesa 3.5.1,
   mesa-frames 0.1.0a0, its only release, an alpha, while its development branch
   \code{ef92326} (0.1.1.dev0) is the one measured in \cref{sec:playbooks}, AgentPy 0.1.5, NetLogo 7, Repast4Py 1.3, Agents.jl 7.1). \checkmark{}: built in;
   ext.: through a companion tool that the project or the tool documents for it (EMA Workbench for
   Mesa, ipysimulate for AgentPy, pyNetLogo with SALib for NetLogo \citep{jaxarozen2018pynetlogo},
-  EMEWS \citep{ozik2016desktop} for Repast4Py); --: not documented (nlrx's ABC calibration supports
+  EMEWS \citep{ozik2016desktop} for Repast4Py); --: not documented. Generic Python libraries such as SALib and pyabc can be called from any of
+  the Python frameworks; the table records integration, not possibility (nlrx's ABC calibration supports
   NetLogo only up to 6.4, and EMEWS documents no sensitivity analysis or calibration for
   Repast4Py). The judgements are the author's, from each project's documentation and source; the
   evidence for every cell is in \code{paper/data/features\_sources.md}. NetLogo's checkpoints are
@@ -95,6 +96,7 @@ widely used platforms in other languages.
     Checkpoint and resume & \checkmark & -- & -- & -- & \checkmark & \checkmark & \checkmark \\
     Run manifests and bundles & \checkmark & -- & -- & -- & -- & -- & -- \\
     Interactive visualisation & \checkmark & \checkmark & -- & ext. & \checkmark & -- & \checkmark \\
+    Graphical model editor & -- & -- & -- & -- & \checkmark & -- & -- \\
     \bottomrule
   \end{tabular}
 \end{table}

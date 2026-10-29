@@ -22,20 +22,23 @@ klinger2018pyabc, kwakkel2017ema}. Faster platforms exist in Java and Julia
 vectorised speed \citep{mesaframes}, and Repast4Py distributes a run over MPI processes
 \citep{collier2020repast4py}.
 
-\modelly{} is a new framework, written from scratch, that removes this cost without asking the
+\modelly{} is a new framework, written from scratch, that reduces this cost without asking the
 modeller to leave Python or to give up agents. Its programming model is compatible with
 Mesa's, so a Mesa user is at home from the first line and a codemod migrates an existing Mesa
-model's framework calls. A researcher writes the model once, as plain Python with agents as
-objects, and gets:
+model's framework calls. A researcher writes the model as plain Python with agents as objects,
+rewrites the phases that act on the whole population as array operations where speed matters,
+one phase at a time, and gets:
 
 \begin{itemize}[leftmargin=*,itemsep=2pt]
   \item \textbf{Speed without leaving Python.} Agent attributes can live in model-owned
   \code{numpy} arrays (\emph{columns}), identical agents can be counted rather than
   instantiated (\emph{cohorts}), and the framework's inner loops run in compiled C, each with a
-  pure-Python twin that gives the same results (\cref{sec:design}). On eight workloads the
-  column form runs 4.6 to 42 times faster than Mesa~2.3 and 2.9 to 33 times faster than
-  Mesa~3.5, the cohort form 251 and 135 times, and an unchanged Mesa model runs up to 4.8 times
-  faster; a study of 100 seeds per variant shows that the faster forms compute the same model
+  pure-Python twin that gives the same results (\cref{sec:design}). On eight workloads, with
+  those phases written as arrays, the column form runs 2.9 to 33 times faster than Mesa~3.5
+  and 4.6 to 42 times faster than Mesa~2.3, and the cohort form 135 and 251 times, with the
+  lead growing with the population; a Mesa~3.5 model migrated by the codemod, with no phase
+  rewritten, runs 1.05 to 2.3 times faster. Over 100 seeds per variant, 63 of 67 statistics of
+  the faster forms are equivalent to Mesa's within half a standard deviation
   (\cref{sec:performance}).
   \item \textbf{The whole study in one package.} Parameter sweeps, approximate Bayesian
   calibration, Morris, Sobol and PAWN sensitivity analysis, emulators and history matching,
@@ -49,12 +52,13 @@ objects, and gets:
   \cmd{modelly verify} repeats it and names the first output that differs; a determinism suite
   checks that the bundled examples give the same digests compiled or in pure Python and
   straight or resumed from a checkpoint (\cref{sec:reproducibility}).
-  \item \textbf{From one laptop to large and data-driven studies.} The same model can be split
-  across processes with byte-identical results, run its array phases on a GPU (35 times faster
-  at ten million agents), be differentiated for gradient calibration, assimilate live
-  observations, couple agents to diffusing fields, be emulated when runs are expensive, start
-  from a synthetic population, and be shared as a page that runs in any browser
-  (\cref{sec:scale}).
+  \item \textbf{Towards large and data-driven studies.} The same model can be split across
+  processes with results byte-identical to one process (a check of correctness; its parallel
+  speed-up beyond one laptop is not yet shown), run its array phases on a GPU (steps 34 times
+  faster than one CPU core at ten million agents), be differentiated for gradient calibration,
+  assimilate live observations, couple agents to diffusing fields, be emulated when runs are
+  expensive, start from a synthetic population, and be shared as a web page (tested in
+  Chromium) (\cref{sec:scale}).
 \end{itemize}
 
 The rest of the paper situates \modelly{} among existing tools (\cref{sec:related}),

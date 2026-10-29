@@ -21,9 +21,10 @@ neighbours, as Mesa's continuous space does, while the \modelly{} one queries a 
 measured how much of the flocking gain that is: a Mesa~3.5 implementation that finds
 neighbours with one periodic \code{scipy.spatial.cKDTree} per step and keeps everything else
 per agent (\code{mesa3kd\_model.py}) gives the same statistics as Mesa~3.5's own search on all
-110 seeds compared and runs 2.7 times faster than it, and \modelly{}'s columns run 12 times
-faster again (\cref{tab:playbooks}): the algorithm accounts for a factor of 2.7, the
-framework for the remaining factor of 12. The cell-list variants keep Mesa's
+110 seeds compared (\code{paper/data/flocking\_kdtree.json}) and runs 2.7 times faster than
+it, and \modelly{}'s columns run 12 times faster again (\cref{tab:playbooks}): the neighbour
+search accounts for a factor of 2.7, and computing the steering terms as array operations
+rather than per agent for the remaining factor of 12. The cell-list variants keep Mesa's
 data structure but not all of its loops: in Schelling's model most of their gain comes from
 counting every resident's similar neighbours at once, which takes three quarters of Mesa's run
 time, while Mesa's move to a random empty cell already runs in constant expected time. In
@@ -54,8 +55,10 @@ cores; the other twelve are efficiency cores), under the \code{intel\_pstate} dr
 \code{performance} governor and turbo disabled, so the core ran at its 1.9~GHz base frequency.
 Absolute times are therefore longer than on a turbo-enabled machine; the ratios are what we
 report. The core was pinned but not isolated: other work shared the machine (one-minute load
-average 5.3 to 28.8 at the start of each workload), and while it cannot take the pinned core's
-CPU time it competes for the shared cache and memory bandwidth, which may weigh more on the
+average 5.3 to 28.8 at the start of each workload of the main timings, 37.4 at the start of the
+size sweep), and \code{taskset} pins the benchmark, not the other processes, so under load
+they can run on the same core; CPU time excludes their time but not their cost in context
+switches, and they compete for the shared cache and memory bandwidth, which may weigh more on the
 memory-bound array code than on interpreter-bound per-agent code. The order of the
 implementations rotated from round to round: every per-round ratio over Mesa~2.3 lies within
 18\% of its median (over Mesa~3.5, within 19\%), for 26 of the 29 non-reference variants
@@ -67,10 +70,10 @@ eight playbooks twice, in two sessions on the same core and settings
 (\code{paper/data/playbooks\_session1/} and \cref{tab:playbooks}), and every one of the 48 speed-ups the two
 sessions share agrees within 4\% (median 0.9\%). The conclusions rest on that one machine: other processors, with other cache sizes and
 vector units, will give other ratios. The measurements of \cref{sec:scale} were
-made on the same laptop without the fixed frequency: the GPU comparison has three rounds and
+made on the same laptop without the fixed frequency: the GPU comparison has five rounds and
 the browser's first load is a median of three, while the weak scaling (\cref{tab:scaling}),
 the 100-million-row run and the nowcast are single runs; the claims that carry weight there
-(identical outputs, a 35-fold speed-up, shortfalls by a factor) do not turn on a few percent.
+(identical outputs, a 34-fold speed-up, shortfalls by a factor) do not turn on a few percent.
 
 \paragraph{One interpreter, few sizes.} Every timing and every digest of this paper ran on
 CPython~3.15; \modelly{} supports 3.12 and later, and its speed on 3.12 to 3.14 was not
@@ -102,7 +105,12 @@ the suite on every published wheel, for more steps, is planned.
 Every public name carries a stability level, stable or provisional
 (\code{docs/api\_stability.toml}); the research workflow and the capabilities of
 \cref{sec:scale} are recent, and the latter have been used by their tests and tutorials, not
-yet by a study outside the repository.
+yet by a study outside the repository. The project's governance is set out in its repository:
+issues and pull requests on GitHub, with a contribution guide (\code{CONTRIBUTING.md}), a code
+of conduct and a security policy; a stable name keeps working for at least one minor release
+after it is deprecated, with a warning naming its replacement, and is removed only in a major
+release (\code{docs/deprecations.md}); every release passes the same local gate (lint, types,
+the test suite with its coverage, and a size audit) before it is tagged.
 
 \subsection{Limitations of the software}
 \label{sec:limitations}

@@ -1,20 +1,22 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-\modelly{} gives Python modellers the agent-based programming model they know and removes
-most of what it costs to do research with it. A model written once, with agents as objects,
-runs its population-wide phases as array operations, 4.6 to 42 times faster than Mesa~2.3 and
-2.9 to 33 times faster than Mesa~3.5 on eight workloads, and its counted populations two orders
-of magnitude faster, while computing the same model: over 100 paired seeds no difference from
-Mesa survives correction. Around that model, the steps of a study (sweeps, calibration,
-sensitivity analysis, emulation, provenance and archiving) are part of the framework, built on
-one seeding discipline and checked against problems whose answers are known, so a study's
-numbers can be rerun and verified by anyone. The same model scales out to processes and GPUs,
-connects to live data and continuous fields, and can be shared as a web page
-(\cref{tab:scale}). For a researcher who needs many runs, large populations or results that
-others can check, \modelly{} replaces the tools usually assembled by hand around a simulation
-library with one package, one seed and one record. The conditions under which these results
-hold, and the evidence still to gather, are set out in \cref{sec:threats}.
+\modelly{} gives Python modellers the agent-based programming model they know and reduces
+what it costs to do research with it. A model keeps its agents as objects and has its
+population-wide phases written as array operations, one at a time; on eight workloads those
+phases run 2.9 to 33 times faster than per-agent Mesa~3.5 code, the lead growing with the
+population, within 1.8 to 4.5 times of hand-written numpy that gives agents up, and counted
+populations two orders of magnitude faster, with 63 of 67 statistics equivalent to Mesa's over
+100 paired seeds. Around that model, the steps of a study (sweeps, calibration, sensitivity
+analysis, emulation, provenance and archiving) are part of the framework, built on one seeding
+discipline and checked against problems whose answers are known, so a study's numbers can be
+rerun and verified by others on the platform tested. The same model splits across processes
+with byte-identical results, runs its array phases on a GPU, connects to live data and
+continuous fields, and can be shared as a web page (\cref{tab:scale}). For a researcher who
+needs many runs, large populations or results that others can check, \modelly{} brings the
+tools usually assembled by hand around a simulation library into one package, one seed and one
+record. The conditions under which these results hold, and the evidence still to gather, are
+set out in \cref{sec:threats}.
 
 \section{Availability}
 \label{sec:availability}
@@ -27,7 +29,7 @@ wheel for everything else (\cref{tab:determinism}). Source, issue tracker, the t
 documentation, tutorials and the roadmap at
 \href{https://remipelloux.github.io/Modelly/}{\nolinkurl{remipelloux.github.io/Modelly}}.
 At the tag, the suite runs 3,054 tests, of which 2,996 pass and 58 skip without an optional
-library (CuPy, Ray, optuna, xarray, a broker) or a browser, with 97.3\% line coverage. The version described here is 1.4.2; the provenance of every measurement (commits,
+library (CuPy, Ray, optuna, xarray, a broker) or a browser, with 97.3\% line coverage (\code{paper/data/test\_suite.json}). The version described here is 1.4.2; the provenance of every measurement (commits,
 machine, package versions and the Software Heritage identifier of the archived code) is in
 \cref{app:reproduce}, and the data and scripts behind every table and figure of this paper
 are in the repository's \code{paper/} folder. To cite \modelly{}, use the metadata in the

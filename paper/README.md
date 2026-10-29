@@ -46,12 +46,14 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 
 ## Where the numbers come from
 
+Tables and figures are named by their LaTeX labels.
+
 | Claim | Source | Regenerate with |
 |---|---|---|
-| Playbook speed-ups, build and step times, determinism (Table 3, Figure 1) | `benchmarks/playbooks/results/*.json` | `benchmarks/playbooks/compare.py`, then `make figures` |
-| Agreement with Mesa: 100 seeds at the small size (Table 5, Figure 2), 50 at the timed size (Table 6) | `data/agreement_small.json`, `data/agreement_large.json` | `scripts/agreement.py run --size small` (or `large`), then `analyse` |
+| Playbook speed-ups, build and step times, determinism (`tab:playbooks`, `fig:speedups`) | `benchmarks/playbooks/results/*.json` | `benchmarks/playbooks/compare.py`, then `make figures` |
+| Agreement with Mesa: 100 seeds at the small size (`tab:agreement`, `fig:agreement`), 50 at the timed size (`tab:agreement-large`) | `data/agreement_small.json`, `data/agreement_large.json` | `scripts/agreement.py run --size small` (or `large`), then `analyse` |
 | Ishigami indices (Section 6.2) | `tests/sensitivity`, `docs/sensitivity.md` | `pytest tests/sensitivity` |
-| ABC-SMC coverage over 200 datasets per model (Table 8) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
+| ABC-SMC coverage over 200 datasets per model (`tab:recovery`) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
 | Every agreement comparison (appendix F) | `data/agreement_small_summary.json` | `scripts/agreement.py analyse` |
 | Grid epidemic at the timed size, replication on 200 new seeds (Section 5.3) | `data/agreement_large_grid200_new.json` | `scripts/agreement.py run --seed-base 10000 --size large --seeds 200 --playbooks grid_epidemic --tag large_grid200_new` |
 | Mesa 3.5 and mesa-frames against Mesa 2.3, 100 seeds (Section 5.3) | `data/agreement_small_baselines.json` | `scripts/agreement.py run --variants mesa3 frames --tag small_baselines` |
@@ -63,9 +65,9 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Mesa's own examples on Mesa and, migrated by the codemod, on Modelly: timing and agreement (Section 5.1) | `data/mesa_examples.json`, `benchmarks/mesa_examples/` | `benchmarks/mesa_examples/run.py --rounds 10 --seeds 100 --core 2 --agree-cores 8-15`, then `scripts/mesa_examples_table.py` |
 | mesa-frames with one thread and with all (Section 5.2) | `data/frames_threads.json` | `scripts/frames_threads.py` |
 | Workload parameters (appendix B) | `benchmarks/playbooks/registry.py` | `make figures` |
-| Determinism (Section 6.1, Table 7) | `tests/determinism`, `tests/determinism/golden.json` | `pytest tests/determinism` |
+| Determinism (Section 6.1, `tab:determinism`) | `tests/determinism`, `tests/determinism/golden.json` | `pytest tests/determinism` |
 | Split runs equal one process; MPI 2 and 4 ranks (Section 7, Appendix E.1) | `tests/distributed/`, `tests/determinism/test_determinism_partition.py` | `pytest tests/distributed tests/determinism/test_determinism_partition.py` (needs mpi4py for the MPI cases) |
-| Weak scaling (Table 17) | `data/weak_mpi_10k.json`, `data/weak_mpi_40k.json`, `data/weak_dask_10k.json` | `benchmarks/distributed/weak_scaling.py` |
+| Weak scaling (`tab:scaling`) | `data/weak_mpi_10k.json`, `data/weak_mpi_40k.json`, `data/weak_dask_10k.json` | `benchmarks/distributed/weak_scaling.py` |
 | GPU speed-up and equality at 10 million agents (Section 7, Appendix E.2) | `data/gpu_speedup.json` | `benchmarks/playbooks/gpu_speedup.py` in a CUDA environment (`docs/gpu.md`) |
 | Differentiable recoveries and gradient checks (Section 7, Appendix E.3) | `tests/diff/`, `docs/differentiable.md` | `pytest tests/diff` (needs jax) |
 | Event heap, column gather, memory-mapped 100 M rows (Appendix E.4) | `tests/native/`, `build/logs` of the measurement run | `benchmarks/large_columns.py` under `systemd-run -p MemoryMax=16G` and `3G` |
@@ -83,7 +85,11 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Speed-ups at three population sizes (Section 5.2, Table `tab:sizes`) | `data/sizes.json` | `scripts/sizes.py run --rounds 5 --core 2` |
 | ABC-SMC coverage with true parameters drawn from the prior (Section 6) | `data/prior_coverage.json` | `scripts/prior_coverage.py run --replicates 500` |
 | The first timing session of the playbooks, for the between-session check (Section 9) | `data/playbooks_session1/` | `benchmarks/playbooks/compare.py --rounds 10 --core 2` |
-| Feature comparison (Table 1) | `data/features_sources.md`: the page or file behind every cell, October 2026 | by hand: check again before submitting |
+| Mesa 3.5 + KD-tree flocking identical to Mesa 3.5 on 110 seeds (Section 9) | `data/flocking_kdtree.json` | `scripts/kdtree_equality.py --small 100 --large 10` |
+| Test count and coverage at the tag (Section 11) | `data/test_suite.json` | `python -m pytest -p pytest_cov --cov` (counts and line rate copied from its output) |
+| ABC-SMC coverage, truths from the prior, at 100 particles (Section 6) | `data/prior_coverage_p100.json` | `scripts/prior_coverage.py run --replicates 500 --particles 100` |
+| Mesa's virus example on 300 new seeds (Section 5.1) | `data/mesa_examples_virus300_new.json` | `benchmarks/mesa_examples/run.py --only virus_on_network --seeds 300 --seed-base 10000` |
+| Feature comparison (`tab:features`) | `data/features_sources.md`: the page or file behind every cell, October 2026 | by hand: check again before submitting |
 
 If the benchmark results are rerun (on different hardware, say), run `make figures` and
 update the hardware line at the start of Section 5.
@@ -95,7 +101,7 @@ update the hardware line at the start of Section 5.
 - [x] Every entry of `references.bib` with a DOI checked against Crossref (authors, title,
       venue, volume, issue, pages, year); the two JASSS articles without DOI and the mesa-frames
       URL checked to resolve.
-- [x] Table 1 re-checked against each project's documentation and repository (October 2026).
+- [x] The feature table re-checked against each project's documentation and repository (October 2026).
 - [x] The paper describes one version, 1.4.2, and compares Modelly only with other
       frameworks, never with its own earlier versions.
 - [x] Every measurement run on the tagged release v1.4.2 (`build/release/measure_142*.sh`:
@@ -115,10 +121,10 @@ update the hardware line at the start of Section 5.
 - [x] Compiled with Tectonic and with pdfLaTeX (the engine arXiv uses), no warnings; every page read.
 - [x] All timings re-run at a fixed frequency (performance governor, turbo off, CPU 2).
 - [x] Mesa 3.5 timed on all eight playbooks, mesa-frames on four, a hand-vectorised Mesa 3.5
-      (numpy) baseline on three (Table 3, Figure 1).
+      (numpy) baseline on three (`tab:playbooks`, `fig:speedups`).
 - [ ] Optional, for a journal: ask Mesa and mesa-frames maintainers to review the baselines,
       and report the three mesa-frames defects upstream.
-- [x] A public same-code result on Mesa's own examples: eight of ten migrate (Table 2).
+- [x] A public same-code result on Mesa's own examples: eight of ten migrate (`tab:mesa-examples`).
 - [ ] arXiv categories: primary **cs.MA** (Multiagent Systems); cross-list **cs.MS**
       (Mathematical Software) and, depending on the audience, **physics.soc-ph** or
       **q-bio.PE**. A first submission to cs.MA may need an endorsement.
