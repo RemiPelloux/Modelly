@@ -1,0 +1,100 @@
+name: platform-digests
+# The determinism suite on every platform and supported interpreter, and the exact
+# digests of every example compared across all of them.
+#
+#   digests   on ubuntu, macos and windows, with CPython 3.12, 3.13 and 3.14: the
+#             determinism suite (golden digests, compiled against pure Python, resumed
+#             against straight runs, split runs against one process), then this build's
+#             exact (unrounded) digests of every example, uploaded as an artifact
+#   compare   downloads the nine digest files and reports, per example, whether the
+#             exact digest is identical on every platform (bit for bit) or only the
+#             rounded one is (the golden suite's ten significant digits)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  digests:
+    name: Digests on ${{ matrix.os }}, CPython ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, macos, windows]
+        python-version: ["3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+      - name: Install Modelly with the dev extras (compiled modules built here)
+        run: |
+          pip install uv
+          uv pip install --system ".[dev]"
+      - name: Which modules compiled
+        run: python -c "from modelly._native import sets, cells, loops, events; print('sets', sets.NATIVE); import modelly, sys, platform; print(modelly.__version__, sys.version, platform.platform())"
+      - name: The determinism suite
+        shell: bash
+        run: pytest -rs -p no:cacheprovider -W default --durations=10 tests/determinism
+      - name: This build's exact digests
+        shell: bash
+        run: |
+          python -m modelly.dev golden --json > "digests-${{ matrix.os }}-${{ matrix.python-version }}.json"
+          python -c "import json,sys; d=json.load(open('digests-${{ matrix.os }}-${{ matrix.python-version }}.json')); print(len(d), 'examples')"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: digests-${{ matrix.os }}-${{ matrix.python-version }}
+          path: digests-*.json
+
+  compare:
+    name: Compare the digests across platforms
+    needs: digests
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: digests-*
+          merge-multiple: true
+          path: digests
+      - name: Per example, where the exact digest agrees
+        shell: bash
+        run: |
+          python - <<'EOF'
+          import json, pathlib, collections
+          files = sorted(pathlib.Path("digests").glob("digests-*.json"))
+          data = {f.stem.removeprefix("digests-"): json.load(open(f)) for f in files}
+          print(f"{len(data)} builds: {', '.join(data)}")
+          names = sorted(set().union(*(set(d) for d in data.values())))
+          golden = json.load(open("tests/determinism/golden.json"))["examples"]
+          exact_everywhere, rounded_only, missing = [], [], []
+          for name in names:
+              values = {b: d.get(name) for b, d in data.items()}
+              present = {b: v for b, v in values.items() if v is not None}
+              distinct = collections.Counter(present.values())
+              digits = golden.get(name, {}).get("float_digits")
+              status = "identical" if len(distinct) == 1 else f"{len(distinct)} distinct"
+              print(f"{name:28s} present on {len(present)}/{len(data)}  exact digests: {status}  (golden: {'exact' if digits is None else f'{digits} digits'})")
+              if len(present) < len(data):
+                  missing.append(name)
+              if len(distinct) == 1:
+                  exact_everywhere.append(name)
+              else:
+                  rounded_only.append(name)
+                  for b, v in present.items():
+                      print(f"    {b:16s} {v}")
+          summary = {"builds": sorted(data), "exact_everywhere": exact_everywhere,
+                     "not_bitwise": rounded_only, "not_on_every_build": missing}
+          json.dump(summary, open("digests/summary.json", "w"), indent=1)
+          print(json.dumps(summary, indent=1))
+          EOF
+      - uses: actions/upload-artifact@v7
+        with:
+          name: digests-summary
+          path: digests/summary.json
