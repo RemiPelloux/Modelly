@@ -119,9 +119,12 @@ def pack(texts: dict[Path, str]) -> Path:
     figures = [
         PAPER / f"{g}.pdf" for g in sorted(set(PATTERNS["graphic"].findall(used)))
     ]
-    files = [*texts, PAPER / "references.bib", *figures]
-    if (PAPER / "main.bbl").exists():
-        files.append(PAPER / "main.bbl")
+    bbl = PAPER / "main.bbl"
+    # arXiv does not run BibTeX: without a current main.bbl every citation prints as [?].
+    newest = max(p.stat().st_mtime for p in [*texts, PAPER / "references.bib"])
+    if not bbl.exists() or bbl.stat().st_mtime < newest:
+        sys.exit("main.bbl missing or older than the sources: build main.pdf first")
+    files = [*texts, PAPER / "references.bib", *figures, bbl]
     with tarfile.open(ARCHIVE, "w:gz") as archive:
         for path in files:
             if path.name == "main.tex":

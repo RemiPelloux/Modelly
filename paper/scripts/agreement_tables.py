@@ -114,7 +114,11 @@ def forest(rows: list[dict], out: Path) -> None:
     centres = [(s + e - 1) / 2 for s, e in zip(starts, ends, strict=True)]
     ax.set_xticks(
         centres,
-        [LABELS[rows[i]["playbook"]].replace(" ", "\n") for i in starts],
+        # Every other label one line lower, so narrow neighbouring groups do not collide.
+        [
+            "\n" * (2 * (k % 2)) + LABELS[rows[i]["playbook"]].replace(" ", "\n")
+            for k, i in enumerate(starts)
+        ],
         fontsize=7,
     )
     ax.tick_params(axis="x", length=0)

@@ -3,6 +3,9 @@
 
 \subsection{The programming model}
 
+\modelly{} is an independent implementation: it contains no Mesa code and does not depend on
+Mesa. Its compatibility with Mesa is at the level of the programming model and the API's
+names, which is what lets a codemod port a Mesa model (\cref{sec:portability}).
 A \modelly{} model is a \code{Model} subclass that owns its agents, its spaces, its clock and
 its random generators; an agent is an \code{Agent} subclass with a \code{step} method or
 whatever behaviour the model calls. Parameters live in a typed \code{Scenario} that also
@@ -19,7 +22,7 @@ The same model can be written at three levels of the speed/expressiveness trade-
 \modelly{} supports all three in one framework:
 
 \begin{description}[style=nextline,leftmargin=1.5em,itemsep=2pt]
-  \item[Objects (as in Mesa).] Each agent is a Python object with its own attributes, and each
+  \item[Objects (the per-agent style of Mesa).] Each agent is a Python object with its own attributes, and each
   cell keeps the list of its occupants. This is the most direct translation of a model's
   description and the easiest to read.
   \item[Columns.] An attribute declared as a \code{Column} is stored in a model-owned
@@ -61,7 +64,7 @@ within a state, are not represented; a model that needs them stays at the object
 level.
 
 \begin{lstlisting}[float=tp,caption={A wealth-exchange model whose agents keep their wealth in a column;
-the step acts on the whole population at once. Run as shown with \modelly{} 1.4.0.},
+the step acts on the whole population at once. Run as shown with \modelly{} 1.4.2.},
 label={lst:columns}]
 import numpy as np
 from modelly import Agent, Column, Model
@@ -122,7 +125,8 @@ identical either way. The modules build with GCC, Clang and MSVC; the release wo
 them on the tag for Linux (glibc and musl, x86-64 and ARM64), macOS and Windows (x86-64 and
 ARM64), checked as \cref{tab:determinism} states. They also build for free-threaded CPython,
 where critical sections and cache generation counters replace the global interpreter lock,
-and the compiled modules' tests run on that build on the development machine.
+and the compiled modules' tests, except the event heap's, run on that build on the development
+machine.
 
 \subsection{Spaces}
 

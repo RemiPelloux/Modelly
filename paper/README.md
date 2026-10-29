@@ -68,7 +68,7 @@ No TeX distribution? Upload the folder to Overleaf (it compiles `main.tex` with 
 | Weak scaling (Table 17) | `data/weak_mpi_10k.json`, `data/weak_mpi_40k.json`, `data/weak_dask_10k.json` | `benchmarks/distributed/weak_scaling.py` |
 | GPU speed-up and equality at 10 million agents (Section 7, Appendix E.2) | `data/gpu_speedup.json` | `benchmarks/playbooks/gpu_speedup.py` in a CUDA environment (`docs/gpu.md`) |
 | Differentiable recoveries and gradient checks (Section 7, Appendix E.3) | `tests/diff/`, `docs/differentiable.md` | `pytest tests/diff` (needs jax) |
-| Event heap, column gather, memory-mapped 100 M rows, PGO (Appendix E.4) | `docs/performance.md` | `benchmarks/large_columns.py`, `benchmarks/pgo.py` |
+| Event heap, column gather, memory-mapped 100 M rows (Appendix E.4) | `tests/native/`, `build/logs` of the measurement run | `benchmarks/large_columns.py` under `systemd-run -p MemoryMax=16G` and `3G` |
 | Nowcasting error and EnKF recovery (Section 7, Appendix E.5) | `docs/assimilation.md` run by `tests/stream/test_assimilation_tutorial.py` | `pytest tests/stream` |
 | Field numerics and the two coupled zoo models (Section 7, Appendix E.6) | `tests/couple/`, `tests/zoo/test_nutrient_foragers.py`, `test_hospital_epidemic.py` | `pytest tests/couple tests/zoo` |
 | History-matching volumes and active learning against LHS (Section 7, Appendix E.7) | `docs/emulators.md`, `tests/emulate/` | `pytest tests/emulate`; `benchmarks/emulate/active_vs_lhs.py` |

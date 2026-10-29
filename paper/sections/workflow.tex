@@ -1,8 +1,7 @@
 \section{From a model to a published study}
 \label{sec:workflow}
 
-\modelly{} ships the steps that usually separate a working model from a defensible study. They
-share the framework's seeding: each run's seed is derived deterministically from the study's
+\modelly{} includes the steps between a working model and a published study. They share the framework's seeding: each run's seed is derived deterministically from the study's
 seed and the run's position in the design, so results never depend on the executor, the number
 of workers or the order in which runs finish.
 
@@ -136,20 +135,15 @@ archive with Zenodo metadata; \cmd{modelly odd} writes the skeleton of an ODD de
 
 \subsection{Tools for building and checking models}
 
-Part of the package and tested, but not evaluated in this paper: a linter (\cmd{modelly
-lint}) for reproducibility bugs (random draws outside the model's generators, iteration over
-sets, wall-clock time, unpicklable callbacks sent to workers, network calls that bypass the
-cached language-model client) and quadratic patterns, with automatic fixes, a language-server
-mode and a pre-commit hook; a profiler (\cmd{modelly profile}) that locates the cost per agent
-class and method and the scans that grow with $N$; time travel, which rewinds a run, replays
-it with changed parameters, branches it and finds the first step where two runs diverge;
-Studio (\cmd{modelly studio}), a browser front end with a parameter panel generated from the
-scenario, a timeline scrubber, the profiler and the linter; language-model agents
-(\code{modelly.llm}) whose cached replies replay offline and travel with a bundle; and a
-NetLogo translator (\cmd{modelly netlogo}) for a documented subset, which marks what it cannot
-translate.
+The package also includes, tested but not evaluated in this paper, a linter for
+reproducibility bugs and quadratic patterns (\cmd{modelly lint}), a profiler
+(\cmd{modelly profile}), time travel over checkpoints (rewind, replay with changed parameters,
+branch, and find the first step where two runs diverge), a browser front end, Studio
+(\cmd{modelly studio}), with a timeline over a run's checkpoints, language-model agents whose cached replies replay offline
+(\code{modelly.llm}), and a translator for a documented subset of NetLogo
+(\cmd{modelly netlogo}).
 
-\subsection{A zoo of validated models}
+\subsection{A zoo of tested reference models}
 \label{sec:zoo}
 
 Seventeen reference models, each with a validation test against an analytical or well-known

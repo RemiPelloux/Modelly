@@ -1,9 +1,8 @@
 \section{Scaling out and connecting to data in detail}
 \label{app:scale}
 
-This appendix is supplementary material for a journal submission: the design, the
-measurement conditions and the evidence behind each capability of \cref{sec:scale}, with
-the tests and result files that reproduce every number. The measurements were made on the
+This appendix gives the design, the measurement conditions and the evidence behind each
+capability of \cref{sec:scale}, with the tests and result files that reproduce every number. The measurements were made on the
 laptop of \cref{sec:performance}, with the machine shared and without the fixed frequency of
 \cref{sec:playbooks}.
 
@@ -177,9 +176,7 @@ rows. A cohort table of 100 million rows (19 bytes a row) ran three life-cycle s
 \code{systemd} memory limit with a peak of 3.61~GB memory-mapped (4.26~GB in memory); a step
 took 9.3 to 10.4~s memory-mapped and 8.3 to 8.7~s in memory; and under a 3~GB limit the memory-mapped table finished while the in-memory one
 was killed (\code{benchmarks/large\_columns.py}); 100 million \emph{agent objects} cannot fit
-in 16~GB, since the objects alone need over 22~GB. Profile-guided optimisation of the C
-modules (GCC~16, trained on the playbooks) measured 0.993 to 1.003 of the plain build over
-seven paired rounds, so the build does not use it (\code{benchmarks/pgo.py}).
+in 16~GB, since the objects alone need over 22~GB.
 
 \subsection{Live data and data assimilation}
 \label{app:assimilation}
@@ -321,11 +318,9 @@ Emscripten through \code{pyodide build}, and the export can ship that wheel.
 \paragraph{Measured} (\code{tests/web/test\_browser.py}, \code{docs/browser.md}). The 14
 bundled examples (the three split-run reference models were not exported) and
 the 17 zoo models, 31 models, each run from its export in headless Chromium with the pure
-wheel and with the compiled one, 62 of 62 runs without error. Two zoo models first failed in
-the browser, because Pyodide's GDAL reads no Deflate-compressed GeoTIFF and its geopandas has
-neither pyogrio nor fiona; the bundled samples were changed to load without either (the
-land-cover window written uncompressed, the tracts read through
-\code{GeoDataFrame.from\_features}), with the same pixels and the same geometries. A cold
+wheel and with the compiled one, 62 of 62 runs without error. Because Pyodide's GDAL reads no Deflate-compressed GeoTIFF and
+its geopandas has neither pyogrio nor fiona, the bundled land-cover window is stored
+uncompressed and the tracts are read through \code{GeoDataFrame.from\_features}. A cold
 first visit transfers 14.1~MB for the age-structured SEIR model
 (Pyodide, its standard library, \code{numpy} and \code{pandas} are 13.5~MB of it) and is
 ready at step 0 after 5.9~s unthrottled, 8.0~s on a 50~Mbit/s line with 40~ms round trips, and

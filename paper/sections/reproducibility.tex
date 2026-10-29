@@ -98,7 +98,9 @@ value lies in the posterior's 95\% highest-density interval.
   \input{tables/recovery}
 \end{table}
 
-Coverage is 94 to 100\% for a nominal 95\% at all six true points (the lowest Clopper--Pearson
+Nominal coverage is guaranteed only on average over parameters drawn from the prior; at a
+fixed true point a well-calibrated posterior can cover more or less often. Coverage is 94 to
+100\% for a nominal 95\% at all six true points (the lowest Clopper--Pearson
 bound is 0.90), so the intervals are not too narrow and, for $\gamma$ at 0.1 and 0.2 and five of the six
 predator-prey parameters, conservative (lower bound at least 0.96), as expected of ABC: a non-zero tolerance widens the posterior. Accuracy depends
 on how well 30 steps identify the parameters. At four of the six points the mean signed error of the posterior mean is within 10\% of the
@@ -109,7 +111,7 @@ for the slow epidemic ($\beta = 0.25$, $\gamma = 0.05$, $R_0 = 5$, whose infecti
 are wide, and they still cover the truth 94 and 96\% of the time.
 The test suite asserts recovery on three fixed seeds per model, with a 25\% criterion on the
 posterior mean and the truth inside the interval; for the skewed predation rate it uses the
-median, a change made with the correction described next.
+median.
 
 \paragraph{Importance weights.} A dedicated test checks \cref{eq:abc-weights} directly: from a
 population crowding the lower bound of a uniform prior, 40,000 proposals reweighted by their

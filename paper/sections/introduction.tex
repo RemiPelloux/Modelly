@@ -41,9 +41,7 @@ reproducible research:
   \item \textbf{The study, not only the simulation.} Experiments, calibration, sensitivity
   analysis, provenance manifests, verifiable bundles and ODD skeletons \citep{grimm2006odd,
   grimm2020odd} are part of the package and share one seeding discipline, so their results do
-  not depend on the executor or the number of workers, and a determinism suite compares the
-  bundled examples' digests across builds and platforms (\cref{sec:workflow,sec:reproducibility},
-  \cref{tab:determinism}).
+  not depend on the executor or the number of workers (\cref{sec:workflow}).
   \item \textbf{Beyond one process, and towards data.} Per-agent random streams and
   split runs, a GPU backend, differentiable models, data assimilation, fields coupled to
   agents, emulators, synthetic populations and a browser export, each measured and each
@@ -54,6 +52,5 @@ The rest of the paper situates \modelly{} among existing tools (\cref{sec:relate
 describes its design (\cref{sec:design}) and research workflow (\cref{sec:workflow}),
 evaluates its speed and its agreement with Mesa (\cref{sec:performance}) and the correctness
 of its methods (\cref{sec:reproducibility}), measures how it scales out and connects to data
-and where that falls short (\cref{sec:scale}), states for which studies it is a good choice
-(\cref{sec:usecases}), and ends with the threats to the validity of these measurements and the
+and where that falls short (\cref{sec:scale}), delimits the studies it suits (\cref{sec:usecases}), and ends with the threats to the validity of these measurements and the
 software's limitations (\cref{sec:threats}).

@@ -18,15 +18,15 @@ these tools resolve in different ways.
 \paragraph{Python.} Mesa \citep{masad2015mesa, kazil2020mesa, terhoeven2025mesa3} provides the agent, model,
 space and data-collection abstractions that most Python ABMs use, and a browser
 visualisation. AgentPy \citep{foramitti2021agentpy} combines a similar model with experiment
-and Sobol tooling built on SALib \citep{herman2017salib}, though it is no longer actively
-developed; Melodie \citep{yu2023melodie} adds calibration and scenario management with
+and Sobol tooling built on SALib \citep{herman2017salib}, though its last release (0.1.5) dates from
+December 2021; Melodie \citep{yu2023melodie} adds calibration and scenario management with
 Cython acceleration; and mesa-frames \citep{mesaframes} represents agent sets as data frames
 to vectorise Mesa models. \modelly{} implements a
 programming model compatible with Mesa's: its codemod (\cmd{python -m modelly.migrate})
 performs the mechanical rewrites of a Mesa model and reports what needs a decision
-(schedulers, legacy grids, batch runs), and a port of a Mesa~2.3 model that changes only the
-framework API produces bit-identical results, a port of a Mesa~3.5 model equivalent
-distributions (\cref{sec:portability}). Unlike a data-frame representation, \modelly{}'s columns keep
+(schedulers, legacy grids, batch runs); the two Mesa~2.3 models ported this way, changing only
+the framework API, give bit-identical results on every seed tried, and the Mesa~3.5 ports
+equivalent distributions (\cref{sec:portability}). Unlike a data-frame representation, \modelly{}'s columns keep
 the per-agent object: each agent reads and writes its row as an attribute, so a model can be
 vectorised one phase at a time (\cref{sec:storage}).
 
@@ -68,7 +68,7 @@ widely used platforms in other languages.
   mesa-frames 0.1.0a0, its only release, an alpha, while its development branch
   \code{ef92326} (0.1.1.dev0) is the one measured in \cref{sec:playbooks}, AgentPy 0.1.5, NetLogo 7, Repast4Py 1.3, Agents.jl 7.1). \checkmark{}: built in;
   ext.: through a companion tool that the project or the tool documents for it (EMA Workbench for
-  Mesa, nlrx for NetLogo, EMEWS \citep{ozik2016desktop} for Repast4Py); --: not documented. NetLogo's checkpoints are
+  Mesa, nlrx for NetLogo, EMEWS \citep{ozik2016desktop} for Repast4Py); --: not documented; the judgements are the author's, from the documentation and source of each project. NetLogo's checkpoints are
   \code{export-world} and \code{import-world}. Licences from the projects' licence files.}
   \label{tab:features}
   \setlength{\tabcolsep}{3pt}

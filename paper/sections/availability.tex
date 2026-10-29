@@ -1,11 +1,10 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-\modelly{} keeps the agent-based programming model that Python modellers know and changes what
-it costs to use it in research: array-backed and counted populations for speed, compiled loops
+\modelly{} keeps the agent-based programming model that Python modellers know and lowers the
+cost of using it in research: array-backed and counted populations for speed, compiled loops
 with pure-Python twins, and the experiment, calibration, sensitivity, provenance and
-publication steps built on one seeding discipline. Its claims are measured in the open: against
-Mesa~2.3, Mesa~3.5 and mesa-frames, with an agreement study over 100 seeds per variant, and
+publication steps built on one seeding discipline. Its claims are measured against Mesa~2.3, Mesa~3.5 and mesa-frames, with an agreement study over 100 seeds per variant, and
 with methods checked on problems whose answers are known. It also runs beyond one process
 (split runs, a GPU backend, differentiable models) and connects a model to data, fields and
 the browser, each capability reported with what it measures and where it falls short
@@ -26,7 +25,7 @@ wheel for everything else (\cref{tab:determinism}). Source, issue tracker, the t
 documentation, tutorials and the roadmap at
 \href{https://remipelloux.github.io/Modelly/}{\nolinkurl{remipelloux.github.io/Modelly}}.
 At the tag, the suite runs 3,038 tests, of which 2,980 pass and 58 skip without an optional
-library (CuPy, Ray, optuna, xarray, a broker) or a browser, with 97.3\% line coverage. The version described here is 1.4.0; the provenance of every measurement (commits,
+library (CuPy, Ray, optuna, xarray, a broker) or a browser, with 97.3\% line coverage. The version described here is 1.4.2; the provenance of every measurement (commits,
 machine, package versions and the Software Heritage identifier of the archived code) is in
 \cref{app:reproduce}, and the data and scripts behind every table and figure of this paper
 are in the repository's \code{paper/} folder. To cite \modelly{}, use the metadata in the
@@ -37,7 +36,7 @@ repository's \code{CITATION.cff}.
 
 \paragraph{Software availability.} Name: \modelly{} (\code{modelly-abm} on PyPI). Developer:
 R\'emi Pelloux, OpenPro (\href{mailto:rp@openpro.ai}{rp@openpro.ai}). First available: 2026.
-Version described: 1.4.0. Language: Python, with five C extension modules. Requirements:
+Version described: 1.4.2. Language: Python, with five C extension modules. Requirements:
 CPython 3.12 or later, \code{numpy}, \code{pandas}, \code{scipy} and \code{tqdm}; optional
 extras for visualisation, geography, networks, experiment storage, MPI (\code{mpi4py}), GPUs
 (CuPy), differentiable models (JAX), message brokers, an outside optimiser and xarray.

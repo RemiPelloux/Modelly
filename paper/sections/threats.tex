@@ -3,8 +3,7 @@
 
 \subsection{Threats to the validity of the measurements}
 
-\paragraph{The baselines.} The playbooks compare against Mesa~2.3.2, the version the ported
-research model was written for, and the current Mesa~3.5.1; Mesa~2.3 runs here on CPython
+\paragraph{The baselines.} The playbooks compare against Mesa~2.3.2 and the current Mesa~3.5.1; Mesa~2.3 runs here on CPython
 3.15, which it does not officially support. The Mesa~3.5 and mesa-frames implementations were
 written for this paper, following each library's documentation and examples, and their
 developers might write them faster. mesa-frames was measured from its development branch
@@ -55,15 +54,20 @@ ratio over Mesa~2.3 lies within 19\% of its median (over Mesa~3.5, within 19\%),
 28 non-reference variants within 10\% (the two exceptions are the insect population's column
 and cohort forms, 18 and 11\%), and
 the bootstrap intervals of \cref{tab:speedup-ci} are a few percent wide (42.1 [41.4, 42.7] for
-the grid epidemic's columns over Mesa~2.3). An earlier session with turbo enabled and the
-\code{powersave} governor gave ratios up to 30\% different for some workloads and per-round
-spreads up to $+94\%$, so the conclusions rest on the order of magnitude of each speed-up, not
+the grid epidemic's columns over Mesa~2.3). Without a fixed frequency (turbo and a power-saving governor), ratios move by tens of percent
+from one session to the next, so the conclusions rest on the order of magnitude of each speed-up, not
 on its last digit, and on one machine: other processors, with other cache sizes and
 vector units, will give other ratios. The measurements of \cref{sec:scale} were
 made on the same laptop without the fixed frequency: the GPU comparison has three rounds and
 the browser's first load is a median of three, while the weak scaling (\cref{tab:scaling}),
 the 100-million-row run and the nowcast are single runs; the claims that carry weight there
 (identical outputs, a 35-fold speed-up, shortfalls by a factor) do not turn on a few percent.
+
+\paragraph{One interpreter, one size.} Every timing and every digest of this paper ran on
+CPython~3.15; \modelly{} supports 3.12 and later, and its speed on 3.12 to 3.14 was not
+measured. Each playbook is timed at one population size (\cref{tab:workloads}); the GPU
+measurement shows how strongly a speed-up can depend on the size (\cref{sec:gpu}), and the
+ratios of \cref{tab:playbooks} should not be extrapolated far from the sizes timed.
 
 \paragraph{Agreement.} The agreement study (\cref{sec:agreement}) compares chosen summary
 statistics, not whole trajectories; six small differences are individually detectable at the
@@ -95,7 +99,7 @@ yet by a study outside the repository.
 
 \begin{itemize}[leftmargin=*,itemsep=2pt]
   \item \textbf{Speed comes from the model's form.} A model written agent by agent gains only
-  where the framework's own calls take its time (none to 4.6 times, \cref{sec:portability}); the
+  where the framework's own calls take its time (1.05 to 4.8 times, \cref{sec:portability}); the
   large gains of \cref{sec:playbooks} require phases that can be
   expressed over the whole population. Sequential decisions where each agent depends on the
   previous one's move remain per-agent loops.
@@ -107,6 +111,6 @@ yet by a study outside the repository.
   need orthogonal grids with uniform spacing; the Ray backend and Apple Metal are untested.
   \item \textbf{Checkpoints and closures.} Checkpoints pickle the model; models that hold
   lambdas, nested functions or classes created at run time cannot be saved, and the framework
-  refuses them with an error naming the object. Checkpoints load only in the \modelly{} minor
-  version that wrote them.
+  refuses them with an error naming the object. Checkpoints load only under the \modelly{} and the
+  Python minor versions that wrote them.
 \end{itemize}

@@ -35,6 +35,7 @@ from registry import PLAYBOOKS  # noqa: E402
 
 REFERENCE = "mesa"
 SEED_BASE = 2000  # disjoint from the harness's own agreement seeds (1000 and up)
+# A replication draws new seeds (--seed-base 10000), disjoint from every primary study's.
 MARGIN = 0.5  # equivalence margin, in pooled standard deviations
 ALPHA = 0.05
 
@@ -55,13 +56,15 @@ def chosen(spec: dict, playbooks: list[str], variants: list[str]) -> list[str]:
     return [v for v in spec["variants"] if v == REFERENCE or v in wanted]
 
 
-def run(seeds: int, jobs: int, size: str, tag: str, only: tuple[list, list]) -> None:
+def run(
+    seeds: int, jobs: int, size: str, tag: str, only: tuple[list, list], base: int
+) -> None:
     """The chosen variants of the chosen playbooks on the same seeds; raw statistics to a file."""
     tasks = [
         (name, variant, seed)
         for name, spec in PLAYBOOKS.items()
         for variant in chosen({"name": name, **spec}, *only)
-        for seed in range(SEED_BASE, SEED_BASE + seeds)
+        for seed in range(base, base + seeds)
     ]
 
     def one(task: tuple[str, str, int]) -> tuple[str, str, int, dict]:
@@ -79,7 +82,7 @@ def run(seeds: int, jobs: int, size: str, tag: str, only: tuple[list, list]) -> 
             raw.setdefault(name, {}).setdefault(variant, {})[str(seed)] = row
     DATA_DIR.mkdir(exist_ok=True)
     env = environment(PAPER.parent, compare.PYTHONS, None)
-    payload = {"environment": env, "seeds": seeds, "seed_base": SEED_BASE, "size": size}
+    payload = {"environment": env, "seeds": seeds, "seed_base": base, "size": size}
     payload["runs"] = raw
     out = DATA_DIR / f"agreement_{tag}.json"
     out.write_text(json.dumps(payload, indent=1), encoding="utf-8")
@@ -147,7 +150,8 @@ def comparisons(payload: dict) -> list[dict]:
     for name, variants in payload["runs"].items():
         reference = variants[REFERENCE]
         for variant, runs in variants.items():
-            if variant == REFERENCE:
+            # The GPU variants are not in the Holm family: they are reported with the GPU.
+            if variant == REFERENCE or variant.endswith(GPU_SUFFIX):
                 continue
             seeds = sorted(reference, key=int)
             for stat in reference[seeds[0]]:
@@ -183,7 +187,7 @@ def analyse(tag: str) -> None:
     payload = json.loads(
         (DATA_DIR / f"agreement_{tag}.json").read_text(encoding="utf-8")
     )
-    rows = [r for r in comparisons(payload) if not r["variant"].endswith(GPU_SUFFIX)]
+    rows = comparisons(payload)
     (PAPER / "tables" / f"agreement_{tag}.tex").write_text(
         table(rows, payload["seeds"]), encoding="utf-8"
     )
@@ -229,6 +233,7 @@ def main() -> None:
         "--tag", default=None, help="data and table name (default: the size)"
     )
     parser.add_argument("--playbooks", nargs="*", default=[])
+    parser.add_argument("--seed-base", type=int, default=SEED_BASE)
     parser.add_argument(
         "--variants", nargs="*", default=[], help="besides the reference"
     )
@@ -236,7 +241,7 @@ def main() -> None:
     tag = options.tag or options.size
     if options.command == "run":
         only = (options.playbooks, options.variants)
-        run(options.seeds, options.jobs, options.size, tag, only)
+        run(options.seeds, options.jobs, options.size, tag, only, options.seed_base)
     else:
         analyse(tag)
 

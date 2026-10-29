@@ -11,7 +11,8 @@ numpy 2.5.4 in each implementation's environment, against Mesa 2.3.2 and Mesa 3.
 \modelly{} at its tagged release v1.4.0 (commit \code{a972492}). The core was held at its 1.9~GHz
 base frequency (the \code{performance} governor, turbo disabled) for every timing of this
 section. Following
-\citet{kalibera2013rigorous}, every run is a fresh interpreter or a fresh model, the rounds are
+\citet{kalibera2013rigorous}, every timed run of the playbooks, the ports and Mesa's examples is
+a fresh interpreter (the GPU arms are fresh interpreters after one warm-up run), the rounds are
 paired and their order varies, and we report medians with their spread and bootstrap intervals
 rather than single runs.
 
@@ -49,12 +50,13 @@ kept in \code{benchmarks/mesa\_examples/}: eight run on \modelly{} after the cod
 to each, the import of the example's own agents made relative (the codemod points it at
 \modelly{}'s bundled example of the same name), plus, for the Epstein civil-violence model, the
 one step its report asks for (\code{self.steps} becomes \code{self.time}); Sugarscape G1MT uses Mesa's property layers and
-alliance formation its meta-agent factory, which \modelly{} lacks. Porting them found a gap in
-the codemod, which rewrote three Mesa~3.5 module paths to \modelly{} paths that do not exist
-without reporting them; the codemod now maps them and reports any module without an
-equivalent (the timed code does not import the codemod). We ran
-each original and its port at Mesa's default parameters, or, where the defaults run in well
-under 0.2~s, on a larger grid at the same density (the virus model on 1,000 nodes), for ten alternating rounds on the same
+alliance formation its meta-agent factory, which \modelly{} lacks. The codemod maps Mesa~3.5's module paths and reports any module
+without a \modelly{} equivalent (the timed code does not import the codemod). We ran
+each original and its port at Mesa's default parameters, except four whose defaults run too
+briefly to time reliably: Boltzmann wealth with 2,500 agents on a $50 \times 50$ grid,
+Schelling's model on $50 \times 50$, wolf--sheep on $50 \times 50$ with 625 sheep and 312
+wolves, and the virus model on 1,000 nodes (\code{benchmarks/mesa\_examples/run.py}), each
+for ten alternating rounds on the same
 fixed-frequency core, and compared every model reporter, at the last step and averaged over
 the run, over 100 shared seeds. \Cref{tab:mesa-examples} gives the results: the ports take
 0.60 (wolf--sheep) to 0.95 (the prisoner's dilemma grid and boid flockers) of Mesa~3.5's CPU time, and all 35 statistics are
@@ -101,9 +103,9 @@ seeds at the small size, 24 of the 26 statistics are equivalent within $0.5\,s_p
 $t$-tests fall below 5\% before correction (the network's peak of infections and the Boltzmann
 model's largest wealth, $|d| \le 0.31$) and none after it, and no Kolmogorov--Smirnov test does.
 
-Same-code gains therefore range from 1.05 to 1.7 times on Mesa~3.5's own examples and 1.1
-to 2.3 times on the Mesa~3.5 ports of the playbooks to
-2.8 and 4.8 times on Mesa~2.3 models, whose framework calls are slower; the larger gains come
+Same-code gains are therefore 1.05 to 1.7 times on Mesa~3.5's own examples, 1.1 to 2.3 times
+on the Mesa~3.5 ports of the playbooks, and 2.8 and 4.8 times on the two Mesa~2.3 models,
+whose framework calls are slower; the larger gains come
 from the forms of \cref{sec:playbooks}.
 
 \subsection{Each framework's own idiom: eight playbooks}
@@ -126,13 +128,13 @@ grid epidemic, Schelling's model and Boltzmann wealth) have a \emph{Mesa~3.5 + n
 implementation, the hand-vectorised baseline: a \code{mesa.Model} that owns the population as
 numpy arrays, with no \code{Agent} objects, and keeps Mesa's grid for its neighbour table and
 property layers and Mesa's \code{DataCollector} for the records. It is what an expert gets by
-giving up agent objects altogether, and so a bound on what a framework that keeps them can
-reach. The \modelly{}
+giving up agent objects altogether, and so a reference point for what a framework that keeps them
+can reach. The \modelly{}
 implementation uses column state, \code{CellIndex}, KD-tree queries or cohorts, and four
-workloads have a further \modelly{} variant, \emph{cell lists}, which keeps Mesa's per-cell
-agent lists and vectorises only the obvious phases (\cref{app:workloads}). Every
-implementation computes the same model within the margins of \cref{sec:agreement}, apart
-from a 0.4\% shift in our mesa-frames Schelling implementation, and three Mesa~3.5
+workloads have a further \modelly{} variant, \emph{cell lists}, which keeps per-cell
+agent lists and vectorises only the obvious phases (\cref{app:workloads}). The
+implementations agree within the margins that \cref{sec:agreement} measures and reports,
+apart from a 0.4\% shift in our mesa-frames Schelling implementation, and three Mesa~3.5
 implementations, which draw the same random numbers in the same order as Mesa~2.3, reproduce
 it run by run: flocking, the network contagion and the insect population. Each implementation
 is run twice from the same seed and must reproduce its own output exactly; all do.
@@ -162,7 +164,7 @@ bootstrap 95\% interval for every speed-up, resampling the paired rounds.
   \caption{$S_{\mathrm{steps}}$ of each implementation over the Mesa~2.3
   implementation of the same workload (\cref{tab:playbooks}); whiskers span the per-round
   ratios, and bars left of 1 are slower than Mesa~2.3. Columns and cohorts are \modelly{}'s
-  array-based storage; cell lists keep Mesa's per-cell lists; mesa-frames is the vectorised
+  array-based storage; cell lists keep per-cell agent lists, as Mesa's grids do; mesa-frames is the vectorised
   data-frame library built on Mesa; Mesa~3.5 + numpy replaces Mesa's agents with hand-written
   arrays.}
   \label{fig:speedups}
@@ -227,7 +229,7 @@ per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}
 (1.3 to 3.1 times), as fast on flocking and Sugarscape, and slower on predator-prey (0.89
 times). mesa-frames is 2.1 to 6.1 times faster than Mesa~2.3 on three of its four workloads and
 slower on Sugarscape (0.71 times), where its per-forager search is a cross join and a sort over
-up to about 130,000 rows per step. \modelly{}'s cell-list variants, which keep Mesa's per-cell
+up to about 130,000 rows per step. \modelly{}'s cell-list variants, which keep per-cell
 agent lists, give 1.3 to 14 times over Mesa~2.3 and 1.3 to 11 over Mesa~3.5: large for
 Schelling's model, whose residents mostly count their neighbours, small where movement and
 search stay per agent. Construction is where \modelly{} spends more than Mesa~2.3 (it
@@ -278,7 +280,8 @@ reference and every \modelly{} variant of every playbook on the same 100 seeds a
 small size (2,100 runs), and compared each of the 67 pairs of a summary statistic and a \modelly{} variant (epidemic peak
 and final size, final populations, cluster counts, Gini coefficient, and so on) with the Mesa
 reference in three ways: a paired $t$-test on the seed-by-seed differences, the two-sample
-Kolmogorov--Smirnov test on the two marginal distributions, and paired two one-sided tests
+Kolmogorov--Smirnov test on the two marginal distributions (conservative for the
+integer-valued statistics, whose values tie), and paired two one-sided tests
 (TOST) of equivalence \citep{schuirmann1987comparison, lakens2017equivalence} with a margin of
 half a pooled standard deviation $s_p$, that is, against the null hypothesis
 $|\mu_{\mathrm{Modelly}} - \mu_{\mathrm{Mesa}}| \ge 0.5\, s_p$. We report the standardised
@@ -327,7 +330,7 @@ insect model and the share of agents without wealth in the Boltzmann model ($|d|
 most 1.4\%). The spreads agree too: the ratio of the two implementations' standard deviations
 lies between 0.77 and 1.27, and one median-centred Levene test \citep{brown1974robust} of 67 falls below 5\%, none after the Holm
 correction, so we find no evidence, within the power of a Levene test on 100 seeds, that a
-vectorised phase changes the variability of an outcome. The earlier check shipped with the benchmark harness, six seeds
+vectorised phase changes the variability of an outcome. The benchmark harness's own quick check, six seeds
 and an unpaired Welch test \citep{welch1947generalization} at 1\%, could not have shown any of
 this: its power to detect a difference of one standard deviation is 13\%.
 

@@ -86,9 +86,9 @@ Schelling study, the coverage study and these three) record commit \code{8925f96
 only result files to the tag; the \code{weak\_*.json} files the interpreter, the platform and the load,
 with the commit and the MPI, mpi4py and Dask versions added from the environment afterwards and
 marked so; and \code{gpu\_speedup.json} the package versions of both arms. In these files the
-version recorded for \code{modelly-abm} is the metadata of the development environments'
-editable installs (1.3.2 and 1.3.3), not the code: both imported \modelly{} from the checkout
-at the tagged commit, which the commit field identifies.
+package version recorded for \code{modelly-abm} is the stale metadata of the development
+environments' editable installs, not the code: both imported \modelly{} from the checkout at
+the tagged commit, which the commit field identifies.
 % SWHID-1.4.0: replace with the identifier of the archived tag once Software Heritage has it
 The tagged release v1.4.0 is archived by Software Heritage.
 
@@ -98,7 +98,7 @@ The tagged release v1.4.0 is archived by Software Heritage.
 \paragraph{Choices in the implementations.} For flocking the Mesa~3.5 implementation uses
 the legacy continuous space of \code{mesa.space}, which Mesa~3.5 still provides and which
 runs this workload 1.6 times faster than the experimental space of Mesa's own example. \modelly{}'s cell-list
-variants keep Mesa's data structure, each cell holding the list of its agents, and vectorise
+variants keep the data structure of Mesa's grids, each cell holding the list of its agents, and vectorise
 only the obvious phases. Where a phase searches cells one agent at a time, as Sugarscape's
 foragers do, the Mesa implementations and the cell-list variant use the same single-pass
 algorithm, so that their comparison is between data structures; the column and mesa-frames
