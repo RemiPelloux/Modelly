@@ -34,7 +34,7 @@ jobs:
           CIBW_ARCHS_WINDOWS: "native"
           CIBW_ENVIRONMENT: "MODELLY_REQUIRE_NATIVE=1"
           CIBW_TEST_COMMAND: >-
-            python -c "import sys, sysconfig, modelly.core.rng as r, modelly._native.loops as l, modelly._native.cells as c, modelly._native.sets as s; assert r.NATIVE and l.NATIVE and c.NATIVE and s.NATIVE, 'compiled modules not active'; assert not (sysconfig.get_config_var('Py_GIL_DISABLED') and sys._is_gil_enabled()), 'a compiled module turned the GIL back on'"
+            python -c "import sys, sysconfig, modelly.core.rng as r, modelly._native.loops as l, modelly._native.cells as c, modelly._native.sets as s, modelly._native.events as e; assert r.NATIVE and l.NATIVE and c.NATIVE and s.NATIVE and e.NATIVE, 'compiled modules not active'; assert not (sysconfig.get_config_var('Py_GIL_DISABLED') and sys._is_gil_enabled()), 'a compiled module turned the GIL back on'"
       - uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ matrix.os }}
