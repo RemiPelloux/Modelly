@@ -226,8 +226,8 @@ def bench_against(args: argparse.Namespace) -> tuple[str, bool]:
         raise PlaybookError("no Modelly variant matches --only")
     pinning = choose(args.core, enabled=not args.no_pin)
     sides = against.prepare(args.against, args.playbooks.resolve())
-    pairings = against.pair_rounds(args, variants, pinning, sides)
-    report_text = against.text(pairings, sides, args, pinning)
+    pairings, skipped = against.pair_rounds(args, variants, pinning, sides)
+    report_text = against.text(pairings, sides, args, pinning, skipped)
     return report_text, against.failed(pairings, args.threshold)
 
 

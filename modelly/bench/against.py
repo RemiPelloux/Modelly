@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Any
 
 from modelly.bench.pinning import Pinning, pinned
-from modelly.bench.playbooks import MODELLY_PREFIX, Variant, run_once
+from modelly.bench.playbooks import MODELLY_PREFIX, PlaybookError, Variant, run_once
 from modelly.dev import perf_env
 
 QUARTILES = 4
@@ -94,9 +94,15 @@ def _results(row: dict[str, Any]) -> dict[str, Any]:
 
 def pair_rounds(
     args: Any, variants: list[Variant], pinning: Pinning, sides: Sides
-) -> list[Pairing]:
-    """Each Modelly variant once per side per round, the side order swapped every round."""
+) -> tuple[list[Pairing], dict[str, str]]:
+    """Each Modelly variant once per side per round, the side order swapped every round.
+
+    A variant the release cannot run (one added since it, for instance) is left out and
+    returned with the release's reason, so the comparison covers what both sides have.
+    """
     chosen = [v for v in variants if v.name.startswith(MODELLY_PREFIX)]
+    skipped = {v.key: why for v in chosen if (why := _cannot_run(args, v, sides))}
+    chosen = [v for v in chosen if v.key not in skipped]
     runs: dict[str, list[tuple[dict[str, Any], dict[str, Any]]]] = {
         v.key: [] for v in chosen
     }
@@ -105,7 +111,17 @@ def pair_rounds(
             swap = index % 2 == 1
             for variant in chosen[::-1] if swap else chosen:
                 runs[variant.key].append(_paired_run(args, variant, sides, swap))
-    return [_pairing(key, pairs) for key, pairs in runs.items()]
+    return [_pairing(key, pairs) for key, pairs in runs.items()], skipped
+
+
+def _cannot_run(args: Any, variant: Variant, sides: Sides) -> str | None:
+    """The last line of the release side's error for ``variant``, or None when it runs."""
+    probe = replace(variant, python=sides.python)
+    try:
+        run_once(args.playbooks, probe, args.seed, args.size, env=sides.release_env)
+    except PlaybookError as error:
+        return str(error).strip().splitlines()[-1]
+    return None
 
 
 def _paired_run(
@@ -128,8 +144,14 @@ def _pairing(key: str, pairs: list[tuple[dict[str, Any], dict[str, Any]]]) -> Pa
     return Pairing(key, release, checkout, identical)
 
 
-def text(pairings: list[Pairing], sides: Sides, args: Any, pinning: Pinning) -> str:
-    """The report: one row per variant, then the verdict."""
+def text(
+    pairings: list[Pairing],
+    sides: Sides,
+    args: Any,
+    pinning: Pinning,
+    skipped: dict[str, str] | None = None,
+) -> str:
+    """The report: one row per variant, the variants the release cannot run, the verdict."""
     head = (
         f"this checkout against modelly {sides.version}: size {args.size}, seed "
         f"{args.seed}, {args.rounds} rounds, sides alternating; {pinning.note}"
@@ -151,6 +173,8 @@ def text(pairings: list[Pairing], sides: Sides, args: Any, pinning: Pinning) -> 
             f"{statistics.median(p.checkout):.3f} | {median:.3f}{mark} | "
             f"{low:.3f} to {high:.3f} | {'identical' if p.identical else 'DIFFER'} |"
         )
+    for key, why in (skipped or {}).items():
+        lines.append(f"skipped (not run by {sides.version}): {key}: {why}")
     return "\n".join([*lines, "", verdict(pairings, sides.version, args.threshold)])
 
 

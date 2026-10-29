@@ -229,7 +229,8 @@ versioning.
   `benchmarks/large_columns.py` runs a cohort population of any size on either storage.
 - `modelly bench --against VERSION`: every Modelly playbook variant in this checkout and in a
   release built from its tag (same compiler and dependencies), alternating, results checked
-  identical, with the median and interquartile range of the per-round CPU ratios.
+  identical, with the median and interquartile range of the per-round CPU ratios; a variant the release cannot run (one added since it) is
+  left out and listed, so the comparison covers what both sides have.
 - `benchmarks/pgo.py`: the compiled modules built with GCC profile-guided optimisation
   (trained on the playbooks, `benchmarks/pgo_training.py`) and timed against -O3 on every
   playbook. It measured no faster, so the build does not use it (`docs/performance.md`).

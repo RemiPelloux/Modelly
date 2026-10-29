@@ -24,6 +24,8 @@ WORKER = """\
 import json, os, sys
 playbook, variant, seed, size = sys.argv[1:5]
 side = os.environ["SIDE"]
+if os.environ.get("FAIL_" + side) == variant:
+    sys.exit("no module named " + variant)
 cpu = float(os.environ.get("CPU_" + side, "1.0"))
 population = int(os.environ.get("POP_" + side, "3"))
 with open(os.environ["LOG"], "a") as log:
@@ -67,6 +69,9 @@ def test_sides_alternate_and_equal_runs_pass(playbooks, capsys):
     assert run(directory) == EXIT_OK
     calls = [json.loads(line) for line in log.read_text().splitlines()]
     assert {variant for _, variant in calls} == {"modelly", "modelly-cells"}
+    # The release side runs each variant once first, to see that it can.
+    assert calls[:2] == [["RELEASE", "modelly"], ["RELEASE", "modelly-cells"]]
+    calls = calls[2:]
     firsts = [calls[i][0] for i in range(0, len(calls), 2)]
     assert firsts == ["RELEASE", "RELEASE", "CHECKOUT", "CHECKOUT"] * 2
     out = capsys.readouterr().out
@@ -106,6 +111,21 @@ def test_a_release_that_cannot_be_built_is_a_usage_error(
     monkeypatch.setattr(against, "prepare", unbuildable)
     assert run(directory) == EXIT_USAGE
     assert "could not build modelly-abm 9.9.9" in capsys.readouterr().err
+
+
+def test_a_variant_the_release_cannot_run_is_skipped(playbooks, monkeypatch, capsys):
+    """A variant added since the release is reported as skipped, not as a failure."""
+    directory, log = playbooks
+    monkeypatch.setenv("FAIL_RELEASE", "modelly-cells")
+    assert run(directory) == EXIT_OK
+    out = capsys.readouterr().out
+    assert (
+        "skipped (not run by 9.9.9): toy/modelly-cells: no module named modelly-cells"
+        in out
+    )
+    assert "| toy/modelly |" in out and "| toy/modelly-cells |" not in out
+    rows = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines()]
+    assert ["RELEASE", "modelly-cells"] not in rows
 
 
 def test_pairing_statistics():

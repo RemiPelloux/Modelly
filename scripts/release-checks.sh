@@ -31,6 +31,7 @@ STAGES=(native mpi slurm bundles pyodide browser studio docs bench)
 STEPS=20
 SEED=7
 PYODIDE_VERSION=314.0.7  # keep in step with modelly.web.export.PYODIDE_VERSION
+WEBKIT_WRAPPER="${WEBKIT_WRAPPER:-$ROOT/build/webkit-libs/MiniBrowser}"
 STUDIES=(
   "boltzmann modelly.examples.basic.boltzmann_wealth_model.model:BoltzmannWealth"
   "schelling modelly.examples.basic.schelling.model:Schelling"
@@ -101,9 +102,14 @@ stage_browser() {
 stage_studio() {
   "$PYTHON" -c "import playwright" 2>/dev/null ||
     { echo "missing: playwright for Python (pip install playwright; playwright install)"; return 1; }
-  local browser
+  local browser executable
   for browser in chromium firefox webkit; do
-    MODELLY_BROWSER="$browser" "$PYTHON" -m pytest -q tests/studio/test_studio_browsers.py || return 1
+    executable=""
+    # Playwright's WebKit lacks libraries on some distributions; docs/studio.md explains
+    # the wrapper, kept out of git under build/.
+    [[ $browser == webkit && -x "$WEBKIT_WRAPPER" ]] && executable="$WEBKIT_WRAPPER"
+    MODELLY_BROWSER="$browser" MODELLY_BROWSER_EXECUTABLE="$executable" \
+      "$PYTHON" -m pytest -q tests/studio/test_studio_browsers.py || return 1
   done
 }
 
