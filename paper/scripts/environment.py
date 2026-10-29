@@ -31,8 +31,20 @@ def commit() -> str:
         text=True,
         check=True,
     ).stdout.strip()
+    # The data files these scripts write do not count: regenerating one must not mark
+    # the next one's record dirty.
     dirty = subprocess.run(
-        [GIT, "-C", str(ROOT), "status", "--porcelain", "--untracked-files=no"],
+        [
+            GIT,
+            "-C",
+            str(ROOT),
+            "status",
+            "--porcelain",
+            "--untracked-files=no",
+            "--",
+            ".",
+            ":(exclude)paper/data",
+        ],
         capture_output=True,
         text=True,
         check=True,
