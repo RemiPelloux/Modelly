@@ -5,11 +5,11 @@
 it costs to use it in research: array-backed and counted populations for speed, compiled loops
 with pure-Python twins, and the experiment, calibration, sensitivity, provenance and
 publication steps built on one seeding discipline. Its claims are measured in the open: against
-Mesa~2.3, Mesa~3.5 and mesa-frames, with an agreement study over 100 seeds per variant; against its own previous release
-before every new one; and with methods checked on problems whose answers are known. Release
-1.4 extends it beyond one process (split runs, a GPU backend, differentiable models) and
-connects it to data, fields and the browser, each addition reported with what it measures
-and where it falls short (\cref{tab:release14}). The
+Mesa~2.3, Mesa~3.5 and mesa-frames, with an agreement study over 100 seeds per variant, and
+with methods checked on problems whose answers are known. It also runs beyond one process
+(split runs, a GPU backend, differentiable models) and connects a model to data, fields and
+the browser, each capability reported with what it measures and where it falls short
+(\cref{tab:scale}). The
 measurements also show where it does not help (a model written agent by agent runs between Mesa's speed and 4.6 times faster, depending on
 how much of its time the framework's calls take; hand-written numpy that gives up agent
 objects is 1.8 to 4.4 times faster than its columns; a split run on one laptop and a GPU at
@@ -46,7 +46,7 @@ extras for visualisation, geography, networks, experiment storage, MPI (\code{mp
 Hardware: any machine that runs CPython; the release workflow builds compiled wheels for
 Linux, macOS and Windows on x86-64 and ARM64 and a pure-Python wheel for everything else and
 for the browser. Size: about 1.1~MB for
-the Linux x86-64 and the pure wheel built from the release branch. Licence: Apache 2.0. Source:
+the Linux x86-64 and the pure wheel. Licence: Apache 2.0. Source:
 \href{https://github.com/RemiPelloux/Modelly}{\nolinkurl{github.com/RemiPelloux/Modelly}}.
 
 \paragraph{Data availability.} The data and scripts behind every measured table and figure are

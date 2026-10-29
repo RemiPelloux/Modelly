@@ -7,11 +7,9 @@ the comparison fair and repeatable, and check separately that the faster forms c
 same model. All the comparisons with Mesa are CPU time (\code{time.process\_time}), measured
 in-process, pinned to one core with \code{taskset}, with the implementations alternating, on an
 Intel Core Ultra 7 356H laptop running Linux, CPython 3.15.0 and numpy 2.5.4 in each
-implementation's environment, against Mesa 2.3.2 and Mesa 3.5.1; the pre-commit guard of
-\cref{sec:regressions} times short bursts of wall-clock time instead. The core was held at
-its 1.9~GHz base frequency (the \code{performance} governor, turbo disabled) for every timing
-of this section except the medfly notebook and the release comparisons of 1.3.1 and 1.3.2
-in \cref{sec:regressions}, which were timed with turbo enabled. Following
+implementation's environment, against Mesa 2.3.2 and Mesa 3.5.1. The core was held at its 1.9~GHz base frequency (the
+\code{performance} governor, turbo disabled) for every timing of this section except the
+medfly notebook, which was timed with turbo enabled. Following
 \citet{kalibera2013rigorous}, every run is a fresh interpreter or a fresh model, the rounds are
 paired and their order varies, and we report medians with their spread and bootstrap intervals
 rather than single runs.
@@ -32,7 +30,7 @@ where \emph{steps} is the simulation and \emph{build} the construction of the mo
 agents. $S_{\mathrm{steps}}$ is the gain per simulated step, which dominates long runs;
 $S_{\mathrm{total}}$ is the gain for one run of the benchmark's length. Round $r$ runs every
 implementation on seed $r$, so the per-round ratios are paired. Where runs are paired chunk by chunk or round by round
-(\cref{sec:portability,tab:mesa-examples,sec:regressions,sec:gpu}) we report instead the
+(\cref{sec:portability,tab:mesa-examples,sec:gpu}) we report instead the
 median of the per-round ratios with its range or quartiles; on our data the two estimators
 differ by under 1\%.
 
@@ -53,7 +51,7 @@ one step its report asks for (\code{self.steps} becomes \code{self.time}); Sugar
 alliance formation its meta-agent factory, which \modelly{} lacks. Porting them found a gap in
 the codemod, which rewrote three Mesa~3.5 module paths to \modelly{} paths that do not exist
 without reporting them; the codemod now maps them and reports any module without an
-equivalent (the fix shipped as 1.3.3; the timed code does not import the codemod). We ran
+equivalent (the timed code does not import the codemod). We ran
 each original and its port at Mesa's default parameters, or, where the defaults run in well
 under 0.2~s, on a larger grid at the same density (the virus model on 1,000 nodes), for ten alternating rounds on the same
 fixed-frequency core, and compared every model reporter, at the last step and averaged over
@@ -370,46 +368,3 @@ we have not found and which does not change its timing's order of magnitude.
   \label{tab:agreement-large}
   \input{tables/agreement_large}
 \end{table}
-
-\subsection{No measurable regression between releases}
-\label{sec:regressions}
-
-Performance work regresses easily: a clearer error message or a thread-safety guard on a hot
-path costs a few percent that no single test notices. From release 1.3.1 on, every release is
-benchmarked against the previous published one before it is tagged, using wheels built by the
-same toolchain and identical dependencies, on three measurements in paired alternating runs:
-the core operations (agent sets, column reads and writes, agent and column removal, cell
-moves, data collection, events, random draws; 15 for 1.3.1, and from 1.3.3 16 plus a
-\code{numpy}-only control, which should read 1.00 and read 1.02, interquartile range 1.01 to
-1.06, in the 1.3.3 gate, the build noise described below), the eight playbooks seed by seed, and the medfly
-notebook at 1/30 of its full scale, chunk by chunk. A release ships only if none shows a
-measurable regression: a median time ratio above 1.03 whose lower quartile is also above
-1.00, confirmed by re-timing with three times as many pairs; a smaller slowdown passes.
-Between releases a pre-commit hook (\cmd{python -m modelly.dev install-hooks}) applies the
-same criterion to the core operations of the working tree in about ten seconds.
-
-The benchmark found slowdowns before it was a gate: release 1.3.0, published before the policy
-existed, had made a column read 2.5\% slower (its getter captured the column's name for a
-clearer error) and, on regular builds, the neighbourhood walk and the cell move paid for
-free-threading safety they did not need; 1.3.1 removed both and was compared with 1.2.0, the
-last release before them. Release 1.3.2, whose only library change is the ABC-SMC correction,
-and release 1.3.3, whose only change is to the codemod, passed the gate against their
-predecessors with identical outputs, 1.3.3 at the fixed frequency of the other timings;
-\cref{tab:release-gates} gives every comparison's ranges. The gate compares two separately
-compiled builds, and that shows: 1.3.3 read 6 to 17\% faster than 1.3.2 on four operations
-(agent-set iteration 0.83, interquartile range 0.826 to 0.831) although no code they run
-changed, so the criterion compares builds, not sources, and a ratio of this size in either
-direction is re-timed from one build before it is believed. The playbook arm's per-round
-ratios spread by more than 3\% (a median of 1.07 passed with its lower quartile below 1), so
-that arm catches large regressions, not small ones.
-% GATE-1.4.0: replace with the fixed-frequency run
-Release 1.4.0, whose library changes are the compiled event heap, the C column gather and the
-per-agent streams (\cref{sec:release14}), was measured against 1.3.3 during integration on
-the shared machine without the fixed frequency: no core operation slower by the criterion
-(medians 0.983 to 1.028), playbook ratios between 0.986 and 1.004 over nine rounds with
-identical outputs, the event-heavy wolf-sheep example at 0.95 and a collection of column
-attributes over 20,000 agents at 0.47 (\cref{app:perf2}); the fixed-frequency run of the full gate, the notebook arm included, precedes the tag. The raw
-numbers of the 1.3 comparisons are in \code{paper/data/release\_gates.json}, except the
-notebook timing of 1.3.1 against 1.2.0 and the core-operation report of 1.3.2 against 1.3.1,
-of which only the summaries were kept; the 1.4 comparison's tables are in
-\code{docs/performance.md}.

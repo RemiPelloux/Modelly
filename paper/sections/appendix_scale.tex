@@ -1,11 +1,10 @@
-\section{Release 1.4 in detail}
-\label{app:release14}
+\section{Scaling out and connecting to data in detail}
+\label{app:scale}
 
 This appendix is supplementary material for a journal submission: the design, the
-measurement conditions and the evidence behind each addition of \cref{sec:release14}, with
+measurement conditions and the evidence behind each capability of \cref{sec:scale}, with
 the tests and result files that reproduce every number. The measurements were made on the
-laptop of \cref{sec:performance} during the release's integration, in each addition's feature
-branch before it was merged, with the machine shared and without the fixed frequency of
+laptop of \cref{sec:performance}, with the machine shared and without the fixed frequency of
 \cref{sec:playbooks}.
 
 \subsection{Per-agent random streams and split runs}
@@ -16,8 +15,8 @@ generators of its own: \code{agent.random} and \code{agent.rng} are seeded from 
 scenario's seed sequence and the agent's \code{stream\_key()} (its \code{unique\_id} unless
 overridden), in a spawn-key domain that \code{SeedSequence.spawn} never reaches. An agent
 then draws the same numbers whatever the activation order and the population, and a
-checkpoint continues every stream. The flag is off by default, so a 1.3 model draws exactly
-as before (\code{tests/core/test\_streams.py}).
+checkpoint continues every stream. The flag is off by default, and a model without it draws
+from the model's two generators (\code{tests/core/test\_streams.py}).
 
 \paragraph{Partitions and the contract.} \code{modelly.distributed} cuts a grid into balanced
 blocks with their halos (torus-aware), a network by breadth-first banding with greedy boundary
@@ -81,7 +80,7 @@ area. The Dask backend, which routes every exchange through its scheduler (eight
 measured 26 to 42\% at 2 to 8 workers on a busier machine. Every efficiency here is a single
 run per worker count, not a median of repeats.
 
-\paragraph{Not met.} The aim set for this release, at least 70\% weak-scaling efficiency from
+\paragraph{Not met.} The design target, at least 70\% weak-scaling efficiency from
 1 to 64 workers, cannot be measured on one laptop, and the laptop's hybrid processor is the
 main limit: eight to sixteen copies of the same work with no communication at all already run
 at 23 to 29\% of one (32\% with 40,000 people per worker), because beyond the four
@@ -116,8 +115,7 @@ clock around the steps with the device synchronised, the build timed apart, one 
 first to fill CuPy's kernel cache: the CPU column variant takes 20.65, 21.05 and 21.39~s for the steps and the CuPy variant 0.612,
 0.608 and 0.622~s, a median speed-up of 34.4 on an NVIDIA RTX~5050 laptop GPU (8~GB, CUDA
 runtime 13.2 from the \code{cupy-cuda13x} 14.2.0 wheel; 33.1 and 33.8 in two rounds with the
-CPU variant on the GPU environment's CPython 3.14; the CPU arm ran the 1.3.2 library on
-CPython 3.15 and the GPU arm the 1.3.3 library on 3.14, which differ only in the codemod). Run on \code{numpy} and on CuPy with the
+CPU variant on the GPU environment's CPython 3.14). Run on \code{numpy} and on CuPy with the
 same seed, the variant gives the same infected series for all 60 steps and the same SHA-256 of
 the final state, days and row columns of all 10 million agents. Building 10 million agent
 objects takes 22 to 42~s on either side, so build plus steps is only 1.5 to 1.8 times
@@ -169,14 +167,7 @@ The data collector's attribute reporters, \code{AgentSet.get} and \code{agg} rea
 \code{Column} attribute from its table in C instead of calling the Python getter per agent,
 with identical rows (\code{test\_column\_gather.py}). \code{MemoryMapped(dir)} keeps a
 table's columns in \code{numpy.memmap} files, grown in place, with checkpoints that carry the
-rows. Measured against 1.3.3 (both built from their tags with the same compiler and
-dependencies, fresh alternating interpreters pinned to one core, results hashed and identical
-in every round; \code{docs/performance.md}): the event-heavy wolf-sheep example runs at 0.95
-of 1.3.3's time (15 rounds, interquartile range 0.93 to 0.96), a schedule of 600 regrowth
-events a step at 0.70 (0.69 to 0.71), and a collection of two column attributes over 20,000
-agents of two classes at 0.47 (0.46 to 0.47); the predator-prey playbook, which regrows its
-grass as a column and schedules no event but the step, is unchanged (0.998 and 1.003). A
-cohort table of 100 million rows (19 bytes a row) ran three life-cycle steps inside a 16~GB
+rows. A cohort table of 100 million rows (19 bytes a row) ran three life-cycle steps inside a 16~GB
 \code{systemd} memory limit with a peak of 3.61~GB memory-mapped (4.26~GB in memory); a step
 took 9.3 to 10.4~s memory-mapped and 8.3 to 8.7~s in memory; and under a 3~GB limit the memory-mapped table finished while the in-memory one
 was killed (\code{benchmarks/large\_columns.py}); 100 million \emph{agent objects} cannot fit
@@ -322,7 +313,7 @@ packages the model was observed to import. The C modules also build for WebAssem
 Emscripten through \code{pyodide build}, and the export can ship that wheel.
 
 \paragraph{Measured} (\code{tests/web/test\_browser.py}, \code{docs/browser.md}). The 14
-bundled examples of release 1.3 (the three split-run reference models were not exported) and
+bundled examples (the three split-run reference models were not exported) and
 the 17 zoo models, 31 models, each run from its export in headless Chromium with the pure
 wheel and with the compiled one, 62 of 62 runs without error. Two zoo models first failed in
 the browser, because Pyodide's GDAL reads no Deflate-compressed GeoTIFF and its geopandas has

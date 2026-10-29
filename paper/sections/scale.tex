@@ -1,10 +1,10 @@
-\section{What release 1.4 adds}
-\label{sec:release14}
+\section{Scaling out and connecting to data}
+\label{sec:scale}
 
-Release 1.4 removes the single-process ceiling of \cref{sec:limitations} and connects a model
-to arriving data, to continuous fields and to the browser. For each addition this section
-gives the mechanism, what was measured and where it falls short; \cref{tab:release14}
-collects the numbers, and \cref{app:release14} has the designs, the measurement conditions
+\modelly{} is not limited to one process on one CPU, and connects a model to arriving data, to
+continuous fields and to the browser. For each capability this section
+gives the mechanism, what was measured and where it falls short; \cref{tab:scale}
+collects the numbers, and \cref{app:scale} has the designs, the measurement conditions
 and the file behind every one of them. The measurements were made on the laptop of
 \cref{sec:performance} while it was shared with other work and without the fixed frequency of
 \cref{sec:playbooks}, and \cref{sec:threats} says which are repeated runs and which are single
@@ -14,9 +14,9 @@ shortfalls by a factor) do not turn on the last digit of a timing.
 \begin{table}[tbp]
   \centering
   \footnotesize
-  \caption{Release 1.4: what was measured and where it falls short. Details and sources in
-  \cref{app:release14}.}
-  \label{tab:release14}
+  \caption{Scaling out and connecting to data: what was measured and where it falls short.
+  Details and sources in \cref{app:scale}.}
+  \label{tab:scale}
   \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.17\linewidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
     \toprule
     Capability & Measured & Falls short \\
@@ -61,7 +61,7 @@ continuous space by recursive bisection), with ghost agents exchanged before a p
 reads across a border and movers migrating after a phase that moves them. On three reference
 models every reporter and every agent's state is byte-identical to the single-process run at
 1, 2, 4 and 16 partitions, under MPI with 2 and 4 ranks and on two Dask workers
-(\cref{app:split}). The weak scaling of \cref{tab:release14} comes from single runs on a laptop
+(\cref{app:split}). The weak scaling of \cref{tab:scale} comes from single runs on a laptop
 whose hybrid processor is the main limit: eight to sixteen copies of the same work with no
 communication at all already run at 23 to 29\% of one (32\% with 40,000 people per worker),
 because beyond the four performance cores the copies land on efficiency cores, and the
@@ -91,7 +91,7 @@ Column phases traced by JAX give gradients of a model's outputs with respect to 
 parameters, exact through normal and uniform draws and approximate through Bernoulli choices
 (straight-through, Gumbel-softmax or score-function estimators, each warning that it is one).
 Gradient calibration recovers two zoo models' parameters from runs of the agent-based
-originals, and pathwise gradients agree with finite differences (\cref{tab:release14},
+originals, and pathwise gradients agree with finite differences (\cref{tab:scale},
 \cref{app:diff}); the straight-through estimator is biased and fails that check, by design, so
 a gradient through a discrete choice is an approximation whose use the documentation delimits.
 
@@ -146,8 +146,8 @@ marginals are made up, so no real joint distribution was tested against.
 \label{sec:browser}
 
 \cmd{modelly export-web} writes a static site that runs a model with Pyodide in a browser tab,
-with Studio's parameter panel, a space view and a reporter plot. The 14 bundled examples of
-release 1.3 and the 17 zoo models each ran from their export in headless Chromium with the
+with Studio's parameter panel, a space view and a reporter plot. The 14 bundled examples
+and the 17 zoo models each ran from their export in headless Chromium with the
 pure-Python wheel and with the compiled one, 62 of 62 runs (\cref{app:browser}). A cold first
 visit is ready after 8.0~s on a 50~Mbit/s line for a model that needs no \code{scipy}, 12.3~s
 for one that does, and 21.4~s on a Fast~4G profile, so the aim of under ten seconds holds only
