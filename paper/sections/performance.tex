@@ -154,8 +154,8 @@ bootstrap 95\% interval for every speed-up, resampling the paired rounds.
   speed-up of the steps over Mesa~3.5; \cref{tab:speedup-ci} gives their 95\% intervals. Agents:
   the population at the end of the last round. The GPU variants of the grid epidemic and the
   insect population, timed in the same session on the CPU, are left out: they draw from Philox
-  streams and are reported with the GPU (\cref{sec:gpu}); on the CPU the grid epidemic's runs
-  its steps in 0.110~s against the columns' 0.153~s. Generated from
+  streams and are reported with the GPU (\cref{sec:gpu}); on the CPU the grid epidemic's GPU
+  variant runs its steps in 0.110~s against the columns' 0.153~s. Generated from
   \code{benchmarks/playbooks/results/} by \code{paper/scripts/make\_figures.py}.}
   \label{tab:playbooks}
   \setlength{\tabcolsep}{4.5pt}
@@ -201,7 +201,8 @@ per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}
   \centering
   \small
   \caption{Where \modelly{}'s speed comes from: for each workload, from the largest step-time
-  speed-up of \cref{tab:playbooks} to the smallest, the mechanism that replaces the per-agent
+  speed-up over Mesa~2.3 in \cref{tab:playbooks} to the smallest (the insect population by its
+  cohort form), the mechanism that replaces the per-agent
   Python loop, as the code of each implementation shows (the attribution comes from the code,
   not from per-workload profiles).}
   \label{tab:why}
@@ -219,10 +220,10 @@ per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}
       scattered back with \code{bincount}; positions written in one call \\
     Schelling & happiness is two sparse products (residents per cell, summed over neighbours);
       all moves in one pass with the sequential rule's law \\
-    Predator-prey & movement, energy, grazing and predation (\code{claim}) are array
-      operations; deaths and births are one call per species \\
     Boltzmann wealth & the exchange is a few array passes (a fixed-point iteration) with the
       law of the shuffled sequential order \\
+    Predator-prey & movement, energy, grazing and predation (\code{claim}) are array
+      operations; deaths and births are one call per species \\
     Sugarscape & every forager's best visible cell found in one array pass; only the walk to
       a free cell stays sequential \\
     \bottomrule
@@ -230,7 +231,7 @@ per-agent loop are given in the documentation (\code{docs/vectorised\_phases.md}
 \end{table}
 
 \paragraph{The other implementations.} Mesa~3.5 is faster than Mesa~2.3 on five workloads
-(1.3 to 3.1 times), as fast on flocking and Sugarscape, and slower on predator-prey (0.92
+(1.3 to 3.0 times), as fast on flocking and Sugarscape, and slower on predator-prey (0.92
 times). mesa-frames is 2.1 to 6.0 times faster than Mesa~2.3 on three of its four workloads and
 slower on Sugarscape (0.70 times), where its per-forager search is a cross join and a sort over
 up to about 130,000 rows per step. \modelly{}'s cell-list variants, which keep per-cell
@@ -263,7 +264,7 @@ check flags three of its six grid epidemic statistics, flags that vanish over 10
 small size lowest paired $p$ 0.13 and largest $|d|$ 0.21; at the timed size 0.19 and 0.20;
 all six equivalent in both; \code{paper/data/agreement\_large\_grid\_mesa3np.json}). The gap is the price of the
 framework layer: \modelly{} sits between per-agent Mesa and hand-written arrays,
-3.5 to 25 times above the first and 1.8 to 4.6 times below the second on these three workloads.
+3.5 to 25 times above Mesa~3.5 and 1.8 to 4.6 times below the numpy baseline on these three workloads.
 
 \paragraph{mesa-frames with more threads.} polars runs multi-threaded by default, while the
 timings above set \code{POLARS\_MAX\_THREADS=1} so that every implementation uses one core;

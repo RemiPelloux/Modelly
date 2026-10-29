@@ -12,7 +12,7 @@ in it comes from a file or a script in this repository.
 | Path | What |
 |---|---|
 | `main.tex` | The paper; `\input`s the sections in order |
-| `sections/` | Abstract, introduction, related work (with the feature comparison), design, research workflow, performance (speed-ups and the agreement study), correctness and reproducibility, scaling out and connecting to data, use cases, threats and limitations, conclusion and availability, appendix (reproduction, workloads, intervals, further agreement tables, scaling out in detail, every comparison) |
+| `sections/` | Abstract, introduction, related work (with the feature comparison), design, research workflow, performance (speed-ups and the agreement study), correctness and reproducibility, scaling out and connecting to data, scope, threats and limitations, conclusion and availability, appendix (reproduction, workloads, intervals, further agreement tables, scaling out in detail, every comparison) |
 | `references.bib` | Bibliography (BibTeX, `plainnat`) |
 | `tables/playbooks.tex` | Results table, **generated** from `benchmarks/playbooks/results/*.json` |
 | `figures/speedups.pdf` | Speed-up figure, **generated** from the same results (PNG preview alongside) |

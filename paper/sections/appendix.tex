@@ -79,11 +79,12 @@ rules a fair comparison must follow, are described in \code{docs/performance.md}
 the tagged release v1.4.2 (commit \code{bf7a225}), compiled on the measurement machine with
 GCC~16.2. One session ran, in this order, the timings at the fixed frequency, the GPU, the weak
 scaling, the primary agreement studies, the coverage study, the three data scripts, the
-100-million-row run, the browser's first load, the active-learning comparison, the GPU and
-differentiable tests, the browser runs and the test suite, from the checkout at the tag. The
-studies run with \code{paper/scripts/agreement.py} after it (the Mesa~3.5 + numpy and baseline
-studies and the two replications on new seeds) ran from commit \code{e3cfb74}, which differs
-from the tag only in the paper's own files. Each result file records what it ran with: the
+100-million-row run, the active-learning comparison, the GPU and differentiable tests, the
+browser runs with the pure wheel and the browser's first load, from the checkout at the tag;
+then the Mesa~3.5 + numpy and baseline agreement studies and the two replications on new
+seeds, from commit \code{e3cfb74}, which differs from the tag only in the paper's own files;
+then, at the tag again, the test suite, and the WebAssembly wheel built and every model run
+with it in the browser. Each result file records what it ran with: the
 playbook, port, example and agreement files the commit, the machine, the load and the package
 versions; \code{assimilation.json}, \code{ishigami.json} and \code{graph\_cut.json} the commit,
 date, interpreter and package versions, their \code{+dirty} marking the benchmark results

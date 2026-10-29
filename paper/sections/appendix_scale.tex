@@ -76,7 +76,7 @@ slowest copy, so the protocol keeps 42 to 56\% of what the machine gives from fo
 noise). Under MPI the efficiency falls from 85\% at two workers to 30\% at four and 5\% at
 sixteen, with the machine itself, the copies, at 53\% and 9\%. With 40,000 people per worker
 (10 steps, loads of 11 to 16), the efficiency is 91, 68 and 45\% at 2, 4 and 8 workers against
-104, 81 and 50\% for the copies, so the protocol keeps 76 to 80\%: a larger block has more
+104, 81 and 50\% for the copies, so the protocol keeps 74 to 80\%: a larger block has more
 work per exchanged border. The Dask backend, which routes every exchange through its
 scheduler (eight per step), measured 69, 35 and 22\% at 2, 4 and 8 workers (loads of 9 to 11),
 each split step 2.1 to 4.0 times its copies: the scheduler's round trips, not the model, take
@@ -270,7 +270,8 @@ Active learning against a Latin hypercube (\code{benchmarks/emulate/active\_vs\_
 normalised root-mean-square error on 500 test points, the hypercube's median of three seeds,
 the factor being the hypercube runs needed for the active design's error divided by the
 active runs): on the Bass diffusion zoo model the factor is 1.64, 2.64, 1.33 and 2.67 at 10
-to 40 runs and above 2.4 at 50 and 60; on Branin \citep{dixon1978towards} 1.13 to 1.43 below
+to 40 runs and above 2.4 at 50 and above 2.0 at 60 (no hypercube of up to 120 runs reached the active
+design's error); on Branin \citep{dixon1978towards} 1.13 to 1.43 below
 80 runs; on the Ishigami function 0.79 to 1.41. Active learning halves the runs a
 hypercube needs (a factor of 2) on the zoo model at most budgets, and not on the two
 analytic functions, where a well-spread design is already close to the best a

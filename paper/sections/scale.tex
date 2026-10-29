@@ -67,7 +67,7 @@ models every reporter and every agent's state is byte-identical to the single-pr
 shared with other jobs, whose hybrid processor is the main limit: eight copies of the same
 work with no communication at all already run at 25\% of one, because beyond the four
 performance cores the copies land on efficiency cores, and with 10,000 people per worker the
-protocol keeps 42 to 56\% of what the machine gives from four workers on, 76 to 80\% with
+protocol keeps 42 to 56\% of what the machine gives from four workers on, 74 to 80\% with
 40,000 (\cref{tab:scaling}). A split run on one laptop is therefore a check of correctness
 more than a speed-up; scaling to the 64 workers of a cluster was not measured, and the Ray
 backend, and MPI on macOS and Windows, are untested.
