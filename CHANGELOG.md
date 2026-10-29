@@ -3,7 +3,7 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
-## Unreleased
+## 1.4.2 - 2026-10-29
 
 A patch release for numpy datasets (`DataRegistry.track_agents_numpy`): their fields now belong
 to each model, so two models alive at once, a model and its copy from `Model.load`, and a
