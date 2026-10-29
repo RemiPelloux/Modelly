@@ -1,0 +1,111 @@
+{
+ "repository": "RemiPelloux/Modelly",
+ "note": "Hosted GitHub Actions runs on 29 October 2026; the modelly package at these commits is the tag v1.4.2's (no change under modelly/ or tests/determinism since the tag). Pytest summaries copied from the job logs.",
+ "runs": {
+  "platform-digests": {
+   "id": 40952635273,
+   "url": "https://github.com/RemiPelloux/Modelly/actions/runs/40952635273",
+   "commit": "5c81530f81e85a748b53d14ce110ebe280f4edd3",
+   "ref": "main",
+   "created": "2026-10-29T20:50:49Z",
+   "conclusion": "success",
+   "jobs": {
+    "Digests on macos, CPython 3.14": "success",
+    "Digests on ubuntu, CPython 3.13": "success",
+    "Digests on macos, CPython 3.13": "success",
+    "Digests on macos, CPython 3.12": "success",
+    "Digests on windows, CPython 3.13": "success",
+    "Digests on windows, CPython 3.14": "success",
+    "Digests on ubuntu, CPython 3.12": "success",
+    "Digests on ubuntu, CPython 3.14": "success",
+    "Digests on windows, CPython 3.12": "success",
+    "Compare the digests across platforms": "success"
+   },
+   "pytest": {
+    "macos-3.12": "50 passed, 3 skipped",
+    "macos-3.13": "50 passed, 3 skipped",
+    "macos-3.14": "50 passed, 3 skipped",
+    "ubuntu-3.12": "51 passed, 2 skipped",
+    "ubuntu-3.13": "51 passed, 2 skipped",
+    "ubuntu-3.14": "51 passed, 2 skipped",
+    "windows-3.12": "50 passed, 3 skipped",
+    "windows-3.13": "50 passed, 3 skipped",
+    "windows-3.14": "50 passed, 3 skipped",
+    "skips": "alliance_formation and tram_model cannot be checkpointed (documented); commuting_city's golden digest is compared on the recording platform (Linux) only"
+   }
+  },
+  "mpi": {
+   "id": 40952684220,
+   "url": "https://github.com/RemiPelloux/Modelly/actions/runs/40952684220",
+   "commit": "70e75902811dc5905798236652b1d967368fdbbe",
+   "ref": "main",
+   "created": "2026-10-29T20:51:11Z",
+   "conclusion": "success",
+   "jobs": {
+    "MPI (windows, msmpi)": "success",
+    "MPI (macos, openmpi)": "success",
+    "MPI (ubuntu, openmpi)": "success"
+   },
+   "pytest": {
+    "ubuntu openmpi 2,4 ranks": "87 passed, 1 skipped",
+    "macos openmpi 2,4 ranks": "87 passed, 1 skipped",
+    "windows msmpi 2 ranks": "85 passed, 1 skipped"
+   }
+  },
+  "platforms": {
+   "id": 40950308392,
+   "url": "https://github.com/RemiPelloux/Modelly/actions/runs/40950308392",
+   "commit": "bf7a2252377ce96a4bfff91eb0fdbb61c650476a",
+   "ref": "v1.4.2",
+   "created": "2026-10-29T20:34:57Z",
+   "conclusion": "failure",
+   "jobs": {
+    "SLURM job arrays": "failure",
+    "Bundle on Linux": "success",
+    "Verify on macos": "success",
+    "Verify on windows": "success"
+   },
+   "pytest": {
+    "bundle on Linux": "success",
+    "verify on macos": "success (outputs match for the three bundles)",
+    "verify on windows": "success (outputs match for the three bundles)",
+    "slurm": "failure: pytest aborted at start (a plugin warning under -Werror on the hosted runner), not run"
+   }
+  }
+ },
+ "digests": {
+  "builds": [
+   "macos-3.12",
+   "macos-3.13",
+   "macos-3.14",
+   "ubuntu-3.12",
+   "ubuntu-3.13",
+   "ubuntu-3.14",
+   "windows-3.12",
+   "windows-3.13",
+   "windows-3.14"
+  ],
+  "exact_everywhere": [
+   "boltzmann_wealth_model",
+   "conways_game_of_life",
+   "epstein_civil_violence",
+   "grid_epidemic",
+   "layered_epidemic",
+   "llm_opinions",
+   "network_sir",
+   "pd_grid",
+   "schelling",
+   "tram_model",
+   "virus_on_network",
+   "wolf_sheep"
+  ],
+  "not_bitwise": [
+   "alliance_formation",
+   "boid_flockers",
+   "commuting_city",
+   "continuous_sir",
+   "sugarscape_g1mt"
+  ],
+  "not_on_every_build": []
+ }
+}

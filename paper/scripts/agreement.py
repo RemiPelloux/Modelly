@@ -113,7 +113,11 @@ def compare_one(a: list[float], b: list[float]) -> dict:
     d = statistics.fmean(diff) / scale
     half = sps.t.ppf(1 - ALPHA / 2, n - 1) * spread / math.sqrt(n) / scale
     paired = sps.ttest_rel(b, a).pvalue if spread else 1.0
-    linked = statistics.correlation(a, b) if pooled and spread else 1.0
+    linked = (
+        statistics.correlation(a, b)
+        if statistics.pvariance(a) and statistics.pvariance(b)
+        else 1.0
+    )
     return {
         "d": d,
         "d_lo": d - half,
@@ -121,7 +125,9 @@ def compare_one(a: list[float], b: list[float]) -> dict:
         "paired": float(paired),
         "ks": float(sps.ks_2samp(a, b).pvalue),
         "levene": float(sps.levene(a, b, center="median").pvalue) if pooled else 1.0,
-        "sd_ratio": statistics.stdev(b) / statistics.stdev(a) if pooled else 1.0,
+        "sd_ratio": statistics.stdev(b) / statistics.stdev(a)
+        if statistics.pvariance(a)
+        else 1.0,
         "tost": tost_p(diff, MARGIN * scale),
         "r": linked,
         "mean_diff": statistics.fmean(diff),

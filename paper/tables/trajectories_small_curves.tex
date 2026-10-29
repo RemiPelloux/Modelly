@@ -1,0 +1,25 @@
+\begin{tabular}{lllrrrrrr}
+\toprule
+Workload & Impl. & Series & Steps & $\sup_t |d_t|$ & upper 95\% & steps $\ni 0$ & rel. & $p_{\mathrm{perm}}$ \\
+\midrule
+Grid epidemic & Mesa 3.5 & infected & 60 & 0.15 & 0.46 & 0 & 5.3\% & 0.921 \\
+Grid epidemic & cell lists & infected & 60 & 0.24 & 0.52 & 0 & 7.4\% & 0.524 \\
+Grid epidemic & columns & infected & 60 & 0.34 & 0.54 & 1 & 3.9\% & 0.158 \\
+Schelling & Mesa 3.5 & happy share & 40 & 0.13 & 0.46 & 0 & 0.2\% & 0.931 \\
+Schelling & cell lists & happy share & 40 & 0.28 & 0.47 & 4 & 0.4\% & 0.045 \\
+Schelling & columns & happy share & 40 & 0.07 & 0.29 & 0 & 0.1\% & 0.991 \\
+Schelling & Mesa 3.5 & moves & 40 & 0.13 & 0.46 & 0 & 3.9\% & 0.931 \\
+Schelling & cell lists & moves & 40 & 0.28 & 0.48 & 4 & 4.8\% & 0.048 \\
+Schelling & columns & moves & 40 & 0.07 & 0.29 & 0 & 1.8\% & 0.990 \\
+Predator-prey & Mesa 3.5 & sheep & 2000 & 0.29 & 0.61 & 22 & 15.1\% & 0.732 \\
+Predator-prey & cell lists & sheep & 2000 & 0.36 & 0.66 & 71 & 13.8\% & 0.382 \\
+Predator-prey & columns & sheep & 2000 & 0.31 & 0.61 & 60 & 13.0\% & 0.629 \\
+Predator-prey & Mesa 3.5 & wolves & 2000 & 0.39 & 0.67 & 135 & 14.6\% & 0.245 \\
+Predator-prey & cell lists & wolves & 2000 & 0.34 & 0.65 & 27 & 13.7\% & 0.457 \\
+Predator-prey & columns & wolves & 2000 & 0.35 & 0.65 & 71 & 14.1\% & 0.407 \\
+Predator-prey & Mesa 3.5 & bare grass & 2000 & 0.32 & 0.62 & 96 & 4.7\% & 0.534 \\
+Predator-prey & cell lists & bare grass & 2000 & 0.37 & 0.65 & 45 & 4.7\% & 0.236 \\
+Predator-prey & columns & bare grass & 2000 & 0.30 & 0.61 & 63 & 5.1\% & 0.622 \\
+\bottomrule
+\end{tabular}
+% 100 seeds per variant

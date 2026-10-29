@@ -12,7 +12,11 @@ and the file behind every one of them. The measurements were made on the laptop 
 \cref{sec:performance} while it was shared with other work and without the fixed frequency of
 \cref{sec:playbooks}, and \cref{sec:threats} says which are repeated runs and which are single
 runs; the conclusions that matter (byte-identical outputs, order-of-magnitude speed-ups) do not
-turn on the last digit of a timing.
+turn on the last digit of a timing. Each capability is presented as validated functionality
+with the performance evidence stated and bounded, not as a general acceleration claim: the
+GPU's 34-fold step speed-up holds at ten million agents and shrinks to 1.6 to 1.8 once the
+agents are built, and the split run's byte-identical results are a correctness property
+whose multi-node speed-up has not been shown.
 
 \begin{table}[tbp]
   \centering

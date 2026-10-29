@@ -15,22 +15,15 @@ Agents.jl and NetLogo have not been measured, and the speed-ups should not be re
 to them.
 
 \paragraph{Framework or algorithm.} The playbook speed-ups measure what a modeller gains by
-writing each model in the form the framework offers, not the framework's overhead alone. Part
-of a gain can be algorithmic: the Mesa flocking implementation scans every agent for
-neighbours, as Mesa's continuous space does, while the \modelly{} one queries a KD-tree. We
-measured how much of the flocking gain that is: a Mesa~3.5 implementation that finds
-neighbours with one periodic \code{scipy.spatial.cKDTree} per step and keeps everything else
-per agent (\code{mesa3kd\_model.py}) gives the same statistics as Mesa~3.5's own search on all
-110 seeds compared (\code{paper/data/flocking\_kdtree.json}) and runs 2.7 times faster than
-it, and \modelly{}'s columns run 12 times faster again (\cref{tab:playbooks}): the neighbour
-search accounts for a factor of 2.7, and computing the steering terms as array operations
-rather than per agent for the remaining factor of 12. The cell-list variants keep Mesa's
-data structure but not all of its loops: in Schelling's model most of their gain comes from
-counting every resident's similar neighbours at once, which takes three quarters of Mesa's run
-time, while Mesa's move to a random empty cell already runs in constant expected time. In
-Sugarscape the Mesa implementations and the cell-list variant run the same search algorithm, so
-their difference is that of the data structure; the column and mesa-frames variants vectorise
-the search as well.
+writing each model in the form the framework offers, not the framework's overhead alone, and
+part of a gain can be algorithmic: the Mesa flocking implementation scans every agent for
+neighbours, as Mesa's continuous space does, while the \modelly{} one queries a KD-tree.
+\Cref{sec:ablation} separates these by changing one thing per rung on four workloads; the
+KD-tree baseline there gives the same statistics as Mesa~3.5's own search on all 110 seeds
+compared (\code{paper/data/flocking\_kdtree.json}). What the ablation does not separate is
+the vectorised rewrite of a phase from the column storage that makes it possible, since the
+one requires the other; the Mesa~3.5 + numpy baseline, which has the arrays without the
+framework, bounds that from the other side.
 
 \paragraph{What the timings include.} The timed region is the whole simulation, including the
 data collection and the summary statistics of each workload. In the Boltzmann wealth model the
@@ -75,31 +68,48 @@ the browser's first load is a median of three, while the weak scaling (\cref{tab
 the 100-million-row run and the nowcast are single runs; the claims that carry weight there
 (identical outputs, a 34-fold speed-up, shortfalls by a factor) do not turn on a few percent.
 
-\paragraph{One interpreter, few sizes.} Every timing and every digest of this paper ran on
-CPython~3.15; \modelly{} supports 3.12 and later, and its speed on 3.12 to 3.14 was not
-measured. The playbooks are timed at one population size each, and three of them at three sizes
-(\cref{tab:sizes}), where the columns' lead grows with the population; the other five were not
-timed at other sizes, and the GPU measurement shows how strongly a speed-up can depend on the
-size (\cref{sec:gpu}).
+\paragraph{One machine, three interpreters, few sizes.} Every timing of \cref{tab:playbooks}
+ran on CPython~3.15 on one laptop; \cref{sec:python-versions} repeats the Mesa~3.5 and
+column arms on CPython 3.12 and 3.14 on the same machine, where the speed-ups hold to
+within the session's noise, but no second processor was measured. The ablation, the
+interpreter comparison and the end-to-end sweep (\cref{sec:ablation,sec:python-versions,sec:sweep})
+ran in later sessions at the machine's default frequency policy rather than the fixed
+1.9~GHz of the main timings, so their absolute times are not comparable with
+\cref{tab:playbooks}; their ratios are paired within each session. The playbooks are timed
+at one population size each, and three of them at three sizes (\cref{tab:sizes}), where the
+columns' lead grows with the population; the other five were not timed at other sizes, and
+the GPU measurement shows how strongly a speed-up can depend on the size (\cref{sec:gpu}).
 
 \paragraph{Agreement.} The agreement study (\cref{sec:agreement}) compares chosen summary
-statistics, not whole trajectories; six small differences are individually detectable at the
-small size, though none survives the correction, which is weak evidence on its own: at the
-corrected level a paired test on 100 seeds detects $d = 0.33$ with probability 0.13 and
-$d = 0.5$ with probability 0.52 for uncorrelated pairs (more where the shared initial state
-correlates them); at the timed size it uses 50 seeds (200 for
-the grid epidemic), whose intervals are wider; and an equivalence margin of half a standard
-deviation is a choice: it is a medium effect by the usual convention, the margin is estimated
-from the same data, which makes the test slightly liberal, and stricter margins give fewer
-equivalences (27 of 67 at $0.3\,s_p$, 19 at $0.25\,s_p$).
+statistics; the trajectory study (\cref{sec:trajectories}) adds whole curves, spatial
+clusters, neighbourhood composition, time to converge, extinction probability and cycle
+period on three playbooks, not on all eight and not at the timed size. Six small
+differences are individually detectable at the small size, and one more (the columns'
+epidemic peak, 3.3 steps earlier) in the trajectory study; that none survives the
+correction is weak evidence on its own, since at the corrected level a paired test on 100
+seeds detects $d = 0.33$ with probability 0.13 and $d = 0.5$ with probability 0.52 for
+uncorrelated pairs (more where the shared initial state correlates them), which is why
+the paper reports intervals and equivalence tests rather than the absence of significant
+differences. At the timed size the study uses 50 seeds (200 for the grid epidemic), whose
+intervals are wider. An equivalence margin of half a standard deviation is a convention,
+not a scientific tolerance: it is a medium effect by Cohen's scale, the margin is estimated
+from the same data, which makes the test slightly liberal, stricter margins give fewer
+equivalences (27 of 67 at $0.3\,s_p$, 19 at $0.25\,s_p$), and the Holm-corrected count
+(29 of 67) is the one that controls the familywise error. The science-specific margins of
+the trajectory study are prespecified but ours: another modeller may need a tighter
+tolerance on a peak's timing than $\pm 2$ steps, and at that margin 100 seeds do not
+decide the question for any implementation, Mesa~3.5 included.
 
-\paragraph{Reproducibility.} The hosted workflows other than the release build and the
-documentation are manual-only, so every check of this paper ran on Linux x86-64
-(\cref{tab:determinism}): the three-platform comparison of the golden digests was not run for
-this version, MPI on macOS and Windows and the free-threaded build of the event heap are
-untested, and the golden digests cover ten steps of seventeen examples (the fourteen bundled
-examples and three split-run models, distinct from the zoo). Running
-the suite on every published wheel, for more steps, is planned.
+\paragraph{Reproducibility.} The determinism suite, the split-run checks and the exact
+digests were run on nine hosted builds and MPI on three operating systems for this version
+(\cref{tab:determinism,tab:platform-digests}); what remains untested is the free-threaded
+build of the event heap, the Ray backend and Apple Metal, and the golden digests cover ten
+steps of seventeen examples (the fourteen bundled examples and three split-run models,
+distinct from the zoo). Five examples are not bitwise reproducible across platforms, and
+two of them not across interpreter versions on one platform either; a study that needs
+bitwise agreement across machines must avoid the transcendental functions and BLAS
+reductions these examples use, or state its guarantee at ten significant digits, as the
+suite does. Running the suite on every published wheel, for more steps, is planned.
 
 \paragraph{A young project.} \modelly{} was first released in October 2026, by one developer.
 Every public name carries a stability level, stable or provisional

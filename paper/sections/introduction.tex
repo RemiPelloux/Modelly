@@ -37,8 +37,15 @@ one phase at a time, and gets:
   those phases written as arrays, the column form runs 2.9 to 33 times faster than Mesa~3.5
   and 4.6 to 42 times faster than Mesa~2.3, and the cohort form 135 and 251 times, with the
   lead growing with the population; a Mesa~3.5 model migrated by the codemod, with no phase
-  rewritten, runs 1.05 to 2.3 times faster. Over 100 seeds per variant, 63 of 67 statistics of
-  the faster forms are equivalent to Mesa's within half a standard deviation
+  rewritten, runs 1.05 to 2.3 times faster. An ablation that changes one thing per rung
+  (framework, compiled runtime, data structure, search algorithm, array representation)
+  attributes the large gains to the array representation of the phases
+  (\cref{sec:ablation}). Whether the faster forms compute the same model is tested: over
+  100 seeds per variant, 63 of 67 summary statistics of the faster forms meet a prespecified
+  equivalence margin of half a standard deviation at nominal significance, 29 after Holm
+  correction, and 48 lie within $\pm 5\%$ of Mesa's mean; a trajectory-level study of three
+  workloads (whole curves, spatial clusters, time to converge, extinction probability,
+  cycle period) finds the faster forms as close to Mesa~2.3 as Mesa~3.5 is
   (\cref{sec:performance}).
   \item \textbf{The whole study in one package.} Parameter sweeps, approximate Bayesian
   calibration, Morris, Sobol and PAWN sensitivity analysis, emulators and history matching,
@@ -51,7 +58,11 @@ one phase at a time, and gets:
   random stream; a run's manifest records everything needed to repeat it, and
   \cmd{modelly verify} repeats it and names the first output that differs; a determinism suite
   checks that the bundled examples give the same digests compiled or in pure Python and
-  straight or resumed from a checkpoint (\cref{sec:reproducibility}).
+  straight or resumed from a checkpoint, and, run on nine hosted builds (Linux, macOS and
+  Windows under CPython 3.12, 3.13 and 3.14), that twelve of seventeen examples give
+  bit-identical digests everywhere and the others agree at ten significant digits
+  wherever the suite compares them (\cref{sec:reproducibility}). The paper states each guarantee's scope: determinism on
+  one build, numerical agreement across platforms, and bitwise agreement where it holds.
   \item \textbf{Towards large and data-driven studies.} The same model can be split across
   processes with results byte-identical to one process (a check of correctness; its parallel
   speed-up beyond one laptop is not yet shown), run its array phases on a GPU (steps 34 times
@@ -60,6 +71,23 @@ one phase at a time, and gets:
   expensive, start from a synthetic population, and be shared as a web page (tested in
   Chromium) (\cref{sec:scale}).
 \end{itemize}
+
+\paragraph{What is new.} The methods \modelly{} integrates are established: approximate
+Bayesian computation, Sobol and Morris sensitivity analysis, emulation, data assimilation
+and Mesa's programming model are all prior work (\cref{sec:related}). The contribution of
+this paper is (i) the objects/columns/cohorts architecture, in which the three levels of
+storage share one programming model and a model moves between them one phase at a time,
+with a stated proposition, and counterexamples, for when a counted population keeps the
+individual model's law (\cref{sec:design}); (ii) the integration of model execution,
+deterministic experiment scheduling and verifiable artefacts under one seeding discipline,
+so that a calibration or a sensitivity analysis is reproducible, resumable and
+executor-independent without extra code (\cref{sec:workflow}); (iii) a Mesa-compatible
+interface with a measured migration path, on Mesa's own examples (\cref{sec:samecode});
+and (iv) tested execution contracts (compiled and pure cores, split runs, GPU backend) whose
+guarantees are stated by scope and checked on several platforms
+(\cref{sec:reproducibility,sec:scale}). The evidence for (i) is the main empirical work of
+the paper: the speed-ups, the ablation that attributes them, and the equivalence and
+trajectory studies that test whether the faster forms are the same model.
 
 The rest of the paper situates \modelly{} among existing tools (\cref{sec:related}),
 describes its design (\cref{sec:design}) and research workflow (\cref{sec:workflow}),

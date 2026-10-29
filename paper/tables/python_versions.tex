@@ -1,0 +1,18 @@
+\begin{tabular}{llrrrrrrrrr}
+\toprule
+ & & \multicolumn{3}{c}{CPython 3.12} & \multicolumn{3}{c}{CPython 3.14} & \multicolumn{3}{c}{CPython 3.15} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8} \cmidrule(lr){9-11}
+Workload & Form & Mesa & Modelly & $S_{\mathrm{steps}}$ & Mesa & Modelly & $S_{\mathrm{steps}}$ & Mesa & Modelly & $S_{\mathrm{steps}}$ \\
+\midrule
+Grid epidemic & columns & 4.034 & 0.130 & 33.2 & 3.613 & 0.114 & 31.9 & 3.351 & 0.125 & 26.1 \\
+Predator-prey & columns & 3.760 & 0.419 & 9.7 & 3.340 & 0.416 & 7.7 & 2.947 & 0.401 & 7.1 \\
+Flocking & columns & 20.567 & 0.617 & 33.2 & 20.567 & 0.611 & 33.7 & 19.493 & 0.614 & 31.5 \\
+Network contagion & columns & 2.244 & 0.160 & 14.2 & 2.428 & 0.162 & 15.0 & 2.107 & 0.160 & 12.9 \\
+Insect population & columns & 1.904 & 0.621 & 3.0 & 1.857 & 0.594 & 3.1 & 1.882 & 0.545 & 3.0 \\
+ & cohorts & 1.904 & 0.013 & 151.2 & 1.857 & 0.012 & 158.7 & 1.882 & 0.013 & 135.4 \\
+Schelling & columns & 3.440 & 0.203 & 16.9 & 3.356 & 0.158 & 22.0 & 3.054 & 0.175 & 17.7 \\
+Boltzmann wealth & columns & 1.109 & 0.257 & 4.3 & 1.147 & 0.266 & 4.2 & 1.004 & 0.270 & 3.5 \\
+Sugarscape & columns & 1.237 & 0.274 & 4.6 & 1.276 & 0.287 & 4.6 & 1.146 & 0.266 & 4.4 \\
+\bottomrule
+\end{tabular}
+% 5 rounds, core 2

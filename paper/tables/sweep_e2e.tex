@@ -1,0 +1,12 @@
+\begin{tabular}{llrrrr}
+\toprule
+Engine & Executor & Sweep (s) & per run (s) & simulation per run (s) & share / gain \\
+\midrule
+columns & serial, one core & 2.18 & 0.034 & 0.020 & 60\% simulation \\
+ & 4 processes & 2.20 & 0.034 & 0.020 & 1.0$\times$ serial \\
+\addlinespace
+Mesa 3.5 & serial, one core & 16.98 & 0.265 & 0.244 & 92\% simulation \\
+ & 4 processes & 6.97 & 0.109 & 0.244 & 2.4$\times$ serial \\
+\bottomrule
+\end{tabular}
+% 64 runs of 60 steps, 5 rounds

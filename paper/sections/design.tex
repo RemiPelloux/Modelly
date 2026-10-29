@@ -37,11 +37,11 @@ The same model can be written at three levels of the speed/expressiveness trade-
   costs at most about 190 rows in our runs.
 \end{description}
 
-\paragraph{Why cohorts keep the individual model's law.} Let a row hold $n$ individuals in
-state $x$, and let each face, independently, the same probability $s(x)$ of surviving a phase.
-In the individual model the survivors are $\sum_{k=1}^{n} B_k$ with $B_k \sim
-\mathrm{Bernoulli}(s(x))$ independent, which is $\mathrm{Binomial}(n, s(x))$; the cohort
-draws that count directly:
+\paragraph{When cohorts keep the individual model's law.} The claim is conditional, and
+we state its conditions. Let a row hold $n$ individuals in state $x$, and let each face,
+independently, the same probability $s(x)$ of surviving a phase. In the individual model
+the survivors are $\sum_{k=1}^{n} B_k$ with $B_k \sim \mathrm{Bernoulli}(s(x))$
+independent, which is $\mathrm{Binomial}(n, s(x))$; the cohort draws that count directly:
 \begin{equation}
   \begin{aligned}
     &\text{survival (\code{thin}):} && n' \sim \mathrm{Binomial}\bigl(n, s(x)\bigr),\\
@@ -52,16 +52,41 @@ draws that count directly:
   \label{eq:cohorts}
 \end{equation}
 The three operations cover survival, two-way transitions and counts of events that each
-individual triggers at most once per phase (an egg batch, an emergence). Distinct rows are drawn independently, as the
-individuals are, so by induction over the phases the vector of counts per state has the same
-distribution as in the individual model. The condition is homogeneity within a phase: every
-member of a row must face the same probabilities, so density-dependent rates are evaluated
-once per phase (a synchronous update), and the cohort model reproduces the law of the
-individual model with that synchronous update, as the Mesa implementations of the insect
-playbook do.
-Individual identities, and histories that differ
-within a state, are not represented; a model that needs them stays at the object or column
-level.
+individual triggers at most once per phase (an egg batch, an emergence).
+
+\begin{description}[style=nextline,leftmargin=1.5em,itemsep=2pt]
+  \item[Proposition.] Suppose that, in every phase, (A1) the individuals of a row are
+  conditionally independent given the state vector at the start of the phase; (A2) every
+  individual of a row faces the same probabilities, which are functions of that state vector
+  only (homogeneity within the row and a synchronous update); and (A3) each individual's
+  fate in the phase is one of the three operations above (one draw per individual, into at
+  most two outcomes). Then, by induction over the phases, the vector of counts per state has
+  the same distribution in the cohort model as in the individual model.
+\end{description}
+
+\noindent The proof is the binomial identity above applied row by row: under (A1) and (A2) the
+rows are drawn independently with the same marginals as the individuals, and (A3) makes each
+row's draw a sum of exchangeable Bernoulli variables. The proposition says nothing when an
+assumption fails, and two cases show that the conclusion then fails too
+(20,000 replicates of one phase on $n = 200$ individuals with $s = 0.8$, by
+\code{paper/scripts/cohort\_counterexample.py}, whose data file is next to it). First, an
+asynchronous update breaks (A2): when each individual's survival probability depends on the
+count alive at its own turn (rising by 0.002 per earlier death), the individual model keeps
+167.0 survivors on average and the cohort, which evaluates the rate once at the start of the
+phase, 160.0, a difference of 7.1 (standard error 0.05). Second, hidden heterogeneity breaks
+(A2) in another way: when the individuals of a row carry a variable the row does not (each
+its own probability, uniform on $0.8 \pm 0.2$), the survivors are Poisson-binomial, with the
+same mean as the cohort's binomial (161.0 against 160.9) but a smaller variance (28.8 against
+31.3; exact values 28.8 and 31.4; median-centred Levene $p = 10^{-6}$). Interactions within
+a phase between members of the same row (a pairwise contest, say) break (A1) in the same
+way. In the positive case, where the assumptions hold, the two distributions coincide (means
+160.0 and 160.0, variances 31.9 and 32.2 for an exact 32.0, Kolmogorov--Smirnov $p = 0.997$).
+The practical rule is therefore: a cohort model reproduces the individual model that updates
+synchronously with rates evaluated once per phase, as the Mesa implementations of the insect
+playbook do (\cref{sec:agreement} checks the insect model's statistics), and any state
+variable that changes an individual's probabilities must be part of the row's key.
+Individual identities, and histories that differ within a state, are not represented; a
+model that needs them stays at the object or column level.
 
 \begin{lstlisting}[float=tp,caption={A wealth-exchange model whose agents keep their wealth in a column;
 the step acts on the whole population at once. Run as shown with \modelly{} 1.4.2.},

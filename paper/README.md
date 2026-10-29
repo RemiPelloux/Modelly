@@ -90,6 +90,14 @@ Tables and figures are named by their LaTeX labels.
 | ABC-SMC coverage, truths from the prior, at 100 particles (Section 6) | `data/prior_coverage_p100.json` | `scripts/prior_coverage.py run --replicates 500 --particles 100` |
 | Mesa's virus example on 300 new seeds (Section 5.1) | `data/mesa_examples_virus300_new.json` | `benchmarks/mesa_examples/run.py --only virus_on_network --seeds 300 --seed-base 10000` |
 | Feature comparison (`tab:features`) | `data/features_sources.md`: the page or file behind every cell, October 2026 | by hand: check again before submitting |
+| Trajectories and patterns, 100 new seeds, three playbooks (Section 5.5, `tab:trajectories`, `fig:trajectories`, appendix) | `data/trajectories_small.json.gz`, `data/trajectories_small_summary.json` | `scripts/trajectories.py run --seeds 100`, then `analyse` |
+| The ablation ladder (Section 5.3, `tab:ablation`) | `data/ablation.json` | `scripts/ablation.py run --rounds 10 --core 2` |
+| Speed-ups on CPython 3.12, 3.14 and 3.15 (`tab:python-versions`) | `data/python_versions.json`; `.venv-py312` and `.venv-py314` built like `.venv` | `scripts/python_versions.py run --rounds 5 --core 2` |
+| A sweep end to end with either engine (`tab:sweep`) | `data/sweep_e2e.json` | `scripts/sweep_e2e.py run --rounds 5 --core 2` |
+| ABC-SMC coverage and diagnostics at 30, 60, 100 and 200 particles (`tab:abc-sweep`) | `data/abc_sweep_p*.json`, `data/abc_sweep_summary.json` | `scripts/abc_sweep.py run --particles 30 60 100 200 --replicates 500`, then `analyse` |
+| Sobol indices across 32 scramblings (`tab:sobol-scramblings`) | `data/sobol_scramblings.json` | `scripts/sobol_scramblings.py` |
+| The cohort proposition's positive case and two counterexamples (Section 3.2) | `data/cohort_counterexample.json` | `scripts/cohort_counterexample.py` |
+| The determinism suite and exact digests on nine hosted builds; MPI on three systems; bundles verified across systems (`tab:determinism`, `tab:platform-digests`) | `data/platform_runs.json`, `data/platform_digests/` (artifacts of `.github/workflows/platform-digests.yml`) | `gh workflow run platform-digests.yml`, `gh workflow run mpi.yml`, download the artifacts, then `scripts/platform_digests_table.py` |
 
 If the benchmark results are rerun (on different hardware, say), run `make figures` and
 update the hardware line at the start of Section 5.
@@ -114,9 +122,18 @@ update the hardware line at the start of Section 5.
 - [x] Every model runs from its export in the browser with the pure and the compiled wheel
       (`scripts/release-checks.sh browser`, then `MODELLY_WASM_WHEEL=... pytest -k wasm`).
 - [x] Tests and coverage counted on the tag (see Section 11).
-- [ ] For a journal: Appendix F (every comparison of the agreement study) becomes a CSV
-      supplement generated from `data/agreement_small_summary.json`; Appendix E is the
-      supplementary material for Section 7.
+- [ ] For a journal: Appendix F (every comparison of the agreement study) and the trajectory
+      study's full tables become CSV supplements generated from
+      `data/agreement_small_summary.json` and `data/trajectories_small_summary.json`;
+      Appendix E is the supplementary material for Section 7.
+- [x] Revision after review: nominal and Holm-corrected equivalence counts kept apart
+      everywhere; a trajectory-level study with prespecified margins; an ablation ladder;
+      three CPython versions; a sweep end to end; ABC particle-count protocol; Sobol
+      uncertainty across scramblings; the cohort proposition with counterexamples;
+      the determinism suite on nine hosted builds and MPI on three systems.
+- [ ] Still open from the review: a second CPU architecture for the timings; the
+      trajectory study at the timed size and on the other five playbooks; multi-node
+      scaling; the three timing scripts of the revision at the fixed frequency.
 - [x] Software Heritage archives the tag v1.4.2 (`swh:1:rel:661000598425e7a9b958b5a679ca1281aa6f6cc3`, Appendix A).
 - [x] Compiled with Tectonic and with pdfLaTeX (the engine arXiv uses), no warnings; every page read.
 - [x] All timings re-run at a fixed frequency (performance governor, turbo off, CPU 2).

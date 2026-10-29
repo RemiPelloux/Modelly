@@ -1,21 +1,28 @@
 \begin{abstract}
 Agent-based simulations are often too slow for the sweeps a study needs, hard to reproduce,
 and hard for a reviewer to check. \modelly{} is an independent Python framework, written from
-scratch, whose programming model is compatible with Mesa's. Agents remain objects while their
-state can live in model-owned arrays (columns), so that a model's population-wide phases can
-be written as array operations one at a time, or in counted populations (cohorts); inner loops
-run in C with pure-Python twins; and the steps of a study (sweeps, calibration, sensitivity
-analysis, emulators, data assimilation, manifests, bundles) and seventeen tested reference
-models are built in. On eight workloads written idiomatically for each framework, the column
-form runs its steps 2.9 to 33 times faster than per-agent Mesa~3.5 code (12 times faster than
-Mesa~3.5 with a KD-tree on flocking) and 3.0 to 9.6 times faster than mesa-frames (on its
-four), and comes within 1.8 to 4.5 times of hand-written numpy without agent objects (on
-three), its lead growing with the population; the cohort form of the one workload that has
-one runs 135 times faster than Mesa~3.5. Over 100 paired seeds, 63 of 67 comparisons of a
-statistic with Mesa are equivalent within half a standard deviation (29 with Holm-corrected
-equivalence tests), and no difference survives Holm correction. Mesa~3.5 models migrated by a
-codemod, Mesa's own examples among them, run 1.05 to 2.3 times faster on \modelly{}.
-\modelly{} also splits a run across processes with byte-identical results, runs columns on a
-GPU (steps 34 times faster than one CPU core at ten million agents), differentiates models,
-assimilates live data and exports a model to a web page.
+scratch, whose programming model is compatible with Mesa's. Its contribution is one
+architecture: agents remain objects while their state can live in model-owned arrays
+(columns), so that a model's population-wide phases can be rewritten as array operations one
+at a time, or in counted populations (cohorts), with the steps of a study (sweeps,
+calibration, sensitivity analysis, emulators, data assimilation, manifests, bundles) built on
+the same seeding discipline. On eight workloads written idiomatically for each framework,
+the column form runs its steps 2.9 to 33 times faster than per-agent Mesa~3.5 code (12 times
+faster than Mesa~3.5 with a KD-tree on flocking), 3.0 to 9.6 times faster than mesa-frames,
+and within 1.8 to 4.5 times of hand-written numpy without agent objects, its lead growing
+with the population; an ablation that changes one thing per rung attributes the gain to the
+array form of the phases rather than to the compiled runtime or the framework's calls;
+Mesa~3.5 models migrated by a codemod, Mesa's own examples among them, run 1.05 to 2.3 times
+faster unchanged. Whether the faster forms compute the same model is tested rather than
+assumed: over 100 paired seeds, 63 of 67 summary statistics meet a prespecified equivalence
+margin of half a standard deviation at nominal significance (29 after Holm correction; 48
+within $\pm 5\%$ of Mesa's mean), and a trajectory-level study of three workloads, with
+margins fixed in each quantity's own units, finds the faster forms' curves, spatial patterns
+and rare events as close to Mesa~2.3 as Mesa~3.5's are. The reproducibility guarantees are
+stated by scope and tested on nine hosted builds (Linux, macOS and Windows under CPython
+3.12 to 3.14): twelve of seventeen examples give bit-identical digests everywhere and the
+rest agree at ten significant digits wherever the suite compares them. \modelly{} also
+splits a run across processes with byte-identical results, runs columns on a GPU (steps 34
+times faster than one CPU core at ten million agents, 1.6 to 1.8 times once construction is
+counted), differentiates models, assimilates live data and exports a model to a web page.
 \end{abstract}
