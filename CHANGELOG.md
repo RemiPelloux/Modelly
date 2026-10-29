@@ -3,6 +3,27 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+A patch release for numpy datasets (`DataRegistry.track_agents_numpy`): their fields now belong
+to each model, so two models alive at once, a model and its copy from `Model.load`, and a
+checkpoint resumed in a new process all read the right values. No core operation is slower than
+1.4.1 (`python -m modelly.dev perf`).
+
+### Fixed
+
+- The fields of a numpy dataset were properties of the agent class bound to one dataset's array,
+  the last one made. Two live models of the same agent class read and wrote the second model's
+  values; a model restored by `Model.load` read the original model's array; a checkpoint loaded
+  in a fresh process had no fields at all (`AttributeError`). Each agent now holds a reference to
+  its own dataset, a restored dataset puts the fields back on the class, and checkpoints written
+  by 1.4.0 and 1.4.1 load and resume as before. Closing one model's registry leaves the fields
+  in place while another model's dataset of that name is open. Reading or writing a tracked
+  field costs about 20 ns more: 1.07x on a step that only updates two tracked fields of 10,000
+  agents (seven paired rounds on one core).
+- `SQLDataRecorder` stores a numpy dataset's `agent_id` as an integer, as the memory and Parquet
+  recorders do, instead of a float.
+
 ## 1.4.1 - 2026-10-29
 
 A patch release: three operations that grew quadratically with the size of a run now grow
