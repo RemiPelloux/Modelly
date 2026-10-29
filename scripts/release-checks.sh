@@ -13,6 +13,8 @@
 #   bundles   run, bundle and verify three studies, then verify them unpacked elsewhere
 #   pyodide   the pure wheel imports and runs an example in Pyodide under node
 #   browser   every example and zoo model from its export-web site in headless Chromium
+#   studio    Studio's views in headless Chromium, Firefox and WebKit (Playwright browsers;
+#             MODELLY_BROWSER_EXECUTABLE points WebKit at a wrapper where its libraries lack)
 #   docs      the documentation builds with warnings as errors
 #   native    the compiled modules and their pure-Python twins, a wheel that must compile
 #             them all, and the free-threaded build when FT_PYTHON names its interpreter
@@ -25,7 +27,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT" || exit 1
 PYTHON="${PYTHON:-.venv/bin/python}"
 WORK="$ROOT/build/release-checks"
-STAGES=(native mpi slurm bundles pyodide browser docs bench)
+STAGES=(native mpi slurm bundles pyodide browser studio docs bench)
 STEPS=20
 SEED=7
 PYODIDE_VERSION=314.0.7  # keep in step with modelly.web.export.PYODIDE_VERSION
@@ -94,6 +96,15 @@ stage_browser() {
   "$PYTHON" -c "import playwright" 2>/dev/null ||
     { echo "missing: playwright for Python (pip install playwright; playwright install chromium)"; return 1; }
   MODELLY_BROWSER_TESTS=1 "$PYTHON" -m pytest -q tests/web/test_browser.py
+}
+
+stage_studio() {
+  "$PYTHON" -c "import playwright" 2>/dev/null ||
+    { echo "missing: playwright for Python (pip install playwright; playwright install)"; return 1; }
+  local browser
+  for browser in chromium firefox webkit; do
+    MODELLY_BROWSER="$browser" "$PYTHON" -m pytest -q tests/studio/test_studio_browsers.py || return 1
+  done
 }
 
 stage_docs() {
