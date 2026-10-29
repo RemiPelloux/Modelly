@@ -10,6 +10,7 @@ from modelly.data.recorders import (
     DatasetConfig,
     JSONDataRecorder,
     ParquetDataRecorder,
+    SQLDataRecorder,
 )
 
 AGENTS = 20
@@ -159,3 +160,13 @@ def test_json_empty_list_snapshot_has_no_rows(tmp_path):
     )
     model.step()
     assert recorder.get_table_dataframe("agent_data").empty
+
+
+def test_sql_numpy_dataset_agent_id_is_an_integer():
+    """As in the memory and Parquet recorders' frames; it used to be stored as REAL."""
+    model = Walkers(n=3)
+    recorder = SQLDataRecorder(model, {"numpy_data": DatasetConfig()})
+    model.step()
+    df = recorder.get_table_dataframe("numpy_data")
+    assert pd.api.types.is_integer_dtype(df["agent_id"])
+    assert df["agent_id"].tolist() == [1, 2, 3]

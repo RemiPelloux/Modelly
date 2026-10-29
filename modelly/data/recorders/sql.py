@@ -68,7 +68,11 @@ class SQLDataRecorder(BaseDataRecorder):
             columns = ["agent_id", *columns]
 
         if not self.metadata[dataset_name]["table_created"]:
-            col_defs = ", ".join([f'"{col}" REAL' for col in columns])
+            # agent_id is an integer column, as in the other recorders' frames
+            col_defs = ", ".join(
+                f'"{col}" {"INTEGER" if col == "agent_id" else "REAL"}'
+                for col in columns
+            )
             self.conn.execute(
                 f'CREATE TABLE IF NOT EXISTS "{dataset_name}" (time REAL, {col_defs})'
             )
