@@ -94,6 +94,31 @@ def test_main_serves_the_config(monkeypatch):
     assert host == "127.0.0.1" and port > 0 and not browser
 
 
+def test_the_input_options_reach_the_config():
+    """--results, --observations and --analysis feed the new tabs; --help lists them."""
+    argv = [WOLF_SHEEP, "--results", "runs", "--observations", "obs.csv"]
+    argv += ["--analysis", "fit.py:results"]
+    config = cli.config_from(cli.build_parser().parse_args(argv))
+    assert (config.results, config.observations, config.analysis) == (
+        "runs",
+        "obs.csv",
+        "fit.py:results",
+    )
+    assert StudioConfig.from_json(config.to_json()) == config
+    text = cli.build_parser().format_help()
+    for word in ("--results", "--observations", "--analysis", "map", "ensemble"):
+        assert word in text
+
+
+def test_serve_warns_when_assets_are_missing(monkeypatch, capsys):
+    """A cache without Solara's front-end files is reported before serving."""
+    uvicorn = pytest.importorskip("uvicorn")
+    monkeypatch.setattr(uvicorn, "Server", FakeServer)
+    monkeypatch.setattr(cli.assets, "warning", lambda: "files are not cached\n")
+    cli.serve(StudioConfig(target=WOLF_SHEEP), cli.LOCALHOST, 1234, browser=False)
+    assert "files are not cached" in capsys.readouterr().err
+
+
 def test_free_port_is_bindable():
     """free_port gives a port the OS reports as free."""
     assert 0 < cli.free_port(cli.LOCALHOST) <= cli.MAX_PORT

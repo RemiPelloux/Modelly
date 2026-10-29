@@ -33,6 +33,11 @@ class StudioConfig:
         profile_steps: How many of the last steps the profiler panel sums.
         table_rows: Rows the agent table shows.
         memory_budget_mib: Mebibytes the timeline's checkpoints may take.
+        results: An experiment's results store folder, for the Experiments tab.
+        observations: A CSV file of observations (a ``time`` column, one column per
+            reporter), for the Assimilation tab.
+        analysis: ``path/to/file.py:function`` returning posteriors or sensitivity
+            results, for the Analysis tab.
     """
 
     target: str
@@ -42,6 +47,9 @@ class StudioConfig:
     profile_steps: int = DEFAULT_PROFILE_STEPS
     table_rows: int = DEFAULT_TABLE_ROWS
     memory_budget_mib: int = DEFAULT_BUDGET_MIB
+    results: str | None = None
+    observations: str | None = None
+    analysis: str | None = None
 
     @property
     def memory_budget(self) -> int:

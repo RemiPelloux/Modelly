@@ -10,7 +10,12 @@ default browser. The app is built from these parts:
 - ``timeline``: checkpoints through ``modelly.timetravel``, or a replay when the model
   cannot be checkpointed;
 - ``data``: series, agent table, figures and the files the exports download;
-- ``state``, ``panels``, ``views``, ``tools`` and ``app``: the Solara components.
+- ``recording`` and ``exports``: the session as a script that rebuilds it, and its bundle;
+- ``ensembles``, ``assimilation``, ``browser``, ``analyses`` and ``figures``: replicates,
+  filters, a results store, posteriors and sensitivity results, and their figures;
+- ``scene`` and ``assets``: the map's arrays, and Solara's front-end files for offline use;
+- ``state``, ``panels``, ``views``, ``tools``, ``mapview``, ``ensemble_views``,
+  ``analysis_views`` and ``app``: the Solara components.
 
 The guide is ``docs/studio.md``. This package imports Solara only in the modules that draw;
 the names exported here work without the ``viz`` extra.
