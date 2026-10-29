@@ -5,6 +5,14 @@ versioning.
 
 ## Unreleased
 
+The scale-out release: split runs across processes, a GPU backend, differentiable models,
+live data and assimilation, fields and ODEs coupled to agents, emulators and history matching,
+synthetic populations, a static export that runs a model in the browser, and Studio II. No
+playbook is slower than 1.3.3 and every output is identical; the event-heavy wolf-sheep example
+runs at 0.95, event scheduling at 0.70 and column data collection at 0.47 of 1.3.3's time
+(`docs/performance.md`). Hosted CI now runs only the Release and docs workflows; every other
+check runs locally (`scripts/release-checks.sh`), on Linux x86-64.
+
 ### Added
 
 - Per-agent random streams (provisional): with `agent_streams = True` on a model class,
