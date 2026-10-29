@@ -34,9 +34,14 @@ gathering the agents' wealth in a Python loop. The summaries computed after the 
 small part of each run (about 2\% of Mesa's Schelling run).
 
 \paragraph{Who wrote the implementations.} Every implementation of every playbook, the Mesa ones
-included, was written by the author of \modelly{}. Each
-Mesa version follows Mesa's documented API and examples, and all of them are in the repository
-for inspection; corrections from Mesa developers are welcome. The one comparison whose
+included, was written by the author of \modelly{}, and no independent party has yet
+reviewed them or rerun the benchmarks. Each Mesa version follows Mesa's documented API and
+examples, and all of them are in the repository for inspection; corrections from Mesa
+developers are welcome. What a third party can check without rerunning the timings is
+that every table and figure regenerates from the published data and that every listing
+runs as printed: \code{paper/scripts/verify\_artifacts.py} and
+\code{paper/scripts/check\_listings.py} do both, and both pass at the commit of this
+version (\cref{app:reproduce}). The one comparison whose
 baselines we did not write is that of Mesa~3.5's own examples (\cref{tab:mesa-examples}),
 whose Mesa arm runs Mesa's code unmodified; it measures the same-code gain, not the gain of the faster
 forms, which no Mesa-written model can show.
@@ -101,12 +106,14 @@ tolerance on a peak's timing than $\pm 2$ steps, and at that margin 100 seeds do
 decide the question for any implementation, Mesa~3.5 included.
 
 \paragraph{Reproducibility.} The determinism suite, the split-run checks and the exact
-digests were run on nine hosted builds and MPI on three operating systems for this version
-(\cref{tab:determinism,tab:platform-digests}); what remains untested is the free-threaded
-build of the event heap, the Ray backend and Apple Metal, and the golden digests cover ten
-steps of seventeen examples (the fourteen bundled examples and three split-run models,
-distinct from the zoo). Five examples are not bitwise reproducible across platforms, and
-two of them not across interpreter versions on one platform either; a study that needs
+digests were run on hosted builds of the checkout and of the released wheels (five
+architectures, three interpreters) and MPI on three operating systems for this version
+(\cref{tab:determinism,tab:platform-digests}); what remains untested is the musl Linux,
+Windows ARM64 and free-threaded wheels, the free-threaded build of the event heap, the Ray
+backend and Apple Metal, and the golden digests cover ten steps of seventeen examples (the
+fourteen bundled examples and three split-run models, distinct from the zoo). Four or
+five examples are not bitwise reproducible across platforms, and one or two of them not
+across interpreter versions on one platform either; a study that needs
 bitwise agreement across machines must avoid the transcendental functions and BLAS
 reductions these examples use, or state its guarantee at ten significant digits, as the
 suite does. Running the suite on every published wheel, for more steps, is planned.

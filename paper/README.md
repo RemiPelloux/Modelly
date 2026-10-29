@@ -97,7 +97,8 @@ Tables and figures are named by their LaTeX labels.
 | ABC-SMC coverage and diagnostics at 30, 60, 100 and 200 particles (`tab:abc-sweep`) | `data/abc_sweep_p*.json`, `data/abc_sweep_summary.json` | `scripts/abc_sweep.py run --particles 30 60 100 200 --replicates 500`, then `analyse` |
 | Sobol indices across 32 scramblings (`tab:sobol-scramblings`) | `data/sobol_scramblings.json` | `scripts/sobol_scramblings.py` |
 | The cohort proposition's positive case and two counterexamples (Section 3.2) | `data/cohort_counterexample.json` | `scripts/cohort_counterexample.py` |
-| The determinism suite and exact digests on nine hosted builds; MPI on three systems; bundles verified across systems (`tab:determinism`, `tab:platform-digests`) | `data/platform_runs.json`, `data/platform_digests/` (artifacts of `.github/workflows/platform-digests.yml`) | `gh workflow run platform-digests.yml`, `gh workflow run mpi.yml`, download the artifacts, then `scripts/platform_digests_table.py` |
+| The determinism suite and exact digests on hosted builds: the checkout on 9 and on 15 (five architectures), the released 1.4.2 wheels from PyPI on 15; MPI on three systems; bundles verified across systems (`tab:determinism`, `tab:platform-digests`) | `data/platform_runs.json`, `data/platform_digests/`, `data/platform_digests_15/`, `data/platform_digests_wheels/` (artifacts of `.github/workflows/platform-digests.yml`) | `gh workflow run platform-digests.yml -f source=checkout` and `-f source=pypi -f version=1.4.2`, `gh workflow run mpi.yml`, download the artifacts, then `scripts/platform_digests_table.py` |
+| Every table and figure regenerates from the data; every listing runs as printed | all of the above | `scripts/verify_artifacts.py`; `scripts/check_listings.py` |
 
 If the benchmark results are rerun (on different hardware, say), run `make figures` and
 update the hardware line at the start of Section 5.
@@ -131,8 +132,15 @@ update the hardware line at the start of Section 5.
       three CPython versions; a sweep end to end; ABC particle-count protocol; Sobol
       uncertainty across scramblings; the cohort proposition with counterexamples;
       the determinism suite on nine hosted builds and MPI on three systems.
-- [ ] Still open from the review: a second CPU architecture for the timings; the
-      trajectory study at the timed size and on the other five playbooks; multi-node
+- [x] Second round: the trajectory study's claim bounded (34 of 52 after Holm, the rest
+      undecided); the released wheels installed from PyPI and the determinism suite run on
+      five architectures; `scripts/verify_artifacts.py` (29 tables, 9 figures, 5 data
+      files regenerate identically) and `scripts/check_listings.py` (the three listings
+      run as printed) pass; `docs/sensitivity.md` explains the row bootstrap against
+      scramblings and shows how to report the latter.
+- [ ] Still open from the review: a second CPU architecture for the timings; an
+      independent review or rerun of the benchmark implementations (not by the author);
+      the trajectory study at the timed size and on the other five playbooks; multi-node
       scaling; the three timing scripts of the revision at the fixed frequency.
 - [x] Software Heritage archives the tag v1.4.2 (`swh:1:rel:661000598425e7a9b958b5a679ca1281aa6f6cc3`, Appendix A).
 - [x] Compiled with Tectonic and with pdfLaTeX (the engine arXiv uses), no warnings; every page read.

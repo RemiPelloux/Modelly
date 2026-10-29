@@ -74,9 +74,15 @@ NP="--variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth"
 .venv/bin/python paper/scripts/abc_sweep.py run --particles 30 60 100 200 --replicates 500
 .venv/bin/python paper/scripts/sobol_scramblings.py
 .venv/bin/python paper/scripts/cohort_counterexample.py
-# the determinism suite and exact digests on nine hosted builds, MPI on three systems
-gh workflow run platform-digests.yml; gh workflow run mpi.yml  # then the artifacts
+# the determinism suite and exact digests on hosted builds (the checkout, then the
+# released wheels from PyPI), MPI on three systems; then the artifacts
+gh workflow run platform-digests.yml -f source=checkout
+gh workflow run platform-digests.yml -f source=pypi -f version=1.4.2
+gh workflow run mpi.yml
 .venv/bin/python paper/scripts/platform_digests_table.py
+# the artifact checks: every table and figure from the published data; every listing
+.venv/bin/python paper/scripts/verify_artifacts.py
+.venv/bin/python paper/scripts/check_listings.py
 # determinism, calibration and sensitivity checks
 .venv/bin/python -m pytest tests/determinism tests/calibrate tests/sensitivity
 # scaling out and connecting to data: split runs, assimilation, coupling, emulators, ...
@@ -92,6 +98,19 @@ gh workflow run platform-digests.yml; gh workflow run mpi.yml  # then the artifa
 MODELLY_BROWSER_TESTS=1 .venv/bin/python -m pytest tests/web/test_browser.py
 .venv/bin/python tools/web/measure_load.py site/
 \end{lstlisting}
+
+\paragraph{Artifact checks.} Two scripts let a reader check the paper's artifacts without
+rerunning its measurements. \code{verify\_artifacts.py} copies \code{tables/} and
+\code{figures/} aside, regenerates every table and figure from the data files with the
+scripts above (the \code{analyse} commands and the table scripts), reruns the five scripts
+that recompute a data file from the code (the Ishigami estimate, the scramblings, the
+cohort counterexample, the graph cut, the nowcast), and compares: the 29 tables byte for
+byte, the 9 figures pixel for pixel, the 5 data files on their numbers. \code{check\_listings.py}
+extracts the three Python listings of the paper and runs each as printed (the ABC listing
+against the model module of \code{docs/calibration.md}, which it writes from the
+documentation's own code blocks); the ABC listing's output is the posterior quoted in
+\cref{sec:validation}. Both pass at the commit of this version; what they do not do is
+rerun a timing, an agreement study or a hosted workflow, which the commands above do.
 
 The playbook runner starts each run in a fresh interpreter, pins it to one core with
 \code{taskset}, alternates the implementations over rounds, checks determinism, and writes JSON

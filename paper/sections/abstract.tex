@@ -18,10 +18,13 @@ assumed: over 100 paired seeds, 63 of 67 summary statistics meet a prespecified 
 margin of half a standard deviation at nominal significance (29 after Holm correction; 48
 within $\pm 5\%$ of Mesa's mean), and a trajectory-level study of three workloads, with
 margins fixed in each quantity's own units, finds the faster forms' curves, spatial patterns
-and rare events as close to Mesa~2.3 as Mesa~3.5's are. The reproducibility guarantees are
-stated by scope and tested on nine hosted builds (Linux, macOS and Windows under CPython
-3.12 to 3.14): twelve of seventeen examples give bit-identical digests everywhere and the
-rest agree at ten significant digits wherever the suite compares them. \modelly{} also
+and rare events as close to Mesa~2.3 as Mesa~3.5's are (34 of 52 scalar quantities shown
+equivalent after Holm correction, the rest undecided at 100 seeds, one timing difference
+shown). The reproducibility guarantees are
+stated by scope and tested on hosted builds, including the released wheels installed from
+PyPI on five architectures (Linux and macOS, x86-64 and ARM64, and Windows) under CPython
+3.12 to 3.14: thirteen of seventeen examples give bit-identical digests on all fifteen
+builds and the rest agree at ten significant digits wherever the suite compares them. \modelly{} also
 splits a run across processes with byte-identical results, runs columns on a GPU (steps 34
 times faster than one CPU core at ten million agents, 1.6 to 1.8 times once construction is
 counted), differentiates models, assimilates live data and exports a model to a web page.

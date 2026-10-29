@@ -51,7 +51,9 @@ model, a function or a Gaussian-process emulator \citep{oakley2004probabilistic}
 (\cref{sec:validation}); \cref{lst:abc} calibrates an epidemic model.
 
 \begin{lstlisting}[float=tp,caption={ABC-SMC calibration of two rates of an epidemic model to an observed series
-(a sketch: \code{epidemic} is the model module of \code{docs/calibration.md}, which gives the full script).},
+\code{epidemic} is the model module of \code{docs/calibration.md}, the documented SIR model
+with its observed series \code{cases}; run as printed against that module, the listing
+gives the posterior quoted in \cref{sec:validation} (\code{paper/scripts/check\_listings.py}).},
 label={lst:abc}]
 from modelly.calibrate import ABCSMC, Prior, Target
 from epidemic import Epidemic, cases   # the model and the observed series

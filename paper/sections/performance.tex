@@ -639,7 +639,9 @@ the phase, and the period, 345 steps in Mesa~2.3, differs by at most 18 steps in
 others, with intervals of about $\pm 33$ steps.
 
 On the scalars, 41 of the 52 \modelly{} comparisons are shown equivalent at their
-prespecified margin (34 after the Holm correction) against 20 of 26 for Mesa~3.5 (17), the
+prespecified margin (34 after the Holm correction) against 20 of 26 for Mesa~3.5 (17); the
+study therefore does not establish equivalence for every quantity it tests, and we do not
+claim that it does: 18 of the 52 are undecided at the familywise level. The
 largest $|d|$ is 0.28 (Mesa~3.5: 0.18), and two paired $t$-tests of 52 fall below 5\% before
 correction (none after; Mesa~3.5: none). The quantities not shown equivalent are the same
 for every implementation, Mesa~3.5 included, and for the same reason: their margins are
@@ -654,12 +656,17 @@ the columns' epidemic peaks $3.3$ steps earlier than Mesa~2.3's ($[-6.6, -0.1]$,
 -0.28$, 12\% of a mean of 28 steps); the cell lists' and Mesa~3.5's peak 2.9 and 2.1 steps
 earlier with intervals that include zero. The second uncorrected difference is the cell
 lists' share of residents with no same-kind neighbour, 0.4\% against 0.5\% ($d = -0.21$).
-Everything the study was designed to catch beyond the summary statistics agrees: the
+What the study does establish is this. Everything it was designed to catch beyond the
+summary statistics agrees: the
 cluster counts and mean cluster sizes are equivalent within $\pm 10\%$ for every
 implementation after the Holm correction, the ten composition bins are equivalent within
 0.02 for both \modelly{} variants before and after it (nine of ten for Mesa~3.5 after it),
 the time to converge within 2 steps for every implementation before it, and the wolves die
 out in 1 of 100 runs on Mesa~2.3 and Mesa~3.5 and in 0 of 100 on either \modelly{} variant
-(sheep never), equivalent within 5 percentage points after it. A run of
-this study at the timed size, and on the other five playbooks, was not made; the three
+(sheep never), equivalent within 5 percentage points after it. The claim this supports
+is bounded: on these three workloads, at this size, the faster forms follow the same
+dynamics as Mesa~2.3 to within what 100 seeds resolve, and no closer than Mesa~3.5 does;
+for the six quantities whose margins 100 seeds cannot decide, the point estimates lie
+within the margins but equivalence is not shown, and one timing difference is shown. A run
+of this study at the timed size, and on the other five playbooks, was not made; the three
 chosen are the ones with spatial structure, a convergence process and a cycle.

@@ -127,6 +127,40 @@ column from `B`.
 The test suite checks both on the Ishigami function and the Sobol G function, whose indices
 are known exactly: every analytical value lies inside its bootstrap interval.
 
+### What the bootstrap interval is, and what to report
+
+The `S1_low`/`S1_high` and `ST_low`/`ST_high` columns come from resampling the rows of the
+design with replacement (`bootstrap` times) and recomputing the indices. The rows of a
+scrambled Sobol sequence are not independent draws, so this is an approximation, and in one
+direction: on the Ishigami function the row bootstrap's half-width is 3 to 7 times the actual
+spread of the estimate across independent scramblings, at `samples=1024` and `4096` alike
+(`paper/scripts/sobol_scramblings.py`, `paper/data/sobol_scramblings.json`). It is
+conservative, cheap (one design, evaluated once) and good enough to tell a large index from a
+small one, which is what a screening needs. It is not a calibrated uncertainty.
+
+For an uncertainty to report in a study, repeat the analysis on independent scramblings and
+take the spread of the estimates: the scrambling is drawn from `seed`, so this is a loop over
+seeds, and the design's evaluations are seeded from each in turn.
+
+```python
+import numpy as np
+
+from modelly.sensitivity import sobol
+
+estimates = [
+    sobol(model, space, "infected", samples=1024, seed=seed).table[["S1", "ST"]]
+    for seed in range(1, 17)
+]
+stack = np.stack([t.to_numpy() for t in estimates])
+mean, spread = stack.mean(axis=0), stack.std(axis=0, ddof=1)
+low, high = np.percentile(stack, [2.5, 97.5], axis=0)
+```
+
+`mean` is the estimate, `spread` its standard error across scramblings, and `low`/`high` a
+95 % range; 16 scramblings cost 16 times one analysis and give a standard error known to
+about 18 %. For a stochastic model with `replicates` per point, the model's own noise is
+inside each estimate already; the scramblings add the design's uncertainty on top.
+
 ## PAWN
 
 `pawn(model, space, output, samples=500, slices=10, summary="median")` evaluates one Latin

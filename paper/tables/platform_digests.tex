@@ -1,24 +1,26 @@
-\begin{tabularx}{\linewidth}{llr>{\raggedright\arraybackslash}X}
+\begin{tabularx}{\linewidth}{llrrr>{\raggedright\arraybackslash}X}
 \toprule
-Example & Golden comparison & Distinct & Builds that agree \\
+ & & \multicolumn{3}{c}{distinct digests} & \\
+\cmidrule(lr){3-5}
+Example & Golden comparison & 9 & 15 & wheels & Wheel builds that agree (x86: x86-64; ARM: ARM64) \\
 \midrule
-\code{alliance\_formation} & 10 digits & 2 & Linux, Windows (6); macOS (3) \\
-\code{boid\_flockers} & 10 digits & 4 & macOS (3); Linux 3.12, Windows 3.12/3.13 (3); Linux 3.13/3.14 (2); Windows 3.14 (1) \\
-\code{boltzmann\_wealth\_model} & exact & 1 & all nine \\
-\code{commuting\_city} & 10 digits, Linux only & 2 & Linux, Windows (6); macOS (3) \\
-\code{continuous\_sir} & 10 digits & 3 & macOS (3); Linux (3); Windows (3) \\
-\code{conways\_game\_of\_life} & exact & 1 & all nine \\
-\code{epstein\_civil\_violence} & 10 digits & 1 & all nine \\
-\code{grid\_epidemic} & exact & 1 & all nine \\
-\code{layered\_epidemic} & 10 digits & 1 & all nine \\
-\code{llm\_opinions} & exact & 1 & all nine \\
-\code{network\_sir} & exact & 1 & all nine \\
-\code{pd\_grid} & exact & 1 & all nine \\
-\code{schelling} & exact & 1 & all nine \\
-\code{sugarscape\_g1mt} & 10 digits & 2 & Linux 3.12, Windows, macOS (7); Linux 3.13/3.14 (2) \\
-\code{tram\_model} & exact & 1 & all nine \\
-\code{virus\_on\_network} & exact & 1 & all nine \\
-\code{wolf\_sheep} & exact & 1 & all nine \\
+\code{alliance\_formation} & 10 digits & 2 & 2 & 2 & Linux ARM, Linux x86, Windows, macOS x86 (12); macOS ARM (3) \\
+\code{boid\_flockers} & 10 digits & 4 & 4 & 3 & Linux ARM, Linux x86, Windows 3.12/3.14 (8); macOS ARM, macOS x86 (6); Windows 3.13 (1) \\
+\code{boltzmann\_wealth\_model} & exact & 1 & 1 & 1 & all \\
+\code{commuting\_city} & 10 digits, Linux x86 only & 2 & 2 & 2 & Linux ARM, Linux x86, Windows (9); macOS ARM, macOS x86 (6) \\
+\code{continuous\_sir} & 10 digits & 3 & 4 & 4 & Linux ARM, Linux x86 (6); macOS x86 (3); macOS ARM (3); Windows (3) \\
+\code{conways\_game\_of\_life} & exact & 1 & 1 & 1 & all \\
+\code{epstein\_civil\_violence} & 10 digits & 1 & 1 & 1 & all \\
+\code{grid\_epidemic} & exact & 1 & 1 & 1 & all \\
+\code{layered\_epidemic} & 10 digits & 1 & 1 & 1 & all \\
+\code{llm\_opinions} & exact & 1 & 1 & 1 & all \\
+\code{network\_sir} & exact & 1 & 1 & 1 & all \\
+\code{pd\_grid} & exact & 1 & 1 & 1 & all \\
+\code{schelling} & exact & 1 & 1 & 1 & all \\
+\code{sugarscape\_g1mt} & 10 digits & 2 & 2 & 1 & all \\
+\code{tram\_model} & exact & 1 & 1 & 1 & all \\
+\code{virus\_on\_network} & exact & 1 & 1 & 1 & all \\
+\code{wolf\_sheep} & exact & 1 & 1 & 1 & all \\
 \bottomrule
 \end{tabularx}
-% 12 of 17 identical on 9 builds
+% 12 of 17 identical on the 9 run, 12 of 17 identical on the 15 run, 13 of 17 identical on the wheels run

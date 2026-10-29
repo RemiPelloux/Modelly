@@ -58,9 +58,10 @@ one phase at a time, and gets:
   random stream; a run's manifest records everything needed to repeat it, and
   \cmd{modelly verify} repeats it and names the first output that differs; a determinism suite
   checks that the bundled examples give the same digests compiled or in pure Python and
-  straight or resumed from a checkpoint, and, run on nine hosted builds (Linux, macOS and
-  Windows under CPython 3.12, 3.13 and 3.14), that twelve of seventeen examples give
-  bit-identical digests everywhere and the others agree at ten significant digits
+  straight or resumed from a checkpoint, and, run on hosted builds of the checkout and of
+  the released wheels (Linux x86-64 and ARM64, macOS ARM64 and x86-64, Windows, under
+  CPython 3.12, 3.13 and 3.14), that twelve or thirteen of seventeen examples give
+  bit-identical digests on every build and the others agree at ten significant digits
   wherever the suite compares them (\cref{sec:reproducibility}). The paper states each guarantee's scope: determinism on
   one build, numerical agreement across platforms, and bitwise agreement where it holds.
   \item \textbf{Towards large and data-driven studies.} The same model can be split across

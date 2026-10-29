@@ -71,6 +71,62 @@
     "verify on windows": "success (outputs match for the three bundles)",
     "slurm": "failure: pytest aborted at start (a plugin warning under -Werror on the hosted runner), not run"
    }
+  },
+  "platform-digests-15": {
+   "id": 40961013783,
+   "url": "https://github.com/RemiPelloux/Modelly/actions/runs/40961013783",
+   "commit": "32e2d33d1303a23406c0ae671a996a129ad12001",
+   "ref": "main",
+   "created": "2026-10-29T21:49:43Z",
+   "conclusion": "success",
+   "jobs": {
+    "Digests on ubuntu-latest, CPython 3.12": "success",
+    "Digests on macos-latest, CPython 3.12": "success",
+    "Digests on windows-latest, CPython 3.13": "success",
+    "Digests on ubuntu-24.04-arm, CPython 3.13": "success",
+    "Digests on ubuntu-latest, CPython 3.13": "success",
+    "Digests on macos-latest, CPython 3.14": "success",
+    "Digests on ubuntu-24.04-arm, CPython 3.12": "success",
+    "Digests on ubuntu-latest, CPython 3.14": "success",
+    "Digests on windows-latest, CPython 3.14": "success",
+    "Digests on macos-15-intel, CPython 3.12": "success",
+    "Digests on ubuntu-24.04-arm, CPython 3.14": "success",
+    "Digests on macos-latest, CPython 3.13": "success",
+    "Digests on macos-15-intel, CPython 3.14": "success",
+    "Digests on windows-latest, CPython 3.12": "success",
+    "Digests on macos-15-intel, CPython 3.13": "success",
+    "Compare the digests across platforms": "success"
+   },
+   "pytest": "50 or 51 passed, 2 or 3 skipped on each of the 15 builds (the checkout, compiled on the runner)",
+   "runners": "ubuntu-latest (Linux x86-64), ubuntu-24.04-arm (Linux ARM64), macos-latest (macOS ARM64), macos-15-intel (macOS x86-64), windows-latest (Windows x86-64), each with CPython 3.12, 3.13, 3.14"
+  },
+  "platform-digests-wheels": {
+   "id": 40961003167,
+   "url": "https://github.com/RemiPelloux/Modelly/actions/runs/40961003167",
+   "commit": "32e2d33d1303a23406c0ae671a996a129ad12001",
+   "ref": "main",
+   "created": "2026-10-29T21:49:38Z",
+   "conclusion": "success",
+   "jobs": {
+    "Digests on ubuntu-latest, CPython 3.12": "success",
+    "Digests on macos-15-intel, CPython 3.13": "success",
+    "Digests on ubuntu-latest, CPython 3.13": "success",
+    "Digests on ubuntu-24.04-arm, CPython 3.13": "success",
+    "Digests on ubuntu-24.04-arm, CPython 3.12": "success",
+    "Digests on ubuntu-24.04-arm, CPython 3.14": "success",
+    "Digests on macos-latest, CPython 3.14": "success",
+    "Digests on ubuntu-latest, CPython 3.14": "success",
+    "Digests on macos-15-intel, CPython 3.14": "success",
+    "Digests on macos-15-intel, CPython 3.12": "success",
+    "Digests on windows-latest, CPython 3.13": "success",
+    "Digests on windows-latest, CPython 3.14": "success",
+    "Digests on macos-latest, CPython 3.12": "success",
+    "Digests on windows-latest, CPython 3.12": "success",
+    "Digests on macos-latest, CPython 3.13": "success",
+    "Compare the digests across platforms": "success"
+   },
+   "pytest": "50 or 51 passed, 2 or 3 skipped on each of the 15 builds (the released 1.4.2 wheels installed from PyPI; the checkout's package directory removed; all five compiled modules present on every build)",
+   "runners": "ubuntu-latest (Linux x86-64), ubuntu-24.04-arm (Linux ARM64), macos-latest (macOS ARM64), macos-15-intel (macOS x86-64), windows-latest (Windows x86-64), each with CPython 3.12, 3.13, 3.14"
   }
  },
  "digests": {
@@ -105,6 +161,92 @@
    "commuting_city",
    "continuous_sir",
    "sugarscape_g1mt"
+  ],
+  "not_on_every_build": []
+ },
+ "digests_15": {
+  "source": "checkout",
+  "version": "1.4.2",
+  "builds": [
+   "macos-15-intel-3.12",
+   "macos-15-intel-3.13",
+   "macos-15-intel-3.14",
+   "macos-latest-3.12",
+   "macos-latest-3.13",
+   "macos-latest-3.14",
+   "ubuntu-24.04-arm-3.12",
+   "ubuntu-24.04-arm-3.13",
+   "ubuntu-24.04-arm-3.14",
+   "ubuntu-latest-3.12",
+   "ubuntu-latest-3.13",
+   "ubuntu-latest-3.14",
+   "windows-latest-3.12",
+   "windows-latest-3.13",
+   "windows-latest-3.14"
+  ],
+  "exact_everywhere": [
+   "boltzmann_wealth_model",
+   "conways_game_of_life",
+   "epstein_civil_violence",
+   "grid_epidemic",
+   "layered_epidemic",
+   "llm_opinions",
+   "network_sir",
+   "pd_grid",
+   "schelling",
+   "tram_model",
+   "virus_on_network",
+   "wolf_sheep"
+  ],
+  "not_bitwise": [
+   "alliance_formation",
+   "boid_flockers",
+   "commuting_city",
+   "continuous_sir",
+   "sugarscape_g1mt"
+  ],
+  "not_on_every_build": []
+ },
+ "digests_wheels": {
+  "source": "pypi",
+  "version": "1.4.2",
+  "builds": [
+   "macos-15-intel-3.12",
+   "macos-15-intel-3.13",
+   "macos-15-intel-3.14",
+   "macos-latest-3.12",
+   "macos-latest-3.13",
+   "macos-latest-3.14",
+   "ubuntu-24.04-arm-3.12",
+   "ubuntu-24.04-arm-3.13",
+   "ubuntu-24.04-arm-3.14",
+   "ubuntu-latest-3.12",
+   "ubuntu-latest-3.13",
+   "ubuntu-latest-3.14",
+   "windows-latest-3.12",
+   "windows-latest-3.13",
+   "windows-latest-3.14"
+  ],
+  "exact_everywhere": [
+   "boltzmann_wealth_model",
+   "conways_game_of_life",
+   "epstein_civil_violence",
+   "grid_epidemic",
+   "layered_epidemic",
+   "llm_opinions",
+   "network_sir",
+   "pd_grid",
+   "schelling",
+   "sugarscape_g1mt",
+   "tram_model",
+   "virus_on_network",
+   "wolf_sheep"
+  ],
+  "not_bitwise": [
+   "alliance_formation",
+   "boid_flockers",
+   "commuting_city",
+   "continuous_sir"
   ],
   "not_on_every_build": []
  }
