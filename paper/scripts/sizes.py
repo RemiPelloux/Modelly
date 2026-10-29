@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import statistics
 import sys
 from pathlib import Path
@@ -59,12 +60,14 @@ def time_size(name: str, size: str, rounds: int, core: int | None) -> dict:
 
 def run(rounds: int, core: int | None) -> None:
     """Every workload at every size, written to data/sizes.json."""
+    start = environment(PAPER.parent, compare.PYTHONS, core)  # the load before timing
     timing = {
         name: {size: time_size(name, size, rounds, core) for size in SIZES}
         for name in WORKLOADS
     }
     payload = {
-        "environment": environment(PAPER.parent, compare.PYTHONS, core),
+        "environment": start,
+        "load_at_end": os.getloadavg(),
         "rounds": rounds,
         "sizes": {n: {s: PLAYBOOKS[n]["sizes"][s] for s in SIZES} for n in WORKLOADS},
         "timing": timing,

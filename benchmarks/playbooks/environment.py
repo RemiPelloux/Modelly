@@ -19,6 +19,11 @@ for name in PACKAGES:
         found[name] = m.version(name)
     except m.PackageNotFoundError:
         pass
+try:  # the version the imported code reports, whatever the install metadata says
+    import modelly
+    found["modelly (imported)"] = modelly.__version__
+except ImportError:
+    pass
 print(json.dumps({"python": platform.python_version(), "packages": found}))
 """
 
