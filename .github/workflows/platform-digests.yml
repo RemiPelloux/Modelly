@@ -2,54 +2,95 @@ name: platform-digests
 # The determinism suite on every platform and supported interpreter, and the exact
 # digests of every example compared across all of them.
 #
-#   digests   on ubuntu, macos and windows, with CPython 3.12, 3.13 and 3.14: the
-#             determinism suite (golden digests, compiled against pure Python, resumed
-#             against straight runs, split runs against one process), then this build's
-#             exact (unrounded) digests of every example, uploaded as an artifact
-#   compare   downloads the nine digest files and reports, per example, whether the
-#             exact digest is identical on every platform (bit for bit) or only the
-#             rounded one is (the golden suite's ten significant digits)
+#   digests   on Linux (x86-64 and ARM64), macOS (ARM64 and x86-64) and Windows, with
+#             CPython 3.12, 3.13 and 3.14: the determinism suite (golden digests, compiled
+#             against pure Python, resumed against straight runs, split runs against one
+#             process), then this build's exact (unrounded) digests of every example,
+#             uploaded as an artifact
+#   compare   downloads the digest files and reports, per example, whether the exact
+#             digest is identical on every build (bit for bit) or only the rounded one is
+#             (the golden suite's ten significant digits)
+#
+# `source` chooses what is tested: the checkout, with the compiled modules built on the
+# runner, or the released wheel of `version` installed from PyPI (the checkout's package
+# directory is removed first, so the tests import the installed wheel; the test files come
+# from the checkout, which must be the tag the wheel was built from).
 
 on:
   workflow_dispatch:
+    inputs:
+      source:
+        description: "checkout (build here) or pypi (the released wheel)"
+        default: "checkout"
+        type: choice
+        options: [checkout, pypi]
+      version:
+        description: "the PyPI version to install when source is pypi"
+        default: "1.4.2"
+        type: string
 
 permissions:
   contents: read
 
 jobs:
   digests:
-    name: Digests on ${{ matrix.os }}, CPython ${{ matrix.python-version }}
-    runs-on: ${{ matrix.os }}-latest
+    name: Digests on ${{ matrix.runner }}, CPython ${{ matrix.python-version }}
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, macos, windows]
+        runner: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, macos-15-intel, windows-latest]
         python-version: ["3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
-      - name: Install Modelly with the dev extras (compiled modules built here)
+      - name: Install Modelly from the checkout (compiled modules built here)
+        if: ${{ inputs.source != 'pypi' }}
         run: |
           pip install uv
           uv pip install --system ".[dev]"
-      - name: Which modules compiled
-        run: python -c "from modelly._native import sets, cells, loops, events; print('sets', sets.NATIVE); import modelly, sys, platform; print(modelly.__version__, sys.version, platform.platform())"
+      - name: Install the released wheel from PyPI
+        if: ${{ inputs.source == 'pypi' }}
+        shell: bash
+        run: |
+          pip install uv
+          uv pip install --system "modelly-abm[dev]==${{ inputs.version }}"
+          rm -rf modelly  # the tests must import the installed wheel, not the checkout
+      - name: Which build is imported, and which modules compiled
+        shell: bash
+        run: |
+          python - <<'EOF'
+          import json, platform, sys
+          import modelly
+          from modelly._native import cells, events, loops, sets
+          info = {
+              "modelly": modelly.__version__,
+              "file": modelly.__file__,
+              "python": sys.version,
+              "platform": platform.platform(),
+              "machine": platform.machine(),
+              "compiled": {"sets": sets.NATIVE, "cells": cells.NATIVE, "loops": loops.NATIVE, "events": events.NATIVE},
+          }
+          print(json.dumps(info, indent=1))
+          json.dump(info, open("build-${{ matrix.runner }}-${{ matrix.python-version }}.json", "w"), indent=1)
+          EOF
       - name: The determinism suite
         shell: bash
         run: pytest -rs -p no:cacheprovider -W default --durations=10 tests/determinism
       - name: This build's exact digests
         shell: bash
         run: |
-          python -m modelly.dev golden --json > "digests-${{ matrix.os }}-${{ matrix.python-version }}.json"
-          python -c "import json,sys; d=json.load(open('digests-${{ matrix.os }}-${{ matrix.python-version }}.json')); print(len(d), 'examples')"
+          python -m modelly.dev golden --json > "digests-${{ matrix.runner }}-${{ matrix.python-version }}.json"
+          python -c "import json,sys; d=json.load(open('digests-${{ matrix.runner }}-${{ matrix.python-version }}.json')); print(len(d), 'examples')"
       - uses: actions/upload-artifact@v7
         with:
-          name: digests-${{ matrix.os }}-${{ matrix.python-version }}
-          path: digests-*.json
+          name: digests-${{ matrix.runner }}-${{ matrix.python-version }}
+          path: |
+            digests-*.json
+            build-*.json
 
   compare:
     name: Compare the digests across platforms
@@ -70,7 +111,10 @@ jobs:
           import json, pathlib, collections
           files = sorted(pathlib.Path("digests").glob("digests-*.json"))
           data = {f.stem.removeprefix("digests-"): json.load(open(f)) for f in files}
+          builds = {f.stem.removeprefix("build-"): json.load(open(f)) for f in pathlib.Path("digests").glob("build-*.json")}
           print(f"{len(data)} builds: {', '.join(data)}")
+          for name, info in sorted(builds.items()):
+              print(f"  {name:28s} {info['modelly']} {info['machine']:8s} compiled={all(info['compiled'].values())} {info['file']}")
           names = sorted(set().union(*(set(d) for d in data.values())))
           golden = json.load(open("tests/determinism/golden.json"))["examples"]
           exact_everywhere, rounded_only, missing = [], [], []
@@ -88,11 +132,12 @@ jobs:
               else:
                   rounded_only.append(name)
                   for b, v in present.items():
-                      print(f"    {b:16s} {v}")
-          summary = {"builds": sorted(data), "exact_everywhere": exact_everywhere,
+                      print(f"    {b:28s} {v}")
+          summary = {"source": "${{ inputs.source }}", "version": "${{ inputs.version }}",
+                     "builds": sorted(data), "build_info": builds, "exact_everywhere": exact_everywhere,
                      "not_bitwise": rounded_only, "not_on_every_build": missing}
           json.dump(summary, open("digests/summary.json", "w"), indent=1)
-          print(json.dumps(summary, indent=1))
+          print(json.dumps({k: v for k, v in summary.items() if k != "build_info"}, indent=1))
           EOF
       - uses: actions/upload-artifact@v7
         with:
