@@ -33,9 +33,9 @@ time, pandas data collection, browser visualization. Fast by construction, repro
 
 ---
 
-**Status:** stable, Python 3.12+. Every public package (`core`, `space`, `time`, `data`,
-`behaviour`, `scenarios`, `batch`, `viz`) follows semantic versioning; there is no experimental
-area. The current version is `modelly.__version__`.
+**Status:** stable, Python 3.12+, release 1.4.0. Every public name has a stability level
+(`docs/api_stability.toml`): stable names follow semantic versioning and the deprecation policy;
+the newest packages are marked provisional. The current version is `modelly.__version__`.
 
 ```bash
 pip install modelly-abm
@@ -67,7 +67,8 @@ describe and hard to keep correct, reproducible and fast. Modelly exists to remo
 **Where we are going.** The engine keeps one Python object per agent, which is what makes models
 easy to write, and moves the heavy lifting into arrays: `Column` attributes give the model a numpy
 view of every agent, continuous space answers neighbour queries for the whole population with one
-KD-tree, and the roadmap adds vectorised step phases and parallel replications out of the box.
+KD-tree, vectorised step phases act on the whole population, and one model can be split across
+processes or run its columns on a GPU ([Scale out and connect](#scale-out-and-connect)).
 The [performance audit](https://github.com/RemiPelloux/Modelly/blob/main/docs/performance.md) records what has been done and what is next.
 
 ## Why Modelly
@@ -111,6 +112,10 @@ Add extras for what you need:
 pip install "modelly-abm[viz]"       # + solara, matplotlib, altair
 pip install "modelly-abm[network]"   # + networkx
 pip install "modelly-abm[rec]"       # network + viz: what the bundled examples need
+pip install "modelly-abm[geo]"       # + geopandas, rasterio, pyproj: geographic space
+pip install "modelly-abm[distributed]"  # + mpi4py: split runs over MPI (dask, ray extras too)
+pip install "modelly-abm[gpu]"       # + CuPy (CUDA); "modelly-abm[diff]" adds JAX, CPU everywhere
+pip install "modelly-abm[calibrate]" # + optuna; xarray, mqtt and kafka extras likewise
 ```
 
 To work on Modelly itself, install from a clone instead: see [Development](#development).
@@ -119,7 +124,7 @@ To depend on Modelly from your own project, add it to `pyproject.toml` (the dist
 `modelly-abm`, the import is `modelly`):
 
 ```toml
-dependencies = ["modelly-abm>=1.3"]
+dependencies = ["modelly-abm>=1.4"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is
@@ -348,6 +353,37 @@ insects.split(0.5, where=emerging, stage=ADULT, female=True)  # sex at emergence
 eggs = insects.draw(lay_prob, where=mature_females).sum() * clutch
 ```
 
+## Scale out and connect
+
+Each item keeps the authoring model above; each number is measured on one laptop and recorded
+in the docs it links to, shortfalls included.
+
+- **Split runs** (`modelly.distributed`): one model across processes with MPI, Dask or locally,
+  byte-identical to a single process at 1, 2, 4 and 16 partitions; weak scaling on a 16-core
+  laptop stays far below a cluster's, 62% at 2 workers and 9% at 16 ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/distributed.md)).
+- **GPU backend** (`modelly.gpu`): columns, cohorts and cell operations on CuPy or JAX, same
+  integer state as numpy; 34x faster at 10 million agents on a laptop RTX 5050, slower at
+  20,000 ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/gpu.md)).
+- **Differentiable models** (`modelly.diff`): JAX-traced phases and gradient calibration that
+  recovers known parameters on two zoo models ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/differentiable.md)).
+- **Live data and assimilation** (`modelly.stream`): sources, replicate ensembles, a particle
+  filter (nowcast error 5 people against 69 unfiltered on the tutorial's synthetic truth) and an
+  ensemble Kalman filter ([tutorial](https://github.com/RemiPelloux/Modelly/blob/main/docs/assimilation.md)).
+- **Fields and ODEs** (`modelly.couple`): diffusion, advection and decay on a grid layer, ODE and
+  stock-flow parts, a checked coupling schedule; mass conserved to round-off ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/coupling.md)).
+- **Emulators and history matching** (`modelly.emulate`): Gaussian-process and neural emulators,
+  active learning, waves that shrink the plausible space from 17% to 2.5% on the SEIR zoo model ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/emulators.md)).
+- **Synthetic populations** (`modelly.population`): people from census tables, households,
+  places and contact networks; three zoo models on real Burlington data, licences bundled ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/population.md)).
+- **A model in the browser**: `modelly export-web model.py:Model` writes a static site that runs
+  it in Pyodide; every bundled model verified in headless Chromium; first load 8 s on a 50 Mbit/s
+  line for a model without scipy, 21 s on a fast 4G profile ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/browser.md)).
+- **Studio II**: ensemble, assimilation, experiment, analysis and WebGL map tabs, a session
+  recorded as a script that reproduces the run ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/studio.md)).
+- **Tools**: a NetLogo translator for a stated subset ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/netlogo.md)),
+  `modelly lint --lsp` for editors, pre-commit hooks, 21 lint rules, strict typing on the
+  research packages.
+
 ## Modelly, Mesa, NetLogo or Agents.jl?
 
 | | Modelly | Mesa | NetLogo | Agents.jl |
@@ -396,14 +432,16 @@ python -m modelly.lint --fix src/            # apply them, then report what is l
 ```
 
 A new project starts clean: `modelly new my-model --template grid` (or `network`, `continuous`,
-`cohort`) writes a package with a seeded scenario, an agent and a model, a determinism test, the
+`cohort`, `geo`, `llm`) writes a package with a seeded scenario, an agent and a model, a determinism test, the
 lint settings and a README with an ODD outline. See
 [docs/new_project.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/new_project.md).
 In Jupyter, `%load_ext modelly.ipython` adds `%modelly lint` and `%modelly profile`, and a model
 displays its scenario, time and population by agent class.
 
 Every tool is also one command: `python -m modelly --help` (or `modelly --help` once installed)
-lists them, and `modelly lint src/` is `python -m modelly.lint src/`. Every rule, with the fix, is in [docs/lint.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/lint.md).
+lists them, and `modelly lint src/` is `python -m modelly.lint src/`. Every rule, with the fix, is in [docs/lint.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/lint.md);
+`modelly lint --lsp` serves the same findings and fixes to an editor over the language server
+protocol, and `.pre-commit-hooks.yaml` offers `modelly-lint` and `modelly-lint-fix` to pre-commit.
 
 Its runtime companion runs the model and shows where each step's time goes: every
 `AgentSet.do` / `shuffle_do` call by agent class and method, with its cost per agent,
@@ -462,10 +500,27 @@ One package per domain; each `__init__.py` lists its public names in `__all__`.
 | `modelly.scenarios` | `Scenario`, `RunConfiguration`, `run_scenarios`, result stores |
 | `modelly.batch` | `run_batch`, `run_grid`, `CohortTable` |
 | `modelly.viz` | Solara app, space renderer, matplotlib and altair backends, command console |
-| `modelly.lint` | `python -m modelly.lint`, static checks for models |
+| `modelly.experiments` | `ScenarioSpace`, designs, executors (processes, threads, Dask, Ray, SLURM, PBS), a Parquet and DuckDB results store |
+| `modelly.calibrate` | ABC rejection and SMC, simulated moments, Bayesian optimisation, posteriors |
+| `modelly.sensitivity` | OAT, Morris, Sobol, PAWN, emulators as stand-ins |
+| `modelly.emulate` | Gaussian-process and neural emulators, active learning, history matching |
+| `modelly.distributed` | split runs: partitioners, halo exchange, MPI, Dask and Ray backends, `check_independence` |
+| `modelly.gpu` | columns, cohorts and cell operations on CuPy or JAX, Philox streams |
+| `modelly.diff` | JAX-traced phases, gradient checks, `GradientCalibration` |
+| `modelly.stream` | live sources, `Ensemble`, `ParticleFilter`, `EnsembleKalmanFilter` |
+| `modelly.couple` | `Field`, `ODE`, `StockFlow`, the coupling schedule |
+| `modelly.population` | synthetic populations, households, places, contact networks |
+| `modelly.provenance` | `modelly run`, `verify`, `bundle`, `odd`: manifests and archivable studies |
+| `modelly.timetravel` | checkpoint rings, rewind, replay, branch, run diff |
+| `modelly.llm` | language-model agents with a replayable response cache |
+| `modelly.studio` | `modelly studio`, the browser workbench |
+| `modelly.web` | `modelly export-web`, a model as a static site |
+| `modelly.zoo` | 17 validated models, each with a test against a known result |
+| `modelly.netlogo` | `modelly netlogo`, the NetLogo translator |
+| `modelly.lint` | `python -m modelly.lint`, static checks for models, `--lsp` |
 | `modelly.profile` | `python -m modelly.profile` and `Profiler`, where a running model's time goes |
 | `modelly.migrate` | `python -m modelly.migrate`, the Mesa codemod |
-| `modelly._native` | the compiled modules (`fastrng.c`, `fastloop.c`), each with a pure-Python twin |
+| `modelly._native` | the five compiled modules (`fastrng`, `fastloop`, `fastcell`, `fastset`, `fastevents`), each with a pure-Python twin |
 
 The top-level names (`modelly.Agent`, `modelly.Model`, `modelly.DataCollector`, `modelly.Column`,
 `modelly.CohortTable`, `modelly.FastRandom`, `modelly.run_batch`, `modelly.run_grid`) import from
@@ -485,7 +540,7 @@ is backed by a measurement in [docs/performance.md](https://github.com/RemiPello
 | Empty cells in any discrete space | swap-remove list + index | O(1) random empty cell at any fill level, built lazily the first time a space turns out to be dense |
 | Property layers | `np.ndarray` per layer | Vectorised updates on the array, per-cell accessors on the cells, one source of truth |
 | Continuous space | one `np.ndarray` of positions, one KD-tree per step | Per-agent queries are numpy; `neighbors_within` answers the whole population in one periodic tree query |
-| Event queue | `heapq` with lazy cancellation and compaction | O(log n) scheduling that never degrades under repeated cancel/reschedule |
+| Event queue | a compiled binary heap (`fastevents.c`) with lazy cancellation and compaction | O(log n) scheduling that never degrades under repeated cancel/reschedule; the same ordering as its pure-Python twin |
 
 ## Benchmarks
 
@@ -544,22 +599,14 @@ checks are in [benchmarks/playbooks/results/README.md](https://github.com/RemiPe
 
 ## Future roadmap
 
-What is shipped: columns, vectorised step phases (`draw`, `do_where`, `remove_where`), one
-KD-tree query for a whole continuous population, an O(1) empty-cell index on every discrete
-space, process-pool replications, incremental data frames, and compiled `do` / `shuffle_do`
-loops and neighbourhood walk (`modelly/_native/fastloop.c`). What comes next, in order of
-expected impact; each item keeps today's authoring model, you still write a `Model`, an
-`Agent` subclass and a `Scenario`:
-
-1. **Vectorised movement on grids.** A coordinate column plus a vectorised neighbourhood
-   lookup, so a grid model can move its whole population in one numpy operation.
-2. **Shared-memory replications.** Fan a sweep over one large model out to processes without
-   copying the column store.
-3. **Compiled cell moves.** An optional compiled path for the cell move, the last
-   Python-bound cost of a per-agent step now that the agent-set loops and the neighbourhood
-   walk are compiled.
-4. **Live dashboards.** The incremental data frame is the first piece; a streaming view that
-   updates per tick without re-reading history is the next.
+Each release page records what shipped and what fell short, measured: [1.3.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.3.0.md)
+(calibration, sensitivity, experiments, provenance, Studio, the zoo) and [1.4.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.4.0.md)
+(the section above). Next, in order and without dates: [1.5.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.5.0.md),
+a model hub with model cards, policy and causal tools, more language-model agents, R and Julia
+bindings; then [2.0.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/2.0.0.md), one space API, one clock, columns by
+default, typed scenarios, a stable ABI and checkpoint format, with its deprecations already
+announced in [docs/deprecations.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/deprecations.md). Each item keeps today's authoring
+model: you still write a `Model`, an `Agent` subclass and a `Scenario`.
 
 ## Built-in examples
 
@@ -578,10 +625,15 @@ Real, runnable models that ship with the package, good reading material for the 
 | Prisoner's Dilemma | Pairwise strategic interaction | `modelly/examples/advanced/pd_grid` |
 | Alliance Formation | Network structure and group formation | `modelly/examples/advanced/alliance_formation` |
 
+The zoo adds 17 research models with validation tests (age-structured SEIR, Bass diffusion,
+Schelling on real census tracts, traffic on OpenStreetMap streets, a hospital-capacity
+epidemic): `python -m modelly.zoo list`, documented in [docs/zoo](https://github.com/RemiPelloux/Modelly/blob/main/docs/zoo/index.md).
+
 Run one:
 
 ```bash
 solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
+modelly export-web modelly.zoo.forest_fire.model:ForestFire --out site/   # the same, as a static site
 ```
 
 ## Documentation
@@ -599,6 +651,8 @@ solara run modelly/examples/basic/boltzmann_wealth_model/app.py   # browser UI
 | **Checking a model** | `docs/lint.md`: the `python -m modelly.lint` rules, `--fix` and `--diff` |
 | **Profiling a model** | `docs/profile.md`: `python -m modelly.profile`, the report and its hints |
 | **Checkpoints** | `docs/checkpoints.md`: save a run, resume it bit for bit |
+| **A study, end to end** | `docs/experiments.md`, `docs/calibration.md`, `docs/sensitivity.md`, `docs/provenance.md`, `docs/timetravel.md`, `docs/llm_agents.md` |
+| **Scale out and connect** | `docs/distributed.md`, `docs/gpu.md`, `docs/differentiable.md`, `docs/assimilation.md`, `docs/coupling.md`, `docs/emulators.md`, `docs/population.md`, `docs/browser.md`, `docs/studio.md`, `docs/netlogo.md`, `docs/r_and_julia.md` |
 | **API reference** | `docs/apis/`: agents, agent sets, columns, model, space, time, data, migrate |
 | **Changelog** | `CHANGELOG.md`: what each release added, changed and fixed |
 
@@ -610,7 +664,8 @@ each notebook).
 ```bash
 git clone https://github.com/RemiPelloux/Modelly.git && cd Modelly
 pip install -e ".[dev]"
-bash scripts/ci-local.sh          # lint, format, tests, size audit: the same gate as CI
+bash scripts/ci-local.sh          # lint, format, strict types, tests, size audit: the local gate
+bash scripts/release-checks.sh    # before a release: MPI, SLURM, bundles, Pyodide, browsers, docs, bench
 bash scripts/ci-local.sh --list   # stage names, run a subset with: ci-local.sh lint test
 python -m modelly.dev gate        # the same gate without bash: Windows, macOS and Linux
 bash scripts/build-native.sh      # compile modelly/_native in place; MODELLY_PURE_PYTHON=1 forces the Python twins
@@ -618,6 +673,9 @@ bash scripts/build-native.sh      # compile modelly/_native in place; MODELLY_PU
 
 The coverage badge at the top of this page is produced by that gate: the test stage measures
 coverage and rewrites `docs/images/badges/coverage.svg`, so commit the badge with your change.
+Hosted CI runs only two workflows: the Release workflow builds the wheels for Linux, macOS and
+Windows on a tag and publishes to PyPI, and the docs workflow publishes the site; every other
+check runs on the maintainer's machine before a release, on Linux x86-64.
 
 Code discipline is written down in [pelloux-guidelines.md](https://github.com/RemiPelloux/Modelly/blob/main/pelloux-guidelines.md): small files,
 short functions, surgical changes, conventional commits. `scripts/audit-pelloux.sh` enforces the
@@ -632,13 +690,14 @@ Issues, ideas and pull requests are welcome on the
 a ticket first is the fastest route: it keeps the patch small and reviewable.
 
 Everything you need is in [CONTRIBUTING.md](https://github.com/RemiPelloux/Modelly/blob/main/CONTRIBUTING.md): local setup, tests, the lint and
-format commands CI runs, docs, and how a pull request is reviewed. By taking part you agree to
+format commands the gate runs, docs, and how a pull request is reviewed. By taking part you agree to
 our [Code of Conduct](https://github.com/RemiPelloux/Modelly/blob/main/CODE_OF_CONDUCT.md).
 
 ## Citing
 
 If Modelly contributes to a publication, cite it with the metadata in [CITATION.cff](https://github.com/RemiPelloux/Modelly/blob/main/CITATION.cff)
-(GitHub shows a "Cite this repository" button that formats it for you).
+(GitHub shows a "Cite this repository" button that formats it for you). The paper in
+[paper/](https://github.com/RemiPelloux/Modelly/tree/main/paper) describes release 1.4.0, with every number traced to a file in this repository.
 
 ## License
 
