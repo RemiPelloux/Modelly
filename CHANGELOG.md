@@ -3,7 +3,7 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
-## Unreleased
+## 1.4.1 - 2026-10-29
 
 A patch release: three operations that grew quadratically with the size of a run now grow
 linearly, one recorder returns the same rows as the others, and the documentation has a
