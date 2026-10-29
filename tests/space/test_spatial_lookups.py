@@ -241,3 +241,17 @@ def test_network_empty_cell_picks_follow_removals_before_and_after_the_index():
         net.remove_cell(net._cells[i])
     picks = {net.select_random_empty_cell().coordinate for _ in range(100)}
     assert picks <= set(range(45, 50))
+
+
+def test_network_cell_replaced_at_its_coordinate_leaves_the_kdtree():
+    """add_cell over an existing coordinate: lookups find the new cell, not the old one."""
+    net = Network(
+        nx.path_graph(3),
+        layout={0: (0, 0), 1: (5, 0), 2: (9, 0)},
+        random=random.Random(1),
+    )
+    old = net._cells[1]
+    new = Cell(coordinate=1, position=np.array([5.0, 0.0]), random=random.Random(1))
+    net.add_cell(new)
+    assert net.find_nearest_cell([5.0, 0.0]) is new
+    assert all(cell is not old for cell in net._kdtree_cells)
