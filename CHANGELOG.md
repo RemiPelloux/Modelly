@@ -3,6 +3,45 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+A patch release: three operations that grew quadratically with the size of a run now grow
+linearly, one recorder returns the same rows as the others, and the documentation has a
+navigation that fits the screen. Results are unchanged; no core operation is slower than 1.4.0
+(`python -m modelly.dev perf`, the 17 operations paired against the 1.4.0 build).
+
+### Performance
+
+- `ParquetDataRecorder` rewrote its whole file every 1000 rows, so a run's writes were
+  quadratic in its rows. The buffer now grows with the file, holds one DataFrame per snapshot
+  instead of one dict per row, and `summary()` reads the row count from the file footer. 2000
+  agents recorded for 200 steps take 1.0 s instead of 7.9 s, and twice the steps take twice
+  the time (single runs on this machine; the frames are identical to 1.4.0's, dtypes included,
+  overwrites and small buffers too).
+- Adding or removing a cell of a discrete space visited every cell to reset the empty-cell
+  index, even when it had never been built; it now does only when the index exists, which
+  detaches the same cells, so random draws are unchanged. `Network.remove_cell` no longer
+  scans its KD-tree list per cell. Removing half of a 32,000-node network takes 0.14 s instead
+  of 7.9 s.
+- `run_batch` and `run_grid` hand each worker a sixteenth of its share at a time instead of one
+  task: 20,000 short tasks on eight workers spent 0.49 s in hand-offs, now 0.01 s. Small
+  batches still go one task at a time; results and their order are unchanged.
+
+### Fixed
+
+- `JSONDataRecorder` returned a numpy dataset as one row per snapshot holding the nested list
+  of values. It now gives one row per agent with `agent_id`, the fields and `time`, as the
+  memory, Parquet and SQL recorders do, and `save_to_json` writes those records; a snapshot of
+  no agents adds no row.
+- `Network` drops a cell replaced by `add_cell` at the same coordinate from its KD-tree, so
+  `find_nearest_cell` cannot return it.
+
+### Documentation
+
+- Six header sections (Get started, Examples, Guides, Performance, API, Releases) instead of
+  six links and a More menu of 29 that ran past the bottom of the window; every page shows its
+  section's navigation in the sidebar. No page moved.
+
 ## 1.4.0 - 2026-10-29
 
 The scale-out release: split runs across processes, a GPU backend, differentiable models,
