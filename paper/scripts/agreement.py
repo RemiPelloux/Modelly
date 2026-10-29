@@ -39,11 +39,19 @@ MARGIN = 0.5  # equivalence margin, in pooled standard deviations
 ALPHA = 0.05
 
 
+GPU_SUFFIX = "-gpu"
+
+
 def chosen(spec: dict, playbooks: list[str], variants: list[str]) -> list[str]:
     """The variants to run: the reference and those asked for (every Modelly one by default)."""
     if playbooks and spec["name"] not in playbooks:
         return []
-    wanted = variants or [v for v in spec["variants"] if v.startswith("modelly")]
+    # The GPU variants draw from Philox streams and are reported with the GPU measurement.
+    wanted = variants or [
+        v
+        for v in spec["variants"]
+        if v.startswith("modelly") and not v.endswith(GPU_SUFFIX)
+    ]
     return [v for v in spec["variants"] if v == REFERENCE or v in wanted]
 
 
@@ -175,7 +183,7 @@ def analyse(tag: str) -> None:
     payload = json.loads(
         (DATA_DIR / f"agreement_{tag}.json").read_text(encoding="utf-8")
     )
-    rows = comparisons(payload)
+    rows = [r for r in comparisons(payload) if not r["variant"].endswith(GPU_SUFFIX)]
     (PAPER / "tables" / f"agreement_{tag}.tex").write_text(
         table(rows, payload["seeds"]), encoding="utf-8"
     )
