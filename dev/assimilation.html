@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Live data and data assimilation &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'assimilation';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/assimilation.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Publishing a reproducible study" href="provenance.html" />
+    <link rel="prev" title="Emulators, active learning and history matching" href="emulators.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Build and check a model</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Checking a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profiling a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checkpoints.html">Checkpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="figures.html">Figures and animations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="browser.html">In the browser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Structure a model</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="geospatial.html">Geospatial models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">Synthetic populations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupling.html">Coupling fields and ODEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm_agents.html">Language-model agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="differentiable.html">Differentiable models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Run a study</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments and sweeps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibration.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emulators.html">Emulators</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Live data and assimilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Reproducible studies</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="guides.html" class="nav-link">Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Live data and data assimilation</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="live-data-and-data-assimilation">
+<h1>Live data and data assimilation<a class="headerlink" href="#live-data-and-data-assimilation" title="Link to this heading">#</a></h1>
+<p>A digital twin is a model that keeps up with the system it stands for: every time new data
+arrives, the model’s picture of the present is corrected, and its forecast starts again from
+there. <code class="docutils literal notranslate"><span class="pre">modelly.stream</span></code> (provisional, new in 1.4) does this for agent-based models in three
+parts:</p>
+<ul class="simple">
+<li><p><strong>sources</strong> hand out observations as they arrive: a table in memory, a growing CSV file, an
+HTTP endpoint, an MQTT or a Kafka topic;</p></li>
+<li><p>an <strong>observation operator</strong> reads the same quantities from a model;</p></li>
+<li><p>an <strong>ensemble</strong> of replicates runs in lock step, and a <strong>filter</strong> keeps it close to the
+observations: a particle filter weights and resamples whole runs, an ensemble Kalman filter
+adjusts continuous parameters.</p></li>
+</ul>
+<p>This page is a nowcasting tutorial. A synthetic “truth” run plays the world; we observe its
+daily case counts with noise and ask the filters what is happening now (the number currently
+infected, which nobody observes), what will happen next, and what the contact rate is. The code
+runs as is, top to bottom; the test suite runs it too (<code class="docutils literal notranslate"><span class="pre">tests/stream/test_assimilation_tutorial.py</span></code>).</p>
+<section id="a-small-epidemic">
+<h2>A small epidemic<a class="headerlink" href="#a-small-epidemic" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.scenarios</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scenario</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TownScenario</span><span class="p">(</span><span class="n">Scenario</span><span class="p">):</span>
+    <span class="n">people</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">seeded</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># infected on day 0</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span>  <span class="c1"># infections per infected person and day, in a susceptible town</span>
+    <span class="n">recovery</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.15</span>  <span class="c1"># chance of recovering each day</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">infected</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">=</span> <span class="n">infected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovered</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Town</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">scenario</span><span class="o">=</span><span class="n">scenario</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">beta</span>  <span class="c1"># an attribute, so a filter can adjust it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_cases</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scenario</span><span class="o">.</span><span class="n">people</span><span class="p">):</span>
+            <span class="n">Person</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infected</span><span class="o">=</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">scenario</span><span class="o">.</span><span class="n">seeded</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">people</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+        <span class="n">chance</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">prevalence</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">people</span><span class="p">))</span>
+        <span class="n">draw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_cases</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">person</span> <span class="ow">in</span> <span class="n">people</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">infected</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">draw</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">recovery</span><span class="p">:</span>
+                    <span class="n">person</span><span class="o">.</span><span class="n">infected</span><span class="p">,</span> <span class="n">person</span><span class="o">.</span><span class="n">recovered</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">person</span><span class="o">.</span><span class="n">recovered</span> <span class="ow">and</span> <span class="n">draw</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">chance</span><span class="p">:</span>
+                <span class="n">person</span><span class="o">.</span><span class="n">infected</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">new_cases</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prevalence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">infected</span> <span class="k">for</span> <span class="n">person</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The contact rate lives on the model as <code class="docutils literal notranslate"><span class="pre">self.beta</span></code>, read at every step: that is what lets a
+filter set it on a running replicate.</p>
+</section>
+<section id="the-truth-and-its-observations">
+<h2>The truth and its observations<a class="headerlink" href="#the-truth-and-its-observations" title="Link to this heading">#</a></h2>
+<p>The truth is one run with <code class="docutils literal notranslate"><span class="pre">beta</span> <span class="pre">=</span> <span class="pre">0.45</span></code>. Each day we record the new cases plus Gaussian noise of
+standard deviation 3, and keep the true prevalence aside to score the filters later.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DAYS</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">NOISE</span> <span class="o">=</span> <span class="mf">3.0</span>
+
+<span class="n">truth</span> <span class="o">=</span> <span class="n">Town</span><span class="p">(</span><span class="n">TownScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.45</span><span class="p">))</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span>
+<span class="n">records</span><span class="p">,</span> <span class="n">true_prevalence</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">DAYS</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">truth</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"time"</span><span class="p">:</span> <span class="n">day</span><span class="p">,</span> <span class="s2">"cases"</span><span class="p">:</span> <span class="n">truth</span><span class="o">.</span><span class="n">new_cases</span> <span class="o">+</span> <span class="n">noise</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">NOISE</span><span class="p">)})</span>
+    <span class="n">true_prevalence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">truth</span><span class="o">.</span><span class="n">prevalence</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">ObservationOperator</span><span class="p">,</span> <span class="n">ReplaySource</span>
+
+<span class="n">observe</span> <span class="o">=</span> <span class="n">ObservationOperator</span><span class="p">(</span><span class="n">cases</span><span class="o">=</span><span class="k">lambda</span> <span class="n">model</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">new_cases</span><span class="p">)</span>
+<span class="n">infected</span> <span class="o">=</span> <span class="n">ObservationOperator</span><span class="p">(</span><span class="n">infected</span><span class="o">=</span><span class="k">lambda</span> <span class="n">model</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">prevalence</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ReplaySource(records)</span></code> replays the table; in a live twin the same loop polls a <code class="docutils literal notranslate"><span class="pre">CSVSource</span></code>
+that a data pipeline appends to, an <code class="docutils literal notranslate"><span class="pre">HTTPSource</span></code>, or a broker (see <a class="reference internal" href="#live-sources">Live sources</a>).
+<code class="docutils literal notranslate"><span class="pre">observe</span></code> maps a model to what the world reports; <code class="docutils literal notranslate"><span class="pre">infected</span></code> reads what we want to know but
+never see.</p>
+</section>
+<section id="an-ensemble">
+<h2>An ensemble<a class="headerlink" href="#an-ensemble" title="Link to this heading">#</a></h2>
+<p>An <code class="docutils literal notranslate"><span class="pre">Ensemble</span></code> builds <code class="docutils literal notranslate"><span class="pre">n</span></code> replicates of one scenario, each with a seed spawned from the
+scenario’s (replicate <code class="docutils literal notranslate"><span class="pre">i</span></code> has the seed <code class="docutils literal notranslate"><span class="pre">Scenario.spawn_replications(n)[i]</span></code> would give it).
+We do not know the contact rate, so each replicate draws its own from a prior: anything
+between 0.2 and 0.8.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ensemble</span>
+
+<span class="n">REPLICATES</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"beta"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">rng</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)}</span>
+
+<span class="n">filtered</span> <span class="o">=</span> <span class="n">Ensemble</span><span class="p">(</span><span class="n">Town</span><span class="p">,</span> <span class="n">TownScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">REPLICATES</span><span class="p">,</span> <span class="n">prior</span><span class="o">=</span><span class="n">prior</span><span class="p">)</span>
+<span class="n">free</span> <span class="o">=</span> <span class="n">Ensemble</span><span class="p">(</span><span class="n">Town</span><span class="p">,</span> <span class="n">TownScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">REPLICATES</span><span class="p">,</span> <span class="n">prior</span><span class="o">=</span><span class="n">prior</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">free</span></code> is the same ensemble left alone: it shows what the model knows without the data.</p>
+</section>
+<section id="particle-filter">
+<h2>Particle filter<a class="headerlink" href="#particle-filter" title="Link to this heading">#</a></h2>
+<p>The particle filter (Gordon, Salmond &amp; Smith 1993) treats each replicate as a particle. At each
+observation it runs the replicates to the observation’s time, weights each by the likelihood
+of the observation (<code class="docutils literal notranslate"><span class="pre">ObservationOperator.log_likelihood</span></code>, Gaussian errors of standard deviation
+<code class="docutils literal notranslate"><span class="pre">sd</span></code>), and when the weights become too uneven it resamples: replicates with little weight are
+dropped and the likely ones duplicated. The test of unevenness is the effective sample size
+(ESS) <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">sum(w**2)</span></code>; the filter resamples when it falls below <code class="docutils literal notranslate"><span class="pre">threshold</span> <span class="pre">*</span> <span class="pre">n</span></code> (half the
+ensemble by default), with systematic resampling (Douc &amp; Cappé 2005). A duplicate is a
+checkpoint copy of the whole model, agents and events included, reseeded so that it goes its
+own way from the next draw on.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParticleFilter</span>
+
+<span class="n">pf</span> <span class="o">=</span> <span class="n">ParticleFilter</span><span class="p">(</span><span class="n">filtered</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="n">NOISE</span><span class="p">)</span>
+
+<span class="n">errors_filtered</span><span class="p">,</span> <span class="n">errors_free</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">observation</span> <span class="ow">in</span> <span class="n">ReplaySource</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">.</span><span class="n">poll</span><span class="p">():</span>
+    <span class="n">pf</span><span class="o">.</span><span class="n">assimilate</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+    <span class="n">free</span><span class="o">.</span><span class="n">advance</span><span class="p">(</span><span class="n">observation</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">true_prevalence</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">observation</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">errors_filtered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pf</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">infected</span><span class="p">)[</span><span class="s2">"infected"</span><span class="p">]</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span>
+    <span class="n">errors_free</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">free</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">infected</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">rmse</span><span class="p">(</span><span class="n">errors</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">errors</span><span class="p">))))</span>
+
+
+<span class="n">rmse_filtered</span><span class="p">,</span> <span class="n">rmse_free</span> <span class="o">=</span> <span class="n">rmse</span><span class="p">(</span><span class="n">errors_filtered</span><span class="p">),</span> <span class="n">rmse</span><span class="p">(</span><span class="n">errors_free</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">pf.estimate(infected)</span></code> is the weighted mean of the hidden prevalence across replicates: the
+nowcast. Over the 50 days its root mean square error is about 5 people for the filtered ensemble
+(<code class="docutils literal notranslate"><span class="pre">rmse_filtered</span></code>) against about 69 for the free one (<code class="docutils literal notranslate"><span class="pre">rmse_free</span></code>): the free replicates, with contact rates spread
+over the prior, peak at different times and heights, while the filter keeps the runs whose
+case counts agree with the data. <code class="docutils literal notranslate"><span class="pre">pf.history</span></code> has one row per observation (time, ESS, whether
+it resampled, and the log evidence <code class="docutils literal notranslate"><span class="pre">log</span> <span class="pre">p(y_t</span> <span class="pre">|</span> <span class="pre">y_&lt;t)</span></code>, whose sum estimates the log marginal
+likelihood of the data); <code class="docutils literal notranslate"><span class="pre">pf.resamplings</span></code> counts the resamplings.</p>
+<p>The replicates that survive also carry a contact rate (0.47 here):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pf_beta</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">beta</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">filtered</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="n">pf</span><span class="o">.</span><span class="n">weights</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>A particle filter learns a fixed parameter only by keeping the replicates that drew a good one:
+after many resamplings few distinct values remain. The ensemble Kalman filter below is the
+tool for parameters.</p>
+</section>
+<section id="bands-now-and-ahead">
+<h2>Bands now and ahead<a class="headerlink" href="#bands-now-and-ahead" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">band</span></code> and <code class="docutils literal notranslate"><span class="pre">forecast</span></code> give the spread of any operator across the (weighted) replicates as a
+plain DataFrame, one row per time and quantity, with the mean and the quantiles you ask for
+(5%, 50% and 95% by default). This is what a plot, a report or Studio’s live view reads.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">now</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">band</span><span class="p">(</span><span class="n">infected</span><span class="p">)</span>
+<span class="n">ahead</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">DAYS</span> <span class="o">+</span> <span class="mi">14</span><span class="p">,</span> <span class="n">infected</span><span class="p">,</span> <span class="n">quantiles</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>    time  quantity       mean  q0.05  q0.25  q0.5  q0.75  q0.95
+0   50.0  infected  14.6    9.0   12.0  14.0   16.3   20.9
+1   51.0  infected  12.6    8.0   10.0  13.0   14.0   19.0
+...
+14  64.0  infected   2.0    0.0    1.0   2.0    3.0    4.9
+</pre></div>
+</div>
+<p>The forecast runs checkpoint copies of the replicates; the ensemble itself stays at day 50,
+ready for tomorrow’s observation. Weighted quantiles place each replicate’s weight at the
+midpoint of its step in the cumulative weights and interpolate (the Hazen definition when the
+weights are equal).</p>
+</section>
+<section id="ensemble-kalman-filter-for-the-contact-rate">
+<h2>Ensemble Kalman filter for the contact rate<a class="headerlink" href="#ensemble-kalman-filter-for-the-contact-rate" title="Link to this heading">#</a></h2>
+<p>The ensemble Kalman filter (Evensen 1994, 2003) treats the parameters as part of the state
+(state/parameter augmentation). At each observation it runs the replicates on, then shifts each
+replicate’s parameters by the Kalman gain estimated from the ensemble, <code class="docutils literal notranslate"><span class="pre">cov(beta,</span> <span class="pre">cases)</span></code>
+over <code class="docutils literal notranslate"><span class="pre">var(cases)</span> <span class="pre">+</span> <span class="pre">sd**2</span></code>, times the gap between a perturbed observation and what that replicate
+predicted. The perturbations (Burgers, van Leeuwen &amp; Evensen 1998) keep the ensemble’s spread
+right; they come from a generator derived from the scenario’s seed, so the filter is
+deterministic.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">EnsembleKalmanFilter</span>
+
+<span class="n">ensemble</span> <span class="o">=</span> <span class="n">Ensemble</span><span class="p">(</span><span class="n">Town</span><span class="p">,</span> <span class="n">TownScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">REPLICATES</span><span class="p">,</span> <span class="n">prior</span><span class="o">=</span><span class="n">prior</span><span class="p">)</span>
+<span class="n">enkf</span> <span class="o">=</span> <span class="n">EnsembleKalmanFilter</span><span class="p">(</span>
+    <span class="n">ensemble</span><span class="p">,</span>
+    <span class="n">observe</span><span class="p">,</span>
+    <span class="n">sd</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">NOISE</span><span class="p">,</span>
+    <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="s2">"beta"</span><span class="p">],</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">"beta"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)},</span>
+<span class="p">)</span>
+<span class="n">enkf</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">ReplaySource</span><span class="p">(</span><span class="n">records</span><span class="p">))</span>
+<span class="n">beta_estimate</span> <span class="o">=</span> <span class="n">enkf</span><span class="o">.</span><span class="n">estimate</span><span class="p">()[</span><span class="s2">"beta"</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The estimate ends at 0.451 against the true 0.45, with a spread of 0.03 across replicates;
+<code class="docutils literal notranslate"><span class="pre">enkf.history</span></code> shows the mean and spread of <code class="docutils literal notranslate"><span class="pre">beta</span></code> after each observation. Two things are worth
+knowing:</p>
+<ul class="simple">
+<li><p>The filter adjusts attributes, not agents: an agent-based state (who is infected) is not a
+vector it can shift, so replicates whose epidemic is ahead or behind the truth push the
+parameter the wrong way for a while. A larger <code class="docutils literal notranslate"><span class="pre">sd</span></code> than the measurement noise, here twice
+it, makes the filter trust each observation less and absorbs that.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bounds</span></code> clips each parameter after every update, so a contact rate never goes negative.</p></li>
+</ul>
+</section>
+<section id="reproducibility">
+<h2>Reproducibility<a class="headerlink" href="#reproducibility" title="Link to this heading">#</a></h2>
+<p>For a seed, every result above is bit-identical from run to run, with the compiled core or the
+pure-Python one (<code class="docutils literal notranslate"><span class="pre">MODELLY_PURE_PYTHON=1</span></code>). The ensemble’s seeds are spawned from the scenario’s
+without changing it, the prior draws, resampling uniforms and Kalman perturbations come from
+seed sequences derived from it in domains of their own, and duplicate <code class="docutils literal notranslate"><span class="pre">slot</span></code> of the <code class="docutils literal notranslate"><span class="pre">g</span></code>-th
+resampling is reseeded from the key <code class="docutils literal notranslate"><span class="pre">(g,</span> <span class="pre">slot)</span></code>. The test suite checks this
+(<code class="docutils literal notranslate"><span class="pre">tests/stream/test_particle.py</span></code>). Replicates run one after the other in this process, in
+index order; parallel stepping would move models between processes at every observation and is
+not done.</p>
+<p>Models with per-agent random streams (<code class="docutils literal notranslate"><span class="pre">agent_streams</span> <span class="pre">=</span> <span class="pre">True</span></code>) resample correctly, but a
+duplicate’s agents keep the streams of the agents they were copied from: only <code class="docutils literal notranslate"><span class="pre">model.random</span></code>
+and <code class="docutils literal notranslate"><span class="pre">model.rng</span></code> are reseeded.</p>
+</section>
+<section id="live-sources">
+<h2>Live sources<a class="headerlink" href="#live-sources" title="Link to this heading">#</a></h2>
+<p>Every source has <code class="docutils literal notranslate"><span class="pre">poll(until=None)</span></code>, which hands out the observations not seen yet, in time
+order, each once; a filter’s <code class="docutils literal notranslate"><span class="pre">run(source)</span></code> assimilates them. For a broker, install the extra and
+point the source at a topic whose messages are JSON records with a <code class="docutils literal notranslate"><span class="pre">time</span></code> field:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Not run here: it needs a broker.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">KafkaSource</span><span class="p">,</span> <span class="n">MQTTSource</span>
+
+<span class="c1"># pip install "modelly-abm[mqtt]"</span>
+<span class="n">cases</span> <span class="o">=</span> <span class="n">MQTTSource</span><span class="p">(</span><span class="s2">"town/cases"</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">"broker.example.org"</span><span class="p">)</span>
+
+<span class="c1"># or: pip install "modelly-abm[kafka]"</span>
+<span class="n">cases</span> <span class="o">=</span> <span class="n">KafkaSource</span><span class="p">(</span>
+    <span class="s2">"town-cases"</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"bootstrap.servers"</span><span class="p">:</span> <span class="s2">"broker.example.org:9092"</span><span class="p">,</span> <span class="s2">"group.id"</span><span class="p">:</span> <span class="s2">"twin"</span><span class="p">},</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">every_morning</span><span class="p">():</span>
+    <span class="n">pf</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cases</span><span class="p">)</span>  <span class="c1"># yesterday's messages</span>
+    <span class="k">return</span> <span class="n">pf</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">pf</span><span class="o">.</span><span class="n">ensemble</span><span class="o">.</span><span class="n">time</span> <span class="o">+</span> <span class="mi">14</span><span class="p">,</span> <span class="n">infected</span><span class="p">)</span>  <span class="c1"># the next two weeks</span>
+</pre></div>
+</div>
+<p>Call <code class="docutils literal notranslate"><span class="pre">every_morning</span></code> from whatever schedules your jobs and publish the frame it returns;
+<code class="docutils literal notranslate"><span class="pre">close()</span></code> on a source releases its connection. <code class="docutils literal notranslate"><span class="pre">client=</span></code> and <code class="docutils literal notranslate"><span class="pre">consumer=</span></code> take a client you
+configured yourself (authentication, TLS), or a stand-in in tests. The code of this section
+needs a broker, so the test suite does not run it.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Gordon, N. J., Salmond, D. J. &amp; Smith, A. F. M. (1993). Novel approach to nonlinear/non-Gaussian
+Bayesian state estimation. <em>IEE Proceedings F</em>, 140(2), 107-113.</p></li>
+<li><p>Douc, R. &amp; Cappé, O. (2005). Comparison of resampling schemes for particle filtering.
+<em>Proceedings of the 4th International Symposium on Image and Signal Processing and Analysis</em>,
+64-69.</p></li>
+<li><p>Evensen, G. (1994). Sequential data assimilation with a nonlinear quasi-geostrophic model using
+Monte Carlo methods to forecast error statistics. <em>Journal of Geophysical Research</em>, 99(C5),
+10143-10162.</p></li>
+<li><p>Burgers, G., van Leeuwen, P. J. &amp; Evensen, G. (1998). Analysis scheme in the ensemble Kalman
+filter. <em>Monthly Weather Review</em>, 126(6), 1719-1724.</p></li>
+<li><p>Evensen, G. (2003). The Ensemble Kalman Filter: theoretical formulation and practical
+implementation. <em>Ocean Dynamics</em>, 53(4), 343-367.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="emulators.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Emulators, active learning and history matching</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="provenance.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Publishing a reproducible study</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-small-epidemic">A small epidemic</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-truth-and-its-observations">The truth and its observations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#an-ensemble">An ensemble</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#particle-filter">Particle filter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bands-now-and-ahead">Bands now and ahead</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ensemble-kalman-filter-for-the-contact-rate">Ensemble Kalman filter for the contact rate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reproducibility">Reproducibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#live-sources">Live sources</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/assimilation.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

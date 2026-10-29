@@ -1,0 +1,65 @@
+{
+  "title": "ForestFire",
+  "target": "modelly.zoo.forest_fire.model:ForestFire",
+  "modelly": "1.4.2",
+  "wheel": "wheels/modelly_abm-1.4.2-py3-none-any.whl",
+  "model_archive": null,
+  "pyodide": {
+    "version": "314.0.7",
+    "url": "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/"
+  },
+  "packages": [
+    "charset-normalizer",
+    "numpy",
+    "pandas",
+    "python-dateutil",
+    "scipy",
+    "six"
+  ],
+  "parameters": [
+    {
+      "name": "width",
+      "kind": "int",
+      "default": 100,
+      "choices": []
+    },
+    {
+      "name": "height",
+      "kind": "int",
+      "default": 100,
+      "choices": []
+    },
+    {
+      "name": "density",
+      "kind": "fraction",
+      "default": 0.6,
+      "choices": []
+    },
+    {
+      "name": "cover",
+      "kind": "fixed",
+      "default": "None",
+      "choices": []
+    },
+    {
+      "name": "growth",
+      "kind": "fraction",
+      "default": 0.0,
+      "choices": []
+    },
+    {
+      "name": "lightning",
+      "kind": "fraction",
+      "default": 0.0,
+      "choices": []
+    },
+    {
+      "name": "steps",
+      "kind": "int",
+      "default": 2000,
+      "choices": []
+    }
+  ],
+  "seed": 42,
+  "steps": 50
+}

@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Coupling agents with fields and ODEs &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=02f2166e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'coupling';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/coupling.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Language-model agents" href="llm_agents.html" />
+    <link rel="prev" title="Networks: dynamic and multilayer" href="networks.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Build and check a model</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Checking a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profiling a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checkpoints.html">Checkpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="figures.html">Figures and animations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="browser.html">In the browser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Structure a model</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="geospatial.html">Geospatial models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">Synthetic populations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Coupling fields and ODEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm_agents.html">Language-model agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="differentiable.html">Differentiable models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Run a study</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments and sweeps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibration.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emulators.html">Emulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assimilation.html">Live data and assimilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Reproducible studies</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="guides.html" class="nav-link">Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Coupling agents with fields and ODEs</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="coupling-agents-with-fields-and-odes">
+<h1>Coupling agents with fields and ODEs<a class="headerlink" href="#coupling-agents-with-fields-and-odes" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.couple</span></code> joins agents to continuous processes: a pollutant, nutrient or heat field that
+diffuses over a grid, an ODE, a system-dynamics stock-flow model. Each runs on its own time
+scale inside the model’s step, and a coupling schedule says who reads which quantity and who
+writes it, checked before the first step. It needs only numpy and scipy, so it works the same
+on Windows, macOS and Linux.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>What it advances</p></th>
+<th class="head"><p>How</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Field</span></code></p></td>
+<td><p>a grid property layer: diffusion, advection, decay</p></td>
+<td><p>finite volumes, explicit sub-steps or backward Euler</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ODE</span></code></p></td>
+<td><p>named state variables, <code class="docutils literal notranslate"><span class="pre">dy/dt</span> <span class="pre">=</span> <span class="pre">rhs(t,</span> <span class="pre">y,</span> <span class="pre">inputs)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">scipy.integrate.solve_ivp</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">StockFlow</span></code></p></td>
+<td><p>stocks joined by flows</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>, with every flow’s running total</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Phase</span></code></p></td>
+<td><p>an agent step phase (any method)</p></td>
+<td><p>calls it</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Coupling</span></code></p></td>
+<td><p>all of the above, once per step</p></td>
+<td><p>phase by phase, writers before readers</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Two zoo models are built this way: <a class="reference internal" href="zoo/nutrient_foragers.html"><span class="std std-doc">foragers on a nutrient field</span></a>
+and an <a class="reference internal" href="zoo/hospital_epidemic.html"><span class="std std-doc">epidemic coupled to hospital capacity</span></a>.</p>
+<section id="a-worked-example">
+<h2>A worked example<a class="headerlink" href="#a-worked-example" title="Link to this heading">#</a></h2>
+<p>Households heat their homes more when it is cold; the smoke drifts east, diffuses and decays;
+the smoke on the grid warms a regional temperature, which the households read the next step.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple</span><span class="w"> </span><span class="kn">import</span> <span class="n">ODE</span><span class="p">,</span> <span class="n">Coupling</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Phase</span><span class="p">,</span> <span class="n">Transport</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space.grid.grids</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrthogonalMooreGrid</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">temperature</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Mean temperature relaxes towards a value raised by the smoke on the grid."""</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mf">15.0</span> <span class="o">+</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">"smoke"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="mf">10.0</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Town</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalMooreGrid</span><span class="p">((</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span> <span class="o">=</span> <span class="n">Coupling</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Phase</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">,</span> <span class="n">reads</span><span class="o">=</span><span class="p">[</span><span class="s2">"temperature"</span><span class="p">],</span> <span class="n">writes</span><span class="o">=</span><span class="p">[</span><span class="s2">"emissions"</span><span class="p">]))</span>
+        <span class="n">smoke</span> <span class="o">=</span> <span class="n">Transport</span><span class="p">(</span><span class="n">diffusion</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="n">decay</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smoke</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">Field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="s2">"smoke"</span><span class="p">,</span> <span class="n">smoke</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">"emissions"</span><span class="p">),</span> <span class="n">phase</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">climate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">ODE</span><span class="p">(</span><span class="n">temperature</span><span class="p">,</span> <span class="p">{</span><span class="s2">"temperature"</span><span class="p">:</span> <span class="mf">15.0</span><span class="p">},</span> <span class="n">reads</span><span class="o">=</span><span class="p">[</span><span class="s2">"smoke"</span><span class="p">]),</span> <span class="n">phase</span><span class="o">=</span><span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">heating</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">18.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="p">[</span><span class="s2">"temperature"</span><span class="p">])</span>
+        <span class="n">emissions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+        <span class="n">emissions</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="n">heating</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="p">[</span><span class="s2">"emissions"</span><span class="p">]</span> <span class="o">=</span> <span class="n">emissions</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+
+<span class="n">town</span> <span class="o">=</span> <span class="n">Town</span><span class="p">()</span>
+<span class="n">town</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">town</span><span class="o">.</span><span class="n">coupling</span><span class="o">.</span><span class="n">order</span>  <span class="c1"># ["Phase 'emit'", "Field 'smoke'", "ODE 'temperature'"]</span>
+<span class="n">town</span><span class="o">.</span><span class="n">climate</span><span class="o">.</span><span class="n">state</span>  <span class="c1"># {'temperature': 17.76...}</span>
+<span class="n">town</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">smoke</span>  <span class="c1"># the field is the grid's property layer; cell.smoke reads it too</span>
+</pre></div>
+</div>
+</section>
+<section id="the-coupling-schedule">
+<h2>The coupling schedule<a class="headerlink" href="#the-coupling-schedule" title="Link to this heading">#</a></h2>
+<p>Every component declares the quantities it <code class="docutils literal notranslate"><span class="pre">reads</span></code> and <code class="docutils literal notranslate"><span class="pre">writes</span></code>, by name; their values live in
+the coupling (<code class="docutils literal notranslate"><span class="pre">coupling[&quot;temperature&quot;]</span></code>). <code class="docutils literal notranslate"><span class="pre">coupling.add(component,</span> <span class="pre">phase=k)</span></code> schedules a
+component, and <code class="docutils literal notranslate"><span class="pre">coupling.step(duration=1.0)</span></code> runs them all from <code class="docutils literal notranslate"><span class="pre">coupling.time</span></code> to
+<code class="docutils literal notranslate"><span class="pre">coupling.time</span> <span class="pre">+</span> <span class="pre">duration</span></code>:</p>
+<ul class="simple">
+<li><p>phases run in increasing order;</p></li>
+<li><p>inside a phase a writer runs before its readers, otherwise in the order they were added;</p></li>
+<li><p>a component that reads a quantity written in a later phase reads the previous step’s value.
+A feedback loop between agents and a continuous process is a loop across two phases, with a
+lag of one step.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">coupling.build()</span></code> (called by the first <code class="docutils literal notranslate"><span class="pre">step</span></code> if you do not call it) checks the declarations
+and raises <code class="docutils literal notranslate"><span class="pre">CouplingError</span></code>, naming the components, for:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Problem</p></th>
+<th class="head"><p>Example message</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>a quantity read but never written</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Phase</span> <span class="pre">'emit'</span> <span class="pre">reads</span> <span class="pre">'temprature',</span> <span class="pre">which</span> <span class="pre">nobody</span> <span class="pre">writes.</span> <span class="pre">Did</span> <span class="pre">you</span> <span class="pre">mean</span> <span class="pre">'temperature'?</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>two writers of one quantity</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'emissions'</span> <span class="pre">has</span> <span class="pre">two</span> <span class="pre">writers:</span> <span class="pre">Phase</span> <span class="pre">'emit'</span> <span class="pre">and</span> <span class="pre">Phase</span> <span class="pre">'factories'.</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>a cycle of reads and writes in one phase</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Phase</span> <span class="pre">0</span> <span class="pre">has</span> <span class="pre">a</span> <span class="pre">cycle</span> <span class="pre">of</span> <span class="pre">reads</span> <span class="pre">and</span> <span class="pre">writes</span> <span class="pre">between</span> <span class="pre">...;</span> <span class="pre">put</span> <span class="pre">one</span> <span class="pre">of</span> <span class="pre">them</span> <span class="pre">in</span> <span class="pre">a</span> <span class="pre">later</span> <span class="pre">phase</span> <span class="pre">so</span> <span class="pre">it</span> <span class="pre">reads</span> <span class="pre">the</span> <span class="pre">previous</span> <span class="pre">step's</span> <span class="pre">values.</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>a lagged read with no initial value</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">...</span> <span class="pre">reads</span> <span class="pre">'x'</span> <span class="pre">before</span> <span class="pre">...</span> <span class="pre">writes</span> <span class="pre">it,</span> <span class="pre">and</span> <span class="pre">there</span> <span class="pre">is</span> <span class="pre">no</span> <span class="pre">initial</span> <span class="pre">value:</span> <span class="pre">give</span> <span class="pre">the</span> <span class="pre">writer</span> <span class="pre">one.</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Fields and ODEs publish their initial state at build time; a <code class="docutils literal notranslate"><span class="pre">Phase</span></code> gives initial values for
+lagged readers with <code class="docutils literal notranslate"><span class="pre">Phase(...,</span> <span class="pre">initial={&quot;emissions&quot;:</span> <span class="pre">0.0})</span></code>. During a step a component may only
+set the quantities it declares: writing another one raises <code class="docutils literal notranslate"><span class="pre">CouplingError</span></code>.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Phase</span></code> calls its function with no arguments; use a method of the model (or a module-level
+function, or a <code class="docutils literal notranslate"><span class="pre">functools.partial</span></code> of one) so the model can still be
+<a class="reference internal" href="checkpoints.html"><span class="std std-doc">checkpointed</span></a>.</p>
+</section>
+<section id="fields">
+<h2>Fields<a class="headerlink" href="#fields" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Field(grid,</span> <span class="pre">name,</span> <span class="pre">transport,</span> <span class="pre">source=None)</span></code> makes the float property layer <code class="docutils literal notranslate"><span class="pre">name</span></code> of an
+orthogonal grid (Moore or von Neumann, of any dimension), or adopts it if the grid already has
+one, for example a <a class="reference internal" href="geospatial.html"><span class="std std-doc">raster</span></a> attached with <code class="docutils literal notranslate"><span class="pre">RasterLayer.attach</span></code>. It advances</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>du/dt = D lap(u) - v . grad(u) - k u
+</pre></div>
+</div>
+<p>with the coefficients of its <code class="docutils literal notranslate"><span class="pre">Transport</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">diffusion</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0.0</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D</span></code>, in spacings squared per unit time</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">velocity</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">v</span></code>, one component per grid axis</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">decay</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0.0</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">k</span></code>, per unit time</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">boundary</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;closed&quot;</span></code> (no flux), <code class="docutils literal notranslate"><span class="pre">&quot;absorbing&quot;</span></code> (zero outside) or <code class="docutils literal notranslate"><span class="pre">&quot;periodic&quot;</span></code>; <code class="docutils literal notranslate"><span class="pre">None</span></code> is periodic on a torus, closed otherwise</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">spacing</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1.0</span></code></p></td>
+<td><p>the width of a cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dt</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td><p>the longest sub-step</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">scheme</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;explicit&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;explicit&quot;</span></code> (forward Euler) or <code class="docutils literal notranslate"><span class="pre">&quot;implicit&quot;</span></code> (backward Euler)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The scheme is a finite-volume one: central differences for diffusion and first-order upwind
+for advection, written as fluxes through the faces between neighbouring cells, so each flux
+leaves one cell and enters the next. The total is conserved to round-off with closed and
+periodic boundaries; what leaves through an absorbing one is counted in <code class="docutils literal notranslate"><span class="pre">field.outflow</span></code>. Decay
+is applied exactly, as <code class="docutils literal notranslate"><span class="pre">exp(-k</span> <span class="pre">dt)</span></code> per sub-step, and counted in <code class="docutils literal notranslate"><span class="pre">field.decayed</span></code>; with a
+uniform <code class="docutils literal notranslate"><span class="pre">k</span></code> it commutes with the transport, so the splitting adds no error.</p>
+<p><strong>Time stepping.</strong> A step of length <code class="docutils literal notranslate"><span class="pre">duration</span></code> is cut into the fewest equal sub-steps no longer
+than <code class="docutils literal notranslate"><span class="pre">dt</span></code>. The explicit scheme is positive and stable when</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>dt * (2 * d * D / h**2 + sum(|v_i|) / h) &lt;= 1
+</pre></div>
+</div>
+<p>for a grid of <code class="docutils literal notranslate"><span class="pre">d</span></code> dimensions and spacing <code class="docutils literal notranslate"><span class="pre">h</span></code> (the diffusion limit <code class="docutils literal notranslate"><span class="pre">h**2</span> <span class="pre">/</span> <span class="pre">(2</span> <span class="pre">d</span> <span class="pre">D)</span></code> and the CFL
+condition of upwind advection in one), and <code class="docutils literal notranslate"><span class="pre">Field</span></code> refuses a larger <code class="docutils literal notranslate"><span class="pre">dt</span></code> with a message that
+names the limit. By default it takes half the limit. For stiff problems (fast diffusion, fine
+grids) use <code class="docutils literal notranslate"><span class="pre">scheme=&quot;implicit&quot;</span></code>: one sparse LU factorisation per sub-step length, stable and
+positive for any <code class="docutils literal notranslate"><span class="pre">dt</span></code>, first order in time. The default implicit sub-step is the whole step.</p>
+<p><strong>Sources.</strong> Agents change a field through its <code class="docutils literal notranslate"><span class="pre">source</span></code> quantity: an amount per cell (an array
+shaped like the grid, or a scalar), positive for emissions and negative for uptake, added at
+the start of each step and counted in <code class="docutils literal notranslate"><span class="pre">field.added</span></code>. The budget then closes exactly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">field</span><span class="o">.</span><span class="n">total</span><span class="p">()</span> <span class="o">==</span> <span class="n">initial</span> <span class="o">+</span> <span class="n">field</span><span class="o">.</span><span class="n">added</span> <span class="o">-</span> <span class="n">field</span><span class="o">.</span><span class="n">outflow</span> <span class="o">-</span> <span class="n">field</span><span class="o">.</span><span class="n">decayed</span>  <span class="c1"># to round-off</span>
+</pre></div>
+</div>
+<p>Agents read the field directly (<code class="docutils literal notranslate"><span class="pre">cell.smoke</span></code>, <code class="docutils literal notranslate"><span class="pre">grid.smoke</span></code>, <code class="docutils literal notranslate"><span class="pre">coupling[&quot;smoke&quot;]</span></code>): the layer is
+updated in place, so every view sees the new values. Do not assign the layer
+(<code class="docutils literal notranslate"><span class="pre">grid.smoke</span> <span class="pre">=</span> <span class="pre">array</span></code> detaches it); write through the source quantity instead.</p>
+<p><strong>Checked against known answers</strong> in <code class="docutils literal notranslate"><span class="pre">tests/couple/test_field.py</span></code>: the second moment of a
+spreading pulse grows by exactly <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">D</span> <span class="pre">t</span></code> per axis; a Gaussian follows the heat kernel within the
+scheme’s truncation error, which vanishes at <code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">dt</span> <span class="pre">/</span> <span class="pre">h**2</span> <span class="pre">=</span> <span class="pre">1/6</span></code>; upwind drift moves the centre
+of mass by exactly <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">t</span></code>; the total decays as <code class="docutils literal notranslate"><span class="pre">exp(-k</span> <span class="pre">t)</span></code>; closed and periodic boundaries
+conserve mass to round-off and absorbing ones account for all of it; the stiff implicit field
+settles on the exact discrete zero-flux profile.</p>
+</section>
+<section id="odes-and-stock-flow-models">
+<h2>ODEs and stock-flow models<a class="headerlink" href="#odes-and-stock-flow-models" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ODE(rhs,</span> <span class="pre">initial,</span> <span class="pre">reads=(),</span> <span class="pre">solver=None)</span></code> holds the state variables named in <code class="docutils literal notranslate"><span class="pre">initial</span></code> and
+integrates <code class="docutils literal notranslate"><span class="pre">dy/dt</span> <span class="pre">=</span> <span class="pre">rhs(t,</span> <span class="pre">y,</span> <span class="pre">inputs)</span></code>, <code class="docutils literal notranslate"><span class="pre">inputs</span></code> mapping each quantity it reads to its value at
+the start of the step, held over the step. It writes its state variables, by name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple</span><span class="w"> </span><span class="kn">import</span> <span class="n">ODE</span><span class="p">,</span> <span class="n">Solver</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">logistic</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span> <span class="o">/</span> <span class="mf">50.0</span><span class="p">)</span>
+
+
+<span class="n">ode</span> <span class="o">=</span> <span class="n">ODE</span><span class="p">(</span><span class="n">logistic</span><span class="p">,</span> <span class="p">{</span><span class="s2">"n"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span> <span class="n">solver</span><span class="o">=</span><span class="n">Solver</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">"LSODA"</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">))</span>
+<span class="n">ode</span><span class="o">.</span><span class="n">advance</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span>
+<span class="n">ode</span><span class="o">.</span><span class="n">state</span>  <span class="c1"># {'n': 26.35...}, the closed form 50 / (1 + 49 exp(-4))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">StockFlow(stocks,</span> <span class="pre">flows,</span> <span class="pre">reads=(),</span> <span class="pre">solver=None)</span></code> is the system-dynamics form. A
+<code class="docutils literal notranslate"><span class="pre">Flow(name,</span> <span class="pre">rate,</span> <span class="pre">source=None,</span> <span class="pre">target=None)</span></code> moves material from its <code class="docutils literal notranslate"><span class="pre">source</span></code> stock to its
+<code class="docutils literal notranslate"><span class="pre">target</span></code> stock (<code class="docutils literal notranslate"><span class="pre">None</span></code> is the outside) at <code class="docutils literal notranslate"><span class="pre">rate(stocks,</span> <span class="pre">inputs)</span></code> per unit time. It writes its
+stocks, and keeps the amount each flow has moved in <code class="docutils literal notranslate"><span class="pre">totals</span></code>. Runge-Kutta methods keep linear
+invariants exactly, so the stocks change by exactly the net flow across the boundary, to
+round-off, whatever the tolerances:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">StockFlow</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">admitted</span><span class="p">(</span><span class="n">stocks</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">"admissions"</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">discharged</span><span class="p">(</span><span class="n">stocks</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">stocks</span><span class="p">[</span><span class="s2">"occupied"</span><span class="p">]</span> <span class="o">/</span> <span class="mf">8.0</span>
+
+
+<span class="n">hospital</span> <span class="o">=</span> <span class="n">StockFlow</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">"occupied"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="p">[</span>
+        <span class="n">Flow</span><span class="p">(</span><span class="s2">"admit"</span><span class="p">,</span> <span class="n">admitted</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">"occupied"</span><span class="p">),</span>
+        <span class="n">Flow</span><span class="p">(</span><span class="s2">"discharge"</span><span class="p">,</span> <span class="n">discharged</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">"occupied"</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="n">reads</span><span class="o">=</span><span class="p">[</span><span class="s2">"admissions"</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Solver(method=&quot;RK45&quot;,</span> <span class="pre">rtol=1e-8,</span> <span class="pre">atol=1e-10)</span></code> passes its fields to <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;RK45&quot;</span></code>
+(Dormand-Prince) and <code class="docutils literal notranslate"><span class="pre">&quot;DOP853&quot;</span></code> for smooth problems, <code class="docutils literal notranslate"><span class="pre">&quot;Radau&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;BDF&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;LSODA&quot;</span></code> for stiff
+ones. A failed integration raises <code class="docutils literal notranslate"><span class="pre">CouplingError</span></code> with scipy’s message. Rate and right-hand-side
+functions must be module-level functions, methods or partials of them, so the model can be
+saved.</p>
+</section>
+<section id="checkpoints-and-determinism">
+<h2>Checkpoints and determinism<a class="headerlink" href="#checkpoints-and-determinism" title="Link to this heading">#</a></h2>
+<p>A coupled model saves and loads like any other (<code class="docutils literal notranslate"><span class="pre">model.save</span></code>, <code class="docutils literal notranslate"><span class="pre">Model.load</span></code>). The field’s layer
+is saved once, with the grid, and after a load the field, the grid, its cells and the coupling
+share the same array again; implicit factorisations are rebuilt on the next step. Every
+integration starts afresh from the stored state, so a run resumed from a checkpoint is the same
+run, bit for bit, as one that never stopped (<code class="docutils literal notranslate"><span class="pre">tests/couple/test_schedule.py</span></code> and both zoo
+models check it).</p>
+<p>The coupling draws no random numbers, so the <a class="reference internal" href="determinism.html"><span class="std std-doc">determinism rules</span></a> are the
+model’s own. Two outputs pass through operations that are not correctly rounded and may differ
+in the last bit between platforms, so compare them with a tolerance across machines: field
+decay (<code class="docutils literal notranslate"><span class="pre">exp</span></code>) and the error norm <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> uses to choose its steps. On one machine, and
+between a straight and a resumed run, they are exact.</p>
+</section>
+<section id="limits">
+<h2>Limits<a class="headerlink" href="#limits" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fields live on orthogonal grids with uniform spacing and uniform coefficients; hexagonal
+grids, networks and continuous space have no field type yet.</p></li>
+<li><p>Advection is first-order upwind: it conserves mass and keeps values positive, and it smears
+sharp fronts (numerical diffusion of about <code class="docutils literal notranslate"><span class="pre">|v|</span> <span class="pre">h</span> <span class="pre">/</span> <span class="pre">2</span></code>).</p></li>
+<li><p>ODE inputs are held over the step; to resolve a process faster than the agents’ step, make
+the step shorter.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="networks.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Networks: dynamic and multilayer</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="llm_agents.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Language-model agents</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-worked-example">A worked example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-coupling-schedule">The coupling schedule</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fields">Fields</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#odes-and-stock-flow-models">ODEs and stock-flow models</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checkpoints-and-determinism">Checkpoints and determinism</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limits">Limits</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/coupling.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

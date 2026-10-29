@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Emulators, active learning and history matching &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'emulators';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/emulators.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Live data and data assimilation" href="assimilation.html" />
+    <link rel="prev" title="Sensitivity analysis" href="sensitivity.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Build and check a model</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Checking a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profiling a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checkpoints.html">Checkpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="figures.html">Figures and animations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="browser.html">In the browser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Structure a model</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="geospatial.html">Geospatial models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">Synthetic populations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupling.html">Coupling fields and ODEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm_agents.html">Language-model agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="differentiable.html">Differentiable models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Run a study</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments and sweeps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibration.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity analysis</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Emulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assimilation.html">Live data and assimilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Reproducible studies</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="guides.html" class="nav-link">Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Emulators, active learning and history matching</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="emulators-active-learning-and-history-matching">
+<h1>Emulators, active learning and history matching<a class="headerlink" href="#emulators-active-learning-and-history-matching" title="Link to this heading">#</a></h1>
+<p>A model that takes minutes per run cannot be run a hundred thousand times for a calibration
+or a sensitivity analysis. An <strong>emulator</strong> is a fast statistical stand-in fitted to a few
+dozen or a few hundred runs, which also says how unsure it is. <code class="docutils literal notranslate"><span class="pre">modelly.emulate</span></code> fits them,
+chooses where to run next (<strong>active learning</strong>) and rules out the parameters that cannot
+reproduce the data (<strong>history matching</strong>).</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>What it does</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GaussianEmulator</span></code></p></td>
+<td><p>one Gaussian process per output: mean, standard deviation, covariance</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NeuralEmulator</span></code></p></td>
+<td><p>an ensemble of small numpy networks, for more runs than a Gaussian process handles</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></p></td>
+<td><p>runs a model (through the <a class="reference internal" href="experiments.html"><span class="std std-doc">experiment executors</span></a>) or a function at chosen points</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ActiveLearning</span></code></p></td>
+<td><p>adds runs where the emulator is least certain, in batches</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HistoryMatch</span></code></p></td>
+<td><p>waves of runs that rule out implausible parameters</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Model runs go to a Parquet store, so models need the <code class="docutils literal notranslate"><span class="pre">experiments</span></code> extra
+(<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;modelly-abm[experiments]&quot;</span></code>); functions do not. Nothing else is needed: the
+Gaussian process is the one of <code class="docutils literal notranslate"><span class="pre">modelly.calibrate</span></code> (numpy and scipy) and the networks are
+plain numpy.</p>
+<section id="emulators">
+<h2>Emulators<a class="headerlink" href="#emulators" title="Link to this heading">#</a></h2>
+<p>Every emulator is fitted to points of the unit cube of a <code class="docutils literal notranslate"><span class="pre">ScenarioSpace</span></code> (one coordinate per
+range or choice, as designs draw them) and to the outputs there, one column per output:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.emulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianEmulator</span>
+
+<span class="n">units</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">30</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">units</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">units</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">units</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">emulator</span> <span class="o">=</span> <span class="n">GaussianEmulator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="p">[</span><span class="s2">"wave"</span><span class="p">,</span> <span class="s2">"product"</span><span class="p">])</span>
+<span class="n">mean</span><span class="p">,</span> <span class="n">sd</span> <span class="o">=</span> <span class="n">emulator</span><span class="o">.</span><span class="n">predict</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>  <span class="c1"># both [point, output]</span>
+<span class="n">emulator</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">test_units</span><span class="p">,</span> <span class="n">test_values</span><span class="p">)</span>  <span class="c1"># normalised RMSE per output: 0 is perfect</span>
+</pre></div>
+</div>
+<p>Each output gets its own process: a squared-exponential kernel with one length scale per
+input and a fitted noise term (the run-to-run scatter of a stochastic model). The
+hyperparameters are fitted from five starting points (<code class="docutils literal notranslate"><span class="pre">restarts=True</span></code>, the default here),
+because from a single start the likelihood search often ends at a fit that calls everything
+noise. <code class="docutils literal notranslate"><span class="pre">covariance(a,</span> <span class="pre">b)</span></code> gives the predictive covariance and <code class="docutils literal notranslate"><span class="pre">condition(units)</span></code> the emulator
+as if those points had been run, which is what batch selection needs.</p>
+<p><code class="docutils literal notranslate"><span class="pre">NeuralEmulator.fit(units,</span> <span class="pre">values,</span> <span class="pre">settings=NeuralSettings(...))</span></code> trains an ensemble of
+<code class="docutils literal notranslate"><span class="pre">members</span></code> fully connected networks (<code class="docutils literal notranslate"><span class="pre">tanh</span></code> hidden layers, full-batch Adam); the mean of the
+members is the prediction and their spread the standard deviation (a “deep ensemble”,
+Lakshminarayanan et al. 2017). With a few dozen runs the Gaussian process is usually more
+accurate; the networks scale to thousands of runs, where the process’s cubic cost does not.
+Every weight comes from <code class="docutils literal notranslate"><span class="pre">settings.seed</span></code>.</p>
+<section id="from-an-experiment-s-results">
+<h3>From an experiment’s results<a class="headerlink" href="#from-an-experiment-s-results" title="Link to this heading">#</a></h3>
+<p>An experiment already in a store trains an emulator directly: one point per design point,
+replicates averaged, each output reduced by a statistic of its series:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.experiments</span><span class="w"> </span><span class="kn">import</span> <span class="n">Experiment</span><span class="p">,</span> <span class="n">ScenarioSpace</span><span class="p">,</span> <span class="n">designs</span>
+
+<span class="n">experiment</span> <span class="o">=</span> <span class="n">Experiment</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">Epidemic</span><span class="p">,</span>
+    <span class="n">space</span><span class="o">=</span><span class="n">space</span><span class="p">,</span>
+    <span class="n">design</span><span class="o">=</span><span class="n">designs</span><span class="o">.</span><span class="n">latin_hypercube</span><span class="p">(</span><span class="mi">80</span><span class="p">),</span>
+    <span class="n">replicates</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">steps</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="s2">"infected"</span><span class="p">],</span>
+    <span class="n">store</span><span class="o">=</span><span class="s2">"runs/sir"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">experiment</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="s2">"processes"</span><span class="p">)</span>
+<span class="n">emulator</span> <span class="o">=</span> <span class="n">GaussianEmulator</span><span class="o">.</span><span class="n">from_results</span><span class="p">(</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">results</span><span class="p">(),</span> <span class="n">space</span><span class="p">,</span> <span class="p">{</span><span class="s2">"infected"</span><span class="p">:</span> <span class="s2">"max"</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="in-a-sensitivity-analysis">
+<h3>In a sensitivity analysis<a class="headerlink" href="#in-a-sensitivity-analysis" title="Link to this heading">#</a></h3>
+<p>An emulator of one output whose <code class="docutils literal notranslate"><span class="pre">space</span></code> is set (<code class="docutils literal notranslate"><span class="pre">from_results</span></code> and the designs below set
+it) stands in for the model in <code class="docutils literal notranslate"><span class="pre">oat</span></code>, <code class="docutils literal notranslate"><span class="pre">morris</span></code>, <code class="docutils literal notranslate"><span class="pre">sobol</span></code> and <code class="docutils literal notranslate"><span class="pre">pawn</span></code>, which then cost no runs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.sensitivity</span><span class="w"> </span><span class="kn">import</span> <span class="n">sobol</span>
+
+<span class="n">sobol</span><span class="p">(</span><span class="n">emulator</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"infected"</span><span class="p">),</span> <span class="n">space</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">8192</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.sensitivity.emulate</span></code> remains the one-call way to fit a Latin-hypercube emulator for
+a sensitivity analysis.</p>
+</section>
+</section>
+<section id="simulations">
+<h2>Simulations<a class="headerlink" href="#simulations" title="Link to this heading">#</a></h2>
+<p>A <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> names what is run and what is emulated:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.emulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
+
+<span class="n">simulation</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span>
+    <span class="n">AgeSEIR</span><span class="p">,</span>
+    <span class="n">space</span><span class="p">,</span>
+    <span class="p">{</span><span class="s2">"peak"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"mymodel:infectious"</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">),</span> <span class="s2">"size"</span><span class="p">:</span> <span class="s2">"mymodel:recovered"</span><span class="p">},</span>
+    <span class="n">steps</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+    <span class="n">replicates</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">executor</span><span class="o">=</span><span class="s2">"processes"</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Each output is something the model records every step (an attribute, a method or a
+module-level function of the model, as for an <code class="docutils literal notranslate"><span class="pre">Experiment</span></code>) and a statistic that reduces a
+run’s series to one number: <code class="docutils literal notranslate"><span class="pre">&quot;last&quot;</span></code> (the default), <code class="docutils literal notranslate"><span class="pre">&quot;max&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;min&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code> or a
+function. A plain function of the parameters can stand in for the model; it returns a number,
+a sequence or a mapping. <code class="docutils literal notranslate"><span class="pre">common=True</span></code> runs every point with the same replicate seeds
+(common random numbers): the output becomes a smoother function of the parameters, which an
+emulator learns from fewer runs.</p>
+</section>
+<section id="active-learning">
+<h2>Active learning<a class="headerlink" href="#active-learning" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.emulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">ActiveLearning</span><span class="p">,</span> <span class="n">ActiveSettings</span>
+
+<span class="n">design</span> <span class="o">=</span> <span class="n">ActiveLearning</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">ActiveSettings</span><span class="p">(</span><span class="n">batch</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">runs</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="n">design</span><span class="o">.</span><span class="n">emulator</span>  <span class="c1"># fitted to all 40 runs</span>
+<span class="n">design</span><span class="o">.</span><span class="n">frame</span><span class="p">()</span>  <span class="c1"># iteration, parameters and outputs of every run</span>
+<span class="n">design</span><span class="o">.</span><span class="n">design</span><span class="p">()</span>  <span class="c1"># the runs as a custom design, to rerun them in an Experiment</span>
+</pre></div>
+</div>
+<p>The design starts from a Latin hypercube of <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">d</span> <span class="pre">+</span> <span class="pre">2</span></code> runs (<code class="docutils literal notranslate"><span class="pre">initial</span></code>), then at each
+iteration scores <code class="docutils literal notranslate"><span class="pre">candidates</span></code> random points and runs the best <code class="docutils literal notranslate"><span class="pre">batch</span></code> of them at once on the
+simulation’s executor, refitting the emulator after every batch. <code class="docutils literal notranslate"><span class="pre">run</span></code> can be called again
+with more runs to go on.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">criterion</span></code></p></th>
+<th class="head"><p>Picks the point that</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;ivr&quot;</span></code> (default)</p></td>
+<td><p>most reduces the predictive variance averaged over <code class="docutils literal notranslate"><span class="pre">references</span></code> points of the space: the integrated variance reduction (Cohn 1996; Sacks et al. 1989)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;variance&quot;</span></code></p></td>
+<td><p>has the largest predictive variance (MacKay 1992): cheaper, but drawn to the edges and corners, more so in more dimensions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A batch is chosen greedily: after each pick the emulator is conditioned on it (the
+“kriging believer”), so the variance there drops and the next pick goes elsewhere. With
+several outputs the criteria add the outputs’ variances, each relative to its spread.</p>
+<section id="how-many-runs-it-saves">
+<h3>How many runs it saves<a class="headerlink" href="#how-many-runs-it-saves" title="Link to this heading">#</a></h3>
+<p>The benchmark (<code class="docutils literal notranslate"><span class="pre">benchmarks/emulate/active_vs_lhs.py</span></code>, protocol in
+<code class="docutils literal notranslate"><span class="pre">tests/emulate/test_active.py</span></code>): accuracy is the normalised RMSE on 500 random test points,
+a Latin hypercube of <code class="docutils literal notranslate"><span class="pre">n</span></code> runs scores the median of three seeds, active learning adds four runs
+per iteration, and the factor is the hypercube runs needed for the active design’s accuracy,
+divided by the active runs. The 1.4.0 roadmap asked for a factor of 2.</p>
+<p>Factor of runs saved (hypercube runs for the same error / active runs), measured on one
+machine with <code class="docutils literal notranslate"><span class="pre">OPENBLAS_NUM_THREADS=1</span></code>; “&gt; 2.4” means the active design beat every hypercube
+measured, up to twice its runs:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Active runs</p></th>
+<th class="head"><p>Branin, <code class="docutils literal notranslate"><span class="pre">ivr</span></code></p></th>
+<th class="head"><p>Branin, <code class="docutils literal notranslate"><span class="pre">variance</span></code></p></th>
+<th class="head"><p>Ishigami, <code class="docutils literal notranslate"><span class="pre">ivr</span></code></p></th>
+<th class="head"><p>Ishigami, <code class="docutils literal notranslate"><span class="pre">variance</span></code></p></th>
+<th class="head"><p>Bass diffusion, <code class="docutils literal notranslate"><span class="pre">ivr</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>1.13</p></td>
+<td><p>1.57</p></td>
+<td><p>1.00</p></td>
+<td><p>1.00</p></td>
+<td><p>1.64</p></td>
+</tr>
+<tr class="row-odd"><td><p>20</p></td>
+<td><p>1.20</p></td>
+<td><p>1.18</p></td>
+<td><p>0.79</p></td>
+<td><p>1.82</p></td>
+<td><p><strong>2.64</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>30</p></td>
+<td><p>1.38</p></td>
+<td><p>1.45</p></td>
+<td><p>0.95</p></td>
+<td><p>0.33</p></td>
+<td><p>1.33</p></td>
+</tr>
+<tr class="row-odd"><td><p>40</p></td>
+<td><p>1.43</p></td>
+<td><p>1.28</p></td>
+<td><p>1.13</p></td>
+<td><p>0.25</p></td>
+<td><p><strong>2.67</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>50</p></td>
+<td><p>1.23</p></td>
+<td><p>1.29</p></td>
+<td><p>0.97</p></td>
+<td><p>0.20</p></td>
+<td><p><strong>&gt; 2.4</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>60</p></td>
+<td><p>1.15</p></td>
+<td><p>1.21</p></td>
+<td><p>1.34</p></td>
+<td><p>0.40</p></td>
+<td><p><strong>&gt; 2.4</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>70</p></td>
+<td><p>1.15</p></td>
+<td><p>1.40</p></td>
+<td><p>1.19</p></td>
+<td><p>0.33</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>80</p></td>
+<td><p><strong>&gt; 1.9</strong></p></td>
+<td><p>1.83</p></td>
+<td><p>1.11</p></td>
+<td><p>1.01</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>100</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>1.41</p></td>
+<td><p>0.88</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Branin is the two-dimensional test function of Dixon and Szego (1978), Ishigami the
+three-dimensional one of the sensitivity tests, and Bass diffusion the zoo model
+(<code class="docutils literal notranslate"><span class="pre">bass_diffusion</span></code>, 20,000 households, well mixed): the share adopted after four years over
+the innovation rate (0.005 to 0.05) and the imitation rate (0.1 to 0.8), common random
+numbers for every run. Errors at 80 Branin runs and at 50 or more Bass runs are at the
+floor the hypercubes reach too (rounding and run-to-run scatter), so the factor there is a
+bound, not a measurement.</p>
+<p>So the roadmap’s factor of 2 holds on the zoo model at most budgets (not at 30 runs), and
+not on the two analytic functions, where integrated variance reduction needs 12 to 30 %
+fewer runs than a hypercube on Branin below 80 runs and at most 29 % fewer on Ishigami, with
+budgets where it needs as many or more. A
+Gaussian process’s variance does not depend on the outputs, only on where the runs are and
+on the fitted length scales, so on a function that varies evenly over the space an active
+design is mostly a well-spread design, and a Latin hypercube already is one. The pure
+variance criterion does worse than a hypercube on Ishigami: in three dimensions it spends its
+runs on the corners. The tests pin what was measured: 40 active runs match a hypercube of 50
+on Branin, and 20 match one of 40 on Bass diffusion (10,000 households there, to keep the
+test fast).</p>
+</section>
+</section>
+<section id="history-matching">
+<h2>History matching<a class="headerlink" href="#history-matching" title="Link to this heading">#</a></h2>
+<p>History matching asks the opposite question to calibration: not “which parameters fit best”
+but “which parameters cannot possibly fit”. For an observed value <code class="docutils literal notranslate"><span class="pre">z</span></code> of an output, the
+implausibility of a parameter point <code class="docutils literal notranslate"><span class="pre">x</span></code> is</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>I(x) = |z - E[f(x)]| / sqrt(Var[f(x)] + Var_obs + Var_discrepancy)
+</pre></div>
+</div>
+<p>with <code class="docutils literal notranslate"><span class="pre">E[f(x)]</span></code> and <code class="docutils literal notranslate"><span class="pre">Var[f(x)]</span></code> the emulator’s prediction, <code class="docutils literal notranslate"><span class="pre">Var_obs</span></code> the observation error and
+<code class="docutils literal notranslate"><span class="pre">Var_discrepancy</span></code> the model discrepancy: what even the best parameters miss, including the
+run-to-run scatter of a stochastic model. A point with <code class="docutils literal notranslate"><span class="pre">I(x)</span> <span class="pre">&gt;</span> <span class="pre">3</span></code> for some output is ruled out
+(three standard deviations, by Pukelsheim’s rule, holds for any unimodal distribution).
+History matching runs in <strong>waves</strong> (Vernon, Goldstein and Bower 2010; Andrianakis et al. 2015):</p>
+<ol class="arabic simple">
+<li><p>spread the wave’s runs over the space not yet ruled out (“not ruled out yet”, NROY);</p></li>
+<li><p>refit the emulators on the runs inside NROY, which are more accurate there than the
+previous wave’s because the region is smaller;</p></li>
+<li><p>rule out every point whose implausibility exceeds the cutoff.</p></li>
+</ol>
+<p>NROY is tracked on a fixed random sample of <code class="docutils literal notranslate"><span class="pre">candidates</span></code> points of the space, so its volume is
+the share of the sample left, and <code class="docutils literal notranslate"><span class="pre">samples()</span></code> returns the points left as parameters.</p>
+<section id="a-worked-example-an-age-structured-seir-epidemic">
+<h3>A worked example: an age-structured SEIR epidemic<a class="headerlink" href="#a-worked-example-an-age-structured-seir-epidemic" title="Link to this heading">#</a></h3>
+<p>The zoo’s <code class="docutils literal notranslate"><span class="pre">age_seir</span></code> model with its default parameters (<code class="docutils literal notranslate"><span class="pre">beta=0.035</span></code>, <code class="docutils literal notranslate"><span class="pre">incubation=0.25</span></code>,
+<code class="docutils literal notranslate"><span class="pre">recovery=0.2</span></code>) plays the truth. One run of it gives the data: the peak share infectious,
+the step of the peak and the share recovered after 150 steps. Can history matching find where
+the truth lies in a wide box, without knowing it?</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.emulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoryMatch</span><span class="p">,</span> <span class="n">MatchSettings</span><span class="p">,</span> <span class="n">Observation</span><span class="p">,</span> <span class="n">Simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.experiments</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScenarioSpace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.zoo.age_seir.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgeSEIR</span><span class="p">,</span> <span class="n">State</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">infectious</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">counts</span><span class="p">()[:,</span> <span class="n">State</span><span class="o">.</span><span class="n">I</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">model</span><span class="o">.</span><span class="n">sizes</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">recovered</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">counts</span><span class="p">()[:,</span> <span class="n">State</span><span class="o">.</span><span class="n">R</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">model</span><span class="o">.</span><span class="n">sizes</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">peak_step</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">series</span><span class="p">))</span>
+
+
+<span class="n">outputs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"peak"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"seir_outputs:infectious"</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">),</span>
+    <span class="s2">"timing"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"seir_outputs:infectious"</span><span class="p">,</span> <span class="n">peak_step</span><span class="p">),</span>
+    <span class="s2">"size"</span><span class="p">:</span> <span class="p">(</span><span class="s2">"seir_outputs:recovered"</span><span class="p">,</span> <span class="s2">"last"</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="n">observations</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># value from one run at the truth; 5 % observation error; scatter of 8 runs there</span>
+    <span class="n">Observation</span><span class="p">(</span><span class="s2">"peak"</span><span class="p">,</span> <span class="mf">0.09225</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="mf">0.09225</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">3.1e-6</span><span class="p">),</span>
+    <span class="n">Observation</span><span class="p">(</span><span class="s2">"timing"</span><span class="p">,</span> <span class="mf">80.0</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="mf">80.0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span>
+    <span class="n">Observation</span><span class="p">(</span><span class="s2">"size"</span><span class="p">,</span> <span class="mf">0.77659</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="mf">0.77659</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">1.5e-6</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">space</span> <span class="o">=</span> <span class="n">ScenarioSpace</span><span class="p">(</span><span class="n">beta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">),</span> <span class="n">incubation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span> <span class="n">recovery</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">simulation</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">(</span><span class="n">AgeSEIR</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">match</span> <span class="o">=</span> <span class="n">HistoryMatch</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">observations</span><span class="p">,</span> <span class="n">MatchSettings</span><span class="p">(</span><span class="n">candidates</span><span class="o">=</span><span class="mi">10_000</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">waves</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">runs</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">table</span><span class="p">())</span>
+<span class="n">result</span><span class="o">.</span><span class="n">contains</span><span class="p">({</span><span class="s2">"beta"</span><span class="p">:</span> <span class="mf">0.035</span><span class="p">,</span> <span class="s2">"incubation"</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span> <span class="s2">"recovery"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">})</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
+<p>(the three functions live in an importable module, here <code class="docutils literal notranslate"><span class="pre">seir_outputs.py</span></code>, so that process
+workers find them.)</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>      runs  training  volume
+wave
+1       20        20  0.1705
+2       20        20  0.0444
+3       20        23  0.0307
+4       20        26  0.0246
+</pre></div>
+</div>
+<p>Eighty runs rule out 97.5 % of the box, and the truth is never ruled out (its largest
+implausibility over the waves is 2.2). What is left is the shape history matching is known
+for: a ridge, not a point. The peak and the final size pin down the reproduction number
+<code class="docutils literal notranslate"><span class="pre">beta</span> <span class="pre">/</span> <span class="pre">recovery</span></code> (times the contact matrix’s spectral radius), so <code class="docutils literal notranslate"><span class="pre">beta</span></code> and <code class="docutils literal notranslate"><span class="pre">recovery</span></code> are
+tied together, while the incubation rate only moves the peak’s timing, which the data know to
+±5 steps; NROY keeps incubation rates from 0.10 to 0.59. A calibration (<code class="docutils literal notranslate"><span class="pre">modelly.calibrate</span></code>)
+started inside NROY then needs far fewer runs. <code class="docutils literal notranslate"><span class="pre">tests/emulate/test_history.py</span></code> runs this
+example and checks that each wave shrinks NROY, that the truth is inside it after every wave,
+and that <code class="docutils literal notranslate"><span class="pre">MODELLY_PURE_PYTHON=1</span></code> rules out exactly the same points.</p>
+<p><code class="docutils literal notranslate"><span class="pre">MatchSettings(rank=2)</span></code> combines the outputs by their second-largest implausibility instead of
+the largest, which tolerates one badly emulated or badly modelled output (Vernon et al.
+2010). <code class="docutils literal notranslate"><span class="pre">run(waves)</span></code> can be called again to add waves; it stops early when NROY is empty, which
+means no parameter in the box reproduces the data within the stated uncertainties: the model,
+the box or the discrepancy is wrong.</p>
+</section>
+</section>
+<section id="seeds-and-executors">
+<h2>Seeds and executors<a class="headerlink" href="#seeds-and-executors" title="Link to this heading">#</a></h2>
+<p>Every random draw (the first design, the candidates, the reference points, the NROY sample,
+the maximin start of each wave, the networks’ weights) comes from the simulation’s <code class="docutils literal notranslate"><span class="pre">seed</span></code>, and
+the runs’ seeds follow the experiment discipline, so the same seed gives the same runs,
+emulators and waves on every executor, with the compiled core or with
+<code class="docutils literal notranslate"><span class="pre">MODELLY_PURE_PYTHON=1</span></code>.</p>
+<p>Small matrix operations are slow with a multi-threaded BLAS on a busy machine; when many
+emulators are fitted in a row (active learning, the benchmark), <code class="docutils literal notranslate"><span class="pre">OPENBLAS_NUM_THREADS=1</span></code>
+(or <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS=1</span></code>) can be an order of magnitude faster.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Andrianakis, I. et al. (2015). Bayesian history matching of complex infectious disease
+models using emulation: a tutorial and a case study on HIV in Uganda. PLoS Computational
+Biology, 11(1), e1003968.</p></li>
+<li><p>Cohn, D. A. (1996). Neural network exploration using optimal experiment design. Neural
+Networks, 9(6), 1071-1083.</p></li>
+<li><p>Lakshminarayanan, B., Pritzel, A. and Blundell, C. (2017). Simple and scalable predictive
+uncertainty estimation using deep ensembles. NeurIPS 30.</p></li>
+<li><p>MacKay, D. J. C. (1992). Information-based objective functions for active data selection.
+Neural Computation, 4(4), 590-604.</p></li>
+<li><p>Sacks, J., Welch, W. J., Mitchell, T. J. and Wynn, H. P. (1989). Design and analysis of
+computer experiments. Statistical Science, 4(4), 409-423.</p></li>
+<li><p>Vernon, I., Goldstein, M. and Bower, R. G. (2010). Galaxy formation: a Bayesian uncertainty
+analysis. Bayesian Analysis, 5(4), 619-669.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="sensitivity.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Sensitivity analysis</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="assimilation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Live data and data assimilation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#emulators">Emulators</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#from-an-experiment-s-results">From an experiment’s results</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-a-sensitivity-analysis">In a sensitivity analysis</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulations">Simulations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#active-learning">Active learning</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-many-runs-it-saves">How many runs it saves</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#history-matching">History matching</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-worked-example-an-age-structured-seir-epidemic">A worked example: an age-structured SEIR epidemic</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#seeds-and-executors">Seeds and executors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/emulators.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

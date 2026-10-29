@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WolfSheep · Modelly</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body data-state="idle" data-steps="0">
+  <header>
+    <h1>WolfSheep</h1>
+    <p id="status" role="status">Loading the page…</p>
+  </header>
+  <main>
+    <form id="panel">
+      <fieldset id="parameters"><legend>Parameters</legend></fieldset>
+      <fieldset>
+        <legend>Run</legend>
+        <label>Seed <input id="seed" type="number" step="1"></label>
+        <label>Steps <input id="steps" type="number" min="1" step="1"></label>
+        <label>Colour by <select id="colour"><option value="class">class</option></select></label>
+      </fieldset>
+      <div class="buttons">
+        <button type="button" id="start" hidden>Start Python</button>
+        <button type="button" id="reset" disabled>Reset</button>
+        <button type="button" id="step" disabled>Step</button>
+        <button type="button" id="run" disabled>Run</button>
+        <button type="button" id="stop" disabled>Stop</button>
+      </div>
+    </form>
+    <figure>
+      <canvas id="space" width="480" height="480" aria-label="Agents in space"></canvas>
+      <figcaption id="space-legend"></figcaption>
+    </figure>
+    <figure>
+      <canvas id="plot" width="480" height="300" aria-label="Model reporters over time"></canvas>
+      <figcaption id="plot-legend"></figcaption>
+    </figure>
+  </main>
+  <footer>
+    Made with <a href="https://remipelloux.github.io/Modelly/">Modelly</a>; Python runs in
+    this tab with <a href="https://pyodide.org/">Pyodide</a>. <span id="versions"></span>
+  </footer>
+</body>
+</html>

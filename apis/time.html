@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Time &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=02f2166e"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'apis/time';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/apis/time.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data" href="data.html" />
+    <link rel="prev" title="Synthetic populations" href="population.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="space.html">Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geo.html">Geospatial space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">Synthetic populations</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="behaviour.html">Behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenarios.html">Scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibrate.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="couple.html">Coupling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emulate.html">Emulate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">GPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diff.html">Differentiable models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viz.html">Viz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">Web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrate.html">Migrate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Lint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">LLM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zoo.html">Model zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distributed.html">Distributed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stream.html">Stream</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="api_main.html" class="nav-link">APIs</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Time</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="time">
+<h1>Time<a class="headerlink" href="#time" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.time</span></code> holds the event list, events and event generators, the scheduling methods of the
+model, and signals (observables that notify subscribers when they change).</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Module</p></th>
+<th class="head"><p>Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.time.events</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Event</span></code>, <code class="docutils literal notranslate"><span class="pre">EventList</span></code>, <code class="docutils literal notranslate"><span class="pre">EventGenerator</span></code>, <code class="docutils literal notranslate"><span class="pre">Schedule</span></code>, <code class="docutils literal notranslate"><span class="pre">Priority</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.time.schedule</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">HasSchedule</span></code>: <code class="docutils literal notranslate"><span class="pre">step</span></code>, <code class="docutils literal notranslate"><span class="pre">run_for</span></code>, <code class="docutils literal notranslate"><span class="pre">run_until</span></code>, <code class="docutils literal notranslate"><span class="pre">schedule_event</span></code>, <code class="docutils literal notranslate"><span class="pre">schedule_recurring</span></code> on the model</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.time.signals</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Observable</span></code>, <code class="docutils literal notranslate"><span class="pre">HasEmitters</span></code>, <code class="docutils literal notranslate"><span class="pre">computed_property</span></code>, <code class="docutils literal notranslate"><span class="pre">ObservableList</span></code>, the signal types</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="module-modelly.time.events.event">
+<span id="events"></span><h2>Events<a class="headerlink" href="#module-modelly.time.events.event" title="Link to this heading">#</a></h2>
+<p>Single simulation events and their priorities.</p>
+<ul class="simple">
+<li><p>Priority: An enumeration defining event priority levels (HIGH, DEFAULT, LOW)</p></li>
+<li><p>Event: A class representing individual events with timing and execution details</p></li>
+</ul>
+<p>Events hold a weak reference to their callable, so canceled or orphaned events do
+not keep agents alive.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.events.event.Priority">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Priority</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/events/event.html#Priority"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event.Priority" title="Link to this definition">#</a></dt>
+<dd><p>Enumeration of priority levels.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.events.event.Event">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.events.event.Priority" title="modelly.time.events.event.Priority"><span class="pre">Priority</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Priority.DEFAULT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/events/event.html#Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event.Event" title="Link to this definition">#</a></dt>
+<dd><p>A simulation event.</p>
+<p>The callable is wrapped using weakref, so there is no need to explicitly cancel event if e.g., an agent
+is removed from the simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The simulation time of the event</p></li>
+<li><p><strong>fn</strong> (<em>Callable</em>) – The function to execute for this event</p></li>
+<li><p><strong>priority</strong> (<a class="reference internal" href="#modelly.time.events.event.Priority" title="modelly.time.events.event.Priority"><em>Priority</em></a>) – The priority of the event</p></li>
+<li><p><strong>unique_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>)</p></li>
+<li><p><strong>list</strong><strong>[</strong><strong>Any</strong><strong>]</strong> (<em>function_args</em>) – Argument for the function</p></li>
+<li><p><strong>Any</strong><strong>]</strong> (<em>function_kwargs dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>,</em>) – Keyword arguments for the function</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Simulation events use a weak reference to the callable.
+If the callback no longer exists at execution time (e.g., because an agent
+has been removed), execution will fail silently.
+Lambda callbacks are rejected at Event creation.</p>
+<p>Initialize a simulation event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> – the instant of time of the simulation event</p></li>
+<li><p><strong>function</strong> – the callable to invoke</p></li>
+<li><p><strong>priority</strong> – the priority of the event</p></li>
+<li><p><strong>function_args</strong> – arguments for callable</p></li>
+<li><p><strong>function_kwargs</strong> – keyword arguments for the callable</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.event.Event.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/event.html#Event.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event.Event.execute" title="Link to this definition">#</a></dt>
+<dd><p>Execute this event.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.event.Event.cancel">
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/event.html#Event.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event.Event.cancel" title="Link to this definition">#</a></dt>
+<dd><p>Cancel this event.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.time.events.event_list">The event list: a heap-based priority queue of simulation events.</p>
+<p>Events are kept in chronological order, respecting priorities. Cancellation is
+lazy, so the heap invariant is never broken, and the heap compacts itself once
+canceled events dominate it. The heap itself is <code class="docutils literal notranslate"><span class="pre">modelly._native.events.EventHeap</span></code>:
+compiled when available, with an identical pure-Python twin.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.events.event_list.EventList">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">EventList</span></span><a class="reference internal" href="../_modules/modelly/time/events/event_list.html#EventList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event_list.EventList" title="Link to this definition">#</a></dt>
+<dd><p>An event list.</p>
+<p>This is a heap queue sorted list of events. Events are always removed from the left, so a binary heap is a
+performant and appropriate data structure. Events are sorted based on their time stamp, their priority, and
+their unique_id as a tie-breaker, guaranteeing a complete ordering.</p>
+<p>Canceling an event leaves it on the heap so the heap invariant is not broken.
+Models that repeatedly cancel and reschedule an event would therefore grow the
+heap without bound, so the list counts the canceled events it holds and rebuilds
+itself once they dominate. That count also makes len() an O(1) operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>COMPACTION_RATIO</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Fraction of canceled events above which the heap is
+rebuilt, which also bounds the peak heap at L / (1 - COMPACTION_RATIO)</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>An event belongs to one event list at a time. Adding the same event to a
+second list hands ownership over, and the first list’s count goes stale.
+An event’s time and priority must not change while it is on a list.</p>
+<p>Initialize an event list.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.event_list.EventList.add_event">
+<span class="sig-name descname"><span class="pre">add_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.events.event.Event" title="modelly.time.events.event.Event"><span class="pre">Event</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/events/event_list.html#EventList.add_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event_list.EventList.add_event" title="Link to this definition">#</a></dt>
+<dd><p>Add the event to the event list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<a class="reference internal" href="#modelly.time.events.event.Event" title="modelly.time.events.event.Event"><em>Event</em></a>) – The event to be added</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the event has already been canceled. Cancellation is
+    terminal, so such an event could never execute.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.event_list.EventList.peek_ahead">
+<span class="sig-name descname"><span class="pre">peek_ahead</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.time.events.event.Event" title="modelly.time.events.event.Event"><span class="pre">Event</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/time/events/event_list.html#EventList.peek_ahead"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event_list.EventList.peek_ahead" title="Link to this definition">#</a></dt>
+<dd><p>Look at the first n non-canceled event in the event list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The number of events to look ahead</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[Event]</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#IndexError" title="(in Python v3.15)"><strong>IndexError</strong></a> – If the eventlist is empty</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>this method can return a list shorted then n if the number of non-canceled events on the event list
+is less than n.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.event_list.EventList.pop_event">
+<span class="sig-name descname"><span class="pre">pop_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.time.events.event.Event" title="modelly.time.events.event.Event"><span class="pre">Event</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/event_list.html#EventList.pop_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event_list.EventList.pop_event" title="Link to this definition">#</a></dt>
+<dd><p>Pop the first element from the event list.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.event_list.EventList.compact">
+<span class="sig-name descname"><span class="pre">compact</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/event_list.html#EventList.compact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event_list.EventList.compact" title="Link to this definition">#</a></dt>
+<dd><p>Remove all canceled events from the heap and rebuild it.</p>
+<p>If there are many canceled events, compaction can speed up performance substantially.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.event_list.EventList.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/event_list.html#EventList.is_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event_list.EventList.is_empty" title="Link to this definition">#</a></dt>
+<dd><p>Return whether the event list is empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.event_list.EventList.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.events.event.Event" title="modelly.time.events.event.Event"><span class="pre">Event</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/event_list.html#EventList.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event_list.EventList.remove" title="Link to this definition">#</a></dt>
+<dd><p>Remove an event from the event list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<a class="reference internal" href="#modelly.time.events.event.Event" title="modelly.time.events.event.Event"><em>Event</em></a>) – The event to be removed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.event_list.EventList.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/event_list.html#EventList.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.event_list.EventList.clear" title="Link to this definition">#</a></dt>
+<dd><p>Clear the event list, detaching the events so a later cancel() is not counted.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.time.events.generator">Recurring events: a Schedule describes when, an EventGenerator makes it happen.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.events.generator.Schedule">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/events/generator.html#Schedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.generator.Schedule" title="Link to this definition">#</a></dt>
+<dd><p>Defines when something should happen repeatedly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em> | </em><em>Callable</em><em>[</em><em>[</em><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><em>Model</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>]</em>) – Time between executions (fixed value or callable returning value)</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> | </em><em>None</em>) – Absolute time to begin (None = use current model time + interval)</p></li>
+<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> | </em><em>None</em>) – Absolute time to stop (None = no end)</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em> | </em><em>None</em>) – Maximum executions (None = unlimited)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.events.generator.EventGenerator">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">EventGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.events.generator.Schedule" title="modelly.time.events.generator.Schedule"><span class="pre">Schedule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.events.event.Priority" title="modelly.time.events.event.Priority"><span class="pre">Priority</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Priority.DEFAULT</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/events/generator.html#EventGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.generator.EventGenerator" title="Link to this definition">#</a></dt>
+<dd><p>A generator that creates recurring events based on a Schedule.</p>
+<p>Unlike a single Event, an EventGenerator is persistent and can be
+stopped or configured with stop conditions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – The model this generator belongs to</p></li>
+<li><p><strong>function</strong> – The callable to execute for each generated event</p></li>
+<li><p><strong>schedule</strong> – The Schedule defining when events occur</p></li>
+<li><p><strong>priority</strong> – Priority level for generated events</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Event generators use a weak reference to the callable. Therefore, you cannot pass a lambda function in fn.
+A simulation event where the callable no longer exists (e.g., because the agent has been removed from the model)
+will fail silently. If you want to use functools.partial, please assign the partial function to a variable
+prior to creating the generator.</p>
+<p>Initialize an EventGenerator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – The model this generator belongs to</p></li>
+<li><p><strong>function</strong> – The callable to execute for each generated event.
+Use functools.partial to bind arguments.</p></li>
+<li><p><strong>schedule</strong> – The Schedule defining timing</p></li>
+<li><p><strong>priority</strong> – Priority level for generated events</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.time.events.generator.EventGenerator.is_active">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_active</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><a class="headerlink" href="#modelly.time.events.generator.EventGenerator.is_active" title="Link to this definition">#</a></dt>
+<dd><p>Return whether the generator is currently active.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.time.events.generator.EventGenerator.execution_count">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">execution_count</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#modelly.time.events.generator.EventGenerator.execution_count" title="Link to this definition">#</a></dt>
+<dd><p>Return the number of times this generator has executed.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.time.events.generator.EventGenerator.next_scheduled_time">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">next_scheduled_time</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><a class="headerlink" href="#modelly.time.events.generator.EventGenerator.next_scheduled_time" title="Link to this definition">#</a></dt>
+<dd><p>Return the time of the next scheduled execution, or None if not scheduled.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.generator.EventGenerator.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.time.events.generator.EventGenerator" title="modelly.time.events.generator.EventGenerator"><span class="pre">EventGenerator</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/generator.html#EventGenerator.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.generator.EventGenerator.start" title="Link to this definition">#</a></dt>
+<dd><p>Start the event generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Self for method chaining</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If schedule.start is in the past, e.g. when restarting
+    a stopped generator after its start time has passed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.generator.EventGenerator.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/generator.html#EventGenerator.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.generator.EventGenerator.stop" title="Link to this definition">#</a></dt>
+<dd><p>Stop the event generator immediately.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.generator.EventGenerator.pause">
+<span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/generator.html#EventGenerator.pause"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.generator.EventGenerator.pause" title="Link to this definition">#</a></dt>
+<dd><p>Pause the event generator temporarily.</p>
+<p>This cancels the currently scheduled event but keeps the generator
+active in the model. Execution can be resumed later using resume().</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.events.generator.EventGenerator.resume">
+<span class="sig-name descname"><span class="pre">resume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/events/generator.html#EventGenerator.resume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.events.generator.EventGenerator.resume" title="Link to this definition">#</a></dt>
+<dd><p>Resume a paused event generator.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="scheduling-on-the-model">
+<h2>Scheduling on the model<a class="headerlink" href="#scheduling-on-the-model" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Model</span></code> inherits these methods; they are also listed on the <a class="reference internal" href="core.html"><span class="std std-doc">Core</span></a> page.</p>
+<p id="module-modelly.time.schedule">Event scheduling and time advance for <a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">modelly.core.model.Model</span></code></a>.</p>
+<p>A mixin so the model file stays readable; every method here needs the
+model’s <code class="docutils literal notranslate"><span class="pre">_event_list</span></code>, <code class="docutils literal notranslate"><span class="pre">_event_generators</span></code>, <code class="docutils literal notranslate"><span class="pre">time</span></code> and signals.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.schedule.HasSchedule">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">HasSchedule</span></span><a class="reference internal" href="../_modules/modelly/time/schedule.html#HasSchedule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.schedule.HasSchedule" title="Link to this definition">#</a></dt>
+<dd><p>Scheduling, running and time advance, mixed into <code class="docutils literal notranslate"><span class="pre">Model</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.schedule.HasSchedule.schedule_event">
+<span class="sig-name descname"><span class="pre">schedule_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.events.event.Priority" title="modelly.time.events.event.Priority"><span class="pre">Priority</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Priority.DEFAULT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.time.events.event.Event" title="modelly.time.events.event.Event"><span class="pre">Event</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/schedule.html#HasSchedule.schedule_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.schedule.HasSchedule.schedule_event" title="Link to this definition">#</a></dt>
+<dd><p>Schedule a one-off event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> – The callable to execute</p></li>
+<li><p><strong>at</strong> – Absolute time to execute (mutually exclusive with after)</p></li>
+<li><p><strong>after</strong> – Relative time from now to execute (mutually exclusive with at)</p></li>
+<li><p><strong>priority</strong> – Priority level for the event</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The scheduled Event (can be used to cancel)</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If both or neither of at/after are specified</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If both or neither of at/after are specified, or if the scheduled time is in the past.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.schedule.HasSchedule.schedule_recurring">
+<span class="sig-name descname"><span class="pre">schedule_recurring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">schedule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.events.generator.Schedule" title="modelly.time.events.generator.Schedule"><span class="pre">Schedule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.events.event.Priority" title="modelly.time.events.event.Priority"><span class="pre">Priority</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Priority.DEFAULT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.time.events.generator.EventGenerator" title="modelly.time.events.generator.EventGenerator"><span class="pre">EventGenerator</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/schedule.html#HasSchedule.schedule_recurring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.schedule.HasSchedule.schedule_recurring" title="Link to this definition">#</a></dt>
+<dd><p>Schedule a recurring event based on a Schedule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> – The callable to execute repeatedly</p></li>
+<li><p><strong>schedule</strong> – The Schedule defining when events occur</p></li>
+<li><p><strong>priority</strong> – Priority level for generated events</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The EventGenerator (can be used to stop)</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the schedule start time is in the past.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.schedule.HasSchedule.run_for">
+<span class="sig-name descname"><span class="pre">run_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/schedule.html#HasSchedule.run_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.schedule.HasSchedule.run_for" title="Link to this definition">#</a></dt>
+<dd><p>Run the model for the specified duration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>duration</strong> – Time units to advance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.schedule.HasSchedule.run_until">
+<span class="sig-name descname"><span class="pre">run_until</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/schedule.html#HasSchedule.run_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.schedule.HasSchedule.run_until" title="Link to this definition">#</a></dt>
+<dd><p>Run the model until the specified time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>end_time</strong> – Absolute time to run until</p>
+</dd>
+</dl>
+<p>If model.time is larger than end_time, the method returns directly.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="signals">
+<h2>Signals<a class="headerlink" href="#signals" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">HasEmitters</span></code> takes its subscription methods (<code class="docutils literal notranslate"><span class="pre">observe</span></code>, <code class="docutils literal notranslate"><span class="pre">unobserve</span></code>, <code class="docutils literal notranslate"><span class="pre">observe_class</span></code>, …)
+from <code class="docutils literal notranslate"><span class="pre">modelly.time.signals.subscriptions</span></code>; they are listed under <code class="docutils literal notranslate"><span class="pre">HasEmitters</span></code>.</p>
+<p id="module-modelly.time.signals.core">Core implementation of Modelly’s reactive programming system.</p>
+<p>This module provides the foundational classes for Modelly’s observable/reactive programming
+functionality:</p>
+<ul class="simple">
+<li><p>BaseObservable: Abstract base class defining the interface for all observables</p></li>
+<li><p>Observable: Main class for creating observable properties that emit change signals</p></li>
+<li><p>computed_property: Decorator for creating properties that automatically update based on dependencies</p></li>
+<li><p>HasEmitters: Mixin class that enables an object to contain and manage observables</p></li>
+<li><p>emit: Decorator for methods that emit signals</p></li>
+</ul>
+<p>The module implements a robust reactive system where changes to observable properties
+automatically trigger updates to dependent computed values and notify subscribed
+observers. This enables building models with complex interdependencies while maintaining
+clean separation of concerns.</p>
+<p>It also owns the dependency-tracking state (CURRENT_COMPUTED, PROCESSING_SIGNALS),
+so everything that reads or rebinds that state is defined here.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.core.BaseObservable">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">BaseObservable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fallback_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/core.html#BaseObservable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.core.BaseObservable" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Base class for all Observables.</p>
+<p>Initialize a BaseObservable.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelly.time.signals.core.BaseObservable.signal_types">
+<span class="sig-name descname"><span class="pre">signal_types</span></span><a class="headerlink" href="#modelly.time.signals.core.BaseObservable.signal_types" title="Link to this definition">#</a></dt>
+<dd><p>alias of <a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalType</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.core.Observable">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Observable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fallback_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/core.html#Observable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.core.Observable" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelly.time.signals.core.BaseObservable" title="modelly.time.signals.core.BaseObservable"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseObservable</span></code></a></p>
+<p>Observable descriptor.</p>
+<p>An observable is an attribute that emits ObservableSignals.CHANGED whenever it is changed to a different value.</p>
+<p>Initialize a BaseObservable.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelly.time.signals.core.Observable.signal_types">
+<span class="sig-name descname"><span class="pre">signal_types</span></span><a class="headerlink" href="#modelly.time.signals.core.Observable.signal_types" title="Link to this definition">#</a></dt>
+<dd><p>alias of <a class="reference internal" href="#modelly.time.signals.types.ObservableSignals" title="modelly.time.signals.types.ObservableSignals"><code class="xref py py-class docutils literal notranslate"><span class="pre">ObservableSignals</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.time.signals.core.computed_property">
+<span class="sig-name descname"><span class="pre">computed_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#property" title="(in Python v3.15)"><span class="pre">property</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/signals/core.html#computed_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.core.computed_property" title="Link to this definition">#</a></dt>
+<dd><p>Decorator to create a computed property.</p>
+<p>Acts like &#64;property, but automatically tracks dependencies (Observables)
+accessed during the function execution and updates them using a diffing engine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – The function to be decorated.</p></li>
+<li><p><strong>dependencies</strong> – Optional iterable of (observable_name, signal_type) tuples to explicitly track.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.core.ComputedState">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ComputedState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">owner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.signals.emitters.HasEmitters" title="modelly.time.signals.emitters.HasEmitters"><span class="pre">HasEmitters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/core.html#ComputedState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.core.ComputedState" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelly.time.signals.computed.ComputedStateBase" title="modelly.time.signals.computed.ComputedStateBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputedStateBase</span></code></a></p>
+<p>Internal class to hold the state of a computed property for a specific instance.</p>
+<p>Initialize a ComputedState.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> – the HasEmitters instance on which this state is defined</p></li>
+<li><p><strong>name</strong> – the name of the computed property</p></li>
+<li><p><strong>func</strong> – the computation function</p></li>
+<li><p><strong>dependencies</strong> – optional iterable of explicit dependencies to track</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.core.ComputedState.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/signals/core.html#ComputedState.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.core.ComputedState.evaluate" title="Link to this definition">#</a></dt>
+<dd><p>Recompute the value by calling self.func, tracking dependencies as it runs.</p>
+<p>Any Observable read during the call is recorded as a dependency, and
+subscriptions are updated so this state is marked dirty again when
+one of them changes. On success, value is updated and is_dirty is
+cleared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#Exception" title="(in Python v3.15)"><strong>Exception</strong></a> – Any exception raised by self.func propagates
+    unchanged. parents is restored to its prior state and
+    is_dirty is left set, so the caller may retry later.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The newly computed value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.time.signals.emitters">Objects that emit signals: the HasEmitters mixin and the emit decorator.</p>
+<p>HasEmitters discovers the observables defined on a class and sends their signals
+to weakly referenced subscribers. Registering subscribers is inherited from
+SubscriptionMixin. The emit decorator turns a method into a signal source.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">HasEmitters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/emitters.html#HasEmitters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters" title="Link to this definition">#</a></dt>
+<dd><p>HasEmitters class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subscribers</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><em>modelly.time.signals.util.SignalType</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/weakref.html#weakref.ReferenceType" title="(in Python v3.15)"><em>weakref.ReferenceType</em></a><em>]</em><em>]</em>) – mapping of observables/emitters and signal type to subscribers</p></li>
+<li><p><strong>observables</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><em>type</em></a><em>[</em><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><em>modelly.time.signals.util.SignalType</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#frozenset" title="(in Python v3.15)"><em>frozenset</em></a><em>[</em><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><em>modelly.time.signals.util.SignalType</em></a><em>]</em><em>]</em>) – mapping of observables/emitters to their available signal types</p></li>
+</ul>
+</dd>
+</dl>
+<p>HasEmitters automatically discovers the observables/emitters defined on the class.</p>
+<p>Initialize a HasEmitters.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters.notify">
+<span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/emitters.html#HasEmitters.notify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters.notify" title="Link to this definition">#</a></dt>
+<dd><p>Emit a signal.</p>
+<p>Inside a batch the signal is captured by the batch. Otherwise it is only
+built and sent when the observable has live subscribers, and sending it
+prunes subscribers that are no longer alive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>observable</strong> – the public name of the observable emitting the signal</p></li>
+<li><p><strong>signal_type</strong> – the type of signal to emit</p></li>
+<li><p><strong>kwargs</strong> – additional keyword arguments to include in the signal</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters.batch">
+<span class="sig-name descname"><span class="pre">batch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/emitters.html#HasEmitters.batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters.batch" title="Link to this definition">#</a></dt>
+<dd><p>Return a context manager that batches signals.</p>
+<p>Signals emitted during the batch are buffered and aggregated on exit.
+Nested batches merge into the outer batch; only the outermost dispatches.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Computed properties may return stale cached values during the batch.
+They will be updated when aggregated signals are dispatched on exit.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters.suppress">
+<span class="sig-name descname"><span class="pre">suppress</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/emitters.html#HasEmitters.suppress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters.suppress" title="Link to this definition">#</a></dt>
+<dd><p>Return a context manager that suppresses all signals.</p>
+<p>No signals are emitted, buffered, or dispatched during suppression.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Computed properties may become permanently stale because their
+triggering signals are dropped entirely.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters.peek">
+<span class="sig-name descname"><span class="pre">peek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/modelly/time/signals/emitters.html#HasEmitters.peek"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters.peek" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve an attribute without registering it in the dependency graph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters.clear_all_class_subscriptions">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">clear_all_class_subscriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_AllSentinel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters.clear_all_class_subscriptions" title="Link to this definition">#</a></dt>
+<dd><p>Clears all class-level subscriptions for the observable &lt;name&gt;.</p>
+<p>if name is ALL, all subscriptions are removed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – name of the Observable to unsubscribe for all signal types</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters.clear_all_subscriptions">
+<span class="sig-name descname"><span class="pre">clear_all_subscriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_AllSentinel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters.clear_all_subscriptions" title="Link to this definition">#</a></dt>
+<dd><p>Clears all instance-level subscriptions for the observable &lt;name&gt;.</p>
+<p>if name is ALL, all subscriptions are removed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – name of the Observable to unsubscribe for all signal types</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters.observe">
+<span class="sig-name descname"><span class="pre">observe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_AllSentinel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_AllSentinel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters.observe" title="Link to this definition">#</a></dt>
+<dd><p>Subscribe to the Observable &lt;name&gt; for signal_type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>observable_name</strong> – name of the Observable to subscribe to</p></li>
+<li><p><strong>signal_type</strong> – the type of signal on the Observable to subscribe to</p></li>
+<li><p><strong>handler</strong> – the handler to call</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if the Observable &lt;name&gt; is not registered or if the Observable</p></li>
+<li><p><strong>does not emit the given signal_type</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters.observe_class">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">observe_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_AllSentinel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_AllSentinel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters.observe_class" title="Link to this definition">#</a></dt>
+<dd><p>Subscribe at the class level to the Observable &lt;name&gt; for signal_type.</p>
+<p>All instances of this class will trigger the handler when they emit this signal.
+Handlers are stored as weak references to prevent memory leaks during experiments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>observable_name</strong> – name of the Observable to subscribe to</p></li>
+<li><p><strong>signal_type</strong> – the type of signal on the Observable to subscribe to</p></li>
+<li><p><strong>handler</strong> – the handler to call</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters.unobserve">
+<span class="sig-name descname"><span class="pre">unobserve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_AllSentinel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_AllSentinel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters.unobserve" title="Link to this definition">#</a></dt>
+<dd><p>Unsubscribe to the Observable &lt;name&gt; for signal_type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>observable_name</strong> – name of the Observable to unsubscribe from</p></li>
+<li><p><strong>signal_type</strong> – the type of signal on the Observable to unsubscribe to</p></li>
+<li><p><strong>handler</strong> – the handler that is unsubscribing</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.HasEmitters.unobserve_class">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">unobserve_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_AllSentinel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_AllSentinel</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modelly.time.signals.emitters.HasEmitters.unobserve_class" title="Link to this definition">#</a></dt>
+<dd><p>Unsubscribe at the class level to the Observable &lt;name&gt; for signal_type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>observable_name</strong> – name of the Observable to unsubscribe from</p></li>
+<li><p><strong>signal_type</strong> – the type of signal on the Observable to unsubscribe to</p></li>
+<li><p><strong>handler</strong> – the handler that is unsubscribing</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.descriptor_generator">
+<span class="sig-name descname"><span class="pre">descriptor_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.15)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#frozenset" title="(in Python v3.15)"><span class="pre">frozenset</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/time/signals/emitters.html#descriptor_generator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.emitters.descriptor_generator" title="Link to this definition">#</a></dt>
+<dd><p>Yield the name and signal_types for each Observable defined on cls.</p>
+<p>This handles both legacy BaseObservable descriptors and new &#64;computed_properties.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.time.signals.emitters.emit">
+<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_to_emit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.15)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'before'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'after'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'after'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/emitters.html#emit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.emitters.emit" title="Link to this definition">#</a></dt>
+<dd><p>Decorator to emit a signal before or after the call to method (HasEmitters only).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>observable_name</strong> – the name of the observable that emits the signal</p></li>
+<li><p><strong>signal_to_emit</strong> – the signal to emit</p></li>
+<li><p><strong>when</strong> – whether to emit the signal before or after the function call.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p id="module-modelly.time.signals.computed">Dependency bookkeeping for computed properties.</p>
+<p>These helpers keep a ComputedState’s subscriptions in step with the observables
+it reads. They hold no tracking state themselves: the currently evaluating
+computed lives in <code class="docutils literal notranslate"><span class="pre">modelly.time.signals.core</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.computed.ComputedProperty">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ComputedProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fdel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/computed.html#ComputedProperty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.computed.ComputedProperty" title="Link to this definition">#</a></dt>
+<dd><p>A custom property class to identify computed properties.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelly.time.signals.computed.ComputedProperty.signal_types">
+<span class="sig-name descname"><span class="pre">signal_types</span></span><a class="headerlink" href="#modelly.time.signals.computed.ComputedProperty.signal_types" title="Link to this definition">#</a></dt>
+<dd><p>alias of <a class="reference internal" href="#modelly.time.signals.types.ObservableSignals" title="modelly.time.signals.types.ObservableSignals"><code class="xref py py-class docutils literal notranslate"><span class="pre">ObservableSignals</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.computed.ComputedStateBase">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ComputedStateBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">owner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.signals.emitters.HasEmitters" title="modelly.time.signals.emitters.HasEmitters"><span class="pre">HasEmitters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/computed.html#ComputedStateBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.computed.ComputedStateBase" title="Link to this definition">#</a></dt>
+<dd><p>The per-instance data of a computed property; core.ComputedState adds evaluation.</p>
+<p>Initialize a ComputedState.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> – the HasEmitters instance on which this state is defined</p></li>
+<li><p><strong>name</strong> – the name of the computed property</p></li>
+<li><p><strong>func</strong> – the computation function</p></li>
+<li><p><strong>dependencies</strong> – optional iterable of explicit dependencies to track</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p id="module-modelly.time.signals.collections">Observable collection types that emit signals when modified.</p>
+<p>This module extends Modelly’s reactive programming capabilities to collection types like
+lists. Observable collections emit signals when items are added, removed, or modified,
+allowing other components to react to changes in the collection’s contents.</p>
+<p>The module provides:
+- ListSignals: Enum defining signal types for list collections
+- ObservableList: A list descriptor that emits signals on modifications
+- SignalingList: The underlying list implementation that manages signal emission</p>
+<p>These classes enable building models where components need to track and react to
+changes in collections of agents, resources, or other model elements.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.collections.ObservableList">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ObservableList</span></span><a class="reference internal" href="../_modules/modelly/time/signals/collections.html#ObservableList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.collections.ObservableList" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelly.time.signals.core.BaseObservable" title="modelly.time.signals.core.BaseObservable"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseObservable</span></code></a></p>
+<p>An ObservableList that emits signals on changes to the underlying list.</p>
+<p>Initialize the ObservableList.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelly.time.signals.collections.ObservableList.signal_types">
+<span class="sig-name descname"><span class="pre">signal_types</span></span><a class="headerlink" href="#modelly.time.signals.collections.ObservableList.signal_types" title="Link to this definition">#</a></dt>
+<dd><p>alias of <a class="reference internal" href="#modelly.time.signals.types.ListSignals" title="modelly.time.signals.types.ListSignals"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListSignals</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.time.signals.batching">Batching and suppression of signals for modelly signals.</p>
+<p>This module provides context managers for controlling signal dispatch:</p>
+<ul class="simple">
+<li><p>batch(): Buffers signals and dispatches aggregated results on exit</p></li>
+<li><p>suppress(): Silently drops all signals during the context</p></li>
+</ul>
+<p>Both batch() and suppress() are used as context managers within HasEmitters. They only
+batch or suppress signals emitted by the instance within which they are invoked.</p>
+<p>It also provides a functools.singledispatch aggregation system for different signal types, making
+it easy for users to add aggregations for their own custom signal types:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@aggregate</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MySignalType</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_my_aggregate</span><span class="p">(</span><span class="n">signal_type</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>During a batch, computed properties may return stale cached values because
+their triggering signals are deferred. At flush, aggregated signals dispatch
+normally and mark computed properties dirty.</p>
+<p>During suppress, computed properties may become permanently stale because
+their triggering signals are dropped entirely.]]</p>
+<p>&#64;aggregate.register is global to the python process, and it’s non-trivial
+to remove it, although you can overwrite it. See also functools.singledispatch for
+more details.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.time.signals.batching.aggregate">
+<span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.time.signals.util.Message" title="modelly.time.signals.util.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.time.signals.util.Message" title="modelly.time.signals.util.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/time/signals/batching.html#aggregate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.batching.aggregate" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.signals.types.ObservableSignals" title="modelly.time.signals.types.ObservableSignals"><span class="pre">ObservableSignals</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.time.signals.util.Message" title="modelly.time.signals.util.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.time.signals.util.Message" title="modelly.time.signals.util.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.signals.types.ListSignals" title="modelly.time.signals.types.ListSignals"><span class="pre">ListSignals</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.time.signals.util.Message" title="modelly.time.signals.util.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.time.signals.util.Message" title="modelly.time.signals.util.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Default aggregation: keep all signals as-is.</p>
+<p>Users can register custom aggregators for their own signal types:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@aggregate</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">MySignalType</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_my_aggregate</span><span class="p">(</span><span class="n">signal_type</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>we need signal_type as the first argument because that is
+how singledispatch can determine which handler to call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal_type</strong> – the type of signal (used for dispatch)</p></li>
+<li><p><strong>signals</strong> – list of buffered Message objects</p></li>
+<li><p><strong>value</strong> – the attribute value captured at the time of the first signal, or None if not captured</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of Message objects to dispatch</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p id="module-modelly.time.signals.types">Signal types.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.types.ObservableSignals">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ObservableSignals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/types.html#ObservableSignals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.types.ObservableSignals" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalType</span></code></a></p>
+<p>Enumeration of signal types that observables can emit.</p>
+<p>This enum provides type-safe signal type definitions with IDE autocomplete support.
+Inherits from str for backward compatibility with existing string-based code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>CHANGED</strong> – Emitted when an observable’s value changes.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.time.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">Observable</span><span class="p">,</span> <span class="n">HasEmitters</span><span class="p">,</span> <span class="n">ObservableSignals</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">HasEmitters</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">value</span> <span class="o">=</span> <span class="n">Observable</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">handler</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">additional_kwargs</span><span class="p">[</span><span class="s2">"new"</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">"value"</span><span class="p">,</span> <span class="n">ObservableSignals</span><span class="o">.</span><span class="n">CHANGED</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>String-based signal types are still supported for backward compatibility:
+&gt;&gt;&gt; model.observe(“value”, “changed”, handler)  # Still works</p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.types.ListSignals">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ListSignals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/types.html#ListSignals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.types.ListSignals" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalType</span></code></a></p>
+<p>Enumeration of signal types that observable lists can emit.</p>
+<p>Provides list-specific signal types with IDE autocomplete and type safety.
+Inherits from str for backward compatibility with existing string-based code.
+Includes all list-specific signals (INSERTED, APPENDED, REMOVED, REPLACED) plus
+a SET signal for when the entire list is modified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>SET</strong> – Emitted when the list itself is replaced/assigned.</p></li>
+<li><p><strong>INSERTED</strong> – Emitted when an item is inserted into the list.</p></li>
+<li><p><strong>APPENDED</strong> – Emitted when an item is appended to the list.</p></li>
+<li><p><strong>REMOVED</strong> – Emitted when an item is removed from the list.</p></li>
+<li><p><strong>REPLACED</strong> – Emitted when an item is replaced/modified in the list.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.time.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">ObservableList</span><span class="p">,</span> <span class="n">HasEmitters</span><span class="p">,</span> <span class="n">ListSignals</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">HasEmitters</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">items</span> <span class="o">=</span> <span class="n">ObservableList</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">handler</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Inserted </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">additional_kwargs</span><span class="p">[</span><span class="s1">'new'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">"items"</span><span class="p">,</span> <span class="n">ListSignals</span><span class="o">.</span><span class="n">INSERTED</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"first"</span><span class="p">)</span>
+<span class="go">Inserted first</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>String-based signal types are still supported for backward compatibility:
+&gt;&gt;&gt; model.observe(“items”, “inserted”, handler)  # Still works</p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.types.ModelSignals">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ModelSignals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/types.html#ModelSignals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.types.ModelSignals" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalType</span></code></a></p>
+<p>Signal types for model-level events.</p>
+</dd></dl>
+
+<p id="module-modelly.time.signals.util">Utility functions and classes for Modelly’s signals implementation.</p>
+<p>This module provides helper functionality used by Modelly’s reactive programming system:</p>
+<ul class="simple">
+<li><p>Message: a dataclass containing information about a signal change</p></li>
+<li><p>SignalType: root enum defining the types of signals that can be emitted</p></li>
+<li><p>create_weakref: Helper function to properly create weak references to different types</p></li>
+<li><p>_AllSentinel class for subscribing to all signals or all observables</p></li>
+</ul>
+<p>These utilities support the core signals implementation by providing reference
+management and convenient data structures used throughout the reactive system.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.util.Message">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.time.signals.util.SignalType" title="modelly.time.signals.util.SignalType"><span class="pre">SignalType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/util.html#Message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.util.Message" title="Link to this definition">#</a></dt>
+<dd><p>A message class containing information about a signal change.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.time.signals.util.SignalType">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">SignalType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_class_name</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/util.html#SignalType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.util.SignalType" title="Link to this definition">#</a></dt>
+<dd><p>Root class for all signal type enums.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.time.signals.util.create_weakref">
+<span class="sig-name descname"><span class="pre">create_weakref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/time/signals/util.html#create_weakref"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.time.signals.util.create_weakref" title="Link to this definition">#</a></dt>
+<dd><p>Helper function to create a correct weakref for any item.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="population.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Synthetic populations</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="data.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.time.events.event">Events</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event.Priority"><code class="docutils literal notranslate"><span class="pre">Priority</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event.Event"><code class="docutils literal notranslate"><span class="pre">Event</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event.Event.execute"><code class="docutils literal notranslate"><span class="pre">Event.execute()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event.Event.cancel"><code class="docutils literal notranslate"><span class="pre">Event.cancel()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event_list.EventList"><code class="docutils literal notranslate"><span class="pre">EventList</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event_list.EventList.add_event"><code class="docutils literal notranslate"><span class="pre">EventList.add_event()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event_list.EventList.peek_ahead"><code class="docutils literal notranslate"><span class="pre">EventList.peek_ahead()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event_list.EventList.pop_event"><code class="docutils literal notranslate"><span class="pre">EventList.pop_event()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event_list.EventList.compact"><code class="docutils literal notranslate"><span class="pre">EventList.compact()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event_list.EventList.is_empty"><code class="docutils literal notranslate"><span class="pre">EventList.is_empty()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event_list.EventList.remove"><code class="docutils literal notranslate"><span class="pre">EventList.remove()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.event_list.EventList.clear"><code class="docutils literal notranslate"><span class="pre">EventList.clear()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.generator.Schedule"><code class="docutils literal notranslate"><span class="pre">Schedule</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.generator.EventGenerator"><code class="docutils literal notranslate"><span class="pre">EventGenerator</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.generator.EventGenerator.is_active"><code class="docutils literal notranslate"><span class="pre">EventGenerator.is_active</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.generator.EventGenerator.execution_count"><code class="docutils literal notranslate"><span class="pre">EventGenerator.execution_count</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.generator.EventGenerator.next_scheduled_time"><code class="docutils literal notranslate"><span class="pre">EventGenerator.next_scheduled_time</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.generator.EventGenerator.start"><code class="docutils literal notranslate"><span class="pre">EventGenerator.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.generator.EventGenerator.stop"><code class="docutils literal notranslate"><span class="pre">EventGenerator.stop()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.generator.EventGenerator.pause"><code class="docutils literal notranslate"><span class="pre">EventGenerator.pause()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.events.generator.EventGenerator.resume"><code class="docutils literal notranslate"><span class="pre">EventGenerator.resume()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduling-on-the-model">Scheduling on the model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.schedule.HasSchedule"><code class="docutils literal notranslate"><span class="pre">HasSchedule</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.schedule.HasSchedule.schedule_event"><code class="docutils literal notranslate"><span class="pre">HasSchedule.schedule_event()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.schedule.HasSchedule.schedule_recurring"><code class="docutils literal notranslate"><span class="pre">HasSchedule.schedule_recurring()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.schedule.HasSchedule.run_for"><code class="docutils literal notranslate"><span class="pre">HasSchedule.run_for()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.schedule.HasSchedule.run_until"><code class="docutils literal notranslate"><span class="pre">HasSchedule.run_until()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#signals">Signals</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.core.BaseObservable"><code class="docutils literal notranslate"><span class="pre">BaseObservable</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.core.BaseObservable.signal_types"><code class="docutils literal notranslate"><span class="pre">BaseObservable.signal_types</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.core.Observable"><code class="docutils literal notranslate"><span class="pre">Observable</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.core.Observable.signal_types"><code class="docutils literal notranslate"><span class="pre">Observable.signal_types</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.core.computed_property"><code class="docutils literal notranslate"><span class="pre">computed_property()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.core.ComputedState"><code class="docutils literal notranslate"><span class="pre">ComputedState</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.core.ComputedState.evaluate"><code class="docutils literal notranslate"><span class="pre">ComputedState.evaluate()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters"><code class="docutils literal notranslate"><span class="pre">HasEmitters</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters.notify"><code class="docutils literal notranslate"><span class="pre">HasEmitters.notify()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters.batch"><code class="docutils literal notranslate"><span class="pre">HasEmitters.batch()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters.suppress"><code class="docutils literal notranslate"><span class="pre">HasEmitters.suppress()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters.peek"><code class="docutils literal notranslate"><span class="pre">HasEmitters.peek()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters.clear_all_class_subscriptions"><code class="docutils literal notranslate"><span class="pre">HasEmitters.clear_all_class_subscriptions()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters.clear_all_subscriptions"><code class="docutils literal notranslate"><span class="pre">HasEmitters.clear_all_subscriptions()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters.observe"><code class="docutils literal notranslate"><span class="pre">HasEmitters.observe()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters.observe_class"><code class="docutils literal notranslate"><span class="pre">HasEmitters.observe_class()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters.unobserve"><code class="docutils literal notranslate"><span class="pre">HasEmitters.unobserve()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.HasEmitters.unobserve_class"><code class="docutils literal notranslate"><span class="pre">HasEmitters.unobserve_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.descriptor_generator"><code class="docutils literal notranslate"><span class="pre">descriptor_generator()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.emitters.emit"><code class="docutils literal notranslate"><span class="pre">emit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.computed.ComputedProperty"><code class="docutils literal notranslate"><span class="pre">ComputedProperty</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.computed.ComputedProperty.signal_types"><code class="docutils literal notranslate"><span class="pre">ComputedProperty.signal_types</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.computed.ComputedStateBase"><code class="docutils literal notranslate"><span class="pre">ComputedStateBase</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.collections.ObservableList"><code class="docutils literal notranslate"><span class="pre">ObservableList</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.collections.ObservableList.signal_types"><code class="docutils literal notranslate"><span class="pre">ObservableList.signal_types</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.batching.aggregate"><code class="docutils literal notranslate"><span class="pre">aggregate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.types.ObservableSignals"><code class="docutils literal notranslate"><span class="pre">ObservableSignals</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.types.ListSignals"><code class="docutils literal notranslate"><span class="pre">ListSignals</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.types.ModelSignals"><code class="docutils literal notranslate"><span class="pre">ModelSignals</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.util.Message"><code class="docutils literal notranslate"><span class="pre">Message</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.util.SignalType"><code class="docutils literal notranslate"><span class="pre">SignalType</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.time.signals.util.create_weakref"><code class="docutils literal notranslate"><span class="pre">create_weakref()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/apis/time.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

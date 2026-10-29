@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>GPU arrays &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=02f2166e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gpu';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/gpu.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="From laptop to cluster" href="distributed.html" />
+    <link rel="prev" title="Vectorised step phases: when a loop over agents is an array operation" href="vectorised_phases.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="performance.html">Performance audit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vectorised_phases.html">Vectorised step phases</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">GPU arrays</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distributed.html">From laptop to cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="determinism.html">Determinism and platforms</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="scale.html" class="nav-link">Performance and scale</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">GPU arrays</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="gpu-arrays">
+<h1>GPU arrays<a class="headerlink" href="#gpu-arrays" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.gpu</span></code> runs the array side of a model (column phases, cohort tables and the operators of
+a cell space) on a GPU, with one setting, and draws the same random numbers there as on the
+CPU. The agents stay Python objects on the host; their columns are copied to the device, the
+step phases run there, and the results come back when the agents need them.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backend</p></th>
+<th class="head"><p>Where it runs</p></th>
+<th class="head"><p>Install</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">numpy</span></code></p></td>
+<td><p>the CPU, always; the fallback of every GPU path</p></td>
+<td><p>nothing</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cupy</span></code></p></td>
+<td><p>NVIDIA GPUs through CUDA, Linux and Windows</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;modelly-abm[gpu]&quot;</span></code> (CuPy wheels bundle the CUDA runtime; only the driver is needed)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">jax</span></code></p></td>
+<td><p>CPU everywhere; CUDA on Linux and Windows; Metal on macOS where <code class="docutils literal notranslate"><span class="pre">jax-metal</span></code> supports it</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;modelly-abm[diff]&quot;</span></code>, plus <code class="docutils literal notranslate"><span class="pre">&quot;jax[cuda13]&quot;</span></code> for NVIDIA or <code class="docutils literal notranslate"><span class="pre">jax-metal</span></code> for Apple GPUs</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Metal has not been tested in Modelly’s own runs: the JAX path uses only operations every JAX
+backend has, but no Apple GPU was available to check it.</p>
+<section id="one-setting">
+<h2>One setting<a class="headerlink" href="#one-setting" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.gpu</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_backend</span>
+
+<span class="n">backend</span> <span class="o">=</span> <span class="n">get_backend</span><span class="p">(</span><span class="s2">"cupy"</span><span class="p">)</span>  <span class="c1"># or "jax", "numpy", "auto" (a GPU backend if one loads)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">get_backend()</span></code> without a name reads the <code class="docutils literal notranslate"><span class="pre">MODELLY_BACKEND</span></code> environment variable (numpy when it
+is unset), so the same script runs on a laptop and on a GPU machine:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">MODELLY_BACKEND</span><span class="o">=</span>cupy<span class="w"> </span>python<span class="w"> </span>run.py
+</pre></div>
+</div>
+<p>A backend that cannot load (no CuPy, no device) falls back to numpy with a
+<code class="docutils literal notranslate"><span class="pre">BackendFallbackWarning</span></code>; <code class="docutils literal notranslate"><span class="pre">get_backend(name,</span> <span class="pre">strict=True)</span></code> raises instead. <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">modelly</span></code> and
+the numpy backend import neither CuPy nor JAX, and nothing in the CPU column code changed: a
+model that does not ask for a GPU runs exactly as before.</p>
+</section>
+<section id="a-column-phase-on-the-gpu">
+<h2>A column phase on the GPU<a class="headerlink" href="#a-column-phase-on-the-gpu" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">modelly-gpu</span></code> variant of the grid epidemic playbook
+(<code class="docutils literal notranslate"><span class="pre">benchmarks/playbooks/grid_epidemic/modelly_gpu.py</span></code>) is the column variant with its step on
+the device:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.gpu</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeviceCellIndex</span><span class="p">,</span> <span class="n">DeviceTable</span><span class="p">,</span> <span class="n">PhiloxStream</span><span class="p">,</span> <span class="n">get_backend</span>
+
+<span class="n">backend</span> <span class="o">=</span> <span class="n">get_backend</span><span class="p">()</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">PhiloxStream</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+<span class="n">cells</span> <span class="o">=</span> <span class="n">DeviceCellIndex</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>  <span class="c1"># the grid's adjacency, once</span>
+<span class="n">people</span> <span class="o">=</span> <span class="n">DeviceTable</span><span class="o">.</span><span class="n">from_columns</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">Person</span><span class="p">],</span> <span class="n">stream</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">():</span>
+    <span class="n">xp</span> <span class="o">=</span> <span class="n">people</span><span class="o">.</span><span class="n">xp</span>  <span class="c1"># numpy, cupy or jax.numpy</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cells</span><span class="o">.</span><span class="n">random_neighbor</span><span class="p">(</span><span class="n">people</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span>  <span class="c1"># a random walk on the grid</span>
+    <span class="n">people</span><span class="o">.</span><span class="n">row</span> <span class="o">=</span> <span class="n">rows</span>
+    <span class="n">infected</span> <span class="o">=</span> <span class="n">people</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">I</span>
+    <span class="n">exposure</span> <span class="o">=</span> <span class="n">cells</span><span class="o">.</span><span class="n">counts</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">infected</span><span class="p">)[</span><span class="n">rows</span><span class="p">]</span>  <span class="c1"># infected cellmates</span>
+    <span class="n">catches</span> <span class="o">=</span> <span class="p">(</span><span class="n">people</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">S</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">people</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">infect</span><span class="p">[</span><span class="n">exposure</span><span class="p">])</span>
+    <span class="n">people</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">catches</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">people</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+
+
+<span class="n">people</span><span class="o">.</span><span class="n">write_to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span>  <span class="c1"># back to the agents</span>
+</pre></div>
+</div>
+<p>Updates are functional: <code class="docutils literal notranslate"><span class="pre">people.state</span> <span class="pre">=</span> <span class="pre">...</span></code> replaces the column, because JAX arrays cannot be
+written in place. The population is fixed while the columns are on the device; add and remove
+agents on the host table and copy again.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Host</p></th>
+<th class="head"><p>Device</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ColumnTable</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DeviceTable</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">draw</span></code>, <code class="docutils literal notranslate"><span class="pre">thin</span></code>, <code class="docutils literal notranslate"><span class="pre">set_where</span></code>, <code class="docutils literal notranslate"><span class="pre">write_to</span></code>, <code class="docutils literal notranslate"><span class="pre">to_dataframe</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CohortTable</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DeviceCohortTable</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">add</span></code>, <code class="docutils literal notranslate"><span class="pre">thin</span></code>, <code class="docutils literal notranslate"><span class="pre">draw</span></code>, <code class="docutils literal notranslate"><span class="pre">split</span></code>, <code class="docutils literal notranslate"><span class="pre">compact</span></code>, <code class="docutils literal notranslate"><span class="pre">merge</span></code>, <code class="docutils literal notranslate"><span class="pre">total</span></code>, <code class="docutils literal notranslate"><span class="pre">totals_by</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CellIndex</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DeviceCellIndex</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">counts</span></code>, <code class="docutils literal notranslate"><span class="pre">neighbor_sum</span></code>, <code class="docutils literal notranslate"><span class="pre">random_neighbor</span></code>, <code class="docutils literal notranslate"><span class="pre">to_layer</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">model.rng</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">PhiloxStream</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">random</span></code>, <code class="docutils literal notranslate"><span class="pre">integers</span></code>, <code class="docutils literal notranslate"><span class="pre">bernoulli</span></code>, <code class="docutils literal notranslate"><span class="pre">binomial</span></code>, <code class="docutils literal notranslate"><span class="pre">draws()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="the-same-numbers-on-every-device">
+<h2>The same numbers on every device<a class="headerlink" href="#the-same-numbers-on-every-device" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">PhiloxStream(seed,</span> <span class="pre">stream)</span></code> is a counter-based generator: Philox4x32-10 (Salmon et al., 2011)
+keyed by the seed. Element <code class="docutils literal notranslate"><span class="pre">i</span></code> of draw number <code class="docutils literal notranslate"><span class="pre">c</span></code> is computed from the counter
+<code class="docutils literal notranslate"><span class="pre">(i</span> <span class="pre">//</span> <span class="pre">k,</span> <span class="pre">sub,</span> <span class="pre">c,</span> <span class="pre">stream)</span></code> alone, with no state carried from one number to the next, so a GPU
+computes the same number for agent <code class="docutils literal notranslate"><span class="pre">i</span></code> as the CPU, whatever the order, the batch or the device.
+The implementation is checked against the published Random123 known-answer vectors, and
+numpy, the CuPy kernels and JAX are checked against each other bit for bit
+(<code class="docutils literal notranslate"><span class="pre">tests/gpu/test_philox.py</span></code>, <code class="docutils literal notranslate"><span class="pre">test_streams.py</span></code>). Numpy’s own <code class="docutils literal notranslate"><span class="pre">numpy.random.Philox</span></code> is the
+4x64 variant, so its streams are different numbers.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Draw</p></th>
+<th class="head"><p>Construction</p></th>
+<th class="head"><p>Same on every backend</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>uniform, float64</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">((w0</span> <span class="pre">&gt;&gt;</span> <span class="pre">5)</span> <span class="pre">*</span> <span class="pre">2**26</span> <span class="pre">+</span> <span class="pre">(w1</span> <span class="pre">&gt;&gt;</span> <span class="pre">6))</span> <span class="pre">/</span> <span class="pre">2**53</span></code>, numpy’s construction</p></td>
+<td><p>yes (JAX: with <code class="docutils literal notranslate"><span class="pre">jax_enable_x64</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>uniform, float32</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(w</span> <span class="pre">&gt;&gt;</span> <span class="pre">8)</span> <span class="pre">/</span> <span class="pre">2**24</span></code></p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-even"><td><p>integers in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">high)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">high</span> <span class="pre">*</span> <span class="pre">w</span> <span class="pre">&gt;&gt;</span> <span class="pre">32</span></code>, bias below <code class="docutils literal notranslate"><span class="pre">high</span> <span class="pre">/</span> <span class="pre">2**32</span></code></p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bernoulli(p)</p></td>
+<td><p>uniform <code class="docutils literal notranslate"><span class="pre">&lt;</span> <span class="pre">p</span></code></p></td>
+<td><p>yes, for the same <code class="docutils literal notranslate"><span class="pre">p</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Binomial(n, p)</p></td>
+<td><p>inversion below a mean of 10, BTRS (Hörmann 1993) above</p></td>
+<td><p>inversion: yes; BTRS: see below</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Both binomial samplers are exact: their variates have the Binomial law (tested by chi-square
+against the probability mass function). The inversion decides with <code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">*</span> <span class="pre">/</span></code> and comparisons
+only, which IEEE 754 makes identical everywhere. BTRS takes logarithms, whose last bit may
+differ between numpy, CUDA and XLA; a different bit changes a variate only when a uniform falls
+within one rounding error of the acceptance bound, so the results are the same in practice (they
+were in every test and every playbook run) and the same law always.</p>
+<p>Without <code class="docutils literal notranslate"><span class="pre">jax.config.update(&quot;jax_enable_x64&quot;,</span> <span class="pre">True)</span></code>, JAX has no 64-bit types: its floats are
+float32 and its integers int32, so its uniforms are the float32 ones and its runs differ from
+numpy’s float64 runs (in the same law). Integers drawn by <code class="docutils literal notranslate"><span class="pre">bits</span></code> and <code class="docutils literal notranslate"><span class="pre">integers</span></code> are the same in
+both modes.</p>
+</section>
+<section id="exactness-against-the-cpu">
+<h2>Exactness against the CPU<a class="headerlink" href="#exactness-against-the-cpu" title="Link to this heading">#</a></h2>
+<p>What “equal” means for each kind of state:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>State</p></th>
+<th class="head"><p>GPU against the numpy run of the same code</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>integer columns (states, counts, cell rows, days)</p></td>
+<td><p>bit for bit</p></td>
+</tr>
+<tr class="row-odd"><td><p>integer sums (<code class="docutils literal notranslate"><span class="pre">counts</span></code>, <code class="docutils literal notranslate"><span class="pre">neighbor_sum</span></code> of integers, <code class="docutils literal notranslate"><span class="pre">totals_by</span></code>)</p></td>
+<td><p>bit for bit</p></td>
+</tr>
+<tr class="row-even"><td><p>float sums (<code class="docutils literal notranslate"><span class="pre">counts</span></code> with float weights, <code class="docutils literal notranslate"><span class="pre">neighbor_sum</span></code> of floats)</p></td>
+<td><p>within a few ulps: additions in another order</p></td>
+</tr>
+<tr class="row-odd"><td><p>float elementwise arithmetic</p></td>
+<td><p>bit for bit for <code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">*</span> <span class="pre">/</span></code>; <code class="docutils literal notranslate"><span class="pre">exp</span></code>, <code class="docutils literal notranslate"><span class="pre">log</span></code>, <code class="docutils literal notranslate"><span class="pre">pow</span></code> within one ulp</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A phase whose integer outcome depends on a transcendental function (the grid epidemic’s
+<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">(1</span> <span class="pre">-</span> <span class="pre">beta)</span> <span class="pre">**</span> <span class="pre">k</span></code>) can tabulate it once on the host, as the playbook does, so the
+comparison that decides a draw is the same on every device. The comparison with the CPU
+column variant (<code class="docutils literal notranslate"><span class="pre">modelly</span></code>), which draws from <code class="docutils literal notranslate"><span class="pre">model.rng</span></code>, is in distribution, like every
+other playbook variant.</p>
+</section>
+<section id="populations-larger-than-the-gpu">
+<h2>Populations larger than the GPU<a class="headerlink" href="#populations-larger-than-the-gpu" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">plan_memory(rows,</span> <span class="pre">bytes_per_row,</span> <span class="pre">backend)</span></code> sizes batches to half the free device memory (or a
+<code class="docutils literal notranslate"><span class="pre">budget</span></code>), and <code class="docutils literal notranslate"><span class="pre">run_batched(plan,</span> <span class="pre">phase,</span> <span class="pre">columns,</span> <span class="pre">backend)</span></code> copies each batch of host rows in,
+runs the phase and copies the outputs back. A phase that draws by position
+(<code class="docutils literal notranslate"><span class="pre">draw.random(n,</span> <span class="pre">start=start)</span></code>) gives the same numbers whatever the batch size, so a batched run
+equals the run in one batch bit for bit. Only phases whose rows do not read one another batch
+exactly; a reduction over rows (counts per cell) is the sum of per-batch reductions, which the
+caller adds.</p>
+</section>
+<section id="speed">
+<h2>Speed<a class="headerlink" href="#speed" title="Link to this heading">#</a></h2>
+<p>Measured on a laptop RTX 5050 (8 GB): the grid epidemic’s 60 steps at 10 million agents run
+34x faster on CuPy than the CPU column variant; see <a class="reference internal" href="performance.html#gpu-backend"><span class="std std-ref">Performance</span></a>
+for the conditions and the other numbers. What does not get faster:</p>
+<ul class="simple">
+<li><p><strong>Small tables.</strong> A cohort table has fewer than two hundred rows; on a GPU each operation is a
+kernel launch of a few microseconds plus a device synchronisation for every data-dependent
+size, so <code class="docutils literal notranslate"><span class="pre">insect_cohorts</span></code> runs slower on CuPy than on numpy. Use the GPU from about a hundred
+thousand rows.</p></li>
+<li><p><strong>JAX and changing shapes.</strong> JAX compiles every operation for every new array shape. A
+<code class="docutils literal notranslate"><span class="pre">DeviceCohortTable</span></code> changes length every day, so on JAX each step recompiles; the binomial
+sampler pads its input to a power of two to bound that, but the cohort playbook still takes
+about a second per step on JAX’s CPU backend. Fixed-size column phases (a population that
+does not change size) compile once.</p></li>
+<li><p><strong>The numpy fallback</strong> draws Philox numbers with array operations, about 50 ns per number,
+several times slower than <code class="docutils literal notranslate"><span class="pre">model.rng</span></code>. It is the reference the GPU runs are checked against,
+not a fast CPU path: keep the <code class="docutils literal notranslate"><span class="pre">ColumnTable</span></code> code for CPU runs.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="vectorised_phases.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Vectorised step phases: when a loop over agents is an array operation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="distributed.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">From laptop to cluster</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-setting">One setting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-column-phase-on-the-gpu">A column phase on the GPU</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-numbers-on-every-device">The same numbers on every device</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exactness-against-the-cpu">Exactness against the CPU</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#populations-larger-than-the-gpu">Populations larger than the GPU</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#speed">Speed</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/gpu.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

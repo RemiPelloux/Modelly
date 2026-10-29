@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Coupling &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=02f2166e"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'apis/couple';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/apis/couple.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Emulate" href="emulate.html" />
+    <link rel="prev" title="Sensitivity" href="sensitivity.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="space.html">Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geo.html">Geospatial space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">Synthetic populations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time.html">Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="behaviour.html">Behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenarios.html">Scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibrate.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Coupling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emulate.html">Emulate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">GPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diff.html">Differentiable models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viz.html">Viz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">Web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrate.html">Migrate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Lint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">LLM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zoo.html">Model zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distributed.html">Distributed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stream.html">Stream</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="api_main.html" class="nav-link">APIs</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Coupling</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="coupling">
+<h1>Coupling<a class="headerlink" href="#coupling" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.couple</span></code> couples agents to fields, ODEs and stock-flow models. How to use it is in
+<a class="reference internal" href="../coupling.html"><span class="std std-doc">Coupling agents with fields and ODEs</span></a>.</p>
+<section id="module-modelly.couple.schedule">
+<span id="schedule"></span><h2>Schedule<a class="headerlink" href="#module-modelly.couple.schedule" title="Link to this heading">#</a></h2>
+<p>The coupling schedule: who reads which quantity, who writes it, and in what order.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Coupling</span></code> runs components (fields, ODEs, stock-flow models and agent phases) once per
+step. Each component declares the quantities it <code class="docutils literal notranslate"><span class="pre">reads</span></code> and <code class="docutils literal notranslate"><span class="pre">writes</span></code>; the values live in
+the coupling, by name (<code class="docutils literal notranslate"><span class="pre">coupling[&quot;occupied&quot;]</span></code>). Components run phase by phase, phase 0
+first; within a phase a writer runs before its readers. A component that reads a quantity
+written in a later phase sees the value of the previous step, so feedback between agents
+and a continuous process is a loop across two phases.</p>
+<p><code class="docutils literal notranslate"><span class="pre">build</span></code> checks the declarations before the first step and raises <code class="docutils literal notranslate"><span class="pre">CouplingError</span></code> for a
+quantity read but never written, a quantity with two writers, a cycle of reads and writes
+inside one phase (no order would be right), and a quantity read before its writer has run
+with no initial value to read.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelly.couple.schedule.CouplingError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">CouplingError</span></span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#CouplingError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.CouplingError" title="Link to this definition">#</a></dt>
+<dd><p>An inconsistent coupling schedule, or a continuous component that cannot step.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Component">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#Component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.Component" title="Link to this definition">#</a></dt>
+<dd><p>What a coupling runs: a label, declared reads and writes, <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">run</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Component.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coupling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.schedule.Coupling" title="modelly.couple.schedule.Coupling"><span class="pre">Coupling</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#Component.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.Component.start" title="Link to this definition">#</a></dt>
+<dd><p>Publish the initial value of every quantity this component writes, if it has one.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Component.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coupling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.schedule.Coupling" title="modelly.couple.schedule.Coupling"><span class="pre">Coupling</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#Component.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.Component.run" title="Link to this definition">#</a></dt>
+<dd><p>Advance from <code class="docutils literal notranslate"><span class="pre">time</span></code> to <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">+</span> <span class="pre">duration</span></code>, reading and writing <code class="docutils literal notranslate"><span class="pre">coupling</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Phase">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#Phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.Phase" title="Link to this definition">#</a></dt>
+<dd><p>An agent step phase (or any callable) as a coupling component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> – called with no arguments on every step, typically a model method.</p></li>
+<li><p><strong>reads</strong> – the quantities it reads.</p></li>
+<li><p><strong>writes</strong> – the quantities it writes.</p></li>
+<li><p><strong>initial</strong> – initial values of some of its writes, for readers that run before it.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Wrap <code class="docutils literal notranslate"><span class="pre">function</span></code>; use a method or a module-level function so it can be saved.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Phase.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coupling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.schedule.Coupling" title="modelly.couple.schedule.Coupling"><span class="pre">Coupling</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#Phase.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.Phase.start" title="Link to this definition">#</a></dt>
+<dd><p>Publish the initial values not yet set, so a rebuild keeps the current ones.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Phase.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coupling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.schedule.Coupling" title="modelly.couple.schedule.Coupling"><span class="pre">Coupling</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#Phase.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.Phase.run" title="Link to this definition">#</a></dt>
+<dd><p>Call the function.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Coupling">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Coupling</span></span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#Coupling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.Coupling" title="Link to this definition">#</a></dt>
+<dd><p>A schedule of components, checked at build time and run once per step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – the current value of every quantity, by name.</p></li>
+<li><p><strong>time</strong> – the coupling’s time, advanced by <code class="docutils literal notranslate"><span class="pre">step</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">emit</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="n">coupling</span><span class="p">[</span><span class="s2">"load"</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">absorb</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">"load"</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple.ode</span><span class="w"> </span><span class="kn">import</span> <span class="n">ODE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coupling</span> <span class="o">=</span> <span class="n">Coupling</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span> <span class="o">=</span> <span class="n">coupling</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Phase</span><span class="p">(</span><span class="n">emit</span><span class="p">,</span> <span class="n">writes</span><span class="o">=</span><span class="p">[</span><span class="s2">"load"</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tank</span> <span class="o">=</span> <span class="n">coupling</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ODE</span><span class="p">(</span><span class="n">absorb</span><span class="p">,</span> <span class="p">{</span><span class="s2">"level"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span> <span class="n">reads</span><span class="o">=</span><span class="p">[</span><span class="s2">"load"</span><span class="p">]),</span> <span class="n">phase</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coupling</span><span class="o">.</span><span class="n">build</span><span class="p">()</span><span class="o">.</span><span class="n">order</span>
+<span class="go">["Phase 'emit'", "ODE 'absorb'"]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coupling</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">coupling</span><span class="p">[</span><span class="s2">"level"</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">1.264241</span>
+</pre></div>
+</div>
+<p>An empty schedule at time 0.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Coupling.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">C</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#Coupling.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.Coupling.add" title="Link to this definition">#</a></dt>
+<dd><p>Schedule <code class="docutils literal notranslate"><span class="pre">component</span></code> in <code class="docutils literal notranslate"><span class="pre">phase</span></code> (lower phases run first) and return it.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Coupling.order">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">order</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#modelly.couple.schedule.Coupling.order" title="Link to this definition">#</a></dt>
+<dd><p>The labels of the components in the order they run (after <code class="docutils literal notranslate"><span class="pre">build</span></code>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Coupling.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.couple.schedule.Coupling" title="modelly.couple.schedule.Coupling"><span class="pre">Coupling</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#Coupling.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.Coupling.build" title="Link to this definition">#</a></dt>
+<dd><p>Check the declarations, order the components and publish initial values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#modelly.couple.schedule.CouplingError" title="modelly.couple.schedule.CouplingError"><strong>CouplingError</strong></a> – a read with no writer, two writers of one quantity, a cycle in
+    one phase, or a read before the first write with no initial value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.schedule.Coupling.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/schedule.html#Coupling.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.schedule.Coupling.step" title="Link to this definition">#</a></dt>
+<dd><p>Run every component once, from <code class="docutils literal notranslate"><span class="pre">time</span></code> to <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">+</span> <span class="pre">duration</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modelly.couple.field">
+<span id="fields"></span><h2>Fields<a class="headerlink" href="#module-modelly.couple.field" title="Link to this heading">#</a></h2>
+<p>Fields: a grid property layer that diffuses, drifts and decays on its own time step.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Field</span></code> owns one property layer of an orthogonal grid (<code class="docutils literal notranslate"><span class="pre">grid.&lt;name&gt;</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">cell.&lt;name&gt;</span></code> on every cell) and advances it by</p>
+<blockquote>
+<div><p>du/dt = D lap(u) - v . grad(u) - k u</p>
+</div></blockquote>
+<p>with the transport operator of <code class="docutils literal notranslate"><span class="pre">modelly.couple.operator</span></code>: finite volumes, central
+diffusion and upwind advection, so the total is conserved to round-off with closed or
+periodic boundaries and what leaves through an absorbing one is counted in <code class="docutils literal notranslate"><span class="pre">outflow</span></code>.
+The decay <code class="docutils literal notranslate"><span class="pre">-k</span> <span class="pre">u</span></code> is applied exactly, as <code class="docutils literal notranslate"><span class="pre">exp(-k</span> <span class="pre">dt)</span></code> per sub-step; with a uniform <code class="docutils literal notranslate"><span class="pre">k</span></code>
+it commutes with transport, so splitting it off adds no error.</p>
+<p>A step of length <code class="docutils literal notranslate"><span class="pre">duration</span></code> is cut into equal sub-steps no longer than <code class="docutils literal notranslate"><span class="pre">dt</span></code>. The
+explicit scheme (the default) needs <code class="docutils literal notranslate"><span class="pre">dt</span></code> within the stability limit and refuses a larger
+one; by default it takes half of the limit. The implicit scheme (backward Euler, one sparse
+LU factorisation per sub-step length) is stable for any <code class="docutils literal notranslate"><span class="pre">dt</span></code>, for stiff diffusion.</p>
+<p>The layer is updated in place, so agents reading <code class="docutils literal notranslate"><span class="pre">cell.&lt;name&gt;</span></code> and vectorised code
+reading <code class="docutils literal notranslate"><span class="pre">grid.&lt;name&gt;</span></code> see the new values, and a checkpoint saves it once with the grid.
+Agents change the field through its <code class="docutils literal notranslate"><span class="pre">source</span></code> quantity (an amount per cell, negative for
+uptake, added at the start of each step), so the budget <code class="docutils literal notranslate"><span class="pre">added</span> <span class="pre">-</span> <span class="pre">outflow</span> <span class="pre">-</span> <span class="pre">decayed</span></code> keeps
+track of every change of <code class="docutils literal notranslate"><span class="pre">total()</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.couple.field.Transport">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Transport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'explicit'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/couple/field.html#Transport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.field.Transport" title="Link to this definition">#</a></dt>
+<dd><p>What a field does between two steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diffusion</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – the diffusion coefficient <code class="docutils literal notranslate"><span class="pre">D</span></code>, in cell spacings squared per unit time
+when <code class="docutils literal notranslate"><span class="pre">spacing</span></code> is 1.</p></li>
+<li><p><strong>velocity</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>...</em><em>]</em>) – the advection velocity, one component per grid axis (empty: none).</p></li>
+<li><p><strong>decay</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – the first-order decay rate <code class="docutils literal notranslate"><span class="pre">k</span></code> per unit time.</p></li>
+<li><p><strong>boundary</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> | </em><em>None</em>) – <code class="docutils literal notranslate"><span class="pre">&quot;closed&quot;</span></code> (no flux), <code class="docutils literal notranslate"><span class="pre">&quot;absorbing&quot;</span></code> (zero outside, mass leaves) or
+<code class="docutils literal notranslate"><span class="pre">&quot;periodic&quot;</span></code>; <code class="docutils literal notranslate"><span class="pre">None</span></code> means periodic on a torus and closed otherwise.</p></li>
+<li><p><strong>spacing</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – the width of a cell, in the units of <code class="docutils literal notranslate"><span class="pre">D</span></code> and <code class="docutils literal notranslate"><span class="pre">velocity</span></code>.</p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> | </em><em>None</em>) – the longest sub-step; <code class="docutils literal notranslate"><span class="pre">None</span></code> takes half the explicit stability limit, or one
+sub-step per step with the implicit scheme.</p></li>
+<li><p><strong>scheme</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – <code class="docutils literal notranslate"><span class="pre">&quot;explicit&quot;</span></code> (forward Euler) or <code class="docutils literal notranslate"><span class="pre">&quot;implicit&quot;</span></code> (backward Euler).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.couple.field.Field">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="space.html#modelly.space.grid.base.Grid" title="modelly.space.grid.base.Grid"><span class="pre">Grid</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">transport</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.field.Transport" title="modelly.couple.field.Transport"><span class="pre">Transport</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/couple/field.html#Field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.field.Field" title="Link to this definition">#</a></dt>
+<dd><p>A grid property layer with a transport solver, a coupling component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – the layer, shaped like the grid (the same array as <code class="docutils literal notranslate"><span class="pre">grid.&lt;name&gt;</span></code>).</p></li>
+<li><p><strong>added</strong> – total amount added through <code class="docutils literal notranslate"><span class="pre">add</span></code> (or the <code class="docutils literal notranslate"><span class="pre">source</span></code> quantity).</p></li>
+<li><p><strong>outflow</strong> – total amount that left through absorbing boundaries.</p></li>
+<li><p><strong>decayed</strong> – total amount removed by decay.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">Random</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space.grid.grids</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrthogonalMooreGrid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalMooreGrid</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">random</span><span class="o">=</span><span class="n">Random</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="s2">"heat"</span><span class="p">,</span> <span class="n">Transport</span><span class="p">(</span><span class="n">diffusion</span><span class="o">=</span><span class="mf">0.5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heat</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heat</span><span class="o">.</span><span class="n">advance</span><span class="p">(</span><span class="mf">5.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">heat</span><span class="o">.</span><span class="n">total</span><span class="p">(),</span> <span class="mi">12</span><span class="p">)</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+<p>Make (or adopt, if <code class="docutils literal notranslate"><span class="pre">grid</span></code> already has it) the float layer <code class="docutils literal notranslate"><span class="pre">name</span></code> of <code class="docutils literal notranslate"><span class="pre">grid</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – an orthogonal grid (Moore or von Neumann), of any dimension.</p></li>
+<li><p><strong>name</strong> – the property layer, also the quantity the field writes in a coupling.</p></li>
+<li><p><strong>transport</strong> – the coefficients, boundary and time stepping (none by default).</p></li>
+<li><p><strong>source</strong> – a quantity read every step and added to the layer before transport.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.field.Field.total">
+<span class="sig-name descname"><span class="pre">total</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/field.html#Field.total"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.field.Field.total" title="Link to this definition">#</a></dt>
+<dd><p>The sum of the layer: the amount in the domain.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.field.Field.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amounts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/field.html#Field.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.field.Field.add" title="Link to this definition">#</a></dt>
+<dd><p>Add <code class="docutils literal notranslate"><span class="pre">amounts</span></code> (a scalar or an array shaped like the grid) to the layer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.field.Field.advance">
+<span class="sig-name descname"><span class="pre">advance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/field.html#Field.advance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.field.Field.advance" title="Link to this definition">#</a></dt>
+<dd><p>Transport and decay for <code class="docutils literal notranslate"><span class="pre">duration</span></code>, in equal sub-steps of at most <code class="docutils literal notranslate"><span class="pre">dt</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.field.Field.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coupling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.schedule.Coupling" title="modelly.couple.schedule.Coupling"><span class="pre">Coupling</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/field.html#Field.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.field.Field.start" title="Link to this definition">#</a></dt>
+<dd><p>Publish the layer as the quantity <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.field.Field.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coupling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.schedule.Coupling" title="modelly.couple.schedule.Coupling"><span class="pre">Coupling</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/field.html#Field.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.field.Field.run" title="Link to this definition">#</a></dt>
+<dd><p>Add the source quantity, if any, then advance.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.couple.operator">The transport operator of a field: diffusion and upwind advection as one sparse matrix.</p>
+<p>A field <code class="docutils literal notranslate"><span class="pre">u</span></code> on a regular grid of spacing <code class="docutils literal notranslate"><span class="pre">h</span></code> obeys <code class="docutils literal notranslate"><span class="pre">du/dt</span> <span class="pre">=</span> <span class="pre">D</span> <span class="pre">lap(u)</span> <span class="pre">-</span> <span class="pre">v</span> <span class="pre">.</span> <span class="pre">grad(u)</span></code>
+(decay is applied separately, exactly). The finite-volume semi-discretisation writes it as
+fluxes through the faces between neighbouring cells: through the face from cell <code class="docutils literal notranslate"><span class="pre">p</span></code> to the
+next cell <code class="docutils literal notranslate"><span class="pre">q</span></code> along an axis, with speed <code class="docutils literal notranslate"><span class="pre">v</span></code> along that axis, the flux is</p>
+<blockquote>
+<div><p>F = (D / h**2 + max(v, 0) / h) * u[p] - (D / h**2 + max(-v, 0) / h) * u[q]</p>
+</div></blockquote>
+<p>(central differences for diffusion, first-order upwind for advection). Each flux leaves one
+cell and enters the other, so the total is conserved: every column of the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> in
+<code class="docutils literal notranslate"><span class="pre">du/dt</span> <span class="pre">=</span> <span class="pre">A</span> <span class="pre">u</span></code> sums to zero, except at an absorbing boundary, where the flux through the
+outer face leaves the domain (<code class="docutils literal notranslate"><span class="pre">leak</span></code>, with the outside held at zero). A periodic boundary
+adds the face between the last and the first cell. A closed one has no outer face (no flux).</p>
+<p>The off-diagonal entries of <code class="docutils literal notranslate"><span class="pre">A</span></code> are non-negative, so explicit Euler with a step <code class="docutils literal notranslate"><span class="pre">dt</span></code> at
+most <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">max(-diag(A))</span></code> keeps every new value a non-negative combination of the old ones:
+positive, stable and conservative (the CFL condition of upwind advection and the classical
+<code class="docutils literal notranslate"><span class="pre">dt</span> <span class="pre">&lt;=</span> <span class="pre">h**2</span> <span class="pre">/</span> <span class="pre">(2</span> <span class="pre">d</span> <span class="pre">D)</span></code> of diffusion are both special cases). Backward Euler,
+<code class="docutils literal notranslate"><span class="pre">(I</span> <span class="pre">-</span> <span class="pre">dt</span> <span class="pre">A)</span> <span class="pre">u_new</span> <span class="pre">=</span> <span class="pre">u_old</span></code>, keeps these properties for any <code class="docutils literal notranslate"><span class="pre">dt</span></code>.</p>
+<p class="rubric">References</p>
+<p>LeVeque, R. J. (2002). Finite Volume Methods for Hyperbolic Problems. Cambridge
+University Press.</p>
+<p>Hundsdorfer, W. and Verwer, J. G. (2003). Numerical Solution of Time-Dependent
+Advection-Diffusion-Reaction Equations. Springer.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.couple.operator.transport_matrix">
+<span class="sig-name descname"><span class="pre">transport_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coefficients</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">csr_matrix</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/couple/operator.html#transport_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.operator.transport_matrix" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">leak)</span></code> for cells in C order: <code class="docutils literal notranslate"><span class="pre">du/dt</span> <span class="pre">=</span> <span class="pre">A</span> <span class="pre">u</span></code>, and <code class="docutils literal notranslate"><span class="pre">leak</span> <span class="pre">&#64;</span> <span class="pre">u</span></code> leaves per unit time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> – the grid’s dimensions.</p></li>
+<li><p><strong>coefficients</strong> – <code class="docutils literal notranslate"><span class="pre">(diffusion,</span> <span class="pre">velocity</span> <span class="pre">per</span> <span class="pre">axis,</span> <span class="pre">spacing)</span></code>.</p></li>
+<li><p><strong>boundary</strong> – <code class="docutils literal notranslate"><span class="pre">&quot;closed&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;absorbing&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;periodic&quot;</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.couple.operator.stability_limit">
+<span class="sig-name descname"><span class="pre">stability_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">csr_matrix</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/operator.html#stability_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.operator.stability_limit" title="Link to this definition">#</a></dt>
+<dd><p>The largest explicit Euler step that keeps the scheme positive (<code class="docutils literal notranslate"><span class="pre">inf</span></code> if none).</p>
+</dd></dl>
+
+</section>
+<section id="module-modelly.couple.ode">
+<span id="odes-and-stock-flow-models"></span><h2>ODEs and stock-flow models<a class="headerlink" href="#module-modelly.couple.ode" title="Link to this heading">#</a></h2>
+<p>ODE and stock-flow components, integrated with <code class="docutils literal notranslate"><span class="pre">scipy.integrate.solve_ivp</span></code>.</p>
+<p>An <code class="docutils literal notranslate"><span class="pre">ODE</span></code> holds named state variables <code class="docutils literal notranslate"><span class="pre">y</span></code> and a right-hand side <code class="docutils literal notranslate"><span class="pre">rhs(t,</span> <span class="pre">y,</span> <span class="pre">inputs)</span></code>,
+where <code class="docutils literal notranslate"><span class="pre">inputs</span></code> maps each quantity the component reads to its value at the start of the
+step; inputs are held constant over the step (a zero-order hold), as an agent phase
+produces them once per step. Every step integrates from <code class="docutils literal notranslate"><span class="pre">time</span></code> to <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">+</span> <span class="pre">duration</span></code>
+with the adaptive Runge-Kutta (or implicit) method and tolerances of its <code class="docutils literal notranslate"><span class="pre">Solver</span></code>, then
+publishes each state variable under its name. The integration starts afresh every step from
+the stored state, so a run is a deterministic function of the state and the inputs, and a
+checkpointed model resumes bit for bit.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">StockFlow</span></code> is the system-dynamics form: stocks, and flows that move material from one
+stock to another or across the model boundary (<code class="docutils literal notranslate"><span class="pre">None</span></code>), at a rate computed from the
+stocks and the inputs. Its equations are <code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">stock</span> <span class="pre">/</span> <span class="pre">dt</span> <span class="pre">=</span> <span class="pre">inflows</span> <span class="pre">-</span> <span class="pre">outflows</span></code>, and it also
+integrates the amount moved by each flow (<code class="docutils literal notranslate"><span class="pre">totals</span></code>). Runge-Kutta methods keep linear
+invariants exactly, so <code class="docutils literal notranslate"><span class="pre">sum(stocks)</span> <span class="pre">-</span> <span class="pre">sum(stocks</span> <span class="pre">at</span> <span class="pre">start)</span></code> equals the net amount moved in
+across the boundary to round-off: a mass balance that holds whatever the tolerances.</p>
+<p class="rubric">References</p>
+<p>Dormand, J. R. and Prince, P. J. (1980). A family of embedded Runge-Kutta formulae.
+Journal of Computational and Applied Mathematics, 6(1), 19-26.</p>
+<p>Sterman, J. D. (2000). Business Dynamics: Systems Thinking and Modeling for a Complex
+World. Irwin/McGraw-Hill.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.couple.ode.Solver">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Solver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'RK45'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/couple/ode.html#Solver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.ode.Solver" title="Link to this definition">#</a></dt>
+<dd><p>How <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> integrates a step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – a <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> method: <code class="docutils literal notranslate"><span class="pre">&quot;RK45&quot;</span></code> (Dormand-Prince), <code class="docutils literal notranslate"><span class="pre">&quot;DOP853&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;Radau&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;BDF&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;LSODA&quot;</span></code> for stiff systems.</p></li>
+<li><p><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – the relative tolerance.</p></li>
+<li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – the absolute tolerance.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.couple.ode.ODE">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ODE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rhs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.ode.Solver" title="modelly.couple.ode.Solver"><span class="pre">Solver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/couple/ode.html#ODE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.ode.ODE" title="Link to this definition">#</a></dt>
+<dd><p>Named state variables advanced by <code class="docutils literal notranslate"><span class="pre">dy/dt</span> <span class="pre">=</span> <span class="pre">rhs(t,</span> <span class="pre">y,</span> <span class="pre">inputs)</span></code>, a coupling component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> – the state, in the order of the <code class="docutils literal notranslate"><span class="pre">initial</span></code> mapping.</p></li>
+<li><p><strong>names</strong> – the state variables, also the quantities the component writes.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">decay</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span> <span class="o">=</span> <span class="n">ODE</span><span class="p">(</span><span class="n">decay</span><span class="p">,</span> <span class="p">{</span><span class="s2">"amount"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span><span class="o">.</span><span class="n">advance</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s2">"amount"</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">0.367879</span>
+</pre></div>
+</div>
+<p>Start at <code class="docutils literal notranslate"><span class="pre">initial</span></code>; <code class="docutils literal notranslate"><span class="pre">rhs</span></code> must be a module-level function or a method to be saved.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.couple.ode.ODE.state">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">state</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#modelly.couple.ode.ODE.state" title="Link to this definition">#</a></dt>
+<dd><p>The state variables by name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.ode.ODE.derivative">
+<span class="sig-name descname"><span class="pre">derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/couple/ode.html#ODE.derivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.ode.ODE.derivative" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">dy/dt</span></code> at <code class="docutils literal notranslate"><span class="pre">(t,</span> <span class="pre">y)</span></code>, as <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> calls it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.ode.ODE.advance">
+<span class="sig-name descname"><span class="pre">advance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/ode.html#ODE.advance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.ode.ODE.advance" title="Link to this definition">#</a></dt>
+<dd><p>Integrate from <code class="docutils literal notranslate"><span class="pre">time</span></code> to <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">+</span> <span class="pre">duration</span></code> with <code class="docutils literal notranslate"><span class="pre">inputs</span></code> held constant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#modelly.couple.schedule.CouplingError" title="modelly.couple.schedule.CouplingError"><strong>CouplingError</strong></a> – if the integrator fails (<code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>’s message is included).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.ode.ODE.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coupling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.schedule.Coupling" title="modelly.couple.schedule.Coupling"><span class="pre">Coupling</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/ode.html#ODE.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.ode.ODE.start" title="Link to this definition">#</a></dt>
+<dd><p>Publish the initial state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.ode.ODE.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coupling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.schedule.Coupling" title="modelly.couple.schedule.Coupling"><span class="pre">Coupling</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/couple/ode.html#ODE.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.ode.ODE.run" title="Link to this definition">#</a></dt>
+<dd><p>Read the inputs, integrate the step, publish the state.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.couple.ode.Flow">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/couple/ode.html#Flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.ode.Flow" title="Link to this definition">#</a></dt>
+<dd><p>A flow of a stock-flow model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – the flow’s name, the key of its total in <code class="docutils literal notranslate"><span class="pre">StockFlow.totals</span></code>.</p></li>
+<li><p><strong>rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><em>collections.abc.Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>]</em>) – <code class="docutils literal notranslate"><span class="pre">rate(stocks,</span> <span class="pre">inputs)</span></code>, the amount per unit time; a module-level function.</p></li>
+<li><p><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> | </em><em>None</em>) – the stock it drains, or <code class="docutils literal notranslate"><span class="pre">None</span></code> for the outside.</p></li>
+<li><p><strong>target</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> | </em><em>None</em>) – the stock it fills, or <code class="docutils literal notranslate"><span class="pre">None</span></code> for the outside.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.couple.ode.StockFlow">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">StockFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stocks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.couple.ode.Flow" title="modelly.couple.ode.Flow"><span class="pre">Flow</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.couple.ode.Solver" title="modelly.couple.ode.Solver"><span class="pre">Solver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/couple/ode.html#StockFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.ode.StockFlow" title="Link to this definition">#</a></dt>
+<dd><p>Stocks joined by flows (system dynamics), a coupling component.</p>
+<p>The state is the stocks followed by the running total of every flow; only the stocks
+are published to the coupling.</p>
+<p>Start the stocks at the given values and every flow total at zero.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.couple.ode.StockFlow.totals">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">totals</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#modelly.couple.ode.StockFlow.totals" title="Link to this definition">#</a></dt>
+<dd><p>The amount moved by each flow since the start.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.couple.ode.StockFlow.derivative">
+<span class="sig-name descname"><span class="pre">derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/couple/ode.html#StockFlow.derivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.couple.ode.StockFlow.derivative" title="Link to this definition">#</a></dt>
+<dd><p>The stocks’ net flows followed by the flow rates.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="sensitivity.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Sensitivity</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="emulate.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Emulate</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.couple.schedule">Schedule</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.CouplingError"><code class="docutils literal notranslate"><span class="pre">CouplingError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Component"><code class="docutils literal notranslate"><span class="pre">Component</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Component.start"><code class="docutils literal notranslate"><span class="pre">Component.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Component.run"><code class="docutils literal notranslate"><span class="pre">Component.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Phase"><code class="docutils literal notranslate"><span class="pre">Phase</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Phase.start"><code class="docutils literal notranslate"><span class="pre">Phase.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Phase.run"><code class="docutils literal notranslate"><span class="pre">Phase.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Coupling"><code class="docutils literal notranslate"><span class="pre">Coupling</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Coupling.add"><code class="docutils literal notranslate"><span class="pre">Coupling.add()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Coupling.order"><code class="docutils literal notranslate"><span class="pre">Coupling.order</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Coupling.build"><code class="docutils literal notranslate"><span class="pre">Coupling.build()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.schedule.Coupling.step"><code class="docutils literal notranslate"><span class="pre">Coupling.step()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.couple.field">Fields</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.field.Transport"><code class="docutils literal notranslate"><span class="pre">Transport</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.field.Field"><code class="docutils literal notranslate"><span class="pre">Field</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.field.Field.total"><code class="docutils literal notranslate"><span class="pre">Field.total()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.field.Field.add"><code class="docutils literal notranslate"><span class="pre">Field.add()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.field.Field.advance"><code class="docutils literal notranslate"><span class="pre">Field.advance()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.field.Field.start"><code class="docutils literal notranslate"><span class="pre">Field.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.field.Field.run"><code class="docutils literal notranslate"><span class="pre">Field.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.operator.transport_matrix"><code class="docutils literal notranslate"><span class="pre">transport_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.operator.stability_limit"><code class="docutils literal notranslate"><span class="pre">stability_limit()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.couple.ode">ODEs and stock-flow models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.Solver"><code class="docutils literal notranslate"><span class="pre">Solver</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.ODE"><code class="docutils literal notranslate"><span class="pre">ODE</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.ODE.state"><code class="docutils literal notranslate"><span class="pre">ODE.state</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.ODE.derivative"><code class="docutils literal notranslate"><span class="pre">ODE.derivative()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.ODE.advance"><code class="docutils literal notranslate"><span class="pre">ODE.advance()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.ODE.start"><code class="docutils literal notranslate"><span class="pre">ODE.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.ODE.run"><code class="docutils literal notranslate"><span class="pre">ODE.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.Flow"><code class="docutils literal notranslate"><span class="pre">Flow</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.StockFlow"><code class="docutils literal notranslate"><span class="pre">StockFlow</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.StockFlow.totals"><code class="docutils literal notranslate"><span class="pre">StockFlow.totals</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.couple.ode.StockFlow.derivative"><code class="docutils literal notranslate"><span class="pre">StockFlow.derivative()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/apis/couple.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+{
+  "title": "WolfSheep",
+  "target": "modelly.examples.advanced.wolf_sheep.model:WolfSheep",
+  "modelly": "1.4.2",
+  "wheel": "wheels/modelly_abm-1.4.2-py3-none-any.whl",
+  "model_archive": null,
+  "pyodide": {
+    "version": "314.0.7",
+    "url": "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/"
+  },
+  "packages": [
+    "numpy",
+    "pandas",
+    "python-dateutil",
+    "six"
+  ],
+  "parameters": [
+    {
+      "name": "width",
+      "kind": "int",
+      "default": 20,
+      "choices": []
+    },
+    {
+      "name": "height",
+      "kind": "int",
+      "default": 20,
+      "choices": []
+    },
+    {
+      "name": "initial_sheep",
+      "kind": "int",
+      "default": 100,
+      "choices": []
+    },
+    {
+      "name": "initial_wolves",
+      "kind": "int",
+      "default": 50,
+      "choices": []
+    },
+    {
+      "name": "sheep_reproduce",
+      "kind": "fraction",
+      "default": 0.04,
+      "choices": []
+    },
+    {
+      "name": "wolf_reproduce",
+      "kind": "fraction",
+      "default": 0.05,
+      "choices": []
+    },
+    {
+      "name": "wolf_gain_from_food",
+      "kind": "float",
+      "default": 20.0,
+      "choices": []
+    },
+    {
+      "name": "grass",
+      "kind": "bool",
+      "default": true,
+      "choices": []
+    },
+    {
+      "name": "grass_regrowth_time",
+      "kind": "int",
+      "default": 30,
+      "choices": []
+    },
+    {
+      "name": "sheep_gain_from_food",
+      "kind": "float",
+      "default": 4.0,
+      "choices": []
+    }
+  ],
+  "seed": 42,
+  "steps": 50
+}

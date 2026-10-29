@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>1.4.0: scale out and connect &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'roadmap/1.4.0';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/roadmap/1.4.0.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="1.5.0: ecosystem and collaboration" href="1.5.0.html" />
+    <link rel="prev" title="1.3.0: answers and trust" href="1.3.0.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://github.com/RemiPelloux/Modelly/blob/main/CHANGELOG.md">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Roadmap</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="1.3.0.html">1.3.0</a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">1.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.5.0.html">1.5.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.0.0.html">2.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platforms.html">Platforms</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../design/index.html">Design reviews</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../design/calibration.html">Calibration (E1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../design/sensitivity.html">Sensitivity analysis (E2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../design/llm-agents.html">Language-model agents (E7)</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../releases.html" class="nav-link">Releases</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Roadmap</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">1.4.0: scale out and connect</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="scale-out-and-connect">
+<h1>1.4.0: scale out and connect<a class="headerlink" href="#scale-out-and-connect" title="Link to this heading">#</a></h1>
+<p><strong>Status:</strong> in release: every epic merged except F10 Studio II (in progress), release gate
+pending · <strong>Base:</strong> 1.3.3</p>
+<p>1.3.0 lets a researcher answer a question with a model. 1.4.0 removes the ceilings on how big
+that model can be and how close to the real world it can run: <strong>distributed populations,
+GPU and differentiable models, live data and assimilation, multi-scale coupling, and Modelly
+running in a browser tab.</strong> Eleven epics, eight sprints, three pre-releases, all on Windows,
+macOS and Linux (see <a class="reference internal" href="platforms.html"><span class="std std-doc">Platforms</span></a>). Backward compatible with 1.3.</p>
+<section id="where-we-start">
+<h2>Where we start<a class="headerlink" href="#where-we-start" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>1.3.0 gives</p></th>
+<th class="head"><p>1.4.0 adds</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Experiments with process, thread, Dask, Ray and SLURM executors</p></td>
+<td><p>One model split across many processes or machines</p></td>
+</tr>
+<tr class="row-odd"><td><p>Calibration (ABC, SMM, Bayesian optimisation)</p></td>
+<td><p>Gradient-based calibration through differentiable models; history matching</p></td>
+</tr>
+<tr class="row-even"><td><p>GPU array backend (preview)</p></td>
+<td><p>GPU backend generally available, with cell spaces on the GPU</p></td>
+</tr>
+<tr class="row-odd"><td><p>Geospatial space and synthetic-population helpers</p></td>
+<td><p>A full synthetic-population toolkit from census tables</p></td>
+</tr>
+<tr class="row-even"><td><p>Studio in a local browser</p></td>
+<td><p>Studio and models running entirely in the browser, shared by a link</p></td>
+</tr>
+<tr class="row-odd"><td><p>Checkpoints and time travel</p></td>
+<td><p>Live data streams and data assimilation over replicate ensembles</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="carried-over-from-1-3-0">
+<h2>Carried over from 1.3.0<a class="headerlink" href="#carried-over-from-1-3-0" title="Link to this heading">#</a></h2>
+<p>1.3.0 did 91 of its 113 tasks (its <a class="reference internal" href="1.3.0.html#sprint-review-log"><span class="std std-ref">review log</span></a>). What it did not
+finish moves here, and goes into the sprints below as their main items allow:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>From</p></th>
+<th class="head"><p>Item</p></th>
+<th class="head"><p>Outcome in 1.4.0</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>E1 Calibration</p></td>
+<td><p>Adapter to an outside Bayesian-optimisation library; a zoo model calibrated end to end; written design reviews (E1, E2, E7)</p></td>
+<td><p>Done: <code class="docutils literal notranslate"><span class="pre">ExternalBayesOpt</span></code> (optuna through the <code class="docutils literal notranslate"><span class="pre">calibrate</span></code> extra, or any <code class="docutils literal notranslate"><span class="pre">ask</span></code>/<code class="docutils literal notranslate"><span class="pre">tell</span></code> optimiser); ABC-SMC recovers the Bass diffusion parameters inside their 95% intervals on three seeds; reviews in <code class="docutils literal notranslate"><span class="pre">docs/design/</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>E2 Sensitivity</p></td>
+<td><p>Morris stability across seeds on zoo models</p></td>
+<td><p>Done: the whole ranking of the Bass model and the top parameter of the age SEIR are the same over five seeds; the SEIR’s recovery and incubation swap places, as the guide says</p></td>
+</tr>
+<tr class="row-even"><td><p>E3 Experiments</p></td>
+<td><p>SLURM and PBS tested on a container cluster</p></td>
+<td><p>Partly: stand-in <code class="docutils literal notranslate"><span class="pre">sbatch</span></code> and <code class="docutils literal notranslate"><span class="pre">qsub</span></code> run the job scripts locally and must equal a serial run; the single-node SLURM job is a manual-only workflow and was not run (no container daemon here)</p></td>
+</tr>
+<tr class="row-odd"><td><p>E4 Provenance</p></td>
+<td><p>A bundle made on Linux verified on macOS and Windows</p></td>
+<td><p>Partly: three bundles are made, unpacked and verified on Linux (<code class="docutils literal notranslate"><span class="pre">release-checks.sh</span> <span class="pre">bundles</span></code>); the macOS and Windows verification is a manual-only workflow, not run</p></td>
+</tr>
+<tr class="row-even"><td><p>E5 Studio</p></td>
+<td><p>Bundle export; posterior and sensitivity plots; a map view; Firefox, Safari and Edge; fully offline assets; a short video</p></td>
+<td><p>F10 Studio II: in progress</p></td>
+</tr>
+<tr class="row-odd"><td><p>E7 LLM agents</p></td>
+<td><p>The response cache inside <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">bundle</span></code>, so <code class="docutils literal notranslate"><span class="pre">verify</span></code> needs no network</p></td>
+<td><p>Done: <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">run</span></code> exports the replies, <code class="docutils literal notranslate"><span class="pre">bundle</span></code> packs them and <code class="docutils literal notranslate"><span class="pre">verify</span></code> replays them with every socket blocked in the test</p></td>
+</tr>
+<tr class="row-even"><td><p>E8 Geospatial</p></td>
+<td><p>Zoo models on a real road network and a real land-use raster, with checksummed download scripts and licences</p></td>
+<td><p>Done: <code class="docutils literal notranslate"><span class="pre">road_traffic</span></code> on OpenStreetMap streets (ODbL) and <code class="docutils literal notranslate"><span class="pre">habitat_selection</span></code> on ESA WorldCover (CC BY 4.0), small bundled samples of Burlington with <code class="docutils literal notranslate"><span class="pre">NOTICE.md</span></code>, <code class="docutils literal notranslate"><span class="pre">scripts/geo_data.py</span></code> with SHA-256 checksums</p></td>
+</tr>
+<tr class="row-odd"><td><p>E10 Zoo</p></td>
+<td><p>Artificial Anasazi; Schelling on real neighbourhoods</p></td>
+<td><p>Partly: <code class="docutils literal notranslate"><span class="pre">schelling_regions</span></code> on census tracts (public domain); Artificial Anasazi moves to 1.5.0</p></td>
+</tr>
+<tr class="row-even"><td><p>E12 Interoperability</p></td>
+<td><p>NetLogo translator; xarray output; R and Julia guides</p></td>
+<td><p>Done: <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">netlogo</span></code> (Fire percolates near 59% density, Wolf Sheep oscillates), <code class="docutils literal notranslate"><span class="pre">DataCollector.to_xarray</span></code> (<code class="docutils literal notranslate"><span class="pre">xarray</span></code> extra), <code class="docutils literal notranslate"><span class="pre">docs/r_and_julia.md</span></code>, Parquet from every example</p></td>
+</tr>
+<tr class="row-odd"><td><p>E13 Developer tools</p></td>
+<td><p>Lint pre-commit hook; language-server mode; strict type checking; the remaining lint rules</p></td>
+<td><p>Done: <code class="docutils literal notranslate"><span class="pre">.pre-commit-hooks.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">lint</span> <span class="pre">--lsp</span></code>, strict mypy on 156 files (the hot-path packages core, space, time and behaviour, plus viz, studio, data and zoo, are excluded), MDL011, MDL013 and MDL014, <code class="docutils literal notranslate"><span class="pre">geo</span></code> and <code class="docutils literal notranslate"><span class="pre">llm</span></code> templates; the onboarding path takes about 25 s of machine time, not timed with volunteers</p></td>
+</tr>
+<tr class="row-even"><td><p>E15 Community</p></td>
+<td><p>Translations; a pilot course; third-party plugins</p></td>
+<td><p>Partly: Modelly reads sampler, lint-rule and Studio-view plugins, with an example package; translations, a pilot course and third-party plugins move to 1.5.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Release</p></td>
+<td><p>Zenodo archive and DOI; the docs build failing on warnings; pre-releases a1, b1 and rc1 for 1.4.0</p></td>
+<td><p>Partly: <code class="docutils literal notranslate"><span class="pre">.zenodo.json</span></code> (the repository still has to be enabled on Zenodo once); the docs build fails on warnings; no pre-releases, 1.4.0 ships as one release</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="who-1-4-0-is-for">
+<h2>Who 1.4.0 is for<a class="headerlink" href="#who-1-4-0-is-for" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>What 1.4.0 unlocks</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Epidemiology</p></td>
+<td><p>Country-scale populations (tens of millions of agents) split over a cluster; nowcasting with live case data through particle filters</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ecology</p></td>
+<td><p>Landscapes coupled to PDE fields (diffusion of nutrients, heat); GPU runs for large individual-based models</p></td>
+</tr>
+<tr class="row-even"><td><p>Economics</p></td>
+<td><p>Agent-based macro models with millions of households; gradient calibration of behavioural parameters</p></td>
+</tr>
+<tr class="row-odd"><td><p>Urban and transport</p></td>
+<td><p>City digital twins fed by sensor streams; traffic on full regional road networks</p></td>
+</tr>
+<tr class="row-even"><td><p>Climate and energy</p></td>
+<td><p>ABMs coupled to system-dynamics or climate emulators; large adoption sweeps on GPUs</p></td>
+</tr>
+<tr class="row-odd"><td><p>Teaching and outreach</p></td>
+<td><p>A model in a web page, no installation, on any computer with a browser</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="epics">
+<h2>Epics<a class="headerlink" href="#epics" title="Link to this heading">#</a></h2>
+<p>Sizes: <strong>S</strong> under a sprint, <strong>M</strong> one sprint, <strong>L</strong> two sprints, <strong>XL</strong> three or more.</p>
+<section id="f1-distributed-simulation-modelly-distributed">
+<h3>F1 · Distributed simulation (<code class="docutils literal notranslate"><span class="pre">modelly.distributed</span></code>)<a class="headerlink" href="#f1-distributed-simulation-modelly-distributed" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> one model whose population and space are split across processes or machines, with
+the same results as a single-process run for the same seed.</p>
+<p><strong>Platforms:</strong> MPI through <code class="docutils literal notranslate"><span class="pre">mpi4py</span></code> (Open MPI or MPICH on Linux and macOS, MS-MPI on Windows);
+a Dask and a Ray backend that need no MPI and run on all three.</p>
+<p><strong>User stories</strong></p>
+<ul class="simple">
+<li><p>As an epidemiologist, I run a 30-million-agent country model on 64 cores of a cluster with
+the code I wrote for 100,000 agents on my laptop.</p></li>
+<li><p>As an RSE, I check that a distributed run and a single-process run of a small model give the
+same output, byte for byte.</p></li>
+</ul>
+<p><strong>Design</strong></p>
+<ul class="simple">
+<li><p>Spatial partitioning (grid blocks, graph partitioning for networks, k-d partitioning for
+continuous space) with ghost cells (halo exchange) at partition borders.</p></li>
+<li><p>Agents migrate between partitions when they move; migration happens at a phase boundary, in
+a deterministic order.</p></li>
+<li><p>Random numbers: one stream per agent (from the agent’s seed), so results do not depend on how
+the space is partitioned.</p></li>
+<li><p>Collectors reduce across partitions; checkpoints write one file per partition plus an index.</p></li>
+</ul>
+<p><strong>API sketch</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.distributed</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cluster</span><span class="p">,</span> <span class="n">partition</span>
+
+<span class="k">with</span> <span class="n">Cluster</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">"mpi"</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span> <span class="k">as</span> <span class="n">cluster</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">Epidemic</span><span class="p">,</span> <span class="n">scenario</span><span class="p">,</span> <span class="n">partition</span><span class="o">=</span><span class="n">partition</span><span class="o">.</span><span class="n">grid_blocks</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">365</span><span class="p">)</span>
+    <span class="n">cluster</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="s2">"runs/country.parquet"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Done when:</strong> partition-independent results on the zoo’s grid and network models (2, 4 and 16
+partitions, identical outputs); weak scaling efficiency of at least 70% from 1 to 64 workers on
+the grid epidemic playbook; runs on MPI and Dask on all three platforms.</p>
+<p><strong>Done:</strong> partly. Byte-identical reporters and agent states at 1, 2, 4 and 16 partitions on
+grid, network and continuous reference models (the zoo has no agent-level grid or network
+model), on the local backend, under <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-n</span> <span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">4</span></code>, and on Dask with 2 workers.
+Weak scaling on one 16-core laptop is 62% at 2 workers, 20% at 8 and 9% at 16 (independent
+copies of the same work already fall to 24-32% there), so the 70% target at 64 workers could
+not be measured. Ray is untested, and macOS and Windows were not run: hosted CI now runs
+only the Release and docs workflows.</p>
+<p><strong>Tasks</strong></p>
+<ul class="simple">
+<li><p>[x] Per-agent random streams (opt-in in 1.4, default in 2.0)</p></li>
+<li><p>[x] Partitioners: grid blocks, graph (METIS-style, pure Python fallback), k-d <em>(grid blocks in S1; graph: BFS banding plus greedy boundary refinement, not METIS; k-d: recursive bisection)</em></p></li>
+<li><p>[x] Halo exchange and agent migration protocol</p></li>
+<li><p>[x] MPI, Dask and Ray backends <em>(Ray written, imports lazily, untested: Ray does not install on Python 3.15)</em></p></li>
+<li><p>[x] Distributed collectors and checkpoints</p></li>
+<li><p>[x] Partition-independence test suite; scaling benchmark <em>(1, 2, 4, 16 partitions on grid, network and continuous models; MPI on 2 and 4 ranks; weak scaling measured to 16 workers on one laptop, 64 not measurable here)</em></p></li>
+<li><p>[x] Guide: from laptop to cluster</p></li>
+</ul>
+<p><strong>Size:</strong> XL · <strong>Depends on:</strong> 1.3 E3, E11</p>
+</section>
+<section id="f2-gpu-backend-generally-available">
+<h3>F2 · GPU backend, generally available<a class="headerlink" href="#f2-gpu-backend-generally-available" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> column phases, cohorts and cell spaces run on a GPU with one setting, with results
+equal to numpy within documented tolerances.</p>
+<p><strong>Platforms:</strong> CUDA through CuPy on Linux and Windows; JAX on Linux, Windows (CPU or CUDA) and
+macOS (Metal where available, CPU otherwise). Every GPU path has a CPU fallback.</p>
+<p><strong>Work items:</strong> array-API backend for every column operation; <code class="docutils literal notranslate"><span class="pre">CellIndex</span></code> adjacency, counts and
+random-neighbour draws on the GPU; <code class="docutils literal notranslate"><span class="pre">CohortTable</span></code> binomial thinning on the GPU; counter-based
+random streams (Philox) so GPU and CPU draw the same numbers; memory planner for populations
+larger than GPU memory (batches); benchmark playbooks with a <code class="docutils literal notranslate"><span class="pre">modelly-gpu</span></code> variant.</p>
+<p><strong>Done when:</strong> grid epidemic and insect cohorts playbooks run on CUDA and Metal; results equal
+the CPU run for integer state and within a stated tolerance for floats; at least 10x faster
+than the CPU column variant at 10 million agents on a mid-range GPU (measured and published,
+not assumed).</p>
+<p><strong>Done:</strong> partly. The grid epidemic at 10 million agents on CuPy keeps the numpy run’s
+integer state bit for bit and runs its 60 steps 34x faster than the CPU column variant on a
+laptop RTX 5050 (the build is not faster, so 1.5x to 1.7x including it); at the playbook’s
+own 20,000 agents the GPU is slower. The insect cohorts run on CuPy with the numpy run’s
+integers but 200x slower: under 200 rows, so launch overhead dominates. Metal is untested
+(no Apple GPU). Backends numpy, CuPy and JAX, Philox streams identical on all three, batches
+for populations larger than the GPU, <code class="docutils literal notranslate"><span class="pre">modelly-gpu</span></code> playbook variants.</p>
+<p><strong>Size:</strong> L · <strong>Depends on:</strong> 1.3 E11 preview</p>
+</section>
+<section id="f3-differentiable-models-modelly-diff">
+<h3>F3 · Differentiable models (<code class="docutils literal notranslate"><span class="pre">modelly.diff</span></code>)<a class="headerlink" href="#f3-differentiable-models-modelly-diff" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> gradients of model outputs with respect to parameters, for gradient-based calibration
+and sensitivity, where the model allows it.</p>
+<p><strong>Platforms:</strong> JAX on all three (CPU everywhere, GPU per F2).</p>
+<p><strong>Design:</strong> column phases traced with JAX; discrete random choices handled with documented
+estimators (straight-through, Gumbel-softmax, score function) and an explicit warning that the
+gradient is an approximation; a <code class="docutils literal notranslate"><span class="pre">differentiable</span></code> flag per phase; gradient checks against finite
+differences.</p>
+<p><strong>User stories:</strong> as an economist, I fit 40 behavioural parameters with gradient descent in
+minutes instead of an ABC run of days; as a modeller, I get local sensitivities (gradients) at
+the calibrated point for free.</p>
+<p><strong>Done when:</strong> gradient-based calibration recovers known parameters on two zoo models; gradients
+agree with finite differences within tolerance; docs explain when gradients are meaningful and
+when they are not.</p>
+<p><strong>Done:</strong> yes. Gradient calibration recovers 0.0305 and 0.379 for the Bass model’s 0.03 and
+0.38 (straight-through) and 1.448 and 0.937 for Bouchaud-Mezard’s 1.5 and 1.0 (pathwise;
+the gap is the noise of the observed Gini series, 1.54 and 1.09 with four replicates); the
+finite-difference checks pass with a relative error below 1e-4; <code class="docutils literal notranslate"><span class="pre">docs/differentiable.md</span></code>
+says when a gradient means something. JAX is the optional <code class="docutils literal notranslate"><span class="pre">diff</span></code> extra.</p>
+<p><strong>Size:</strong> L · <strong>Depends on:</strong> F2, 1.3 E1</p>
+</section>
+<section id="f4-modelly-in-the-browser-pyodide-and-webassembly">
+<h3>F4 · Modelly in the browser (Pyodide and WebAssembly)<a class="headerlink" href="#f4-modelly-in-the-browser-pyodide-and-webassembly" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> run a Modelly model and Studio entirely in a browser tab, with no installation, and
+share it as a link or a static page.</p>
+<p><strong>Platforms:</strong> any OS with a current browser (Chrome, Edge, Firefox, Safari); Pyodide build of
+the pure wheel in 1.3 (smoke test), compiled modules built for WebAssembly in 1.4.</p>
+<p><strong>Work items:</strong> Emscripten builds of <code class="docutils literal notranslate"><span class="pre">fastrng</span></code>, <code class="docutils literal notranslate"><span class="pre">fastloop</span></code>, <code class="docutils literal notranslate"><span class="pre">fastcell</span></code>; a <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">export-web</span></code>
+command that writes a static site (model code, scenario, Studio) deployable on GitHub Pages;
+optional dependencies trimmed for the browser; worker threads for long runs; size budget for
+the first load.</p>
+<p><strong>Done when:</strong> every 1.3 example runs in the browser from a static export; the export of a zoo
+model loads in under 10 seconds on a typical connection (measured); the docs gallery embeds live
+models.</p>
+<p><strong>Done:</strong> partly. All 14 examples and the 12 zoo models of its base run from a static
+<code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">export-web</span></code> site in headless Chromium, with the pure wheel and the
+Emscripten-compiled one; the five zoo models merged after it are run by the browser stage of
+the release checks. A scipy-free zoo model is ready in 8.0 s on a 50 Mbit/s line, but one that
+needs scipy takes 12.3 s and “Fast 4G” takes 21.4 s: Pyodide, numpy and pandas alone are
+13.5 MB. The gallery embeds three live models.</p>
+<p><strong>Size:</strong> L · <strong>Depends on:</strong> 1.3 E5 Studio</p>
+</section>
+<section id="f5-live-data-and-data-assimilation-modelly-stream">
+<h3>F5 · Live data and data assimilation (<code class="docutils literal notranslate"><span class="pre">modelly.stream</span></code>)<a class="headerlink" href="#f5-live-data-and-data-assimilation-modelly-stream" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> feed real-world observations into running models and keep an ensemble of runs close
+to reality: the core of a digital twin.</p>
+<p><strong>Platforms:</strong> pure Python on all three; MQTT and Kafka connectors as optional extras with
+wheels for all three.</p>
+<p><strong>Design:</strong> stream sources (files, HTTP polling, MQTT, Kafka); observation operators mapping
+model state to observed quantities; ensembles of replicates advanced in lock step;
+assimilation by particle filter (resampling replicates through checkpoints) and ensemble Kalman
+filter for continuous parameters; a live dashboard in Studio.</p>
+<p><strong>User stories:</strong> as a public-health modeller, I update tomorrow’s forecast every morning from
+yesterday’s cases; as a transport researcher, I keep a traffic model in step with loop-detector
+counts.</p>
+<p><strong>Done when:</strong> a nowcasting tutorial with a synthetic “truth” run shows the filter tracking it;
+particle resampling is reproducible for a seed; Studio shows the ensemble band live.</p>
+<p><strong>Done:</strong> partly. The nowcasting tutorial’s filter tracks a synthetic truth with an error of
+5.07 people against 69.2 for the unfiltered ensemble, the ensemble Kalman filter recovers
+beta 0.451 for 0.45, and a run is bit-identical for a seed with the compiled and the
+pure-Python core. The live band in Studio is F10’s. MQTT and Kafka sources are tested
+against fakes only.</p>
+<p><strong>Size:</strong> L · <strong>Depends on:</strong> 1.3 E6 (checkpoint ring), E3</p>
+</section>
+<section id="f6-multi-scale-coupling-modelly-couple">
+<h3>F6 · Multi-scale coupling (<code class="docutils literal notranslate"><span class="pre">modelly.couple</span></code>)<a class="headerlink" href="#f6-multi-scale-coupling-modelly-couple" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> couple agents to continuous processes: system-dynamics stocks and flows, ODEs, and
+PDE fields over space.</p>
+<p><strong>Platforms:</strong> numpy and scipy on all three.</p>
+<p><strong>Design:</strong> a <code class="docutils literal notranslate"><span class="pre">Field</span></code> type (a property layer with a solver: diffusion, advection, decay) stepped
+on its own time step; ODE and stock-flow components through scipy’s integrators; a coupling
+schedule (who reads what, when) checked for consistency at build time.</p>
+<p><strong>Done when:</strong> an ecology model with a diffusing nutrient field and a disease model coupled to a
+hospital-capacity ODE are in the zoo, with conservation checks (mass balance) as tests.</p>
+<p><strong>Done:</strong> yes. <code class="docutils literal notranslate"><span class="pre">nutrient_foragers</span></code> and <code class="docutils literal notranslate"><span class="pre">hospital_epidemic</span></code> are in the zoo; fields conserve
+mass to round-off, a Gaussian matches the heat kernel, the hospital stock-flow ODE is within
+1e-6 of its matrix-exponential solution, and checkpointed runs resume bit for bit. Fields are
+limited to orthogonal grids with uniform spacing; advection is first-order upwind.</p>
+<p><strong>Size:</strong> M · <strong>Depends on:</strong> 1.3 E8 (rasters)</p>
+</section>
+<section id="f7-emulators-active-learning-and-history-matching">
+<h3>F7 · Emulators, active learning and history matching<a class="headerlink" href="#f7-emulators-active-learning-and-history-matching" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> answer questions about expensive models with far fewer runs.</p>
+<p><strong>Design:</strong> Gaussian-process and neural emulators trained on experiment results (1.3 E3);
+active-learning designs that choose the next runs where the emulator is least certain; history
+matching (implausibility measures, waves of non-implausible space), widely used in epidemiology
+and climate science.</p>
+<p><strong>Done when:</strong> history matching reproduces a published wave sequence on a zoo model; active
+learning reaches the same emulator accuracy as a Latin hypercube with at most half the runs on
+two benchmarks.</p>
+<p><strong>Done:</strong> partly. History matching on the age SEIR keeps 17.1%, 4.4%, 3.1% and 2.5% of the
+box over four waves, with the truth inside each. Active learning against a Latin hypercube
+saves a factor of 1.3 to 2.7 on the Bass model (2 at most run counts) but only 1.1 to 1.4
+on Branin and 0.8 to 1.4 on Ishigami, where a well-spread design is already close to best;
+the tests assert the measured factors.</p>
+<p><strong>Size:</strong> M · <strong>Depends on:</strong> 1.3 E1, E2, E3</p>
+</section>
+<section id="f8-synthetic-populations-modelly-population">
+<h3>F8 · Synthetic populations (<code class="docutils literal notranslate"><span class="pre">modelly.population</span></code>)<a class="headerlink" href="#f8-synthetic-populations-modelly-population" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> realistic starting populations from aggregate data, with households and places.</p>
+<p><strong>Design:</strong> iterative proportional fitting and combinatorial optimisation from census marginals;
+households, schools and workplaces assigned with distance constraints; contact networks
+generated from places; privacy notes and no bundled personal data.</p>
+<p><strong>Done when:</strong> a synthetic population for a sample region reproduces its marginals within
+tolerance; the age-structured SEIR zoo model starts from it.</p>
+<p><strong>Done:</strong> yes. About 20,000 people across 41 Burlington census tracts from made-up
+marginals: totals and age counts exact in every tract, sex counts off by fewer than 3, no
+school or workplace over capacity or beyond its distance limit; the age SEIR starts from it
+(<code class="docutils literal notranslate"><span class="pre">scenario_from_population</span></code>) and follows its final-size relation within 0.05.</p>
+<p><strong>Size:</strong> M · <strong>Depends on:</strong> 1.3 E8, E9</p>
+</section>
+<section id="f9-performance-ii">
+<h3>F9 · Performance II<a class="headerlink" href="#f9-performance-ii" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> compiled event scheduler (heap in C, same ordering); compiled <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code>
+gather for column-backed agents; memory-mapped columns for populations larger than RAM;
+per-compiler PGO (GCC, Clang, MSVC) shipped where it measures faster;
+<code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">bench</span></code> comparison against 1.3 on all three OSs.</p>
+<p><strong>Done when:</strong> no playbook slower than 1.3 on any OS; event-heavy models (wolf-sheep) measurably
+faster; a 100-million-row column run on a 16 GB machine.</p>
+<p><strong>Done:</strong> partly. No playbook slower than 1.3.3 on Linux x86-64 (medians 0.986 to 1.004,
+results identical); the wolf-sheep example runs at 0.95, 600 regrowth events per step at
+0.70 and the column gather at 0.47. The predator-prey playbook is not faster (0.998 to
+1.003): it schedules no events and regrows grass as a column. A 100-million-row cohort table
+peaks at 3.6 GB under a 16 GB limit (3.2 GB memory-mapped under a 3 GB limit). PGO measured
+0.993 to 1.003 against -O3 and is not shipped. Windows, macOS and the free-threaded build
+were not measured.</p>
+<p><strong>Size:</strong> L</p>
+</section>
+<section id="f10-studio-ii">
+<h3>F10 · Studio II<a class="headerlink" href="#f10-studio-ii" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> ensemble views (bands across replicates); experiment browser over the results
+store; calibration and assimilation dashboards; map and network views at scale (WebGL);
+recording a session as a reproducible script.</p>
+<p><strong>Status:</strong> in progress. The ensemble, assimilation, experiment, analysis and map tabs and
+the browser checks in Chromium, Firefox and WebKit are on its branch, not yet merged.</p>
+<p><strong>Size:</strong> M · <strong>Depends on:</strong> F4, F5</p>
+</section>
+<section id="f11-quality-and-platforms">
+<h3>F11 · Quality and platforms<a class="headerlink" href="#f11-quality-and-platforms" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> partition-independence and GPU-equality suites in the determinism suite;
+WebAssembly in the release matrix; distributed tests on a three-OS MPI matrix
+(MS-MPI on Windows); deprecations for 2.0 announced in this release’s notes.</p>
+<p><strong>Done:</strong> partly. Partition independence is in the determinism suite and the 2.0 changes are
+announced (<code class="docutils literal notranslate"><span class="pre">docs/deprecations.md</span></code>, warnings on the moved geo names). The Pyodide smoke test,
+the three-OS MPI matrix and the cross-OS bundle check exist as manual-only workflows and
+were not run: hosted CI runs only the Release and docs workflows, and
+<code class="docutils literal notranslate"><span class="pre">scripts/release-checks.sh</span></code> runs their Linux parts locally. GPU equality is checked in
+<code class="docutils literal notranslate"><span class="pre">tests/gpu</span></code> (numpy against CuPy and JAX), not in the determinism suite.</p>
+<p><strong>Size:</strong> M (continuous)</p>
+</section>
+</section>
+<section id="priorities">
+<h2>Priorities<a class="headerlink" href="#priorities" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Priority</p></th>
+<th class="head"><p>Epics</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must</strong></p></td>
+<td><p>F1 Distributed, F2 GPU GA, F5 Live data, F11 Quality</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Should</strong></p></td>
+<td><p>F3 Differentiable, F4 Browser, F7 Emulators, F9 Performance II</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Could</strong></p></td>
+<td><p>F6 Coupling, F8 Synthetic populations, F10 Studio II</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Won’t</strong></p></td>
+<td><p>Breaking changes; a hosted service</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<pre  class="mermaid">
+        flowchart LR
+    E3[&quot;1.3 Experiments&quot;] --&gt; F1[F1 Distributed]
+    E11[&quot;1.3 Performance&quot;] --&gt; F2[F2 GPU]
+    F2 --&gt; F3[F3 Differentiable]
+    E1[&quot;1.3 Calibration&quot;] --&gt; F3
+    E1 --&gt; F7[F7 Emulators]
+    E5[&quot;1.3 Studio&quot;] --&gt; F4[F4 Browser]
+    E6[&quot;1.3 Time travel&quot;] --&gt; F5[F5 Live data]
+    F4 --&gt; F10[F10 Studio II]
+    F5 --&gt; F10
+    E8[&quot;1.3 Geospatial&quot;] --&gt; F6[F6 Coupling]
+    E8 --&gt; F8[F8 Populations]
+    </pre></section>
+<section id="sprint-plan">
+<h2>Sprint plan<a class="headerlink" href="#sprint-plan" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Sprint</p></th>
+<th class="head"><p>Goal</p></th>
+<th class="head"><p>Main items</p></th>
+<th class="head"><p>Exit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>S1</p></td>
+<td><p>Foundations</p></td>
+<td><p>Per-agent random streams; grid-block partitioner; stream sources and observation operators</p></td>
+<td><p>Same results with per-agent streams on 1 partition</p></td>
+</tr>
+<tr class="row-odd"><td><p>S2</p></td>
+<td><p>Distributed core</p></td>
+<td><p>Halo exchange, migration, MPI backend; distributed collectors</p></td>
+<td><p>Partition-independent grid epidemic on 2 and 4 partitions</p></td>
+</tr>
+<tr class="row-even"><td><p>S3</p></td>
+<td><p>GPU and assimilation · <strong>a1</strong></p></td>
+<td><p>Array-API backend complete; Philox streams; particle filter</p></td>
+<td><p>GPU equals CPU on integer state; filter tracks synthetic truth</p></td>
+</tr>
+<tr class="row-odd"><td><p>S4</p></td>
+<td><p>Backends and gradients</p></td>
+<td><p>Dask and Ray distributed backends; graph partitioner; JAX tracing; ensemble Kalman filter</p></td>
+<td><p>Distributed runs on Dask on all three OSs; gradient check passes</p></td>
+</tr>
+<tr class="row-even"><td><p>S5</p></td>
+<td><p>Browser</p></td>
+<td><p>Emscripten builds; <code class="docutils literal notranslate"><span class="pre">export-web</span></code>; Pyodide CI</p></td>
+<td><p>Every example runs from a static export</p></td>
+</tr>
+<tr class="row-odd"><td><p>S6</p></td>
+<td><p>Emulators and Studio II · <strong>b1</strong></p></td>
+<td><p>GP emulator, active learning, history matching; ensemble views</p></td>
+<td><p>Feature complete; API review closed</p></td>
+</tr>
+<tr class="row-even"><td><p>S7</p></td>
+<td><p>Coupling and populations · <strong>rc1</strong></p></td>
+<td><p>Fields and ODE coupling; synthetic populations; compiled scheduler</p></td>
+<td><p>No open blocker</p></td>
+</tr>
+<tr class="row-odd"><td><p>S8</p></td>
+<td><p>Hardening · <strong>1.4.0</strong></p></td>
+<td><p>Determinism, partition and GPU suites on all three OSs; scaling report; docs</p></td>
+<td><p>All release gates pass</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="release-gates">
+<h2>Release gates<a class="headerlink" href="#release-gates" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Release</p></th>
+<th class="head"><p>Gate</p></th>
+<th class="head"><p>Outcome</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1.4.0a1</p></td>
+<td><p>Distributed grid model partition-independent; GPU backend equals CPU on integer state; wheels for all platforms</p></td>
+<td><p>Skipped: no pre-releases, 1.4.0 ships as one release</p></td>
+</tr>
+<tr class="row-odd"><td><p>1.4.0b1</p></td>
+<td><p>Must and Should epics feature complete; public API frozen</p></td>
+<td><p>Skipped; every new name is provisional</p></td>
+</tr>
+<tr class="row-even"><td><p>1.4.0rc1</p></td>
+<td><p>No open blocker; tutorials run in the docs build</p></td>
+<td><p>Skipped</p></td>
+</tr>
+<tr class="row-odd"><td><p>1.4.0</p></td>
+<td><p>Determinism, partition-independence and GPU suites green on Windows, macOS and Linux; scaling report published</p></td>
+<td><p>Pending: green on Linux (<code class="docutils literal notranslate"><span class="pre">ci-local.sh</span></code>, <code class="docutils literal notranslate"><span class="pre">release-checks.sh</span></code>); macOS and Windows not run, since hosted CI runs only the Release and docs workflows; the scaling report is the laptop measurement in <code class="docutils literal notranslate"><span class="pre">docs/distributed.md</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="success-metrics">
+<h2>Success metrics<a class="headerlink" href="#success-metrics" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Metric</p></th>
+<th class="head"><p>1.3.0</p></th>
+<th class="head"><p>1.4.0 target</p></th>
+<th class="head"><p>1.4.0 measured</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Largest tested population</p></td>
+<td><p>single machine</p></td>
+<td><p>30 million agents across 64 workers</p></td>
+<td><p>10 million agents on one GPU; a 100-million-row cohort table within 16 GB; no cluster run</p></td>
+</tr>
+<tr class="row-odd"><td><p>Weak scaling efficiency, 1 to 64 workers</p></td>
+<td><p>not applicable</p></td>
+<td><p>at least 70%</p></td>
+<td><p>62% at 2, 20% at 8 and 9% at 16 workers on one 16-core laptop; 64 not measurable here</p></td>
+</tr>
+<tr class="row-even"><td><p>Platforms with compiled wheels</p></td>
+<td><p>8</p></td>
+<td><p>9 (plus WebAssembly)</p></td>
+<td><p>8 published, plus a WebAssembly wheel built locally for <code class="docutils literal notranslate"><span class="pre">export-web</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Calibration methods</p></td>
+<td><p>ABC, SMM, Bayesian optimisation</p></td>
+<td><p>plus gradient-based and history matching</p></td>
+<td><p>plus gradient-based, an outside Bayesian optimiser (optuna) and history matching</p></td>
+</tr>
+<tr class="row-even"><td><p>Examples runnable in a browser</p></td>
+<td><p>0</p></td>
+<td><p>all</p></td>
+<td><p>all 14 examples and the 12 zoo models of F4’s base; the 5 later zoo models through the release checks</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="risks">
+<h2>Risks<a class="headerlink" href="#risks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Risk</p></th>
+<th class="head"><p>Likelihood</p></th>
+<th class="head"><p>Impact</p></th>
+<th class="head"><p>Mitigation</p></th>
+<th class="head"><p>Outcome</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Partition independence is hard to guarantee for every space</p></td>
+<td><p>High</p></td>
+<td><p>High</p></td>
+<td><p>Per-agent streams and phase-boundary migration; models that cannot be partitioned are detected and refused with a clear error</p></td>
+<td><p>Held: byte-identical on grid, network and continuous models; eleven kinds of model are refused with the reason</p></td>
+</tr>
+<tr class="row-odd"><td><p>MS-MPI on Windows lags Open MPI</p></td>
+<td><p>Medium</p></td>
+<td><p>Medium</p></td>
+<td><p>Dask and Ray backends are first-class; MPI tests on Windows run a reduced matrix</p></td>
+<td><p>Not exercised: Windows was not run; Ray is untested on Python 3.15</p></td>
+</tr>
+<tr class="row-even"><td><p>GPU numerics differ from CPU</p></td>
+<td><p>High</p></td>
+<td><p>Medium</p></td>
+<td><p>Integer state compared exactly; floats with stated tolerances; Philox streams shared by CPU and GPU</p></td>
+<td><p>Held for integers; BTRS binomial draws use <code class="docutils literal notranslate"><span class="pre">log</span></code> and may differ in the last bit (never seen); JAX without x64 draws float32</p></td>
+</tr>
+<tr class="row-odd"><td><p>WebAssembly bundle too large</p></td>
+<td><p>Medium</p></td>
+<td><p>Medium</p></td>
+<td><p>Size budget per release; lazy loading of optional modules</p></td>
+<td><p>Happened: 14 MB on a first visit (28 MB with scipy), so the 10 s target holds only on a fast line</p></td>
+</tr>
+<tr class="row-even"><td><p>Scope (11 epics)</p></td>
+<td><p>High</p></td>
+<td><p>High</p></td>
+<td><p>Could items move to 1.5 first</p></td>
+<td><p>Every epic shipped, in three waves of parallel work; what fell short is noted per epic</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="open-questions">
+<h2>Open questions<a class="headerlink" href="#open-questions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>[x] Default distributed backend: MPI (fastest on clusters) or Dask (easiest everywhere)? <em>Neither is a default: <code class="docutils literal notranslate"><span class="pre">Cluster(backend=...)</span></code> names <code class="docutils literal notranslate"><span class="pre">local</span></code>, <code class="docutils literal notranslate"><span class="pre">mpi</span></code>, <code class="docutils literal notranslate"><span class="pre">dask</span></code> or <code class="docutils literal notranslate"><span class="pre">ray</span></code>, and only <code class="docutils literal notranslate"><span class="pre">local</span></code> needs nothing installed. MPI needs the <code class="docutils literal notranslate"><span class="pre">distributed</span></code> extra and a launcher; the guide says when to pick each.</em></p></li>
+<li><p>[x] Per-agent random streams: opt-in in 1.4 and default in 2.0, or default already in 1.4? <em>Opt-in in 1.4 (S1), so 1.x models keep their numbers.</em></p></li>
+<li><p>[x] JAX as an optional extra only, or part of <code class="docutils literal notranslate"><span class="pre">rec</span></code> for GPU users? <em>Optional extras only: <code class="docutils literal notranslate"><span class="pre">diff</span></code> (JAX) and <code class="docutils literal notranslate"><span class="pre">gpu</span></code> (CuPy); <code class="docutils literal notranslate"><span class="pre">rec</span></code> stays network and viz, and <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">modelly</span></code> loads neither.</em></p></li>
+<li><p>[x] Which public data sets to use for the synthetic-population tutorial (licences)? <em>Made-up marginals on real Burlington census tracts (public domain), OpenStreetMap streets (ODbL) and ESA WorldCover (CC BY 4.0), as small bundled samples with <code class="docutils literal notranslate"><span class="pre">NOTICE.md</span></code>; nothing personal.</em></p></li>
+</ul>
+</section>
+<section id="sprint-review-log">
+<h2>Sprint review log<a class="headerlink" href="#sprint-review-log" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Sprint</p></th>
+<th class="head"><p>Shipped</p></th>
+<th class="head"><p>Slipped</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>S1</p></td>
+<td><p>Per-agent random streams (<code class="docutils literal notranslate"><span class="pre">Model.agent_streams</span></code>, opt-in); the grid-block partitioner with halos (<code class="docutils literal notranslate"><span class="pre">modelly.distributed.partition</span></code>); stream sources and observation operators (<code class="docutils literal notranslate"><span class="pre">modelly.stream</span></code>)</p></td>
+<td><p></p></td>
+<td><p>Exit holds: with per-agent streams an agent draws the same numbers whatever the activation order, the population and a checkpoint in between, on one process. Opt-in in 1.4 settles the open question. Core operations no slower than 1.3.3</p></td>
+</tr>
+<tr class="row-odd"><td><p>S2</p></td>
+<td><p>Halo exchange and migration at phase boundaries; the <code class="docutils literal notranslate"><span class="pre">local</span></code> and MPI backends, and (from S4) Dask and Ray; reduced reporters and per-partition checkpoints with an index; the graph and k-d partitioners (from S4); <code class="docutils literal notranslate"><span class="pre">owns()</span></code> for builds of a partition only; the partition-independence suite; the weak-scaling script; the guide “From laptop to cluster”</p></td>
+<td><p>Ray untested (no Ray for Python 3.15); MPI and Dask on macOS and Windows; weak scaling to 64 workers (one 16-core laptop)</p></td>
+<td><p>Exit holds: the grid epidemic split into 1, 2, 4 and 16 blocks, a network model into 2, 4 and 16 parts and a continuous model into 2, 4 and 16 boxes give byte-identical reporters and agent states, also under <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-n</span> <span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">4</span></code>. The zoo has no agent-level grid or network model, so the suite runs on three reference models in <code class="docutils literal notranslate"><span class="pre">modelly.examples.distributed</span></code>. Measured on the laptop: the split run keeps 53-91% of what independent copies get with 10,000 people per worker and 79-109% with 40,000; the machine itself gives 24-32% at 8-16 processes</p></td>
+</tr>
+<tr class="row-even"><td><p>S3-S4 (wave 1)</p></td>
+<td><p>F5 ensembles, particle and ensemble Kalman filters, MQTT and Kafka sources, the nowcasting tutorial; F6 fields, ODE and stock-flow components with a checked schedule, two zoo models; F7 Gaussian and neural emulators, active learning, history matching; F8 synthetic populations, three zoo models on real Burlington data. F1 ran alongside</p></td>
+<td><p>Studio’s live band (to F10); active learning’s factor of 2 on the analytic functions; parallel replicate stepping (in-process by design)</p></td>
+<td><p>The epics ran in parallel, one agent each in its own worktree, rather than one after another; no a1 pre-release. Filter error 5.07 against 69.2 unfiltered; history-matching waves 17.1% to 2.5% of the box; marginals reproduced exactly on totals and ages</p></td>
+</tr>
+<tr class="row-odd"><td><p>S5-S6 (wave 2)</p></td>
+<td><p>F2 numpy, CuPy and JAX backends with Philox streams and batching; F3 differentiable phases and gradient calibration; F4 <code class="docutils literal notranslate"><span class="pre">export-web</span></code>, the WebAssembly wheel, every example and zoo model in headless Chromium, three live models in the gallery; F9 compiled event heap, column gather in C, memory-mapped columns, <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">bench</span> <span class="pre">--against</span></code></p></td>
+<td><p>Metal; the 10 s first load on Fast 4G and for models that need scipy; predator-prey not faster; PGO (no gain); the free-threaded build untested; no b1 pre-release</p></td>
+<td><p>34x at 10 million agents on a laptop RTX 5050, 200x slower on a 200-row cohort table; 14 MB first load; 100-million-row table in 3.6 GB; no playbook slower than 1.3.3 on Linux</p></td>
+</tr>
+<tr class="row-even"><td><p>S7-S8 (wave 3, integration)</p></td>
+<td><p>F11 partition independence in the determinism suite, 2.0 deprecations announced, <code class="docutils literal notranslate"><span class="pre">.zenodo.json</span></code>, the docs failing on warnings; the E12 and E13 carry-overs (NetLogo translator, xarray, R and Julia guide, lint rules, <code class="docutils literal notranslate"><span class="pre">lint</span> <span class="pre">--lsp</span></code>, pre-commit hooks, strict typing on 156 files); the E1, E2, E7 and E15 carry-overs; integration: strict typing extended to the merged code, hosted CI cut to the Release and docs workflows, <code class="docutils literal notranslate"><span class="pre">scripts/release-checks.sh</span></code> for the rest</p></td>
+<td><p>F10 Studio II (in progress); macOS and Windows checks (manual-only workflows, not run); Anasazi, translations, a pilot course and third-party plugins (to 1.5.0); no rc1 pre-release</p></td>
+<td><p>2,865 tests pass and 55 skip on the integration branch (opt-in browser tests and absent CuPy, Ray, optuna and xarray); the release gate (benchmark against 1.3.3, the notebooks, the local release checks) is pending</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="1.3.0.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">1.3.0: answers and trust</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="1.5.0.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">1.5.0: ecosystem and collaboration</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-we-start">Where we start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carried-over-from-1-3-0">Carried over from 1.3.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#who-1-4-0-is-for">Who 1.4.0 is for</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epics">Epics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f1-distributed-simulation-modelly-distributed">F1 · Distributed simulation (<code class="docutils literal notranslate"><span class="pre">modelly.distributed</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f2-gpu-backend-generally-available">F2 · GPU backend, generally available</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f3-differentiable-models-modelly-diff">F3 · Differentiable models (<code class="docutils literal notranslate"><span class="pre">modelly.diff</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f4-modelly-in-the-browser-pyodide-and-webassembly">F4 · Modelly in the browser (Pyodide and WebAssembly)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f5-live-data-and-data-assimilation-modelly-stream">F5 · Live data and data assimilation (<code class="docutils literal notranslate"><span class="pre">modelly.stream</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f6-multi-scale-coupling-modelly-couple">F6 · Multi-scale coupling (<code class="docutils literal notranslate"><span class="pre">modelly.couple</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f7-emulators-active-learning-and-history-matching">F7 · Emulators, active learning and history matching</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f8-synthetic-populations-modelly-population">F8 · Synthetic populations (<code class="docutils literal notranslate"><span class="pre">modelly.population</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f9-performance-ii">F9 · Performance II</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f10-studio-ii">F10 · Studio II</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f11-quality-and-platforms">F11 · Quality and platforms</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#priorities">Priorities</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sprint-plan">Sprint plan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-gates">Release gates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#success-metrics">Success metrics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#risks">Risks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#open-questions">Open questions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sprint-review-log">Sprint review log</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/roadmap/1.4.0.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

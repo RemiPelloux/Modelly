@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Sugarscape Constant Growback Model with Traders &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../../_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="../../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/advanced/sugarscape_g1mt';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/examples/advanced/sugarscape_g1mt.html" />
+    <link rel="icon" href="../../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Tram Route Model (Continuous State Example)" href="../behaviour/tram_model.html" />
+    <link rel="prev" title="Epstein Civil Violence Model" href="epstein_civil_violence.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../examples.html">Core examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic/boltzmann_wealth_model.html">boltzmann wealth model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/schelling.html">schelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/virus_on_network.html">virus on network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/conways_game_of_life.html">conways game of life</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/boid_flockers.html">boid flockers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wolf_sheep.html">wolf sheep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alliance_formation.html">alliance formation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pd_grid.html">pd grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="epstein_civil_violence.html">epstein civil violence</a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">sugarscape g1mt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../behaviour/tram_model.html">tram model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spatial/commuting_city.html">commuting city</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spatial/layered_epidemic.html">layered epidemic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../llm/llm_opinions.html">llm opinions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../zoo/index.html">Model zoo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/age_seir.html">Age-structured SEIR with contact matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/vector_borne.html">Vector-borne transmission on a landscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/habitat_selection.html">Habitat selection on a real land-cover raster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/hospital_epidemic.html">Epidemic coupled to hospital capacity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/energy_budget.html">Individual-based population with energy budgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/nutrient_foragers.html">Foragers on a diffusing nutrient field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/forest_fire.html">Forest fire and succession on a raster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/order_book.html">Continuous double auction (zero-intelligence order book)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/kinetic_wealth.html">Boltzmann wealth exchange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/bouchaud_mezard.html">Bouchaud-Mezard wealth condensation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/deffuant.html">Deffuant bounded-confidence opinion dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/hegselmann_krause.html">Hegselmann-Krause bounded-confidence opinion dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/schelling_regions.html">Schelling segregation on real neighbourhoods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/axelrod.html">Axelrod culture dissemination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/nagel_schreckenberg.html">Nagel-Schreckenberg traffic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/road_traffic.html">Traffic assignment on a real street network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/bass_diffusion.html">Bass diffusion of innovation on a network</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gallery.html">Gallery</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../models.html" class="nav-link">Example models</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../examples.html" class="nav-link">Modelly Core Examples</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Sugarscape Constant Growback Model with Traders</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="sugarscape-constant-growback-model-with-traders">
+<h1>Sugarscape Constant Growback Model with Traders<a class="headerlink" href="#sugarscape-constant-growback-model-with-traders" title="Link to this heading">#</a></h1>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>This is Epstein &amp; Axtell’s Sugarscape model with Traders, a detailed description is in</p>
+<!-- vale Google.WordList = NO -->
+<p>Chapter four of <em>Growing Artificial Societies: Social Science from the Bottom Up (1996)</em>.</p>
+<!-- vale Google.WordList = YES -->
+<p>The model shows an emergent price equilibrium can happen via a decentralized dynamics.</p>
+<p>This code generally matches the code in the Complexity Explorer Tutorial, but in <code class="docutils literal notranslate"><span class="pre">.py</span></code> instead of <code class="docutils literal notranslate"><span class="pre">.ipynb</span></code> format.</p>
+<section id="agents">
+<h3>Agents:<a class="headerlink" href="#agents" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Resource</strong>:  Resource agents grow back at one unit of sugar and spice per time step up to a specified max amount and can be harvested and traded by the trader agents.
+(if you do the interactive run, the color will be green if the resource agent has a bigger amount of sugar, or yellow if it has a bigger amount of spice)</p></li>
+<li><p><strong>Traders</strong>: Trader agents have the following attributes: (1) metabolism for sugar, (2) metabolism for spice, (3) vision,
+(4) initial sugar endowment and (5) initial spice endowment. The traverse the landscape harvesting sugar and spice and
+trading with other agents. If they run out of sugar or spice then they are removed from the model. (red circle if you do the interactive run)</p></li>
+</ul>
+<p>The trader agents traverse the landscape according to rule <strong>M</strong>:</p>
+<ul class="simple">
+<li><p>Look out as far as vision permits in the four principal lattice directions and identify the unoccupied site(s).</p></li>
+<li><p>Considering only unoccupied sites find the nearest position that produces the most welfare using the Cobb-Douglas function.</p></li>
+<li><p>Move to the new position</p></li>
+<li><p>Collect all the resources (sugar and spice) at that location
+(Epstein and Axtell, 1996, p. 99)</p></li>
+</ul>
+<p>The traders trade according to rule <strong>T</strong>:</p>
+<ul class="simple">
+<li><p>Agents and potential trade partner compute their marginal rates of substitution (MRS), if they are equal <em>end</em>.</p></li>
+<li><p>Exchange resources, with spice flowing from the agent with the higher MRS to the agent with the lower MRS and sugar
+flowing the opposite direction.</p></li>
+<li><p>The price (p) is calculated by taking the geometric mean of the agents’ MRS.</p></li>
+<li><p>If p &gt; 1 then p units of spice are traded for 1 unit of sugar; if p &lt; 1 then 1/p units of sugar for 1 unit of spice</p></li>
+<li><p>The trade occurs if it will (a) make both agent better off (increases MRS) and (b) does not cause the agents’ MRS to
+cross over one another otherwise <em>end</em>.</p></li>
+<li><p>This process then repeats until an <em>end</em> condition is met.
+(Epstein and Axtell, 1996, p. 105)</p></li>
+</ul>
+<p>The model demonstrates several Modelly concepts and features:</p>
+<ul class="simple">
+<li><p>OrthogonalMooreGrid</p></li>
+<li><p>Multiple agent types (traders, sugar, spice)</p></li>
+<li><p>Dynamically removing agents from the grid and the model when they die</p></li>
+<li><p>Data Collection at the model and agent level</p></li>
+<li><p>custom solara matplotlib space visualization</p></li>
+</ul>
+</section>
+</section>
+<section id="how-to-run">
+<h2>How to Run<a class="headerlink" href="#how-to-run" title="Link to this heading">#</a></h2>
+<p>Install Modelly with recommended dependencies:</p>
+<p>pip install “modelly-abm[rec]”</p>
+<p>Then run the example:</p>
+<p>solara run app.py</p>
+<p>Open the displayed local URL in your browser.</p>
+</section>
+<section id="files">
+<h2>Files<a class="headerlink" href="#files" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">model.py</span></code>: The Sugarscape Constant Growback with Traders model.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agents.py</span></code>: Defines the Trader agent class and the Resource agent class which contains an amount of sugar and spice.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">app.py</span></code>: Runs a visualization server via Solara (<code class="docutils literal notranslate"><span class="pre">solara</span> <span class="pre">run</span> <span class="pre">app.py</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sugar-map.txt</span></code>: Provides sugar and spice landscape in raster type format.</p></li>
+</ul>
+</section>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://mitpress.mit.edu/9780262550253/growing-artificial-societies/">Growing Artificial Societies</a></p></li>
+<li><p><a class="reference external" href="https://www.complexityexplorer.org/courses/172-agent-based-models-with-python-an-introduction-to-modelly">Complexity Explorer Sugarscape with Traders Tutorial</a></p></li>
+</ul>
+</section>
+<section id="id1">
+<h2>Agents<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellAgent</span>
+
+
+<span class="c1"># Helper function</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_distance</span><span class="p">(</span><span class="n">cell_1</span><span class="p">,</span> <span class="n">cell_2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Calculate the Euclidean distance between two positions</span>
+
+<span class="sd">    used in trade.move()</span>
+<span class="sd">    """</span>
+
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">cell_1</span><span class="o">.</span><span class="n">coordinate</span>
+    <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">cell_2</span><span class="o">.</span><span class="n">coordinate</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">dy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Trader</span><span class="p">(</span><span class="n">CellAgent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Trader:</span>
+<span class="sd">    - has a metabolism of sugar and spice</span>
+<span class="sd">    - harvest and trade sugar and spice to survive</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">cell</span><span class="p">,</span>
+        <span class="n">sugar</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">spice</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">metabolism_sugar</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">metabolism_spice</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">vision</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sugar</span> <span class="o">=</span> <span class="n">sugar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spice</span> <span class="o">=</span> <span class="n">spice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metabolism_sugar</span> <span class="o">=</span> <span class="n">metabolism_sugar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metabolism_spice</span> <span class="o">=</span> <span class="n">metabolism_spice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vision</span> <span class="o">=</span> <span class="n">vision</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trade_partners</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_trader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        helper function used in self.trade_with_neighbors()</span>
+<span class="sd">        """</span>
+
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">Trader</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">agent</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_welfare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sugar</span><span class="p">,</span> <span class="n">spice</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        helper function</span>
+
+<span class="sd">        part 2 self.move()</span>
+<span class="sd">        self.trade()</span>
+<span class="sd">        """</span>
+
+        <span class="c1"># calculate total resources</span>
+        <span class="n">m_total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolism_sugar</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolism_spice</span>
+        <span class="c1"># Cobb-Douglas functional form; starting on p. 97</span>
+        <span class="c1"># on Growing Artificial Societies</span>
+        <span class="k">return</span> <span class="n">sugar</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metabolism_sugar</span> <span class="o">/</span> <span class="n">m_total</span><span class="p">)</span> <span class="o">*</span> <span class="n">spice</span> <span class="o">**</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metabolism_spice</span> <span class="o">/</span> <span class="n">m_total</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_starved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Helper function for self.maybe_die()</span>
+<span class="sd">        """</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sugar</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spice</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_MRS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sugar</span><span class="p">,</span> <span class="n">spice</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Helper function for</span>
+<span class="sd">          - self.trade()</span>
+<span class="sd">          - self.maybe_self_spice()</span>
+
+<span class="sd">        Determines what trader agent needs and can give up</span>
+<span class="sd">        """</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">spice</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolism_spice</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sugar</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolism_sugar</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_sell_spice_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">price</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        helper function for self.maybe_sell_spice() which is called from</span>
+<span class="sd">        self.trade()</span>
+<span class="sd">        """</span>
+
+        <span class="k">if</span> <span class="n">price</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">sugar</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">spice</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">price</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sugar</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">price</span><span class="p">)</span>
+            <span class="n">spice</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">sugar</span><span class="p">,</span> <span class="n">spice</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">sell_spice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">sugar</span><span class="p">,</span> <span class="n">spice</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        used in self.maybe_sell_spice()</span>
+
+<span class="sd">        exchanges sugar and spice between traders</span>
+<span class="sd">        """</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sugar</span> <span class="o">+=</span> <span class="n">sugar</span>
+        <span class="n">other</span><span class="o">.</span><span class="n">sugar</span> <span class="o">-=</span> <span class="n">sugar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spice</span> <span class="o">-=</span> <span class="n">spice</span>
+        <span class="n">other</span><span class="o">.</span><span class="n">spice</span> <span class="o">+=</span> <span class="n">spice</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">maybe_sell_spice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">welfare_self</span><span class="p">,</span> <span class="n">welfare_other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        helper function for self.trade()</span>
+<span class="sd">        """</span>
+
+        <span class="n">sugar_exchanged</span><span class="p">,</span> <span class="n">spice_exchanged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_sell_spice_amount</span><span class="p">(</span><span class="n">price</span><span class="p">)</span>
+
+        <span class="c1"># Assess new sugar and spice amount - what if change did occur</span>
+        <span class="n">self_sugar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sugar</span> <span class="o">+</span> <span class="n">sugar_exchanged</span>
+        <span class="n">other_sugar</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">sugar</span> <span class="o">-</span> <span class="n">sugar_exchanged</span>
+        <span class="n">self_spice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spice</span> <span class="o">-</span> <span class="n">spice_exchanged</span>
+        <span class="n">other_spice</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">spice</span> <span class="o">+</span> <span class="n">spice_exchanged</span>
+
+        <span class="c1"># double check to ensure agents have resources</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">self_sugar</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">other_sugar</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">self_spice</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">other_spice</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># trade criteria #1 - are both agents better off?</span>
+        <span class="n">both_agents_better_off</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">welfare_self</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_welfare</span><span class="p">(</span><span class="n">self_sugar</span><span class="p">,</span> <span class="n">self_spice</span><span class="p">)</span>
+        <span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">welfare_other</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">calculate_welfare</span><span class="p">(</span><span class="n">other_sugar</span><span class="p">,</span> <span class="n">other_spice</span><span class="p">))</span>
+
+        <span class="c1"># trade criteria #2 is their mrs crossing with potential trade</span>
+        <span class="n">mrs_not_crossing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_MRS</span><span class="p">(</span>
+            <span class="n">self_sugar</span><span class="p">,</span> <span class="n">self_spice</span>
+        <span class="p">)</span> <span class="o">&gt;</span> <span class="n">other</span><span class="o">.</span><span class="n">calculate_MRS</span><span class="p">(</span><span class="n">other_sugar</span><span class="p">,</span> <span class="n">other_spice</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">both_agents_better_off</span> <span class="ow">and</span> <span class="n">mrs_not_crossing</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># criteria met, execute trade</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sell_spice</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">sugar_exchanged</span><span class="p">,</span> <span class="n">spice_exchanged</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">trade</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        helper function used in trade_with_neighbors()</span>
+
+<span class="sd">        other is a trader agent object</span>
+<span class="sd">        """</span>
+
+        <span class="c1"># sanity check to verify code is working as expected</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">sugar</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">spice</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">other</span><span class="o">.</span><span class="n">sugar</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">other</span><span class="o">.</span><span class="n">spice</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+        <span class="c1"># calculate marginal rate of substitution in Growing Artificial Societies p. 101</span>
+        <span class="n">mrs_self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_MRS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sugar</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spice</span><span class="p">)</span>
+        <span class="n">mrs_other</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">calculate_MRS</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">sugar</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">spice</span><span class="p">)</span>
+
+        <span class="c1"># calculate each agents welfare</span>
+        <span class="n">welfare_self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_welfare</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sugar</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spice</span><span class="p">)</span>
+        <span class="n">welfare_other</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">calculate_welfare</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">sugar</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">spice</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">mrs_self</span><span class="p">,</span> <span class="n">mrs_other</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="c1"># calculate price</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mrs_self</span> <span class="o">*</span> <span class="n">mrs_other</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mrs_self</span> <span class="o">&gt;</span> <span class="n">mrs_other</span><span class="p">:</span>
+            <span class="c1"># self is a sugar buyer, spice seller</span>
+            <span class="n">sold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maybe_sell_spice</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">welfare_self</span><span class="p">,</span> <span class="n">welfare_other</span><span class="p">)</span>
+            <span class="c1"># no trade - criteria not met</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sold</span><span class="p">:</span>
+                <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># self is a spice buyer, sugar seller</span>
+            <span class="n">sold</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">maybe_sell_spice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">welfare_other</span><span class="p">,</span> <span class="n">welfare_self</span><span class="p">)</span>
+            <span class="c1"># no trade - criteria not met</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sold</span><span class="p">:</span>
+                <span class="k">return</span>
+
+        <span class="c1"># Capture data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">price</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trade_partners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
+
+        <span class="c1"># continue trading</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trade</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="c1">######################################################################</span>
+    <span class="c1">#                                                                    #</span>
+    <span class="c1">#                      MAIN TRADE FUNCTIONS                          #</span>
+    <span class="c1">#                                                                    #</span>
+    <span class="c1">######################################################################</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function for trader agent to identify optimal move for each step in 4 parts</span>
+<span class="sd">        1 - identify all possible moves</span>
+<span class="sd">        2 - determine which move maximizes welfare</span>
+<span class="sd">        3 - find closest best option</span>
+<span class="sd">        4 - move</span>
+<span class="sd">        """</span>
+
+        <span class="c1"># 1. identify all possible moves</span>
+
+        <span class="n">neighboring_cells</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">cell</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">get_neighborhood</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vision</span><span class="p">,</span> <span class="n">include_center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">is_empty</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">neighboring_cells</span><span class="p">:</span>
+            <span class="c1"># all neighboring cells are occupied</span>
+            <span class="k">return</span>
+
+        <span class="c1"># 2. determine which move maximizes welfare</span>
+
+        <span class="n">welfares</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calculate_welfare</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sugar</span> <span class="o">+</span> <span class="n">cell</span><span class="o">.</span><span class="n">sugar</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spice</span> <span class="o">+</span> <span class="n">cell</span><span class="o">.</span><span class="n">spice</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">neighboring_cells</span>
+        <span class="p">]</span>
+
+        <span class="c1"># 3. Find closest best option</span>
+
+        <span class="c1"># find the highest welfare in welfares</span>
+        <span class="n">max_welfare</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">welfares</span><span class="p">)</span>
+        <span class="c1"># Get cells with the highest welfare</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">cell</span>
+            <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">welfare</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">neighboring_cells</span><span class="p">,</span> <span class="n">welfares</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">welfare</span><span class="p">,</span> <span class="n">max_welfare</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="n">min_dist</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">get_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">)</span>
+
+        <span class="n">final_candidates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">cell</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">candidates</span>
+            <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">get_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">cell</span><span class="p">),</span> <span class="n">min_dist</span><span class="p">,</span> <span class="n">rel_tol</span><span class="o">=</span><span class="mf">1e-02</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="c1"># 4. Move Agent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">final_candidates</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">eat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sugar</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">sugar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">sugar</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sugar</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolism_sugar</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">spice</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">spice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">spice</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spice</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolism_spice</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">maybe_die</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to remove Traders who have consumed all their sugar or spice</span>
+<span class="sd">        """</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_starved</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Agent step method."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trade_partners</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eat</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maybe_die</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">trade_with_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function for trader agents to decide who to trade with in three parts</span>
+
+<span class="sd">        1- identify neighbors who can trade</span>
+<span class="sd">        2- trade (2 sessions)</span>
+<span class="sd">        3- collect data</span>
+<span class="sd">        """</span>
+        <span class="c1"># iterate through traders in neighboring cells and trade</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">get_neighborhood</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vision</span><span class="p">)</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trade</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+</pre></div>
+</div>
+</section>
+<section id="model">
+<h2>Model<a class="headerlink" href="#model" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples.advanced.sugarscape_g1mt.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">Trader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.scenarios</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scenario</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrthogonalVonNeumannGrid</span>
+
+
+<span class="c1"># Helper Functions</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flatten</span><span class="p">(</span><span class="n">list_of_lists</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    helper function for model datacollector for trade price</span>
+<span class="sd">    collapses agent price list into one list</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">list_of_lists</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">geometric_mean</span><span class="p">(</span><span class="n">list_of_prices</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    find the geometric mean of a list of prices</span>
+<span class="sd">    """</span>
+    <span class="c1"># protects against an invalid value if no prices</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_prices</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">list_of_prices</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">trader_count</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Number of traders alive."""</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">trade_volume</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Number of trades made this step, counted once per partner."""</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">trade_partners</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">trade_price</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Geometric mean of the prices of every trade this step."""</span>
+    <span class="k">return</span> <span class="n">geometric_mean</span><span class="p">(</span><span class="n">flatten</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">prices</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">]))</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SugarScapeScenario</span><span class="p">(</span><span class="n">Scenario</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Sugarscape scenario class."""</span>
+
+    <span class="n">initial_population</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">endowment_min</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">endowment_max</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">metabolism_min</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">metabolism_max</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">vision_min</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">vision_max</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">enable_trade</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SugarscapeG1mt</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Manager class to run Sugarscape with Traders</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario</span><span class="p">:</span> <span class="n">SugarScapeScenario</span> <span class="o">=</span> <span class="n">SugarScapeScenario</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">scenario</span><span class="o">=</span><span class="n">scenario</span><span class="p">)</span>
+        <span class="c1"># Initiate width and height of sugarscape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">50</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">50</span>
+
+        <span class="c1"># Initiate population attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enable_trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">enable_trade</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># initiate modelly grid class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalVonNeumannGrid</span><span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">torus</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span>
+        <span class="p">)</span>
+        <span class="c1"># initiate datacollector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">DataCollector</span><span class="p">(</span>
+            <span class="n">model_reporters</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"#Traders"</span><span class="p">:</span> <span class="n">trader_count</span><span class="p">,</span>
+                <span class="s2">"Trade Volume"</span><span class="p">:</span> <span class="n">trade_volume</span><span class="p">,</span>
+                <span class="s2">"Price"</span><span class="p">:</span> <span class="n">trade_price</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">agent_reporters</span><span class="o">=</span><span class="p">{</span><span class="s2">"Trade Network"</span><span class="p">:</span> <span class="s2">"trade_partners"</span><span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="c1"># read in landscape file from supplementary material</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sugar_distribution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"sugar-map.txt"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spice_distribution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sugar_distribution</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">add_property_layer</span><span class="p">(</span><span class="s2">"sugar"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sugar_distribution</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">add_property_layer</span><span class="p">(</span><span class="s2">"spice"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spice_distribution</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">initial_population</span>
+        <span class="n">Trader</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">initial_population</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="o">.</span><span class="n">cells</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">n</span><span class="p">),</span>
+            <span class="n">sugar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">endowment_min</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">endowment_max</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">n</span><span class="p">,),</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">spice</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">endowment_min</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">endowment_max</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">n</span><span class="p">,),</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">metabolism_sugar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">metabolism_min</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">metabolism_max</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">n</span><span class="p">,),</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">metabolism_spice</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">metabolism_min</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">metabolism_max</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">n</span><span class="p">,),</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">vision</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">vision_min</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">vision_max</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">n</span><span class="p">,),</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Unique step function that does staged activation of sugar and spice</span>
+<span class="sd">        and then randomly activates traders</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">sugar</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">sugar</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sugar_distribution</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">spice</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">spice</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spice_distribution</span><span class="p">)</span>
+
+        <span class="c1"># step trader agents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_trade</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"trade_with_neighbors"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step_count</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">step_count</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+</pre></div>
+</div>
+</section>
+<section id="app">
+<h2>App<a class="headerlink" href="#app" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples.advanced.sugarscape_g1mt.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">SugarscapeG1mt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">Slider</span><span class="p">,</span> <span class="n">SolaraViz</span><span class="p">,</span> <span class="n">SpaceRenderer</span><span class="p">,</span> <span class="n">make_plot_component</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentPortrayalStyle</span><span class="p">,</span> <span class="n">PropertyLayerStyle</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">agent_portrayal</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">AgentPortrayalStyle</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">agent</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">coordinate</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">agent</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">coordinate</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span>
+        <span class="n">marker</span><span class="o">=</span><span class="s2">"o"</span><span class="p">,</span>
+        <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">property_layer_portrayal</span><span class="p">(</span><span class="n">layer</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">layer</span> <span class="o">==</span> <span class="s2">"sugar"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PropertyLayerStyle</span><span class="p">(</span>
+            <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">PropertyLayerStyle</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">post_process</span><span class="p">(</span><span class="n">chart</span><span class="p">):</span>
+    <span class="n">chart</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">chart</span>
+
+
+<span class="n">model_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"rng"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"InputText"</span><span class="p">,</span>
+        <span class="s2">"value"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+        <span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Random Seed"</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">"width"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="s2">"height"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="c1"># Population parameters</span>
+    <span class="s2">"initial_population"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span>
+        <span class="s2">"Initial Population"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span>
+    <span class="p">),</span>
+    <span class="c1"># Agent endowment parameters</span>
+    <span class="s2">"endowment_min"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Min Initial Endowment"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"endowment_max"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Max Initial Endowment"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="c1"># Metabolism parameters</span>
+    <span class="s2">"metabolism_min"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Min Metabolism"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"metabolism_max"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Max Metabolism"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="c1"># Vision parameters</span>
+    <span class="s2">"vision_min"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Min Vision"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"vision_max"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Max Vision"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="c1"># Trade parameter</span>
+    <span class="s2">"enable_trade"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"Checkbox"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Enable Trading"</span><span class="p">},</span>
+<span class="p">}</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SugarscapeG1mt</span><span class="p">()</span>
+
+<span class="c1"># Here, the renderer uses the Altair backend, while the plot components</span>
+<span class="c1"># use the Matplotlib backend.</span>
+<span class="c1"># Both can be mixed and matched to enhance the visuals of your model.</span>
+<span class="n">renderer</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SpaceRenderer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"altair"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">setup_agents</span><span class="p">(</span><span class="n">agent_portrayal</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">setup_property_layer</span><span class="p">(</span><span class="n">property_layer_portrayal</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+<span class="n">renderer</span><span class="o">.</span><span class="n">post_process</span> <span class="o">=</span> <span class="n">post_process</span>
+
+<span class="c1"># Note: It is advised to switch the pages after pausing the model</span>
+<span class="c1"># on the Solara dashboard.</span>
+<span class="n">page</span> <span class="o">=</span> <span class="n">SolaraViz</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">renderer</span><span class="p">,</span>
+    <span class="n">components</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">make_plot_component</span><span class="p">(</span><span class="s2">"#Traders"</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">make_plot_component</span><span class="p">(</span><span class="s2">"Price"</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="n">model_params</span><span class="o">=</span><span class="n">model_params</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Sugarscape {G1, M, T}"</span><span class="p">,</span>
+    <span class="n">play_interval</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">page</span>  <span class="c1"># noqa</span>
+
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="epstein_civil_violence.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Epstein Civil Violence Model</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../behaviour/tram_model.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Tram Route Model (Continuous State Example)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#agents">Agents:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-run">How to Run</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#files">Files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further Reading</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Agents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#app">App</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/examples/advanced/sugarscape_g1mt.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

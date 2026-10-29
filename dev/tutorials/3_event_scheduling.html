@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Event Scheduling &amp; Time &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/3_event_scheduling';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/tutorials/3_event_scheduling.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Adding Space" href="4_adding_space.html" />
+    <link rel="prev" title="Agent Activation" href="2_agent_activation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../overview.html">Overview and tutorials</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0_first_model.html">Creating Your First Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_agentset.html">AgentSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_agent_activation.html">Agent Activation</a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">Event Scheduling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_adding_space.html">Adding Space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_collecting_data.html">Collecting Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_visualization_basic.html">Basic Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_visualization_dynamic_agents.html">Dynamic Agent Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_visualization_rendering_with_space_renderer.html">Visualisation using SpaceRenderer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_visualization_property_layer_visualization.html">Property Layer Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_visualization_custom.html">Custom Visualization Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_discrete_event_simulation.html">Discrete Event Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_hybrid_abm_devs.html">Hybrid ABM-DEVS Models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../course/index.html">Course</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../course/session_1.html">Session 1: agents, a scenario and a step</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../course/session_2.html">Session 2: data, seeds and reproducibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../course/session_3.html">Session 3: space, rasters and percolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../course/session_4.html">Session 4: networks and contact structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../course/session_5.html">Session 5: thinking in arrays, columns and cohorts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../course/session_6.html">Session 6: validation against theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../course/session_7.html">Session 7: experiments, sweeps and replications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../course/session_8.html">Session 8: from the zoo to your own project</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="domains/index.html">Domain tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="domains/epidemiology.html">Epidemiology: who gets infected, and how many</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domains/ecology.html">Ecology: fire on a landscape, and populations that feed themselves</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domains/economics.html">Economics: where inequality comes from</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domains/sociology.html">Sociology and political science: consensus, polarisation and culture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domains/transport.html">Transport: traffic jams from nothing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domains/energy.html">Energy: how rooftop solar spreads</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Your own project</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../using_modelly_in_your_project.html">Using Modelly in your project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_project.html">Starting a project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best-practices.html">Best practices</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Coming from another tool</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_mesa.html">From Mesa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../netlogo.html">From NetLogo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../r_and_julia.html">From R and Julia</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../getting_started.html" class="nav-link">Getting started</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../overview.html" class="nav-link">Overview of the MODELLY library</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Event Scheduling &amp; Time</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="event-scheduling-time">
+<h1>Event Scheduling &amp; Time<a class="headerlink" href="#event-scheduling-time" title="Link to this heading">#</a></h1>
+<p><strong>Important:</strong></p>
+<ul class="simple">
+<li><p>If you are just exploring Modelly and want the fastest way to execute the code we recommend executing this tutorial online in a Colab notebook. <a class="reference external" href="https://colab.research.google.com/github/RemiPelloux/Modelly/blob/main/docs/tutorials/3_event_scheduling.ipynb"><img alt="Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a> or if you do not have a Google account you can use <a class="reference external" href="https://mybinder.org/v2/gh/RemiPelloux/Modelly/main?labpath=docs%2Ftutorials%2F3_event_scheduling.ipynb"><img alt="Binder" src="https://mybinder.org/badge_logo.svg" /></a> (This can take 30 seconds to 5 minutes to load)</p></li>
+<li><p>If you are running locally, please ensure you have the latest Modelly version installed.</p></li>
+</ul>
+<section id="tutorial-description">
+<h2>Tutorial Description<a class="headerlink" href="#tutorial-description" title="Link to this heading">#</a></h2>
+<p>In the previous tutorials, you created agents, queried them with AgentSet, and learned
+activation patterns. In this tutorial, we cover <strong>time</strong> — how Modelly models progress
+through time, how you run simulations, and how to schedule events that happen at specific
+moments.
+By the end of this tutorial you will know how to:</p>
+<ul class="simple">
+<li><p>Understand how <code class="docutils literal notranslate"><span class="pre">model.time</span></code> advances during a simulation</p></li>
+<li><p>Run models with <code class="docutils literal notranslate"><span class="pre">run_for()</span></code> and <code class="docutils literal notranslate"><span class="pre">run_until()</span></code></p></li>
+<li><p>Schedule one-off events at absolute or relative times</p></li>
+<li><p>Schedule recurring events with <code class="docutils literal notranslate"><span class="pre">Schedule</span></code></p></li>
+<li><p>Control event priority</p></li>
+<li><p>Cancel events and stop recurring generators</p></li>
+<li><p>Combine step-based agent activation with discrete events in a single model</p></li>
+</ul>
+<section id="in-colab-run-the-next-cell">
+<h3>IN COLAB? - Run the next cell<a class="headerlink" href="#in-colab-run-the-next-cell" title="Link to this heading">#</a></h3>
+</section>
+<section id="import-dependencies">
+<h3>Import Dependencies<a class="headerlink" href="#import-dependencies" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Priority</span><span class="p">,</span> <span class="n">Schedule</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="how-time-works-in-modelly">
+<h2>How Time Works in Modelly<a class="headerlink" href="#how-time-works-in-modelly" title="Link to this heading">#</a></h2>
+<p>Modelly models track simulation time with:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">model.time</span></code></strong> — A float representing the current simulation time (starts at 0.0).</p></li>
+</ul>
+<section id="the-default-step-mechanism">
+<h3>The default step mechanism<a class="headerlink" href="#the-default-step-mechanism" title="Link to this heading">#</a></h3>
+<p>When you define a <code class="docutils literal notranslate"><span class="pre">step()</span></code> method on your model and advance time, Modelly wraps your step
+in an internal event system. Each step:</p>
+<ol class="arabic simple">
+<li><p>Advances <code class="docutils literal notranslate"><span class="pre">model.time</span></code> by 1.0</p></li>
+<li><p>Executes your <code class="docutils literal notranslate"><span class="pre">step()</span></code> method
+For event-driven simulations, prefer these methods:</p></li>
+</ol>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">model.run_for(n)</span></code></strong> — Advance time by <code class="docutils literal notranslate"><span class="pre">n</span></code> units (executing <code class="docutils literal notranslate"><span class="pre">n</span></code> steps for standard models)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">model.run_until(t)</span></code></strong> — Advance time until <code class="docutils literal notranslate"><span class="pre">model.time</span></code> reaches <code class="docutils literal notranslate"><span class="pre">t</span></code>
+These methods are the primary way to run any Modelly model.</p></li>
+</ul>
+</section>
+<section id="a-quick-example">
+<h3>A quick example<a class="headerlink" href="#a-quick-example" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SimpleModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Step </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">step_count</span><span class="si">}</span><span class="s2"> at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SimpleModel</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Initial state:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  step_count=</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">step_count</span><span class="si">}</span><span class="s2">, time=</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Running for 3 time units:"</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Final state: step_count=</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">step_count</span><span class="si">}</span><span class="s2">, time=</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial state:
+  step_count=0, time=0.0
+
+Running for 3 time units:
+  Step 1 at time 1.0
+  Step 2 at time 2.0
+  Step 3 at time 3.0
+
+Final state: step_count=3, time=3.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Notice that after <code class="docutils literal notranslate"><span class="pre">run_for(3)</span></code>, both the example’s <code class="docutils literal notranslate"><span class="pre">step_count</span></code> and <code class="docutils literal notranslate"><span class="pre">time</span></code> are at 3.
+For standard step-based models, a user-defined step counter like this advances in
+lockstep with time. But as we’ll see, events can fire
+at <em>any</em> time — including between steps.</p>
+</section>
+</section>
+<section id="run-for-vs-run-until">
+<h2><code class="docutils literal notranslate"><span class="pre">run_for</span></code> vs <code class="docutils literal notranslate"><span class="pre">run_until</span></code><a class="headerlink" href="#run-for-vs-run-until" title="Link to this heading">#</a></h2>
+<p>Both methods advance time and process any scheduled events (including the default step events)
+along the way. The difference is simple:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">run_for(duration)</span></code> advances time by the specified <strong>duration</strong> from the current time</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_until(end_time)</span></code> advances time to the specified <strong>absolute time</strong></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">SimpleModel</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"run_for(2):"</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  → time is now </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"run_until(5):"</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  → time is now </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"run_for(3) more:"</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  → time is now </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>run_for(2):
+  Step 1 at time 1.0
+  Step 2 at time 2.0
+  → time is now 2.0
+
+run_until(5):
+  Step 3 at time 3.0
+  Step 4 at time 4.0
+  Step 5 at time 5.0
+  → time is now 5
+
+run_for(3) more:
+  Step 6 at time 6.0
+  Step 7 at time 7.0
+  Step 8 at time 8.0
+  → time is now 8
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">run_until</span></code> is particularly useful when you have a fixed end time for your simulation,
+or when coordinating with external time references:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="mi">365</span><span class="p">)</span>  <span class="c1"># Run for one simulated year</span>
+</pre></div>
+</div>
+</section>
+<section id="scheduling-one-off-events">
+<h2>Scheduling One-Off Events<a class="headerlink" href="#scheduling-one-off-events" title="Link to this heading">#</a></h2>
+<p>Beyond the regular step cycle, Modelly lets you schedule <strong>events</strong> — functions that
+execute at specific times. This is useful for modeling things that don’t happen every
+step: policy changes, natural disasters, market shocks, seasonal effects, or any
+occurrence that happens at a specific point in time.
+Use <code class="docutils literal notranslate"><span class="pre">model.schedule_event()</span></code> to schedule a one-off event:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">at=</span></code></strong> — Schedule at an <strong>absolute</strong> time</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">after=</span></code></strong> — Schedule at a <strong>relative</strong> time from now (i.e., <code class="docutils literal notranslate"><span class="pre">model.time</span> <span class="pre">+</span> <span class="pre">after</span></code>)
+You must specify exactly one of <code class="docutils literal notranslate"><span class="pre">at</span></code> or <code class="docutils literal notranslate"><span class="pre">after</span></code>.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">EconomyModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A simple economy where a tax reform happens at a specific time."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tax_rate</span> <span class="o">=</span> <span class="mf">0.1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events_log</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Create agents with wealth</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">Agent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">=</span> <span class="mi">10</span>
+
+        <span class="c1"># Schedule a tax reform at time 5.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tax_reform</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+
+        <span class="c1"># Schedule a stimulus check 2 time units from now (so at time 2.0)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stimulus</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">tax_reform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tax_rate</span> <span class="o">=</span> <span class="mf">0.25</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">: Tax reform! Rate now </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tax_rate</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">stimulus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">: Stimulus! Everyone gets 5 units"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Simple taxation each step</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">tax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tax_rate</span><span class="p">)</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">-=</span> <span class="n">tax</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">EconomyModel</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Events that occurred:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">events_log</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Final tax rate: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">tax_rate</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">avg_wealth</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average wealth: </span><span class="si">{</span><span class="n">avg_wealth</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Events that occurred:
+  t=2.0: Stimulus! Everyone gets 5 units
+  t=5.0: Tax reform! Rate now 0.25
+
+Final tax rate: 0.25
+Average wealth: 7.0
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Key point:</strong> Events fire <em>during</em> time advancement. When <code class="docutils literal notranslate"><span class="pre">run_for(7)</span></code> processes time,
+it encounters the stimulus event at t=2.0 and the tax reform at t=5.0, executing them
+at the correct moments. Your <code class="docutils literal notranslate"><span class="pre">step()</span></code> method also fires at t=1.0, 2.0, 3.0, etc. as
+scheduled events under the hood.</p>
+<section id="canceling-events">
+<h3>Canceling events<a class="headerlink" href="#canceling-events" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">schedule_event</span></code> returns an <code class="docutils literal notranslate"><span class="pre">Event</span></code> object. You can cancel it before it fires:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CancelDemo</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Schedule two events</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_a_fn</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_b_fn</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+
+        <span class="c1"># Cancel event B before it fires</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_b</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">event_a_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Event A fired at t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">event_b_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Event B fired at t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">CancelDemo</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Running — Event B was canceled:"</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"  (Event B never fired)"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running — Event B was canceled:
+  Event A fired at t=3.0
+  (Event B never fired)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Cancellation is useful when model conditions change. For example, you might schedule
+a disaster event but cancel it if agents take preventive action.</p>
+</section>
+</section>
+<section id="scheduling-recurring-events">
+<h2>Scheduling Recurring Events<a class="headerlink" href="#scheduling-recurring-events" title="Link to this heading">#</a></h2>
+<p>Many models have things that happen repeatedly but not every step — quarterly reports,
+seasonal cycles, periodic inspections, or interest payments. Use <code class="docutils literal notranslate"><span class="pre">model.schedule_recurring()</span></code>
+with a <code class="docutils literal notranslate"><span class="pre">Schedule</span></code> to define these patterns.
+The <code class="docutils literal notranslate"><span class="pre">Schedule</span></code> dataclass specifies:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">interval</span></code></strong> — Time between executions (required)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">start</span></code></strong> — When to begin (default: current time + interval)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">end</span></code></strong> — When to stop (default: never)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">count</span></code></strong> — Maximum number of executions (default: unlimited)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SeasonalModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A model with regular seasonal events."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">season</span> <span class="o">=</span> <span class="s2">"spring"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">season_log</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">Agent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">=</span> <span class="mi">10</span>
+
+        <span class="c1"># Change season every 3 time units, starting at t=3.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">change_season</span><span class="p">,</span>
+            <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">3.0</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Collect taxes every 5 time units, but only 4 times</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">collect_taxes</span><span class="p">,</span>
+            <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">change_season</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">seasons</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"spring"</span><span class="p">,</span> <span class="s2">"summer"</span><span class="p">,</span> <span class="s2">"autumn"</span><span class="p">,</span> <span class="s2">"winter"</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">seasons</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">season</span> <span class="o">=</span> <span class="n">seasons</span><span class="p">[(</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">season_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">: Season → </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">season</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">collect_taxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">season_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">: Taxes collected!"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Normal step — agents earn money</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SeasonalModel</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Timeline:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">season_log</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Final season: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">season</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average wealth: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s1">'wealth'</span><span class="p">,</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Timeline:
+  t=3.0: Season → summer
+  t=5.0: Taxes collected!
+  t=6.0: Season → autumn
+  t=9.0: Season → winter
+  t=10.0: Taxes collected!
+  t=12.0: Season → spring
+  t=15.0: Taxes collected!
+  t=15.0: Season → summer
+  t=18.0: Season → autumn
+  t=20.0: Taxes collected!
+
+Final season: autumn
+Average wealth: 27.4
+</pre></div>
+</div>
+</div>
+</div>
+<section id="controlling-when-recurring-events-start">
+<h3>Controlling when recurring events start<a class="headerlink" href="#controlling-when-recurring-events-start" title="Link to this heading">#</a></h3>
+<p>By default, a recurring event first fires at <code class="docutils literal notranslate"><span class="pre">current_time</span> <span class="pre">+</span> <span class="pre">interval</span></code>. You can
+override this with the <code class="docutils literal notranslate"><span class="pre">start</span></code> parameter:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">StartDemo</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Fires at t=5, t=10, t=15, ... (default start)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_start_event</span><span class="p">,</span>
+            <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">5.0</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Fires at t=0, t=5, t=10, ... (start immediately)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_at_zero_event</span><span class="p">,</span>
+            <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Fires at t=2, t=7, t=12, ... (custom start)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_at_two_event</span><span class="p">,</span>
+            <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mf">2.0</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_start_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Default start: t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_at_zero_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Start at 0:    t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_at_two_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Start at 2:    t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">StartDemo</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Events firing during first 12 time units:"</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Events firing during first 12 time units:
+  Start at 0:    t=0.0
+  Start at 2:    t=2.0
+  Default start: t=5.0
+  Start at 0:    t=5.0
+  Start at 2:    t=7.0
+  Default start: t=10.0
+  Start at 0:    t=10.0
+  Start at 2:    t=12.0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="stopping-recurring-events">
+<h3>Stopping recurring events<a class="headerlink" href="#stopping-recurring-events" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">schedule_recurring</span></code> returns an <code class="docutils literal notranslate"><span class="pre">EventGenerator</span></code> that you can stop at any time:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">StopDemo</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Start a recurring event</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tick</span><span class="p">,</span>
+            <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">tick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Tick #</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">counter</span><span class="si">}</span><span class="s2"> at t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Stop the ticker after 5 ticks</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">&gt;=</span> <span class="mi">5</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Ticker stopped at t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">StopDemo</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Total ticks: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">counter</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Tick #1 at t=1.0
+  Tick #2 at t=2.0
+  Tick #3 at t=3.0
+  Tick #4 at t=4.0
+  Tick #5 at t=5.0
+  Ticker stopped at t=6.0
+
+Total ticks: 5
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="using-end-and-count-for-automatic-limits">
+<h3>Using <code class="docutils literal notranslate"><span class="pre">end</span></code> and <code class="docutils literal notranslate"><span class="pre">count</span></code> for automatic limits<a class="headerlink" href="#using-end-and-count-for-automatic-limits" title="Link to this heading">#</a></h3>
+<p>Instead of manually stopping a generator, you can set limits in the <code class="docutils literal notranslate"><span class="pre">Schedule</span></code> itself:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stop after time 50.0</span>
+<span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mf">50.0</span><span class="p">)</span>
+<span class="c1"># Execute at most 10 times</span>
+<span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># Both: stop after 10 executions OR after time 50.0, whichever comes first</span>
+<span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mf">50.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dynamic-intervals">
+<h3>Dynamic intervals<a class="headerlink" href="#dynamic-intervals" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">interval</span></code> parameter can be a callable that returns the next interval dynamically.
+The callable receives the model as its argument. This is useful for modeling processes
+where the frequency changes over time:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AcceleratingModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A model where events happen faster and faster."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_times</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Interval starts at 4.0 and shrinks each time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">record_event</span><span class="p">,</span>
+            <span class="n">Schedule</span><span class="p">(</span>
+                <span class="n">interval</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">4.0</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">time</span> <span class="o">*</span> <span class="mf">0.3</span><span class="p">),</span>
+                <span class="n">count</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">record_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">AcceleratingModel</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Event times (accelerating intervals):"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">event_times</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">gap</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">event_times</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  t=</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> (gap: </span><span class="si">{</span><span class="n">gap</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  t=</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Event times (accelerating intervals):
+  t=4.0
+  t=6.8 (gap: 2.8)
+  t=8.8 (gap: 2.0)
+  t=10.1 (gap: 1.4)
+  t=11.1 (gap: 1.0)
+  t=12.1 (gap: 1.0)
+  t=13.1 (gap: 1.0)
+  t=14.1 (gap: 1.0)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="event-priority">
+<h2>Event Priority<a class="headerlink" href="#event-priority" title="Link to this heading">#</a></h2>
+<p>When multiple events are scheduled for the same time, <strong>priority</strong> determines execution
+order. Modelly provides three priority levels:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Priority.HIGH</span></code> (1) — Executes first</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Priority.DEFAULT</span></code> (5) — Normal priority</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Priority.LOW</span></code> (10) — Executes last
+Lower numeric values mean higher priority. Note that the default model <code class="docutils literal notranslate"><span class="pre">step()</span></code> is
+scheduled at <code class="docutils literal notranslate"><span class="pre">Priority.HIGH</span></code>, so it runs before your custom events at the same time.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PriorityDemo</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Schedule three events at the same time with different priorities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">low_priority_event</span><span class="p">,</span>
+            <span class="n">at</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+            <span class="n">priority</span><span class="o">=</span><span class="n">Priority</span><span class="o">.</span><span class="n">LOW</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">high_priority_event</span><span class="p">,</span>
+            <span class="n">at</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+            <span class="n">priority</span><span class="o">=</span><span class="n">Priority</span><span class="o">.</span><span class="n">HIGH</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_priority_event</span><span class="p">,</span>
+            <span class="n">at</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+            <span class="n">priority</span><span class="o">=</span><span class="n">Priority</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">low_priority_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  LOW priority event at t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">high_priority_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  HIGH priority event at t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_priority_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  DEFAULT priority event at t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">==</span> <span class="mf">2.0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Model step (HIGH priority) at t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">PriorityDemo</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Events at t=2.0 in execution order:"</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Events at t=2.0 in execution order:
+  HIGH priority event at t=2.0
+  Model step (HIGH priority) at t=2.0
+  DEFAULT priority event at t=2.0
+  LOW priority event at t=2.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Priority is useful when the order of operations matters. For example, you might want
+data collection (HIGH) to happen before agent actions (DEFAULT), or environmental
+updates (LOW) to happen after everything else.</p>
+</section>
+<section id="putting-it-all-together-a-complete-example">
+<h2>Putting It All Together: A Complete Example<a class="headerlink" href="#putting-it-all-together-a-complete-example" title="Link to this heading">#</a></h2>
+<p>Let’s build a more complete model that combines step-based agent activation with
+discrete events. This is a simple economy where:</p>
+<ul class="simple">
+<li><p>Agents exchange money every step (standard activation)</p></li>
+<li><p>A central bank adjusts interest rates every 10 time units (recurring event)</p></li>
+<li><p>A one-time economic stimulus happens at t=25 (one-off event)</p></li>
+<li><p>The simulation runs until t=50</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Citizen</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">savings</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">exchange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Give 1 unit to a random other agent."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">others</span> <span class="o">=</span> <span class="p">[</span><span class="n">agent</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span> <span class="k">if</span> <span class="n">agent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">others</span><span class="p">:</span>
+                <span class="n">other</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">others</span><span class="p">)</span>
+                <span class="n">other</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">earn_interest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Earn interest on savings based on current rate."""</span>
+        <span class="n">interest</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">savings</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">interest_rate</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">savings</span> <span class="o">+=</span> <span class="n">interest</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CentralBankModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""An economy with monetary policy events."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_citizens</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interest_rate</span> <span class="o">=</span> <span class="mf">0.05</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">Citizen</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n_citizens</span><span class="p">)</span>
+
+        <span class="c1"># Distribute initial savings randomly</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">savings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="c1"># Recurring: Central bank reviews interest rate every 10 time units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rate_review</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">review_interest_rate</span><span class="p">,</span>
+            <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Recurring: Interest is paid every 5 time units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pay_interest</span><span class="p">,</span>
+            <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">5.0</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># One-off: Economic stimulus at t=25</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">economic_stimulus</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">25.0</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">review_interest_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Central bank adjusts rate based on average wealth."""</span>
+        <span class="n">avg_wealth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">avg_wealth</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interest_rate</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interest_rate</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">)</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s2">"raised"</span>
+        <span class="k">elif</span> <span class="n">avg_wealth</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interest_rate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interest_rate</span> <span class="o">-</span> <span class="mf">0.02</span><span class="p">)</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s2">"lowered"</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s2">"held"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">5.1f</span><span class="si">}</span><span class="s2"> | Rate review: </span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">interest_rate</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(avg wealth: </span><span class="si">{</span><span class="n">avg_wealth</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">pay_interest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Pay interest to all citizens."""</span>
+        <span class="n">total_paid</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">interest</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">savings</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">interest_rate</span><span class="p">)</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">savings</span> <span class="o">+=</span> <span class="n">interest</span>
+            <span class="n">total_paid</span> <span class="o">+=</span> <span class="n">interest</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">5.1f</span><span class="si">}</span><span class="s2"> | Interest paid: </span><span class="si">{</span><span class="n">total_paid</span><span class="si">}</span><span class="s2"> total"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">economic_stimulus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""One-time stimulus: every citizen gets 5 units."""</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">5.1f</span><span class="si">}</span><span class="s2"> | *** STIMULUS: +5 to all citizens ***"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Regular step: agents exchange money."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"exchange"</span><span class="p">)</span>
+
+        <span class="c1"># Some agents save a portion of their wealth</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">save_amount</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">//</span> <span class="mi">4</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">-=</span> <span class="n">save_amount</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">savings</span> <span class="o">+=</span> <span class="n">save_amount</span>
+
+
+<span class="c1"># Run the simulation</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">CentralBankModel</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Central Bank Economy: Event Log ===</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">log</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Final State (t=</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">) ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Interest rate: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">interest_rate</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Avg wealth: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s1">'wealth'</span><span class="p">,</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Avg savings: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s1">'savings'</span><span class="p">,</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">savings</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total money in economy: </span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== Central Bank Economy: Event Log ===
+
+  t=  5.0 | Interest paid: 12 total
+  t= 10.0 | Rate review: raised to 7% (avg wealth: 2.1)
+  t= 10.0 | Interest paid: 41 total
+  t= 15.0 | Interest paid: 42 total
+  t= 20.0 | Rate review: raised to 9% (avg wealth: 1.2)
+  t= 20.0 | Interest paid: 65 total
+  t= 25.0 | *** STIMULUS: +5 to all citizens ***
+  t= 25.0 | Interest paid: 69 total
+  t= 30.0 | Rate review: raised to 11% (avg wealth: 2.6)
+  t= 30.0 | Interest paid: 118 total
+  t= 35.0 | Interest paid: 138 total
+  t= 40.0 | Rate review: raised to 13% (avg wealth: 1.4)
+  t= 40.0 | Interest paid: 190 total
+  t= 45.0 | Interest paid: 218 total
+  t= 50.0 | Rate review: raised to 15% (avg wealth: 1.0)
+  t= 50.0 | Interest paid: 288 total
+
+=== Final State (t=50) ===
+Interest rate: 15%
+Avg wealth: 1.0
+Avg savings: 47.4
+Total money in economy: 2420
+</pre></div>
+</div>
+</div>
+</div>
+<p>This model demonstrates the core Modelly pattern: the <code class="docutils literal notranslate"><span class="pre">step()</span></code> method handles
+regular per-step agent activation, while <code class="docutils literal notranslate"><span class="pre">schedule_event</span></code> and <code class="docutils literal notranslate"><span class="pre">schedule_recurring</span></code>
+handle things that happen at specific times or on different schedules. The event system
+manages all timing automatically — you just specify <em>what</em> should happen and <em>when</em>.</p>
+</section>
+<section id="when-to-use-events-vs-steps">
+<h2>When to Use Events vs Steps<a class="headerlink" href="#when-to-use-events-vs-steps" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Use case</p></th>
+<th class="head"><p>Approach</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Agents act every time unit</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">step()</span></code> with <code class="docutils literal notranslate"><span class="pre">agents.shuffle_do()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Something happens once at a known time</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">schedule_event(fn,</span> <span class="pre">at=...)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Something happens repeatedly on a schedule</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">schedule_recurring(fn,</span> <span class="pre">Schedule(...))</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Something happens after a delay from now</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">schedule_event(fn,</span> <span class="pre">after=...)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Different processes run at different frequencies</p></td>
+<td><p>Combine step + recurring events</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pure discrete-event simulation (no regular steps)</p></td>
+<td><p>Use only <code class="docutils literal notranslate"><span class="pre">schedule_event</span></code> / <code class="docutils literal notranslate"><span class="pre">schedule_recurring</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>The step mechanism itself is implemented as a recurring event under the hood (with</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Priority.HIGH</span></code>, interval 1.0, starting at t=1.0). This means steps and custom events</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>coexist naturally in the same time-ordered event queue.</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p><strong>Running models:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">model.run_for(n)</span></code> — Advance time by <code class="docutils literal notranslate"><span class="pre">n</span></code> units</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.run_until(t)</span></code> — Advance time to absolute time <code class="docutils literal notranslate"><span class="pre">t</span></code>
+<strong>One-off events:</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.schedule_event(fn,</span> <span class="pre">at=t)</span></code> — Fire at absolute time <code class="docutils literal notranslate"><span class="pre">t</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.schedule_event(fn,</span> <span class="pre">after=d)</span></code> — Fire <code class="docutils literal notranslate"><span class="pre">d</span></code> time units from now</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">event.cancel()</span></code> — Cancel before it fires
+<strong>Recurring events:</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.schedule_recurring(fn,</span> <span class="pre">Schedule(interval=...))</span></code> — Repeat on a schedule</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Schedule(interval,</span> <span class="pre">start,</span> <span class="pre">end,</span> <span class="pre">count)</span></code> — Control timing, limits</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generator.stop()</span></code> — Stop a recurring event</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generator.is_active</span></code> — Check if still running
+<strong>Priority:</strong> <code class="docutils literal notranslate"><span class="pre">Priority.HIGH</span></code> → <code class="docutils literal notranslate"><span class="pre">Priority.DEFAULT</span></code> → <code class="docutils literal notranslate"><span class="pre">Priority.LOW</span></code>
+<strong>Time tracking:</strong> <code class="docutils literal notranslate"><span class="pre">model.time</span></code> (float), plus any user-defined counters you maintain in your model</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<p>Check out the <a class="reference internal" href="4_adding_space.html"><span class="std std-doc">adding space tutorial</span></a> on how to add a space to your Modelly model.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="2_agent_activation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Agent Activation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="4_adding_space.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Adding Space</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-description">Tutorial Description</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-colab-run-the-next-cell">IN COLAB? - Run the next cell</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#import-dependencies">Import Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-time-works-in-modelly">How Time Works in Modelly</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-default-step-mechanism">The default step mechanism</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-quick-example">A quick example</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-for-vs-run-until"><code class="docutils literal notranslate"><span class="pre">run_for</span></code> vs <code class="docutils literal notranslate"><span class="pre">run_until</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduling-one-off-events">Scheduling One-Off Events</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#canceling-events">Canceling events</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduling-recurring-events">Scheduling Recurring Events</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#controlling-when-recurring-events-start">Controlling when recurring events start</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stopping-recurring-events">Stopping recurring events</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-end-and-count-for-automatic-limits">Using <code class="docutils literal notranslate"><span class="pre">end</span></code> and <code class="docutils literal notranslate"><span class="pre">count</span></code> for automatic limits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-intervals">Dynamic intervals</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#event-priority">Event Priority</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#putting-it-all-together-a-complete-example">Putting It All Together: A Complete Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-events-vs-steps">When to Use Events vs Steps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/tutorials/3_event_scheduling.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

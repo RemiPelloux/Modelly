@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Overview of the MODELLY library &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=8ca9e7a0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.3';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/overview.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Creating Your First Model" href="tutorials/0_first_model.html" />
+    <link rel="prev" title="Model zoo" href="apis/zoo.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#" aria-current="page">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Overview of the MODELLY library</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="overview-of-the-modelly-library">
+<h1>Overview of the MODELLY library<a class="headerlink" href="#overview-of-the-modelly-library" title="Link to this heading">#</a></h1>
+<p>Modelly is modular, meaning that its modeling, analysis and visualization components are kept separate but intended to work together. The modules are grouped into three categories:</p>
+<ol class="arabic simple">
+<li><p><strong>Modeling:</strong> Classes used to build the models themselves: a model and agent classes, space for them to move around in, and built-in features for managing agents.</p></li>
+<li><p><strong>Analysis:</strong> Tools to collect data generated from your model, or to run it multiple times with different parameter values.</p></li>
+<li><p><strong>Visualization:</strong> Classes to create and launch an interactive model visualization, using a browser-based interface.</p></li>
+</ol>
+<section id="modeling-modules">
+<h2>Modeling modules<a class="headerlink" href="#modeling-modules" title="Link to this heading">#</a></h2>
+<p>Most models consist of one class to represent the model itself and one or more classes for agents. Modelly provides built-in support for managing agents and their interactions. These are implemented in Modelly’s modeling modules:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="apis/core.html"><span class="doc std std-doc">modelly.core</span></a>: the model, agents, agent sets, columns and the random source</p></li>
+<li><p><a class="reference internal" href="apis/space.html"><span class="doc std std-doc">modelly.space</span></a>: cell spaces (grids, networks, Voronoi meshes), property layers and continuous space</p></li>
+<li><p><a class="reference internal" href="apis/time.html"><span class="doc std std-doc">modelly.time</span></a>: events, scheduling on the model and signals</p></li>
+<li><p><a class="reference internal" href="apis/behaviour.html"><span class="doc std std-doc">modelly.behaviour</span></a>: timed actions, continuous states and meta-agents</p></li>
+</ul>
+<p>The skeleton of a model might look like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyAgent</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">age</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Agent </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2"> now is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="si">}</span><span class="s2"> years old"</span><span class="p">)</span>
+        <span class="c1"># Whatever else the agent does when activated</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_agents</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">OrthogonalMooreGrid</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">torus</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">initial_ages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_agents</span><span class="p">)</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="n">MyAgent</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_agents</span><span class="p">,</span> <span class="n">initial_ages</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="o">.</span><span class="n">select_random_cell</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can instantiate a model and run it for one step with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">(</span><span class="n">n_agents</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="spaces-in-modelly">
+<h2>Spaces in Modelly<a class="headerlink" href="#spaces-in-modelly" title="Link to this heading">#</a></h2>
+<p>Modelly provides several types of spaces where agents can exist and interact:</p>
+<section id="discrete-spaces">
+<h3>Discrete Spaces<a class="headerlink" href="#discrete-spaces" title="Link to this heading">#</a></h3>
+<p>Modelly implements discrete spaces through the <code class="docutils literal notranslate"><span class="pre">modelly.space</span></code> module, using a doubly-linked structure where each cell maintains connections to its neighbors. Available variants include:</p>
+<ol class="arabic">
+<li><p><strong>Grid-based Spaces:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a Von Neumann grid (4 neighbors per cell)</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">OrthogonalVonNeumannGrid</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">torus</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Create a Moore grid (8 neighbors per cell)</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">OrthogonalMooreGrid</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">torus</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Create a hexagonal grid</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">HexGrid</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">torus</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Network Space:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a network-based space</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">Network</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Voronoi Space:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create an irregular tessellation</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">VoronoiGrid</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="property-layers">
+<h3>Property Layers<a class="headerlink" href="#property-layers" title="Link to this heading">#</a></h3>
+<p>Discrete spaces support PropertyLayers - efficient numpy-based arrays for storing cell-level property_layers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create and use a property layer</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">create_property_layer</span><span class="p">(</span><span class="s2">"elevation"</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">high_ground</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">property_layers</span><span class="p">[</span><span class="s2">"elevation"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">50</span>
+</pre></div>
+</div>
+</section>
+<section id="continuous-space">
+<h3>Continuous Space<a class="headerlink" href="#continuous-space" title="Link to this heading">#</a></h3>
+<p>For models requiring continuous movement:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space.continuous</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContinuousSpace</span><span class="p">,</span> <span class="n">ContinuousSpaceAgent</span>
+
+<span class="c1"># Create a continuous space</span>
+<span class="n">space</span> <span class="o">=</span> <span class="n">ContinuousSpace</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_max</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_max</span><span class="p">]],</span> <span class="n">torus</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+
+<span class="c1"># Place an agent in the space and move it to specific coordinates</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">ContinuousSpaceAgent</span><span class="p">(</span><span class="n">space</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="n">agent</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_x</span><span class="p">,</span> <span class="n">new_y</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>Note:</strong> There are no <code class="docutils literal notranslate"><span class="pre">MultiGrid</span></code> or <code class="docutils literal notranslate"><span class="pre">SingleGrid</span></code> classes. Use the cell spaces of <code class="docutils literal notranslate"><span class="pre">modelly.space</span></code> and the continuous space of <code class="docutils literal notranslate"><span class="pre">modelly.space.continuous</span></code>.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="time-advancement-and-agent-activation">
+<h2>Time Advancement and Agent Activation<a class="headerlink" href="#time-advancement-and-agent-activation" title="Link to this heading">#</a></h2>
+<p>Modelly supports multiple approaches to advancing time and activating agents.</p>
+<section id="running-the-model">
+<h3>Running the model<a class="headerlink" href="#running-the-model" title="Link to this heading">#</a></h3>
+<p>Use the time advancement methods on <code class="docutils literal notranslate"><span class="pre">Model</span></code> to run your simulation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>  <span class="c1"># Run for 100 time units</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="mf">50.0</span><span class="p">)</span>  <span class="c1"># Run until absolute time 50</span>
+</pre></div>
+</div>
+<p>By default, the model’s <code class="docutils literal notranslate"><span class="pre">step()</span></code> method is scheduled to run every 1.0 time units, so <code class="docutils literal notranslate"><span class="pre">model.run_for(10)</span></code> executes 10 steps.</p>
+</section>
+<section id="agent-activation-patterns">
+<h3>Agent Activation Patterns<a class="headerlink" href="#agent-activation-patterns" title="Link to this heading">#</a></h3>
+<p>Modelly provides flexible agent activation through the AgentSet API:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sequential activation</span>
+<span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+
+<span class="c1"># Random activation</span>
+<span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+
+<span class="c1"># Multi-stage activation</span>
+<span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"move"</span><span class="p">,</span> <span class="s2">"eat"</span><span class="p">,</span> <span class="s2">"reproduce"</span><span class="p">]:</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">stage</span><span class="p">)</span>
+
+<span class="c1"># Activation by agent type</span>
+<span class="k">for</span> <span class="n">klass</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agent_types</span><span class="p">:</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">agents_by_type</span><span class="p">[</span><span class="n">klass</span><span class="p">]</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="event-scheduling">
+<h3>Event Scheduling<a class="headerlink" href="#event-scheduling" title="Link to this heading">#</a></h3>
+<p>Modelly supports event-based time progression directly on the <code class="docutils literal notranslate"><span class="pre">Model</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Schedule one-off events</span>
+<span class="n">model</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="n">some_function</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">25.0</span><span class="p">)</span>  <span class="c1"># At absolute time</span>
+<span class="n">model</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="n">some_function</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>  <span class="c1"># Relative to now</span>
+
+<span class="c1"># Cancel a scheduled event</span>
+<span class="n">event</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">100.0</span><span class="p">)</span>
+<span class="n">event</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+
+<span class="c1"># Schedule recurring events</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schedule</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>  <span class="c1"># Every 10 time units</span>
+<span class="n">model</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># Starting immediately</span>
+<span class="n">model</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">,</span> <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">)</span>  <span class="c1"># Limited to 10 executions</span>
+
+<span class="c1"># Stop a recurring event</span>
+<span class="n">gen</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">schedule_recurring</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">5.0</span><span class="p">))</span>
+<span class="n">gen</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="c1"># Advance time, processing all scheduled events along the way</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="mf">100.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This enables pure event-driven models, hybrid approaches combining agent-based steps with scheduled events, and everything in between.</p>
+</section>
+</section>
+<section id="agentset-and-model-agents">
+<h2>AgentSet and model.agents<a class="headerlink" href="#agentset-and-model-agents" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">model.agents</span></code> and the AgentSet class are central in managing and activating agents.</p>
+<section id="model-agents">
+<h3>model.agents<a class="headerlink" href="#model-agents" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">model.agents</span></code> is an AgentSet containing all agents in the model. It’s automatically updated when agents are added or removed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get total number of agents</span>
+<span class="n">num_agents</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+
+<span class="c1"># Iterate over all agents</span>
+<span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="agentset-features">
+<h3>AgentSet Features<a class="headerlink" href="#agentset-features" title="Link to this heading">#</a></h3>
+<p>AgentSet offers several methods for efficient agent management:</p>
+<ol class="arabic">
+<li><p><strong>Selecting</strong>: Filter agents based on criteria.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">high_energy_agents</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">energy</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Shuffling and Sorting</strong>: Randomize or order agents.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">shuffled_agents</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle</span><span class="p">()</span>
+<span class="n">sorted_agents</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">"energy"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Applying methods</strong>: Execute methods on all agents.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"move"</span><span class="p">)</span>  <span class="c1"># Shuffle then apply method</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Aggregating</strong>: Compute aggregate values across agents.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">avg_energy</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"energy"</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Grouping</strong>: Group agents by attributes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">grouped_agents</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"species"</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">agent_group</span> <span class="ow">in</span> <span class="n">grouped_agents</span><span class="p">:</span>
+    <span class="n">agent_group</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+<span class="n">species_counts</span> <span class="o">=</span> <span class="n">grouped_agents</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">mean_age_by_group</span> <span class="o">=</span> <span class="n">grouped_agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"age"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">model.agents</span></code> can also be accessed within a model instance using <code class="docutils literal notranslate"><span class="pre">self.agents</span></code>.</p>
+<p>These are just some examples of using the AgentSet, there are many more possibilities, see the <a class="reference internal" href="apis/core.html"><span class="doc std std-doc">AgentSet API docs</span></a>.</p>
+</section>
+</section>
+<section id="analysis-modules">
+<h2>Analysis modules<a class="headerlink" href="#analysis-modules" title="Link to this heading">#</a></h2>
+<p>If you’re using modeling for research, you’ll want a way to collect the data each model run generates. You’ll probably also want to run the model multiple times, to see how some output changes with different parameters. Data collection is implemented in the appropriately-named analysis modules:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="apis/data.html"><span class="doc std std-doc">modelly.data</span></a>: the <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> and the dataset recorders</p></li>
+<li><p><a class="reference internal" href="apis/batch.html"><span class="doc std std-doc">modelly.batch</span></a>: <code class="docutils literal notranslate"><span class="pre">run_batch</span></code>, <code class="docutils literal notranslate"><span class="pre">run_grid</span></code> and <code class="docutils literal notranslate"><span class="pre">CohortTable</span></code></p></li>
+<li><p><a class="reference internal" href="apis/scenarios.html"><span class="doc std std-doc">modelly.scenarios</span></a>: typed parameters, sweeps and their results</p></li>
+</ul>
+<p>You’d add a data collector to the model like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># ...</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_agents</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># ... (model initialization code)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">DataCollector</span><span class="p">(</span>
+            <span class="n">model_reporters</span><span class="o">=</span><span class="p">{</span><span class="s2">"mean_age"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"age"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)},</span>
+            <span class="n">agent_reporters</span><span class="o">=</span><span class="p">{</span><span class="s2">"age"</span><span class="p">:</span> <span class="s2">"age"</span><span class="p">},</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The data collector will collect the specified model- and agent-level data at each step of the model. After you’re done running it, you can extract the data as a <a class="reference external" href="http://pandas.pydata.org/">pandas</a> DataFrame:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">model_df</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">get_model_vars_dataframe</span><span class="p">()</span>
+<span class="n">agent_df</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">get_agent_vars_dataframe</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading">#</a></h2>
+<p>Modelly uses a browser-based visualization system called SolaraViz. This allows for interactive, customizable visualizations of your models.</p>
+<blockquote>
+<div><p><strong>Note:</strong> SolaraViz instantiates new models using <code class="docutils literal notranslate"><span class="pre">**model_parameters.value</span></code>, so all model inputs must be keyword arguments.</p>
+</div></blockquote>
+<p>Ensure your model’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method accepts keyword arguments matching the <code class="docutils literal notranslate"><span class="pre">model_params</span></code> keys.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_agents</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># Initialize the model with N agents</span>
+</pre></div>
+</div>
+<p>The core components for building your own visualizations reside in the <a class="reference internal" href="apis/viz.html"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">modelly.viz</span></code></span></a> namespace.</p>
+<p>Here’s a basic example of how to set up a visualization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Slider</span><span class="p">,</span>
+    <span class="n">SolaraViz</span><span class="p">,</span>
+    <span class="n">make_space_component</span><span class="p">,</span>
+    <span class="n">make_plot_component</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentPortrayalStyle</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">agent_portrayal</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">AgentPortrayalStyle</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+
+<span class="n">model_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"n_agents"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Number of agents:"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">page</span> <span class="o">=</span> <span class="n">SolaraViz</span><span class="p">(</span>
+    <span class="n">MyModel</span><span class="p">(</span><span class="n">n_agents</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span>
+    <span class="p">[</span><span class="n">make_space_component</span><span class="p">(</span><span class="n">agent_portrayal</span><span class="p">),</span> <span class="n">make_plot_component</span><span class="p">(</span><span class="s2">"mean_age"</span><span class="p">)],</span>
+    <span class="n">model_params</span><span class="o">=</span><span class="n">model_params</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">page</span>
+</pre></div>
+</div>
+<p>This will create an interactive visualization of your model, including:</p>
+<ul class="simple">
+<li><p>A grid visualization of agents</p></li>
+<li><p>A plot of a model metric over time</p></li>
+<li><p>A slider to adjust the number of agents</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="apis/zoo.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Model zoo</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="tutorials/0_first_model.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Creating Your First Model</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modeling-modules">Modeling modules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spaces-in-modelly">Spaces in Modelly</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discrete-spaces">Discrete Spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#property-layers">Property Layers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-space">Continuous Space</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#time-advancement-and-agent-activation">Time Advancement and Agent Activation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-model">Running the model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#agent-activation-patterns">Agent Activation Patterns</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#event-scheduling">Event Scheduling</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#agentset-and-model-agents">AgentSet and model.agents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model-agents">model.agents</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#agentset-features">AgentSet Features</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis-modules">Analysis modules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/overview.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Sensitivity &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=8ca9e7a0"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'apis/sensitivity';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.3';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/apis/sensitivity.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Batch" href="batch.html" />
+    <link rel="prev" title="Calibration" href="calibrate.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="space.html">Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geo.html">Geospatial space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time.html">Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="behaviour.html">Behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenarios.html">Scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibrate.html">Calibration</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viz.html">Viz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrate.html">Migrate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Lint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">LLM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zoo.html">Model zoo</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="api_main.html" class="nav-link">APIs</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Sensitivity</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="sensitivity">
+<h1>Sensitivity<a class="headerlink" href="#sensitivity" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.sensitivity</span></code> ranks parameters by their influence. How to use it is in
+<a class="reference internal" href="../sensitivity.html"><span class="std std-doc">Sensitivity analysis</span></a>.</p>
+<section id="module-modelly.sensitivity.screening">
+<span id="methods"></span><h2>Methods<a class="headerlink" href="#module-modelly.sensitivity.screening" title="Link to this heading">#</a></h2>
+<p>Screening: one-at-a-time sweeps and Morris elementary effects.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.experiments</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScenarioSpace</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">space</span> <span class="o">=</span> <span class="n">ScenarioSpace</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">b</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">screen</span> <span class="o">=</span> <span class="n">morris</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="n">trajectories</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">screen</span><span class="o">.</span><span class="n">ranking</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="go">['a', 'b']</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.screening.oat">
+<span class="sig-name descname"><span class="pre">oat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="experiments.html#modelly.experiments.space.ScenarioSpace" title="modelly.experiments.space.ScenarioSpace"><span class="pre">ScenarioSpace</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.sensitivity.results.OATResult" title="modelly.sensitivity.results.OATResult"><span class="pre">OATResult</span></a></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/screening.html#oat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.screening.oat" title="Link to this definition">#</a></dt>
+<dd><p>Vary each parameter alone over <code class="docutils literal notranslate"><span class="pre">levels</span></code> values, the others at their midpoint.</p>
+<p><code class="docutils literal notranslate"><span class="pre">effect</span></code> is the output’s range along a parameter’s sweep. <code class="docutils literal notranslate"><span class="pre">settings</span></code> are
+the <a class="reference internal" href="#modelly.sensitivity.study.Study" title="modelly.sensitivity.study.Study"><code class="xref py py-class docutils literal notranslate"><span class="pre">Study</span></code></a> fields (seed, steps,
+replicates, statistic, store, executor, max_parallel, options).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.screening.morris_design">
+<span class="sig-name descname"><span class="pre">morris_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generator</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/screening.html#morris_design"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.screening.morris_design" title="Link to this definition">#</a></dt>
+<dd><p>Morris trajectories on a <code class="docutils literal notranslate"><span class="pre">levels</span></code> grid.</p>
+<p>Returns the points <code class="docutils literal notranslate"><span class="pre">[trajectory,</span> <span class="pre">step,</span> <span class="pre">dimension]</span></code> (<code class="docutils literal notranslate"><span class="pre">dimensions</span> <span class="pre">+</span> <span class="pre">1</span></code>
+steps), the factor each step moves <code class="docutils literal notranslate"><span class="pre">[trajectory,</span> <span class="pre">step]</span></code> and its signed
+size <code class="docutils literal notranslate"><span class="pre">[trajectory,</span> <span class="pre">step]</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.screening.morris">
+<span class="sig-name descname"><span class="pre">morris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="experiments.html#modelly.experiments.space.ScenarioSpace" title="modelly.experiments.space.ScenarioSpace"><span class="pre">ScenarioSpace</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.sensitivity.results.MorrisResult" title="modelly.sensitivity.results.MorrisResult"><span class="pre">MorrisResult</span></a></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/screening.html#morris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.screening.morris" title="Link to this definition">#</a></dt>
+<dd><p>Morris elementary effects: <code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">mu_star</span></code> (ranking) and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> per parameter.</p>
+<p><code class="docutils literal notranslate"><span class="pre">trajectories</span></code> random trajectories on a
+<code class="docutils literal notranslate"><span class="pre">levels</span></code> grid, drawn from the stream <code class="docutils literal notranslate"><span class="pre">(DESIGN,</span> <span class="pre">MORRIS_KEY)</span></code> of the
+seed: <code class="docutils literal notranslate"><span class="pre">trajectories</span> <span class="pre">*</span> <span class="pre">(parameters</span> <span class="pre">+</span> <span class="pre">1)</span></code> evaluations. <code class="docutils literal notranslate"><span class="pre">settings</span></code> are the
+<a class="reference internal" href="#modelly.sensitivity.study.Study" title="modelly.sensitivity.study.Study"><code class="xref py py-class docutils literal notranslate"><span class="pre">Study</span></code></a> fields.</p>
+</dd></dl>
+
+<p id="module-modelly.sensitivity.variance">Variance-based sensitivity: first-order and total Sobol indices.</p>
+<p>Saltelli sampling: two independent matrices <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> of <code class="docutils literal notranslate"><span class="pre">samples</span></code>
+rows each come from one scrambled Sobol sequence of twice the dimension
+(<code class="docutils literal notranslate"><span class="pre">scipy.stats.qmc</span></code>, scrambled from the seed), and <code class="docutils literal notranslate"><span class="pre">AB_i</span></code> is <code class="docutils literal notranslate"><span class="pre">A</span></code> with
+column <code class="docutils literal notranslate"><span class="pre">i</span></code> taken from <code class="docutils literal notranslate"><span class="pre">B</span></code>: <code class="docutils literal notranslate"><span class="pre">samples</span> <span class="pre">*</span> <span class="pre">(parameters</span> <span class="pre">+</span> <span class="pre">2)</span></code> evaluations.</p>
+<p>Estimators (Saltelli et al., 2010), with <code class="docutils literal notranslate"><span class="pre">V</span></code> the variance of <code class="docutils literal notranslate"><span class="pre">f(A)</span></code> and <code class="docutils literal notranslate"><span class="pre">f(B)</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">estimator</span></code></p></th>
+<th class="head"><p>S1</p></th>
+<th class="head"><p>ST</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">jansen</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(V</span> <span class="pre">-</span> <span class="pre">mean((f(B)</span> <span class="pre">-</span> <span class="pre">f(AB_i))**2)</span> <span class="pre">/</span> <span class="pre">2)</span> <span class="pre">/</span> <span class="pre">V</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mean((f(A)</span> <span class="pre">-</span> <span class="pre">f(AB_i))**2)</span> <span class="pre">/</span> <span class="pre">2</span> <span class="pre">/</span> <span class="pre">V</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">saltelli</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mean(f(B)</span> <span class="pre">*</span> <span class="pre">(f(AB_i)</span> <span class="pre">-</span> <span class="pre">f(A)))</span> <span class="pre">/</span> <span class="pre">V</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mean(f(A)</span> <span class="pre">*</span> <span class="pre">(f(A)</span> <span class="pre">-</span> <span class="pre">f(AB_i)))</span> <span class="pre">/</span> <span class="pre">V</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Confidence intervals come from resampling the rows <code class="docutils literal notranslate"><span class="pre">bootstrap</span></code> times (the
+stream <code class="docutils literal notranslate"><span class="pre">(BOOTSTRAP,</span> <span class="pre">SOBOL_KEY)</span></code> of the seed) and taking percentiles.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.variance.saltelli_sample">
+<span class="sig-name descname"><span class="pre">saltelli_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generator</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/variance.html#saltelli_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.variance.saltelli_sample" title="Link to this definition">#</a></dt>
+<dd><p>The points <code class="docutils literal notranslate"><span class="pre">[A;</span> <span class="pre">B;</span> <span class="pre">AB_1;</span> <span class="pre">...;</span> <span class="pre">AB_d]</span></code> in the unit cube.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.variance.indices">
+<span class="sig-name descname"><span class="pre">indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_ab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/variance.html#indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.variance.indices" title="Link to this definition">#</a></dt>
+<dd><p>S1 and ST from <code class="docutils literal notranslate"><span class="pre">f(A)</span></code>, <code class="docutils literal notranslate"><span class="pre">f(B)</span></code> and <code class="docutils literal notranslate"><span class="pre">f(AB)[parameter,</span> <span class="pre">row]</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.variance.sobol">
+<span class="sig-name descname"><span class="pre">sobol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="experiments.html#modelly.experiments.space.ScenarioSpace" title="modelly.experiments.space.ScenarioSpace"><span class="pre">ScenarioSpace</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'jansen'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.sensitivity.results.SobolResult" title="modelly.sensitivity.results.SobolResult"><span class="pre">SobolResult</span></a></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/variance.html#sobol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.variance.sobol" title="Link to this definition">#</a></dt>
+<dd><p>First-order (<code class="docutils literal notranslate"><span class="pre">S1</span></code>) and total (<code class="docutils literal notranslate"><span class="pre">ST</span></code>) Sobol indices with bootstrap intervals.</p>
+<p><code class="docutils literal notranslate"><span class="pre">samples</span></code> should be a power of two. <code class="docutils literal notranslate"><span class="pre">settings</span></code> are the
+<a class="reference internal" href="#modelly.sensitivity.study.Study" title="modelly.sensitivity.study.Study"><code class="xref py py-class docutils literal notranslate"><span class="pre">Study</span></code></a> fields (seed, steps, replicates,
+statistic, store, executor, max_parallel, options).</p>
+</dd></dl>
+
+<p id="module-modelly.sensitivity.pawn">PAWN: moment-independent sensitivity from output distributions (Pianosi and Wagener, 2015).</p>
+<p>One Latin-hypercube sample of <code class="docutils literal notranslate"><span class="pre">samples</span></code> points is evaluated. For each
+parameter its range is cut into <code class="docutils literal notranslate"><span class="pre">slices</span></code> equal-count slices; in each slice
+the distribution of the output is compared with the unconditional one by the
+Kolmogorov-Smirnov statistic (the largest gap between the two CDFs). A
+parameter’s index summarises its slices’ statistics (<code class="docutils literal notranslate"><span class="pre">median</span></code>, <code class="docutils literal notranslate"><span class="pre">mean</span></code>,
+<code class="docutils literal notranslate"><span class="pre">max</span></code>); 0 means the output’s distribution does not change with it. Suits
+skewed or multi-modal outputs, where variance-based indices mislead.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.pawn.ks_statistics">
+<span class="sig-name descname"><span class="pre">ks_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/pawn.html#ks_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.pawn.ks_statistics" title="Link to this definition">#</a></dt>
+<dd><p>The KS statistic of each slice of <code class="docutils literal notranslate"><span class="pre">column</span></code> against the whole <code class="docutils literal notranslate"><span class="pre">output</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.pawn.pawn">
+<span class="sig-name descname"><span class="pre">pawn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="experiments.html#modelly.experiments.space.ScenarioSpace" title="modelly.experiments.space.ScenarioSpace"><span class="pre">ScenarioSpace</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'median'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.sensitivity.results.SensitivityResult" title="modelly.sensitivity.results.SensitivityResult"><span class="pre">SensitivityResult</span></a></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/pawn.html#pawn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.pawn.pawn" title="Link to this definition">#</a></dt>
+<dd><p>PAWN indices (<code class="docutils literal notranslate"><span class="pre">median</span></code>, <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> KS statistic) per parameter.</p>
+<p><code class="docutils literal notranslate"><span class="pre">summary</span></code> picks the column <code class="docutils literal notranslate"><span class="pre">ranking</span></code> sorts by. <code class="docutils literal notranslate"><span class="pre">settings</span></code> are the
+<a class="reference internal" href="#modelly.sensitivity.study.Study" title="modelly.sensitivity.study.Study"><code class="xref py py-class docutils literal notranslate"><span class="pre">Study</span></code></a> fields.</p>
+</dd></dl>
+
+<p id="module-modelly.sensitivity.emulator">A Gaussian-process emulator: analyse an expensive model from a few hundred runs.</p>
+<p><code class="docutils literal notranslate"><span class="pre">emulate</span></code> runs the model at a Latin hypercube of <code class="docutils literal notranslate"><span class="pre">samples</span></code> points and fits
+the basic Gaussian process of <a class="reference internal" href="calibrate.html#module-modelly.calibrate.gp" title="modelly.calibrate.gp"><code class="xref py py-mod docutils literal notranslate"><span class="pre">modelly.calibrate.gp</span></code></a> to the output. The
+returned <a class="reference internal" href="#modelly.sensitivity.emulator.Emulator" title="modelly.sensitivity.emulator.Emulator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Emulator</span></code></a> stands in for the model in <code class="docutils literal notranslate"><span class="pre">oat</span></code>, <code class="docutils literal notranslate"><span class="pre">morris</span></code>,
+<code class="docutils literal notranslate"><span class="pre">sobol</span></code> and <code class="docutils literal notranslate"><span class="pre">pawn</span></code>, which then cost no further runs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">surrogate</span> <span class="o">=</span> <span class="n">emulate</span><span class="p">(</span><span class="n">Epidemic</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="s2">"peak"</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">surrogate</span><span class="o">.</span><span class="n">r2</span><span class="p">)</span>            <span class="c1"># leave-one-out accuracy, near 1 is good</span>
+<span class="n">sobol</span><span class="p">(</span><span class="n">surrogate</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">4096</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.sensitivity.emulator.Emulator">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Emulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="experiments.html#modelly.experiments.space.ScenarioSpace" title="modelly.experiments.space.ScenarioSpace"><span class="pre">ScenarioSpace</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">process</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="calibrate.html#modelly.calibrate.gp.GaussianProcess" title="modelly.calibrate.gp.GaussianProcess"><span class="pre">GaussianProcess</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/sensitivity/emulator.html#Emulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.emulator.Emulator" title="Link to this definition">#</a></dt>
+<dd><p>A fitted Gaussian process over the unit cube of <code class="docutils literal notranslate"><span class="pre">space</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>space</strong> (<a class="reference internal" href="experiments.html#modelly.experiments.space.ScenarioSpace" title="modelly.experiments.space.ScenarioSpace"><em>modelly.experiments.space.ScenarioSpace</em></a>) – the parameter space it was fitted over.</p></li>
+<li><p><strong>process</strong> (<a class="reference internal" href="calibrate.html#modelly.calibrate.gp.GaussianProcess" title="modelly.calibrate.gp.GaussianProcess"><em>modelly.calibrate.gp.GaussianProcess</em></a>) – the fitted Gaussian process.</p></li>
+<li><p><strong>units</strong> (<em>numpy.ndarray</em>) – the training points.</p></li>
+<li><p><strong>values</strong> (<em>numpy.ndarray</em>) – the model’s outputs at them.</p></li>
+<li><p><strong>r2</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – the share of variance explained on held-out training points.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.sensitivity.emulator.Emulator.predict_unit">
+<span class="sig-name descname"><span class="pre">predict_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/emulator.html#Emulator.predict_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.emulator.Emulator.predict_unit" title="Link to this definition">#</a></dt>
+<dd><p>The predicted output at points of the unit cube.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.emulator.emulate">
+<span class="sig-name descname"><span class="pre">emulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="experiments.html#modelly.experiments.space.ScenarioSpace" title="modelly.experiments.space.ScenarioSpace"><span class="pre">ScenarioSpace</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.sensitivity.emulator.Emulator" title="modelly.sensitivity.emulator.Emulator"><span class="pre">Emulator</span></a></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/emulator.html#emulate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.emulator.emulate" title="Link to this definition">#</a></dt>
+<dd><p>Run <code class="docutils literal notranslate"><span class="pre">model</span></code> at <code class="docutils literal notranslate"><span class="pre">samples</span></code> Latin-hypercube points and fit an Emulator.</p>
+<p><code class="docutils literal notranslate"><span class="pre">settings</span></code> are the <a class="reference internal" href="#modelly.sensitivity.study.Study" title="modelly.sensitivity.study.Study"><code class="xref py py-class docutils literal notranslate"><span class="pre">Study</span></code></a> fields.</p>
+</dd></dl>
+
+</section>
+<section id="module-modelly.sensitivity.study">
+<span id="studies-and-results"></span><h2>Studies and results<a class="headerlink" href="#module-modelly.sensitivity.study" title="Link to this heading">#</a></h2>
+<p>What a sensitivity analysis evaluates: a model’s output, a function, or an emulator.</p>
+<p>A <a class="reference internal" href="#modelly.sensitivity.study.Study" title="modelly.sensitivity.study.Study"><code class="xref py py-class docutils literal notranslate"><span class="pre">Study</span></code></a> turns points of the unit cube (one coordinate per varying
+parameter of a <code class="xref py py-class docutils literal notranslate"><span class="pre">ScenarioSpace</span></code>) into one number
+each:</p>
+<ul class="simple">
+<li><p>a Model class (or <code class="docutils literal notranslate"><span class="pre">&quot;module:Class&quot;</span></code> reference) is run through the
+experiment executors (<a class="reference internal" href="calibrate.html#module-modelly.calibrate.simulator" title="modelly.calibrate.simulator"><code class="xref py py-mod docutils literal notranslate"><span class="pre">modelly.calibrate.simulator</span></code></a>); <code class="docutils literal notranslate"><span class="pre">output</span></code> names
+what it records every step and <code class="docutils literal notranslate"><span class="pre">statistic</span></code> reduces each run’s series to
+one value (<code class="docutils literal notranslate"><span class="pre">&quot;last&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;max&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;min&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code> or a
+function), averaged over the replicates;</p></li>
+<li><p>a plain function is called with the parameters as keyword arguments;</p></li>
+<li><p>an <a class="reference internal" href="#modelly.sensitivity.emulator.Emulator" title="modelly.sensitivity.emulator.Emulator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Emulator</span></code></a> predicts all points at once.</p></li>
+</ul>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.study.is_model">
+<span class="sig-name descname"><span class="pre">is_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/study.html#is_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.study.is_model" title="Link to this definition">#</a></dt>
+<dd><p>Whether <code class="docutils literal notranslate"><span class="pre">model</span></code> is a Model class or a <code class="docutils literal notranslate"><span class="pre">module:Class</span></code> reference to one.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.sensitivity.study.Study">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Study</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">model:</span> <span class="pre">~typing.Any,</span> <span class="pre">space:</span> <span class="pre">~modelly.experiments.space.ScenarioSpace,</span> <span class="pre">output:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">~collections.abc.Callable[[~typing.Any],</span> <span class="pre">~typing.Any]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">seed:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">steps:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">replicates:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">statistic:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">~collections.abc.Callable[[~numpy.ndarray],</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">'last',</span> <span class="pre">store:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">~pathlib.Path</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">executor:</span> <span class="pre">~typing.Any</span> <span class="pre">=</span> <span class="pre">'serial',</span> <span class="pre">max_parallel:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">options:</span> <span class="pre">~collections.abc.Mapping[str,</span> <span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/sensitivity/study.html#Study"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.study.Study" title="Link to this definition">#</a></dt>
+<dd><p>The quantity analysed and where it is computed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – a Model class or reference, a function of the parameters, or an Emulator.</p></li>
+<li><p><strong>space</strong> – the parameter space; its ranges and choices are the inputs.</p></li>
+<li><p><strong>output</strong> – for a model, the attribute, method or function of the model to record.</p></li>
+<li><p><strong>seed</strong> – the root of the design, the bootstrap and the runs’ seeds.</p></li>
+<li><p><strong>steps</strong> – steps per run (models only).</p></li>
+<li><p><strong>replicates</strong> – runs per point, averaged (models only).</p></li>
+<li><p><strong>statistic</strong> – how a run’s series becomes one number (models only).</p></li>
+<li><p><strong>store</strong> – the folder of the runs (a temporary one by default).</p></li>
+<li><p><strong>executor</strong> – where the runs execute (any experiment executor).</p></li>
+<li><p><strong>max_parallel</strong> – the most runs at once.</p></li>
+<li><p><strong>options</strong> – the executor’s options.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.sensitivity.study.Study.names">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#modelly.sensitivity.study.Study.names" title="Link to this definition">#</a></dt>
+<dd><p>The analysed parameters, in the space’s order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.sensitivity.study.Study.rng">
+<span class="sig-name descname"><span class="pre">rng</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="calibrate.html#modelly.calibrate.simulator.Stream" title="modelly.calibrate.simulator.Stream"><span class="pre">Stream</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/study.html#Study.rng"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.study.Study.rng" title="Link to this definition">#</a></dt>
+<dd><p>The generator of one stream of this study’s seed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.sensitivity.study.Study.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/study.html#Study.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.study.Study.evaluate" title="Link to this definition">#</a></dt>
+<dd><p>One output value per row of <code class="docutils literal notranslate"><span class="pre">units</span></code>; <code class="docutils literal notranslate"><span class="pre">key</span></code> names the batch of runs.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.sensitivity.results">Results of a sensitivity analysis: a table per parameter, a ranking and a plot.</p>
+<p>Every method returns a <a class="reference internal" href="#modelly.sensitivity.results.SensitivityResult" title="modelly.sensitivity.results.SensitivityResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">SensitivityResult</span></code></a> (or a subclass) whose
+<code class="docutils literal notranslate"><span class="pre">table</span></code> has one row per parameter. <code class="docutils literal notranslate"><span class="pre">ranking()</span></code> sorts it by the method’s
+main measure, most influential first; <code class="docutils literal notranslate"><span class="pre">to_dataframe()</span></code> returns a copy;
+<code class="docutils literal notranslate"><span class="pre">plot()</span></code> draws a Matplotlib figure (<code class="docutils literal notranslate"><span class="pre">figure.savefig(path)</span></code> writes it).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.sensitivity.results.SensitivityResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">SensitivityResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/sensitivity/results.html#SensitivityResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.results.SensitivityResult" title="Link to this definition">#</a></dt>
+<dd><p>One analysis: <code class="docutils literal notranslate"><span class="pre">table</span></code> (index: parameter) and the measure ranking uses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – the method’s name.</p></li>
+<li><p><strong>table</strong> (<em>pandas.DataFrame</em>) – one row per parameter.</p></li>
+<li><p><strong>measure</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – the column <code class="docutils literal notranslate"><span class="pre">ranking</span></code> sorts by.</p></li>
+<li><p><strong>info</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>Any</em><em>]</em>) – how the analysis ran (samples, model runs, seed…).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.sensitivity.results.SensitivityResult.ranking">
+<span class="sig-name descname"><span class="pre">ranking</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/results.html#SensitivityResult.ranking"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.results.SensitivityResult.ranking" title="Link to this definition">#</a></dt>
+<dd><p>The table sorted by the main measure, most influential first.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.sensitivity.results.SensitivityResult.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/results.html#SensitivityResult.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.results.SensitivityResult.to_dataframe" title="Link to this definition">#</a></dt>
+<dd><p>A copy of the table, the parameter as a column.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.sensitivity.results.SensitivityResult.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/results.html#SensitivityResult.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.results.SensitivityResult.plot" title="Link to this definition">#</a></dt>
+<dd><p>A bar chart of the main measure, parameters in ranking order.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.sensitivity.results.MorrisResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MorrisResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/sensitivity/results.html#MorrisResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.results.MorrisResult" title="Link to this definition">#</a></dt>
+<dd><p>Morris screening: <code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">mu_star</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> of the elementary effects.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.sensitivity.results.MorrisResult.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/results.html#MorrisResult.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.results.MorrisResult.plot" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">sigma</span></code> against <code class="docutils literal notranslate"><span class="pre">mu_star</span></code>: far right is influential, high is non-linear.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.sensitivity.results.SobolResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">SobolResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/sensitivity/results.html#SobolResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.results.SobolResult" title="Link to this definition">#</a></dt>
+<dd><p>Sobol indices <code class="docutils literal notranslate"><span class="pre">S1</span></code> and <code class="docutils literal notranslate"><span class="pre">ST</span></code> with bootstrap intervals.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.sensitivity.results.SobolResult.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/results.html#SobolResult.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.results.SobolResult.plot" title="Link to this definition">#</a></dt>
+<dd><p>First-order and total indices side by side, with their intervals.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.sensitivity.results.OATResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">OATResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweeps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/sensitivity/results.html#OATResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.results.OATResult" title="Link to this definition">#</a></dt>
+<dd><p>One-at-a-time sweeps: <code class="docutils literal notranslate"><span class="pre">sweeps</span></code> holds every evaluated value.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.sensitivity.results.OATResult.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/results.html#OATResult.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.results.OATResult.plot" title="Link to this definition">#</a></dt>
+<dd><p>The output along each parameter’s sweep, the others at their midpoint.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modelly.sensitivity.spec">
+<span id="analysis-files"></span><h2>Analysis files<a class="headerlink" href="#module-modelly.sensitivity.spec" title="Link to this heading">#</a></h2>
+<p>Read a sensitivity analysis from a TOML file (what <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">sensitivity</span> <span class="pre">spec.toml</span></code> runs).</p>
+<p>The file reuses the experiment format; <code class="docutils literal notranslate"><span class="pre">[sensitivity]</span></code> picks the method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">experiment</span><span class="p">]</span>
+<span class="n">model</span> <span class="o">=</span> <span class="s2">"model.py:SIR"</span>          <span class="c1"># a Model class, or module:function of the parameters</span>
+<span class="n">steps</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">replicates</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"infected"</span><span class="p">]</span>          <span class="c1"># the first output is analysed</span>
+<span class="n">store</span> <span class="o">=</span> <span class="s2">"runs/sensitivity"</span>      <span class="c1"># optional</span>
+
+<span class="p">[</span><span class="n">space</span><span class="p">]</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="p">{</span> <span class="nb">min</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nb">max</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="p">}</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="p">{</span> <span class="nb">min</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="nb">max</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="p">}</span>
+<span class="n">population</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="p">[</span><span class="n">sensitivity</span><span class="p">]</span>
+<span class="n">method</span> <span class="o">=</span> <span class="s2">"morris"</span>               <span class="c1"># oat, morris, sobol, pawn</span>
+<span class="n">statistic</span> <span class="o">=</span> <span class="s2">"max"</span>               <span class="c1"># last, max, min, mean, sum</span>
+<span class="n">trajectories</span> <span class="o">=</span> <span class="mi">20</span>               <span class="c1"># the method's settings</span>
+
+<span class="p">[</span><span class="n">run</span><span class="p">]</span>
+<span class="n">executor</span> <span class="o">=</span> <span class="s2">"processes"</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.sensitivity.spec.load_sensitivity">
+<span class="sig-name descname"><span class="pre">load_sensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/sensitivity/spec.html#load_sensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.sensitivity.spec.load_sensitivity" title="Link to this definition">#</a></dt>
+<dd><p>The method a TOML file (or <code class="docutils literal notranslate"><span class="pre">method</span></code>) names and every keyword argument for it.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="calibrate.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Calibration</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="batch.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Batch</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.sensitivity.screening">Methods</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.screening.oat"><code class="docutils literal notranslate"><span class="pre">oat()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.screening.morris_design"><code class="docutils literal notranslate"><span class="pre">morris_design()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.screening.morris"><code class="docutils literal notranslate"><span class="pre">morris()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.variance.saltelli_sample"><code class="docutils literal notranslate"><span class="pre">saltelli_sample()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.variance.indices"><code class="docutils literal notranslate"><span class="pre">indices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.variance.sobol"><code class="docutils literal notranslate"><span class="pre">sobol()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.pawn.ks_statistics"><code class="docutils literal notranslate"><span class="pre">ks_statistics()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.pawn.pawn"><code class="docutils literal notranslate"><span class="pre">pawn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.emulator.Emulator"><code class="docutils literal notranslate"><span class="pre">Emulator</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.emulator.Emulator.predict_unit"><code class="docutils literal notranslate"><span class="pre">Emulator.predict_unit()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.emulator.emulate"><code class="docutils literal notranslate"><span class="pre">emulate()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.sensitivity.study">Studies and results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.study.is_model"><code class="docutils literal notranslate"><span class="pre">is_model()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.study.Study"><code class="docutils literal notranslate"><span class="pre">Study</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.study.Study.names"><code class="docutils literal notranslate"><span class="pre">Study.names</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.study.Study.rng"><code class="docutils literal notranslate"><span class="pre">Study.rng()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.study.Study.evaluate"><code class="docutils literal notranslate"><span class="pre">Study.evaluate()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.results.SensitivityResult"><code class="docutils literal notranslate"><span class="pre">SensitivityResult</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.results.SensitivityResult.ranking"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.ranking()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.results.SensitivityResult.to_dataframe"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.to_dataframe()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.results.SensitivityResult.plot"><code class="docutils literal notranslate"><span class="pre">SensitivityResult.plot()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.results.MorrisResult"><code class="docutils literal notranslate"><span class="pre">MorrisResult</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.results.MorrisResult.plot"><code class="docutils literal notranslate"><span class="pre">MorrisResult.plot()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.results.SobolResult"><code class="docutils literal notranslate"><span class="pre">SobolResult</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.results.SobolResult.plot"><code class="docutils literal notranslate"><span class="pre">SobolResult.plot()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.results.OATResult"><code class="docutils literal notranslate"><span class="pre">OATResult</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.results.OATResult.plot"><code class="docutils literal notranslate"><span class="pre">OATResult.plot()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.sensitivity.spec">Analysis files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.sensitivity.spec.load_sensitivity"><code class="docutils literal notranslate"><span class="pre">load_sensitivity()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/apis/sensitivity.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

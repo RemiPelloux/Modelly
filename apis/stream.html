@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Stream &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=02f2166e"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'apis/stream';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/apis/stream.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Releases" href="../releases.html" />
+    <link rel="prev" title="Distributed" href="distributed.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="space.html">Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geo.html">Geospatial space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">Synthetic populations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time.html">Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="behaviour.html">Behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenarios.html">Scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibrate.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="couple.html">Coupling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emulate.html">Emulate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">GPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diff.html">Differentiable models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viz.html">Viz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">Web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrate.html">Migrate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Lint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">LLM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zoo.html">Model zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distributed.html">Distributed</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Stream</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="api_main.html" class="nav-link">APIs</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Stream</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="stream">
+<h1>Stream<a class="headerlink" href="#stream" title="Link to this heading">#</a></h1>
+<p>Live observations for running models (provisional, new in 1.4): sources that hand out
+observations as they arrive, observation operators that read the same quantities from a
+model, ensembles of replicates advanced in lock step, and the filters that keep an ensemble
+close to the observations. The <a class="reference internal" href="../assimilation.html"><span class="std std-doc">data assimilation tutorial</span></a> walks through
+all of them on a synthetic truth.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Module</p></th>
+<th class="head"><p>Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.stream.sources</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Observation</span></code>, <code class="docutils literal notranslate"><span class="pre">ReplaySource</span></code>, <code class="docutils literal notranslate"><span class="pre">CSVSource</span></code>, <code class="docutils literal notranslate"><span class="pre">HTTPSource</span></code>, <code class="docutils literal notranslate"><span class="pre">due</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.stream.connectors</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">MQTTSource</span></code> (extra <code class="docutils literal notranslate"><span class="pre">mqtt</span></code>), <code class="docutils literal notranslate"><span class="pre">KafkaSource</span></code> (extra <code class="docutils literal notranslate"><span class="pre">kafka</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.stream.operators</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ObservationOperator</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.stream.ensemble</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Ensemble</span></code>, <code class="docutils literal notranslate"><span class="pre">derived_seed</span></code>, <code class="docutils literal notranslate"><span class="pre">replicate_scenarios</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.stream.particle</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ParticleFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">FilterStep</span></code>, <code class="docutils literal notranslate"><span class="pre">systematic_resample</span></code>, <code class="docutils literal notranslate"><span class="pre">effective_sample_size</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.stream.kalman</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">EnsembleKalmanFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">enkf_update</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.stream.bands</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">forecast_band</span></code>, <code class="docutils literal notranslate"><span class="pre">weighted_quantiles</span></code>, <code class="docutils literal notranslate"><span class="pre">quantile_column</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Methods: the bootstrap particle filter of Gordon, Salmond &amp; Smith (1993) with systematic
+resampling (Douc &amp; Cappé 2005); the stochastic ensemble Kalman filter of Evensen (1994, 2003)
+with perturbed observations (Burgers, van Leeuwen &amp; Evensen 1998). Full references are in the
+tutorial.</p>
+<p>Bands (<code class="docutils literal notranslate"><span class="pre">Ensemble.band</span></code>, <code class="docutils literal notranslate"><span class="pre">Ensemble.forecast</span></code>, <code class="docutils literal notranslate"><span class="pre">ParticleFilter.band</span></code>, <code class="docutils literal notranslate"><span class="pre">ParticleFilter.forecast</span></code>)
+are long-format DataFrames with the columns <code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">quantity</span></code>, <code class="docutils literal notranslate"><span class="pre">mean</span></code> and one <code class="docutils literal notranslate"><span class="pre">q&lt;level&gt;</span></code> per
+quantile (<code class="docutils literal notranslate"><span class="pre">q0.05</span></code>, <code class="docutils literal notranslate"><span class="pre">q0.5</span></code>, <code class="docutils literal notranslate"><span class="pre">q0.95</span></code> by default): plain data for plots and live views.</p>
+<p id="module-modelly.stream.sources">Where observations come from: a replayed table, a growing CSV file, an HTTP endpoint.</p>
+<p>Every source has <code class="docutils literal notranslate"><span class="pre">poll(until=None)</span></code>: the observations it has not handed out
+yet, in time order, up to <code class="docutils literal notranslate"><span class="pre">until</span></code> when given (later ones wait for a later
+poll). A source never hands out an observation twice, so a loop that polls
+before each model step sees each data point exactly once. An observation that
+arrives after a later one was handed out is dropped: a run cannot go back to
+use it.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.sources.Observation">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Observation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/sources.html#Observation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.sources.Observation" title="Link to this definition">#</a></dt>
+<dd><p>Values observed at one time; <code class="docutils literal notranslate"><span class="pre">values</span></code> maps a quantity to a number.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.sources.ReplaySource">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ReplaySource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">records</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'time'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/sources.html#ReplaySource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.sources.ReplaySource" title="Link to this definition">#</a></dt>
+<dd><p>Observations from memory: a list of records, or a pandas DataFrame.</p>
+<p>Replay <code class="docutils literal notranslate"><span class="pre">records</span></code> (mappings with a <code class="docutils literal notranslate"><span class="pre">time</span></code> field, or a DataFrame).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.sources.ReplaySource.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/sources.html#ReplaySource.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.sources.ReplaySource.poll" title="Link to this definition">#</a></dt>
+<dd><p>The observations not handed out yet, up to <code class="docutils literal notranslate"><span class="pre">until</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.sources.CSVSource">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">CSVSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'time'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/sources.html#CSVSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.sources.CSVSource" title="Link to this definition">#</a></dt>
+<dd><p>A CSV file that grows: each poll reads the rows appended since the last one.</p>
+<p>Follow <code class="docutils literal notranslate"><span class="pre">path</span></code>; its first line is the header.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.sources.CSVSource.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/sources.html#CSVSource.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.sources.CSVSource.poll" title="Link to this definition">#</a></dt>
+<dd><p>Read complete new lines, then hand out what is due.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.sources.HTTPSource">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">HTTPSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">url:</span> <span class="pre">str,</span> <span class="pre">*,</span> <span class="pre">time:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'time',</span> <span class="pre">fetch:</span> <span class="pre">~collections.abc.Callable[[str],</span> <span class="pre">bytes]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_get&gt;,</span> <span class="pre">parse:</span> <span class="pre">~collections.abc.Callable[[bytes],</span> <span class="pre">~collections.abc.Iterable[~collections.abc.Mapping[str,</span> <span class="pre">~typing.Any]]]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">loads&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/sources.html#HTTPSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.sources.HTTPSource" title="Link to this definition">#</a></dt>
+<dd><p>An endpoint returning a JSON list of records; each poll fetches it again.</p>
+<p>Poll <code class="docutils literal notranslate"><span class="pre">url</span></code>; <code class="docutils literal notranslate"><span class="pre">fetch</span></code> and <code class="docutils literal notranslate"><span class="pre">parse</span></code> replace the HTTP call and the JSON decoding.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.sources.HTTPSource.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/sources.html#HTTPSource.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.sources.HTTPSource.poll" title="Link to this definition">#</a></dt>
+<dd><p>Fetch, keep records not seen before, then hand out what is due.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.stream.sources.due">
+<span class="sig-name descname"><span class="pre">due</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/sources.html#due"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.sources.due" title="Link to this definition">#</a></dt>
+<dd><p>The observations of <code class="docutils literal notranslate"><span class="pre">source</span></code> up to <code class="docutils literal notranslate"><span class="pre">until</span></code>, in the order it gives them.</p>
+<p><code class="docutils literal notranslate"><span class="pre">source</span></code> is a stream source (anything with <code class="docutils literal notranslate"><span class="pre">poll(until)</span></code>) or an
+iterable of observations, such as a list.</p>
+</dd></dl>
+
+<p id="module-modelly.stream.connectors">Message-broker sources: MQTT topics and Kafka topics (optional extras).</p>
+<p>Both behave like the other stream sources: <code class="docutils literal notranslate"><span class="pre">poll(until=None)</span></code> hands out the
+observations received since the last poll, in time order, each once. A
+message’s payload is a JSON record with a <code class="docutils literal notranslate"><span class="pre">time</span></code> field (or a list of them);
+<code class="docutils literal notranslate"><span class="pre">parse</span></code> replaces the decoding.</p>
+<p>The client libraries are optional and imported only when a source builds its
+own client:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="s2">"modelly-abm[mqtt]"</span>    <span class="c1"># paho-mqtt</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="s2">"modelly-abm[kafka]"</span>   <span class="c1"># confluent-kafka</span>
+</pre></div>
+</div>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">client=</span></code> (MQTT) or <code class="docutils literal notranslate"><span class="pre">consumer=</span></code> (Kafka) to use one you configured
+yourself, with authentication, TLS and so on, or a stand-in in tests.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.connectors.MQTTSource">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MQTTSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">topic:</span> <span class="pre">str,</span> <span class="pre">*,</span> <span class="pre">host:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'localhost',</span> <span class="pre">port:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1883,</span> <span class="pre">client:</span> <span class="pre">~typing.Any</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">time:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'time',</span> <span class="pre">parse:</span> <span class="pre">~collections.abc.Callable[[bytes],</span> <span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">loads&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/connectors.html#MQTTSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.connectors.MQTTSource" title="Link to this definition">#</a></dt>
+<dd><p>Observations published to an MQTT topic (paho-mqtt).</p>
+<p>Subscribe to <code class="docutils literal notranslate"><span class="pre">topic</span></code> on the broker at <code class="docutils literal notranslate"><span class="pre">host:port</span></code>, or through <code class="docutils literal notranslate"><span class="pre">client</span></code>.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">client</span></code> needs <code class="docutils literal notranslate"><span class="pre">subscribe(topic)</span></code> and an <code class="docutils literal notranslate"><span class="pre">on_message</span></code>
+attribute, as a paho <code class="docutils literal notranslate"><span class="pre">Client</span></code> has; it is used as given (connected,
+its loop running). Messages arrive on the client’s thread and wait in
+a queue for the next <code class="docutils literal notranslate"><span class="pre">poll</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.connectors.MQTTSource.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/connectors.html#MQTTSource.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.connectors.MQTTSource.poll" title="Link to this definition">#</a></dt>
+<dd><p>Decode the messages received since the last poll, then hand out what is due.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.connectors.MQTTSource.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/stream/connectors.html#MQTTSource.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.connectors.MQTTSource.close" title="Link to this definition">#</a></dt>
+<dd><p>Stop and disconnect the client when this source created it.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.connectors.KafkaSource">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">KafkaSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">topic:</span> <span class="pre">str,</span> <span class="pre">*,</span> <span class="pre">config:</span> <span class="pre">~collections.abc.Mapping[str,</span> <span class="pre">~typing.Any]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">consumer:</span> <span class="pre">~typing.Any</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">time:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'time',</span> <span class="pre">parse:</span> <span class="pre">~collections.abc.Callable[[bytes],</span> <span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">loads&gt;,</span> <span class="pre">timeout:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/connectors.html#KafkaSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.connectors.KafkaSource" title="Link to this definition">#</a></dt>
+<dd><p>Observations from a Kafka topic (confluent-kafka).</p>
+<p>Consume <code class="docutils literal notranslate"><span class="pre">topic</span></code> with a consumer built from <code class="docutils literal notranslate"><span class="pre">config</span></code>, or with <code class="docutils literal notranslate"><span class="pre">consumer</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">config</span></code> is the confluent-kafka configuration, for example
+<code class="docutils literal notranslate"><span class="pre">{&quot;bootstrap.servers&quot;:</span> <span class="pre">&quot;broker:9092&quot;,</span> <span class="pre">&quot;group.id&quot;:</span> <span class="pre">&quot;twin&quot;}</span></code>. A
+<code class="docutils literal notranslate"><span class="pre">consumer</span></code> needs <code class="docutils literal notranslate"><span class="pre">subscribe([topic])</span></code>, <code class="docutils literal notranslate"><span class="pre">consume(num_messages,</span>
+<span class="pre">timeout)</span></code> and <code class="docutils literal notranslate"><span class="pre">close()</span></code>. Each poll waits at most <code class="docutils literal notranslate"><span class="pre">timeout</span></code> seconds.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.connectors.KafkaSource.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/connectors.html#KafkaSource.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.connectors.KafkaSource.poll" title="Link to this definition">#</a></dt>
+<dd><p>Read the messages waiting on the topic, then hand out what is due.</p>
+<p>Messages that carry an error (such as the end of a partition) are kept
+in <code class="docutils literal notranslate"><span class="pre">errors</span></code> instead of being decoded.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.connectors.KafkaSource.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/stream/connectors.html#KafkaSource.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.connectors.KafkaSource.close" title="Link to this definition">#</a></dt>
+<dd><p>Leave the consumer group and close the consumer.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.stream.operators">Observation operators: what a model would report if it were observed like the world.</p>
+<p>An operator names each observed quantity and how to read it from a model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">observe</span> <span class="o">=</span> <span class="n">ObservationOperator</span><span class="p">(</span>
+    <span class="n">cases</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">new_cases</span><span class="p">,</span>
+    <span class="n">hospital</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"hospitalised"</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">observe</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>                      <span class="c1"># {"cases": 41.0, "hospital": 7.0}</span>
+<span class="n">observe</span><span class="o">.</span><span class="n">residuals</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">obs</span><span class="p">)</span>       <span class="c1"># observed minus modelled, for the quantities obs has</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">log_likelihood</span></code> scores a model against an observation under independent
+Gaussian errors; the particle filter weights replicates with it.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.operators.ObservationOperator">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ObservationOperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">quantities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/operators.html#ObservationOperator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.operators.ObservationOperator" title="Link to this definition">#</a></dt>
+<dd><p>Maps a model to the quantities an observation reports.</p>
+<p>One callable per observed quantity, taking the model.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.stream.operators.ObservationOperator.names">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#modelly.stream.operators.ObservationOperator.names" title="Link to this definition">#</a></dt>
+<dd><p>The observed quantities, in declaration order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.operators.ObservationOperator.residuals">
+<span class="sig-name descname"><span class="pre">residuals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">observation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/operators.html#ObservationOperator.residuals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.operators.ObservationOperator.residuals" title="Link to this definition">#</a></dt>
+<dd><p>Observed minus modelled, for the quantities both the operator and <code class="docutils literal notranslate"><span class="pre">observation</span></code> have.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.operators.ObservationOperator.log_likelihood">
+<span class="sig-name descname"><span class="pre">log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">observation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/modelly/stream/operators.html#ObservationOperator.log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.operators.ObservationOperator.log_likelihood" title="Link to this definition">#</a></dt>
+<dd><p>Log density of <code class="docutils literal notranslate"><span class="pre">observation</span></code> given <code class="docutils literal notranslate"><span class="pre">model</span></code> under independent Gaussian errors.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sd</span></code> is one standard deviation for every quantity, or one per quantity.
+Quantities the observation lacks do not count.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.stream.ensemble">Ensembles: replicates of one scenario advanced in lock step.</p>
+<p>An <a class="reference internal" href="#modelly.stream.ensemble.Ensemble" title="modelly.stream.ensemble.Ensemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ensemble</span></code></a> builds <code class="docutils literal notranslate"><span class="pre">n</span></code> models from one scenario, each with a seed
+spawned from the scenario’s seed sequence, so replicate <code class="docutils literal notranslate"><span class="pre">i</span></code> gets the seed
+<code class="docutils literal notranslate"><span class="pre">Scenario.spawn_replications(n)[i]</span></code> gets on a fresh scenario:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ensemble</span> <span class="o">=</span> <span class="n">Ensemble</span><span class="p">(</span><span class="n">Epidemic</span><span class="p">,</span> <span class="n">EpidemicScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">7</span><span class="p">),</span> <span class="mi">40</span><span class="p">)</span>
+<span class="n">ensemble</span><span class="o">.</span><span class="n">advance</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>                      <span class="c1"># every replicate to time 10</span>
+<span class="n">ensemble</span><span class="o">.</span><span class="n">band</span><span class="p">(</span><span class="n">observe</span><span class="p">)</span>                    <span class="c1"># quantiles across replicates, a DataFrame</span>
+</pre></div>
+</div>
+<p>Replicates run one after the other in this process, in index order: the
+ensemble is deterministic for a seed. The assimilation filters
+(<a class="reference internal" href="#module-modelly.stream.particle" title="modelly.stream.particle"><code class="xref py py-mod docutils literal notranslate"><span class="pre">modelly.stream.particle</span></code></a>, <a class="reference internal" href="#module-modelly.stream.kalman" title="modelly.stream.kalman"><code class="xref py py-mod docutils literal notranslate"><span class="pre">modelly.stream.kalman</span></code></a>) work on an
+ensemble: they weight, duplicate and adjust its replicates between advances.</p>
+<p>Every random draw the ensemble or a filter makes outside the models comes from
+a seed sequence derived from the scenario’s with a domain of its own
+(<code class="docutils literal notranslate"><span class="pre">derived_seed</span></code>), so no derived stream equals a replicate’s or an agent’s.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.stream.ensemble.derived_seed">
+<span class="sig-name descname"><span class="pre">derived_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SeedSequence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SeedSequence</span></span></span><a class="reference internal" href="../_modules/modelly/stream/ensemble.html#derived_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.ensemble.derived_seed" title="Link to this definition">#</a></dt>
+<dd><p>The seed sequence of <code class="docutils literal notranslate"><span class="pre">key</span></code> in <code class="docutils literal notranslate"><span class="pre">domain</span></code>, below <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">SeedSequence.spawn</span></code> hands out keys <code class="docutils literal notranslate"><span class="pre">(*root.spawn_key,</span> <span class="pre">i)</span></code>; these keys
+are one level deeper and start with <code class="docutils literal notranslate"><span class="pre">domain</span></code>, a number far above any
+replicate count, so they never collide with a spawned seed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.stream.ensemble.replicate_scenarios">
+<span class="sig-name descname"><span class="pre">replicate_scenarios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="scenarios.html#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="scenarios.html#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/ensemble.html#replicate_scenarios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.ensemble.replicate_scenarios" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">n</span></code> replicates of <code class="docutils literal notranslate"><span class="pre">scenario</span></code>, as <code class="docutils literal notranslate"><span class="pre">spawn_replications(n)</span></code> on a fresh one.</p>
+<p>The scenario’s seed sequence is left as it was, so building a second
+ensemble from the same scenario gives the same replicates.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.ensemble.Ensemble">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Ensemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">factory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="scenarios.html#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="calibrate.html#modelly.calibrate.priors.Prior" title="modelly.calibrate.priors.Prior"><span class="pre">Prior</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/ensemble.html#Ensemble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.ensemble.Ensemble" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">n</span></code> replicates of a model, built from one scenario with spawned seeds.</p>
+<p>Build <code class="docutils literal notranslate"><span class="pre">factory(scenario=replicate)</span></code> for each of <code class="docutils literal notranslate"><span class="pre">n</span></code> replicate scenarios.</p>
+<p>A model class is a factory. <code class="docutils literal notranslate"><span class="pre">prior</span></code> maps a model attribute to a
+callable drawing its starting value from a numpy generator: each
+replicate gets its own draw, set after the model is built and before
+it runs, from a generator derived from the scenario’s seed.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.ensemble.Ensemble.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SeedSequence</span></span></span><a class="reference internal" href="../_modules/modelly/stream/ensemble.html#Ensemble.seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.ensemble.Ensemble.seed" title="Link to this definition">#</a></dt>
+<dd><p>A seed sequence derived from the scenario’s (see <code class="docutils literal notranslate"><span class="pre">derived_seed</span></code>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.stream.ensemble.Ensemble.time">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">time</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><a class="headerlink" href="#modelly.stream.ensemble.Ensemble.time" title="Link to this definition">#</a></dt>
+<dd><p>The time every replicate has reached.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.ensemble.Ensemble.advance">
+<span class="sig-name descname"><span class="pre">advance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/stream/ensemble.html#Ensemble.advance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.ensemble.Ensemble.advance" title="Link to this definition">#</a></dt>
+<dd><p>Run every replicate to time <code class="docutils literal notranslate"><span class="pre">until</span></code>, one after the other.</p>
+<p>Nothing happens when the replicates are already at <code class="docutils literal notranslate"><span class="pre">until</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">until</span></code> is before the current time.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.ensemble.Ensemble.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.operators.ObservationOperator" title="modelly.stream.operators.ObservationOperator"><span class="pre">ObservationOperator</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/stream/ensemble.html#Ensemble.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.ensemble.Ensemble.values" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">operator</span></code> read from every replicate: one row per replicate, one column per quantity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.ensemble.Ensemble.resample">
+<span class="sig-name descname"><span class="pre">resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reseed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">SeedSequence</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/stream/ensemble.html#Ensemble.resample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.ensemble.Ensemble.resample" title="Link to this definition">#</a></dt>
+<dd><p>Replace the replicates by <code class="docutils literal notranslate"><span class="pre">models[i]</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">indices</span></code>, copying duplicates.</p>
+<p>The first slot that takes a replicate keeps the model itself; every
+other slot gets a checkpoint copy (<code class="xref py py-func docutils literal notranslate"><span class="pre">modelly.core.checkpoint.checkpoint_bytes()</span></code>)
+reseeded in place from <code class="docutils literal notranslate"><span class="pre">reseed(slot)</span></code>, so duplicates diverge from
+their next draw on. A copy is a full checkpoint, so it holds every
+agent, space, column and scheduled event of the original.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Per-agent streams (<code class="docutils literal notranslate"><span class="pre">agent_streams</span> <span class="pre">=</span> <span class="pre">True</span></code>) are copied, not
+reseeded: only <code class="docutils literal notranslate"><span class="pre">model.random</span></code> and <code class="docutils literal notranslate"><span class="pre">model.rng</span></code> are.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.ensemble.Ensemble.band">
+<span class="sig-name descname"><span class="pre">band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.operators.ObservationOperator" title="modelly.stream.operators.ObservationOperator"><span class="pre">ObservationOperator</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.05,</span> <span class="pre">0.5,</span> <span class="pre">0.95)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pd.DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/stream/ensemble.html#Ensemble.band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.ensemble.Ensemble.band" title="Link to this definition">#</a></dt>
+<dd><p>Mean and quantiles of <code class="docutils literal notranslate"><span class="pre">operator</span></code> across replicates, at the current time.</p>
+<p>One row per quantity, with columns <code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">quantity</span></code>, <code class="docutils literal notranslate"><span class="pre">mean</span></code> and
+one <code class="docutils literal notranslate"><span class="pre">q&lt;level&gt;</span></code> per quantile (<code class="docutils literal notranslate"><span class="pre">q0.05</span></code>, <code class="docutils literal notranslate"><span class="pre">q0.5</span></code>, …): plain data for
+a plot or a live view. <code class="docutils literal notranslate"><span class="pre">weights</span></code> weight the replicates (equal by default).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.ensemble.Ensemble.forecast">
+<span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.operators.ObservationOperator" title="modelly.stream.operators.ObservationOperator"><span class="pre">ObservationOperator</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">every</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.05,</span> <span class="pre">0.5,</span> <span class="pre">0.95)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pd.DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/stream/ensemble.html#Ensemble.forecast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.ensemble.Ensemble.forecast" title="Link to this definition">#</a></dt>
+<dd><p>The band of <code class="docutils literal notranslate"><span class="pre">operator</span></code> from now to <code class="docutils literal notranslate"><span class="pre">until</span></code>, every <code class="docutils literal notranslate"><span class="pre">every</span></code> time units.</p>
+<p>The forecast runs checkpoint copies of the replicates: the ensemble
+itself stays where it is. The frame has the columns of <code class="docutils literal notranslate"><span class="pre">band</span></code>, one
+row per time and quantity, the current time first.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.stream.particle">Particle filter: keep an ensemble of runs close to the observations.</p>
+<p>The bootstrap filter of Gordon, Salmond &amp; Smith (1993), also called
+sequential importance resampling. Each replicate of an
+<a class="reference internal" href="#modelly.stream.ensemble.Ensemble" title="modelly.stream.ensemble.Ensemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ensemble</span></code></a> is a particle. At each
+observation the replicates run to its time (the model itself is the
+proposal), each is weighted by
+<a class="reference internal" href="#modelly.stream.operators.ObservationOperator.log_likelihood" title="modelly.stream.operators.ObservationOperator.log_likelihood"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ObservationOperator.log_likelihood</span></code></a>,
+and when the effective sample size falls below <code class="docutils literal notranslate"><span class="pre">threshold</span> <span class="pre">*</span> <span class="pre">n</span></code> the
+ensemble is resampled with systematic resampling (Douc &amp; Cappé 2005;
+Kitagawa 1996): a replicate drawn more than once is duplicated through a
+checkpoint and the duplicates are reseeded so they diverge:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pf</span> <span class="o">=</span> <span class="n">ParticleFilter</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+<span class="n">pf</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>                       <span class="c1"># assimilate every observation</span>
+<span class="n">pf</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span>                        <span class="c1"># weighted mean of each quantity now</span>
+<span class="n">pf</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">until</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>                <span class="c1"># quantile bands ahead, a DataFrame</span>
+</pre></div>
+</div>
+<p>For a seed the filter is deterministic: the uniform of each systematic
+resampling comes from a generator derived from the scenario’s seed, and
+duplicate <code class="docutils literal notranslate"><span class="pre">slot</span></code> of resampling <code class="docutils literal notranslate"><span class="pre">g</span></code> is reseeded from the derived key
+<code class="docutils literal notranslate"><span class="pre">(RESAMPLE_DOMAIN,</span> <span class="pre">g,</span> <span class="pre">slot)</span></code>. Two runs give bit-identical weights and
+replicates, with the compiled core or the pure-Python one.</p>
+<p class="rubric">References</p>
+<p>Gordon, N. J., Salmond, D. J. &amp; Smith, A. F. M. (1993). Novel approach to
+nonlinear/non-Gaussian Bayesian state estimation. IEE Proceedings F,
+140(2), 107-113.
+Douc, R. &amp; Cappé, O. (2005). Comparison of resampling schemes for particle
+filtering. ISPA 2005, 64-69.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.stream.particle.effective_sample_size">
+<span class="sig-name descname"><span class="pre">effective_sample_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/modelly/stream/particle.html#effective_sample_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.particle.effective_sample_size" title="Link to this definition">#</a></dt>
+<dd><p>Kish’s effective sample size of <code class="docutils literal notranslate"><span class="pre">weights</span></code>: <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">sum(w**2)</span></code> once they sum to one.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.stream.particle.systematic_resample">
+<span class="sig-name descname"><span class="pre">systematic_resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uniform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/stream/particle.html#systematic_resample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.particle.systematic_resample" title="Link to this definition">#</a></dt>
+<dd><p>The replicates systematic resampling keeps, one index per slot, in order.</p>
+<p>Slot <code class="docutils literal notranslate"><span class="pre">k</span></code> takes the replicate whose cumulative weight first exceeds
+<code class="docutils literal notranslate"><span class="pre">(uniform</span> <span class="pre">+</span> <span class="pre">k)</span> <span class="pre">/</span> <span class="pre">n</span></code>; one uniform in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1)</span></code> decides every slot, which
+gives the lowest resampling variance of the usual schemes (Douc &amp; Cappé 2005).</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.particle.FilterStep">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">FilterStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resampled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_evidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/particle.html#FilterStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.particle.FilterStep" title="Link to this definition">#</a></dt>
+<dd><p>What one assimilated observation did to the ensemble.</p>
+<p><code class="docutils literal notranslate"><span class="pre">log_evidence</span></code> is the log of the observation’s likelihood averaged over
+the weighted replicates before it, an estimate of <code class="docutils literal notranslate"><span class="pre">log</span> <span class="pre">p(y_t</span> <span class="pre">|</span> <span class="pre">y_&lt;t)</span></code>;
+the sum over steps estimates the log marginal likelihood of the data.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.particle.ParticleFilter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ParticleFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensemble</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.ensemble.Ensemble" title="modelly.stream.ensemble.Ensemble"><span class="pre">Ensemble</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.operators.ObservationOperator" title="modelly.stream.operators.ObservationOperator"><span class="pre">ObservationOperator</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/particle.html#ParticleFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.particle.ParticleFilter" title="Link to this definition">#</a></dt>
+<dd><p>Bootstrap particle filter over an ensemble (Gordon et al. 1993).</p>
+<p>Weight <code class="docutils literal notranslate"><span class="pre">ensemble</span></code> against observations read through <code class="docutils literal notranslate"><span class="pre">operator</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sd</span></code> is the observation error, one standard deviation for every
+quantity or one per quantity. <code class="docutils literal notranslate"><span class="pre">threshold</span></code> is the fraction of the
+ensemble size under which the effective sample size triggers a
+resampling: <code class="docutils literal notranslate"><span class="pre">1.0</span></code> resamples at every observation.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.stream.particle.ParticleFilter.weights">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">weights</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#modelly.stream.particle.ParticleFilter.weights" title="Link to this definition">#</a></dt>
+<dd><p>The normalised weight of each replicate.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.stream.particle.ParticleFilter.ess">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ess</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><a class="headerlink" href="#modelly.stream.particle.ParticleFilter.ess" title="Link to this definition">#</a></dt>
+<dd><p>The effective sample size of the current weights.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.stream.particle.ParticleFilter.resamplings">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">resamplings</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#modelly.stream.particle.ParticleFilter.resamplings" title="Link to this definition">#</a></dt>
+<dd><p>How many times the ensemble has been resampled.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.particle.ParticleFilter.assimilate">
+<span class="sig-name descname"><span class="pre">assimilate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.stream.particle.FilterStep" title="modelly.stream.particle.FilterStep"><span class="pre">FilterStep</span></a></span></span><a class="reference internal" href="../_modules/modelly/stream/particle.html#ParticleFilter.assimilate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.particle.ParticleFilter.assimilate" title="Link to this definition">#</a></dt>
+<dd><p>Run the ensemble to <code class="docutils literal notranslate"><span class="pre">observation</span></code>, weight it, resample when the ESS is low.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.particle.ParticleFilter.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.stream.particle.FilterStep" title="modelly.stream.particle.FilterStep"><span class="pre">FilterStep</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/particle.html#ParticleFilter.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.particle.ParticleFilter.run" title="Link to this definition">#</a></dt>
+<dd><p>Assimilate every observation <code class="docutils literal notranslate"><span class="pre">source</span></code> has, up to <code class="docutils literal notranslate"><span class="pre">until</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">source</span></code> is a stream source (anything with <code class="docutils literal notranslate"><span class="pre">poll(until)</span></code>) or an
+iterable of observations in time order (see <code class="docutils literal notranslate"><span class="pre">sources.due</span></code>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.particle.ParticleFilter.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.operators.ObservationOperator" title="modelly.stream.operators.ObservationOperator"><span class="pre">ObservationOperator</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/particle.html#ParticleFilter.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.particle.ParticleFilter.estimate" title="Link to this definition">#</a></dt>
+<dd><p>The weighted mean of each quantity of <code class="docutils literal notranslate"><span class="pre">operator</span></code> (the filter’s own by default).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.particle.ParticleFilter.band">
+<span class="sig-name descname"><span class="pre">band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.operators.ObservationOperator" title="modelly.stream.operators.ObservationOperator"><span class="pre">ObservationOperator</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.05,</span> <span class="pre">0.5,</span> <span class="pre">0.95)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pd.DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/stream/particle.html#ParticleFilter.band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.particle.ParticleFilter.band" title="Link to this definition">#</a></dt>
+<dd><p>The weighted band of <code class="docutils literal notranslate"><span class="pre">operator</span></code> now (see <code class="xref py py-meth docutils literal notranslate"><span class="pre">Ensemble.band()</span></code>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.particle.ParticleFilter.forecast">
+<span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.operators.ObservationOperator" title="modelly.stream.operators.ObservationOperator"><span class="pre">ObservationOperator</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">every</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.05,</span> <span class="pre">0.5,</span> <span class="pre">0.95)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pd.DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/stream/particle.html#ParticleFilter.forecast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.particle.ParticleFilter.forecast" title="Link to this definition">#</a></dt>
+<dd><p>The weighted band ahead to <code class="docutils literal notranslate"><span class="pre">until</span></code> (see <code class="xref py py-meth docutils literal notranslate"><span class="pre">Ensemble.forecast()</span></code>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.stream.particle.ParticleFilter.history">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">history</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></span><a class="headerlink" href="#modelly.stream.particle.ParticleFilter.history" title="Link to this definition">#</a></dt>
+<dd><p>time, ESS, resampled, log evidence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>One row per assimilated observation</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.stream.kalman">Ensemble Kalman filter for continuous parameters (state/parameter augmentation).</p>
+<p>The stochastic ensemble Kalman filter of Evensen (1994, 2003) with perturbed
+observations (Burgers, van Leeuwen &amp; Evensen 1998). The quantities it adjusts
+are named model attributes: parameters such as a contact rate, or any
+continuous state the model reads back. At each observation the replicates
+run to its time; with <code class="docutils literal notranslate"><span class="pre">X</span></code> the attributes (one row per replicate), <code class="docutils literal notranslate"><span class="pre">Y</span></code>
+what the operator reads from each and <code class="docutils literal notranslate"><span class="pre">R</span></code> the observation error variance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">K</span>   <span class="o">=</span> <span class="n">cov</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span> <span class="p">(</span><span class="n">cov</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span><span class="o">^-</span><span class="mi">1</span>
+<span class="n">X_i</span> <span class="o">=</span> <span class="n">X_i</span> <span class="o">+</span> <span class="n">K</span> <span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">e_i</span> <span class="o">-</span> <span class="n">Y_i</span><span class="p">),</span>      <span class="n">e_i</span> <span class="o">~</span> <span class="n">N</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Agent-level state is left alone: an agent-based model is rarely a vector the
+filter could shift, so the attributes are where it learns. Parameters can be
+kept in a range with <code class="docutils literal notranslate"><span class="pre">bounds</span></code>, clipping after each update:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">enkf</span> <span class="o">=</span> <span class="n">EnsembleKalmanFilter</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="s2">"beta"</span><span class="p">],</span>
+                            <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">"beta"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)})</span>
+<span class="n">enkf</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+<span class="n">enkf</span><span class="o">.</span><span class="n">estimate</span><span class="p">()</span>                      <span class="c1"># {"beta": 0.31}, the ensemble mean</span>
+</pre></div>
+</div>
+<p>The perturbations come from a generator derived from the scenario’s seed, so
+the filter is deterministic for a seed.</p>
+<p class="rubric">References</p>
+<p>Evensen, G. (1994). Sequential data assimilation with a nonlinear
+quasi-geostrophic model using Monte Carlo methods to forecast error
+statistics. Journal of Geophysical Research, 99(C5), 10143-10162.
+Burgers, G., van Leeuwen, P. J. &amp; Evensen, G. (1998). Analysis scheme in
+the ensemble Kalman filter. Monthly Weather Review, 126(6), 1719-1724.
+Evensen, G. (2003). The Ensemble Kalman Filter: theoretical formulation
+and practical implementation. Ocean Dynamics, 53(4), 343-367.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.stream.kalman.enkf_update">
+<span class="sig-name descname"><span class="pre">enkf_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/stream/kalman.html#enkf_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.kalman.enkf_update" title="Link to this definition">#</a></dt>
+<dd><p>The EnKF analysis of <code class="docutils literal notranslate"><span class="pre">states</span></code> (replicates by attributes).</p>
+<p><code class="docutils literal notranslate"><span class="pre">predicted</span></code> holds what each replicate would observe (replicates by
+quantities), <code class="docutils literal notranslate"><span class="pre">observed</span></code> one perturbed observation per replicate (same
+shape) and <code class="docutils literal notranslate"><span class="pre">variance</span></code> the observation error variance of each quantity.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.stream.kalman.EnsembleKalmanFilter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">EnsembleKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensemble</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.ensemble.Ensemble" title="modelly.stream.ensemble.Ensemble"><span class="pre">Ensemble</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.operators.ObservationOperator" title="modelly.stream.operators.ObservationOperator"><span class="pre">ObservationOperator</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/stream/kalman.html#EnsembleKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.kalman.EnsembleKalmanFilter" title="Link to this definition">#</a></dt>
+<dd><p>Stochastic EnKF with perturbed observations (Evensen 1994, 2003).</p>
+<p>Adjust the <code class="docutils literal notranslate"><span class="pre">parameters</span></code> attributes of <code class="docutils literal notranslate"><span class="pre">ensemble</span></code> to fit the observations.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sd</span></code> is the observation error, one standard deviation for every
+quantity or one per quantity. <code class="docutils literal notranslate"><span class="pre">bounds</span></code> maps a parameter to the
+<code class="docutils literal notranslate"><span class="pre">(low,</span> <span class="pre">high)</span></code> range it is clipped to after each update.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.kalman.EnsembleKalmanFilter.states">
+<span class="sig-name descname"><span class="pre">states</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/stream/kalman.html#EnsembleKalmanFilter.states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.kalman.EnsembleKalmanFilter.states" title="Link to this definition">#</a></dt>
+<dd><p>The adjusted attributes: one row per replicate, one column per parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.kalman.EnsembleKalmanFilter.assimilate">
+<span class="sig-name descname"><span class="pre">assimilate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/kalman.html#EnsembleKalmanFilter.assimilate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.kalman.EnsembleKalmanFilter.assimilate" title="Link to this definition">#</a></dt>
+<dd><p>Run the ensemble to <code class="docutils literal notranslate"><span class="pre">observation</span></code> and update the parameters.</p>
+<p>Returns the ensemble mean of each parameter after the update; an
+observation with none of the operator’s quantities changes nothing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.kalman.EnsembleKalmanFilter.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.stream.sources.Observation" title="modelly.stream.sources.Observation"><span class="pre">Observation</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/kalman.html#EnsembleKalmanFilter.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.kalman.EnsembleKalmanFilter.run" title="Link to this definition">#</a></dt>
+<dd><p>Assimilate every observation <code class="docutils literal notranslate"><span class="pre">source</span></code> has, up to <code class="docutils literal notranslate"><span class="pre">until</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">source</span></code> is a stream source (anything with <code class="docutils literal notranslate"><span class="pre">poll(until)</span></code>) or an
+iterable of observations in time order (see <code class="docutils literal notranslate"><span class="pre">sources.due</span></code>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.stream.kalman.EnsembleKalmanFilter.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/stream/kalman.html#EnsembleKalmanFilter.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.kalman.EnsembleKalmanFilter.estimate" title="Link to this definition">#</a></dt>
+<dd><p>The ensemble mean of each parameter.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.stream.kalman.EnsembleKalmanFilter.history">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">history</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></span><a class="headerlink" href="#modelly.stream.kalman.EnsembleKalmanFilter.history" title="Link to this definition">#</a></dt>
+<dd><p>time, then each parameter’s mean and <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;_sd</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>One row per observation</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.stream.bands">Quantile bands across an ensemble, as plain DataFrames.</p>
+<p>A band is the spread of the observed quantities across replicates at a time:
+the (weighted) mean and a few quantiles. Rows are long-format, one per time
+and quantity, so a plot, a table or a live view (Studio) reads them without
+knowing anything about ensembles:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">time</span>  <span class="n">quantity</span>  <span class="n">mean</span>   <span class="n">q0</span><span class="mf">.05</span>  <span class="n">q0</span><span class="mf">.5</span>   <span class="n">q0</span><span class="mf">.95</span>
+<span class="mf">12.0</span>  <span class="n">cases</span>     <span class="mf">41.3</span>   <span class="mf">30.0</span>   <span class="mf">40.5</span>   <span class="mf">55.2</span>
+</pre></div>
+</div>
+<p>Weighted quantiles put each replicate’s weight at the midpoint of its step in
+the cumulative weights and interpolate linearly between them; with equal
+weights this is the Hazen definition (Hyndman &amp; Fan 1996, definition 5).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.stream.bands.quantile_column">
+<span class="sig-name descname"><span class="pre">quantile_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/modelly/stream/bands.html#quantile_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.bands.quantile_column" title="Link to this definition">#</a></dt>
+<dd><p>The column of quantile <code class="docutils literal notranslate"><span class="pre">level</span></code>: <code class="docutils literal notranslate"><span class="pre">q0.05</span></code>, <code class="docutils literal notranslate"><span class="pre">q0.5</span></code>, …</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.stream.bands.weighted_quantiles">
+<span class="sig-name descname"><span class="pre">weighted_quantiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/stream/bands.html#weighted_quantiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.bands.weighted_quantiles" title="Link to this definition">#</a></dt>
+<dd><p>Quantiles of <code class="docutils literal notranslate"><span class="pre">values</span></code> weighted by <code class="docutils literal notranslate"><span class="pre">weights</span></code> (equal when <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.stream.bands.forecast_band">
+<span class="sig-name descname"><span class="pre">forecast_band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.stream.operators.ObservationOperator" title="modelly.stream.operators.ObservationOperator"><span class="pre">ObservationOperator</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">every</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.05,</span> <span class="pre">0.5,</span> <span class="pre">0.95)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pd.DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/stream/bands.html#forecast_band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.stream.bands.forecast_band" title="Link to this definition">#</a></dt>
+<dd><p>Run checkpoint copies of <code class="docutils literal notranslate"><span class="pre">models</span></code> to <code class="docutils literal notranslate"><span class="pre">until</span></code>, a band at every forecast time.</p>
+<p>The times are the models’ current time, then every <code class="docutils literal notranslate"><span class="pre">every</span></code> time units,
+ending exactly at <code class="docutils literal notranslate"><span class="pre">until</span></code>; <code class="docutils literal notranslate"><span class="pre">models</span></code> themselves do not move.</p>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="distributed.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Distributed</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../releases.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Releases</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.sources.Observation"><code class="docutils literal notranslate"><span class="pre">Observation</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.sources.ReplaySource"><code class="docutils literal notranslate"><span class="pre">ReplaySource</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.sources.ReplaySource.poll"><code class="docutils literal notranslate"><span class="pre">ReplaySource.poll()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.sources.CSVSource"><code class="docutils literal notranslate"><span class="pre">CSVSource</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.sources.CSVSource.poll"><code class="docutils literal notranslate"><span class="pre">CSVSource.poll()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.sources.HTTPSource"><code class="docutils literal notranslate"><span class="pre">HTTPSource</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.sources.HTTPSource.poll"><code class="docutils literal notranslate"><span class="pre">HTTPSource.poll()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.sources.due"><code class="docutils literal notranslate"><span class="pre">due()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.connectors.MQTTSource"><code class="docutils literal notranslate"><span class="pre">MQTTSource</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.connectors.MQTTSource.poll"><code class="docutils literal notranslate"><span class="pre">MQTTSource.poll()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.connectors.MQTTSource.close"><code class="docutils literal notranslate"><span class="pre">MQTTSource.close()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.connectors.KafkaSource"><code class="docutils literal notranslate"><span class="pre">KafkaSource</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.connectors.KafkaSource.poll"><code class="docutils literal notranslate"><span class="pre">KafkaSource.poll()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.connectors.KafkaSource.close"><code class="docutils literal notranslate"><span class="pre">KafkaSource.close()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.operators.ObservationOperator"><code class="docutils literal notranslate"><span class="pre">ObservationOperator</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.operators.ObservationOperator.names"><code class="docutils literal notranslate"><span class="pre">ObservationOperator.names</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.operators.ObservationOperator.residuals"><code class="docutils literal notranslate"><span class="pre">ObservationOperator.residuals()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.operators.ObservationOperator.log_likelihood"><code class="docutils literal notranslate"><span class="pre">ObservationOperator.log_likelihood()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.ensemble.derived_seed"><code class="docutils literal notranslate"><span class="pre">derived_seed()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.ensemble.replicate_scenarios"><code class="docutils literal notranslate"><span class="pre">replicate_scenarios()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.ensemble.Ensemble"><code class="docutils literal notranslate"><span class="pre">Ensemble</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.ensemble.Ensemble.seed"><code class="docutils literal notranslate"><span class="pre">Ensemble.seed()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.ensemble.Ensemble.time"><code class="docutils literal notranslate"><span class="pre">Ensemble.time</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.ensemble.Ensemble.advance"><code class="docutils literal notranslate"><span class="pre">Ensemble.advance()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.ensemble.Ensemble.values"><code class="docutils literal notranslate"><span class="pre">Ensemble.values()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.ensemble.Ensemble.resample"><code class="docutils literal notranslate"><span class="pre">Ensemble.resample()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.ensemble.Ensemble.band"><code class="docutils literal notranslate"><span class="pre">Ensemble.band()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.ensemble.Ensemble.forecast"><code class="docutils literal notranslate"><span class="pre">Ensemble.forecast()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.effective_sample_size"><code class="docutils literal notranslate"><span class="pre">effective_sample_size()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.systematic_resample"><code class="docutils literal notranslate"><span class="pre">systematic_resample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.FilterStep"><code class="docutils literal notranslate"><span class="pre">FilterStep</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.ParticleFilter"><code class="docutils literal notranslate"><span class="pre">ParticleFilter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.ParticleFilter.weights"><code class="docutils literal notranslate"><span class="pre">ParticleFilter.weights</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.ParticleFilter.ess"><code class="docutils literal notranslate"><span class="pre">ParticleFilter.ess</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.ParticleFilter.resamplings"><code class="docutils literal notranslate"><span class="pre">ParticleFilter.resamplings</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.ParticleFilter.assimilate"><code class="docutils literal notranslate"><span class="pre">ParticleFilter.assimilate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.ParticleFilter.run"><code class="docutils literal notranslate"><span class="pre">ParticleFilter.run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.ParticleFilter.estimate"><code class="docutils literal notranslate"><span class="pre">ParticleFilter.estimate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.ParticleFilter.band"><code class="docutils literal notranslate"><span class="pre">ParticleFilter.band()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.ParticleFilter.forecast"><code class="docutils literal notranslate"><span class="pre">ParticleFilter.forecast()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.particle.ParticleFilter.history"><code class="docutils literal notranslate"><span class="pre">ParticleFilter.history</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.kalman.enkf_update"><code class="docutils literal notranslate"><span class="pre">enkf_update()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.kalman.EnsembleKalmanFilter"><code class="docutils literal notranslate"><span class="pre">EnsembleKalmanFilter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.kalman.EnsembleKalmanFilter.states"><code class="docutils literal notranslate"><span class="pre">EnsembleKalmanFilter.states()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.kalman.EnsembleKalmanFilter.assimilate"><code class="docutils literal notranslate"><span class="pre">EnsembleKalmanFilter.assimilate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.kalman.EnsembleKalmanFilter.run"><code class="docutils literal notranslate"><span class="pre">EnsembleKalmanFilter.run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.kalman.EnsembleKalmanFilter.estimate"><code class="docutils literal notranslate"><span class="pre">EnsembleKalmanFilter.estimate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.kalman.EnsembleKalmanFilter.history"><code class="docutils literal notranslate"><span class="pre">EnsembleKalmanFilter.history</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.bands.quantile_column"><code class="docutils literal notranslate"><span class="pre">quantile_column()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.bands.weighted_quantiles"><code class="docutils literal notranslate"><span class="pre">weighted_quantiles()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.stream.bands.forecast_band"><code class="docutils literal notranslate"><span class="pre">forecast_band()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/apis/stream.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

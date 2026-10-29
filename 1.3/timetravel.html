@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Time travel and run diff &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=8ca9e7a0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'timetravel';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.3';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/timetravel.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Geospatial models" href="geospatial.html" />
+    <link rel="prev" title="Publishing a reproducible study" href="provenance.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#" aria-current="page">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Time travel and run diff</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="time-travel-and-run-diff">
+<h1>Time travel and run diff<a class="headerlink" href="#time-travel-and-run-diff" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.timetravel</span></code> lets you debug a stochastic model without rerunning it from step zero. A
+<code class="docutils literal notranslate"><span class="pre">Recorder</span></code> keeps checkpoints of a run as it goes; from them you can get the model back at any
+step, change it and replay from there, branch it into several futures, and <code class="docutils literal notranslate"><span class="pre">diff</span></code> two runs to
+see the first step, agent and attribute where they diverge.</p>
+<p>It is built on <a class="reference internal" href="checkpoints.html"><span class="std std-doc">checkpoints</span></a>: a recorder checkpoint is a <code class="docutils literal notranslate"><span class="pre">Model.save</span></code> file,
+held in memory or written to disk, so everything said there about what can be saved holds here.</p>
+<section id="recording-and-rewinding">
+<h2>Recording and rewinding<a class="headerlink" href="#recording-and-rewinding" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples</span><span class="w"> </span><span class="kn">import</span> <span class="n">WolfSheep</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples.advanced.wolf_sheep.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">WolfSheepScenario</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.timetravel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Recorder</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">WolfSheep</span><span class="p">(</span><span class="n">WolfSheepScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span>
+<span class="k">with</span> <span class="n">Recorder</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="k">as</span> <span class="n">rec</span><span class="p">:</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">rec</span><span class="o">.</span><span class="n">steps</span>  <span class="c1"># [0.0, 10.0, 20.0, ..., 1000.0], or fewer if the budget evicted some</span>
+<span class="n">past</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mi">312</span><span class="p">)</span>  <span class="c1"># a new model at step 312</span>
+</pre></div>
+</div>
+<p>The recorder checkpoints the model when recording starts (<code class="docutils literal notranslate"><span class="pre">with</span></code> or <code class="docutils literal notranslate"><span class="pre">start()</span></code>) and then every
+<code class="docutils literal notranslate"><span class="pre">every</span></code> time units, at the multiples of <code class="docutils literal notranslate"><span class="pre">every</span></code>. <code class="docutils literal notranslate"><span class="pre">at(step)</span></code> restores the nearest checkpoint at or
+before <code class="docutils literal notranslate"><span class="pre">step</span></code> and runs the model on to <code class="docutils literal notranslate"><span class="pre">step</span></code>. The model returned is independent: running it
+changes neither the recorded model nor the checkpoints, and <code class="docutils literal notranslate"><span class="pre">at</span></code> can be called again for the
+same or another step. <code class="docutils literal notranslate"><span class="pre">at</span></code> accepts any step in <code class="docutils literal notranslate"><span class="pre">rec.span</span></code>, from the first checkpoint to the
+last time the recorder saw the model; after <code class="docutils literal notranslate"><span class="pre">stop()</span></code> (or the end of the <code class="docutils literal notranslate"><span class="pre">with</span></code> block) the
+checkpoints stay available, and the model can go on running unrecorded.</p>
+<section id="bit-identical-replay">
+<h3>Bit-identical replay<a class="headerlink" href="#bit-identical-replay" title="Link to this heading">#</a></h3>
+<p>The state <code class="docutils literal notranslate"><span class="pre">at(step)</span></code> returns is the state a straight run reaches at <code class="docutils literal notranslate"><span class="pre">step</span></code>, bit for bit: agents
+and their attributes, columns, spaces, scheduled events, collected data and the exact state of
+<code class="docutils literal notranslate"><span class="pre">model.random</span></code> and <code class="docutils literal notranslate"><span class="pre">model.rng</span></code>. Running it on gives what the straight run gives. Recording does
+not change the run either. Both are tested on the bundled Boltzmann, Schelling, Wolf-Sheep
+(with its grass regrowth events) and Boids examples, with the compiled core and with the
+pure-Python one (<code class="docutils literal notranslate"><span class="pre">MODELLY_PURE_PYTHON=1</span></code>).</p>
+<p>Recording stops time at each checkpoint, so a model observed through <code class="docutils literal notranslate"><span class="pre">observe(&quot;time&quot;,</span> <span class="pre">...)</span></code>
+sees one <code class="docutils literal notranslate"><span class="pre">time</span></code> change at each checkpoint time even when no event falls on it. With the default
+schedule there is always a step there, and nothing changes.</p>
+</section>
+<section id="changes-from-outside-the-run">
+<h3>Changes from outside the run<a class="headerlink" href="#changes-from-outside-the-run" title="Link to this heading">#</a></h3>
+<p>Replay reruns the model’s own dynamics: its steps and scheduled events. A change made from
+outside between two <code class="docutils literal notranslate"><span class="pre">run_for</span></code> calls, such as setting an agent’s attribute by hand, is part of
+the recorded run only from the next checkpoint on; replay from an earlier checkpoint does not
+repeat it. Call <code class="docutils literal notranslate"><span class="pre">rec.checkpoint()</span></code> right after such a change to record it at once.</p>
+</section>
+</section>
+<section id="budget-and-storage">
+<h2>Budget and storage<a class="headerlink" href="#budget-and-storage" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Recorder</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">memory_budget</span><span class="o">=</span><span class="mi">512</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># bytes, default 256 MiB</span>
+<span class="n">Recorder</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># gzip each checkpoint</span>
+<span class="n">Recorder</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="s2">"runs/rewind"</span><span class="p">)</span>  <span class="c1"># checkpoints on disk</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">memory_budget</span></code> bounds the bytes all checkpoints take, in memory or, with <code class="docutils literal notranslate"><span class="pre">directory</span></code>, on disk.
+When a new checkpoint takes the ring over its budget, the oldest are evicted, except the first
+one (step 0 when recording starts with the model) and the newest, so the run can always be
+rewound to where recording started; <code class="docutils literal notranslate"><span class="pre">rec.nbytes</span></code> says how much is held. Evicting a checkpoint
+only makes rewinding to the steps after it slower, since <code class="docutils literal notranslate"><span class="pre">at</span></code> replays from an earlier one.</p>
+<p>On disk each checkpoint is a file <code class="docutils literal notranslate"><span class="pre">step-&lt;time&gt;.ckpt</span></code>, for example <code class="docutils literal notranslate"><span class="pre">step-310.0.ckpt</span></code>, that
+<code class="docutils literal notranslate"><span class="pre">Model.load</span></code> reads. A file is written under a temporary name and moved into place with
+<code class="docutils literal notranslate"><span class="pre">os.replace</span></code>, which is atomic on Windows, macOS and Linux, so a file in the directory is always
+whole. Evicted files are deleted; the others are left when the recorder is gone.</p>
+</section>
+<section id="replay-with-a-changed-scenario">
+<h2>Replay with a changed scenario<a class="headerlink" href="#replay-with-a-changed-scenario" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">past</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mi">312</span><span class="p">)</span>
+<span class="n">past</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">grass_regrowth_time</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">past</span><span class="o">.</span><span class="n">grass</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">past</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">Scenario</span></code> is frozen, but the scenario of a model returned by <code class="docutils literal notranslate"><span class="pre">at</span></code> or <code class="docutils literal notranslate"><span class="pre">branch</span></code> is a copy you
+may change. Changing a scenario mid-run means:</p>
+<ul class="simple">
+<li><p>the new value is seen by any code that reads <code class="docutils literal notranslate"><span class="pre">self.scenario.&lt;name&gt;</span></code> (or
+<code class="docutils literal notranslate"><span class="pre">self.model.scenario.&lt;name&gt;</span></code>) from the next step or event on;</p></li>
+<li><p>values the model copied out of the scenario when it was created keep their old value: in
+Wolf-Sheep, <code class="docutils literal notranslate"><span class="pre">grass</span></code> is copied to <code class="docutils literal notranslate"><span class="pre">model.grass</span></code> and <code class="docutils literal notranslate"><span class="pre">grass_regrowth_time</span></code> to each grass patch,
+so change those attributes too, as above;</p></li>
+<li><p>the random generators are not touched, so the replay draws the same numbers as the original
+until the change makes it draw differently;</p></li>
+<li><p>the recorded run and its checkpoints keep the original scenario. A model saved after the
+change keeps the new values (frozen again once loaded).</p></li>
+</ul>
+</section>
+<section id="branching">
+<h2>Branching<a class="headerlink" href="#branching" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">futures</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">branch</span><span class="p">(</span><span class="mi">312</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># four models at step 312, same random streams</span>
+<span class="n">futures</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">branch</span><span class="p">(</span><span class="mi">312</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">reseed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># four models at step 312, four streams</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">branch(step,</span> <span class="pre">n)</span></code> returns <code class="docutils literal notranslate"><span class="pre">n</span></code> independent models, all in the state of the run at <code class="docutils literal notranslate"><span class="pre">step</span></code>. Without
+<code class="docutils literal notranslate"><span class="pre">reseed</span></code> they continue the same random streams: left unchanged they stay identical, so
+differences between them come only from what you change. With <code class="docutils literal notranslate"><span class="pre">reseed=True</span></code>, branch <code class="docutils literal notranslate"><span class="pre">i</span></code> has
+both generators reseeded from <code class="docutils literal notranslate"><span class="pre">scenario.seed_sequence.spawn(n)[i]</span></code>, the child seeds
+<code class="docutils literal notranslate"><span class="pre">Scenario.spawn_replications(n)</span></code> uses: the futures differ by chance, and the same call gives the
+same futures again. <code class="docutils literal notranslate"><span class="pre">model.rng</span></code> keeps its bit generator class and <code class="docutils literal notranslate"><span class="pre">model.random</span></code> gets the stdlib
+seed <code class="docutils literal notranslate"><span class="pre">Model</span></code> derives from a seed sequence. The scenario’s <code class="docutils literal notranslate"><span class="pre">seed_sequence</span></code> is left as it was.</p>
+</section>
+<section id="diffing-two-runs">
+<h2>Diffing two runs<a class="headerlink" href="#diffing-two-runs" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoltzmannWealth</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples.basic.boltzmann_wealth_model.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoltzmannScenario</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.timetravel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Recorder</span><span class="p">,</span> <span class="n">diff</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">record</span><span class="p">(</span><span class="n">nudge</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">BoltzmannWealth</span><span class="p">(</span><span class="n">BoltzmannScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span>
+    <span class="k">with</span> <span class="n">Recorder</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="k">as</span> <span class="n">rec</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">23</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nudge</span><span class="p">:</span>  <span class="c1"># one agent gets one more coin at step 23</span>
+            <span class="nb">min</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">rec</span><span class="o">.</span><span class="n">checkpoint</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rec</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">record</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span> <span class="n">record</span><span class="p">(</span><span class="kc">True</span><span class="p">)))</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>The runs diverge at step 23.
+Collected data: step 24, model, Gini: 0.6597999999999999 != 0.6620792079207921
+State: step 23, agent 1 (MoneyAgent), wealth: 5 != 6
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">diff</span></code> takes two runs, each a model, a <code class="docutils literal notranslate"><span class="pre">Recorder</span></code>, a <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> or a DataFrame of model
+variables (<code class="docutils literal notranslate"><span class="pre">get_model_vars_dataframe()</span></code>), and returns a <code class="docutils literal notranslate"><span class="pre">RunDiff</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: the first difference in the collected data: the first collection at which a model
+reporter differs, or, between two collectors, the first agent and reporter whose agent record
+differs, whichever comes first;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: the first difference in state: model attributes first, then agents in <code class="docutils literal notranslate"><span class="pre">unique_id</span></code>
+order (an agent present in only one run, a different class, then the first attribute that
+differs), then the generators. Between two recorders the states are compared at the common
+checkpoints and then step by step from the last matching one, so <code class="docutils literal notranslate"><span class="pre">state.step</span></code> is the first
+step where the runs differ. Between two models, they are compared as they are now.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">RunDiff.step</span></code> is the earlier of the two, <code class="docutils literal notranslate"><span class="pre">RunDiff.identical</span></code> is true when neither was found,
+and each <code class="docutils literal notranslate"><span class="pre">Difference</span></code> has <code class="docutils literal notranslate"><span class="pre">step</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">agent</span></code> and <code class="docutils literal notranslate"><span class="pre">agent_class</span></code>.</p>
+<p>An agent’s state, as compared, is <code class="docutils literal notranslate"><span class="pre">agent_state(agent)</span></code>: its <code class="docutils literal notranslate"><span class="pre">Column</span></code> values, the scalars in its
+<code class="docutils literal notranslate"><span class="pre">__dict__</span></code> (bools, numbers, strings, short numpy vectors and tuples of scalars; names starting
+with <code class="docutils literal notranslate"><span class="pre">_</span></code> left out) and its place (<code class="docutils literal notranslate"><span class="pre">cell</span></code> coordinate or <code class="docutils literal notranslate"><span class="pre">position</span></code>). Lists, sets, references to
+other agents and other objects are not compared; the generators are compared through a digest
+of their state. NaN equals NaN.</p>
+</section>
+<section id="for-tools-the-timeline-interface">
+<h2>For tools: the timeline interface<a class="headerlink" href="#for-tools-the-timeline-interface" title="Link to this heading">#</a></h2>
+<p>A timeline scrubber, such as the one planned for Modelly Studio, needs only three members, which
+<code class="docutils literal notranslate"><span class="pre">modelly.timetravel.Timeline</span></code> names and <code class="docutils literal notranslate"><span class="pre">Recorder</span></code> implements:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Member</p></th>
+<th class="head"><p>Returns</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">steps</span></code></p></td>
+<td><p>the steps that hold a checkpoint, oldest first: instant to fetch</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">span</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(first,</span> <span class="pre">last)</span></code>: the steps <code class="docutils literal notranslate"><span class="pre">at</span></code> accepts</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">at(step)</span></code></p></td>
+<td><p>a new, independent model at <code class="docutils literal notranslate"><span class="pre">step</span></code>: a checkpoint restored, then replayed from it to <code class="docutils literal notranslate"><span class="pre">step</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Checkpoints are pickles. A directory of recorder checkpoints is as trusted as the code that
+wrote it: only load files you made yourself or otherwise trust.</p>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="provenance.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Publishing a reproducible study</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="geospatial.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Geospatial models</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recording-and-rewinding">Recording and rewinding</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bit-identical-replay">Bit-identical replay</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changes-from-outside-the-run">Changes from outside the run</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#budget-and-storage">Budget and storage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#replay-with-a-changed-scenario">Replay with a changed scenario</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#branching">Branching</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diffing-two-runs">Diffing two runs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#for-tools-the-timeline-interface">For tools: the timeline interface</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/timetravel.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

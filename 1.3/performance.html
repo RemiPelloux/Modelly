@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Performance audit &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=8ca9e7a0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'performance';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.3';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/performance.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="APIs" href="apis/api_main.html" />
+    <link rel="prev" title="Migrating from Mesa" href="migrating_from_mesa.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Performance audit</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="performance-audit">
+<h1>Performance audit<a class="headerlink" href="#performance-audit" title="Link to this heading">#</a></h1>
+<p>This page records how Modelly’s core data structures were audited, what was measured, what
+changed, and what is still on the table. Numbers come from the benchmark configurations in
+<code class="docutils literal notranslate"><span class="pre">benchmarks/configurations.py</span></code> (“large” sizes) and from micro-benchmarks run on the same
+machine, best of several alternating before/after runs, measured in CPU time.</p>
+<section id="the-question">
+<h2>The question<a class="headerlink" href="#the-question" title="Link to this heading">#</a></h2>
+<p>Modelly keeps one Python object per agent and stores collections of them in dictionaries:
+<code class="docutils literal notranslate"><span class="pre">AgentSet</span></code> was a <code class="docutils literal notranslate"><span class="pre">weakref.WeakKeyDictionary</span></code>, the model registry is a plain <code class="docutils literal notranslate"><span class="pre">dict</span></code>, and a cell
+holds a <code class="docutils literal notranslate"><span class="pre">list</span></code> of the agents standing on it. Is that the right shape, and where does the time go?</p>
+<p>The short answer: the shapes are right for the operations a simulation performs (ordered
+membership, O(1) removal, stable shuffles), but four things around them were costing far more than
+the containers themselves. Those were fixed. The one structural change with a large constant
+factor (columnar agent state) is a roadmap item, not a patch.</p>
+</section>
+<section id="what-the-profile-showed">
+<h2>What the profile showed<a class="headerlink" href="#what-the-profile-showed" title="Link to this heading">#</a></h2>
+<p>Profiling the four benchmark models at their “large” configuration put the framework’s own
+overhead in five places, in order of cost:</p>
+<ol class="arabic simple">
+<li><p><strong>Empty-cell search on dense grids.</strong> <code class="docutils literal notranslate"><span class="pre">Grid.select_random_empty_cell</span></code> tried 50 random cells,
+then fell back to <code class="docutils literal notranslate"><span class="pre">np.argwhere</span></code> over the whole grid, on every call. On a 99% full grid that is
+14 µs per call, and a Schelling model at that density spends most of its step there.</p></li>
+<li><p><strong>Per-agent data collection.</strong> <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> built one closure call per reporter per agent,
+read <code class="docutils literal notranslate"><span class="pre">agent.model.time</span></code> through the observable descriptor for every agent, and called
+<code class="docutils literal notranslate"><span class="pre">deepcopy</span></code> on <code class="docutils literal notranslate"><span class="pre">None</span></code> and numpy scalars. About 390 ns per agent per step.</p></li>
+<li><p><strong>Double-built views.</strong> Every <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">shuffle</span></code>, <code class="docutils literal notranslate"><span class="pre">sort</span></code> and <code class="docutils literal notranslate"><span class="pre">groupby</span></code> on <code class="docutils literal notranslate"><span class="pre">model.agents</span></code>
+built a strong-reference set and then rebuilt it as a weak one. Counting fully grown grass in
+Wolf-Sheep built a 10,000-entry weak dictionary to call <code class="docutils literal notranslate"><span class="pre">len()</span></code> on it: 2.2 ms of a 17 ms step.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">WeakKeyDictionary</span></code> overhead.</strong> Its pure-Python wrapper and iteration guard made construction,
+membership and iteration about twice the cost of a dict keyed on <code class="docutils literal notranslate"><span class="pre">weakref.ref</span></code> objects.</p></li>
+<li><p><strong>Unconditional property-layer writes.</strong> Every agent move wrote the <code class="docutils literal notranslate"><span class="pre">empty</span></code> layer twice through
+a numpy scalar index, even when the cell’s emptiness had not changed.</p></li>
+</ol>
+<p>Two defects came out of the same pass:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Cell.get_neighborhood</span></code> was decorated with <code class="docutils literal notranslate"><span class="pre">functools.cache</span></code> on a method, which is one global
+cache keyed on the cell. Discarding a grid left all its cells alive (10,000 cells after building
+and dropping fifteen 100x100 grids), and <code class="docutils literal notranslate"><span class="pre">connect()</span></code> on any cell cleared every cell’s cache in
+the process.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Grid.__init__</span></code> registered each grid’s private cell class in the global <code class="docutils literal notranslate"><span class="pre">copyreg</span></code> dispatch
+table, so a discarded grid stayed reachable from it.</p></li>
+</ul>
+</section>
+<section id="what-changed">
+<h2>What changed<a class="headerlink" href="#what-changed" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Area</p></th>
+<th class="head"><p>Before</p></th>
+<th class="head"><p>After</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AgentSet</span></code> storage</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">weakref.WeakKeyDictionary</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> keyed on <code class="docutils literal notranslate"><span class="pre">weakref.ref</span></code> with a removal callback; all bulk operations walk a C-level snapshot of the keys</p></td>
+</tr>
+<tr class="row-odd"><td><p>Views from the registry</p></td>
+<td><p>built strong, rebuilt weak</p></td>
+<td><p>built once through <code class="docutils literal notranslate"><span class="pre">_view()</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">select</span></code></p></td>
+<td><p>generator with a running count</p></td>
+<td><p>list comprehensions, slice for <code class="docutils literal notranslate"><span class="pre">at_most</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get</span></code></p></td>
+<td><p>Python loop</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">operator.attrgetter</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Neighbourhood cache</p></td>
+<td><p>global <code class="docutils literal notranslate"><span class="pre">functools.cache</span></code></p></td>
+<td><p>per-cell <code class="docutils literal notranslate"><span class="pre">dict</span></code>; <code class="docutils literal notranslate"><span class="pre">connect</span></code>/<code class="docutils literal notranslate"><span class="pre">disconnect</span></code> clear only that cell</p></td>
+</tr>
+<tr class="row-odd"><td><p>Empty cells</p></td>
+<td><p>50 tries then full scan</p></td>
+<td><p>8 tries, then a lazily built swap-remove index kept in sync by <code class="docutils literal notranslate"><span class="pre">cell.empty</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">empty</span></code> layer writes</p></td>
+<td><p>on every add/remove</p></td>
+<td><p>only on empty/occupied transitions</p></td>
+</tr>
+<tr class="row-odd"><td><p>Agent rows</p></td>
+<td><p>closure per reporter per agent</p></td>
+<td><p>gathered column-wise: one C-level <code class="docutils literal notranslate"><span class="pre">map</span></code> per reporter, columns zipped into rows; copy a column only if it holds a mutable value</p></td>
+</tr>
+<tr class="row-even"><td><p>Grid cell class pickling</p></td>
+<td><p>global <code class="docutils literal notranslate"><span class="pre">copyreg</span></code> registration</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">__reduce__</span></code> on the class</p></td>
+</tr>
+<tr class="row-odd"><td><p>Grid unpickling</p></td>
+<td><p>one class per cell, accessors on the first</p></td>
+<td><p>cells re-homed onto one class, accessors restored on it</p></td>
+</tr>
+<tr class="row-even"><td><p>Registration logging</p></td>
+<td><p>f-string built even when debug is off</p></td>
+<td><p>lazy <code class="docutils literal notranslate"><span class="pre">%s</span></code> formatting</p></td>
+</tr>
+<tr class="row-odd"><td><p>Wolf-Sheep grass reporter</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">len(select(...))</span></code></p></td>
+<td><p>a direct count</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="measurements">
+<h2>Measurements<a class="headerlink" href="#measurements" title="Link to this heading">#</a></h2>
+<p>Model benchmarks, CPU time per step, best of three alternating rounds:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model (large)</p></th>
+<th class="head"><p>Before</p></th>
+<th class="head"><p>After</p></th>
+<th class="head"><p>Speedup</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Boltzmann wealth, 10k agents, 100x100</p></td>
+<td><p>19.3 ms</p></td>
+<td><p>16.6 ms</p></td>
+<td><p>1.16x</p></td>
+</tr>
+<tr class="row-odd"><td><p>Schelling, 100x100, density 0.8, radius 2</p></td>
+<td><p>26.9 ms</p></td>
+<td><p>24.4 ms</p></td>
+<td><p>1.10x</p></td>
+</tr>
+<tr class="row-even"><td><p>Schelling, 100x100, density 0.98</p></td>
+<td><p>137.7 ms</p></td>
+<td><p>20.7 ms</p></td>
+<td><p>6.66x</p></td>
+</tr>
+<tr class="row-odd"><td><p>Wolf-Sheep, 100x100, 1000 sheep, 500 wolves</p></td>
+<td><p>18.5 ms</p></td>
+<td><p>17.0 ms</p></td>
+<td><p>1.09x</p></td>
+</tr>
+<tr class="row-even"><td><p>Boids, 400 agents</p></td>
+<td><p>12.4 ms</p></td>
+<td><p>12.1 ms</p></td>
+<td><p>1.03x</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Hot paths, per call:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Operation</p></th>
+<th class="head"><p>Before</p></th>
+<th class="head"><p>After</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">select_random_empty_cell</span></code>, 99% full grid</p></td>
+<td><p>14.3 µs</p></td>
+<td><p>0.11 µs</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">select_random_empty_cell</span></code>, 50% full grid</p></td>
+<td><p>0.29 µs</p></td>
+<td><p>0.14 µs</p></td>
+</tr>
+<tr class="row-even"><td><p>agent move between two cells</p></td>
+<td><p>522 ns</p></td>
+<td><p>440 ns</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cell.get_neighborhood(radius=2)</span></code> (cached)</p></td>
+<td><p>77 ns</p></td>
+<td><p>52 ns</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cell.neighborhood</span></code> (cached)</p></td>
+<td><p>49 ns</p></td>
+<td><p>56 ns</p></td>
+</tr>
+<tr class="row-odd"><td><p>build a 10k-agent <code class="docutils literal notranslate"><span class="pre">AgentSet</span></code></p></td>
+<td><p>0.83 ms</p></td>
+<td><p>0.49 ms</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">model.agents.select(...)</span></code> over 10k agents</p></td>
+<td><p>1.98 ms</p></td>
+<td><p>1.30 ms</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DataCollector.collect</span></code>, 10k agents, 1 attribute</p></td>
+<td><p>1.60 ms</p></td>
+<td><p>0.95 ms</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DataCollector.collect</span></code>, 10k agents, 2 attributes + 1 lambda</p></td>
+<td><p>2.13 ms</p></td>
+<td><p>1.43 ms</p></td>
+</tr>
+<tr class="row-odd"><td><p>Wolf-Sheep <code class="docutils literal notranslate"><span class="pre">collect</span></code> (grass count)</p></td>
+<td><p>2.2 ms</p></td>
+<td><p>0.4 ms</p></td>
+</tr>
+<tr class="row-even"><td><p>cells alive after discarding 15 grids</p></td>
+<td><p>10,000</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The remaining per-step cost in Boltzmann and Schelling is the agents’ own Python logic
+(random choices, list comprehensions over neighbours), which is the expected profile for an
+object-per-agent engine.</p>
+</section>
+<section id="columnar-agent-state">
+<h2>Columnar agent state<a class="headerlink" href="#columnar-agent-state" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.core.columns</span></code> adds the one structural change with a large constant factor, as an opt-in.
+A <code class="docutils literal notranslate"><span class="pre">Column</span></code> declared on an agent class stores that attribute in a numpy array owned by the
+model (one table per concrete class, rows in insertion order, swap-remove on removal, the same
+scheme the continuous space uses for positions). The agent reads and writes its own row through
+a descriptor; the model reads everyone through <code class="docutils literal notranslate"><span class="pre">model.columns[Cls].&lt;name&gt;</span></code>, a zero-copy view.</p>
+<p>Measured on the Boltzmann model with 10,000 agents, CPU time:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Operation</p></th>
+<th class="head"><p>Plain attribute</p></th>
+<th class="head"><p>Column</p></th>
+<th class="head"><p>Speedup</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Gini coefficient</p></td>
+<td><p>1.09 ms</p></td>
+<td><p>0.03 ms</p></td>
+<td><p>33x</p></td>
+</tr>
+<tr class="row-odd"><td><p>Count agents with <code class="docutils literal notranslate"><span class="pre">wealth</span> <span class="pre">&gt;</span> <span class="pre">0</span></code></p></td>
+<td><p>0.94 ms</p></td>
+<td><p>0.008 ms</p></td>
+<td><p>125x</p></td>
+</tr>
+<tr class="row-even"><td><p>Mean wealth (<code class="docutils literal notranslate"><span class="pre">agg</span></code> vs <code class="docutils literal notranslate"><span class="pre">.mean()</span></code>)</p></td>
+<td><p>0.47 ms</p></td>
+<td><p>0.009 ms</p></td>
+<td><p>55x</p></td>
+</tr>
+<tr class="row-odd"><td><p>Decrement every <code class="docutils literal notranslate"><span class="pre">wealth</span> <span class="pre">&gt;</span> <span class="pre">5</span></code></p></td>
+<td><p>0.15 ms</p></td>
+<td><p>0.004 ms</p></td>
+<td><p>36x</p></td>
+</tr>
+<tr class="row-even"><td><p>Snapshot to a DataFrame</p></td>
+<td><p>1.10 ms</p></td>
+<td><p>0.31 ms</p></td>
+<td><p>3.6x</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">AgentSet</span></code> of <code class="docutils literal notranslate"><span class="pre">wealth</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> (<code class="docutils literal notranslate"><span class="pre">select</span></code> vs <code class="docutils literal notranslate"><span class="pre">where</span></code>)</p></td>
+<td><p>0.94 ms</p></td>
+<td><p>0.62 ms</p></td>
+<td><p>1.5x</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DataCollector.collect</span></code>, one attribute reporter</p></td>
+<td><p>0.95 ms</p></td>
+<td><p>0.46 ms</p></td>
+<td><p>2.1x</p></td>
+</tr>
+<tr class="row-odd"><td><p>One <code class="docutils literal notranslate"><span class="pre">agent.wealth</span></code> read / <code class="docutils literal notranslate"><span class="pre">+=</span> <span class="pre">1</span></code> inside <code class="docutils literal notranslate"><span class="pre">step</span></code></p></td>
+<td><p>6 / 13 ns</p></td>
+<td><p>27 / 72 ns</p></td>
+<td><p>0.2x</p></td>
+</tr>
+<tr class="row-even"><td><p>Boltzmann <code class="docutils literal notranslate"><span class="pre">shuffle_do(&quot;step&quot;)</span></code>, object loop</p></td>
+<td><p>22.3 ms</p></td>
+<td><p>21.0 ms</p></td>
+<td><p>within noise</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The last two rows are the trade-off. A column attribute is a plain <code class="docutils literal notranslate"><span class="pre">property</span></code> installed on the
+class (the interpreter inlines property getters, which it never does for a custom descriptor)
+that reads the agent’s row through a <code class="docutils literal notranslate"><span class="pre">memoryview</span></code>, so a read returns a Python <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code> or
+<code class="docutils literal notranslate"><span class="pre">bool</span></code> rather than building a numpy scalar, and arithmetic on it is Python arithmetic. That took
+a read from 79 ns to 27 ns and <code class="docutils literal notranslate"><span class="pre">+=</span> <span class="pre">1</span></code> from 171 ns to 72 ns (CPython 3.15), and a Boltzmann
+exchange step over 5,000 column agents from 5.0 ms to 3.1 ms, against 1.6 ms with plain
+attributes. Dtypes a <code class="docutils literal notranslate"><span class="pre">memoryview</span></code> cannot index (strings, objects, complex, datetimes) keep
+numpy indexing, and a write a <code class="docutils literal notranslate"><span class="pre">memoryview</span></code> rejects (a float into an int column) falls back to
+numpy’s own assignment, so values and errors are unchanged. A column is still not the place for
+a scratch value read in a tight loop. <code class="docutils literal notranslate"><span class="pre">where</span></code> is bounded by building the <code class="docutils literal notranslate"><span class="pre">AgentSet</span></code>
+from 10,000 objects, not by the mask.</p>
+<p>Recording a column with <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> is a straight slice of the table when the reporters are
+all columns of one class and the collected agents are that class’s whole population; rows are
+then in table order rather than registration order (identical until an agent is removed).</p>
+</section>
+<section id="continuous-space">
+<h2>Continuous space<a class="headerlink" href="#continuous-space" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">get_agents_in_radius</span></code> compares one point against every position, so a model where every
+agent asks for its neighbours is O(n²) per step. <code class="docutils literal notranslate"><span class="pre">ContinuousSpace.neighbors_within(radius)</span></code>
+builds one <code class="docutils literal notranslate"><span class="pre">scipy.spatial.cKDTree</span></code> from the positions as they are now and queries it for the
+whole population in a single call; on a torus the tree is periodic. A model uses it once per
+step and gives every agent the same snapshot of positions (a simultaneous update).</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Boids, per step</p></th>
+<th class="head"><p>Per-agent scans</p></th>
+<th class="head"><p>One tree per step</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>400 agents</p></td>
+<td><p>12.1 ms</p></td>
+<td><p>8.1 ms</p></td>
+</tr>
+<tr class="row-odd"><td><p>2,000 agents</p></td>
+<td><p>98.2 ms</p></td>
+<td><p>41.7 ms</p></td>
+</tr>
+<tr class="row-even"><td><p>10,000 agents</p></td>
+<td><p>about 2.5 s (extrapolated)</p></td>
+<td><p>227 ms</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>What remains per agent is its own numpy arithmetic on a handful of neighbours.</p>
+</section>
+<section id="agent-lifecycle">
+<h2>Agent lifecycle<a class="headerlink" href="#agent-lifecycle" title="Link to this heading">#</a></h2>
+<p>Models with high birth and death rates (an insect population, an epidemic with recovery and
+reinfection) spend much of their step creating and removing agents, so the framework’s share
+of such a model is the lifecycle path. Measured as a bare <code class="docutils literal notranslate"><span class="pre">Agent(model)</span></code> followed by
+<code class="docutils literal notranslate"><span class="pre">agent.remove()</span></code>, and as the notebook agent below inside its real model:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Birth + death</p></th>
+<th class="head"><p>Mesa 2.3</p></th>
+<th class="head"><p>Modelly, first audit</p></th>
+<th class="head"><p>Modelly now</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>bare agent, bare model</p></td>
+<td><p>372 ns</p></td>
+<td><p>861 ns</p></td>
+<td><p>421 ns</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">agent</span> <span class="pre">in</span> <span class="pre">model.agents</span></code> (liveness check)</p></td>
+<td><p>35 ns</p></td>
+<td><p>160 ns</p></td>
+<td><p>35 ns</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>What changed, in order: the <code class="docutils literal notranslate"><span class="pre">emit</span></code> decorator’s wrapper checks for listeners inline and calls
+<code class="docutils literal notranslate"><span class="pre">notify</span></code> only when someone can hear; <code class="docutils literal notranslate"><span class="pre">remove()</span></code> uses <code class="docutils literal notranslate"><span class="pre">try/except</span></code> instead of a
+<code class="docutils literal notranslate"><span class="pre">contextlib.suppress</span></code> context manager (about 300 ns); the strong registry is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> subclass,
+so membership, length and the registry writes run in C; <code class="docutils literal notranslate"><span class="pre">Agent.__init__</span></code> and <code class="docutils literal notranslate"><span class="pre">Agent.remove</span></code>
+inline the registration when the model keeps the default <code class="docutils literal notranslate"><span class="pre">register_agent</span></code> and
+<code class="docutils literal notranslate"><span class="pre">deregister_agent</span></code> (a flag computed per class, with a test that an override is still honoured);
+the cooperative <code class="docutils literal notranslate"><span class="pre">super().__init__()</span></code> is skipped for plain subclasses; the listener test is four
+attribute reads with no dict lookups. A three-day bisect at 2,800 agents on the medfly model
+below puts the current path at 11.4 ms against 11.7 ms for a stripped-down path with none of
+Modelly’s features and 11.2 ms for Mesa 2.3: the lifecycle is at parity.</p>
+<section id="fastrandom">
+<h3>FastRandom<a class="headerlink" href="#fastrandom" title="Link to this heading">#</a></h3>
+<p>A quarter to a third of an agent-based model’s time is the standard library’s <code class="docutils literal notranslate"><span class="pre">random</span></code>, whose
+<code class="docutils literal notranslate"><span class="pre">randint</span></code>, <code class="docutils literal notranslate"><span class="pre">choice</span></code>, <code class="docutils literal notranslate"><span class="pre">shuffle</span></code> and <code class="docutils literal notranslate"><span class="pre">sample</span></code> are Python loops calling <code class="docutils literal notranslate"><span class="pre">_randbelow</span></code> per draw.
+<code class="docutils literal notranslate"><span class="pre">modelly.FastRandom</span></code> reimplements the four with the rejection loop written inline, making the
+same <code class="docutils literal notranslate"><span class="pre">getrandbits</span></code> calls in the same order, so a seed gives exactly the same numbers as
+<code class="docutils literal notranslate"><span class="pre">random.Random</span></code> (tested across seeds, sizes and both <code class="docutils literal notranslate"><span class="pre">sample</span></code> code paths). <code class="docutils literal notranslate"><span class="pre">model.random</span></code> is a
+<code class="docutils literal notranslate"><span class="pre">FastRandom</span></code>. On CPython 3.15, against a standard library that has itself become cheaper,
+per call:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Draw</p></th>
+<th class="head"><p>Faster than <code class="docutils literal notranslate"><span class="pre">random.Random</span></code> by</p></th>
+<th class="head"><p>How</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">randint(6,</span> <span class="pre">11)</span></code></p></td>
+<td><p>3 to 4%</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">type(x)</span> <span class="pre">is</span> <span class="pre">int</span></code> (specialised by the interpreter) instead of two <code class="docutils literal notranslate"><span class="pre">operator.index</span></code> calls; bit length from a 4,096-entry table instead of <code class="docutils literal notranslate"><span class="pre">int.bit_length()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">choice</span></code></p></td>
+<td><p>11 to 12%</p></td>
+<td><p>the same table</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sample(list</span> <span class="pre">of</span> <span class="pre">3,000,</span> <span class="pre">3)</span></code></p></td>
+<td><p>20 to 26%</p></td>
+<td><p>the table, and the <code class="docutils literal notranslate"><span class="pre">Sequence</span></code> ABC check skipped for <code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">tuple</span></code> and <code class="docutils literal notranslate"><span class="pre">range</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">shuffle(3,000)</span></code></p></td>
+<td><p>15 to 27%</p></td>
+<td><p>lists over 64 elements are walked in runs of constant bit length, so the inner loop has no lookup at all</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Every change makes the same <code class="docutils literal notranslate"><span class="pre">getrandbits</span></code> calls in the same order; a test shuffles every
+length from 0 to 139 and lengths around each power of two and compares with the standard
+library element for element, and then compares the next draw.</p>
+<p><strong>The compiled core.</strong> Pure Python had nothing left to remove: what remained of a draw
+was the Python function call around a C call. <code class="docutils literal notranslate"><span class="pre">modelly/_native/fastrng.c</span></code> implements
+<code class="docutils literal notranslate"><span class="pre">randint</span></code>, <code class="docutils literal notranslate"><span class="pre">choice</span></code>, <code class="docutils literal notranslate"><span class="pre">shuffle</span></code>, <code class="docutils literal notranslate"><span class="pre">sample</span></code> and <code class="docutils literal notranslate"><span class="pre">_randbelow</span></code> in C as “fastcall” methods (the
+cheapest call CPython has). The type extends <code class="docutils literal notranslate"><span class="pre">_random.Random</span></code> and generates words from the same
+Mersenne Twister state the base class uses, so <code class="docutils literal notranslate"><span class="pre">random()</span></code>, <code class="docutils literal notranslate"><span class="pre">gauss</span></code>, <code class="docutils literal notranslate"><span class="pre">getrandbits</span></code>, <code class="docutils literal notranslate"><span class="pre">seed</span></code> and
+<code class="docutils literal notranslate"><span class="pre">getstate</span></code> from the standard library and the compiled methods consume one stream exactly as
+<code class="docutils literal notranslate"><span class="pre">random.Random</span></code> does; the stdlib’s <code class="docutils literal notranslate"><span class="pre">sample</span></code> set-size rule and both of its code paths are
+reproduced draw for draw. Anything outside the fast paths (ranges of 2³² or more, non-int
+arguments, sequences that are not lists or tuples, <code class="docutils literal notranslate"><span class="pre">counts=</span></code>) goes to the standard library’s
+own code, which reads the same state. At import a self-test compares a mixed sequence of draws
+with <code class="docutils literal notranslate"><span class="pre">random.Random</span></code>; on any mismatch, without a compiler, or with
+<code class="docutils literal notranslate"><span class="pre">MODELLY_PURE_PYTHON=1</span></code>, <code class="docutils literal notranslate"><span class="pre">FastRandom</span></code> is the pure-Python <code class="docutils literal notranslate"><span class="pre">PyFastRandom</span></code> above. Per call:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Draw</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">random.Random</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">PyFastRandom</span></code></p></th>
+<th class="head"><p>compiled <code class="docutils literal notranslate"><span class="pre">FastRandom</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">randint(6,</span> <span class="pre">11)</span></code></p></td>
+<td><p>193 ns</p></td>
+<td><p>185 ns</p></td>
+<td><p>59 ns</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">choice(list</span> <span class="pre">of</span> <span class="pre">3,000)</span></code></p></td>
+<td><p>190 ns</p></td>
+<td><p>168 ns</p></td>
+<td><p>72 ns</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">shuffle(3,000)</span></code>, per element</p></td>
+<td><p>206 ns</p></td>
+<td><p>156 ns</p></td>
+<td><p>38 ns</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Assembly would not beat this: generating a word is 2 to 3 ns of C that compilers already turn
+into near-optimal code, and the rest is the interpreter’s call, which no language can avoid.
+Platform wheels carry the compiled modules (Linux glibc and musl on x86-64 and ARM64, macOS,
+Windows x86-64 and ARM64, the GIL and the free-threaded interpreters); other platforms install
+the pure wheel.</p>
+<p>A second compiled module, <code class="docutils literal notranslate"><span class="pre">modelly/_native/fastloop.c</span></code>, runs <code class="docutils literal notranslate"><span class="pre">do</span></code> and <code class="docutils literal notranslate"><span class="pre">shuffle_do</span></code> on the
+model’s agent registries and the breadth-first walk behind <code class="docutils literal notranslate"><span class="pre">Cell.get_neighborhood</span></code>. Each loop
+has an identical pure-Python twin in <code class="docutils literal notranslate"><span class="pre">modelly/_native/loops.py</span></code>, used when the module is not
+built or <code class="docutils literal notranslate"><span class="pre">MODELLY_PURE_PYTHON=1</span></code> is set; <code class="docutils literal notranslate"><span class="pre">tests/native</span></code> checks the two against each other.</p>
+<p>A third, <code class="docutils literal notranslate"><span class="pre">modelly/_native/fastcell.c</span></code>, is the setter of <code class="docutils literal notranslate"><span class="pre">CellAgent.cell</span></code>: add to the new cell
+(capacity check, <code class="docutils literal notranslate"><span class="pre">CellFullException</span></code>), remove from the old one (<code class="docutils literal notranslate"><span class="pre">AgentMissingException</span></code> chained
+from the <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>), and write <code class="docutils literal notranslate"><span class="pre">empty</span></code> only on a transition, through the normal attribute
+protocol so a grid’s property-layer <code class="docutils literal notranslate"><span class="pre">empty</span></code> still updates. It runs <code class="docutils literal notranslate"><span class="pre">Cell.add_agent</span></code> and
+<code class="docutils literal notranslate"><span class="pre">remove_agent</span></code> inline only when the cell’s type resolves them to <code class="docutils literal notranslate"><span class="pre">Cell</span></code>’s own (checked per type,
+revalidated on CPython’s type version tag, so an override or a later patch is called instead),
+and reads the <code class="docutils literal notranslate"><span class="pre">_agents</span></code> and <code class="docutils literal notranslate"><span class="pre">capacity</span></code> slots at their offsets. Its twin is <code class="docutils literal notranslate"><span class="pre">py_set_cell</span></code> in
+<code class="docutils literal notranslate"><span class="pre">modelly/_native/cells.py</span></code>. A first version that used plain attribute lookups was no faster than
+Python 3.15’s specialised bytecode; the slot reads are what made the difference.</p>
+<p>Measured on Python 3.15, one pinned core (<code class="docutils literal notranslate"><span class="pre">nice</span> <span class="pre">taskset</span> <span class="pre">-c</span> <span class="pre">5</span></code>) of a shared 16-core laptop at
+load 3 to 4, CPU time, base (<code class="docutils literal notranslate"><span class="pre">main</span></code>) and new alternating in separate processes, identical
+results checked every round:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Workload</p></th>
+<th class="head"><p>base</p></th>
+<th class="head"><p>new</p></th>
+<th class="head"><p>new / base, median (IQR)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>one move, no <code class="docutils literal notranslate"><span class="pre">empty</span></code> transition</p></td>
+<td><p>205 ns</p></td>
+<td><p>107 ns</p></td>
+<td><p>0.52</p></td>
+</tr>
+<tr class="row-odd"><td><p>one move, two property-layer <code class="docutils literal notranslate"><span class="pre">empty</span></code> transitions</p></td>
+<td><p>315 ns</p></td>
+<td><p>200 ns</p></td>
+<td><p>0.63</p></td>
+</tr>
+<tr class="row-even"><td><p>one move to a random neighbour (<code class="docutils literal notranslate"><span class="pre">cell.neighborhood.select_random_cell()</span></code>)</p></td>
+<td><p>677 ns</p></td>
+<td><p>450 to 550 ns</p></td>
+<td><p>0.66 to 0.81</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid_epidemic</span></code>, <code class="docutils literal notranslate"><span class="pre">modelly-cells</span></code>, small, 20 rounds</p></td>
+<td><p>0.121 s</p></td>
+<td><p>0.102 s</p></td>
+<td><p>0.86 (0.79 to 0.96)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">predator_prey</span></code>, <code class="docutils literal notranslate"><span class="pre">modelly-cells</span></code>, small, 20 rounds</p></td>
+<td><p>0.212 s</p></td>
+<td><p>0.185 s</p></td>
+<td><p>0.89 (0.83 to 0.95)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid_epidemic</span></code>, <code class="docutils literal notranslate"><span class="pre">modelly-cells</span></code>, large, 10 rounds</p></td>
+<td><p>2.62 s</p></td>
+<td><p>2.39 s</p></td>
+<td><p>0.91 (0.91 to 0.96)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">predator_prey</span></code>, <code class="docutils literal notranslate"><span class="pre">modelly-cells</span></code>, large, 10 rounds</p></td>
+<td><p>2.11 s</p></td>
+<td><p>1.96 s</p></td>
+<td><p>0.93 (0.89 to 0.95)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>At the large size the gain is 7 to 9%: the rest of a step (the neighbourhood lookup, the
+random draw, the column writes, the property-layer <code class="docutils literal notranslate"><span class="pre">empty</span></code> setter) is unchanged.</p>
+</section>
+<section id="compiled-select-and-agg">
+<h3>Compiled <code class="docutils literal notranslate"><span class="pre">select</span></code> and <code class="docutils literal notranslate"><span class="pre">agg</span></code><a class="headerlink" href="#compiled-select-and-agg" title="Link to this heading">#</a></h3>
+<p>A fourth module, <code class="docutils literal notranslate"><span class="pre">modelly/_native/fastset.c</span></code>, runs the loops behind <code class="docutils literal notranslate"><span class="pre">AgentSet.select</span></code>, <code class="docutils literal notranslate"><span class="pre">get</span></code>
+and <code class="docutils literal notranslate"><span class="pre">agg</span></code>, and the two loops every weak <code class="docutils literal notranslate"><span class="pre">AgentSet</span></code> view is made of. Each function ports one
+function of <code class="docutils literal notranslate"><span class="pre">modelly/_native/sets.py</span></code>, which is the reference and the fallback, and
+<code class="docutils literal notranslate"><span class="pre">tests/native/test_sets.py</span></code> runs the pairs side by side (order, calls, exceptions, dotted
+attribute names, dead references, reference counts):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Function</p></th>
+<th class="head"><p>Python twin</p></th>
+<th class="head"><p>Used by</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">keep_type</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[a</span> <span class="pre">for</span> <span class="pre">a</span> <span class="pre">in</span> <span class="pre">agents</span> <span class="pre">if</span> <span class="pre">isinstance(a,</span> <span class="pre">agent_type)]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">select(agent_type=...)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">keep_if</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[a</span> <span class="pre">for</span> <span class="pre">a</span> <span class="pre">in</span> <span class="pre">agents</span> <span class="pre">if</span> <span class="pre">filter_func(a)]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">select(filter_func)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">attr_values</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list(map(operator.attrgetter(name),</span> <span class="pre">agents))</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">get(name)</span></code>, <code class="docutils literal notranslate"><span class="pre">agg</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">live_agents</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[a</span> <span class="pre">for</span> <span class="pre">r</span> <span class="pre">in</span> <span class="pre">list(refs)</span> <span class="pre">if</span> <span class="pre">(a</span> <span class="pre">:=</span> <span class="pre">r())</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">None]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AgentSet.to_list</span></code> and everything built on it</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">make_refs</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict.fromkeys([weakref.ref(a,</span> <span class="pre">callback)</span> <span class="pre">for</span> <span class="pre">a</span> <span class="pre">in</span> <span class="pre">agents])</span></code></p></td>
+<td><p>every view <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">shuffle</span></code>, <code class="docutils literal notranslate"><span class="pre">sort</span></code> and <code class="docutils literal notranslate"><span class="pre">groupby</span></code> return</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Paired micro-benchmark, 20,000 agents, compiled and Python alternating in one process for
+41 rounds, <code class="docutils literal notranslate"><span class="pre">time.thread_time</span></code>, one pinned core (<code class="docutils literal notranslate"><span class="pre">nice</span> <span class="pre">taskset</span> <span class="pre">-c</span> <span class="pre">3</span></code>) of a shared 16-core laptop
+at load 2 to 6, Python 3.15:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Function</p></th>
+<th class="head"><p>Python</p></th>
+<th class="head"><p>compiled</p></th>
+<th class="head"><p>compiled / Python, median (IQR)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">keep_type</span></code></p></td>
+<td><p>0.274 ms</p></td>
+<td><p>0.148 ms</p></td>
+<td><p>0.54 (0.53 to 0.55)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">keep_if</span></code> (a Python lambda)</p></td>
+<td><p>0.555 ms</p></td>
+<td><p>0.524 ms</p></td>
+<td><p>0.95 (0.93 to 0.97)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">attr_values</span></code></p></td>
+<td><p>0.251 ms</p></td>
+<td><p>0.220 ms</p></td>
+<td><p>0.89 (0.87 to 0.91)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">live_agents</span></code></p></td>
+<td><p>0.402 ms</p></td>
+<td><p>0.181 ms</p></td>
+<td><p>0.45 (0.44 to 0.46)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">make_refs</span></code></p></td>
+<td><p>1.353 ms</p></td>
+<td><p>0.929 ms</p></td>
+<td><p>0.69 (0.65 to 0.72)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">keep_if</span></code> gains least: the cost is the call of the filter, and Python 3.15 calls a Python
+function from its own bytecode about as cheaply as C can. The playbooks barely use <code class="docutils literal notranslate"><span class="pre">select</span></code>
+or <code class="docutils literal notranslate"><span class="pre">agg</span></code> (they are written with column phases), so they show no change: every Modelly variant,
+size <code class="docutils literal notranslate"><span class="pre">large</span></code>, <code class="docutils literal notranslate"><span class="pre">main</span></code> and this branch alternating in fresh pinned interpreters for 6 rounds,
+had a median ratio between 0.89 and 1.02 with every interquartile range containing 1.0, and
+the same results bit for bit on three seeds, compiled and pure.</p>
+</section>
+<section id="free-threaded-cpython">
+<h3>Free-threaded CPython<a class="headerlink" href="#free-threaded-cpython" title="Link to this heading">#</a></h3>
+<p>All four modules load on free-threaded CPython (wheels for 3.14t and 3.15t; tested on 3.15t)
+and declare <code class="docutils literal notranslate"><span class="pre">Py_MOD_GIL_NOT_USED</span></code>, so importing Modelly leaves the GIL off; before 1.3 they
+refused to load and the pure twins ran instead. What each one does to be safe:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fastrng</span></code>: every draw holds the generator’s per-object critical section, the lock
+<code class="docutils literal notranslate"><span class="pre">_random.Random</span></code>’s own methods take, so a draw from C and a <code class="docutils literal notranslate"><span class="pre">random()</span></code> from the standard
+library never interleave on one state. A list being shuffled, sampled or chosen from is
+locked with it. Draws from one generator shared by threads are atomic (tested: the threads
+together draw exactly the serial sequence, in some order), but which thread gets which number
+depends on scheduling: give each thread its own model, or its own generator.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fastloop</span></code>: list items are read as new references; a cell’s <code class="docutils literal notranslate"><span class="pre">connections</span></code> dict is walked
+inside its critical section.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fastcell</span></code>: the per-type layout cache is per thread; <code class="docutils literal notranslate"><span class="pre">bind()</span></code> and its readers share one
+<code class="docutils literal notranslate"><span class="pre">PyMutex</span></code>; slots are read through <code class="docutils literal notranslate"><span class="pre">getattr</span></code> and <code class="docutils literal notranslate"><span class="pre">list.remove</span></code> runs itself, since both take
+the object’s lock.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fastset</span></code>: list items are read as new references; weak-reference keys are snapshotted with
+<code class="docutils literal notranslate"><span class="pre">PyDict_Keys</span></code>, which locks the dict.</p></li>
+</ul>
+<p>GIL builds compile the same code with the locks as empty blocks (<code class="docutils literal notranslate"><span class="pre">modelly/_native/ftcompat.h</span></code>);
+paired micro-benchmarks of <code class="docutils literal notranslate"><span class="pre">shuffle</span></code>, <code class="docutils literal notranslate"><span class="pre">randint</span></code>, <code class="docutils literal notranslate"><span class="pre">choice</span></code>, <code class="docutils literal notranslate"><span class="pre">sample</span></code>, the cell move, <code class="docutils literal notranslate"><span class="pre">do</span></code> and the
+neighbourhood walk against <code class="docutils literal notranslate"><span class="pre">main</span></code> were within noise (medians 0.92 to 0.98). On CPython 3.15t
+(Linux x86-64) the whole suite passes with the compiled modules, and
+<code class="docutils literal notranslate"><span class="pre">tests/native/test_threads.py</span></code> (four threads; shared draws, independent replicates on threads
+equal to serial runs, agents moved across a shared grid, <code class="docutils literal notranslate"><span class="pre">select</span></code> and <code class="docutils literal notranslate"><span class="pre">agg</span></code> while another
+thread adds and removes agents) passed 25 repeated runs at ten times its default rounds.
+ThreadSanitizer was not run: it needs an instrumented interpreter.</p>
+</section>
+<section id="memory-per-agent">
+<h3>Memory per agent<a class="headerlink" href="#memory-per-agent" title="Link to this heading">#</a></h3>
+<p>Measured with <code class="docutils literal notranslate"><span class="pre">tracemalloc</span></code> on Python 3.15 (Linux x86-64), after <code class="docutils literal notranslate"><span class="pre">gc.collect()</span></code>, as the bytes
+traced while 100,000 agents are created, minus the list that holds them. This is the
+framework’s own share; an agent’s model attributes come on top.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>What</p></th>
+<th class="head"><p>Bytes per agent</p></th>
+<th class="head"><p>Where it goes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Agent(model)</span></code></p></td>
+<td><p>225</p></td>
+<td><p>the object with its inline attribute values (88), <code class="docutils literal notranslate"><span class="pre">unique_id</span></code> (an int above 256, 32), and one entry in each of the two registries (<code class="docutils literal notranslate"><span class="pre">model.agents</span></code> and the per-type set, about 50 each at this size including the dicts’ spare room)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CellAgent</span></code> placed in a cell</p></td>
+<td><p>265</p></td>
+<td><p>the above, the <code class="docutils literal notranslate"><span class="pre">_modelly_cell</span></code> attribute and the entry in the cell’s agent list</p></td>
+</tr>
+<tr class="row-even"><td><p>an entry of a weak <code class="docutils literal notranslate"><span class="pre">AgentSet</span></code> view</p></td>
+<td><p>132</p></td>
+<td><p>a <code class="docutils literal notranslate"><span class="pre">weakref.ref</span></code> with its callback and the dict entry; only while the view lives</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Per playbook, <code class="docutils literal notranslate"><span class="pre">large</span></code>, bytes traced by the whole model divided by its population, after
+building and after the run (the grid, the property layers, the columns and the data collector
+dominate; this is the baseline the 1.3 memory work is measured against):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Playbook / variant</p></th>
+<th class="head"><p>agents built</p></th>
+<th class="head"><p>bytes per agent, built</p></th>
+<th class="head"><p>population at the end</p></th>
+<th class="head"><p>bytes per agent, end</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grid_epidemic</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly-cells</span></code></p></td>
+<td><p>20,000</p></td>
+<td><p>1,704</p></td>
+<td><p>20,000</p></td>
+<td><p>3,103</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid_epidemic</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly</span></code></p></td>
+<td><p>20,000</p></td>
+<td><p>1,656</p></td>
+<td><p>20,000</p></td>
+<td><p>2,232</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">predator_prey</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly-cells</span></code></p></td>
+<td><p>1,600</p></td>
+<td><p>21,360</p></td>
+<td><p>5,455</p></td>
+<td><p>12,876</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">predator_prey</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly</span></code></p></td>
+<td><p>1,600</p></td>
+<td><p>21,320</p></td>
+<td><p>5,343</p></td>
+<td><p>8,948</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">flocking</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly</span></code></p></td>
+<td><p>4,000</p></td>
+<td><p>314</p></td>
+<td><p>4,000</p></td>
+<td><p>4,179</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">network_contagion</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly</span></code></p></td>
+<td><p>30,000</p></td>
+<td><p>2,542</p></td>
+<td><p>30,000</p></td>
+<td><p>2,595</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">insect_cohorts</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly</span></code></p></td>
+<td><p>500</p></td>
+<td><p>253</p></td>
+<td><p>26,466</p></td>
+<td><p>413</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">insect_cohorts</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly-cohorts</span></code></p></td>
+<td><p>0 (cohort rows)</p></td>
+<td><p>-</p></td>
+<td><p>26,660</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">schelling</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly-cells</span></code></p></td>
+<td><p>32,022</p></td>
+<td><p>1,388</p></td>
+<td><p>32,022</p></td>
+<td><p>1,792</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">schelling</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly</span></code></p></td>
+<td><p>32,022</p></td>
+<td><p>1,332</p></td>
+<td><p>32,022</p></td>
+<td><p>1,708</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">boltzmann_wealth</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly</span></code></p></td>
+<td><p>10,000</p></td>
+<td><p>265</p></td>
+<td><p>10,000</p></td>
+<td><p>11,190</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sugarscape</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly-cells</span></code></p></td>
+<td><p>1,600</p></td>
+<td><p>4,587</p></td>
+<td><p>714</p></td>
+<td><p>47,405</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sugarscape</span></code> / <code class="docutils literal notranslate"><span class="pre">modelly</span></code></p></td>
+<td><p>1,600</p></td>
+<td><p>9,514</p></td>
+<td><p>713</p></td>
+<td><p>21,127</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>No reduction was kept in 1.3 so far. <code class="docutils literal notranslate"><span class="pre">__slots__</span></code> for the framework attributes (<code class="docutils literal notranslate"><span class="pre">model</span></code>,
+<code class="docutils literal notranslate"><span class="pre">unique_id</span></code>) was measured and gives nothing on Python 3.13 and later: an instance without
+slots already stores its attributes inline at 8 bytes each, exactly what a slot costs (88 bytes
+for a two-attribute object either way, 112 with three more attributes in a subclass), while it
+would forbid a subclass from relying on <code class="docutils literal notranslate"><span class="pre">Agent.__dict__</span></code> semantics. The two registry entries
+are the next target; a more compact registry must keep iteration order, membership in C and
+the removal semantics, so it is a design change rather than a patch.</p>
+</section>
+<section id="no-regression-from-release-to-release">
+<h3>No regression from release to release<a class="headerlink" href="#no-regression-from-release-to-release" title="Link to this heading">#</a></h3>
+<p>Every release is benchmarked against the previous published one before it is tagged: the
+previous wheel from PyPI against the new wheel built by the release workflow (same
+toolchain), installed with identical dependencies, on one machine. Three measurements, each
+in paired, alternating runs so that load and frequency drift hit both versions alike:</p>
+<ul class="simple">
+<li><p><strong>Core operations</strong> (17, including Column reads, agent removal with columns, cell moves
+and neighbourhood walks): two persistent processes pinned to one core, short bursts in
+ABBA order, over several sessions with the starting version swapped; a numpy-only control
+must read 1.00.</p></li>
+<li><p><strong>The playbooks</strong> (13 Modelly variants): the same seeds in two persistent processes, ABBA,
+CPU time of the steps, results compared seed by seed.</p></li>
+<li><p><strong>A research notebook</strong> (a 576-season factorial at 1/30 scale): its seasons in chunks
+alternating between the two versions, records compared chunk by chunk.</p></li>
+</ul>
+<p>1.3.1 against 1.2.0 (median ratio of CPU time, 1.3.1 / 1.2.0; below 1 is faster):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Measurement</p></th>
+<th class="head"><p>Ratio</p></th>
+<th class="head"><p>Results</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AgentSet.select</span></code></p></td>
+<td><p>0.79</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">AgentSet.agg</span></code></p></td>
+<td><p>0.88</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>Creating and removing agents</p></td>
+<td><p>0.94</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">shuffle_do</span></code></p></td>
+<td><p>0.97</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">do</span></code>, Column read and write, cell moves, neighbourhood walks, data collection, events, random draws</p></td>
+<td><p>0.98 to 1.01, within noise</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Playbooks: insect cohorts (individuals)</p></td>
+<td><p>0.94</p></td>
+<td><p>identical</p></td>
+</tr>
+<tr class="row-even"><td><p>Playbooks: the other twelve variants</p></td>
+<td><p>0.98 to 1.00</p></td>
+<td><p>identical</p></td>
+</tr>
+<tr class="row-odd"><td><p>TIS notebook at 1/30, 576 seasons</p></td>
+<td><p>1.00 (17.92 s and 17.92 s)</p></td>
+<td><p>identical</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Between releases, a pre-commit hook (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">modelly.dev</span> <span class="pre">install-hooks</span></code>) refuses any
+commit that makes one of 17 core operations more than 3% slower than the last release, in
+about ten seconds; CONTRIBUTING.md describes it.</p>
+<p>1.3.0 had two small regressions that this check found after its release: a Column read
+was about 2.5% slower (the getter kept the column’s name for a clearer error) and, on
+regular builds, the neighbourhood walk and the cell move paid for free-threading safety
+they do not need. 1.3.1 removes both; the free-threaded builds keep their safe paths.</p>
+</section>
+<section id="how-we-evaluate-against-other-frameworks">
+<h3>How we evaluate against other frameworks<a class="headerlink" href="#how-we-evaluate-against-other-frameworks" title="Link to this heading">#</a></h3>
+<p>Micro-benchmarks say where time goes; whether a framework is faster for a researcher is
+decided on a real model. The method we use, and recommend for any comparison:</p>
+<ol class="arabic simple">
+<li><p><strong>Same model, same seeds.</strong> Take a research notebook written for the other framework and
+port it with <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">modelly.migrate</span></code>, changing nothing but the framework API. Seed both
+from the same value so the random streams match.</p></li>
+<li><p><strong>Prove equivalence before timing.</strong> Run both to completion and compare every output table
+by checksum. Only bit-identical outputs make the timings comparable; a port that changes
+the activation order or the random stream is a different model.</p></li>
+<li><p><strong>Time CPU, pinned, alternating.</strong> Wall-clock on a shared machine swings by 2x; CPU time of
+the experiment cell, in-process, pinned to one core, with the two frameworks alternating
+for at least three rounds, is stable to a few percent. Keep every round, not only the best.</p></li>
+<li><p><strong>Profile both and compare shares.</strong> The profiler inflates call-heavy code, so compare each
+function’s share of its own run, and attribute the remainder by bisection: swap one piece
+for a minimal stand-in and measure again.</p></li>
+</ol>
+<p>Applied to a medfly population model written for Mesa 2.3 (21 cells, a 576-season factorial
+experiment, bit-identical output CSVs), the comparison went through two stages.</p>
+<p><strong>Stage one: the model’s own code.</strong> The profile put 68% of the time in the notebook’s model
+code, 25% in <code class="docutils literal notranslate"><span class="pre">random</span></code> and 7% in Modelly. Three changes to the model, identical in both
+notebooks and preserving the random stream (an early exit in the fruit status update placed
+after its random draw, <code class="docutils literal notranslate"><span class="pre">len(self.slots)</span> <span class="pre">&lt;</span> <span class="pre">capacity</span></code> instead of two property hops, and
+re-filtering the free-fruit pool only on days when fruits were removed) cut the experiment
+cell by 3x on both frameworks: Modelly 30 s to 9.4 s, Mesa 26 s to 7.8 s, same checksums.</p>
+<p>A third round of model-code changes, again identical on both sides and stream-preserving (an
+incremental rot score per fruit instead of a daily loop over its slots, an inlined capacity
+test in the egg-laying loop, <code class="docutils literal notranslate"><span class="pre">FastRandom</span></code> seeding on the Modelly side), took the experiment
+cell from 14.1 s to 11.2 s on Modelly and from 13.3 s to 11.0 s on Mesa, same checksums.
+Dispatching the 576 independent seasons of the factorial to a forked process pool, records
+reassembled in the original order so the CSV is identical, brings the cell to 1.3 to 1.6 s of
+wall-clock on eight workers: the largest practical gain on this workload, and the one that
+needs no re-validation of the model.</p>
+<p><strong>Stage two: the framework.</strong> Whole-cell rounds swing by up to 2x on a shared machine, so
+the comparison moved to a finer instrument: two persistent processes, one per framework,
+pinned to the same core, running the 576 seasons in 48 chunks with the order alternating,
+each chunk’s records hashed and compared (no mismatch in any run). Measured that way, the
+gap before this round was 2.1%, and none of it was in the model’s arithmetic:</p>
+<ol class="arabic simple">
+<li><p><strong>The random draws.</strong> <code class="docutils literal notranslate"><span class="pre">FastRandom.randint</span></code> had become 4% <em>slower</em> than the standard
+library on CPython 3.15, which now inlines Python-to-Python calls well; the <code class="docutils literal notranslate"><span class="pre">operator.index</span></code>
+calls were the difference. The table above lists the fixes; this was the largest item.</p></li>
+<li><p><strong>Agent birth and death.</strong> One model flag (<code class="docutils literal notranslate"><span class="pre">_quiet</span></code>: default registry and nobody
+listening) replaces four attribute reads, and one class flag (<code class="docutils literal notranslate"><span class="pre">_extra_hooks</span></code>: columns or
+datasets) replaces two. The flag only ever turns false (on <code class="docutils literal notranslate"><span class="pre">observe</span></code>, <code class="docutils literal notranslate"><span class="pre">observe_class</span></code>, a
+batch, a suppress, or an overridden <code class="docutils literal notranslate"><span class="pre">register_agent</span></code>), so a stale value can only send an
+agent down the slower, still correct path. Creation went from 295 ns to 225 ns at the
+notebook’s live population, against 281 ns for Mesa.</p></li>
+<li><p><strong>The garbage collector.</strong> About 11% of the run on both frameworks. Collecting identical
+garbage costs the same on both (78 to 83 ms per 240,000 objects); what differs is where
+collections fall relative to season boundaries, which depends on allocation counts. With
+the collection threshold set equally on both sides, Modelly is ahead at four of five
+values and behind at one. We report the default threshold. <code class="docutils literal notranslate"><span class="pre">gc.freeze()</span></code> after the imports
+would have given Modelly another 2.4%; applied to both sides it gives nothing, so it is a
+process setting rather than an engine property, and Modelly does not do it.</p></li>
+</ol>
+<p>Result at the default settings, experiment cell, separate processes, pinned, alternating
+(same output CSV in every round):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Round</p></th>
+<th class="head"><p>Mesa 2.3</p></th>
+<th class="head"><p>Modelly</p></th>
+<th class="head"><p>Modelly faster by</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>13.09 s</p></td>
+<td><p>12.70 s</p></td>
+<td><p>3.0%</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>12.71 s</p></td>
+<td><p>12.53 s</p></td>
+<td><p>1.4%</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>12.66 s</p></td>
+<td><p>12.50 s</p></td>
+<td><p>1.3%</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>12.98 s</p></td>
+<td><p>12.49 s</p></td>
+<td><p>3.8%</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The paired instrument agrees (Modelly/Mesa 0.985 to 0.994 total; 0.969 to 0.983 outside the
+collector). The win depends on Modelly’s generator: with the port’s seeding line left as
+<code class="docutils literal notranslate"><span class="pre">random.Random(seed)</span></code>, the same instrument puts Modelly 1.5 to 2% behind, mostly collector
+timing. Using <code class="docutils literal notranslate"><span class="pre">FastRandom</span></code> there is fair in the sense this page uses: it is <code class="docutils literal notranslate"><span class="pre">model.random</span></code>’s
+own type, and it reproduces the identical stream, so every output is bit-identical.</p>
+<p><strong>Correction (2026-10-25).</strong> An earlier version of this page reported Modelly 12% ahead
+(0.877 to 0.884 of Mesa’s time). That pairing ran the reference notebook against the
+<em>optimised</em> Modelly notebook, whose model code had changes the Mesa notebook did not (the
+incremental rot score among them), so the ratio mixed the framework with the model
+optimisations. Re-measured with the plain codemod port (<code class="docutils literal notranslate"><span class="pre">port_to_modelly.py</span></code>: framework API
+only, every line of model logic unchanged) against the unmodified Mesa notebook, at 1/30 scale,
+48 chunks per run, same records in every chunk:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Paired run</p></th>
+<th class="head"><p>Port seeded with</p></th>
+<th class="head"><p>Mesa 2.3</p></th>
+<th class="head"><p>Modelly</p></th>
+<th class="head"><p>Modelly / Mesa</p></th>
+<th class="head"><p>median chunk</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">FastRandom</span></code></p></td>
+<td><p>27.17 s</p></td>
+<td><p>27.62 s</p></td>
+<td><p>1.017 (machine shared with other jobs)</p></td>
+<td><p>0.895</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">FastRandom</span></code></p></td>
+<td><p>23.37 s</p></td>
+<td><p>21.86 s</p></td>
+<td><p>0.936</p></td>
+<td><p>0.893</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">FastRandom</span></code></p></td>
+<td><p>23.60 s</p></td>
+<td><p>22.16 s</p></td>
+<td><p>0.939</p></td>
+<td><p>0.890</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">random.Random</span></code></p></td>
+<td><p>25.00 s</p></td>
+<td><p>25.96 s</p></td>
+<td><p>1.038</p></td>
+<td><p>1.037</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">random.Random</span></code></p></td>
+<td><p>23.36 s</p></td>
+<td><p>23.81 s</p></td>
+<td><p>1.019</p></td>
+<td><p>1.017</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">random.Random</span></code></p></td>
+<td><p>23.71 s</p></td>
+<td><p>24.14 s</p></td>
+<td><p>1.018</p></td>
+<td><p>1.009</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A model written agent by agent runs at Mesa’s speed: 6% faster with the compiled generator,
+about 2% slower with the standard library’s.</p>
+<p>Measured and rejected on this workload: a <code class="docutils literal notranslate"><span class="pre">shuffle</span></code> that draws its random words in one call
+(it reproduces the permutation but leaves the stream in a different place for the next draw,
+and is 3x slower); a cheaper <code class="docutils literal notranslate"><span class="pre">Model</span></code> construction (it is 18 µs; 576 of them are 10 ms).</p>
+</section>
+<section id="the-playbooks-same-model-each-framework-s-own-idiom">
+<h3>The playbooks: same model, each framework’s own idiom<a class="headerlink" href="#the-playbooks-same-model-each-framework-s-own-idiom" title="Link to this heading">#</a></h3>
+<p>The port above answers “what does identical code cost”. The second question is what each
+framework lets a modeller write. <code class="docutils literal notranslate"><span class="pre">benchmarks/playbooks/</span></code> holds eight models, each implemented
+for Mesa 2.3 with per-agent methods on <code class="docutils literal notranslate"><span class="pre">MultiGrid</span></code>, <code class="docutils literal notranslate"><span class="pre">SingleGrid</span></code>, <code class="docutils literal notranslate"><span class="pre">ContinuousSpace</span></code> and
+<code class="docutils literal notranslate"><span class="pre">NetworkGrid</span></code>, for the current Mesa 3.5 with its cell spaces (<code class="docutils literal notranslate"><span class="pre">OrthogonalMooreGrid</span></code>,
+<code class="docutils literal notranslate"><span class="pre">CellAgent</span></code>, <code class="docutils literal notranslate"><span class="pre">Network</span></code>), its experimental continuous space and <code class="docutils literal notranslate"><span class="pre">AgentSet.shuffle_do</span></code>, as in
+Mesa’s own examples, and for Modelly with <code class="docutils literal notranslate"><span class="pre">Column</span></code> state, <code class="docutils literal notranslate"><span class="pre">CellIndex</span></code> (integer rows for the cells of
+any discrete space plus their sparse adjacency), <code class="docutils literal notranslate"><span class="pre">Occupancy</span></code> / <code class="docutils literal notranslate"><span class="pre">claim</span></code>, <code class="docutils literal notranslate"><span class="pre">pairs_within</span></code> /
+<code class="docutils literal notranslate"><span class="pre">move_all</span></code>, <code class="docutils literal notranslate"><span class="pre">ColumnTable.thin</span></code> and the <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> column reporters. The rules for a fair comparison, enforced by the runner:</p>
+<ol class="arabic simple">
+<li><p>Same model: same rules, same phase order (synchronous, or one agent at a time in a random
+order), same parameters, same graph and initial positions where seeds can be shared; the
+Mesa side uses numpy where a Mesa modeller would.</p></li>
+<li><p>Agreement in distribution, checked: every implementation runs the same seeds and each
+summary statistic is compared with the Mesa reference by Welch’s t-test (flagged below
+0.01). The implementations draw their random numbers in different orders, so the outputs
+differ run by run and must agree in law; <code class="docutils literal notranslate"><span class="pre">vectorised_phases.md</span></code> states why each vectorised
+phase has the law of its per-agent loop.</p></li>
+<li><p>Determinism, checked: the first seed runs twice per implementation. (This check caught the
+Mesa side being unseeded when the seed was passed positionally: Mesa 2.3 reads it from the
+keyword arguments in <code class="docutils literal notranslate"><span class="pre">Model.__new__</span></code>.)</p></li>
+<li><p>CPU time of a fresh interpreter per run, build and steps timed separately, pinned to one
+core, implementations alternating over five rounds, every round reported.</p></li>
+</ol>
+<p>The Mesa 3.5 implementations agree with Mesa 2.3’s in distribution (30 seeds per playbook, no
+Welch p below 0.05); flocking, the network and the insects draw the same numbers in the same
+order and reproduce Mesa 2.3 run for run. Median CPU seconds of the steps at the large size,
+all variants in one session (load average about 5 on 16 cores, other jobs running):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Playbook</p></th>
+<th class="head"><p>Mesa 2.3</p></th>
+<th class="head"><p>Mesa 3.5</p></th>
+<th class="head"><p>Modelly, cell lists</p></th>
+<th class="head"><p>Modelly</p></th>
+<th class="head"><p>vs Mesa 2.3</p></th>
+<th class="head"><p>vs Mesa 3.5</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Grid epidemic (SIR, random walk, synchronous)</p></td>
+<td><p>7.43 s</p></td>
+<td><p>4.24 s</p></td>
+<td><p>3.24 s</p></td>
+<td><p>0.126 s</p></td>
+<td><p>59x</p></td>
+<td><p>34x</p></td>
+</tr>
+<tr class="row-odd"><td><p>Predator-prey with grass (births and deaths every step)</p></td>
+<td><p>4.47 s</p></td>
+<td><p>5.07 s</p></td>
+<td><p>3.15 s</p></td>
+<td><p>0.540 s</p></td>
+<td><p>8.3x</p></td>
+<td><p>9.4x</p></td>
+</tr>
+<tr class="row-even"><td><p>Flocking in continuous space</p></td>
+<td><p>25.70 s</p></td>
+<td><p>32.51 s</p></td>
+<td><p></p></td>
+<td><p>0.868 s</p></td>
+<td><p>30x</p></td>
+<td><p>37x</p></td>
+</tr>
+<tr class="row-odd"><td><p>Virus on a random network</p></td>
+<td><p>7.15 s</p></td>
+<td><p>2.05 s</p></td>
+<td><p></p></td>
+<td><p>0.120 s</p></td>
+<td><p>60x</p></td>
+<td><p>17x</p></td>
+</tr>
+<tr class="row-even"><td><p>Stage-structured insect population, individuals</p></td>
+<td><p>2.54 s</p></td>
+<td><p>1.38 s</p></td>
+<td><p></p></td>
+<td><p>0.522 s</p></td>
+<td><p>4.9x</p></td>
+<td><p>2.6x</p></td>
+</tr>
+<tr class="row-odd"><td><p>Same population as a <code class="docutils literal notranslate"><span class="pre">CohortTable</span></code> (binomial thinning)</p></td>
+<td><p>2.54 s</p></td>
+<td><p>1.38 s</p></td>
+<td><p></p></td>
+<td><p>0.010 s</p></td>
+<td><p>249x</p></td>
+<td><p>136x</p></td>
+</tr>
+<tr class="row-even"><td><p>Schelling segregation (moves to random empty cells)</p></td>
+<td><p>4.58 s</p></td>
+<td><p>4.01 s</p></td>
+<td><p>0.29 s</p></td>
+<td><p>0.160 s</p></td>
+<td><p>29x</p></td>
+<td><p>25x</p></td>
+</tr>
+<tr class="row-odd"><td><p>Boltzmann wealth exchange, Gini by a <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code></p></td>
+<td><p>1.58 s</p></td>
+<td><p>0.85 s</p></td>
+<td><p></p></td>
+<td><p>0.205 s</p></td>
+<td><p>7.7x</p></td>
+<td><p>4.2x</p></td>
+</tr>
+<tr class="row-even"><td><p>Sugarscape, constant growback (vision, best sugar in sight)</p></td>
+<td><p>5.91 s</p></td>
+<td><p>1.42 s</p></td>
+<td><p>0.91 s</p></td>
+<td><p>0.180 s</p></td>
+<td><p>33x</p></td>
+<td><p>7.9x</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The “cell lists” column is the same model with Mesa’s data structure, every cell holding the
+list of its agents, so movement and predation stay per-agent loops: 1.4 to 2.3x over Mesa
+2.3, consistent with the port. The gap opens when the cell becomes a column of rows: the random walk is one
+<code class="docutils literal notranslate"><span class="pre">random_neighbor</span></code> call over the grid’s CSR adjacency, the exposure count a <code class="docutils literal notranslate"><span class="pre">bincount</span></code>, the
+predation a vectorised matching with the law of the shuffled sequential rule. Construction is
+reported separately (a 180x180 Moore grid builds in 0.11 s, a 30,000-node network in 0.4 s,
+against milliseconds for Mesa 2.3’s lazy structures, and about the same for Mesa 3.5’s cell
+spaces); the build+run speed-ups over Mesa 2.3 in the results are correspondingly lower (27x,
+6.8x, 29x, 13x, 4.8x, 222x, 10x, 7.1x, 28x). Mesa 3.5 is itself faster than Mesa 2.3 on six
+playbooks (1.1x to 4.2x) and slower on flocking (0.8x: its experimental continuous space scans
+every agent in Python per neighbour query) and predator-prey (0.9x).</p>
+<p>The last three playbooks have phases that are sequential by nature, and each still has an
+exact array form (<code class="docutils literal notranslate"><span class="pre">vectorised_phases.md</span></code>, §7 to §9). Schelling’s unhappy residents move one at
+a time to random empty cells; since every move takes one empty cell and frees one, the pool of
+empty cells keeps its size, and all the moves become one sort over slots drawn up front. In the
+Boltzmann exchange, who gives in the random order is the least fixed point of a monotone map
+over the drawn order and partners, reached in a few array passes; the <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> slices
+the wealth column instead of visiting agents. In Sugarscape the foragers’ choices depend on the
+cells taken before their turn, so the walk to the first free cell stays a loop, but everything
+it reads (the visible cells, their sugar, the head of each forager’s ranking) is one array
+pass, and eating and starving move after the loop without changing the law. Rankings are not
+sorted up front: the loop takes a forager’s head when it is free and sorts the ranking only
+when that cell is not free at its turn (under a third of the turns). That gives the same runs,
+bit for bit, as sorting every ranking, and is 2.5x faster (median of 5 paired runs, range 1.9
+to 2.6x, thread CPU time, large size, a loaded machine). The “cell lists” variants of these
+two are far ahead of Mesa 2.3 (16x and 6.5x), unlike the 1.4 to 2.3x above: Schelling’s happiness
+count is an array pass even there, the empty-cell index answers each move in O(1) where Mesa’s
+<code class="docutils literal notranslate"><span class="pre">move_to_empty</span></code> draws until it hits an empty cell, and the Sugarscape scan reads cached
+neighbourhoods where Mesa’s <code class="docutils literal notranslate"><span class="pre">select_cells</span></code> builds whole-grid masks for every forager.</p>
+<p>The insect playbook is a stage-structured population under sterile releases, an original
+model with the dynamics of the medfly workload (thousands of eggs a day, stage-specific
+mortality, density-dependent larval survival). Agent creation is at parity, so the
+individual-level gap is the per-agent loop only (4.9x over Mesa 2.3, 2.6x over Mesa 3.5). The cohort variant represents every
+insect in the same (stage, age, sex) class as one row and thins it with a binomial draw; it
+has the same law as the individual model (the agreement table shows it) and runs in 10 ms.
+Absolute times vary by up to 2x between sessions on a shared machine; the ratios much less.</p>
+</section>
+</section>
+<section id="caches">
+<h2>Caches<a class="headerlink" href="#caches" title="Link to this heading">#</a></h2>
+<p>Two results are now reused instead of recomputed:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DataCollector.get_agent_vars_dataframe</span></code> keeps the frame it last built and the number of
+steps it covered; a later call converts only the new steps and appends them. A dashboard
+that reads the frame every tick pays for one tick of rows instead of the whole history.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ContinuousSpace.neighbors_within</span></code> keys its lists on the radius, the population size and a
+hash of the position array, so repeated queries within a step cost a hash of the positions
+(tens of microseconds for 10,000 agents) instead of a tree build, and any position change,
+including a direct write to the array, invalidates it.</p></li>
+</ul>
+</section>
+<section id="considered-and-rejected">
+<h2>Considered and rejected<a class="headerlink" href="#considered-and-rejected" title="Link to this heading">#</a></h2>
+<p>Measured on the same machine; each would have bought a few percent at the cost of complexity or
+of a different random stream for the same seed.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Idea</p></th>
+<th class="head"><p>Measured</p></th>
+<th class="head"><p>Why not</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Shuffle 10k agents with a numpy permutation seeded from the stdlib stream</p></td>
+<td><p>810 µs to 310 µs per shuffle, about 3% of a 10k-agent step</p></td>
+<td><p>needs a size threshold (slower below ~500 agents) and changes which order a seed produces</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cells[int(random()</span> <span class="pre">*</span> <span class="pre">n)]</span></code> instead of <code class="docutils literal notranslate"><span class="pre">random.choice</span></code></p></td>
+<td><p>100 ns to 50 ns per pick</p></td>
+<td><p>changes the random stream for every model for a 3% gain</p></td>
+</tr>
+<tr class="row-even"><td><p>Empties index with a slot stored on each cell instead of a dict</p></td>
+<td><p>90 ns to 70 ns per move</p></td>
+<td><p>couples <code class="docutils literal notranslate"><span class="pre">Cell</span></code> to the grid index for 20 ns</p></td>
+</tr>
+<tr class="row-odd"><td><p>Return <code class="docutils literal notranslate"><span class="pre">Cell.agents</span></code> without copying</p></td>
+<td><p>60 ns per access</p></td>
+<td><p>callers that remove agents while iterating would skip elements</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The remaining per-agent framework cost in the grid models is about 0.6 µs of a 1.4 µs
+agent-step (the cell move, the neighbourhood lookup, the shuffle and the membership check);
+the rest is the agent’s own logic. Going meaningfully faster from here means the columnar
+state on the roadmap, not more micro-tuning.</p>
+</section>
+<section id="behaviour-notes">
+<h2>Behaviour notes<a class="headerlink" href="#behaviour-notes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Seeded runs that call <code class="docutils literal notranslate"><span class="pre">select_random_empty_cell</span></code> on a dense grid draw from the index instead of
+from repeated random tries, so the sequence of chosen cells differs from earlier versions for the
+same seed. Runs are still fully reproducible for a given seed.</p></li>
+<li><p>Iterating an <code class="docutils literal notranslate"><span class="pre">AgentSet</span></code> walks a snapshot: adding or removing agents while iterating no longer
+raises, and <code class="docutils literal notranslate"><span class="pre">do</span></code>/<code class="docutils literal notranslate"><span class="pre">shuffle_do</span></code>/<code class="docutils literal notranslate"><span class="pre">map</span></code> still skip agents removed earlier in the same pass.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">select_random</span></code> and <code class="docutils literal notranslate"><span class="pre">select</span></code> on <code class="docutils literal notranslate"><span class="pre">model.agents</span></code> now return a weak <code class="docutils literal notranslate"><span class="pre">AgentSet</span></code> like every other view
+(previously <code class="docutils literal notranslate"><span class="pre">select_random</span></code> leaked a strong-reference set).</p></li>
+</ul>
+</section>
+<section id="what-is-next">
+<h2>What is next<a class="headerlink" href="#what-is-next" title="Link to this heading">#</a></h2>
+<p>These are the changes with the largest remaining upside. Each is a project, not a patch.</p>
+<ol class="arabic simple">
+<li><p><strong>Vectorised movement on grids</strong> is in: a cell-row column plus <code class="docutils literal notranslate"><span class="pre">CellIndex.random_neighbor</span></code>
+moves a whole population in one call, and <code class="docutils literal notranslate"><span class="pre">Occupancy</span></code> / <code class="docutils literal notranslate"><span class="pre">claim</span></code> answer the per-cell
+questions a step still has. What remains is a visualisation path for agents that keep
+their cell as a column rather than in the cell’s list.</p></li>
+<li><p><strong>Shared-memory replications.</strong> <code class="docutils literal notranslate"><span class="pre">workers=</span></code> runs replications in processes that each hold a
+full model; a shared column store would let a sweep over one large model fan out without
+copying it.</p></li>
+<li><p><strong>Compiled hot loops.</strong> The neighbourhood lookup and <code class="docutils literal notranslate"><span class="pre">do</span></code> / <code class="docutils literal notranslate"><span class="pre">shuffle_do</span></code> on the model’s
+registries now run in <code class="docutils literal notranslate"><span class="pre">modelly/_native/fastloop.c</span></code>, the cell move in
+<code class="docutils literal notranslate"><span class="pre">modelly/_native/fastcell.c</span></code> (7 to 14% on the cell-list playbooks), and <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">agg</span></code>
+and the weak views in <code class="docutils literal notranslate"><span class="pre">modelly/_native/fastset.c</span></code>. What remains per agent
+is the random-neighbour lookup around the draw and the property-layer <code class="docutils literal notranslate"><span class="pre">empty</span></code> setter.</p></li>
+</ol>
+</section>
+<section id="how-to-re-run">
+<h2>How to re-run<a class="headerlink" href="#how-to-re-run" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>benchmarks/global_benchmark.py<span class="w">        </span><span class="c1"># the four reference models, saves timings_N.pickle</span>
+python<span class="w"> </span>benchmarks/compare_timings.py<span class="w"> </span>a.pickle<span class="w"> </span>b.pickle
+python<span class="w"> </span>benchmarks/playbooks/compare.py<span class="w"> </span>--core<span class="w"> </span><span class="m">5</span><span class="w">   </span><span class="c1"># the eight playbooks against Mesa 2.3</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">bench</span></code> runs the Modelly variants of the playbooks on every operating system without
+shell tools, keeps a history and reports regressions. Run it from the repository root (or
+point <code class="docutils literal notranslate"><span class="pre">--playbooks</span></code> at the directory):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modelly<span class="w"> </span>bench<span class="w"> </span>--label<span class="w"> </span>v1.2.0<span class="w">                       </span><span class="c1"># record a named baseline (size large, 3 rounds)</span>
+modelly<span class="w"> </span>bench<span class="w"> </span>--baseline<span class="w"> </span>v1.2.0<span class="w">                    </span><span class="c1"># compare; exit 1 on a regression above 10%</span>
+modelly<span class="w"> </span>bench<span class="w"> </span>--size<span class="w"> </span>small<span class="w"> </span>--rounds<span class="w"> </span><span class="m">5</span><span class="w"> </span>--only<span class="w"> </span>grid_epidemic<span class="w"> </span>--only<span class="w"> </span>schelling:modelly
+modelly<span class="w"> </span>bench<span class="w"> </span>--history<span class="w"> </span>~/bench/modelly.jsonl<span class="w"> </span>--core<span class="w"> </span><span class="m">3</span><span class="w"> </span>--threshold<span class="w"> </span><span class="m">0</span>.05
+<span class="nv">MESA_PYTHON</span><span class="o">=</span>.venv-mesa2/bin/python<span class="w"> </span>modelly<span class="w"> </span>bench<span class="w">   </span><span class="c1"># the Mesa variants too</span>
+</pre></div>
+</div>
+<p>Each variant runs in a fresh interpreter; the order of the variants alternates from one round
+to the next. Runs are pinned to one core through <code class="docutils literal notranslate"><span class="pre">psutil</span></code> (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">modelly-abm[bench]</span></code>)
+on Linux and Windows; macOS has no CPU affinity API, and the report says the runs were not
+pinned. Every invocation appends one JSON line to the history file
+(<code class="docutils literal notranslate"><span class="pre">.modelly-bench/history.jsonl</span></code> by default): the Modelly version, which compiled modules were
+active, Python, platform, pinning, and every round’s CPU seconds per variant. The baseline is
+the entry named by <code class="docutils literal notranslate"><span class="pre">--baseline</span></code> (a <code class="docutils literal notranslate"><span class="pre">--label</span></code>, or an index such as <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">-2</span></code>), else the latest
+entry at the same size.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="migrating_from_mesa.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Migrating from Mesa</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="apis/api_main.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">APIs</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-question">The question</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-profile-showed">What the profile showed</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-changed">What changed</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#measurements">Measurements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#columnar-agent-state">Columnar agent state</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-space">Continuous space</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#agent-lifecycle">Agent lifecycle</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fastrandom">FastRandom</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compiled-select-and-agg">Compiled <code class="docutils literal notranslate"><span class="pre">select</span></code> and <code class="docutils literal notranslate"><span class="pre">agg</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#free-threaded-cpython">Free-threaded CPython</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-per-agent">Memory per agent</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-regression-from-release-to-release">No regression from release to release</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-we-evaluate-against-other-frameworks">How we evaluate against other frameworks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-playbooks-same-model-each-framework-s-own-idiom">The playbooks: same model, each framework’s own idiom</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#caches">Caches</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#considered-and-rejected">Considered and rejected</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#behaviour-notes">Behaviour notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-next">What is next</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-re-run">How to re-run</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/performance.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

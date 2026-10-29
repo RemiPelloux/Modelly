@@ -1,0 +1,247 @@
+# 1.5.0: ecosystem and collaboration
+
+**Status:** proposed · **Base:** 1.4.0
+
+By 1.5.0 a single researcher can build, calibrate, scale and publish a model. 1.5.0 is about
+**everyone else**: the colleague who wants to reuse it, the policy team that has to decide with
+it, the R or Julia user who never writes Python, the student, the reviewer. **A model hub,
+model cards, decision and causal tools, richer language-model agents, R and Julia bindings,
+accessibility and a stable plugin API.** Eleven epics, eight sprints, all on Windows, macOS and
+Linux (see [Platforms](platforms.md)). Backward compatible with 1.4; it is also the last
+release before 2.0, so every deprecation 2.0 needs is announced here.
+
+## Where we start
+
+| 1.4.0 gives | 1.5.0 adds |
+|---|---|
+| Run bundles, manifests, `modelly verify` | A hub where bundles and models are published, found, installed and cited |
+| ODD skeletons and zoo validations | Model cards: purpose, validation, limits, generated and kept up to date |
+| Calibration, sensitivity, emulators | Decision tools: scenario comparison, robust decision making, intervention optimisation |
+| Seeded replicates | Causal analysis with common random numbers; explanations of outcomes |
+| LLM agents with caching and budgets | Memory, planning, tools, conversation, and an evaluation harness |
+| A Python API | R and Julia packages; Studio for non-programmers |
+
+## Who 1.5.0 is for
+
+| Audience | What 1.5.0 unlocks |
+|---|---|
+| Research groups | Publish a model to the hub with a DOI; colleagues install it with one command |
+| Policy analysts and public agencies | Compare interventions with confidence intervals and costs, without writing code, in Studio |
+| R users (epidemiology, ecology, social science) | `library(modelly)`: run, calibrate and analyse Modelly models from R |
+| Julia users | Call Modelly from Julia and pass arrays without copies |
+| Reviewers and journals | Model cards and verifiable bundles attached to papers |
+| Educators | A visual builder that writes real Modelly code; a course pack v2 |
+| People using assistive technology | Studio conformant with WCAG 2.2 AA |
+
+## Epics
+
+### G1 · Modelly Hub
+
+**Goal:** publish, discover, install and cite models and studies.
+
+**Platforms:** the hub is a static index on GitHub Pages plus Zenodo for archives: no server to
+run or pay for; the client is pure Python on all three.
+
+**User stories**
+
+- As an author, `modelly hub publish` turns my project into an installable package with a model
+  card and a DOI.
+- As a researcher, `modelly hub search "malaria"` lists published models with their validation
+  status, and `modelly hub install` gets one with its exact environment.
+- As a reviewer, a paper's DOI resolves to a bundle I can `modelly verify`.
+
+**Design:** packages are ordinary Python packages with an entry point and a model card; the index
+is a JSON file in a public repository, updated by pull request (reviewed, with automatic checks:
+lint clean, determinism test, card complete); archives on Zenodo; signatures with Sigstore.
+
+**Done when:** ten zoo models and three community models are on the hub; install and verify work
+on all three platforms; publishing a model takes under ten minutes, timed.
+
+**Size:** L · **Depends on:** 1.3 E4, E10
+
+### G2 · Model cards
+
+**Goal:** every model carries a short, standard, honest description of what it is for, how it
+was validated, and where it should not be used.
+
+**Design:** generated from the ODD skeleton, the scenario, the zoo or user validation tests and
+the calibration report; sections for intended use, out-of-scope use, data, validation, known
+limits, ethical considerations; rendered in docs, Studio and the hub; a lint check that the card
+exists and is not stale (validation re-run since the last model change).
+
+**Size:** M · **Depends on:** 1.3 E4
+
+### G3 · Decision and policy toolkit (`modelly.decide`)
+
+**Goal:** turn model runs into decisions people can defend.
+
+**Work items:** scenario comparison with paired replicates and intervals; cost and
+cost-effectiveness outputs (per-scenario costs, incremental ratios); robust decision making
+(many futures, find policies that do well across them); intervention optimisation through an
+optional Optuna extra, with the optimiser's randomness seeded from the experiment; Studio
+"compare scenarios" view for non-programmers.
+
+**Done when:** a vaccination-strategy tutorial produces a ranked comparison with intervals and
+costs; the same study rerun gives the same ranking.
+
+**Size:** L · **Depends on:** 1.3 E3, 1.4 F7
+
+### G4 · Causal analysis and explanations (`modelly.explain`)
+
+**Goal:** say why an outcome happened, not only that it did.
+
+**Work items:** common random numbers so paired scenarios differ only by the intervention
+(variance reduction, reported); average treatment effects with intervals across replicates;
+agent- and event-level attribution (which agents or events, removed, change the outcome);
+SHAP-style explanations on emulators; counterfactual replay through time travel.
+
+**Done when:** a tutorial shows the variance reduction of common random numbers on a zoo model
+(measured); attribution finds the seeded "patient zero" in a synthetic outbreak.
+
+**Size:** M · **Depends on:** 1.3 E6, 1.4 F7
+
+### G5 · Language-model agents II
+
+**Goal:** richer generative agents that stay reproducible and affordable.
+
+**Work items:** memory (episodic and summarised, stored in checkpoints); planning and reflection
+loops; tool use (agents calling model functions); agent-to-agent conversation with turn
+scheduling; an evaluation harness (behavioural benchmarks, consistency across seeds, cost
+reports); every response still cached and part of the bundle.
+
+**Done when:** a 500-agent conversational market runs, caches and replays offline; the evaluation
+harness reports cost, consistency and behaviour metrics for three providers or local models.
+
+**Size:** L · **Depends on:** 1.3 E7
+
+### G6 · R and Julia bindings
+
+**Goal:** Modelly for people who do not write Python.
+
+**Platforms:** the R package through reticulate and the Julia package through PythonCall, both
+tested on Windows, macOS and Linux, with an installer that sets up the Python side automatically.
+
+**Work items:** R: build and run models from R, scenario objects as lists, results as data frames
+or tibbles, calibration and sensitivity results with ggplot2 methods; CRAN-ready package.
+Julia: zero-copy array access to columns, results as DataFrames.jl.
+
+**Done when:** the SIR calibration tutorial runs end to end in R and in Julia on all three OSs.
+
+**Size:** L
+
+### G7 · Studio for everyone
+
+**Work items:** a no-code mode (open a published model, change parameters, run experiments,
+compare scenarios, export a report); a visual model builder for teaching that writes ordinary
+Modelly code; report export (HTML and PDF) with the model card, figures and the run manifest.
+
+**Size:** L · **Depends on:** 1.4 F10
+
+### G8 · Accessibility and languages
+
+**Work items:** WCAG 2.2 AA audit and fixes for Studio and the docs (keyboard navigation, screen
+readers, contrast, colour-blind-safe palettes by default); translations of Studio and the
+getting-started docs (French, Spanish, Portuguese, Chinese, then by demand); right-to-left
+layout support.
+
+**Size:** M
+
+### G9 · Plugin API v1
+
+**Goal:** a stable, documented way to extend Modelly from separate packages.
+
+**Design:** entry-point groups for spaces, executors, samplers, collectors, Studio views, lint
+rules and hub sources; a compatibility declaration per plugin; a plugin template
+(`modelly new --template plugin`); the API is frozen for the 1.x line and carried into 2.0
+unchanged or with a migration path.
+
+**Done when:** three third-party plugins (one space, one executor, one Studio view) are listed
+on the hub and tested against 1.5 on all three platforms.
+
+**Size:** M
+
+### G10 · Education II
+
+**Work items:** course pack v2 (twelve sessions, assessments, instructor notes); classroom mode
+in Studio (shared parameters, collect students' runs); a "from NetLogo" track for instructors
+moving their courses.
+
+**Size:** M · **Depends on:** G7
+
+### G11 · Quality, 2.0 preparation and platforms
+
+**Work items:** every 2.0 change deprecated with a warning naming the replacement; `modelly
+migrate --check-2.0` reports what a project must change; the bindings, hub client and Studio in
+the three-OS test matrix; installer guide for locked-down Windows machines (no admin rights).
+
+**Size:** M (continuous)
+
+## Priorities
+
+| Priority | Epics |
+|---|---|
+| **Must** | G1 Hub, G2 Model cards, G9 Plugin API v1, G11 Quality and 2.0 preparation |
+| **Should** | G3 Decisions, G4 Causal, G5 LLM agents II, G6 R and Julia |
+| **Could** | G7 Studio for everyone, G8 Accessibility and languages, G10 Education II |
+| **Won't** | A hosted service with accounts; breaking changes |
+
+## Sprint plan
+
+| Sprint | Goal | Main items | Exit |
+|---|---|---|---|
+| S1 | Foundations | Model card schema and generator; plugin entry-point groups; 2.0 deprecation inventory | Every zoo model has a card |
+| S2 | Hub | Index format, `publish`, `search`, `install`; Zenodo and Sigstore | A zoo model published and installed on all three OSs |
+| S3 | Decisions · **a1** | Scenario comparison, costs, robust decision making | Vaccination tutorial ranks strategies reproducibly |
+| S4 | Causal and R | Common random numbers, effects, attribution; R package core | Variance reduction measured; R runs the SIR tutorial |
+| S5 | LLM agents II and Julia | Memory, planning, conversation, evaluation; Julia package | Conversational market replays offline |
+| S6 | Studio for everyone · **b1** | No-code mode, report export, builder preview | Feature complete; API frozen |
+| S7 | Access and education · **rc1** | WCAG fixes, translations, course pack v2 | No open blocker |
+| S8 | Hardening · **1.5.0** | Three-OS matrix for bindings and hub; `--check-2.0`; docs | All gates pass |
+
+## Release gates
+
+| Release | Gate |
+|---|---|
+| 1.5.0a1 | Hub publish and install on all three OSs; model cards for the zoo |
+| 1.5.0b1 | Must and Should epics feature complete; plugin API frozen |
+| 1.5.0rc1 | No open blocker; R and Julia tutorials pass on all three OSs |
+| 1.5.0 | Every 2.0 change has a deprecation warning; `migrate --check-2.0` covers it |
+
+## Success metrics
+
+| Metric | 1.4.0 | 1.5.0 target |
+|---|---|---|
+| Models on the hub | 0 | 10 zoo plus at least 3 community |
+| Languages with a binding | Python | Python, R, Julia |
+| Third-party plugins | 0 | at least 3 |
+| Studio accessibility | not audited | WCAG 2.2 AA |
+| Docs languages | English, French, Spanish (getting started) | plus Portuguese and Chinese |
+| 2.0 changes with a deprecation warning | partial | all |
+
+## Risks
+
+| Risk | Likelihood | Impact | Mitigation |
+|---|---|---|---|
+| The hub needs moderation effort | Medium | Medium | Automatic checks on every pull request; clear inclusion rules |
+| R and Julia bindings break with Python environment changes | High | Medium | Installer pins the Python side; three-OS CI for both packages |
+| Decision tools are misused as forecasts | Medium | High | Model cards, intervals shown by default, wording reviewed by domain users |
+| LLM agent costs | Medium | Medium | Budgets, caching, local models; evaluation harness reports cost |
+
+## Open questions
+
+- [ ] Hub index: one repository for everything, or one per field?
+- [ ] R package on CRAN (strict policies) or r-universe first?
+- [ ] Which translations first, by user demand or by community volunteers?
+
+## Sprint review log
+
+| Sprint | Shipped | Slipped | Notes |
+|---|---|---|---|
+| S1 | | | |
+| S2 | | | |
+| S3 | | | |
+| S4 | | | |
+| S5 | | | |
+| S6 | | | |
+| S7 | | | |
+| S8 | | | |

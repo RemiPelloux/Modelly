@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Profile &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=02f2166e"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'apis/profile';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/apis/profile.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Provenance" href="provenance.html" />
+    <link rel="prev" title="Lint" href="lint.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="space.html">Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geo.html">Geospatial space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">Synthetic populations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time.html">Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="behaviour.html">Behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenarios.html">Scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibrate.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="couple.html">Coupling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emulate.html">Emulate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">GPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diff.html">Differentiable models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viz.html">Viz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">Web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrate.html">Migrate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Lint</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">LLM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zoo.html">Model zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distributed.html">Distributed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stream.html">Stream</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="api_main.html" class="nav-link">APIs</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Profile</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="profile">
+<h1>Profile<a class="headerlink" href="#profile" title="Link to this heading">#</a></h1>
+<p>The runtime profiler behind <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">modelly.profile</span></code>. How to read its report is in
+<a class="reference internal" href="../profile.html"><span class="std std-doc">Profiling a model</span></a>.</p>
+<p id="module-modelly.profile">Runtime profiling for Modelly models: where each step’s time goes, in Modelly terms.</p>
+<p>The runtime companion of <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">modelly.lint</span></code>. <code class="docutils literal notranslate"><span class="pre">Profiler</span></code> times each
+step, every <code class="docutils literal notranslate"><span class="pre">AgentSet.do</span></code> / <code class="docutils literal notranslate"><span class="pre">shuffle_do</span></code> / <code class="docutils literal notranslate"><span class="pre">map</span></code> call by agent class and
+method, <code class="docutils literal notranslate"><span class="pre">DataCollector.collect</span></code> and the scheduled-event callbacks, and counts
+births and deaths per step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.profile</span><span class="w"> </span><span class="kn">import</span> <span class="n">Profiler</span>
+
+<span class="k">with</span> <span class="n">Profiler</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">as</span> <span class="n">prof</span><span class="p">:</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">report</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>From a shell: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">modelly.profile</span> <span class="pre">path/to/model.py:MyModel</span> <span class="pre">--steps</span> <span class="pre">100</span></code>.
+<code class="docutils literal notranslate"><span class="pre">compare_sizes</span></code> builds the model at several population sizes and compares the
+cost per agent (<code class="docutils literal notranslate"><span class="pre">--sizes</span> <span class="pre">1000,4000</span></code> on the command line).
+Nothing is patched outside the <code class="docutils literal notranslate"><span class="pre">with</span></code> block. The guide is <code class="docutils literal notranslate"><span class="pre">docs/profile.md</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.profile.Profiler">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Profiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_every</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#Profiler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.Profiler" title="Link to this definition">#</a></dt>
+<dd><p>Record where each step of <code class="docutils literal notranslate"><span class="pre">model</span></code> spends its time.</p>
+<p>Use it as a context manager around the run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">Profiler</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">as</span> <span class="n">prof</span><span class="p">:</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">report</span><span class="p">())</span>
+<span class="n">frame</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – the model to profile.</p></li>
+<li><p><strong>sample_every</strong> – profile one step in <code class="docutils literal notranslate"><span class="pre">sample_every</span></code> (steps 1, 1 + N, …);
+the others run through the wrappers untimed.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The patched methods are class attributes, so while the block runs every
+agent set, collector and event in the process is timed, not only those
+of <code class="docutils literal notranslate"><span class="pre">model</span></code>. Only one profiler can be active at a time. Times of nested
+loops (an agent’s step calling <code class="docutils literal notranslate"><span class="pre">do</span></code> on another set) are inclusive.</p>
+<p>Prepare a profiler; nothing is patched until the <code class="docutils literal notranslate"><span class="pre">with</span></code> block starts.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.Profiler.report">
+<span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#Profiler.report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.Profiler.report" title="Link to this definition">#</a></dt>
+<dd><p>A text table of the <code class="docutils literal notranslate"><span class="pre">top</span></code> costliest operations, with hints.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.Profiler.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#Profiler.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.Profiler.to_dict" title="Link to this definition">#</a></dt>
+<dd><p>The summary, the per-step totals and the hints, JSON-ready.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.Profiler.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pd.DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#Profiler.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.Profiler.to_dataframe" title="Link to this definition">#</a></dt>
+<dd><p>One row per step (kind <code class="docutils literal notranslate"><span class="pre">step</span></code>) and per operation within a step.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.profile.SizeComparison">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">SizeComparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">runs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">SizeRun</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/profile/sizes.html#SizeComparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.SizeComparison" title="Link to this definition">#</a></dt>
+<dd><p>The profiles of one model built at several sizes, compared per agent.</p>
+<p><code class="docutils literal notranslate"><span class="pre">runs</span></code> are ordered by size, smallest first.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.SizeComparison.growths">
+<span class="sig-name descname"><span class="pre">growths</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Growth</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/profile/sizes.html#SizeComparison.growths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.SizeComparison.growths" title="Link to this definition">#</a></dt>
+<dd><p>The whole step, then each agent loop, costliest at the largest size first.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.SizeComparison.hints">
+<span class="sig-name descname"><span class="pre">hints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/profile/sizes.html#SizeComparison.hints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.SizeComparison.hints" title="Link to this definition">#</a></dt>
+<dd><p>A hint per notable operation whose cost per agent grows roughly with N.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.SizeComparison.report">
+<span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/modelly/profile/sizes.html#SizeComparison.report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.SizeComparison.report" title="Link to this definition">#</a></dt>
+<dd><p>The us-per-agent table, one column per size, then the growth and the hints.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.SizeComparison.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/profile/sizes.html#SizeComparison.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.SizeComparison.to_dict" title="Link to this definition">#</a></dt>
+<dd><p>The sizes, each operation’s us per agent and growth, and the hints.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.SizeComparison.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/profile/sizes.html#SizeComparison.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.SizeComparison.to_dataframe" title="Link to this definition">#</a></dt>
+<dd><p>One row per operation and size: <code class="docutils literal notranslate"><span class="pre">operation</span></code>, <code class="docutils literal notranslate"><span class="pre">size</span></code>, <code class="docutils literal notranslate"><span class="pre">us_per_agent</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.profile.StepRecord">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">StepRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">step:</span> <span class="pre">int,</span> <span class="pre">time:</span> <span class="pre">float,</span> <span class="pre">agents:</span> <span class="pre">int,</span> <span class="pre">wall:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0,</span> <span class="pre">cpu:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0,</span> <span class="pre">births:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">deaths:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">ops:</span> <span class="pre">dict[tuple[str,</span> <span class="pre">str,</span> <span class="pre">str],</span> <span class="pre">list[~typing.Any]]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#StepRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.StepRecord" title="Link to this definition">#</a></dt>
+<dd><p>What one profiled step cost.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ops</span></code> maps <code class="docutils literal notranslate"><span class="pre">(kind,</span> <span class="pre">owner,</span> <span class="pre">name)</span></code> to <code class="docutils literal notranslate"><span class="pre">[calls,</span> <span class="pre">agents</span> <span class="pre">visited,</span> <span class="pre">wall</span> <span class="pre">s,</span>
+<span class="pre">CPU</span> <span class="pre">s]</span></code>. <code class="docutils literal notranslate"><span class="pre">kind</span></code> is an AgentSet method (<code class="docutils literal notranslate"><span class="pre">do</span></code>, <code class="docutils literal notranslate"><span class="pre">shuffle_do</span></code>, <code class="docutils literal notranslate"><span class="pre">map</span></code>),
+<code class="docutils literal notranslate"><span class="pre">collect</span></code> or <code class="docutils literal notranslate"><span class="pre">event</span></code>; <code class="docutils literal notranslate"><span class="pre">owner</span></code> is the agent class (<code class="docutils literal notranslate"><span class="pre">A|B</span></code> for a mixed
+set) or the collector class. Births and deaths count from this step’s start
+to the next one’s, so agents created by events in between are included.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.StepRecord.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">agents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#StepRecord.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.StepRecord.add" title="Link to this definition">#</a></dt>
+<dd><p>Add one timed call; <code class="docutils literal notranslate"><span class="pre">key</span></code> None is the step itself.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.profile.compare_sizes">
+<span class="sig-name descname"><span class="pre">compare_sizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">factory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_every</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.profile.SizeComparison" title="modelly.profile.SizeComparison"><span class="pre">SizeComparison</span></a></span></span><a class="reference internal" href="../_modules/modelly/profile/sizes.html#compare_sizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.compare_sizes" title="Link to this definition">#</a></dt>
+<dd><p>Build the model with <code class="docutils literal notranslate"><span class="pre">factory(size)</span></code> at each size, profile <code class="docutils literal notranslate"><span class="pre">steps</span></code> steps of each.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – when there are fewer than two different positive sizes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p id="module-modelly.profile.profiler">The profiler: time a running model’s steps, agent-set loops, data collection and events.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Profiler</span></code> replaces a handful of framework methods while its <code class="docutils literal notranslate"><span class="pre">with</span></code> block
+runs and puts the originals back on exit, so a model that is not being profiled
+runs exactly the code it always does. The wrappers never draw a random number
+nor reorder a loop: a profiled run gives the same results as an unprofiled one.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.profile.profiler.StepRecord">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">StepRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">step:</span> <span class="pre">int,</span> <span class="pre">time:</span> <span class="pre">float,</span> <span class="pre">agents:</span> <span class="pre">int,</span> <span class="pre">wall:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0,</span> <span class="pre">cpu:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0,</span> <span class="pre">births:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">deaths:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">ops:</span> <span class="pre">dict[tuple[str,</span> <span class="pre">str,</span> <span class="pre">str],</span> <span class="pre">list[~typing.Any]]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#StepRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.profiler.StepRecord" title="Link to this definition">#</a></dt>
+<dd><p>What one profiled step cost.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ops</span></code> maps <code class="docutils literal notranslate"><span class="pre">(kind,</span> <span class="pre">owner,</span> <span class="pre">name)</span></code> to <code class="docutils literal notranslate"><span class="pre">[calls,</span> <span class="pre">agents</span> <span class="pre">visited,</span> <span class="pre">wall</span> <span class="pre">s,</span>
+<span class="pre">CPU</span> <span class="pre">s]</span></code>. <code class="docutils literal notranslate"><span class="pre">kind</span></code> is an AgentSet method (<code class="docutils literal notranslate"><span class="pre">do</span></code>, <code class="docutils literal notranslate"><span class="pre">shuffle_do</span></code>, <code class="docutils literal notranslate"><span class="pre">map</span></code>),
+<code class="docutils literal notranslate"><span class="pre">collect</span></code> or <code class="docutils literal notranslate"><span class="pre">event</span></code>; <code class="docutils literal notranslate"><span class="pre">owner</span></code> is the agent class (<code class="docutils literal notranslate"><span class="pre">A|B</span></code> for a mixed
+set) or the collector class. Births and deaths count from this step’s start
+to the next one’s, so agents created by events in between are included.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.profiler.StepRecord.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">agents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#StepRecord.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.profiler.StepRecord.add" title="Link to this definition">#</a></dt>
+<dd><p>Add one timed call; <code class="docutils literal notranslate"><span class="pre">key</span></code> None is the step itself.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.profile.profiler.agent_classes">
+<span class="sig-name descname"><span class="pre">agent_classes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agentset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#agent_classes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.profiler.agent_classes" title="Link to this definition">#</a></dt>
+<dd><p>The class names of the members of <code class="docutils literal notranslate"><span class="pre">agentset</span></code>, sorted and joined by <code class="docutils literal notranslate"><span class="pre">|</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.profile.profiler.callable_name">
+<span class="sig-name descname"><span class="pre">callable_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#callable_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.profiler.callable_name" title="Link to this definition">#</a></dt>
+<dd><p>A readable name for a method name, a function or an event callback.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.profile.profiler.Profiler">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Profiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_every</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#Profiler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.profiler.Profiler" title="Link to this definition">#</a></dt>
+<dd><p>Record where each step of <code class="docutils literal notranslate"><span class="pre">model</span></code> spends its time.</p>
+<p>Use it as a context manager around the run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">Profiler</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">as</span> <span class="n">prof</span><span class="p">:</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">report</span><span class="p">())</span>
+<span class="n">frame</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – the model to profile.</p></li>
+<li><p><strong>sample_every</strong> – profile one step in <code class="docutils literal notranslate"><span class="pre">sample_every</span></code> (steps 1, 1 + N, …);
+the others run through the wrappers untimed.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The patched methods are class attributes, so while the block runs every
+agent set, collector and event in the process is timed, not only those
+of <code class="docutils literal notranslate"><span class="pre">model</span></code>. Only one profiler can be active at a time. Times of nested
+loops (an agent’s step calling <code class="docutils literal notranslate"><span class="pre">do</span></code> on another set) are inclusive.</p>
+<p>Prepare a profiler; nothing is patched until the <code class="docutils literal notranslate"><span class="pre">with</span></code> block starts.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.profiler.Profiler.report">
+<span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#Profiler.report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.profiler.Profiler.report" title="Link to this definition">#</a></dt>
+<dd><p>A text table of the <code class="docutils literal notranslate"><span class="pre">top</span></code> costliest operations, with hints.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.profiler.Profiler.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#Profiler.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.profiler.Profiler.to_dict" title="Link to this definition">#</a></dt>
+<dd><p>The summary, the per-step totals and the hints, JSON-ready.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.profile.profiler.Profiler.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pd.DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/profile/profiler.html#Profiler.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.profile.profiler.Profiler.to_dataframe" title="Link to this definition">#</a></dt>
+<dd><p>One row per step (kind <code class="docutils literal notranslate"><span class="pre">step</span></code>) and per operation within a step.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="lint.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lint</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="provenance.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Provenance</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.Profiler"><code class="docutils literal notranslate"><span class="pre">Profiler</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.Profiler.report"><code class="docutils literal notranslate"><span class="pre">Profiler.report()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.Profiler.to_dict"><code class="docutils literal notranslate"><span class="pre">Profiler.to_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.Profiler.to_dataframe"><code class="docutils literal notranslate"><span class="pre">Profiler.to_dataframe()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.SizeComparison"><code class="docutils literal notranslate"><span class="pre">SizeComparison</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.SizeComparison.growths"><code class="docutils literal notranslate"><span class="pre">SizeComparison.growths()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.SizeComparison.hints"><code class="docutils literal notranslate"><span class="pre">SizeComparison.hints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.SizeComparison.report"><code class="docutils literal notranslate"><span class="pre">SizeComparison.report()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.SizeComparison.to_dict"><code class="docutils literal notranslate"><span class="pre">SizeComparison.to_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.SizeComparison.to_dataframe"><code class="docutils literal notranslate"><span class="pre">SizeComparison.to_dataframe()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.StepRecord"><code class="docutils literal notranslate"><span class="pre">StepRecord</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.StepRecord.add"><code class="docutils literal notranslate"><span class="pre">StepRecord.add()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.compare_sizes"><code class="docutils literal notranslate"><span class="pre">compare_sizes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.profiler.StepRecord"><code class="docutils literal notranslate"><span class="pre">StepRecord</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.profiler.StepRecord.add"><code class="docutils literal notranslate"><span class="pre">StepRecord.add()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.profiler.agent_classes"><code class="docutils literal notranslate"><span class="pre">agent_classes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.profiler.callable_name"><code class="docutils literal notranslate"><span class="pre">callable_name()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.profiler.Profiler"><code class="docutils literal notranslate"><span class="pre">Profiler</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.profiler.Profiler.report"><code class="docutils literal notranslate"><span class="pre">Profiler.report()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.profiler.Profiler.to_dict"><code class="docutils literal notranslate"><span class="pre">Profiler.to_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.profile.profiler.Profiler.to_dataframe"><code class="docutils literal notranslate"><span class="pre">Profiler.to_dataframe()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/apis/profile.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

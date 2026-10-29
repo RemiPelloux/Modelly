@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>modelly.behaviour.actions.lifecycle &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/modelly.css?v=92ce3cff" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../../../_static/documentation_options.js?v=fc837d61"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/modelly/behaviour/actions/lifecycle';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../../../../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../../../../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/_modules/modelly/behaviour/actions/lifecycle.html" />
+    <link rel="icon" href="../../../../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.1" />
+  
+    
+    <script src="../../../../_static/searchtools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script src="../../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../../../../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">modelly.behaviour.actions.lifecycle</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for modelly.behaviour.actions.lifecycle</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Action lifecycle: states, subclass hooks and the internal state transitions.</span>
+
+<span class="sd">``ActionLifecycle`` is the base of :class:`modelly.behaviour.actions.Action`.</span>
+<span class="sd">It holds the progress properties, the overridable hooks (on_start,</span>
+<span class="sd">on_resume, on_complete, on_interrupt, on_fail) and the private transitions</span>
+<span class="sd">that every way of ending an action goes through.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">modelly.behaviour.actions.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">HasActions</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">modelly.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+
+
+<div class="viewcode-block" id="ActionState">
+<a class="viewcode-back" href="../../../../apis/behaviour.html#modelly.behaviour.actions.action.ActionState">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ActionState</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Lifecycle state of an Action."""</span>
+
+    <span class="n">PENDING</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">ACTIVE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">COMPLETED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">INTERRUPTED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">FAILED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_as_predicates</span><span class="p">(</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Agent</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Agent</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Agent</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""Normalise a requirement spec into a list the action owns."""</span>
+    <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">spec</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">spec</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ActionLifecycle</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Progress, hooks and state transitions shared by every Action."""</span>
+
+    <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+        <span class="c1"># Set by Action.__init__.</span>
+        <span class="n">agent</span><span class="p">:</span> <span class="n">HasActions</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">Model</span>
+        <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span>
+        <span class="n">priority</span><span class="p">:</span> <span class="nb">float</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">ActionState</span>
+        <span class="n">completion_requirements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Agent</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span>
+        <span class="n">_progress</span><span class="p">:</span> <span class="nb">float</span>
+        <span class="n">_start_time</span><span class="p">:</span> <span class="nb">float</span>
+        <span class="n">_event</span><span class="p">:</span> <span class="n">Event</span> <span class="o">|</span> <span class="kc">None</span>
+        <span class="n">_priority_spec</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Agent</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span>
+        <span class="n">_priority_resolved</span><span class="p">:</span> <span class="nb">bool</span>
+
+    <span class="c1"># --- Properties ---</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">progress</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Time fraction completed, 0.0 to 1.0.</span>
+
+<span class="sd">        Computed live while the action is active. For interrupted or</span>
+<span class="sd">        completed actions, returns the final progress value.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="n">ActionState</span><span class="o">.</span><span class="n">ACTIVE</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+        <span class="p">):</span>
+            <span class="n">elapsed_this_attempt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">+</span> <span class="n">elapsed_this_attempt</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remaining_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Time remaining until completion.</span>
+
+<span class="sd">        Computed live while active. For interrupted actions, returns</span>
+<span class="sd">        the time that would remain if resumed.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">elapsed_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Total time spent on this action so far (across all attempts)."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_resumable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether this action can be resumed (interrupted, not completed)."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="n">ActionState</span><span class="o">.</span><span class="n">INTERRUPTED</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">&lt;</span> <span class="mf">1.0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether a requirement did not hold, at start or at completion."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="n">ActionState</span><span class="o">.</span><span class="n">FAILED</span>
+
+    <span class="c1"># --- Lifecycle methods (override in subclasses) ---</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Called when the action starts executing for the first time.</span>
+
+<span class="sd">        Override for setup logic (e.g., logging, animation triggers,</span>
+<span class="sd">        resource reservation). Not called on resume — see on_resume().</span>
+<span class="sd">        """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_resume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Called when the action resumes after interruption.</span>
+
+<span class="sd">        Override to handle resumption differently from first start</span>
+<span class="sd">        (e.g., logging "resumed" instead of "started", skipping</span>
+<span class="sd">        setup that shouldn't happen twice).</span>
+
+<span class="sd">        Default implementation calls on_start().</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_start</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Called when the action finishes normally.</span>
+
+<span class="sd">        Override to apply the action's full effect (e.g., gaining</span>
+<span class="sd">        energy, completing a transaction).</span>
+<span class="sd">        """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_interrupt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Called when the action is interrupted before completion.</span>
+
+<span class="sd">        Override to handle partial completion. The progress parameter</span>
+<span class="sd">        is the raw time fraction (0.0 to 1.0), giving you full control</span>
+<span class="sd">        over how partial work translates to partial effect.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            progress: Fraction of duration completed (elapsed / duration).</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            Also called by cancel(). If you need to distinguish</span>
+<span class="sd">            interruption from cancellation, check self.interruptible:</span>
+<span class="sd">            a non-interruptible action that receives on_interrupt was</span>
+<span class="sd">            necessarily cancelled, not interrupted.</span>
+<span class="sd">        """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Called when a requirement does not hold.</span>
+
+<span class="sd">        Override to release anything the action</span>
+<span class="sd">        reserved, or to record the attempt.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            Check self.progress to tell the two failures apart: it is 1.0</span>
+<span class="sd">            when the action ran its full duration and only then found the</span>
+<span class="sd">            requirement broken, and below 1.0 when the action never got to</span>
+<span class="sd">            run this attempt.</span>
+<span class="sd">        """</span>
+
+    <span class="c1"># --- Internal ---</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_freeze_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Snapshot live progress into _progress for storage."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">elapsed_this_attempt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                <span class="mf">1.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">+</span> <span class="n">elapsed_this_attempt</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cancel_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Cancel the scheduled completion event if it exists."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_release_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Clear the agent's slot and schedule its idle wake.</span>
+
+<span class="sd">        Completion, interruption, cancellation, and failure all funnel</span>
+<span class="sd">        through here, so the wake contract has a single path. An action</span>
+<span class="sd">        that never held the slot (started directly, without</span>
+<span class="sd">        start_action()) wakes nobody. HasActions.remove() is the one end</span>
+<span class="sd">        that does not come through here: it abandons the action, and a</span>
+<span class="sd">        dying agent must not wake.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">current_action</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">current_action</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">_schedule_wake</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Resolve the priority spec against the agent, at most once.</span>
+
+<span class="sd">        Called from start(), and from HasActions.interrupt_for before it consults</span>
+<span class="sd">        should_interrupt, since the incoming action has not started yet and</span>
+<span class="sd">        its priority would otherwise still read 0.0. A callable spec is</span>
+<span class="sd">        called at most once either way.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_priority_resolved</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_priority_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_priority_spec</span><span class="p">)</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_priority_spec</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_priority_resolved</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_requirements_met</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">requirements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Agent</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether every requirement in the given list holds right now."""</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">requirement</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span> <span class="k">for</span> <span class="n">requirement</span> <span class="ow">in</span> <span class="n">requirements</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Move to FAILED, release the agent, and fire on_fail()."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">ActionState</span><span class="o">.</span><span class="n">FAILED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_release_agent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_fail</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Handle normal completion. Called by the scheduled event."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">ActionState</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Progress reaches 1.0 even if a requirement broke: the full duration</span>
+        <span class="c1"># elapsed, only the effect is withheld.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requirements_met</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">completion_requirements</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fail</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">ActionState</span><span class="o">.</span><span class="n">COMPLETED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_release_agent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_complete</span><span class="p">()</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>From laptop to cluster &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=02f2166e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'distributed';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/distributed.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Determinism and platforms" href="determinism.html" />
+    <link rel="prev" title="GPU arrays" href="gpu.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="performance.html">Performance audit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vectorised_phases.html">Vectorised step phases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">GPU arrays</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">From laptop to cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="determinism.html">Determinism and platforms</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="scale.html" class="nav-link">Performance and scale</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">From laptop to cluster</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="from-laptop-to-cluster">
+<h1>From laptop to cluster<a class="headerlink" href="#from-laptop-to-cluster" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.distributed</span></code> (provisional, new in 1.4) splits one model across processes or machines:
+each worker holds the agents of one part of the space, and the workers exchange the agents at
+their borders. For the same seed a split run gives the same results as one process, byte for
+byte: the same reporter values at every step and, at the end, every agent in the same place
+with the same attributes and random streams.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.distributed</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cluster</span><span class="p">,</span> <span class="n">partition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples.distributed.grid_epidemic</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpidemicScenario</span><span class="p">,</span> <span class="n">GridEpidemic</span>
+
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">EpidemicScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">people</span><span class="o">=</span><span class="mi">50_000</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">Cluster</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">"dask"</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="k">as</span> <span class="n">cluster</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">GridEpidemic</span><span class="p">,</span> <span class="n">scenario</span><span class="p">,</span> <span class="n">partition</span><span class="o">=</span><span class="n">partition</span><span class="o">.</span><span class="n">grid_blocks</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">cluster</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="s2">"runs/epidemic.parquet"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The same model runs in one process as any Modelly model does (<code class="docutils literal notranslate"><span class="pre">GridEpidemic(scenario)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">model.run_for(100)</span></code>). Splitting it is a choice of backend and partition, not a rewrite.</p>
+<section id="what-a-model-must-do-to-be-split">
+<h2>What a model must do to be split<a class="headerlink" href="#what-a-model-must-do-to-be-split" title="Link to this heading">#</a></h2>
+<p>Only models written to a contract can be split. Most of it is what a synchronous model does
+anyway; the build and the run refuse, with the reason, the breaches they can see.</p>
+<ol class="arabic simple">
+<li><p><strong>Declare the split.</strong> A class attribute <code class="docutils literal notranslate"><span class="pre">partitionable</span> <span class="pre">=</span> <span class="pre">Partitionable(space=...,</span> <span class="pre">phases=...,</span> <span class="pre">reporters=...)</span></code> names the model attribute that holds the space, the phases of one step and
+the reporters. The model’s <code class="docutils literal notranslate"><span class="pre">step</span></code> runs the phases: <code class="docutils literal notranslate"><span class="pre">self.partitionable.step(self)</span></code>.</p></li>
+<li><p><strong>Use per-agent streams.</strong> <code class="docutils literal notranslate"><span class="pre">agent_streams</span> <span class="pre">=</span> <span class="pre">True</span></code> on the class, and every draw in a phase from
+the agent’s own <code class="docutils literal notranslate"><span class="pre">self.random</span></code> or <code class="docutils literal notranslate"><span class="pre">self.rng</span></code>. A phase that draws from <code class="docutils literal notranslate"><span class="pre">model.random</span></code> or
+<code class="docutils literal notranslate"><span class="pre">model.rng</span></code> (directly, or through a space or cell collection seeded with them, such as
+<code class="docutils literal notranslate"><span class="pre">cell.neighborhood.select_random_cell()</span></code>) is refused at the step it happens.</p></li>
+<li><p><strong>Phases are synchronous and local.</strong> A phase is one method every agent runs. It reads other
+agents only within its <code class="docutils literal notranslate"><span class="pre">radius</span></code> (Chebyshev cells on a grid, hops on a network, distance in a
+continuous space), writes only the agent running it, and does not depend on the order in
+which agents run or neighbours are listed. The usual pattern is a phase that decides
+<code class="docutils literal notranslate"><span class="pre">next_state</span></code> from the neighbours’ <code class="docutils literal notranslate"><span class="pre">state</span></code>, then a phase that copies <code class="docutils literal notranslate"><span class="pre">next_state</span></code> to <code class="docutils literal notranslate"><span class="pre">state</span></code>.</p></li>
+<li><p><strong>Moves happen in moving phases.</strong> A phase declared with <code class="docutils literal notranslate"><span class="pre">moves=True</span></code> may change the agent’s
+cell or position; after it, agents standing on another partition’s ground migrate there,
+with their random streams. Moves into cells with a capacity are refused: who gets a free
+cell would depend on the order of the moves.</p></li>
+<li><p><strong>Agents hold plain data.</strong> Attributes are numbers, strings, arrays, tuples and the like, not
+references to agents, cells or the model (keep a stream key or a coordinate instead). Agent
+classes are defined at module level, so they can be sent to another process.</p></li>
+<li><p><strong>Every agent has a place in the partitioned space</strong>, and the model schedules no events of
+its own. Agents with <code class="docutils literal notranslate"><span class="pre">Column</span></code> state are not supported yet.</p></li>
+<li><p><strong>Stream keys do not depend on the partition.</strong> An agent’s streams are seeded from the
+model’s seed and its <code class="docutils literal notranslate"><span class="pre">stream_key()</span></code>, <code class="docutils literal notranslate"><span class="pre">unique_id</span></code> by default. By default every worker builds
+the whole initial population in the single-process order and keeps its part, so <code class="docutils literal notranslate"><span class="pre">unique_id</span></code>
+is the same everywhere. A model that builds only its own part (below), or creates agents
+during the run, overrides <code class="docutils literal notranslate"><span class="pre">stream_key()</span></code> with a key of its own; the build refuses different
+populations keyed on <code class="docutils literal notranslate"><span class="pre">unique_id</span></code>, and a phase that creates such agents is refused.</p></li>
+</ol>
+<p>The breaches the checks cannot see (reading past the radius, depending on the order of
+neighbours, writing to another agent) change the results. <code class="docutils literal notranslate"><span class="pre">check_independence</span></code> finds them: it
+runs the model in one process and split, and raises at the first output that differs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.distributed</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_independence</span><span class="p">,</span> <span class="n">partition</span>
+
+<span class="n">check_independence</span><span class="p">(</span>
+    <span class="n">GridEpidemic</span><span class="p">,</span>
+    <span class="n">scenario</span><span class="p">,</span>
+    <span class="p">[</span><span class="n">partition</span><span class="o">.</span><span class="n">grid_blocks</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">partition</span><span class="o">.</span><span class="n">grid_blocks</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span>
+    <span class="n">steps</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Run it on a small scenario before a long split run.</p>
+</section>
+<section id="a-model-in-full">
+<h2>A model, in full<a class="headerlink" href="#a-model-in-full" title="Link to this heading">#</a></h2>
+<p>The grid epidemic of <code class="docutils literal notranslate"><span class="pre">modelly.examples.distributed.grid_epidemic</span></code>, shortened:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.distributed</span><span class="w"> </span><span class="kn">import</span> <span class="n">Partitionable</span><span class="p">,</span> <span class="n">Phase</span><span class="p">,</span> <span class="n">Sum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.distributed.building</span><span class="w"> </span><span class="kn">import</span> <span class="n">owns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrthogonalMooreGrid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space.cells.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellAgent</span>
+
+<span class="n">S</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">(</span><span class="n">CellAgent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">days</span> <span class="o">=</span> <span class="n">key</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_state</span> <span class="o">=</span> <span class="n">state</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">stream_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span>  <span class="c1"># the index in the creation order, whoever builds the person</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">expose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># reads the people in its own cell and the eight around it</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">S</span><span class="p">:</span>
+            <span class="n">around</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">cells</span><span class="p">]</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">I</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">around</span> <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span> <span class="o">**</span> <span class="n">k</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">next_state</span> <span class="o">=</span> <span class="n">I</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">I</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">days</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">days</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">recovery</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">next_state</span> <span class="o">=</span> <span class="n">R</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">advance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_state</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">infected</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span> <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">I</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">GridEpidemic</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">agent_streams</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">partitionable</span> <span class="o">=</span> <span class="n">Partitionable</span><span class="p">(</span>
+        <span class="n">space</span><span class="o">=</span><span class="s2">"grid"</span><span class="p">,</span>
+        <span class="n">phases</span><span class="o">=</span><span class="p">(</span><span class="n">Phase</span><span class="p">(</span><span class="s2">"move"</span><span class="p">,</span> <span class="n">moves</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">Phase</span><span class="p">(</span><span class="s2">"expose"</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">Phase</span><span class="p">(</span><span class="s2">"advance"</span><span class="p">)),</span>
+        <span class="n">reporters</span><span class="o">=</span><span class="p">{</span><span class="s2">"I"</span><span class="p">:</span> <span class="n">Sum</span><span class="p">(</span><span class="n">infected</span><span class="p">)},</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">scenario</span><span class="o">=</span><span class="n">scenario</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalMooreGrid</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">torus</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span>
+        <span class="p">)</span>
+        <span class="n">cells</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">pick</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cells</span><span class="p">),</span> <span class="n">s</span><span class="o">.</span><span class="n">people</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">owns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">[</span><span class="n">pick</span><span class="p">]</span><span class="o">.</span><span class="n">coordinate</span><span class="p">):</span>
+                <span class="n">Person</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">[</span><span class="n">pick</span><span class="p">],</span> <span class="n">I</span> <span class="k">if</span> <span class="n">key</span> <span class="o">&lt;</span> <span class="n">s</span><span class="o">.</span><span class="n">infected</span> <span class="k">else</span> <span class="n">S</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partitionable</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The model’s own generator is used while building (every worker draws the same numbers there);
+during a step only the people’s streams are.</p>
+</section>
+<section id="partitions">
+<h2>Partitions<a class="headerlink" href="#partitions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Space</p></th>
+<th class="head"><p>Partition</p></th>
+<th class="head"><p>Halo</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>A 2-D grid (torus or not; tested on <code class="docutils literal notranslate"><span class="pre">OrthogonalMooreGrid</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">partition.grid_blocks(rows,</span> <span class="pre">cols)</span></code>: rectangles of nearly equal size, the larger first</p></td>
+<td><p>cells within <code class="docutils literal notranslate"><span class="pre">radius</span></code> (Chebyshev) of the block</p></td>
+</tr>
+<tr class="row-odd"><td><p>A <code class="docutils literal notranslate"><span class="pre">Network</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">partition.graph(parts,</span> <span class="pre">imbalance=0.03)</span></code>: nodes ordered by breadth-first search from a far node of each component, cut into equal runs, then refined by greedy boundary moves (k-way Fiduccia-Mattheyses) within the imbalance</p></td>
+<td><p>nodes within <code class="docutils literal notranslate"><span class="pre">radius</span></code> hops</p></td>
+</tr>
+<tr class="row-even"><td><p>A <code class="docutils literal notranslate"><span class="pre">ContinuousSpace</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">partition.kd(parts)</span></code>: recursive bisection of the domain along its longest side at the population quantile (a k-d tree)</p></td>
+<td><p>agents within <code class="docutils literal notranslate"><span class="pre">radius</span></code> of the box, wrapping on a torus</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Every partitioner is deterministic and pure numpy, so all workers compute the same layout. The
+graph partitioner is not METIS: on a 30 by 30 lattice cut in four it cuts about twice the edges
+of the best split, and far fewer than a random one. A layout answers <code class="docutils literal notranslate"><span class="pre">owner</span></code>, <code class="docutils literal notranslate"><span class="pre">owners</span></code>, <code class="docutils literal notranslate"><span class="pre">halo</span></code>
+and <code class="docutils literal notranslate"><span class="pre">neighbours</span></code> (<code class="docutils literal notranslate"><span class="pre">GraphLayout.cut()</span></code> and <code class="docutils literal notranslate"><span class="pre">sizes()</span></code> measure a graph split).</p>
+</section>
+<section id="what-happens-in-a-step">
+<h2>What happens in a step<a class="headerlink" href="#what-happens-in-a-step" title="Link to this heading">#</a></h2>
+<p>For each phase, in order:</p>
+<ol class="arabic simple">
+<li><p>if the phase’s radius is above zero, each worker sends copies of its agents within the
+radius of a neighbour (ghosts) to that neighbour, which places them in its copy of the space;</p></li>
+<li><p>every worker runs the phase on its own agents; the run checks that the model’s generators
+did not move and that no agent keyed on <code class="docutils literal notranslate"><span class="pre">unique_id</span></code> was created;</p></li>
+<li><p>ghosts are removed;</p></li>
+<li><p>after a moving phase, agents now on another partition’s ground are sent there with their
+streams and registered, by sender and then in the sender’s order.</p></li>
+</ol>
+<p>Then every worker computes its part of each reporter and the parts are reduced. <code class="docutils literal notranslate"><span class="pre">Sum</span></code>, <code class="docutils literal notranslate"><span class="pre">Min</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Max</span></code> are exact on integers; a float <code class="docutils literal notranslate"><span class="pre">Sum</span></code> adds the parts with <code class="docutils literal notranslate"><span class="pre">math.fsum</span></code>, but each part
+is rounded before, so use integer reporters where byte identity matters.</p>
+</section>
+<section id="building-only-your-own-part">
+<h2>Building only your own part<a class="headerlink" href="#building-only-your-own-part" title="Link to this heading">#</a></h2>
+<p>By default each worker builds the whole initial population, then drops the agents of other
+partitions: simple, and always correct, but every worker holds the whole population while it
+builds. <code class="docutils literal notranslate"><span class="pre">owns(model,</span> <span class="pre">location)</span></code> (in <code class="docutils literal notranslate"><span class="pre">modelly.distributed.building</span></code>) lets the model’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code>
+build only the agents its worker owns, as the example above does: it is always <code class="docutils literal notranslate"><span class="pre">True</span></code> in one
+process, so the model builds the same agents there. The agents need stream keys of their own.
+<code class="docutils literal notranslate"><span class="pre">kd</span></code> splits cannot answer <code class="docutils literal notranslate"><span class="pre">owns</span></code>, since their boxes come from the built positions. Each worker
+still holds the whole space (every cell of the grid, every node of the network).</p>
+</section>
+<section id="backends">
+<h2>Backends<a class="headerlink" href="#backends" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backend</p></th>
+<th class="head"><p>Use</p></th>
+<th class="head"><p>How it runs</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;local&quot;</span></code></p></td>
+<td><p>tests, debugging, <code class="docutils literal notranslate"><span class="pre">check_independence</span></code></p></td>
+<td><p>every partition in this process, one after the other</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;mpi&quot;</span></code></p></td>
+<td><p>clusters, the fastest exchange</p></td>
+<td><p>one partition per MPI rank; launch the script with <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-n</span> <span class="pre">&lt;partitions&gt;</span> <span class="pre">python</span> <span class="pre">run.py</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;dask&quot;</span></code></p></td>
+<td><p>a laptop or a Dask cluster, no MPI needed</p></td>
+<td><p>one Dask actor per partition (a local cluster of one-thread processes, or <code class="docutils literal notranslate"><span class="pre">address=</span></code> / <code class="docutils literal notranslate"><span class="pre">client=</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;ray&quot;</span></code></p></td>
+<td><p>a Ray cluster</p></td>
+<td><p>one Ray actor per partition; <code class="docutils literal notranslate"><span class="pre">ray.init</span></code> arguments as options</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Under MPI every rank runs the same script, and every <code class="docutils literal notranslate"><span class="pre">DistributedModel</span></code> method is collective: call
+it on every rank, never inside <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">cluster.is_root:</span></code>. All ranks get the same results; write files
+from the root only:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">Cluster</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">"mpi"</span><span class="p">)</span> <span class="k">as</span> <span class="n">cluster</span><span class="p">:</span>  <span class="c1"># mpirun -n 4 python run.py</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">GridEpidemic</span><span class="p">,</span> <span class="n">scenario</span><span class="p">,</span> <span class="n">partition</span><span class="o">.</span><span class="n">grid_blocks</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">365</span><span class="p">)</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">cluster</span><span class="o">.</span><span class="n">is_root</span><span class="p">:</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="s2">"runs/epidemic.parquet"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An error on one rank is raised on every rank, so a failed run stops instead of waiting forever.
+With Dask and Ray the ghosts and migrants travel through the process that called <code class="docutils literal notranslate"><span class="pre">build</span></code>, a
+round trip per exchange: fine for a few workers, slower than MPI for many. Install with
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;modelly-abm[distributed]&quot;</span></code> (mpi4py, which needs an MPI library: Open MPI or MPICH
+on Linux and macOS, MS-MPI on Windows), <code class="docutils literal notranslate"><span class="pre">&quot;modelly-abm[dask]&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;modelly-abm[ray]&quot;</span></code>.</p>
+</section>
+<section id="outputs-and-checkpoints">
+<h2>Outputs and checkpoints<a class="headerlink" href="#outputs-and-checkpoints" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">model.collect()</span></code> (or <code class="docutils literal notranslate"><span class="pre">cluster.collect()</span></code>): a pandas frame, one row per step and one for the
+build, with <code class="docutils literal notranslate"><span class="pre">time</span></code> and every reporter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.snapshot((&quot;state&quot;,</span> <span class="pre">&quot;days&quot;))</span></code>: every agent by stream key with its location and the
+attributes named, equal to <code class="docutils literal notranslate"><span class="pre">modelly.distributed.snapshot(single_process_model,</span> <span class="pre">...)</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.states()</span></code>: the full state of every agent, for exact comparisons.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.checkpoint(&quot;runs/ckpt&quot;)</span></code> writes <code class="docutils literal notranslate"><span class="pre">part-00000.ckpt</span></code> … one file per partition (a core
+checkpoint of its model, plus its layout) and <code class="docutils literal notranslate"><span class="pre">index.json</span></code> (the model class, the partitions,
+the time, the reporter rows so far and each file’s SHA-256). <code class="docutils literal notranslate"><span class="pre">cluster.restore(&quot;runs/ckpt&quot;)</span></code>
+continues the run draw for draw, on any backend with the same number of workers; a file that
+no longer matches its digest is refused. Like every checkpoint, the files are pickles: only
+restore checkpoints you made or trust.</p></li>
+</ul>
+</section>
+<section id="scaling-measured">
+<h2>Scaling, measured<a class="headerlink" href="#scaling-measured" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">benchmarks/distributed/weak_scaling.py</span></code> measures weak scaling on the grid epidemic: every
+worker owns a block of the same size with the same number of people, so perfect scaling keeps
+the time per step constant, and the efficiency is <code class="docutils literal notranslate"><span class="pre">T(1)</span> <span class="pre">/</span> <span class="pre">T(K)</span></code>.</p>
+<p>Next to each split run of K workers the script times K independent copies of one block’s
+model running at the same time with no communication at all, and keeps the slowest. That
+separates what the machine gives (<code class="docutils literal notranslate"><span class="pre">T_copies(1)</span> <span class="pre">/</span> <span class="pre">T_copies(K)</span></code>) from what the split run keeps of
+it (<code class="docutils literal notranslate"><span class="pre">T_copies(K)</span> <span class="pre">/</span> <span class="pre">T(K)</span></code>, the protocol’s efficiency).</p>
+<p>Measured on one laptop (Intel Core Ultra 7 356H, 16 cores of three kinds, Linux, Python
+3.15, Open MPI 5.0, mpi4py 4.1) shared with other jobs: the load average before each run is in
+the table. Wall-clock seconds per step after a warm-up step, the build excluded; the raw
+numbers, with every copy’s time, are in <code class="docutils literal notranslate"><span class="pre">benchmarks/distributed/results/</span></code>.</p>
+<p>MPI, 10,000 people per worker (20 steps):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-right"><p>workers</p></th>
+<th class="head text-right"><p>people</p></th>
+<th class="head text-right"><p>s/step split</p></th>
+<th class="head text-right"><p>s/step K copies</p></th>
+<th class="head text-right"><p>efficiency T(1)/T(K)</p></th>
+<th class="head text-right"><p>machine</p></th>
+<th class="head text-right"><p>protocol</p></th>
+<th class="head text-right"><p>load</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-right"><p>1</p></td>
+<td class="text-right"><p>10,000</p></td>
+<td class="text-right"><p>0.0151</p></td>
+<td class="text-right"><p>0.0138</p></td>
+<td class="text-right"><p>100%</p></td>
+<td class="text-right"><p>100%</p></td>
+<td class="text-right"><p>91%</p></td>
+<td class="text-right"><p>8.4</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>2</p></td>
+<td class="text-right"><p>20,000</p></td>
+<td class="text-right"><p>0.0244</p></td>
+<td class="text-right"><p>0.0163</p></td>
+<td class="text-right"><p>62%</p></td>
+<td class="text-right"><p>85%</p></td>
+<td class="text-right"><p>67%</p></td>
+<td class="text-right"><p>8.5</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>4</p></td>
+<td class="text-right"><p>40,000</p></td>
+<td class="text-right"><p>0.0421</p></td>
+<td class="text-right"><p>0.0227</p></td>
+<td class="text-right"><p>36%</p></td>
+<td class="text-right"><p>61%</p></td>
+<td class="text-right"><p>54%</p></td>
+<td class="text-right"><p>8.1</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>8</p></td>
+<td class="text-right"><p>80,000</p></td>
+<td class="text-right"><p>0.0745</p></td>
+<td class="text-right"><p>0.0482</p></td>
+<td class="text-right"><p>20%</p></td>
+<td class="text-right"><p>29%</p></td>
+<td class="text-right"><p>65%</p></td>
+<td class="text-right"><p>7.6</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>12</p></td>
+<td class="text-right"><p>120,000</p></td>
+<td class="text-right"><p>0.1113</p></td>
+<td class="text-right"><p>0.0587</p></td>
+<td class="text-right"><p>14%</p></td>
+<td class="text-right"><p>23%</p></td>
+<td class="text-right"><p>53%</p></td>
+<td class="text-right"><p>7.7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>16</p></td>
+<td class="text-right"><p>160,000</p></td>
+<td class="text-right"><p>0.1723</p></td>
+<td class="text-right"><p>0.0582</p></td>
+<td class="text-right"><p>9%</p></td>
+<td class="text-right"><p>24%</p></td>
+<td class="text-right"><p>34%</p></td>
+<td class="text-right"><p>21.7</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>MPI, 40,000 people per worker (10 steps):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-right"><p>workers</p></th>
+<th class="head text-right"><p>people</p></th>
+<th class="head text-right"><p>s/step split</p></th>
+<th class="head text-right"><p>s/step K copies</p></th>
+<th class="head text-right"><p>efficiency T(1)/T(K)</p></th>
+<th class="head text-right"><p>machine</p></th>
+<th class="head text-right"><p>protocol</p></th>
+<th class="head text-right"><p>load</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-right"><p>1</p></td>
+<td class="text-right"><p>40,000</p></td>
+<td class="text-right"><p>0.0993</p></td>
+<td class="text-right"><p>0.1006</p></td>
+<td class="text-right"><p>100%</p></td>
+<td class="text-right"><p>100%</p></td>
+<td class="text-right"><p>101%</p></td>
+<td class="text-right"><p>4.7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>2</p></td>
+<td class="text-right"><p>80,000</p></td>
+<td class="text-right"><p>0.1492</p></td>
+<td class="text-right"><p>0.1623</p></td>
+<td class="text-right"><p>67%</p></td>
+<td class="text-right"><p>62%</p></td>
+<td class="text-right"><p>109%</p></td>
+<td class="text-right"><p>4.4</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>4</p></td>
+<td class="text-right"><p>160,000</p></td>
+<td class="text-right"><p>0.2218</p></td>
+<td class="text-right"><p>0.1759</p></td>
+<td class="text-right"><p>45%</p></td>
+<td class="text-right"><p>57%</p></td>
+<td class="text-right"><p>79%</p></td>
+<td class="text-right"><p>4.4</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>8</p></td>
+<td class="text-right"><p>320,000</p></td>
+<td class="text-right"><p>0.3603</p></td>
+<td class="text-right"><p>0.3139</p></td>
+<td class="text-right"><p>28%</p></td>
+<td class="text-right"><p>32%</p></td>
+<td class="text-right"><p>87%</p></td>
+<td class="text-right"><p>4.6</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Dask, 10,000 people per worker (20 steps), on a busier machine:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-right"><p>workers</p></th>
+<th class="head text-right"><p>people</p></th>
+<th class="head text-right"><p>s/step split</p></th>
+<th class="head text-right"><p>s/step K copies</p></th>
+<th class="head text-right"><p>efficiency T(1)/T(K)</p></th>
+<th class="head text-right"><p>machine</p></th>
+<th class="head text-right"><p>protocol</p></th>
+<th class="head text-right"><p>load</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-right"><p>1</p></td>
+<td class="text-right"><p>10,000</p></td>
+<td class="text-right"><p>0.0572</p></td>
+<td class="text-right"><p>0.0422</p></td>
+<td class="text-right"><p>100%</p></td>
+<td class="text-right"><p>100%</p></td>
+<td class="text-right"><p>74%</p></td>
+<td class="text-right"><p>14.1</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>2</p></td>
+<td class="text-right"><p>20,000</p></td>
+<td class="text-right"><p>0.1875</p></td>
+<td class="text-right"><p>0.0591</p></td>
+<td class="text-right"><p>31%</p></td>
+<td class="text-right"><p>71%</p></td>
+<td class="text-right"><p>32%</p></td>
+<td class="text-right"><p>14.8</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>4</p></td>
+<td class="text-right"><p>40,000</p></td>
+<td class="text-right"><p>0.2161</p></td>
+<td class="text-right"><p>0.0381</p></td>
+<td class="text-right"><p>26%</p></td>
+<td class="text-right"><p>111%</p></td>
+<td class="text-right"><p>18%</p></td>
+<td class="text-right"><p>17.4</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>8</p></td>
+<td class="text-right"><p>80,000</p></td>
+<td class="text-right"><p>0.1374</p></td>
+<td class="text-right"><p>0.0455</p></td>
+<td class="text-right"><p>42%</p></td>
+<td class="text-right"><p>93%</p></td>
+<td class="text-right"><p>33%</p></td>
+<td class="text-right"><p>17.1</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>What this shows, and what it does not:</p>
+<ul class="simple">
+<li><p><strong>This laptop is not a cluster.</strong> K copies of the same model with no communication already
+slow down to 24-32% of one copy at 8 to 16 processes (cores of different speeds, a shared
+memory bus, a lower all-core clock, other jobs). No split run can do better than that here.</p></li>
+<li><p><strong>The protocol keeps 53-91% of the machine with 10,000 people per worker</strong> (34% at 16
+workers, when the load from other jobs tripled during the run) <strong>and 79-109% with 40,000</strong>:
+the exchange grows with a block’s border, the work with its area, so larger blocks scale
+better. A step of this model costs about 1.5 microseconds per person, so the border
+traffic weighs heavily at small blocks; a model with more work per agent hides it better.</p></li>
+<li><p><strong>Dask pays a round trip through the coordinator</strong> for every exchange (eight per step here):
+it is the backend that runs everywhere without MPI, not the fast one.</p></li>
+<li><p><strong>The 1.4 target, at least 70% weak scaling efficiency from 1 to 64 workers, is not measured.</strong>
+It needs 64 cores of a cluster with a fast interconnect; one 16-core laptop cannot show it.
+Measured here, the split run’s own efficiency against the machine’s (the protocol column) is
+the part the code controls.</p></li>
+</ul>
+</section>
+<section id="limits-in-1-4">
+<h2>Limits in 1.4<a class="headerlink" href="#limits-in-1-4" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Agents with <code class="docutils literal notranslate"><span class="pre">Column</span></code> state, models with events of their own and moves into cells with a
+capacity are refused.</p></li>
+<li><p>Each worker holds the whole space, and by default the whole initial population at build time
+(see <code class="docutils literal notranslate"><span class="pre">owns</span></code> above).</p></li>
+<li><p>Partitions are fixed at build: there is no load balancing while the run goes on.</p></li>
+<li><p>One worker runs one partition, and a restore needs the same number of partitions.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="gpu.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">GPU arrays</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="determinism.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Determinism and platforms</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-a-model-must-do-to-be-split">What a model must do to be split</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-model-in-full">A model, in full</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#partitions">Partitions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-happens-in-a-step">What happens in a step</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-only-your-own-part">Building only your own part</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backends">Backends</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#outputs-and-checkpoints">Outputs and checkpoints</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scaling-measured">Scaling, measured</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limits-in-1-4">Limits in 1.4</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/distributed.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

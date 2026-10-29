@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>modelly.core.model &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../../_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/modelly/core/model';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../../../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../../../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/_modules/modelly/core/model.html" />
+    <link rel="icon" href="../../../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../../../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">modelly.core.model</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for modelly.core.model</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""The model class for Modelly framework.</span>
+
+<span class="sd">Core Objects: Model</span>
+<span class="sd">"""</span>
+
+<span class="c1"># Postpone annotation evaluation to avoid NameError from forward references (PEP 563). Remove once Python 3.14+ is required.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Self</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.checkpoint</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckpointWriter</span><span class="p">,</span> <span class="n">load_model</span><span class="p">,</span> <span class="n">save_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.columns</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnStore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_html</span><span class="p">,</span> <span class="n">model_markdown</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckpointError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentRegistry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.rng</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastRandom</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.data.recorders.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataRegistry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_module_logger</span><span class="p">,</span> <span class="n">method_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.scenarios</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scenario</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.time</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">EventGenerator</span><span class="p">,</span>
+    <span class="n">EventList</span><span class="p">,</span>
+    <span class="n">Priority</span><span class="p">,</span>
+    <span class="n">Schedule</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.time.schedule</span><span class="w"> </span><span class="kn">import</span> <span class="n">HasSchedule</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.time.signals</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HasEmitters</span><span class="p">,</span>
+    <span class="n">ModelSignals</span><span class="p">,</span>
+    <span class="n">ObservableSignals</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">SeedLike</span> <span class="o">=</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">SeedSequence</span>
+<span class="n">RNGLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">BitGenerator</span>
+
+
+<span class="n">_modelly_logger</span> <span class="o">=</span> <span class="n">create_module_logger</span><span class="p">()</span>
+
+<span class="c1"># Subscriber keys and the observable signals of ``agents``; see register_agent.</span>
+<span class="n">_AGENT_SIGNALS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">ModelSignals</span><span class="o">.</span><span class="n">AGENT_ADDED</span><span class="p">,</span> <span class="n">ModelSignals</span><span class="o">.</span><span class="n">AGENT_REMOVED</span><span class="p">})</span>
+
+
+<span class="c1"># TODO: We can add `= Scenario` default type when Python 3.13+ is required</span>
+<div class="viewcode-block" id="Model">
+<a class="viewcode-back" href="../../../apis/core.html#modelly.core.model.Model">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Model</span><span class="p">[</span><span class="n">A</span><span class="p">:</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">S</span><span class="p">:</span> <span class="n">Scenario</span><span class="p">](</span><span class="n">AgentRegistry</span><span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="n">HasSchedule</span><span class="p">,</span> <span class="n">HasEmitters</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Base class for models in the Modelly ABM library.</span>
+
+<span class="sd">    This class serves as a foundational structure for creating agent-based models.</span>
+<span class="sd">    It includes the basic attributes and methods necessary for initializing and</span>
+<span class="sd">    running a simulation model.</span>
+
+<span class="sd">    Type Parameters:</span>
+<span class="sd">        A: The agent type used in this model</span>
+<span class="sd">        S: The scenario type used in this model</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        running: A boolean indicating if the model should continue running.</span>
+<span class="sd">        time: the current simulation time.</span>
+<span class="sd">        random: a seeded python.random number generator.</span>
+<span class="sd">        rng: a seeded numpy.random.Generator</span>
+<span class="sd">        scenario: the scenario instance containing model parameters</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        Model.agents returns the AgentSet containing all agents registered with the model. Changing</span>
+<span class="sd">        the content of the AgentSet directly can result in strange behavior. If you want change the</span>
+<span class="sd">        composition of this AgentSet, ensure you operate on a copy.</span>
+
+<span class="sd">    """</span>
+
+    <span class="c1"># time is a plain attribute for speed: reads are ~40ns vs ~100ns through a</span>
+    <span class="c1"># data descriptor. The CHANGED signal is emitted once per time advance by</span>
+    <span class="c1"># _set_time(), so BaseDataRecorder and observe("time", ...) keep working.</span>
+    <span class="c1"># "time" is registered as an observable in __init_subclass__ (below) and at</span>
+    <span class="c1"># module level for the base Model class itself.</span>
+
+    <span class="c1"># True when the class keeps the default registration methods, which lets</span>
+    <span class="c1"># Agent.__init__ and Agent.remove inline them (see agent.py).</span>
+    <span class="n">_default_registry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># True gives every agent random streams of its own (modelly.core.streams):</span>
+    <span class="c1"># agent.random and agent.rng no longer return the model's generators.</span>
+    <span class="n">agent_streams</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Register ``time`` as an observable for every Model subclass."""</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">observables</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ObservableSignals</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">observables</span><span class="p">[</span><span class="s2">"agents"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_AGENT_SIGNALS</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_default_registry</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">register_agent</span> <span class="ow">is</span> <span class="n">Model</span><span class="o">.</span><span class="n">register_agent</span>
+            <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="n">deregister_agent</span> <span class="ow">is</span> <span class="n">Model</span><span class="o">.</span><span class="n">deregister_agent</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_default_registry</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_quiet</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Agent.__init__ must call the override</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_scenario</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">RNGLike</span> <span class="o">|</span> <span class="n">SeedLike</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scenario</span><span class="p">:</span> <span class="n">S</span> <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">S</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set the scenario and the two generators it seeds."""</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scenario</span><span class="p">,</span> <span class="n">Scenario</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rng</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Pass either rng or scenario, not both."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scenario</span><span class="p">,</span> <span class="n">Scenario</span><span class="p">):</span>
+            <span class="n">scenario</span> <span class="o">=</span> <span class="n">scenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>  <span class="c1"># type: ignore[assignment]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span> <span class="o">=</span> <span class="n">scenario</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">rng</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random</span> <span class="o">=</span> <span class="n">FastRandom</span><span class="p">(</span><span class="n">scenario</span><span class="o">.</span><span class="n">_stdlib_seed</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_default_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Wrap the user's step in the default schedule (every 1.0 time units)."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_schedule</span><span class="p">:</span> <span class="n">EventGenerator</span> <span class="o">=</span> <span class="n">EventGenerator</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_user_step</span><span class="p">,</span>
+            <span class="n">Schedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span>
+            <span class="n">priority</span><span class="o">=</span><span class="n">Priority</span><span class="o">.</span><span class="n">HIGH</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_step</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scenario</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">S</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return scenario instance."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scenario</span>
+
+    <span class="nd">@scenario</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scenario</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario</span><span class="p">:</span> <span class="n">S</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set scenario instance."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scenario</span> <span class="o">=</span> <span class="n">scenario</span>
+
+    <span class="nd">@method_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">RNGLike</span> <span class="o">|</span> <span class="n">SeedLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scenario</span><span class="p">:</span> <span class="n">S</span> <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">S</span><span class="p">]</span> <span class="o">=</span> <span class="n">Scenario</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a new model.</span>
+
+<span class="sd">        Overload this method with the actual code to initialize the model. Always start with super().__init__()</span>
+<span class="sd">        to initialize the model object properly.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args: arguments to pass onto super</span>
+<span class="sd">            rng: Seed for the random number generator. Accepts any value accepted by</span>
+<span class="sd">                numpy.random.default_rng(). Ignored if a Scenario instance is passed;</span>
+<span class="sd">                used to instantiate the scenario when a Scenario class is passed.</span>
+<span class="sd">            scenario: A Scenario instance or subclass to use for this model. If a class</span>
+<span class="sd">                is passed it is instantiated with rng. If an instance is passed, rng</span>
+<span class="sd">                must not be set.</span>
+<span class="sd">            kwargs: keyword arguments to pass onto super</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            Pass either rng or a Scenario instance, not both. Passing rng alongside</span>
+<span class="sd">            a Scenario class is valid — rng is forwarded to the class constructor.</span>
+
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent_id_counter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># Event list for event-based execution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_list</span><span class="p">:</span> <span class="n">EventList</span> <span class="o">=</span> <span class="n">EventList</span><span class="p">()</span>
+        <span class="c1"># Strong references to active EventGenerators (prevent GC)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_generators</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">EventGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_scenario</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">scenario</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_default_schedule</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_registries</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_registry</span> <span class="o">=</span> <span class="n">DataRegistry</span><span class="p">()</span>
+        <span class="c1"># Column tables for agent classes that declare Column attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">ColumnStore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Model.run_model">
+<a class="viewcode-back" href="../../../apis/core.html#modelly.core.model.Model.run_model">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Run the model until the end condition is reached.</span>
+
+<span class="sd">        Overload as needed.</span>
+<span class="sd">        """</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Model.step">
+<a class="viewcode-back" href="../../../apis/core.html#modelly.core.model.Model.step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""A single step. Fill in here."""</span></div>
+
+
+    <span class="c1"># Jupyter shows a model as its class, scenario, time and population by class.</span>
+    <span class="n">_repr_html_</span> <span class="o">=</span> <span class="n">model_html</span>
+    <span class="n">_repr_markdown_</span> <span class="o">=</span> <span class="n">model_markdown</span>
+
+<div class="viewcode-block" id="Model.save">
+<a class="viewcode-back" href="../../../apis/core.html#modelly.core.model.Model.save">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Save the whole model to one checkpoint file.</span>
+
+<span class="sd">        The file holds the agents, spaces, columns, scheduled events, data</span>
+<span class="sd">        collected so far and the exact state of ``random`` and ``rng``, so</span>
+<span class="sd">        ``Model.load`` resumes the run draw for draw.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: The file to write.</span>
+<span class="sd">            compress: Gzip the payload (smaller, slower).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            CheckpointError: If a callback the model holds, such as an event</span>
+<span class="sd">                callback or a reporter, is a lambda or nested function.</span>
+<span class="sd">        """</span>
+        <span class="n">save_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="n">compress</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Model.load">
+<a class="viewcode-back" href="../../../apis/core.html#modelly.core.model.Model.load">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Load a model saved with ``save``.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            A checkpoint is a pickle: loading one runs code chosen by whoever</span>
+<span class="sd">            wrote it. Only load files you created or otherwise trust.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: The checkpoint file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The saved model, an instance of the class it was saved from.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            CheckpointError: If the file is not a checkpoint, was written by</span>
+<span class="sd">                another Modelly or Python release, or holds no ``cls``.</span>
+<span class="sd">        """</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">CheckpointError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> holds a </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, not a </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">."</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">model</span></div>
+
+
+<div class="viewcode-block" id="Model.checkpoint_every">
+<a class="viewcode-back" href="../../../apis/core.html#modelly.core.model.Model.checkpoint_every">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint_every</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">path_pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CheckpointWriter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Save a checkpoint every ``interval`` time units.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            interval: Time between checkpoints; the first is ``interval`` from now.</span>
+<span class="sd">            path_pattern: The file name, formatted with ``time``, e.g.</span>
+<span class="sd">                ``"run-{time:04.0f}.ckpt"``.</span>
+<span class="sd">            compress: Gzip each checkpoint.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The writer; call its ``stop()`` to end the checkpoints.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">CheckpointWriter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">path_pattern</span><span class="p">,</span> <span class="n">compress</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Model.remove_all_agents">
+<a class="viewcode-back" href="../../../apis/core.html#modelly.core.model.Model.remove_all_agents">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_all_agents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Remove all agents from the model.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            This method calls agent.remove for all agents in the model. If you need to remove agents from</span>
+<span class="sd">            e.g., a SingleGrid, you can either explicitly implement your own agent.remove method or clean this up</span>
+<span class="sd">            near where you are calling this method.</span>
+
+<span class="sd">        """</span>
+        <span class="c1"># we need to wrap keys in a list to avoid a RunTimeError: dictionary changed size during iteration</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_agents</span><span class="p">):</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_registry</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c1"># this is needed to ensure GC works properly</span></div>
+</div>
+
+
+
+<span class="c1"># Register "time" as an observable for the base Model class itself (subclasses</span>
+<span class="c1"># get it via Model.__init_subclass__). Model.time is a plain attribute now, so</span>
+<span class="c1"># the descriptor generator no longer discovers it automatically.</span>
+<span class="n">Model</span><span class="o">.</span><span class="n">observables</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ObservableSignals</span>
+<span class="n">Model</span><span class="o">.</span><span class="n">observables</span><span class="p">[</span><span class="s2">"agents"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_AGENT_SIGNALS</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

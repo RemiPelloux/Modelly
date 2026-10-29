@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Sensitivity analysis &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'sensitivity';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/sensitivity.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Emulators, active learning and history matching" href="emulators.html" />
+    <link rel="prev" title="Calibration" href="calibration.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Build and check a model</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Checking a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profiling a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checkpoints.html">Checkpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="figures.html">Figures and animations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="browser.html">In the browser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Structure a model</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="geospatial.html">Geospatial models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">Synthetic populations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupling.html">Coupling fields and ODEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm_agents.html">Language-model agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="differentiable.html">Differentiable models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Run a study</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments and sweeps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibration.html">Calibration</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Sensitivity analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emulators.html">Emulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assimilation.html">Live data and assimilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Reproducible studies</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="guides.html" class="nav-link">Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Sensitivity analysis</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="sensitivity-analysis">
+<h1>Sensitivity analysis<a class="headerlink" href="#sensitivity-analysis" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.sensitivity</span></code> says which parameters drive which outputs: screen many parameters cheaply,
+then split an output’s variance between the few that matter. Every method takes a model (run
+through the <a class="reference internal" href="experiments.html"><span class="std std-doc">experiment executors</span></a>), a plain function of the parameters, or an
+emulator, and a <code class="docutils literal notranslate"><span class="pre">ScenarioSpace</span></code> whose ranges and choices are the inputs.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Function</p></th>
+<th class="head"><p>Measures</p></th>
+<th class="head"><p>Runs</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">oat</span></code></p></td>
+<td><p>the output’s range as each parameter moves alone</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">levels</span></code> per parameter</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">morris</span></code></p></td>
+<td><p>elementary effects: <code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">mu_star</span></code>, <code class="docutils literal notranslate"><span class="pre">sigma</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">trajectories</span> <span class="pre">*</span> <span class="pre">(parameters</span> <span class="pre">+</span> <span class="pre">1)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sobol</span></code></p></td>
+<td><p>first-order <code class="docutils literal notranslate"><span class="pre">S1</span></code> and total <code class="docutils literal notranslate"><span class="pre">ST</span></code> indices, bootstrap intervals</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">samples</span> <span class="pre">*</span> <span class="pre">(parameters</span> <span class="pre">+</span> <span class="pre">2)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pawn</span></code></p></td>
+<td><p>how much each parameter changes the output’s distribution</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">samples</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">emulate</span></code></p></td>
+<td><p>a Gaussian-process stand-in for an expensive model</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">samples</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Runs of a model go to a Parquet store, so models need the <code class="docutils literal notranslate"><span class="pre">experiments</span></code> extra
+(<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;modelly-abm[experiments]&quot;</span></code>); functions and emulators do not.</p>
+<section id="a-worked-example-which-epidemic-parameters-matter">
+<h2>A worked example: which epidemic parameters matter<a class="headerlink" href="#a-worked-example-which-epidemic-parameters-matter" title="Link to this heading">#</a></h2>
+<p>The SIR model of the <a class="reference internal" href="calibration.html#a-worked-example-an-sir-model-and-case-data"><span class="std std-ref">calibration guide</span></a>
+(<code class="docutils literal notranslate"><span class="pre">epidemic.py</span></code>) has four parameters. Which ones decide how high the epidemic peaks?</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">epidemic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Epidemic</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.experiments</span><span class="w"> </span><span class="kn">import</span> <span class="n">Range</span><span class="p">,</span> <span class="n">ScenarioSpace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.sensitivity</span><span class="w"> </span><span class="kn">import</span> <span class="n">morris</span><span class="p">,</span> <span class="n">sobol</span>
+
+<span class="n">space</span> <span class="o">=</span> <span class="n">ScenarioSpace</span><span class="p">(</span>
+    <span class="n">beta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span>
+    <span class="n">initial</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="n">population</span><span class="o">=</span><span class="n">Range</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">integer</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">common</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"output"</span><span class="p">:</span> <span class="s2">"infected"</span><span class="p">,</span>
+    <span class="s2">"statistic"</span><span class="p">:</span> <span class="s2">"max"</span><span class="p">,</span>
+    <span class="s2">"steps"</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="s2">"replicates"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">"seed"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">screen</span> <span class="o">=</span> <span class="n">morris</span><span class="p">(</span><span class="n">Epidemic</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="n">trajectories</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="o">**</span><span class="n">common</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">screen</span><span class="o">.</span><span class="n">ranking</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                 mu  mu_star    sigma
+gamma      -464.850  465.075  408.749
+beta        433.800  462.000  370.234
+population  408.075  408.975  400.663
+initial      85.575   94.575  203.890
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">output=&quot;infected&quot;</span></code> records the number infected every step and <code class="docutils literal notranslate"><span class="pre">statistic=&quot;max&quot;</span></code> keeps each
+run’s peak; the two replicates are averaged. <code class="docutils literal notranslate"><span class="pre">mu_star</span></code>, the mean absolute effect of moving a
+parameter across a step of its grid, ranks the parameters; a large <code class="docutils literal notranslate"><span class="pre">sigma</span></code> next to it means
+the effect depends on where the other parameters are (interactions, non-linearity). The peak
+is a head count, so it scales with the population; the size of the first outbreak matters much
+less. Recovery and infection rates matter most, in opposite directions (<code class="docutils literal notranslate"><span class="pre">mu</span></code> is negative for
+<code class="docutils literal notranslate"><span class="pre">gamma</span></code>).</p>
+<p>With the population and the first cases fixed, Sobol indices split the peak’s variance between
+the two rates:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">narrowed</span> <span class="o">=</span> <span class="n">ScenarioSpace</span><span class="p">(</span>
+    <span class="n">beta</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span> <span class="n">gamma</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span> <span class="n">initial</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="mi">1000</span>
+<span class="p">)</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">sobol</span><span class="p">(</span><span class="n">Epidemic</span><span class="p">,</span> <span class="n">narrowed</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="o">**</span><span class="n">common</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">indices</span><span class="o">.</span><span class="n">ranking</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">indices</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"sobol.png"</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>          S1     ST  S1_low  S1_high  ST_low  ST_high
+beta   0.544  0.576   0.469    0.612   0.495    0.687
+gamma  0.423  0.458   0.325    0.514   0.387    0.540
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">beta</span></code> alone explains about half the variance, <code class="docutils literal notranslate"><span class="pre">gamma</span></code> alone about 40 %; <code class="docutils literal notranslate"><span class="pre">ST</span> <span class="pre">-</span> <span class="pre">S1</span></code>, the share
+that comes through interactions, is small for both. The intervals come from 200 bootstrap
+resamples; more <code class="docutils literal notranslate"><span class="pre">samples</span></code> narrow them.</p>
+</section>
+<section id="one-at-a-time">
+<h2>One at a time<a class="headerlink" href="#one-at-a-time" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.sensitivity</span><span class="w"> </span><span class="kn">import</span> <span class="n">oat</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">oat</span><span class="p">(</span><span class="n">Epidemic</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="o">**</span><span class="n">common</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">table</span>  <span class="c1"># low, high, effect per parameter</span>
+<span class="n">result</span><span class="o">.</span><span class="n">sweeps</span>  <span class="c1"># every evaluated point: parameter, position, value, output</span>
+</pre></div>
+</div>
+<p>Each parameter takes <code class="docutils literal notranslate"><span class="pre">levels</span></code> evenly spaced values (every value of a choice) while the others
+stay at the middle of their ranges. It is the cheapest look and blind to interactions.</p>
+</section>
+<section id="morris-elementary-effects">
+<h2>Morris elementary effects<a class="headerlink" href="#morris-elementary-effects" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">morris(model,</span> <span class="pre">space,</span> <span class="pre">output,</span> <span class="pre">trajectories=10,</span> <span class="pre">levels=4,</span> <span class="pre">...)</span></code> draws <code class="docutils literal notranslate"><span class="pre">trajectories</span></code> random
+paths on a grid of <code class="docutils literal notranslate"><span class="pre">levels</span></code> values per parameter, each moving one parameter at a time by
+<code class="docutils literal notranslate"><span class="pre">levels</span> <span class="pre">/</span> <span class="pre">(2</span> <span class="pre">*</span> <span class="pre">(levels</span> <span class="pre">-</span> <span class="pre">1))</span></code> of its range. The elementary effect of a move is the change in the
+output divided by the step; <code class="docutils literal notranslate"><span class="pre">mu</span></code> is their mean, <code class="docutils literal notranslate"><span class="pre">mu_star</span></code> the mean of their absolute values and
+<code class="docutils literal notranslate"><span class="pre">sigma</span></code> their standard deviation. <code class="docutils literal notranslate"><span class="pre">plot()</span></code> draws <code class="docutils literal notranslate"><span class="pre">sigma</span></code> against <code class="docutils literal notranslate"><span class="pre">mu_star</span></code>.</p>
+<p>A ranking is only as stable as the gaps between the effects. On the zoo’s Bass diffusion
+(innovation, imitation and the number of households) the whole ranking is the same on every seed
+with 12 trajectories, and on the age-structured SEIR model the transmission probability comes
+first on every seed, three times ahead of the others, while recovery and incubation, whose effects
+are of the same size, swap places from seed to seed (<code class="docutils literal notranslate"><span class="pre">tests/sensitivity/test_morris_stability.py</span></code>).
+Rerun a screen with two or three seeds before dropping a parameter: one whose rank changes with
+the seed is not clearly less important than its neighbour.</p>
+</section>
+<section id="sobol-indices">
+<h2>Sobol indices<a class="headerlink" href="#sobol-indices" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">sobol(model,</span> <span class="pre">space,</span> <span class="pre">output,</span> <span class="pre">samples=1024,</span> <span class="pre">bootstrap=200,</span> <span class="pre">confidence=0.95,</span> <span class="pre">estimator=&quot;jansen&quot;)</span></code>
+uses Saltelli sampling: two matrices <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> from one scrambled Sobol sequence
+(<code class="docutils literal notranslate"><span class="pre">scipy.stats.qmc</span></code>, power-of-two <code class="docutils literal notranslate"><span class="pre">samples</span></code>), and for every parameter the matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> with that
+column from <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">estimator</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">S1</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">ST</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;jansen&quot;</span></code> (default)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(V</span> <span class="pre">-</span> <span class="pre">mean((f(B)</span> <span class="pre">-</span> <span class="pre">f(AB_i))**2)</span> <span class="pre">/</span> <span class="pre">2)</span> <span class="pre">/</span> <span class="pre">V</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mean((f(A)</span> <span class="pre">-</span> <span class="pre">f(AB_i))**2)</span> <span class="pre">/</span> <span class="pre">2</span> <span class="pre">/</span> <span class="pre">V</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;saltelli&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mean(f(B)</span> <span class="pre">*</span> <span class="pre">(f(AB_i)</span> <span class="pre">-</span> <span class="pre">f(A)))</span> <span class="pre">/</span> <span class="pre">V</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mean(f(A)</span> <span class="pre">*</span> <span class="pre">(f(A)</span> <span class="pre">-</span> <span class="pre">f(AB_i)))</span> <span class="pre">/</span> <span class="pre">V</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The test suite checks both on the Ishigami function and the Sobol G function, whose indices
+are known exactly: every analytical value lies inside its bootstrap interval.</p>
+<section id="what-the-bootstrap-interval-is-and-what-to-report">
+<h3>What the bootstrap interval is, and what to report<a class="headerlink" href="#what-the-bootstrap-interval-is-and-what-to-report" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">S1_low</span></code>/<code class="docutils literal notranslate"><span class="pre">S1_high</span></code> and <code class="docutils literal notranslate"><span class="pre">ST_low</span></code>/<code class="docutils literal notranslate"><span class="pre">ST_high</span></code> columns come from resampling the rows of the
+design with replacement (<code class="docutils literal notranslate"><span class="pre">bootstrap</span></code> times) and recomputing the indices. The rows of a
+scrambled Sobol sequence are not independent draws, so this is an approximation, and in one
+direction: on the Ishigami function the row bootstrap’s half-width is 3 to 7 times the actual
+spread of the estimate across independent scramblings, at <code class="docutils literal notranslate"><span class="pre">samples=1024</span></code> and <code class="docutils literal notranslate"><span class="pre">4096</span></code> alike
+(<code class="docutils literal notranslate"><span class="pre">paper/scripts/sobol_scramblings.py</span></code>, <code class="docutils literal notranslate"><span class="pre">paper/data/sobol_scramblings.json</span></code>). It is
+conservative, cheap (one design, evaluated once) and good enough to tell a large index from a
+small one, which is what a screening needs. It is not a calibrated uncertainty.</p>
+<p>For an uncertainty to report in a study, repeat the analysis on independent scramblings and
+take the spread of the estimates: the scrambling is drawn from <code class="docutils literal notranslate"><span class="pre">seed</span></code>, so this is a loop over
+seeds, and the design’s evaluations are seeded from each in turn.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.sensitivity</span><span class="w"> </span><span class="kn">import</span> <span class="n">sobol</span>
+
+<span class="n">estimates</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">sobol</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="s2">"infected"</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">[[</span><span class="s2">"S1"</span><span class="p">,</span> <span class="s2">"ST"</span><span class="p">]]</span>
+    <span class="k">for</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="n">stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">t</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">estimates</span><span class="p">])</span>
+<span class="n">mean</span><span class="p">,</span> <span class="n">spread</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">stack</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">97.5</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">mean</span></code> is the estimate, <code class="docutils literal notranslate"><span class="pre">spread</span></code> its standard error across scramblings, and <code class="docutils literal notranslate"><span class="pre">low</span></code>/<code class="docutils literal notranslate"><span class="pre">high</span></code> a
+95 % range; 16 scramblings cost 16 times one analysis and give a standard error known to
+about 18 %. For a stochastic model with <code class="docutils literal notranslate"><span class="pre">replicates</span></code> per point, the model’s own noise is
+inside each estimate already; the scramblings add the design’s uncertainty on top.</p>
+</section>
+</section>
+<section id="pawn">
+<h2>PAWN<a class="headerlink" href="#pawn" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pawn(model,</span> <span class="pre">space,</span> <span class="pre">output,</span> <span class="pre">samples=500,</span> <span class="pre">slices=10,</span> <span class="pre">summary=&quot;median&quot;)</span></code> evaluates one Latin
+hypercube, cuts each parameter’s range into <code class="docutils literal notranslate"><span class="pre">slices</span></code> equal-count slices and compares the
+output’s distribution in each slice with the unconditional one by the Kolmogorov-Smirnov
+statistic. The table gives the <code class="docutils literal notranslate"><span class="pre">median</span></code>, <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> over the slices; 0 means the
+parameter does not change the output’s distribution. Unlike variance-based indices, PAWN does
+not assume the variance describes the output well, which matters for skewed or multi-modal
+outputs (extinction or outbreak, boom or bust).</p>
+</section>
+<section id="emulators-for-expensive-models">
+<h2>Emulators for expensive models<a class="headerlink" href="#emulators-for-expensive-models" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.sensitivity</span><span class="w"> </span><span class="kn">import</span> <span class="n">emulate</span>
+
+<span class="n">surrogate</span> <span class="o">=</span> <span class="n">emulate</span><span class="p">(</span><span class="n">Epidemic</span><span class="p">,</span> <span class="n">narrowed</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="o">**</span><span class="n">common</span><span class="p">)</span>
+<span class="n">surrogate</span><span class="o">.</span><span class="n">r2</span>  <span class="c1"># share of variance explained on held-out runs: 0.993 here</span>
+<span class="n">sobol</span><span class="p">(</span><span class="n">surrogate</span><span class="p">,</span> <span class="n">narrowed</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">4096</span><span class="p">)</span>  <span class="c1"># no further model runs</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">emulate</span></code> runs the model at a Latin hypercube of <code class="docutils literal notranslate"><span class="pre">samples</span></code> points and fits a Gaussian process
+(the basic numpy and scipy one of <code class="docutils literal notranslate"><span class="pre">modelly.calibrate.gp</span></code>) to the output. The emulator then
+stands in for the model in every method. Check <code class="docutils literal notranslate"><span class="pre">r2</span></code> before trusting it: a low value means the
+process does not capture the output, and more samples or a narrower space are needed.</p>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading">#</a></h2>
+<p>Every function returns a result with:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">table</span></code>: one row per parameter;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ranking()</span></code>: the table sorted by the main measure (<code class="docutils literal notranslate"><span class="pre">effect</span></code>, <code class="docutils literal notranslate"><span class="pre">mu_star</span></code>, <code class="docutils literal notranslate"><span class="pre">ST</span></code> or the PAWN
+summary), most influential first;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">to_dataframe()</span></code>: the table with the parameter as a column, ready for CSV or Parquet;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plot()</span></code>: a Matplotlib figure;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">info</span></code>: the number of evaluations and the settings.</p></li>
+</ul>
+</section>
+<section id="settings-seeds-and-executors">
+<h2>Settings, seeds and executors<a class="headerlink" href="#settings-seeds-and-executors" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">seed</span></code>, <code class="docutils literal notranslate"><span class="pre">steps</span></code>, <code class="docutils literal notranslate"><span class="pre">replicates</span></code>, <code class="docutils literal notranslate"><span class="pre">statistic</span></code> (<code class="docutils literal notranslate"><span class="pre">&quot;last&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;max&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;min&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code> or a
+function of the series), <code class="docutils literal notranslate"><span class="pre">store</span></code>, <code class="docutils literal notranslate"><span class="pre">executor</span></code>, <code class="docutils literal notranslate"><span class="pre">max_parallel</span></code> and <code class="docutils literal notranslate"><span class="pre">options</span></code> (the executor’s) are
+accepted by every function. The designs and the bootstrap are drawn from the seed, and every
+run’s seed comes from it as in an experiment, so the indices are the same on every executor and
+with any number of workers.</p>
+</section>
+<section id="from-the-command-line">
+<h2>From the command line<a class="headerlink" href="#from-the-command-line" title="Link to this heading">#</a></h2>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[experiment]</span>
+<span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"epidemic.py:Epidemic"</span><span class="w">   </span><span class="c1"># a Model class, or module:function of the parameters</span>
+<span class="n">steps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">60</span>
+<span class="n">replicates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">outputs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"infected"</span><span class="p">]</span><span class="w">           </span><span class="c1"># the first output is analysed</span>
+
+<span class="k">[space]</span>
+<span class="n">beta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">min</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.8</span><span class="w"> </span><span class="p">}</span>
+<span class="n">gamma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">min</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.3</span><span class="w"> </span><span class="p">}</span>
+<span class="n">initial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">min</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="p">}</span>
+<span class="n">population</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span>
+
+<span class="k">[sensitivity]</span>
+<span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"morris"</span><span class="w">                </span><span class="c1"># oat, morris, sobol, pawn</span>
+<span class="n">statistic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"max"</span>
+<span class="n">trajectories</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="w">                </span><span class="c1"># the method's settings</span>
+
+<span class="k">[run]</span>
+<span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"processes"</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modelly<span class="w"> </span>sensitivity<span class="w"> </span>study.toml
+modelly<span class="w"> </span>sensitivity<span class="w"> </span>study.toml<span class="w"> </span>--method<span class="w"> </span>pawn<span class="w"> </span>--executor<span class="w"> </span>threads
+modelly<span class="w"> </span>sensitivity<span class="w"> </span>study.toml<span class="w"> </span>--output<span class="w"> </span>ranking.csv
+</pre></div>
+</div>
+<p>It prints the ranking. Exit status: 0 when the analysis finished, 1 when a model run failed,
+2 for a bad command line or spec. <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">modelly.sensitivity</span></code> is the same command.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="calibration.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Calibration</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="emulators.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Emulators, active learning and history matching</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-worked-example-which-epidemic-parameters-matter">A worked example: which epidemic parameters matter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-at-a-time">One at a time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#morris-elementary-effects">Morris elementary effects</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sobol-indices">Sobol indices</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-bootstrap-interval-is-and-what-to-report">What the bootstrap interval is, and what to report</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pawn">PAWN</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#emulators-for-expensive-models">Emulators for expensive models</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#settings-seeds-and-executors">Settings, seeds and executors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-the-command-line">From the command line</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/sensitivity.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

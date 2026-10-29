@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Module Index &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=02f2166e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'py-modindex';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/py-modindex.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+
+
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+
+   <h1>Python Module Index</h1>
+
+   <div class="modindex-jumpbox">
+   <a href="#cap-m"><strong>m</strong></a>
+   </div>
+
+   <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-m"><td></td><td>
+       <strong>m</strong></td><td></td></tr>
+     <tr>
+       <td><img src="_static/minus.png" class="toggler"
+              id="toggle-1" style="display: none" alt="-" /></td>
+       <td>
+       <code class="xref">modelly</code></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/batch.html#module-modelly.batch.cohorts"><code class="xref">modelly.batch.cohorts</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/batch.html#module-modelly.batch.runs"><code class="xref">modelly.batch.runs</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/behaviour.html#module-modelly.behaviour.actions.action"><code class="xref">modelly.behaviour.actions.action</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/behaviour.html#module-modelly.behaviour.actions.actions"><code class="xref">modelly.behaviour.actions.actions</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/behaviour.html#module-modelly.behaviour.actions.lifecycle"><code class="xref">modelly.behaviour.actions.lifecycle</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/behaviour.html#module-modelly.behaviour.meta_agents.api"><code class="xref">modelly.behaviour.meta_agents.api</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/behaviour.html#module-modelly.behaviour.meta_agents.combinations"><code class="xref">modelly.behaviour.meta_agents.combinations</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/behaviour.html#module-modelly.behaviour.meta_agents.meta_agent"><code class="xref">modelly.behaviour.meta_agents.meta_agent</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/behaviour.html#module-modelly.behaviour.meta_agents.views"><code class="xref">modelly.behaviour.meta_agents.views</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/behaviour.html#module-modelly.behaviour.states.state"><code class="xref">modelly.behaviour.states.state</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/behaviour.html#module-modelly.behaviour.states.threshold"><code class="xref">modelly.behaviour.states.threshold</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.base"><code class="xref">modelly.calibrate.base</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.bayesopt"><code class="xref">modelly.calibrate.bayesopt</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.distance"><code class="xref">modelly.calibrate.distance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.external"><code class="xref">modelly.calibrate.external</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.gp"><code class="xref">modelly.calibrate.gp</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.kernels"><code class="xref">modelly.calibrate.kernels</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.moments"><code class="xref">modelly.calibrate.moments</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.optimize"><code class="xref">modelly.calibrate.optimize</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.plots"><code class="xref">modelly.calibrate.plots</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.pool"><code class="xref">modelly.calibrate.pool</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.posterior"><code class="xref">modelly.calibrate.posterior</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.priors"><code class="xref">modelly.calibrate.priors</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.rejection"><code class="xref">modelly.calibrate.rejection</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.simulator"><code class="xref">modelly.calibrate.simulator</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.smc"><code class="xref">modelly.calibrate.smc</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.spec"><code class="xref">modelly.calibrate.spec</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/calibrate.html#module-modelly.calibrate.targets"><code class="xref">modelly.calibrate.targets</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/core.html#module-modelly.core.agent"><code class="xref">modelly.core.agent</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/core.html#module-modelly.core.agentset.abstract"><code class="xref">modelly.core.agentset.abstract</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/core.html#module-modelly.core.agentset.groupby"><code class="xref">modelly.core.agentset.groupby</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/core.html#module-modelly.core.agentset.weak"><code class="xref">modelly.core.agentset.weak</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/core.html#module-modelly.core.checkpoint"><code class="xref">modelly.core.checkpoint</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/core.html#module-modelly.core.column_access"><code class="xref">modelly.core.column_access</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/core.html#module-modelly.core.columns"><code class="xref">modelly.core.columns</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/core.html#module-modelly.core.exceptions"><code class="xref">modelly.core.exceptions</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/core.html#module-modelly.core.model"><code class="xref">modelly.core.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/core.html#module-modelly.core.rng"><code class="xref">modelly.core.rng</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.core.streams"><code class="xref">modelly.core.streams</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/couple.html#module-modelly.couple.field"><code class="xref">modelly.couple.field</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/couple.html#module-modelly.couple.ode"><code class="xref">modelly.couple.ode</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/couple.html#module-modelly.couple.operator"><code class="xref">modelly.couple.operator</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/couple.html#module-modelly.couple.schedule"><code class="xref">modelly.couple.schedule</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.collector"><code class="xref">modelly.data.collector</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.io"><code class="xref">modelly.data.io</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.recorders.base"><code class="xref">modelly.data.recorders.base</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.recorders.config"><code class="xref">modelly.data.recorders.config</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.recorders.json_recorder"><code class="xref">modelly.data.recorders.json_recorder</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.recorders.memory"><code class="xref">modelly.data.recorders.memory</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.recorders.numpy_dataset"><code class="xref">modelly.data.recorders.numpy_dataset</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.recorders.object_datasets"><code class="xref">modelly.data.recorders.object_datasets</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.recorders.parquet"><code class="xref">modelly.data.recorders.parquet</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.recorders.protocol"><code class="xref">modelly.data.recorders.protocol</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.recorders.registry"><code class="xref">modelly.data.recorders.registry</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.recorders.sql"><code class="xref">modelly.data.recorders.sql</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/data.html#module-modelly.data.reporters"><code class="xref">modelly.data.reporters</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/diff.html#module-modelly.diff.calibrate"><code class="xref">modelly.diff.calibrate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/diff.html#module-modelly.diff.check"><code class="xref">modelly.diff.check</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/diff.html#module-modelly.diff.estimators"><code class="xref">modelly.diff.estimators</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/diff.html#module-modelly.diff.model"><code class="xref">modelly.diff.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.building"><code class="xref">modelly.distributed.building</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.checkpoints"><code class="xref">modelly.distributed.checkpoints</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.cluster"><code class="xref">modelly.distributed.cluster</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.contract"><code class="xref">modelly.distributed.contract</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.graphs"><code class="xref">modelly.distributed.graphs</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.groups"><code class="xref">modelly.distributed.groups</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.kdtree"><code class="xref">modelly.distributed.kdtree</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.partition"><code class="xref">modelly.distributed.partition</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.reduce"><code class="xref">modelly.distributed.reduce</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.remote"><code class="xref">modelly.distributed.remote</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.verify"><code class="xref">modelly.distributed.verify</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/distributed.html#module-modelly.distributed.worker"><code class="xref">modelly.distributed.worker</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/emulate.html#module-modelly.emulate.active"><code class="xref">modelly.emulate.active</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/emulate.html#module-modelly.emulate.base"><code class="xref">modelly.emulate.base</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/emulate.html#module-modelly.emulate.gaussian"><code class="xref">modelly.emulate.gaussian</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/emulate.html#module-modelly.emulate.history"><code class="xref">modelly.emulate.history</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/emulate.html#module-modelly.emulate.neural"><code class="xref">modelly.emulate.neural</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/emulate.html#module-modelly.emulate.simulation"><code class="xref">modelly.emulate.simulation</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.designs"><code class="xref">modelly.experiments.designs</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.executors"><code class="xref">modelly.experiments.executors</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.executors.cluster"><code class="xref">modelly.experiments.executors.cluster</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.executors.dask_executor"><code class="xref">modelly.experiments.executors.dask_executor</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.executors.local"><code class="xref">modelly.experiments.executors.local</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.executors.ray_executor"><code class="xref">modelly.experiments.executors.ray_executor</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.experiment"><code class="xref">modelly.experiments.experiment</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.space"><code class="xref">modelly.experiments.space</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.spec"><code class="xref">modelly.experiments.spec</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.store"><code class="xref">modelly.experiments.store</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.tasks"><code class="xref">modelly.experiments.tasks</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/experiments.html#module-modelly.experiments.worker"><code class="xref">modelly.experiments.worker</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/gpu.html#module-modelly.gpu.backend"><code class="xref">modelly.gpu.backend</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/gpu.html#module-modelly.gpu.binomial"><code class="xref">modelly.gpu.binomial</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/gpu.html#module-modelly.gpu.cells"><code class="xref">modelly.gpu.cells</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/gpu.html#module-modelly.gpu.cohorts"><code class="xref">modelly.gpu.cohorts</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/gpu.html#module-modelly.gpu.cupy_backend"><code class="xref">modelly.gpu.cupy_backend</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/gpu.html#module-modelly.gpu.jax_backend"><code class="xref">modelly.gpu.jax_backend</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/gpu.html#module-modelly.gpu.memory"><code class="xref">modelly.gpu.memory</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/gpu.html#module-modelly.gpu.philox"><code class="xref">modelly.gpu.philox</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/gpu.html#module-modelly.gpu.streams"><code class="xref">modelly.gpu.streams</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/gpu.html#module-modelly.gpu.table"><code class="xref">modelly.gpu.table</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/lint.html#module-modelly.lint"><code class="xref">modelly.lint</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/lint.html#module-modelly.lint.config"><code class="xref">modelly.lint.config</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/lint.html#module-modelly.lint.plugins"><code class="xref">modelly.lint.plugins</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/lint.html#module-modelly.lint.rules"><code class="xref">modelly.lint.rules</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/llm.html#module-modelly.llm"><code class="xref">modelly.llm</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/llm.html#module-modelly.llm.replay"><code class="xref">modelly.llm.replay</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/log.html#module-modelly.log"><code class="xref">modelly.log</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/migrate.html#module-modelly.migrate"><code class="xref">modelly.migrate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/plugins.html#module-modelly.plugins"><code class="xref">modelly.plugins</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/population.html#module-modelly.population.annealing"><code class="xref">modelly.population.annealing</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/population.html#module-modelly.population.contacts"><code class="xref">modelly.population.contacts</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/population.html#module-modelly.population.fitting"><code class="xref">modelly.population.fitting</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/population.html#module-modelly.population.households"><code class="xref">modelly.population.households</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/population.html#module-modelly.population.places"><code class="xref">modelly.population.places</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/profile.html#module-modelly.profile"><code class="xref">modelly.profile</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/profile.html#module-modelly.profile.profiler"><code class="xref">modelly.profile.profiler</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/provenance.html#module-modelly.provenance"><code class="xref">modelly.provenance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/provenance.html#module-modelly.provenance.bundle"><code class="xref">modelly.provenance.bundle</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/provenance.html#module-modelly.provenance.compare"><code class="xref">modelly.provenance.compare</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/provenance.html#module-modelly.provenance.llm"><code class="xref">modelly.provenance.llm</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/provenance.html#module-modelly.provenance.manifest"><code class="xref">modelly.provenance.manifest</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/provenance.html#module-modelly.provenance.odd"><code class="xref">modelly.provenance.odd</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/provenance.html#module-modelly.provenance.runner"><code class="xref">modelly.provenance.runner</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/provenance.html#module-modelly.provenance.verify"><code class="xref">modelly.provenance.verify</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/scenarios.html#module-modelly.scenarios.exceptions"><code class="xref">modelly.scenarios.exceptions</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/scenarios.html#module-modelly.scenarios.runner"><code class="xref">modelly.scenarios.runner</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/scenarios.html#module-modelly.scenarios.sampling"><code class="xref">modelly.scenarios.sampling</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/scenarios.html#module-modelly.scenarios.scenario"><code class="xref">modelly.scenarios.scenario</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/scenarios.html#module-modelly.scenarios.store"><code class="xref">modelly.scenarios.store</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/sensitivity.html#module-modelly.sensitivity.emulator"><code class="xref">modelly.sensitivity.emulator</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/sensitivity.html#module-modelly.sensitivity.pawn"><code class="xref">modelly.sensitivity.pawn</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/sensitivity.html#module-modelly.sensitivity.results"><code class="xref">modelly.sensitivity.results</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/sensitivity.html#module-modelly.sensitivity.screening"><code class="xref">modelly.sensitivity.screening</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/sensitivity.html#module-modelly.sensitivity.spec"><code class="xref">modelly.sensitivity.spec</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/sensitivity.html#module-modelly.sensitivity.study"><code class="xref">modelly.sensitivity.study</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/sensitivity.html#module-modelly.sensitivity.variance"><code class="xref">modelly.sensitivity.variance</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.base"><code class="xref">modelly.space.base</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.cells.agents"><code class="xref">modelly.space.cells.agents</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.cells.cell"><code class="xref">modelly.space.cells.cell</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.cells.collection"><code class="xref">modelly.space.cells.collection</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.cells.index"><code class="xref">modelly.space.cells.index</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.cells.occupancy"><code class="xref">modelly.space.cells.occupancy</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.continuous.agents"><code class="xref">modelly.space.continuous.agents</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.continuous.space"><code class="xref">modelly.space.continuous.space</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.continuous.vectorised"><code class="xref">modelly.space.continuous.vectorised</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.delaunay"><code class="xref">modelly.space.delaunay</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/geo.html#module-modelly.space.geo.agents"><code class="xref">modelly.space.geo.agents</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/geo.html#module-modelly.space.geo.export"><code class="xref">modelly.space.geo.export</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/geo.html#module-modelly.space.geo.raster"><code class="xref">modelly.space.geo.raster</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/geo.html#module-modelly.space.geo.regions"><code class="xref">modelly.space.geo.regions</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/geo.html#module-modelly.space.geo.roads"><code class="xref">modelly.space.geo.roads</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/geo.html#module-modelly.space.geo.samples"><code class="xref">modelly.space.geo.samples</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/geo.html#module-modelly.space.geo.space"><code class="xref">modelly.space.geo.space</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.grid.base"><code class="xref">modelly.space.grid.base</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.grid.grids"><code class="xref">modelly.space.grid.grids</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.grid.layers"><code class="xref">modelly.space.grid.layers</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.network"><code class="xref">modelly.space.network</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/networks.html#module-modelly.space.networks.base"><code class="xref">modelly.space.networks.base</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/networks.html#module-modelly.space.networks.collectors"><code class="xref">modelly.space.networks.collectors</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/networks.html#module-modelly.space.networks.contacts"><code class="xref">modelly.space.networks.contacts</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/networks.html#module-modelly.space.networks.io"><code class="xref">modelly.space.networks.io</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/networks.html#module-modelly.space.networks.multilayer"><code class="xref">modelly.space.networks.multilayer</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/networks.html#module-modelly.space.networks.temporal"><code class="xref">modelly.space.networks.temporal</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/space.html#module-modelly.space.voronoi"><code class="xref">modelly.space.voronoi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/stream.html#module-modelly.stream.bands"><code class="xref">modelly.stream.bands</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/stream.html#module-modelly.stream.connectors"><code class="xref">modelly.stream.connectors</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/stream.html#module-modelly.stream.ensemble"><code class="xref">modelly.stream.ensemble</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/stream.html#module-modelly.stream.kalman"><code class="xref">modelly.stream.kalman</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/stream.html#module-modelly.stream.operators"><code class="xref">modelly.stream.operators</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/stream.html#module-modelly.stream.particle"><code class="xref">modelly.stream.particle</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/stream.html#module-modelly.stream.sources"><code class="xref">modelly.stream.sources</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.analyses"><code class="xref">modelly.studio.analyses</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.app"><code class="xref">modelly.studio.app</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.assets"><code class="xref">modelly.studio.assets</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.assimilation"><code class="xref">modelly.studio.assimilation</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.browser"><code class="xref">modelly.studio.browser</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.config"><code class="xref">modelly.studio.config</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.data"><code class="xref">modelly.studio.data</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.ensembles"><code class="xref">modelly.studio.ensembles</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.exports"><code class="xref">modelly.studio.exports</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.figures"><code class="xref">modelly.studio.figures</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.loader"><code class="xref">modelly.studio.loader</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.mapview"><code class="xref">modelly.studio.mapview</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.params"><code class="xref">modelly.studio.params</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.recording"><code class="xref">modelly.studio.recording</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.scene"><code class="xref">modelly.studio.scene</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.session"><code class="xref">modelly.studio.session</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/studio.html#module-modelly.studio.timeline"><code class="xref">modelly.studio.timeline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.events.event"><code class="xref">modelly.time.events.event</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.events.event_list"><code class="xref">modelly.time.events.event_list</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.events.generator"><code class="xref">modelly.time.events.generator</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.schedule"><code class="xref">modelly.time.schedule</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.signals.batching"><code class="xref">modelly.time.signals.batching</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.signals.collections"><code class="xref">modelly.time.signals.collections</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.signals.computed"><code class="xref">modelly.time.signals.computed</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.signals.core"><code class="xref">modelly.time.signals.core</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.signals.emitters"><code class="xref">modelly.time.signals.emitters</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.signals.types"><code class="xref">modelly.time.signals.types</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/time.html#module-modelly.time.signals.util"><code class="xref">modelly.time.signals.util</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/timetravel.html#module-modelly.timetravel"><code class="xref">modelly.timetravel</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/timetravel.html#module-modelly.timetravel.diff"><code class="xref">modelly.timetravel.diff</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/timetravel.html#module-modelly.timetravel.recorder"><code class="xref">modelly.timetravel.recorder</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/timetravel.html#module-modelly.timetravel.report"><code class="xref">modelly.timetravel.report</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/timetravel.html#module-modelly.timetravel.ring"><code class="xref">modelly.timetravel.ring</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/timetravel.html#module-modelly.timetravel.snapshot"><code class="xref">modelly.timetravel.snapshot</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.altair.backend"><code class="xref">modelly.viz.altair.backend</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.altair.components"><code class="xref">modelly.viz.altair.components</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.animation"><code class="xref">modelly.viz.animation</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.components"><code class="xref">modelly.viz.components</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.console.console"><code class="xref">modelly.viz.console.console</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.mpl.backend"><code class="xref">modelly.viz.mpl.backend</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.mpl.components"><code class="xref">modelly.viz.mpl.components</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.mpl.figure"><code class="xref">modelly.viz.mpl.figure</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.mpl.space"><code class="xref">modelly.viz.mpl.space</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.palettes"><code class="xref">modelly.viz.palettes</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.render.backend"><code class="xref">modelly.viz.render.backend</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.render.drawers.base"><code class="xref">modelly.viz.render.drawers.base</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.render.drawers.continuous"><code class="xref">modelly.viz.render.drawers.continuous</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.render.drawers.hexagonal"><code class="xref">modelly.viz.render.drawers.hexagonal</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.render.drawers.network"><code class="xref">modelly.viz.render.drawers.network</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.render.drawers.orthogonal"><code class="xref">modelly.viz.render.drawers.orthogonal</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.render.drawers.voronoi"><code class="xref">modelly.viz.render.drawers.voronoi</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.render.portrayal"><code class="xref">modelly.viz.render.portrayal</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.render.renderer"><code class="xref">modelly.viz.render.renderer</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.solara.app"><code class="xref">modelly.viz.solara.app</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.solara.params"><code class="xref">modelly.viz.solara.params</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/viz.html#module-modelly.viz.styles"><code class="xref">modelly.viz.styles</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/web.html#module-modelly.web.export"><code class="xref">modelly.web.export</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/web.html#module-modelly.web.packages"><code class="xref">modelly.web.packages</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/web.html#module-modelly.web.runtime"><code class="xref">modelly.web.runtime</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/web.html#module-modelly.web.snapshot"><code class="xref">modelly.web.snapshot</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/web.html#module-modelly.web.wheel"><code class="xref">modelly.web.wheel</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.age_seir.model"><code class="xref">modelly.zoo.age_seir.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.axelrod.model"><code class="xref">modelly.zoo.axelrod.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/diff.html#module-modelly.zoo.bass_diffusion.differentiable"><code class="xref">modelly.zoo.bass_diffusion.differentiable</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.bass_diffusion.model"><code class="xref">modelly.zoo.bass_diffusion.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/diff.html#module-modelly.zoo.bouchaud_mezard.differentiable"><code class="xref">modelly.zoo.bouchaud_mezard.differentiable</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.bouchaud_mezard.model"><code class="xref">modelly.zoo.bouchaud_mezard.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.copy"><code class="xref">modelly.zoo.copy</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.deffuant.model"><code class="xref">modelly.zoo.deffuant.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.energy_budget.model"><code class="xref">modelly.zoo.energy_budget.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.forest_fire.model"><code class="xref">modelly.zoo.forest_fire.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.hegselmann_krause.model"><code class="xref">modelly.zoo.hegselmann_krause.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.hospital_epidemic.model"><code class="xref">modelly.zoo.hospital_epidemic.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.kinetic_wealth.model"><code class="xref">modelly.zoo.kinetic_wealth.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.measures"><code class="xref">modelly.zoo.measures</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.nagel_schreckenberg.model"><code class="xref">modelly.zoo.nagel_schreckenberg.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.nutrient_foragers.model"><code class="xref">modelly.zoo.nutrient_foragers.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.order_book.model"><code class="xref">modelly.zoo.order_book.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.registry"><code class="xref">modelly.zoo.registry</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="apis/zoo.html#module-modelly.zoo.vector_borne.model"><code class="xref">modelly.zoo.vector_borne.model</code></a></td><td>
+       <em></em></td></tr>
+   </table>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

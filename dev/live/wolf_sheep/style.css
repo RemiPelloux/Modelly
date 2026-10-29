@@ -1,0 +1,77 @@
+:root {
+  --ink: #16233b;
+  --muted: #4a5873;
+  --line: #e1e6ef;
+  --surface: #f5f7fb;
+  --accent: #3d5af1;
+  --error: #b8285a;
+  font-family: system-ui, sans-serif;
+  color: var(--ink);
+}
+
+body {
+  margin: 0 auto;
+  max-width: 72rem;
+  padding: 1rem;
+  background: #fff;
+}
+
+header h1 { margin: 0; font-size: 1.4rem; }
+#status { margin: 0.3rem 0 1rem; color: var(--muted); }
+body[data-state="error"] #status { color: var(--error); white-space: pre-wrap; }
+
+main {
+  display: grid;
+  grid-template-columns: minmax(14rem, 18rem) 1fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 60rem) {
+  main { grid-template-columns: 1fr; }
+}
+
+fieldset {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin: 0 0 0.8rem;
+  padding: 0.5rem 0.8rem;
+}
+
+label {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.3rem 0;
+  overflow-wrap: anywhere;
+}
+input, select { width: 6rem; font: inherit; }
+input[type="checkbox"] { width: auto; justify-self: end; }
+output { min-width: 2.5rem; font-variant-numeric: tabular-nums; }
+
+.buttons { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+button {
+  font: inherit;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.4; cursor: default; }
+
+figure { margin: 0; }
+canvas {
+  width: 100%;
+  height: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+figcaption { font-size: 0.85rem; color: var(--muted); }
+figcaption span { margin-right: 0.8rem; white-space: nowrap; }
+figcaption i { display: inline-block; width: 0.7rem; height: 0.7rem; margin-right: 0.25rem; }
+
+footer { margin-top: 1rem; font-size: 0.8rem; color: var(--muted); }

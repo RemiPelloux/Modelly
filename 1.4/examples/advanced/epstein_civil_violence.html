@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Epstein Civil Violence Model &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../../_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="../../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../_static/documentation_options.js?v=02f2166e"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/advanced/epstein_civil_violence';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/examples/advanced/epstein_civil_violence.html" />
+    <link rel="icon" href="../../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Sugarscape Constant Growback Model with Traders" href="sugarscape_g1mt.html" />
+    <link rel="prev" title="Demographic Prisoner’s Dilemma on a Grid" href="pd_grid.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.4" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../examples.html">Core examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic/boltzmann_wealth_model.html">boltzmann wealth model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/schelling.html">schelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/virus_on_network.html">virus on network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/conways_game_of_life.html">conways game of life</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/boid_flockers.html">boid flockers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wolf_sheep.html">wolf sheep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alliance_formation.html">alliance formation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pd_grid.html">pd grid</a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">epstein civil violence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sugarscape_g1mt.html">sugarscape g1mt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../behaviour/tram_model.html">tram model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spatial/commuting_city.html">commuting city</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spatial/layered_epidemic.html">layered epidemic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../llm/llm_opinions.html">llm opinions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../zoo/index.html">Model zoo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/age_seir.html">Age-structured SEIR with contact matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/vector_borne.html">Vector-borne transmission on a landscape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/habitat_selection.html">Habitat selection on a real land-cover raster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/hospital_epidemic.html">Epidemic coupled to hospital capacity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/energy_budget.html">Individual-based population with energy budgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/nutrient_foragers.html">Foragers on a diffusing nutrient field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/forest_fire.html">Forest fire and succession on a raster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/order_book.html">Continuous double auction (zero-intelligence order book)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/kinetic_wealth.html">Boltzmann wealth exchange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/bouchaud_mezard.html">Bouchaud-Mezard wealth condensation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/deffuant.html">Deffuant bounded-confidence opinion dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/hegselmann_krause.html">Hegselmann-Krause bounded-confidence opinion dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/schelling_regions.html">Schelling segregation on real neighbourhoods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/axelrod.html">Axelrod culture dissemination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/nagel_schreckenberg.html">Nagel-Schreckenberg traffic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/road_traffic.html">Traffic assignment on a real street network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../zoo/bass_diffusion.html">Bass diffusion of innovation on a network</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gallery.html">Gallery</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../models.html" class="nav-link">Example models</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../examples.html" class="nav-link">Modelly Core Examples</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Epstein Civil Violence Model</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="epstein-civil-violence-model">
+<h1>Epstein Civil Violence Model<a class="headerlink" href="#epstein-civil-violence-model" title="Link to this heading">#</a></h1>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>This model is based on Joshua Epstein’s simulation of how civil unrest grows and is suppressed. Citizen agents wander the grid randomly, and are endowed with individual risk aversion and hardship levels; there is also a universal regime legitimacy value. There are also Cop agents, who work on behalf of the regime. Cops arrest Citizens who are actively rebelling; Citizens decide whether to rebel based on their hardship and the regime legitimacy, and their perceived probability of arrest.</p>
+<p>The model generates mass uprising as self-reinforcing processes: if enough agents are rebelling, the probability of any individual agent being arrested is reduced, making more agents more likely to join the uprising. However, the more rebelling Citizens the Cops arrest, the less likely additional agents become to join.</p>
+</section>
+<section id="how-to-run">
+<h2>How to Run<a class="headerlink" href="#how-to-run" title="Link to this heading">#</a></h2>
+<p>Install Modelly with recommended dependencies:</p>
+<p>pip install “modelly-abm[rec]”</p>
+<p>Then run the example:</p>
+<p>solara run app.py</p>
+<p>Open the displayed local URL in your browser.</p>
+</section>
+<section id="files">
+<h2>Files<a class="headerlink" href="#files" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">model.py</span></code>: Core model code.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agents.py</span></code>: Agent classes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">app.py</span></code>: Sets up the interactive visualization.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Epstein</span> <span class="pre">Civil</span> <span class="pre">Violence.ipynb</span></code>: Jupyter notebook conducting some preliminary analysis of the model.</p></li>
+</ul>
+</section>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading">#</a></h2>
+<p>This model is based adapted from:</p>
+<p><a class="reference external" href="https://doi.org/10.1073/pnas.092080199">Epstein, J. “Modeling civil violence: An agent-based computational approach”, Proceedings of the National Academy of Sciences, Vol. 99, Suppl. 3, May 14, 2002</a></p>
+<p>A similar model is also included with NetLogo:</p>
+<p>Wilensky, U. (2004). NetLogo Rebellion model. http://ccl.northwestern.edu/netlogo/models/Rebellion. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.</p>
+</section>
+<section id="agents">
+<h2>Agents<a class="headerlink" href="#agents" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CitizenState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ACTIVE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">QUIET</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">ARRESTED</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EpsteinAgent</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">CellAgent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Look around and see who my neighbors are</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neighborhood</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">get_neighborhood</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">cop_vision</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">empty_neighbors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">empties</span><span class="o">.</span><span class="n">cells</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Move to a random empty neighboring cell if movement is enabled."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">movement</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_neighbors</span><span class="p">:</span>
+            <span class="n">new_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">empty_neighbors</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">new_pos</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Citizen</span><span class="p">(</span><span class="n">EpsteinAgent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    A member of the general population, may or may not be in active rebellion.</span>
+<span class="sd">    Summary of rule: If grievance - risk &gt; threshold, rebel.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        hardship: Agent's 'perceived hardship (i.e., physical or economic</span>
+<span class="sd">            privation).' Exogenous, drawn from U(0,1).</span>
+<span class="sd">        risk_aversion: Exogenous, drawn from U(0,1).</span>
+<span class="sd">        state: Can be CitizenState.QUIET, ACTIVE, or ARRESTED</span>
+<span class="sd">        jail_sentence: remaining jail time (0 if not in jail)</span>
+<span class="sd">        grievance: deterministic function of hardship and regime_legitimacy;</span>
+<span class="sd">            how aggrieved is agent at the regime?</span>
+<span class="sd">        arrest_probability: agent's assessment of arrest probability, given rebellion</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        Parameters accessed via model.scenario: legitimacy, active_threshold, citizen_vision, arrest_prob_constant</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Create a new Citizen.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: the model to which the agent belongs</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hardship</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">risk_aversion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">CitizenState</span><span class="o">.</span><span class="n">QUIET</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jail_sentence</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grievance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hardship</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">legitimacy</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arrest_probability</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neighborhood</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neighbors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">empty_neighbors</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Decide whether to activate, then move if applicable.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jail_sentence</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jail_sentence</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">return</span>  <span class="c1"># no other changes or movements if agent is in jail.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_neighbors</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_estimated_arrest_probability</span><span class="p">()</span>
+
+        <span class="n">net_risk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">risk_aversion</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrest_probability</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grievance</span> <span class="o">-</span> <span class="n">net_risk</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">active_threshold</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">CitizenState</span><span class="o">.</span><span class="n">ACTIVE</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">CitizenState</span><span class="o">.</span><span class="n">QUIET</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_estimated_arrest_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Based on the ratio of cops to actives in my neighborhood, estimate the</span>
+<span class="sd">        p(Arrest | I go active).</span>
+<span class="sd">        """</span>
+        <span class="n">cops_in_vision</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">actives_in_vision</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># citizen counts herself</span>
+        <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">neighbor</span><span class="p">,</span> <span class="n">Cop</span><span class="p">):</span>
+                <span class="n">cops_in_vision</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">neighbor</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">CitizenState</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">:</span>
+                <span class="n">actives_in_vision</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># there is a body of literature on this equation</span>
+        <span class="c1"># the round is not in the pnas paper but without it, its impossible to replicate</span>
+        <span class="c1"># the dynamics shown there.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arrest_probability</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">arrest_prob_constant</span>
+            <span class="o">*</span> <span class="nb">round</span><span class="p">(</span><span class="n">cops_in_vision</span> <span class="o">/</span> <span class="n">actives_in_vision</span><span class="p">)</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Cop</span><span class="p">(</span><span class="n">EpsteinAgent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    A cop for life. No defection.</span>
+<span class="sd">    Summary of rule: Inspect local vision and arrest a random active agent.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        Parameters accessed via model.scenario: cop_vision, max_jail_term</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Create a new Cop.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: model instance</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Inspect local vision and arrest a random active agent. Move if</span>
+<span class="sd">        applicable.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_neighbors</span><span class="p">()</span>
+        <span class="n">active_neighbors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">Citizen</span><span class="p">)</span> <span class="ow">and</span> <span class="n">agent</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">CitizenState</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">:</span>
+                <span class="n">active_neighbors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">agent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">active_neighbors</span><span class="p">:</span>
+            <span class="n">arrestee</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">active_neighbors</span><span class="p">)</span>
+            <span class="n">arrestee</span><span class="o">.</span><span class="n">jail_sentence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">max_jail_term</span><span class="p">)</span>
+            <span class="n">arrestee</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">CitizenState</span><span class="o">.</span><span class="n">ARRESTED</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">()</span>
+
+</pre></div>
+</div>
+</section>
+<section id="model">
+<h2>Model<a class="headerlink" href="#model" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples.advanced.epstein_civil_violence.agents</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Citizen</span><span class="p">,</span>
+    <span class="n">CitizenState</span><span class="p">,</span>
+    <span class="n">Cop</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.scenarios</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scenario</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrthogonalMooreGrid</span><span class="p">,</span> <span class="n">OrthogonalVonNeumannGrid</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">jail_sentence</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""An agent's remaining jail term, or None for agents that are never jailed."""</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="s2">"jail_sentence"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">arrest_probability</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A citizen's estimated arrest probability, or None for cops."""</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="s2">"arrest_probability"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<span class="c1"># Define a typed scenario subclass with defaults</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EpsteinScenario</span><span class="p">(</span><span class="n">Scenario</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Scenario parameters for Epstein Civil Violence model."""</span>
+
+    <span class="n">citizen_density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span>
+    <span class="n">cop_density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.074</span>
+    <span class="n">citizen_vision</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">cop_vision</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">legitimacy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.8</span>
+    <span class="n">max_jail_term</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">active_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">arrest_prob_constant</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.3</span>
+    <span class="n">movement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">max_iters</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">activation_order</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"Random"</span><span class="p">,</span> <span class="s2">"Sequential"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Random"</span>
+    <span class="n">grid_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"Von Neumann"</span><span class="p">,</span> <span class="s2">"Moore"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Von Neumann"</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EpsteinCivilViolence</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Model 1 from "Modeling civil violence: An agent-based computational</span>
+<span class="sd">    approach," by Joshua Epstein.</span>
+<span class="sd">    http://www.pnas.org/content/99/suppl_3/7243.full</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        height: grid height</span>
+<span class="sd">        width: grid width</span>
+<span class="sd">        seed: random seed for reproducibility</span>
+<span class="sd">        scenario: EpsteinScenario object containing model parameters.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+        <span class="n">scenario</span><span class="p">:</span> <span class="n">EpsteinScenario</span> <span class="o">=</span> <span class="n">EpsteinScenario</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">scenario</span><span class="o">=</span><span class="n">scenario</span><span class="p">)</span>
+
+        <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">grid_type</span><span class="p">:</span>
+            <span class="k">case</span> <span class="s2">"Moore"</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalMooreGrid</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">torus</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span>
+                <span class="p">)</span>
+            <span class="k">case</span> <span class="s2">"Von Neumann"</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalVonNeumannGrid</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">torus</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span>
+                <span class="p">)</span>
+            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Unknown value of grid_type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">grid_type</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+
+        <span class="n">model_reporters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"active"</span><span class="p">:</span> <span class="n">CitizenState</span><span class="o">.</span><span class="n">ACTIVE</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">"quiet"</span><span class="p">:</span> <span class="n">CitizenState</span><span class="o">.</span><span class="n">QUIET</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">"arrested"</span><span class="p">:</span> <span class="n">CitizenState</span><span class="o">.</span><span class="n">ARRESTED</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">agent_reporters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"jail_sentence"</span><span class="p">:</span> <span class="n">jail_sentence</span><span class="p">,</span>
+            <span class="s2">"arrest_probability"</span><span class="p">:</span> <span class="n">arrest_probability</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">DataCollector</span><span class="p">(</span>
+            <span class="n">model_reporters</span><span class="o">=</span><span class="n">model_reporters</span><span class="p">,</span> <span class="n">agent_reporters</span><span class="o">=</span><span class="n">agent_reporters</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">cop_density</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">citizen_density</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cop density + citizen density must be less than 1"</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="p">:</span>
+            <span class="n">klass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">Citizen</span><span class="p">,</span> <span class="n">Cop</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                <span class="n">cum_weights</span><span class="o">=</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">citizen_density</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">citizen_density</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">cop_density</span><span class="p">,</span>
+                    <span class="mi">1</span><span class="p">,</span>
+                <span class="p">],</span>
+            <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">klass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">agent</span> <span class="o">=</span> <span class="n">klass</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># Either Citizen or Cop</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_counts</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Advance the model by one step and collect data.</span>
+<span class="sd">        """</span>
+        <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">activation_order</span><span class="p">:</span>
+            <span class="k">case</span> <span class="s2">"Random"</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+            <span class="k">case</span> <span class="s2">"Sequential"</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"unknown value of activation_order: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">activation_order</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_counts</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">max_iters</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Helper function for counting nr. of citizens in given state."""</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents_by_type</span><span class="p">[</span><span class="n">Citizen</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"state"</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">CitizenState</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+</pre></div>
+</div>
+</section>
+<section id="app">
+<h2>App<a class="headerlink" href="#app" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples.advanced.epstein_civil_violence.agents</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Citizen</span><span class="p">,</span>
+    <span class="n">CitizenState</span><span class="p">,</span>
+    <span class="n">Cop</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples.advanced.epstein_civil_violence.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpsteinCivilViolence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Slider</span><span class="p">,</span>
+    <span class="n">SolaraViz</span><span class="p">,</span>
+    <span class="n">SpaceRenderer</span><span class="p">,</span>
+    <span class="n">make_plot_component</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentPortrayalStyle</span>
+
+<span class="n">COP_COLOR</span> <span class="o">=</span> <span class="s2">"#000000"</span>
+
+<span class="n">agent_colors</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">CitizenState</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">:</span> <span class="s2">"#FE6100"</span><span class="p">,</span>
+    <span class="n">CitizenState</span><span class="o">.</span><span class="n">QUIET</span><span class="p">:</span> <span class="s2">"#648FFF"</span><span class="p">,</span>
+    <span class="n">CitizenState</span><span class="o">.</span><span class="n">ARRESTED</span><span class="p">:</span> <span class="s2">"#808080"</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">citizen_cop_portrayal</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">agent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">portrayal</span> <span class="o">=</span> <span class="n">AgentPortrayalStyle</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">Citizen</span><span class="p">):</span>
+        <span class="n">portrayal</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="s2">"color"</span><span class="p">,</span> <span class="n">agent_colors</span><span class="p">[</span><span class="n">agent</span><span class="o">.</span><span class="n">state</span><span class="p">]))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">Cop</span><span class="p">):</span>
+        <span class="n">portrayal</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="s2">"color"</span><span class="p">,</span> <span class="n">COP_COLOR</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">portrayal</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">post_process</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">"equal"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+
+<span class="n">model_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"rng"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"InputText"</span><span class="p">,</span>
+        <span class="s2">"value"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+        <span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Random Seed"</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">"height"</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+    <span class="s2">"width"</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+    <span class="s2">"citizen_density"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Initial Agent Density"</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+    <span class="s2">"cop_density"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Initial Cop Density"</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
+    <span class="s2">"citizen_vision"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Citizen Vision"</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"cop_vision"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Cop Vision"</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"legitimacy"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Government Legitimacy"</span><span class="p">,</span> <span class="mf">0.82</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
+    <span class="s2">"max_jail_term"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span><span class="s2">"Max Jail Term"</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"activation_order"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"Select"</span><span class="p">,</span>
+        <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"Random"</span><span class="p">,</span>
+        <span class="s2">"values"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Random"</span><span class="p">,</span> <span class="s2">"Sequential"</span><span class="p">],</span>
+        <span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Activation Order"</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">"grid_type"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"Select"</span><span class="p">,</span>
+        <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"Von Neumann"</span><span class="p">,</span>
+        <span class="s2">"values"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Von Neumann"</span><span class="p">,</span> <span class="s2">"Moore"</span><span class="p">],</span>
+        <span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Grid Type"</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+
+<span class="n">chart_component</span> <span class="o">=</span> <span class="n">make_plot_component</span><span class="p">(</span>
+    <span class="p">{</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">agent_colors</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">CitizenState</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">epstein_model</span> <span class="o">=</span> <span class="n">EpsteinCivilViolence</span><span class="p">()</span>
+<span class="n">renderer</span> <span class="o">=</span> <span class="n">SpaceRenderer</span><span class="p">(</span><span class="n">epstein_model</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"matplotlib"</span><span class="p">)</span><span class="o">.</span><span class="n">setup_agents</span><span class="p">(</span>
+    <span class="n">citizen_cop_portrayal</span>
+<span class="p">)</span>
+<span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+<span class="n">renderer</span><span class="o">.</span><span class="n">post_process</span> <span class="o">=</span> <span class="n">post_process</span>
+
+<span class="n">page</span> <span class="o">=</span> <span class="n">SolaraViz</span><span class="p">(</span>
+    <span class="n">epstein_model</span><span class="p">,</span>
+    <span class="n">renderer</span><span class="p">,</span>
+    <span class="n">components</span><span class="o">=</span><span class="p">[</span><span class="n">chart_component</span><span class="p">],</span>
+    <span class="n">model_params</span><span class="o">=</span><span class="n">model_params</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Epstein Civil Violence"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">page</span>  <span class="c1"># noqa</span>
+
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pd_grid.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Demographic Prisoner’s Dilemma on a Grid</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="sugarscape_g1mt.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Sugarscape Constant Growback Model with Traders</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-run">How to Run</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#files">Files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further Reading</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#agents">Agents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#app">App</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/examples/advanced/epstein_civil_violence.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Web &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=7277ebde" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'apis/web';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/apis/web.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="logging" href="log.html" />
+    <link rel="prev" title="Studio" href="studio.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="space.html">Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geo.html">Geospatial space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">Synthetic populations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time.html">Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="behaviour.html">Behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenarios.html">Scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibrate.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="couple.html">Coupling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emulate.html">Emulate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu.html">GPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diff.html">Differentiable models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viz.html">Viz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrate.html">Migrate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Lint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">LLM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zoo.html">Model zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distributed.html">Distributed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stream.html">Stream</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="api_main.html" class="nav-link">APIs</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Web</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="web">
+<h1>Web<a class="headerlink" href="#web" title="Link to this heading">#</a></h1>
+<p>Modelly in the browser: <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">export-web</span></code> and the Python its pages run in Pyodide. How to
+use it is in <a class="reference internal" href="../browser.html"><span class="std std-doc">Modelly in the browser</span></a>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Module</p></th>
+<th class="head"><p>Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.web.export</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">WebExport</span></code>, <code class="docutils literal notranslate"><span class="pre">export_web</span></code>, <code class="docutils literal notranslate"><span class="pre">PYODIDE_VERSION</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.web.packages</span></code></p></td>
+<td><p>the Pyodide packages a model needs</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.web.wheel</span></code></p></td>
+<td><p>the pure-Python wheel a site ships</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.web.runtime</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">BrowserRun</span></code>, what the page’s Web Worker calls</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.web.snapshot</span></code></p></td>
+<td><p>the series and agent places the page draws</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p id="module-modelly.web.export"><code class="docutils literal notranslate"><span class="pre">export_web</span></code>: write a static site that runs a model in the browser with Pyodide.</p>
+<p>The site is plain files, deployable on GitHub Pages or any static host:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">index</span><span class="o">.</span><span class="n">html</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">js</span><span class="p">,</span> <span class="n">draw</span><span class="o">.</span><span class="n">js</span><span class="p">,</span> <span class="n">worker</span><span class="o">.</span><span class="n">js</span><span class="p">,</span> <span class="n">style</span><span class="o">.</span><span class="n">css</span>   <span class="n">the</span> <span class="n">runner</span> <span class="n">page</span>
+<span class="n">modelly</span><span class="o">.</span><span class="n">json</span>                                         <span class="n">what</span> <span class="n">to</span> <span class="n">load</span> <span class="ow">and</span> <span class="n">run</span>
+<span class="n">wheels</span><span class="o">/</span><span class="n">modelly_abm</span><span class="o">-&lt;</span><span class="n">version</span><span class="o">&gt;-</span><span class="n">py3</span><span class="o">-</span><span class="n">none</span><span class="o">-</span><span class="nb">any</span><span class="o">.</span><span class="n">whl</span>        <span class="n">Modelly</span><span class="p">,</span> <span class="n">pure</span> <span class="n">Python</span>
+<span class="n">model</span><span class="o">.</span><span class="n">zip</span>                                            <span class="n">the</span> <span class="n">model</span><span class="s1">'s code, unless it is</span>
+                                                     <span class="n">part</span> <span class="n">of</span> <span class="n">Modelly</span> <span class="p">(</span><span class="n">an</span> <span class="n">example</span><span class="p">,</span> <span class="n">a</span>
+                                                     <span class="n">zoo</span> <span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Pyodide itself comes from its CDN at the pinned <code class="docutils literal notranslate"><span class="pre">PYODIDE_VERSION</span></code>, with only the
+packages the model was seen to import (<code class="docutils literal notranslate"><span class="pre">modelly.web.packages</span></code>).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.web.export.WebExport">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">WebExport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">42</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wheel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyodide_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://cdn.jsdelivr.net/pyodide/v314.0.7/full/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_packages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_packages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/web/export.html#WebExport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.export.WebExport" title="Link to this definition">#</a></dt>
+<dd><p>What <code class="docutils literal notranslate"><span class="pre">export_web</span></code> writes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The model, <code class="docutils literal notranslate"><span class="pre">path/to/model.py:Class</span></code> or <code class="docutils literal notranslate"><span class="pre">package.module:Class</span></code>.</p></li>
+<li><p><strong>out</strong> (<a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><em>pathlib.Path</em></a>) – The folder the site is written to (created; files in it are replaced).</p></li>
+<li><p><strong>steps</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The steps the export runs the model for, to check it and to see what it
+imports; also the page’s default run length.</p></li>
+<li><p><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – The seed of that run and the page’s default seed.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The page title; the model class name when empty.</p></li>
+<li><p><strong>wheel</strong> (<a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><em>pathlib.Path</em></a><em> | </em><em>None</em>) – A Modelly wheel to ship instead of the pure one built from this install,
+such as one built for WebAssembly with <code class="docutils literal notranslate"><span class="pre">pyodide</span> <span class="pre">build</span></code>.</p></li>
+<li><p><strong>pyodide_url</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Where the page loads Pyodide from (the pinned CDN release).</p></li>
+<li><p><strong>add_packages</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>...</em><em>]</em>) – Pyodide packages to load in addition to the detected ones.</p></li>
+<li><p><strong>skip_packages</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>...</em><em>]</em>) – Detected packages not to load.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.export.export_web">
+<span class="sig-name descname"><span class="pre">export_web</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.web.export.WebExport" title="modelly.web.export.WebExport"><span class="pre">WebExport</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/web/export.html#export_web"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.export.export_web" title="Link to this definition">#</a></dt>
+<dd><p>Write the static site <code class="docutils literal notranslate"><span class="pre">options</span></code> describes; the manifest it wrote.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>TargetError</strong> – When the model cannot be found, built or run for <code class="docutils literal notranslate"><span class="pre">steps</span></code> steps.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.export.model_code">
+<span class="sig-name descname"><span class="pre">model_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ModelCode</span></span></span><a class="reference internal" href="../_modules/modelly/web/export.html#model_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.export.model_code" title="Link to this definition">#</a></dt>
+<dd><p>The import name of <code class="docutils literal notranslate"><span class="pre">target</span></code>’s module and the files the site needs for it.</p>
+</dd></dl>
+
+<p id="module-modelly.web.packages">The Pyodide packages a model needs: the ones its import and its first steps load.</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">modelly.web.packages</span> <span class="pre">TARGET</span> <span class="pre">STEPS</span> <span class="pre">SEED</span></code> builds the model in a fresh
+interpreter, runs it, and prints the distributions of the third-party modules imported
+after <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">modelly</span></code> as JSON. <code class="docutils literal notranslate"><span class="pre">needed_packages</span></code> runs it in a subprocess, so what the
+exporting process imported before does not count. <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">modelly</span></code> itself needs only
+<code class="docutils literal notranslate"><span class="pre">CORE</span></code> in the browser; the page loads nothing else, so an optional dependency the model
+does not use (matplotlib for networkx, pyarrow for pandas) is not downloaded.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelly.web.packages.ModelRunError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ModelRunError</span></span><a class="reference internal" href="../_modules/modelly/web/packages.html#ModelRunError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.packages.ModelRunError" title="Link to this definition">#</a></dt>
+<dd><p>The model was found but raised while it was built or run.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.packages.distributions_of">
+<span class="sig-name descname"><span class="pre">distributions_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#set" title="(in Python v3.15)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#set" title="(in Python v3.15)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/web/packages.html#distributions_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.packages.distributions_of" title="Link to this definition">#</a></dt>
+<dd><p>The installed distributions that provide <code class="docutils literal notranslate"><span class="pre">modules</span></code>, stdlib and Modelly excluded.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.packages.needed_packages">
+<span class="sig-name descname"><span class="pre">needed_packages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/web/packages.html#needed_packages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.packages.needed_packages" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">probe</span></code> in a fresh interpreter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#modelly.web.packages.ModelRunError" title="modelly.web.packages.ModelRunError"><strong>ModelRunError</strong></a> – When the model cannot be imported, built or run.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.packages.normalise">
+<span class="sig-name descname"><span class="pre">normalise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/modelly/web/packages.html#normalise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.packages.normalise" title="Link to this definition">#</a></dt>
+<dd><p>A distribution name as Pyodide’s lock file spells it (PEP 503).</p>
+</dd></dl>
+
+<p id="module-modelly.web.wheel">The pure-Python wheel of Modelly a static site ships for Pyodide.</p>
+<p><code class="docutils literal notranslate"><span class="pre">write_wheel</span></code> packs the installed <code class="docutils literal notranslate"><span class="pre">modelly</span></code> package, without its compiled modules (the
+pure-Python twins replace them), its C sources and the parts that cannot run in a browser
+tab or that a model does not import (<code class="docutils literal notranslate"><span class="pre">EXCLUDED</span></code>: the command-line tools, Solara
+visualisation, the examples). An example model’s own folder is kept, so an exported
+example finds its code. The wheel is deterministic: same files, same bytes.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.wheel.package_files">
+<span class="sig-name descname"><span class="pre">package_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePosixPath" title="(in Python v3.15)"><span class="pre">PurePosixPath</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePosixPath" title="(in Python v3.15)"><span class="pre">PurePosixPath</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/web/wheel.html#package_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.wheel.package_files" title="Link to this definition">#</a></dt>
+<dd><p>The package’s files the wheel holds, relative to its root, sorted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>keep</strong> – A folder under an excluded part (<code class="docutils literal notranslate"><span class="pre">examples/basic/schelling</span></code>) to keep.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.wheel.wheel_name">
+<span class="sig-name descname"><span class="pre">wheel_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1.4.2'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/modelly/web/wheel.html#wheel_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.wheel.wheel_name" title="Link to this definition">#</a></dt>
+<dd><p>The file name of the browser wheel of <code class="docutils literal notranslate"><span class="pre">version</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.wheel.write_wheel">
+<span class="sig-name descname"><span class="pre">write_wheel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePosixPath" title="(in Python v3.15)"><span class="pre">PurePosixPath</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../_modules/modelly/web/wheel.html#write_wheel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.wheel.write_wheel" title="Link to this definition">#</a></dt>
+<dd><p>Write the browser wheel into <code class="docutils literal notranslate"><span class="pre">out_dir</span></code>; its path.</p>
+</dd></dl>
+
+<p id="module-modelly.web.runtime">The Python half of the browser runner: what the page’s Web Worker calls in Pyodide.</p>
+<p><code class="docutils literal notranslate"><span class="pre">BrowserRun</span></code> builds the model from the parameter panel’s values, advances it a few
+steps at a time and reports what the page draws. Values cross the JavaScript boundary as
+JSON strings, so the worker never holds a Python object but the run itself.</p>
+<p>The panel’s fields are Studio’s (<code class="docutils literal notranslate"><span class="pre">modelly.studio.params</span></code>), encoded for the page by
+<code class="docutils literal notranslate"><span class="pre">encode_parameter</span></code>: a <code class="docutils literal notranslate"><span class="pre">choice</span></code> sends the index of the selected value, a <code class="docutils literal notranslate"><span class="pre">fixed</span></code>
+field is shown as its <code class="docutils literal notranslate"><span class="pre">repr</span></code> and keeps its default.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.web.runtime.BrowserRun">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">BrowserRun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/web/runtime.html#BrowserRun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.runtime.BrowserRun" title="Link to this definition">#</a></dt>
+<dd><p>One model in a browser tab, rebuilt by <code class="docutils literal notranslate"><span class="pre">build</span></code> and advanced by <code class="docutils literal notranslate"><span class="pre">advance</span></code>.</p>
+<p>Load the model class <code class="docutils literal notranslate"><span class="pre">target</span></code> names (<code class="docutils literal notranslate"><span class="pre">package.module:Class</span></code>).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.web.runtime.BrowserRun.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values_json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/web/runtime.html#BrowserRun.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.runtime.BrowserRun.build" title="Link to this definition">#</a></dt>
+<dd><p>A new model from the panel’s <code class="docutils literal notranslate"><span class="pre">values</span></code> (JSON, by name) and <code class="docutils literal notranslate"><span class="pre">seed</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.web.runtime.BrowserRun.advance">
+<span class="sig-name descname"><span class="pre">advance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">budget_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/modelly/web/runtime.html#BrowserRun.advance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.runtime.BrowserRun.advance" title="Link to this definition">#</a></dt>
+<dd><p>Up to <code class="docutils literal notranslate"><span class="pre">steps</span></code> steps, fewer when the time budget ends or the model stops.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.web.runtime.BrowserRun.state_json">
+<span class="sig-name descname"><span class="pre">state_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">colour_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'class'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/modelly/web/runtime.html#BrowserRun.state_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.runtime.BrowserRun.state_json" title="Link to this definition">#</a></dt>
+<dd><p>The page’s view of the run: time, the new reporter rows and the space.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.runtime.decode_value">
+<span class="sig-name descname"><span class="pre">decode_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="studio.html#modelly.studio.params.Parameter" title="modelly.studio.params.Parameter"><span class="pre">Parameter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/modelly/web/runtime.html#decode_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.runtime.decode_value" title="Link to this definition">#</a></dt>
+<dd><p>The value the page sent for <code class="docutils literal notranslate"><span class="pre">parameter</span></code>, as the model takes it.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.runtime.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><span class="pre">type</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/web/runtime.html#describe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.runtime.describe" title="Link to this definition">#</a></dt>
+<dd><p>The parameter panel of <code class="docutils literal notranslate"><span class="pre">model_class</span></code>, encoded for the page.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.runtime.encode_parameter">
+<span class="sig-name descname"><span class="pre">encode_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="studio.html#modelly.studio.params.Parameter" title="modelly.studio.params.Parameter"><span class="pre">Parameter</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/web/runtime.html#encode_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.runtime.encode_parameter" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">parameter</span></code> as the JSON the page builds its field from.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.runtime.native_modules">
+<span class="sig-name descname"><span class="pre">native_modules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/web/runtime.html#native_modules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.runtime.native_modules" title="Link to this definition">#</a></dt>
+<dd><p>The compiled <code class="docutils literal notranslate"><span class="pre">modelly._native</span></code> modules this interpreter can import.</p>
+</dd></dl>
+
+<p id="module-modelly.web.snapshot">What the browser runner draws: the agents’ places in space and the model reporters.</p>
+<p>Plain functions of a model that return JSON-ready values, so the page’s space view and
+plot read the same data in Pyodide and the tests read it in CPython.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.snapshot.colour_attributes">
+<span class="sig-name descname"><span class="pre">colour_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/web/snapshot.html#colour_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.snapshot.colour_attributes" title="Link to this definition">#</a></dt>
+<dd><p>The numeric attributes of the agents the space view can colour by, sorted.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.snapshot.series_rows">
+<span class="sig-name descname"><span class="pre">series_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/web/snapshot.html#series_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.snapshot.series_rows" title="Link to this definition">#</a></dt>
+<dd><p>The numeric model reporters collected from row <code class="docutils literal notranslate"><span class="pre">start</span></code> on, by name, or None.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.web.snapshot.space_view">
+<span class="sig-name descname"><span class="pre">space_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">colour_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'class'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/web/snapshot.html#space_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.web.snapshot.space_view" title="Link to this definition">#</a></dt>
+<dd><p>The agents’ places and colour values, or None when no agent has a place.</p>
+<p>Each point is <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y,</span> <span class="pre">value]</span></code>: the index of the agent’s class name in <code class="docutils literal notranslate"><span class="pre">classes</span></code>
+when <code class="docutils literal notranslate"><span class="pre">colour_by</span></code> is <code class="docutils literal notranslate"><span class="pre">class</span></code>, else the agent’s <code class="docutils literal notranslate"><span class="pre">colour_by</span></code> attribute (None when
+it has none). <code class="docutils literal notranslate"><span class="pre">cells</span></code> tells the page to draw grid squares instead of dots.</p>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="studio.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Studio</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="log.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">logging</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.export.WebExport"><code class="docutils literal notranslate"><span class="pre">WebExport</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.export.export_web"><code class="docutils literal notranslate"><span class="pre">export_web()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.export.model_code"><code class="docutils literal notranslate"><span class="pre">model_code()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.packages.ModelRunError"><code class="docutils literal notranslate"><span class="pre">ModelRunError</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.packages.distributions_of"><code class="docutils literal notranslate"><span class="pre">distributions_of()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.packages.needed_packages"><code class="docutils literal notranslate"><span class="pre">needed_packages()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.packages.normalise"><code class="docutils literal notranslate"><span class="pre">normalise()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.wheel.package_files"><code class="docutils literal notranslate"><span class="pre">package_files()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.wheel.wheel_name"><code class="docutils literal notranslate"><span class="pre">wheel_name()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.wheel.write_wheel"><code class="docutils literal notranslate"><span class="pre">write_wheel()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.runtime.BrowserRun"><code class="docutils literal notranslate"><span class="pre">BrowserRun</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.runtime.BrowserRun.build"><code class="docutils literal notranslate"><span class="pre">BrowserRun.build()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.runtime.BrowserRun.advance"><code class="docutils literal notranslate"><span class="pre">BrowserRun.advance()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.runtime.BrowserRun.state_json"><code class="docutils literal notranslate"><span class="pre">BrowserRun.state_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.runtime.decode_value"><code class="docutils literal notranslate"><span class="pre">decode_value()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.runtime.describe"><code class="docutils literal notranslate"><span class="pre">describe()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.runtime.encode_parameter"><code class="docutils literal notranslate"><span class="pre">encode_parameter()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.runtime.native_modules"><code class="docutils literal notranslate"><span class="pre">native_modules()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.snapshot.colour_attributes"><code class="docutils literal notranslate"><span class="pre">colour_attributes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.snapshot.series_rows"><code class="docutils literal notranslate"><span class="pre">series_rows()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.web.snapshot.space_view"><code class="docutils literal notranslate"><span class="pre">space_view()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/apis/web.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

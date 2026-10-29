@@ -1,0 +1,223 @@
+
+# Layered Epidemic
+
+An age-structured SIR epidemic on a three-layer contact network, built with
+`modelly.space.networks`:
+
+- **household**: everybody in a household is in contact (weight 1);
+- **school**: children are shuffled into classes, everybody in a class is in contact
+  (weight 0.5);
+- **work**: adults of working age are shuffled into small workplaces (weight 0.25).
+
+The three layers share one `MultilayerNetwork`. Each step, the infection pressure on every
+person is one sparse product, `network.adjacency() @ infected`, where the adjacency sums the
+layers with their weights. A susceptible person is infected with probability
+`1 - exp(-beta * pressure)`; an infected person recovers with probability `recovery`.
+
+When the share infected reaches `close_schools_at`, the schools close:
+`network.add_layer("school", 0.0)` sets the layer's weight to zero without touching its
+edges, so reopening is one more call.
+
+`model.contacts` is the age-group contact matrix of the network at the start
+(`contact_matrix`), the input a compartmental model would need; `attack_rate_by_group()`
+gives the share of children, adults and seniors ever infected. The mean number of contacts is
+recorded with `network_reporter("network", mean_degree)`, a reporter that survives
+checkpoints.
+
+## How to run
+
+```bash
+python -c "from modelly.examples.spatial.layered_epidemic.model import LayeredEpidemic; m = LayeredEpidemic(); m.run_for(60); print(m.datacollector.get_model_vars_dataframe().tail())"
+```
+
+
+## Agents
+
+```python
+from enum import IntEnum
+
+from modelly import Agent
+
+
+class State(IntEnum):
+    SUSCEPTIBLE = 0
+    INFECTED = 1
+    RECOVERED = 2
+
+
+class Person(Agent):
+    """A person: a node of the contact network, an age and an infection state.
+
+    The states of everybody live in one numpy array on the model (``model.state``), so a
+    step updates the whole population with one sparse product; ``person.state`` reads it.
+    """
+
+    def __init__(self, model, node, age):
+        super().__init__(model)
+        self.node = node
+        self.age = age
+
+    @property
+    def state(self):
+        return State(int(self.model.state[self.node]))
+
+```
+
+
+## Model
+
+```python
+"""
+Layered Epidemic
+================
+
+An age-structured SIR epidemic on a three-layer contact network: households, school
+classes and workplaces, each layer with its own weight. When prevalence reaches a
+threshold the schools close, which sets the school layer's weight to zero. Infection
+pressure is one sparse product, ``adjacency() @ infected``, per step.
+"""
+
+import numpy as np
+
+from modelly import Model
+from modelly.data.collector import DataCollector
+from modelly.examples.spatial.layered_epidemic.agents import Person, State
+from modelly.scenarios import Scenario
+from modelly.space.networks import (
+    MultilayerNetwork,
+    age_groups,
+    contact_matrix,
+    mean_degree,
+    network_reporter,
+)
+
+LAYERS = {"household": 1.0, "school": 0.5, "work": 0.25}
+AGE_BREAKS = [18, 65]  # children, adults, seniors
+MAX_HOUSEHOLD = 5
+ADULT_AGES = (20, 65)
+SENIOR_AGES = (65, 90)
+CHILD_AGES = (0, 18)
+SENIOR_SINGLE_SHARE = 0.4  # one-person households that are seniors
+
+
+class EpidemicScenario(Scenario):
+    """Scenario parameters for the layered epidemic.
+
+    Args:
+        households: number of households.
+        class_size: pupils per school class.
+        workplace_size: workers per workplace.
+        beta: infection rate per unit of contact weight per step.
+        recovery: probability per step that an infected person recovers.
+        initial_infected: people infected at the start.
+        close_schools_at: prevalence (share infected) at which schools close.
+    """
+
+    households: int = 120
+    class_size: int = 20
+    workplace_size: int = 8
+    beta: float = 0.15
+    recovery: float = 0.1
+    initial_infected: int = 5
+    close_schools_at: float = 0.05
+
+
+class LayeredEpidemic(Model):
+    """SIR on households, schools and workplaces, with school closure."""
+
+    def __init__(self, scenario: EpidemicScenario = EpidemicScenario):
+        super().__init__(scenario=scenario)
+        ages, households = self.draw_households()
+        self.network = MultilayerNetwork(len(ages), LAYERS)
+        for members in households:
+            self.link_all(members, "household")
+        self.group_and_link(
+            np.flatnonzero(ages < AGE_BREAKS[0]), scenario.class_size, "school"
+        )
+        working = np.flatnonzero((ages >= AGE_BREAKS[0]) & (ages < AGE_BREAKS[1]))
+        self.group_and_link(working, scenario.workplace_size, "work")
+        for node, age in enumerate(ages):
+            Person(self, node, int(age))
+        self.groups = age_groups(ages, AGE_BREAKS)
+        self.contacts = contact_matrix(self.network, self.groups)
+        self.state = np.full(len(ages), State.SUSCEPTIBLE, dtype=np.int8)
+        seeds = self.rng.choice(len(ages), scenario.initial_infected, replace=False)
+        self.state[seeds] = State.INFECTED
+        self.schools_open = True
+        self.datacollector = DataCollector(
+            model_reporters={
+                "susceptible": "susceptible",
+                "infected": "infected",
+                "recovered": "recovered",
+                "mean_contacts": network_reporter("network", mean_degree),
+            }
+        )
+        self.datacollector.collect(self)
+
+    def draw_households(self):
+        """Ages of everybody and the members of every household."""
+        ages, households = [], []
+        for _ in range(self.scenario.households):
+            size = int(self.rng.integers(1, MAX_HOUSEHOLD + 1))
+            if size == 1 and self.rng.random() < SENIOR_SINGLE_SHARE:
+                members_ages = [self.rng.integers(*SENIOR_AGES)]
+            else:
+                adults = min(size, 2)
+                members_ages = list(self.rng.integers(*ADULT_AGES, size=adults))
+                members_ages += list(self.rng.integers(*CHILD_AGES, size=size - adults))
+            start = len(ages)
+            ages.extend(members_ages)
+            households.append(range(start, len(ages)))
+        return np.array(ages), households
+
+    def link_all(self, members, layer):
+        """Link every pair of ``members`` on ``layer``."""
+        members = list(members)
+        for k, u in enumerate(members):
+            for v in members[k + 1 :]:
+                self.network.add_edge(int(u), int(v), layer)
+
+    def group_and_link(self, people, size, layer):
+        """Shuffle ``people`` into groups of ``size`` and link everybody within a group."""
+        people = self.rng.permutation(people)
+        for start in range(0, len(people), size):
+            self.link_all(people[start : start + size], layer)
+
+    def step(self):
+        """Infections from the weighted contacts, recoveries, then the school policy."""
+        s = self.scenario
+        infected = (self.state == State.INFECTED).astype(float)
+        pressure = self.network.adjacency() @ infected
+        catch = 1.0 - np.exp(-s.beta * pressure)
+        draws = self.rng.random((2, len(self.state)))
+        new = (self.state == State.SUSCEPTIBLE) & (draws[0] < catch)
+        recovered = (self.state == State.INFECTED) & (draws[1] < s.recovery)
+        self.state[new] = State.INFECTED
+        self.state[recovered] = State.RECOVERED
+        if self.schools_open and self.infected / len(self.state) >= s.close_schools_at:
+            self.network.add_layer("school", 0.0)
+            self.schools_open = False
+        self.datacollector.collect(self)
+
+    def attack_rate_by_group(self):
+        """Share of each age group ever infected."""
+        ever = self.state != State.SUSCEPTIBLE
+        sizes = np.bincount(self.groups, minlength=len(AGE_BREAKS) + 1)
+        hits = np.bincount(self.groups, weights=ever, minlength=len(AGE_BREAKS) + 1)
+        return hits / np.maximum(sizes, 1)
+
+    @property
+    def susceptible(self):
+        return int((self.state == State.SUSCEPTIBLE).sum())
+
+    @property
+    def infected(self):
+        return int((self.state == State.INFECTED).sum())
+
+    @property
+    def recovered(self):
+        return int((self.state == State.RECOVERED).sum())
+
+```
+
+

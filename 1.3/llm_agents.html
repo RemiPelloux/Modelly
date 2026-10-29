@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Language-model agents &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=8ca9e7a0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'llm_agents';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.3';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/llm_agents.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Calibration" href="calibration.html" />
+    <link rel="prev" title="Experiments and sweeps" href="experiments.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#" aria-current="page">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Language-model agents</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="language-model-agents">
+<h1>Language-model agents<a class="headerlink" href="#language-model-agents" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.llm</span></code> lets an agent decide through a language model: give it a persona, ask it a
+question, get back data checked against a schema. Every call goes through one client that
+caches the reply, holds the call against a budget and retries when the provider is busy, so a
+study can be rerun, replayed offline and audited.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.llm</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AnthropicProvider</span><span class="p">,</span>
+    <span class="n">Budget</span><span class="p">,</span>
+    <span class="n">Client</span><span class="p">,</span>
+    <span class="n">LLMAgent</span><span class="p">,</span>
+    <span class="n">ResponseCache</span><span class="p">,</span>
+    <span class="n">decide_all</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">STANCE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span>
+    <span class="s2">"required"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"opinion"</span><span class="p">],</span>
+    <span class="s2">"properties"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"opinion"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"enum"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"support"</span><span class="p">,</span> <span class="s2">"neutral"</span><span class="p">,</span> <span class="s2">"oppose"</span><span class="p">]}},</span>
+<span class="p">}</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Citizen</span><span class="p">(</span><span class="n">LLMAgent</span><span class="p">,</span> <span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">persona</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">persona</span> <span class="o">=</span> <span class="n">persona</span>  <span class="c1"># the system prompt of this agent's calls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opinion</span> <span class="o">=</span> <span class="s2">"neutral"</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Town</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">personas</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">llm</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span>
+            <span class="n">AnthropicProvider</span><span class="p">(),</span>  <span class="c1"># reads ANTHROPIC_API_KEY; model claude-sonnet-5-5</span>
+            <span class="n">cache</span><span class="o">=</span><span class="n">ResponseCache</span><span class="p">(</span><span class="s2">"town.sqlite"</span><span class="p">),</span>
+            <span class="n">budget</span><span class="o">=</span><span class="n">Budget</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">500_000</span><span class="p">),</span>
+            <span class="n">max_concurrency</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">persona</span> <span class="ow">in</span> <span class="n">personas</span><span class="p">:</span>
+            <span class="n">Citizen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">persona</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">citizens</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+        <span class="n">decisions</span> <span class="o">=</span> <span class="n">decide_all</span><span class="p">(</span>
+            <span class="n">citizens</span><span class="p">,</span> <span class="s2">"What do you think of the new bike lane?"</span><span class="p">,</span> <span class="n">STANCE</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">citizen</span><span class="p">,</span> <span class="n">decision</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">citizens</span><span class="p">,</span> <span class="n">decisions</span><span class="p">):</span>
+            <span class="n">citizen</span><span class="o">.</span><span class="n">opinion</span> <span class="o">=</span> <span class="n">decision</span><span class="p">[</span><span class="s2">"opinion"</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>One agent can also ask on its own: <code class="docutils literal notranslate"><span class="pre">self.decide(prompt,</span> <span class="pre">schema)</span></code> returns validated data and
+<code class="docutils literal notranslate"><span class="pre">self.ask(prompt)</span></code> returns the reply text. <code class="docutils literal notranslate"><span class="pre">decide_all</span></code> sends a whole population’s calls
+concurrently (at most <code class="docutils literal notranslate"><span class="pre">max_concurrency</span></code> at once) and returns the decisions in the order of the
+agents, whatever order the replies arrive in.</p>
+<p>The full example, 200 persona agents on a friendship network, is
+<a class="reference external" href="https://github.com/RemiPelloux/Modelly/tree/main/modelly/examples/llm/llm_opinions"><code class="docutils literal notranslate"><span class="pre">modelly/examples/llm/llm_opinions</span></code></a>.
+It runs offline with a local stand-in for the model and replays from a bundled cache.</p>
+<section id="providers">
+<h2>Providers<a class="headerlink" href="#providers" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Adapter</p></th>
+<th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Key</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AnthropicProvider()</span></code></p></td>
+<td><p>Anthropic Messages API, <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/v1/messages</span></code>; default model <code class="docutils literal notranslate"><span class="pre">claude-sonnet-5-5</span></code> (also <code class="docutils literal notranslate"><span class="pre">claude-opus-5-5</span></code>, <code class="docutils literal notranslate"><span class="pre">claude-haiku-5-5</span></code> through <code class="docutils literal notranslate"><span class="pre">Client(model=...)</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ANTHROPIC_API_KEY</span></code> or <code class="docutils literal notranslate"><span class="pre">api_key=</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OpenAICompatibleProvider(base_url=...)</span></code></p></td>
+<td><p>any <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/chat/completions</span></code>: OpenAI, or a local Ollama or llama.cpp server; pass <code class="docutils literal notranslate"><span class="pre">model=</span></code> to the client</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OPENAI_API_KEY</span></code>, optional for local servers</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">FakeProvider(responder)</span></code></p></td>
+<td><p>a Python function of the request: tests, teaching, dry runs</p></td>
+<td><p>none</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The adapters use the standard library only (<code class="docutils literal notranslate"><span class="pre">urllib.request</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>): installing Modelly
+installs no provider SDK. A local model is one line:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span>
+    <span class="n">OpenAICompatibleProvider</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">"http://127.0.0.1:11434/v1"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"ollama"</span><span class="p">),</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">"llama3.2"</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="reproducibility">
+<h2>Reproducibility<a class="headerlink" href="#reproducibility" title="Link to this heading">#</a></h2>
+<p>A language model is not a seeded generator: the same prompt can get a different reply, and a
+hosted model can change or be retired. Modelly makes the <em>run</em> reproducible by recording what
+the model said.</p>
+<ul class="simple">
+<li><p><strong>The cache key</strong> is a SHA-256 of the provider name, the model, the system prompt, the
+messages, the call parameters (temperature, <code class="docutils literal notranslate"><span class="pre">max_tokens</span></code>, …), the model’s seed, the caller
+(an agent’s class and <code class="docutils literal notranslate"><span class="pre">unique_id</span></code>) and the caller’s call counter. Each agent counts its own
+calls, so a key does not depend on thread timing: one thread or many give the same keys.</p></li>
+<li><p><strong>Modes.</strong> <code class="docutils literal notranslate"><span class="pre">ResponseCache(path,</span> <span class="pre">mode=&quot;read-write&quot;)</span></code> answers from the cache and records what
+it does not hold. <code class="docutils literal notranslate"><span class="pre">mode=&quot;read-only&quot;</span></code> is a replay: a cache miss raises <code class="docutils literal notranslate"><span class="pre">CacheMiss</span></code> naming the
+agent, its call index and the start of the prompt, and nothing is ever sent. <code class="docutils literal notranslate"><span class="pre">mode=&quot;off&quot;</span></code>
+always calls and stores nothing. A reply served from the cache never touches the network.</p></li>
+<li><p><strong>Checkpoints.</strong> The client, its cache, its counters and the agents’ call counters are part
+of the model, so <code class="docutils literal notranslate"><span class="pre">Model.save</span></code> writes them into the checkpoint and <code class="docutils literal notranslate"><span class="pre">Model.load</span></code> resumes with
+them.</p></li>
+<li><p><strong>Bundles.</strong> <code class="docutils literal notranslate"><span class="pre">client.cache.export(&quot;replies.jsonl.gz&quot;)</span></code> writes every reply, sorted by key,
+with the request it answered: plain JSON lines a reviewer can read (<code class="docutils literal notranslate"><span class="pre">.jsonl</span></code>), compressed
+(<code class="docutils literal notranslate"><span class="pre">.jsonl.gz</span></code>, the same content for the same calls) or SQLite (any other suffix). The file travels with the study;
+<code class="docutils literal notranslate"><span class="pre">ResponseCache.from_file(path)</span></code> replays it without any network.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">replay</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">AnthropicProvider</span><span class="p">(),</span> <span class="n">cache</span><span class="o">=</span><span class="n">ResponseCache</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"replies.jsonl.gz"</span><span class="p">))</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Town</span><span class="p">(</span><span class="n">personas</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">llm</span> <span class="o">=</span> <span class="n">replay</span>  <span class="c1"># same seed, same prompts: every call is a cache hit</span>
+</pre></div>
+</div>
+<p>The store is SQLite from the standard library, in its rollback-journal mode (no WAL side
+files), one transaction per reply, and exports are written to a temporary name and renamed,
+so an interrupted run never leaves half a row or half a file.</p>
+<p>A replay reproduces a run only when the run asks the same questions in the same order: same
+seed, same prompts, same parameters. Change a prompt and its key changes, and the replay
+reports the first call it does not hold.</p>
+</section>
+<section id="costs-and-budgets">
+<h2>Costs and budgets<a class="headerlink" href="#costs-and-budgets" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.llm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Budget</span><span class="p">,</span> <span class="n">Price</span>
+
+<span class="n">budget</span> <span class="o">=</span> <span class="n">Budget</span><span class="p">(</span>
+    <span class="n">max_tokens</span><span class="o">=</span><span class="mi">2_000_000</span><span class="p">,</span>
+    <span class="n">max_cost</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
+    <span class="n">prices</span><span class="o">=</span><span class="p">{</span><span class="s2">"claude-sonnet-5-5"</span><span class="p">:</span> <span class="n">Price</span><span class="p">(</span><span class="n">input_per_million</span><span class="o">=...</span><span class="p">,</span> <span class="n">output_per_million</span><span class="o">=...</span><span class="p">)},</span>
+<span class="p">)</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">AnthropicProvider</span><span class="p">(),</span> <span class="n">budget</span><span class="o">=</span><span class="n">budget</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Modelly ships <strong>no prices</strong>: they change, and a wrong price is worse than none. Pass the
+provider’s current prices; without a price, <code class="docutils literal notranslate"><span class="pre">usage.cost</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code> and only a token budget
+can be enforced (a cost budget with a model that has no price refuses to call).</p></li>
+<li><p>Before a call is sent, its worst case is reserved: the prompt’s estimated tokens plus its
+<code class="docutils literal notranslate"><span class="pre">max_tokens</span></code>. When that could take the run past a limit, <code class="docutils literal notranslate"><span class="pre">BudgetExceeded</span></code> is raised and the
+call is never made. In a batch, the calls before it are sent, counted and cached first, so a
+rerun with a larger budget picks up from the cache.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">client.usage</span></code> counts the calls sent, the cache hits, the retries, the input and output
+tokens and the cost. Cache hits cost nothing.</p></li>
+<li><p>Rate limits (429), server errors (5xx) and lost connections are retried with exponential
+backoff (<code class="docutils literal notranslate"><span class="pre">RetryPolicy(max_retries=3,</span> <span class="pre">base_delay=1.0,</span> <span class="pre">max_delay=30.0)</span></code>), honouring the
+server’s <code class="docutils literal notranslate"><span class="pre">Retry-After</span></code>. Other errors (a bad request, a missing key) fail at once.</p></li>
+</ul>
+</section>
+<section id="structured-decisions">
+<h2>Structured decisions<a class="headerlink" href="#structured-decisions" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">decide</span></code> and <code class="docutils literal notranslate"><span class="pre">decide_all</span></code> append the schema to the prompt, read the JSON value out of the
+reply (plain, in a code fence or after some prose) and check it locally. The checker supports
+<code class="docutils literal notranslate"><span class="pre">type</span></code> (one name or a list), <code class="docutils literal notranslate"><span class="pre">enum</span></code>, <code class="docutils literal notranslate"><span class="pre">properties</span></code>, <code class="docutils literal notranslate"><span class="pre">required</span></code>, <code class="docutils literal notranslate"><span class="pre">additionalProperties:</span> <span class="pre">false</span></code>,
+<code class="docutils literal notranslate"><span class="pre">items</span></code>, <code class="docutils literal notranslate"><span class="pre">minimum</span></code>, <code class="docutils literal notranslate"><span class="pre">maximum</span></code>, <code class="docutils literal notranslate"><span class="pre">minLength</span></code>, <code class="docutils literal notranslate"><span class="pre">maxLength</span></code>, <code class="docutils literal notranslate"><span class="pre">minItems</span></code> and <code class="docutils literal notranslate"><span class="pre">maxItems</span></code>; any other
+keyword is refused rather than silently ignored. An invalid reply gets a repair call (the same
+conversation, the reply, and the reason it failed); <code class="docutils literal notranslate"><span class="pre">repairs=</span></code> sets how many rounds before
+<code class="docutils literal notranslate"><span class="pre">DecisionError</span></code>. A repair is a call of its own with the agent’s next call index, so a replay
+asks for exactly the same repairs.</p>
+<p>Agents have no memory of earlier calls: each call sends the persona and the prompt only. Put
+what an agent should remember into its prompt.</p>
+</section>
+<section id="privacy-of-api-keys">
+<h2>Privacy of API keys<a class="headerlink" href="#privacy-of-api-keys" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>A key is read from the <code class="docutils literal notranslate"><span class="pre">api_key=</span></code> argument or from the environment
+(<code class="docutils literal notranslate"><span class="pre">ANTHROPIC_API_KEY</span></code>, <code class="docutils literal notranslate"><span class="pre">OPENAI_API_KEY</span></code>) when the call is made.</p></li>
+<li><p>It is never written anywhere Modelly writes: not to the cache, not to an export, not to a
+checkpoint (a provider pickles without its key; a loaded model reads the environment again),
+not to a <code class="docutils literal notranslate"><span class="pre">repr</span></code>, not to an error message (errors name the URL and the status, never the
+headers).</p></li>
+<li><p>Prefer the environment to the argument, and keep the variable out of notebooks and scripts
+you share.</p></li>
+<li><p>The cache stores prompts and replies in full. If prompts hold personal data, the cache and
+its exports hold it too: treat them as research data under your data-protection rules.</p></li>
+</ul>
+</section>
+<section id="ethics-and-limitations">
+<h2>Ethics and limitations<a class="headerlink" href="#ethics-and-limitations" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>A model is not a population.</strong> Personas produce plausible text, not the distribution of
+views of real people. Language models carry the biases of their training data, flatten
+differences between groups and can caricature the people they are asked to play. Validate
+any finding against data from people before reading it as a finding about people.</p></li>
+<li><p><strong>Prompt sensitivity.</strong> Small changes of wording, order or format can change decisions.
+Report the exact prompts, the schema, the model name and the parameters, and test how much
+the results move when the wording does.</p></li>
+<li><p><strong>Replay is not re-measurement.</strong> A replay shows that the analysis follows from the recorded
+replies. It does not show that the model would answer the same way again: a hosted model can
+change under the same name. Archive the cache with the results.</p></li>
+<li><p><strong>Cost and footprint.</strong> Every uncached call costs money and energy. Develop with
+<code class="docutils literal notranslate"><span class="pre">FakeProvider</span></code> or a small local model, cache everything, and set a budget before a large
+run.</p></li>
+<li><p><strong>Terms of use.</strong> Follow the provider’s terms and your ethics board’s rules for studies that
+use generated text, especially when personas describe real groups or prompts include data
+about real people.</p></li>
+</ul>
+</section>
+<section id="checking-a-model">
+<h2>Checking a model<a class="headerlink" href="#checking-a-model" title="Link to this heading">#</a></h2>
+<p>Lint rule <a class="reference internal" href="lint.html#mdl012"><span class="std std-ref">MDL012</span></a> flags a call to <code class="docutils literal notranslate"><span class="pre">requests</span></code>, <code class="docutils literal notranslate"><span class="pre">httpx</span></code>, <code class="docutils literal notranslate"><span class="pre">urllib.request.urlopen</span></code> or
+the <code class="docutils literal notranslate"><span class="pre">openai</span></code> and <code class="docutils literal notranslate"><span class="pre">anthropic</span></code> SDKs inside model or agent code: such a call bypasses the cache,
+so the run cannot be replayed.</p>
+<p>The API is on the <a class="reference internal" href="apis/llm.html"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">modelly.llm</span></code> page</span></a>.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="experiments.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Experiments and sweeps</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="calibration.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Calibration</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#providers">Providers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reproducibility">Reproducibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#costs-and-budgets">Costs and budgets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#structured-decisions">Structured decisions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#privacy-of-api-keys">Privacy of API keys</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ethics-and-limitations">Ethics and limitations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-a-model">Checking a model</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/llm_agents.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

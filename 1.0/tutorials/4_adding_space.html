@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Adding Space &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=92ce3cff" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=292eb321"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/4_adding_space';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/tutorials/4_adding_space.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Collecting Data" href="5_collecting_data.html" />
+    <link rel="prev" title="Event Scheduling &amp; Time" href="3_event_scheduling.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.0" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="0_first_model.html">Creating Your First Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_agentset.html">AgentSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_agent_activation.html">Agent Activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_event_scheduling.html">Event Scheduling</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Adding Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_collecting_data.html">Collecting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_visualization_basic.html">Basic Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_visualization_dynamic_agents.html">Dynamic Agent Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8_visualization_rendering_with_space_renderer.html">Visualisation using SpaceRenderer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9_visualization_property_layer_visualization.html">Property Layer Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_visualization_custom.html">Custom Visualization Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_discrete_event_simulation.html">Discrete Event Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12_hybrid_abm_devs.html">Hybrid ABM-DEVS Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best-practices.html">Best Practices</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../overview.html" class="nav-link">Overview of the MODELLY library</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Adding Space</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="adding-space">
+<h1>Adding Space<a class="headerlink" href="#adding-space" title="Link to this heading">#</a></h1>
+<section id="the-boltzmann-wealth-model">
+<h2>The Boltzmann Wealth Model<a class="headerlink" href="#the-boltzmann-wealth-model" title="Link to this heading">#</a></h2>
+<p>If you want to get straight to the tutorial checkout these environment providers:<br>
+(with Google Account) <a class="reference external" href="https://colab.research.google.com/github/RemiPelloux/Modelly/blob/main/docs/tutorials/4_adding_space.ipynb"><img alt="Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a><br>
+(no Google Account)   <a class="reference external" href="https://mybinder.org/v2/gh/RemiPelloux/Modelly/main?labpath=docs%2Ftutorials%2F4_adding_space.ipynb"><img alt="Binder" src="https://mybinder.org/badge_logo.svg" /></a> (This can take 30 seconds to 5 minutes to load)</p>
+<p><em>If you are running locally, please ensure you have the latest Modelly version installed.</em></p>
+</section>
+<section id="tutorial-description">
+<h2>Tutorial Description<a class="headerlink" href="#tutorial-description" title="Link to this heading">#</a></h2>
+<p>This tutorial extends the Boltzmann wealth model from the <a class="reference internal" href="0_first_model.html"><span class="std std-doc">Running Your First Model tutorial</span></a>, by adding Modelly’s discrete space module.</p>
+<p>In this portion, <code class="docutils literal notranslate"><span class="pre">MoneyAgent</span></code>s will move in a two dimensional grid, made up of discrete cells and randomly exchange money with other agents.</p>
+<p><em>If you are starting here please see the <a class="reference internal" href="0_first_model.html"><span class="std std-doc">Running Your First Model tutorial</span></a> for dependency and start-up instructions</em></p>
+<section id="in-colab-run-the-next-cell">
+<h3>IN COLAB? - Run the next cell<a class="headerlink" href="#in-colab-run-the-next-cell" title="Link to this heading">#</a></h3>
+</section>
+<section id="import-dependencies">
+<h3>Import Dependencies<a class="headerlink" href="#import-dependencies" title="Link to this heading">#</a></h3>
+<p>This includes importing of dependencies needed for the tutorial.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Has multi-dimensional arrays and matrices.</span>
+<span class="c1"># Has a large collection of mathematical functions to operate on these arrays.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Data manipulation and analysis.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Data visualization tools.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="base-model">
+<h2>Base Model<a class="headerlink" href="#base-model" title="Link to this heading">#</a></h2>
+<p>The below provides the base model from which we will add our space functionality.</p>
+<p>This is from the <a class="reference internal" href="0_first_model.html"><span class="std std-doc">Running Your First Model tutorial</span></a> tutorial. If you have any questions about it functionality please review that tutorial.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MoneyAgent</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Agent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""An agent with fixed initial wealth."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="c1"># Pass the parameters to the parent class.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+        <span class="c1"># Create the agent's variable and set the initial values.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">exchange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Verify agent has some wealth</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">other_agent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">other_agent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">other_agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">-=</span> <span class="mi">1</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MoneyModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A model with some number of agents."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_agents</span> <span class="o">=</span> <span class="n">n</span>
+
+        <span class="c1"># Create agents</span>
+        <span class="n">MoneyAgent</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Advance the model by one step."""</span>
+        <span class="c1"># This function psuedo-randomly reorders the list of agent objects and</span>
+        <span class="c1"># then iterates through calling the function passed in as the parameter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"exchange"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Execute the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MoneyModel</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+<span class="c1"># Make sure it worked</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"You have </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span><span class="si">}</span><span class="s2"> agents."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>You have 10 agents.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id1">
+<h2>Adding space<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p><strong>Background:</strong> Due to the complex dynamics of space and movement, Modelly offers a wide range space options and has built a structure to allow for the addition of even more spaces or custom user space creation. (Please contribute to Modelly if you develop a new space that can add to user options.)</p>
+<p>The two main approaches to space are discrete space (think cells or nodes that agents occupy) and continuous space (agents can occupy any location(s) in a three-dimensional space). Continuous space lives in <code class="docutils literal notranslate"><span class="pre">modelly.space.continuous</span></code>.</p>
+<p><strong>Overview of Discrete Space:</strong> For this tutorial we will be using discrete space in the classic cartesian coordinated system. As indicated in the diagram discrete space is made up of two modules. Cells and Cell Agents.</p>
+<p><strong>Cells:</strong>
+The cell class represents a location that can:</p>
+<ul class="simple">
+<li><p>Have properties (like temperature or resources)</p></li>
+<li><p>Track and limit the agents it contains</p></li>
+<li><p>Connect to neighboring cells</p></li>
+<li><p>Provide neighborhood information</p></li>
+</ul>
+<p>Cells form the foundation of the cell space system, enabling rich spatial environments where both location properties and agent behaviors matter. They’re useful for modeling things like varying terrain, infrastructure capacity, or environmental conditions.</p>
+<p><strong>Cell Agents:</strong>
+Agents that understand how to exist in and move through cell spaces.</p>
+<p>Cell Agents are specialized agent classes that handle cell occupation, movement, and proper registration:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CellAgent</span></code>: Mobile agents that can move between cells</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FixedAgent</span></code>: Immobile agents permanently fixed to cells</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Grid2DMovingAgent</span></code>: Agents with grid-specific movement capabilities</p></li>
+</ul>
+<p>These classes ensure consistent agent-cell relationships and proper state management as agents move through the space. They can be used directly or as examples for creating custom cell-aware agents.</p>
+<p>From these basic building blocks we can then add features to allow for different types of spaces and behaviors. To keep this tutorial concise we will not go through all of them, however, the current layout of discrete space is below as well as the different support modules. To find out more about the other options and what they can do, check out the <a class="reference external" href="https://remipelloux.github.io/Modelly/apis/space.html">Space API</a></p>
+<p><br><br>
+<img alt="Discerete Space Diagram" src="../_images/Discrete_Space.drawio.png" />
+<br></p>
+<p><em>A big thanks to maintainer qualquel and his creation of this exceptional space dynamic.</em></p>
+<p><strong>Model-specific information:</strong>  In addition to using discrete space, the agents will access their <a class="reference external" href="https://en.wikipedia.org/wiki/Moore_neighborhood">Moore neighborhood</a>. A Moore neighborhood means agents can interact with 8 neighbors.  Instead of giving their unit of money to any random agent, they’ll give it to an agent on the same cell. For the Money model multiple agents can be in the same spaces and since they are on a torus the agents on the left side can exchange money with agent on the right. Agents on the top can exchange with agents on the bottom.</p>
+<section id="code-implementation">
+<h3>Code Implementation<a class="headerlink" href="#code-implementation" title="Link to this heading">#</a></h3>
+<p>To ensure we give our agents discrete space functionality we now instantiate our <code class="docutils literal notranslate"><span class="pre">MoneyAgent</span></code>s as <code class="docutils literal notranslate"><span class="pre">CellAgent</span></code>s. <code class="docutils literal notranslate"><span class="pre">Cell</span> <span class="pre">Agent</span></code> is a subclass to Modelly’s <code class="docutils literal notranslate"><span class="pre">Agent</span></code> class that is specifically built to interact and move within the <code class="docutils literal notranslate"><span class="pre">discrete</span> <span class="pre">space</span></code> module.</p>
+<p>Below highlights each of the changes to the base code to add space and movement of agents.</p>
+<p><strong>Imports</strong><br>
+# Import Cell Agent and OrthogonalMooreGrid</p>
+<ul class="simple">
+<li><p><em>Description:</em> Import the cell agent class and a specific grid construct the OrthognalMooreGrid.</p></li>
+<li><p><em>API</em>: <a class="reference external" href="https://remipelloux.github.io/Modelly/apis/space.html#modelly.space.cells.agents.CellAgent">CellAgent</a> and <a class="reference external" href="https://remipelloux.github.io/Modelly/apis/space.html#modelly.space.grid.grids.OrthogonalMooreGrid">OrthogonalMooreGrid</a></p></li>
+</ul>
+<p><strong>MoneyAgent Class</strong><br>
+# Instantiate MoneyAgent as CellAgent</p>
+<ul class="simple">
+<li><p><em>Description:</em> <code class="docutils literal notranslate"><span class="pre">MoneyAgent</span></code> inherits <code class="docutils literal notranslate"><span class="pre">CellAgent</span></code>, a subclass of <code class="docutils literal notranslate"><span class="pre">Agent</span></code>.</p></li>
+<li><p><em>API</em>: <a class="reference external" href="https://remipelloux.github.io/Modelly/apis/space.html#modelly.space.cells.agents.CellAgent">CellAgent</a></p></li>
+</ul>
+<p># Instantiate agent with location (x,y)</p>
+<ul class="simple">
+<li><p><em>Description:</em> Pass the cell object as a parameter to the agent to give the agent a location</p></li>
+<li><p><em>API</em>: N/A</p></li>
+</ul>
+<p># Move function</p>
+<ul class="simple">
+<li><p><em>Description:</em> Update the agents cell through methods in Modelly’s discrete_space module <code class="docutils literal notranslate"><span class="pre">neighborhood</span></code>, which defaults to radius one and <code class="docutils literal notranslate"><span class="pre">select_random_cell</span></code> which selects a random cell for the provided neighborhood</p></li>
+<li><p><em>API</em>: <a class="reference external" href="https://remipelloux.github.io/Modelly/apis/space.html#modelly.space.cells.cell.Cell.neighborhood">neighborhood</a> and <a class="reference external" href="https://remipelloux.github.io/Modelly/apis/space.html#modelly.space.cells.collection.CellCollection.select_random_cell">select_random_cell</a></p></li>
+</ul>
+<p><strong>MoneyModel Class</strong><br>
+# Instantiate an instance of Moore neighborhood space</p>
+<ul class="simple">
+<li><p><em>Description:</em> Instantiate a OrthgonalMooreGrid as <code class="docutils literal notranslate"><span class="pre">self.grid</span></code> with passing in the parameters width and height as a tuple, torus as True, and the models random seed to the discrete space</p></li>
+<li><p><em>API</em>: <a class="reference external" href="https://remipelloux.github.io/Modelly/apis/space.html#modelly.space.grid.grids.OrthogonalMooreGrid">OrthogonalMooreGrid</a></p></li>
+</ul>
+<p># Randomly select agents cell</p>
+<ul class="simple">
+<li><p><em>Description:</em> Use Python’s <code class="docutils literal notranslate"><span class="pre">random.choices</span></code> and pass in all cells with discrete space all_cells properties and the number of choices <code class="docutils literal notranslate"><span class="pre">k</span></code> to assign each agent a location.</p></li>
+<li><p><em>API</em>: <a class="reference external" href="https://docs.python.org/3/library/random.html#random.choices">random.choices</a> and <a class="reference external" href="https://remipelloux.github.io/Modelly/apis/space.html#modelly.space.base.DiscreteSpace.all_cells">all_cells</a></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import Cell Agent and OrthogonalMooreGrid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellAgent</span><span class="p">,</span> <span class="n">OrthogonalMooreGrid</span>
+
+
+<span class="c1"># Instantiate MoneyAgent as CellAgent</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MoneyAgent</span><span class="p">(</span><span class="n">CellAgent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""An agent with fixed initial wealth."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>  <span class="c1"># Instantiate agent with location (x,y)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># Move Function</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">select_random_cell</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">give_money</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cellmates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">agents</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span>
+        <span class="p">]</span>  <span class="c1"># Get all agents in cell</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">cellmates</span><span class="p">:</span>
+            <span class="n">other_agent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">cellmates</span><span class="p">)</span>
+            <span class="n">other_agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">-=</span> <span class="mi">1</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MoneyModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A model with some number of agents."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_agents</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="c1"># Instantiate an instance of Moore neighborhood space</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalMooreGrid</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">torus</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+
+        <span class="c1"># Create agents</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="n">MoneyAgent</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_agents</span><span class="p">,</span>
+            <span class="c1"># Randomly select agents cell</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="o">.</span><span class="n">cells</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_agents</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"move"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="s2">"give_money"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s create a model with 100 agents on a 10x10 grid, and run it for 20 steps.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">MoneyModel</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s use seaborn and numpy to visualize the number of agents residing in each cell. To do that, we create a numpy array of the same size as the grid, filled with zeros.</p>
+<p>Then again use <code class="docutils literal notranslate"><span class="pre">all_cells</span></code> to loop over every cell in the grid, giving us each cell’s position (cell coordinate attribute) and its contents (cell agent attribute).</p>
+<p><a class="reference external" href="https://remipelloux.github.io/Modelly/apis/space.html#modelly.space.cells.cell.Cell">Cell API</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">model</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="p">:</span>
+    <span class="n">agent_counts</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">coordinate</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+<span class="c1"># Plot using seaborn, with a visual size of 5x5</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">agent_counts</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"viridis"</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Number of agents on each cell of the grid"</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/078c7ead2ff3079aab7579cc8306044653d83f9788a4a739bc35d578fefa1508.png" src="../_images/078c7ead2ff3079aab7579cc8306044653d83f9788a4a739bc35d578fefa1508.png" />
+</div>
+</div>
+</section>
+<section id="exercises">
+<h3>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Change the size of the grid</p></li>
+<li><p>Change the capacity of the cells and account for this in Agent movement</p></li>
+<li><p>Try a different grid space like OrthognalVonNeumann, Network, or Voronoi</p></li>
+</ul>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<p>Check out the <a class="reference internal" href="5_collecting_data.html"><span class="std std-doc">collecting data tutorial</span></a> on how to collect data from your model.</p>
+<p>[Comer2014] Comer, Kenneth W. “Who Goes First? An Examination of the Impact of Activation on Outcome Behavior in AgentBased Models.” George Mason University, 2014. http://mars.gmu.edu/bitstream/handle/1920/9070/Comer_gmu_0883E_10539.pdf</p>
+<p>[Dragulescu2002] Drăgulescu, Adrian A., and Victor M. Yakovenko. “Statistical Mechanics of Money, Income, and Wealth: A Short Survey.” arXiv Preprint Cond-mat/0211175, 2002. http://arxiv.org/abs/cond-mat/0211175.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="3_event_scheduling.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Event Scheduling &amp; Time</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="5_collecting_data.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Collecting Data</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-boltzmann-wealth-model">The Boltzmann Wealth Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-description">Tutorial Description</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-colab-run-the-next-cell">IN COLAB? - Run the next cell</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#import-dependencies">Import Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#base-model">Base Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Adding space</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-implementation">Code Implementation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/tutorials/4_adding_space.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>
