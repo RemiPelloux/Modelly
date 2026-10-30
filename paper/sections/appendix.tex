@@ -155,7 +155,9 @@ platform and the load, with the commit and the MPI, mpi4py and Dask versions add
 environment afterwards and marked so; and \code{gpu\_speedup.json} the package versions of
 both arms. In these files the package version recorded for \code{modelly-abm} is the stale
 metadata of the development environments' editable installs, not the code: every environment
-imported \modelly{} from the checkout, which the commit field identifies.
+imported \modelly{} from the checkout, which the commit field identifies. The result files written since
+record the version the imported code reports (\code{modelly (imported)}: 1.4.2), and the
+editable installs now carry 1.4.2 as well.
 A further session, on 29 October 2026, ran from commits after \code{069f9b4}, whose
 \code{modelly} package and determinism tests are still the tag's (no file under
 \code{modelly/} or \code{tests/determinism/} has changed since it) and which add the

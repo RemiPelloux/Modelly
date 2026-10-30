@@ -36,8 +36,7 @@ small part of each run (about 2\% of Mesa's Schelling run).
 \paragraph{Who wrote the implementations.} Every implementation of every playbook, the Mesa ones
 included, was written by the author of \modelly{}, and no independent party has yet
 reviewed them or rerun the benchmarks. Each Mesa version follows Mesa's documented API and
-examples, and all of them are in the repository for inspection; corrections from Mesa
-developers are welcome. One baseline invites a closer look: our Mesa~3.5 predator-prey, which
+examples, and all of them are in the repository for inspection. One baseline invites a closer look: our Mesa~3.5 predator-prey, which
 follows Mesa's own examples (\code{CellAgent} on an \code{OrthogonalMooreGrid}, grass in a
 property layer), runs slower than Mesa~2.3's (0.91 times); we have not profiled why, so the
 columns' 7.1 times over Mesa~3.5 there may be larger than a tuned Mesa~3.5 model would allow. What a third party can check without rerunning the timings is
@@ -114,12 +113,14 @@ architectures, three interpreters) and MPI on three operating systems for this v
 (\cref{tab:determinism,tab:platform-digests}); what remains untested is the musl Linux,
 Windows ARM64 and free-threaded wheels, the free-threaded build of the event heap, the Ray
 backend and Apple Metal, and the golden digests cover ten steps of seventeen examples (the
-fourteen bundled examples and three split-run models, distinct from the zoo). Four or
-five examples are not bitwise reproducible across platforms, and one or two of them not
-across interpreter versions on one platform either; a study that needs
+fourteen bundled examples and three split-run models, distinct from the zoo). Four
+examples (five on the nine checkout builds) are not bitwise reproducible across platforms,
+and boid flockers (with Sugarscape G1MT on the checkout builds) not across interpreter
+versions on one platform either; a study that needs
 bitwise agreement across machines must avoid the transcendental functions and BLAS
 reductions these examples use, or state its guarantee at ten significant digits, as the
-suite does. Running the suite on every published wheel, for more steps, is planned.
+suite does. The suite has not been run for more than ten steps, nor on the musl, Windows ARM64
+or free-threaded wheels.
 
 \paragraph{A young project.} \modelly{} was first released on 24 October 2026, by one developer,
 who is so far the only maintainer; the other projects of \cref{tab:features} have been in use
@@ -131,9 +132,9 @@ yet by a study outside the repository. The project's governance is set out in it
 issues and pull requests on GitHub, with a contribution guide (\code{CONTRIBUTING.md}), a code
 of conduct and a security policy; a stable name keeps working for at least one minor release
 after it is deprecated, with a warning naming its replacement, and is removed only in a major
-release (\code{docs/deprecations.md}), which no release has yet been; minor releases have been
-frequent, so the notice before a removal is better counted in major releases than in time; every release passes the same local gate (lint, types,
-the test suite with its coverage, and a size audit) before it is tagged.
+release (\code{docs/deprecations.md}), which no release has yet been, so the notice before a
+removal is counted in major releases; releases are tagged after lint, type checks and the test
+suite pass.
 
 \subsection{Limitations of the software}
 \label{sec:limitations}

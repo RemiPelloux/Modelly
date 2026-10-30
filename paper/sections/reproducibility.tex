@@ -23,8 +23,9 @@ reproducibility are different properties, and the suite tests each within a stat
 \emph{Determinism on one build}: the same code, inputs and seed give the same bytes, run
 straight or resumed, compiled or pure, in one process or split across workers; this is what
 \cmd{modelly verify} and the split-run contract of \cref{sec:split} promise, and it is
-exact. \emph{Numerical reproducibility across platforms}: every example gives the same
-digest at ten significant digits on every platform and interpreter tested, which is the
+exact. \emph{Numerical reproducibility across platforms}: every example the suite compares off
+its recording platform (all but the geographic one) gives the same digest at ten significant
+digits on every platform and interpreter tested, which is the
 guarantee a reader of a published study can rely on when rerunning it on another machine.
 \emph{Bitwise reproducibility across platforms}: holds for the examples whose arithmetic
 is integer or exactly rounded, and is reported example by example rather than claimed in

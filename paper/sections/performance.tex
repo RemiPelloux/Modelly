@@ -6,11 +6,12 @@ modeller write the same model in a faster form. We measure both, with methods ch
 the comparison fair and repeatable, and check separately that the faster forms compute the
 same model. All the comparisons with Mesa are CPU time (\code{time.process\_time}), measured
 in-process, pinned to one core with \code{taskset}, with the implementations alternating, on an
-Intel Core Ultra 7 356H laptop running Linux, CPython 3.15.1 (3.15.0 for mesa-frames) and
+Intel Core Ultra 7 356H laptop running Linux, CPython 3.15.1 for the main timings (3.15.0 for mesa-frames; 3.15.2 for the ablation, the
+interpreter comparison and the sweep) and
 numpy 2.5.4 in each implementation's environment, against Mesa 2.3.2 and Mesa 3.5.1, with
 \modelly{} at its tagged release v1.4.2 (commit \code{bf7a225}); \cref{tab:playbooks} comes from
-the second of two timing sessions, run at commit \code{63e7bd9}, whose \code{modelly} package is
-the tag's and which adds the Mesa~3.5 + KD-tree flocking implementation. The core was held at its 1.9~GHz
+the second of two timing sessions, whose \code{modelly} package is the tag's
+(\cref{app:reproduce}). The core was held at its 1.9~GHz
 base frequency (the \code{performance} governor, turbo disabled) for every timing of this
 section. Following
 \citet{kalibera2013rigorous}, every timed run of the playbooks, the migrated models and Mesa's examples is
@@ -70,37 +71,21 @@ $50 \times 50$ with 625 sheep and 312 wolves, and the virus model on 1,000 nodes
 fixed-frequency core, and compared every model reporter, at the last step and averaged over
 the run, over 100 shared seeds. \Cref{tab:mesa-examples} gives the results: on \modelly{} the
 examples take 0.60 (wolf--sheep) to 0.95 (the prisoner's dilemma grid and boid flockers) of
-Mesa~3.5's CPU time, and all 35 statistics are equivalent within $0.5\,s_p$, with no paired
-$t$-test or Kolmogorov--Smirnov test below 5\% even before correction. The one consistent
-pattern is in the virus model, seven of whose eight statistics lean the same way on
-\modelly{} (fewer resistant and more susceptible nodes, $|d| = 0.22$ to $0.25$, paired
-$p \ge 0.10$; the eighth, the final number infected, is zero in every run). Run again on 300
-new seeds (\code{paper/data/mesa\_examples\_virus300\_new.json}), the pattern keeps its direction
-but shrinks ($|d| \le 0.15$, paired $p \ge 0.07$), every interval including zero and all eight
-statistics equivalent within $0.5\,s_p$. Pooled over the 400 seeds by inverse variance, the
-difference is small but consistent: $d \approx 0.17$ $[0.03, 0.32]$ (paired $p \approx 0.02$
-uncorrected), about 14\% more susceptible and 6\% fewer resistant nodes at the end. To find
-where it comes from we compared the two arms level by level in one process
-(\code{paper/scripts/virus\_trace.py}, \code{data/virus\_trace.json}; 10 seeds at the
-harness's 1,000 nodes and 200 steps): the graph, which both arms draw from the global
-streams the harness seeds, is the same edge set; the agents are created in the same node
-order with the same neighbourhoods; the data collector's counts equal a direct count of the
-states; and only the initial outbreak differs, because Mesa seeds \code{model.random} with
-the seed itself while \modelly{} seeds it with a 32-bit value derived from the seed, so the
-two arms draw from different streams. With the streams aligned (the outbreak set equal and
-both generators reseeded alike after construction) the per-node states are identical after
-every one of the 200 steps on every seed, and with Mesa's derivation forced on both arms
-(both reseeded with the seed and the outbreak redrawn as Mesa's constructor draws it) the
-whole runs, outbreak and data collection included, are bit-identical on every seed. The
-migrated copy is therefore the same stochastic process as the example, draw for draw; what
-the agreement study compares is two independent random streams of that process, and the
-pooled shift is what those streams happened to give. A replication on 1,000 further seeds
-(20,000 to 20,999; \code{paper/data/mesa\_examples\_virus1000\_new.json}) bears this out: on
-them every $|d| \le 0.016$ (paired $p \ge 0.73$), and over all 1,400 seeds together every
-$|d| \le 0.06$ with every interval including zero (final susceptible $d = 0.060$
-$[-0.02, 0.13]$, 4.7\% of the mean; resistant $-0.060$, 2.2\%), all eight statistics
-equivalent within $0.5\,s_p$ and within $0.25\,s_p$. The shift of the first 400 seeds was a
-run of the two streams, not a property of the migrated code.
+Mesa~3.5's CPU time, and all 35 statistics (34 once the virus model's final number infected, zero in every run,
+is set aside) are equivalent within $0.5\,s_p$, with no paired $t$-test or
+Kolmogorov--Smirnov test below 5\% even before correction. The virus model's other seven
+statistics leaned the same way ($|d| = 0.22$ to $0.25$, paired $p \ge 0.10$), and we traced it
+(\code{paper/scripts/virus\_trace.py}, \code{data/virus\_trace.json}, 10 seeds): the graph, the
+agents' order and neighbourhoods and the data collection are identical on both arms, and only
+the initial outbreak differs, because Mesa seeds \code{model.random} with the seed itself and
+\modelly{} with a 32-bit value derived from it. With Mesa's derivation forced on both arms the
+whole runs are bit-identical on every seed: the migrated copy is the same stochastic process,
+draw for draw, and the agreement study compares two independent streams of it. A replication
+on 1,000 new seeds (20,000 to 20,999, \code{paper/data/mesa\_examples\_virus1000\_new.json})
+gives every $|d| \le 0.016$ (paired $p \ge 0.73$). Here, as for the grid epidemic's peak time
+and Schelling's model in \cref{sec:agreement}, a replication on new seeds was run where a
+consistent pattern or an interval excluding zero appeared; the other comparisons were not
+replicated.
 
 \begin{table}[tbp]
   \centering
@@ -354,7 +339,7 @@ interpreters pinned to one core at the machine's default frequency policy
 (\code{paper/scripts/python\_versions.py}, \cref{tab:python-versions} in the appendix). The
 speed-ups on 3.15 reproduce \cref{tab:playbooks}'s within the session's noise (26.1, 7.1,
 31.5, 12.9, 3.0, 17.7, 3.5 and 4.4 against 25.7, 7.1, 32.6, 12.9, 2.9, 17.8, 3.5 and 4.4;
-the cohorts 135 against 135), and on 3.12 and 3.14 they are the same or larger: 33 and 32
+the cohorts 135 against 135), and on 3.12 and 3.14 they are similar or larger: 33 and 32
 on the grid epidemic, 9.7 and 7.7 on predator-prey, 17 and 22 on Schelling's model, 4.3 and
 4.2 on Boltzmann wealth, within 10\% of the 3.15 values on the other four, with the
 cohorts at 151 and 159. Mesa's per-agent steps are 1 to 28\% faster on 3.15 than on 3.12
@@ -450,7 +435,8 @@ terms as array operations are a factor of 12.5 over the KD-tree baseline; on Sug
 the search as one array pass is a factor of 3.9 over the same search per forager. The
 compiled runtime contributes nothing to the column rungs (0.99 to 1.04): once a phase is an
 array operation, the framework's loops are no longer on the path, and the time is numpy's.
-The column form sits 1.7 to 4.6 times above hand-written numpy without agent objects,
+In the ablation's session the column form sits 1.7 to 4.6 times above hand-written numpy
+without agent objects (1.8 to 4.5 in \cref{tab:playbooks}),
 which is the price of keeping agents, agent sets and spaces next to the arrays.
 The attribution is therefore: of the grid epidemic's factor of 26, about 1.3 is the
 framework and its compiled loops and about 20 the array representation of the phases; of
@@ -562,7 +548,7 @@ replication on 200 new seeds, disjoint from these 50, does not reproduce them: n
 of the twelve grid epidemic comparisons excludes zero, the largest $|d|$ is 0.13 (the peak
 time's is 0.03 and 0.04, under 1\% of the mean), and all twelve are equivalent within
 $0.4\,s_p$, also after the Holm correction. The trajectory study at the small size
-(\cref{sec:trajectories}) later found the columns' peak 3.3 steps \emph{earlier} on 100
+(\cref{sec:trajectories}) finds the columns' peak 3.3 steps \emph{earlier} on 100
 other seeds; taken together, the three samples put the columns' peak timing within about
 $\pm 12\%$ of Mesa's, with the sign undetermined, which is what the tests' power at this
 margin allows.
@@ -597,7 +583,7 @@ Summary statistics at the end of a run can agree while the runs that produce the
 in the shape of the epidemic curve, the spatial pattern it leaves, the speed at which a city
 segregates, the period of a predator-prey cycle, or how often a species dies out. We
 therefore compared trajectories and patterns on three playbooks, over 100 new shared seeds
-(20,000 to 20,099, disjoint from every other study's) at the small size, each \modelly{}
+(20,000 to 20,099, disjoint from the playbook studies' seeds) at the small size, each \modelly{}
 variant against Mesa~2.3, and, as a reference for what two per-agent implementations of
 the same model differ by, Mesa~3.5 against Mesa~2.3 on the same seeds
 (\code{paper/scripts/trajectories.py}). The quantities and their margins were fixed before
@@ -691,7 +677,7 @@ the time to converge within 2 steps for every implementation before it, and the 
 out in 1 of 100 runs on Mesa~2.3 and Mesa~3.5 and in 0 of 100 on either \modelly{} variant
 (sheep never), equivalent within 5 percentage points after it. The claim this supports
 is bounded: on these three workloads, at this size, the faster forms follow the same
-dynamics as Mesa~2.3 to within what 100 seeds resolve, and no closer than Mesa~3.5 does;
+dynamics as Mesa~2.3 to within what 100 seeds resolve, and about as closely as Mesa~3.5 does;
 for the six quantities whose margins 100 seeds cannot decide, the point estimates lie
 within the margins but equivalence is not shown, and one timing difference is shown. The
 variants are therefore not interchangeable for every scientific question: one whose answer

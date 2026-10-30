@@ -90,8 +90,7 @@ cluster code would aim for, cannot be measured on one laptop, and the laptop's h
 processor is the main limit: eight copies of the same work with no communication at all
 already run at 25\% of one (50\% with 40,000 people per worker), because beyond the four
 performance cores the copies land on efficiency cores (at eight workers their step times
-split into two groups, 0.022~s and 0.029 to 0.044~s). The Ray backend is written but untested (Ray does not install on CPython 3.15); MPI on
-macOS and Windows is untested (\cref{sec:threats}); and the split-run suite runs on the three
+split into two groups, 0.022~s and 0.029 to 0.044~s). The Ray backend is written but untested (Ray does not install on CPython 3.15); and the split-run suite runs on the three
 reference models, not on the zoo, whose models would change their numbers if moved to
 per-agent streams.
 

@@ -35,16 +35,18 @@ one phase at a time, and gets:
   instantiated (\emph{cohorts}), and the framework's inner loops run in compiled C, each with a
   pure-Python twin that gives the same results (\cref{sec:design}). On eight workloads, with
   those phases written as arrays, the column form runs 2.9 to 33 times faster than Mesa~3.5
-  and 4.6 to 42 times faster than Mesa~2.3, and the cohort form 135 and 251 times, with the
+  (12 times on flocking against Mesa~3.5 given the same KD-tree search) and 4.6 to 42 times
+  faster than Mesa~2.3, and changing the insect model's representation to counted cohorts makes
+  it 135 times faster than individuals on Mesa~3.5, with the
   lead growing with the population on the grid epidemic and Schelling's model; a Mesa~3.5 model migrated by the codemod, with no phase
   rewritten, runs 1.05 to 2.3 times faster. An ablation that changes one thing per rung
   (framework, compiled runtime, data structure, search algorithm, array representation)
   attributes the large gains to the array representation of the phases
   (\cref{sec:ablation}). Whether the faster forms compute the same model is tested: against
-  the author's Mesa~2.3 reference implementations, over 100 seeds per variant, 63 of 67
-  summary statistics of the faster forms meet a prespecified
-  equivalence margin of half a standard deviation at nominal significance, 29 after Holm
-  correction, and 48 lie within $\pm 5\%$ of Mesa's mean; a trajectory-level study of three
+  the author's Mesa~2.3 reference implementations, over 100 seeds per variant, 29 of 67
+  statistic--variant comparisons of the faster forms are shown equivalent within a prespecified
+  margin of half a standard deviation after Holm correction (63 at nominal significance), and
+  48 are shown equivalent within $\pm 5\%$ of Mesa's mean; a trajectory-level study of three
   workloads (whole curves, spatial clusters, time to converge, extinction probability,
   cycle period) finds the faster forms as close to Mesa~2.3 as Mesa~3.5 is
   (\cref{sec:performance}).
@@ -61,8 +63,9 @@ one phase at a time, and gets:
   checks that the bundled examples give the same digests compiled or in pure Python and
   straight or resumed from a checkpoint, and, run on hosted builds of the checkout and of
   the released wheels (Linux x86-64 and ARM64, macOS ARM64 and x86-64, Windows, under
-  CPython 3.12, 3.13 and 3.14), that twelve or thirteen of seventeen examples give
-  bit-identical digests on every build and the others agree at ten significant digits
+  CPython 3.12, 3.13 and 3.14), that thirteen of seventeen examples give
+  bit-identical digests on all fifteen wheel builds (twelve on the nine builds compiled from
+  the checkout) and the others agree at ten significant digits
   wherever the suite compares them (\cref{sec:reproducibility}). The paper states each guarantee's scope: determinism on
   one build, numerical agreement across platforms, and bitwise agreement where it holds.
   \item \textbf{Towards large and data-driven studies.} The same model can be split across

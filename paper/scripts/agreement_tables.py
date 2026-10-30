@@ -85,7 +85,7 @@ def forest(rows: list[dict], out: Path) -> None:
         "cohorts": "#009E73",
         "Mesa 3.5": "#9A9A9A",
         "Mesa 3.5 + numpy": "#555555",
-        "Mesa 3.5 + KD-tree": "#777777",
+        "Mesa 3.5 + KD-tree": "#CC79A7",
         "mesa-frames": "#D55E00",
     }
     fig, ax = plt.subplots(figsize=(6.8, 3.0))

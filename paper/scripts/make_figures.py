@@ -58,7 +58,7 @@ VARIANTS = {
 COLOURS = {
     "Mesa 3.5": "#9A9A9A",
     "Mesa 3.5 + numpy": "#555555",
-    "Mesa 3.5 + KD-tree": "#777777",
+    "Mesa 3.5 + KD-tree": "#CC79A7",
     "mesa-frames": "#D55E00",
     "Modelly, cell lists": "#56B4E9",
     "Modelly, columns": "#0072B2",

@@ -507,7 +507,7 @@ def quantity_label(quantity: str) -> str:
 def full_table(scalar: list[dict], seeds: int) -> str:
     """Every scalar comparison: Mesa's mean, the paired difference, d, margin, TOST p."""
     lines = [
-        "\\begin{longtable}{llp{0.21\\linewidth}rp{0.19\\linewidth}rrrr}",
+        "\\begin{longtable}{ll>{\\raggedright\\arraybackslash}p{0.21\\linewidth}r>{\\raggedright\\arraybackslash}p{0.19\\linewidth}rrrr}",
         (
             "\\caption{Every scalar comparison of the trajectory study over "
             f"{seeds} shared seeds at the small size (seeds {SEED_BASE} to {SEED_BASE + seeds - 1}): "

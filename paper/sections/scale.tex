@@ -32,7 +32,8 @@ whose multi-node speed-up has not been shown.
     MPI with 2 and 4 ranks; Dask with 2 workers & Weak scaling 85, 30, 19 and 5\% at 2, 4, 8
     and 16 workers with 10,000 people per worker, 91, 68 and 45\% at 2, 4 and 8 with 40,000
     (single runs on a shared laptop whose copies without communication already fall to 25\% at
-    eight); 64 workers unmeasured; Ray, and MPI on macOS and Windows, untested \\
+    eight); 64 workers unmeasured; MPI with 2 and 4 ranks on Linux and macOS and 2 on Windows; Ray
+    untested \\
     \addlinespace
     GPU backend & Steps 34 times faster than the CPU column variant on one core at 10 million agents (78 times
     the same GPU variant on \code{numpy}); the GPU variant's
@@ -78,7 +79,7 @@ performance cores the copies land on efficiency cores, and with 10,000 people pe
 protocol keeps 42 to 56\% of what the machine gives from four workers on, 74 to 80\% with
 40,000 (\cref{tab:scaling}). A split run on one laptop is therefore a check of correctness
 more than a speed-up; scaling to the 64 workers of a cluster was not measured, and the Ray
-backend, and MPI on macOS and Windows, are untested.
+backend is untested.
 
 \subsection{A GPU backend}
 \label{sec:gpu}

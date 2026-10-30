@@ -36,7 +36,9 @@ if __name__ == "__main__":   # process workers re-import the script
 Results are appended to Parquet files with a DuckDB view; an interrupted sweep resumes without
 repeating finished runs. Executors cover serial runs, threads, processes, Dask, Ray and SLURM
 or PBS job arrays, and are pluggable. The test suite checks that serial, thread and process
-runs of the same experiment give identical results, and Dask runs when Dask is installed; the
+runs of the same experiment give identical results, the SLURM and PBS executors against
+stand-in \code{sbatch} and \code{qsub} commands (no cluster was available, and the hosted
+SLURM job did not run for this version), and Dask runs when Dask is installed; the
 Ray and cluster executors are tested against stand-ins for their schedulers.
 
 \subsection{Calibration and sensitivity analysis}
@@ -50,7 +52,7 @@ the experiment executors; a stopped calibration resumes to the same posterior.
 model, a function or a Gaussian-process emulator \citep{oakley2004probabilistic}. Both are checked against known answers
 (\cref{sec:validation}); \cref{lst:abc} calibrates an epidemic model.
 
-\begin{lstlisting}[float=tp,caption={ABC-SMC calibration of two rates of an epidemic model to an observed series
+\begin{lstlisting}[float=tp,caption={ABC-SMC calibration of two rates of an epidemic model to an observed series.
 \code{epidemic} is the model module of \code{docs/calibration.md}, the documented SIR model
 with its observed series \code{cases}; run as printed against that module, the listing
 gives the posterior quoted in \cref{sec:validation} (\code{paper/scripts/check\_listings.py}).},

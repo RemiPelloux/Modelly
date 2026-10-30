@@ -140,9 +140,10 @@ the numbers of Python's \code{random.Random} for the same seed (the Mersenne Twi
 \code{FastRandom}'s hot methods (\code{randint}, \code{choice}, \code{shuffle},
 \code{sample}) run in C on CPython's own generator state; at import it is checked against
 \code{random.Random}, and a pure-Python implementation with the same stream is used when the C
-module is absent. A model migrated from code that used \code{random.Random(seed)} therefore keeps
-its exact stream, which is what makes the bit-identical results of \cref{sec:samecode}
-possible. A model can instead give every agent generators of its own
+module is absent. A model that seeds its own \code{random.Random(seed)} keeps that exact stream, which is
+what makes the identical results of the two migrated Mesa~2.3 models possible; \code{model.random}
+itself is seeded from a value derived from the scenario's seed, so a migrated model that draws
+from it follows a different stream from Mesa's (\cref{sec:samecode}). A model can instead give every agent generators of its own
 (\code{agent\_streams = True}): each is seeded from the scenario's seed sequence and the
 agent's stream key, so what an agent draws no longer depends on the activation order or on
 the population, which is what lets a run split across workers reproduce the single-process
@@ -159,8 +160,9 @@ two side by side, and \code{MODELLY\_PURE\_PYTHON=1} forces the Python path. Res
 identical either way. The modules build with GCC, Clang and MSVC; the release workflow builds
 them on the tag for Linux (glibc and musl, x86-64 and ARM64), macOS and Windows (x86-64 and
 ARM64), where a module that fails to compile fails the
-build and each wheel's test imports four of the five compiled (all but the event heap), checked
-as \cref{tab:determinism} states. They also build for free-threaded CPython,
+build and the release workflow's import test checks four of the five compiled (all but the
+event heap), while the runs of the released wheels from PyPI found all five present, as
+\cref{tab:determinism} states. They also build for free-threaded CPython,
 where critical sections and cache generation counters replace the global interpreter lock,
 and the compiled modules' tests, except the event heap's, run on that build on the development
 machine.
