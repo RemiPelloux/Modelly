@@ -80,7 +80,10 @@ agents' order and neighbourhoods and the data collection are identical on both a
 the initial outbreak differs, because Mesa seeds \code{model.random} with the seed itself and
 \modelly{} with a 32-bit value derived from it. With Mesa's derivation forced on both arms the
 whole runs are bit-identical on every seed: the migrated copy is the same stochastic process,
-draw for draw, and the agreement study compares two independent streams of it. A replication
+draw for draw, and the agreement study compares two independent streams of it. Exact,
+run-for-run reproduction of a Mesa model therefore requires aligned random streams: by default
+a migrated model draws \code{model.random} from \modelly{}'s seed derivation and agrees with
+Mesa in distribution, not run by run. A replication
 on 1,000 new seeds (20,000 to 20,999, \code{paper/data/mesa\_examples\_virus1000\_new.json})
 gives every $|d| \le 0.016$ (paired $p \ge 0.73$). Here, as for the grid epidemic's peak time
 and Schelling's model in \cref{sec:agreement}, a replication on new seeds was run where a
