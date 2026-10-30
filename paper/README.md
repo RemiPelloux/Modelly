@@ -99,6 +99,7 @@ Tables and figures are named by their LaTeX labels.
 | The cohort proposition's positive case and two counterexamples (Section 3.2) | `data/cohort_counterexample.json` | `scripts/cohort_counterexample.py` |
 | The determinism suite and exact digests on hosted builds: the checkout on 9 and on 15 (five architectures), the released 1.4.2 wheels from PyPI on 15; MPI on three systems; bundles verified across systems (`tab:determinism`, `tab:platform-digests`) | `data/platform_runs.json`, `data/platform_digests/`, `data/platform_digests_15/`, `data/platform_digests_wheels/` (artifacts of `.github/workflows/platform-digests.yml`) | `gh workflow run platform-digests.yml -f source=checkout` and `-f source=pypi -f version=1.4.2`, `gh workflow run mpi.yml`, download the artifacts, then `scripts/platform_digests_table.py` |
 | Every table and figure regenerates from the data; every listing runs as printed; the same from a fresh clone and environment | all of the above; `data/clean_checkout_check.json` | `scripts/verify_artifacts.py`; `scripts/check_listings.py` |
+| Mesa's virus example against its migrated copy, level by level (graph, agents, outbreak, aligned streams, Mesa's seed derivation on both arms), and a replication on 1,000 new seeds (Section 5.1) | `data/virus_trace.json`, `data/mesa_examples_virus1000_new.json` | `scripts/virus_trace.py --seeds 10`; `benchmarks/mesa_examples/run.py --only virus_on_network --rounds 1 --seeds 1000 --seed-base 20000` |
 | The ABC-SMC weights against their equation: the proposal density and a closed-form posterior (Section 6.2) | `data/abc_weights_check.json` | `scripts/abc_weights_check.py` |
 
 If the benchmark results are rerun (on different hardware, say), run `make figures` and
@@ -143,6 +144,11 @@ update the hardware line at the start of Section 5.
       proposal density and a closed-form posterior); the artifact checks rerun from a fresh
       clone with dependencies resolved from PyPI; the conclusion bounded to the dynamics
       tested, with the peak-timing difference kept.
+- [x] Fourth round: the conclusion's reproducibility counts reconciled with the abstract
+      (13/17 on the fifteen wheel builds, 12/17 on the nine checkout builds); 29/67 in the
+      abstract; independence across rows made explicit in the cohort proposition; the
+      virus example traced level by level (same process draw for draw; the shift was the
+      two frameworks' seed derivations) and replicated on 1,000 new seeds (no shift).
 - [ ] Still open from the review: a second CPU architecture for the timings; an
       independent review or rerun of the benchmark implementations (not by the author);
       the trajectory study at the timed size and on the other five playbooks; multi-node

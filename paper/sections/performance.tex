@@ -79,9 +79,28 @@ new seeds (\code{paper/data/mesa\_examples\_virus300\_new.json}), the pattern ke
 but shrinks ($|d| \le 0.15$, paired $p \ge 0.07$), every interval including zero and all eight
 statistics equivalent within $0.5\,s_p$. Pooled over the 400 seeds by inverse variance, the
 difference is small but consistent: $d \approx 0.17$ $[0.03, 0.32]$ (paired $p \approx 0.02$
-uncorrected), about 14\% more susceptible and 6\% fewer resistant nodes at the end. We have not
-found its cause, and report it as an open difference between the example on Mesa and its
-migrated copy on \modelly{}.
+uncorrected), about 14\% more susceptible and 6\% fewer resistant nodes at the end. To find
+where it comes from we compared the two arms level by level in one process
+(\code{paper/scripts/virus\_trace.py}, \code{data/virus\_trace.json}; 10 seeds at the
+harness's 1,000 nodes and 200 steps): the graph, which both arms draw from the global
+streams the harness seeds, is the same edge set; the agents are created in the same node
+order with the same neighbourhoods; the data collector's counts equal a direct count of the
+states; and only the initial outbreak differs, because Mesa seeds \code{model.random} with
+the seed itself while \modelly{} seeds it with a 32-bit value derived from the seed, so the
+two arms draw from different streams. With the streams aligned (the outbreak set equal and
+both generators reseeded alike after construction) the per-node states are identical after
+every one of the 200 steps on every seed, and with Mesa's derivation forced on both arms
+(both reseeded with the seed and the outbreak redrawn as Mesa's constructor draws it) the
+whole runs, outbreak and data collection included, are bit-identical on every seed. The
+migrated copy is therefore the same stochastic process as the example, draw for draw; what
+the agreement study compares is two independent random streams of that process, and the
+pooled shift is what those streams happened to give. A replication on 1,000 further seeds
+(20,000 to 20,999; \code{paper/data/mesa\_examples\_virus1000\_new.json}) bears this out: on
+them every $|d| \le 0.016$ (paired $p \ge 0.73$), and over all 1,400 seeds together every
+$|d| \le 0.06$ with every interval including zero (final susceptible $d = 0.060$
+$[-0.02, 0.13]$, 4.7\% of the mean; resistant $-0.060$, 2.2\%), all eight statistics
+equivalent within $0.5\,s_p$ and within $0.25\,s_p$. The shift of the first 400 seeds was a
+run of the two streams, not a property of the migrated code.
 
 \begin{table}[tbp]
   \centering

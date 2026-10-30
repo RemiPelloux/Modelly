@@ -55,18 +55,28 @@ The three operations cover survival, two-way transitions and counts of events th
 individual triggers at most once per phase (an egg batch, an emergence).
 
 \begin{description}[style=nextline,leftmargin=1.5em,itemsep=2pt]
-  \item[Proposition.] Suppose that, in every phase, (A1) the individuals of a row are
-  conditionally independent given the state vector at the start of the phase; (A2) every
-  individual of a row faces the same probabilities, which are functions of that state vector
-  only (homogeneity within the row and a synchronous update); and (A3) each individual's
-  fate in the phase is one of the three operations above (one draw per individual, into at
-  most two outcomes). Then, by induction over the phases, the vector of counts per state has
-  the same distribution in the cohort model as in the individual model.
+  \item[Proposition.] Suppose that, in every phase, (A1) all the individuals of the
+  population, within a row and across rows, are conditionally independent given the state
+  vector at the start of the phase; (A2) every individual of a row faces the same
+  probabilities, which are functions of that state vector only (homogeneity within the row
+  and a synchronous update); and (A3) each individual's fate in the phase is one of the
+  three operations above (one draw per individual, into at most two outcomes). Then, by
+  induction over the phases, the vector of counts per state has the same distribution in
+  the cohort model as in the individual model.
 \end{description}
 
-\noindent The proof is the binomial identity above applied row by row: under (A1) and (A2) the
-rows are drawn independently with the same marginals as the individuals, and (A3) makes each
-row's draw a sum of exchangeable Bernoulli variables. The proposition says nothing when an
+\noindent The proof is the binomial identity above applied row by row. Conditional on the
+state vector at the start of the phase, (A1) makes the fates of all individuals
+independent, so the fates of distinct rows are independent of one another and, within a
+row, (A2) and (A3) make them exchangeable Bernoulli variables with the row's probability:
+each row's count is therefore binomial, the rows' counts are conditionally independent,
+and their joint law given the state is the one the cohort model draws from (one
+independent binomial per row, with the same probabilities, since the cohort evaluates them
+from the same state vector). The induction over phases carries the equality of the joint
+law of the state vector from one phase to the next. Independence across rows is part of
+(A1), not a consequence of independence within rows: a phase in which two rows' fates are
+coupled (a shared resource drawn once and allocated to both, say) breaks (A1) even when
+each row's members are independent among themselves. The proposition says nothing when an
 assumption fails, and two cases show that the conclusion then fails too
 (20,000 replicates of one phase on $n = 200$ individuals with $s = 0.8$, by
 \code{paper/scripts/cohort\_counterexample.py}, whose data file is next to it). First, an

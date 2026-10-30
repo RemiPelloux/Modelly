@@ -75,6 +75,9 @@ NP="--variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth"
 .venv/bin/python paper/scripts/sobol_scramblings.py
 .venv/bin/python paper/scripts/cohort_counterexample.py
 .venv/bin/python paper/scripts/abc_weights_check.py   # the SMC weights vs their equation
+.venv/bin/python paper/scripts/virus_trace.py --seeds 10  # the virus example, level by level
+.venv/bin/python benchmarks/mesa_examples/run.py --only virus_on_network --rounds 1 \
+    --seeds 1000 --seed-base 20000 --output paper/data/mesa_examples_virus1000_new.json
 # the determinism suite and exact digests on hosted builds (the checkout, then the
 # released wheels from PyPI), MPI on three systems; then the artifacts
 gh workflow run platform-digests.yml -f source=checkout

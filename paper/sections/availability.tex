@@ -19,13 +19,15 @@ correction, the rest are undecided at 100 seeds, and one difference is shown, th
 form's epidemic peak 3.3 steps earlier than Mesa~2.3's ($[-6.6, -0.1]$), so a study for
 which a peak's timing matters to that precision should set its own tolerance and test it
 as \cref{sec:trajectories} does; and Mesa's own examples, migrated with the codemod, give all 35 of
-their statistics within the same margin. Around that model, the
+their statistics within the same margin, the virus example's small pooled shift traced to
+the two frameworks' random streams rather than to the migrated code (\cref{sec:samecode}). Around that model, the
 steps of a study (sweeps, calibration, sensitivity analysis, emulation, provenance and
 archiving) are part of the framework, built on one seeding discipline and checked against
 problems whose answers are known, and the reproducibility guarantees are stated by scope:
-deterministic on one build, reproducible at ten significant digits across the nine
-platform-interpreter builds tested, and bit-identical across them for twelve of seventeen
-examples. The same model splits across processes with byte-identical results, runs its array
+deterministic on one build; reproducible at ten significant digits on every hosted build
+tested, the released wheels installed from PyPI on fifteen (five architectures, three
+interpreters) among them; and bit-identical across those fifteen for thirteen of seventeen
+examples (twelve of seventeen across the nine builds compiled from the checkout). The same model splits across processes with byte-identical results, runs its array
 phases on a GPU (with a bounded gain once construction is counted), connects to live data and
 continuous fields, and can be shared as a web page (\cref{tab:scale}); these capabilities are
 validated functionality with the performance evidence of \cref{tab:scale}, not general

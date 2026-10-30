@@ -11,8 +11,9 @@ and within 1.8 to 4.5 times of hand-written numpy without agent objects, and an 
 attributes the gain to the array form of the phases. Mesa~3.5 models migrated with a codemod
 (Mesa's own examples with one import edit each) run 1.05 to 2.3 times faster. Against the author's Mesa~2.3
 reference implementations, 63 of 67 summary statistics over 100 paired seeds meet a
-prespecified equivalence margin of half a standard deviation, and a trajectory-level study
-finds the faster forms as close to Mesa~2.3 as Mesa~3.5 is. The released wheels, installed
+prespecified equivalence margin of half a standard deviation at nominal significance (29
+after Holm correction), and a trajectory-level study finds the faster forms as close to
+Mesa~2.3 as Mesa~3.5 is on the dynamics tested, with one timing difference shown. The released wheels, installed
 from PyPI on five architectures under CPython 3.12 to 3.14, give bit-identical digests for
 thirteen of seventeen examples and agree to ten significant digits for the rest. \modelly{}
 also splits a run across processes with byte-identical results, runs columns on a GPU,
