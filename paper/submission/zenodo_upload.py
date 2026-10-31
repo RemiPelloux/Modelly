@@ -85,7 +85,9 @@ def main() -> int:
     if not options.publish:
         print(f"draft saved: {draft['links']['html']}")
         return 0
-    done = call("POST", f"{api}/deposit/depositions/{draft['id']}/actions/publish", token)
+    done = call(
+        "POST", f"{api}/deposit/depositions/{draft['id']}/actions/publish", token
+    )
     print(f"published: DOI {done['doi']}  {done['links']['record_html']}")
     return 0
 
