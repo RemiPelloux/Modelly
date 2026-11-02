@@ -33,6 +33,7 @@ FILES = {
     "modelly/__init__.py": '"""Modelly."""\n\n__version__ = "1.2.0"\n',
     "CITATION.cff": 'cff-version: "1.2.0"\nversion: "1.2.0"\ndate-released: "2026-10-24"\n',
     "CHANGELOG.md": "# Changelog\n\nIntro.\n\n## 1.2.0 - 2026-10-24\n\n- Old.\n",
+    "docs/whats_new.md": "# What's new\n\n## Unreleased\n\n- Shiny.\n\n## 1.2.0 - 2026-10-24\n",
 }
 
 
@@ -44,7 +45,7 @@ def _git(repo, *args):
 
 @pytest.fixture
 def repo(tmp_path):
-    """A repository on main with the three files a release changes, committed."""
+    """A repository on main with the four files a release changes, committed."""
     path = tmp_path / "repo"
     for name, text in FILES.items():
         (path / name).parent.mkdir(parents=True, exist_ok=True)
@@ -75,7 +76,7 @@ def test_dry_run_is_the_default_and_changes_nothing(repo, capsys):
 
 
 def test_apply_bumps_commits_and_tags(repo):
-    """--apply writes the three files, one trailer-free commit and the tag."""
+    """--apply writes the four files, one trailer-free commit and the tag."""
     assert _cut(repo, "--apply") == EXIT_OK
     assert f'__version__ = "{VERSION}"' in (repo / "modelly/__init__.py").read_text(
         encoding="utf-8"
@@ -87,6 +88,11 @@ def test_apply_bumps_commits_and_tags(repo):
     assert 'cff-version: "1.2.0"' in citation
     changelog = (repo / "CHANGELOG.md").read_text(encoding="utf-8")
     assert f"Intro.\n\n## {VERSION} - {DATE}\n\n## 1.2.0" in changelog
+    whats_new = (repo / "docs/whats_new.md").read_text(encoding="utf-8")
+    assert (
+        f"## {VERSION} - {DATE}\n\n- Shiny." in whats_new
+        and "Unreleased" not in whats_new
+    )
     assert _git(repo, "log", "-1", "--format=%B") == f"chore(release): {VERSION}"
     assert _git(repo, "tag") == f"v{VERSION}"
     assert _git(repo, "status", "--porcelain") == ""
@@ -105,6 +111,22 @@ def test_unreleased_heading_is_renamed(repo):
     assert _cut(repo, "--apply") == EXIT_OK
     text = changelog.read_text(encoding="utf-8")
     assert f"## {VERSION} - {DATE}\n\n- New." in text and "Unreleased" not in text
+
+
+@pytest.mark.parametrize(
+    ("page", "message"),
+    [
+        ("# What's new\n\n## 1.2.0 - 2026-10-24\n", "no '## Unreleased' section"),
+        ("# What's new\n\n## Unreleased\n\n\n## 1.2.0 - 2026-10-24\n", "are empty"),
+    ],
+)
+def test_no_release_without_its_notes(repo, capsys, page, message):
+    """A What's new page with no Unreleased notes, or empty ones, stops the release."""
+    (repo / "docs/whats_new.md").write_text(page, encoding="utf-8")
+    _git(repo, "commit", "-q", "-am", "docs: no notes")
+    assert _cut(repo, "--apply") == EXIT_FAILED
+    assert message in capsys.readouterr().err
+    assert _git(repo, "tag") == ""
 
 
 def test_push_sends_main_and_the_tag(repo, tmp_path):

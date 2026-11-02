@@ -14,8 +14,11 @@ Steps, in order; the first that fails stops the release:
    CITATION date the release date (today, or ``--date``);
 4. the CHANGELOG gets the heading ``## X.Y.Z - DATE``: an ``## Unreleased`` heading is
    renamed, otherwise the heading is inserted above the latest release;
-5. one commit ``chore(release): X.Y.Z`` of exactly those three files, with no trailers;
-6. the annotated tag ``vX.Y.Z``; with ``--push``, ``main`` and the tag are pushed.
+5. the What's new page (``docs/whats_new.md``) must have a written ``## Unreleased``
+   section, the release's notes for users, which becomes ``## X.Y.Z - DATE``; without one
+   the release stops, so no version ships without its notes;
+6. one commit ``chore(release): X.Y.Z`` of exactly those four files, with no trailers;
+7. the annotated tag ``vX.Y.Z``; with ``--push``, ``main`` and the tag are pushed.
 
 The release workflow builds the wheels and the docs from the pushed tag. A GitHub release
 published for the tag is archived by the GitHub-Zenodo integration, which reads the
@@ -42,6 +45,7 @@ REMOTE = "origin"
 INIT = Path("modelly") / "__init__.py"
 CITATION = Path("CITATION.cff")
 CHANGELOG = Path("CHANGELOG.md")
+WHATS_NEW = Path("docs") / "whats_new.md"
 VERSION = re.compile(r"^\d+\.\d+\.\d+$")
 INIT_LINE = re.compile(r'^__version__ = "[^"]*"$', re.MULTILINE)
 CFF_VERSION = re.compile(r'^version: "[^"]*"$', re.MULTILINE)
@@ -134,6 +138,26 @@ def bumped_changelog(text: str, version: str, date: str) -> str:
     return f"{text[: latest.start()]}{heading}\n\n{text[latest.start() :]}"
 
 
+def bumped_whats_new(text: str, version: str, date: str) -> str:
+    """The What's new page with its Unreleased notes under the release heading.
+
+    Raises:
+        ReleaseError: the page has no ``## Unreleased`` section, or an empty one.
+    """
+    unreleased = UNRELEASED.search(text)
+    if unreleased is None:
+        raise ReleaseError(
+            f"{WHATS_NEW.as_posix()} has no '## Unreleased' section: write the notes first"
+        )
+    following = RELEASE_HEADING.search(text, unreleased.end())
+    notes = text[unreleased.end() : following.start() if following else len(text)]
+    if not notes.strip():
+        raise ReleaseError(
+            f"the '## Unreleased' notes in {WHATS_NEW.as_posix()} are empty"
+        )
+    return UNRELEASED.sub(f"## {version} - {date}", text, count=1)
+
+
 def planned_files(release: Release) -> dict[Path, str]:
     """The new contents of every file the release changes, by relative path."""
 
@@ -144,6 +168,7 @@ def planned_files(release: Release) -> dict[Path, str]:
         INIT: bumped_init(read(INIT), release.version),
         CITATION: bumped_citation(read(CITATION), release.version, release.date),
         CHANGELOG: bumped_changelog(read(CHANGELOG), release.version, release.date),
+        WHATS_NEW: bumped_whats_new(read(WHATS_NEW), release.version, release.date),
     }
 
 

@@ -3,6 +3,15 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Documentation
+
+- What's new (`docs/whats_new.md`): each release from 1.0.0 to 1.4.3 in a few lines per
+  feature, with links to the guides. `scripts/release.py` now requires a written
+  `## Unreleased` section there and renames it with the version, as it does in the changelog;
+  CONTRIBUTING says what goes in each.
+
 ## 1.4.3 - 2026-11-02
 
 ### Added

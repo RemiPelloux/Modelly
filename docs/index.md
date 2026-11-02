@@ -155,6 +155,7 @@ for _ in range(100):
 <ul>
 <li><a href="https://github.com/RemiPelloux/Modelly">GitHub repository</a>: source, issues and pull requests.</li>
 <li><a href="https://github.com/RemiPelloux/Modelly/discussions">Discussions</a>: questions and ideas.</li>
+<li><a href="whats_new.html">What's new</a>: what each release lets you do, feature by feature.</li>
 <li><a href="https://github.com/RemiPelloux/Modelly/blob/main/CHANGELOG.md">Changelog</a>: what each release added, changed and fixed.</li>
 <li><a href="https://github.com/RemiPelloux/Modelly/blob/main/CONTRIBUTING.md">Contributing guide</a>: local setup, tests, lint and review.</li>
 </ul>

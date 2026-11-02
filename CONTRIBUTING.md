@@ -294,8 +294,24 @@ worth getting right.
 
 ## Release notes
 
-User-facing changes are described in the pull request body; they are collected into release notes at
-release time. Internal refactors without behaviour changes do not need an entry.
+Every release has two sets of notes, written with the change, not at release time:
+
+- **`CHANGELOG.md`**, the full record: every user-facing change, under `## Unreleased`, in the
+  section that fits (Added, Changed, Deprecated, Fixed, Performance, ...), with the numbers that
+  back it.
+- **[What's new](docs/whats_new.md)** (`docs/whats_new.md`), the page users read: under
+  `## Unreleased`, a bold one-line theme for the release, then a few lines per feature that
+  say what a user can now do and link to its guide, under `### New`, `### Faster`,
+  `### Changed`, `### Deprecated` or `### Fixed`. Plain language, no internals, one to four
+  lines per item; anything that changes results or breaks code goes under Changed or
+  Deprecated, with what to do about it.
+
+A pull request that adds a feature, changes behaviour, makes something faster or fixes a bug
+users can see updates both. Internal refactors, tests and CI need a changelog entry only when a
+user would notice them, and never a What's new entry.
+
+`scripts/release.py` renames both `## Unreleased` headings to `## X.Y.Z - DATE`, and stops
+when the What's new page has no Unreleased notes or empty ones: no version ships without them.
 
 ## Questions
 
