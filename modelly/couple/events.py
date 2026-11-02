@@ -1,6 +1,6 @@
 """Events for ``solve_batch``: where a function of the state crosses zero, per system.
 
-An ``Event`` wraps ``condition(t, y, params)``, which returns one value per system, as an
+An ``ODEEvent`` wraps ``condition(t, y, params)``, which returns one value per system, as an
 event function of ``solve_ivp`` does for one. After every accepted step a system whose value
 changed sign (in the event's ``direction``) has the crossing located on the step's dense
 output (the Runge-Kutta pair's own interpolant, as ``solve_ivp`` uses), by bisection to the
@@ -23,7 +23,7 @@ BISECTIONS = 60
 
 
 @dataclass(frozen=True)
-class Event:
+class ODEEvent:
     """A zero crossing to locate in every system.
 
     Attributes:
@@ -104,7 +104,7 @@ class _Step:
         dy = np.einsum("dmc,dc->mc", self.Q[..., cols], powers)
         return self.t0[cols] + x * h, self.y0[:, cols] + h * dy
 
-    def root(self, event: Event, before: np.ndarray, cols: np.ndarray) -> np.ndarray:
+    def root(self, event: ODEEvent, before: np.ndarray, cols: np.ndarray) -> np.ndarray:
         """The fraction of the step where ``event`` crosses, by bisection on the interpolant."""
         sign = np.sign(before[cols])
         lo, hi = np.zeros(cols.size), np.ones(cols.size)
@@ -120,7 +120,7 @@ class _Step:
 
 def _locate(
     batch: _Batch,
-    events: Sequence[Event],
+    events: Sequence[ODEEvent],
     logs: list[EventLog],
     previous: list[np.ndarray],
     rows: np.ndarray,
@@ -155,7 +155,7 @@ def _locate(
     return stop
 
 
-def _fractions(step: _Step, event: Event, before, t_new, y_new) -> np.ndarray:
+def _fractions(step: _Step, event: ODEEvent, before, t_new, y_new) -> np.ndarray:
     """The fraction of the step where each system crosses, ``inf`` where none does."""
     after = event.value(t_new, y_new, step.params)
     cols = np.flatnonzero(event.crossed(before, after))

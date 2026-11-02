@@ -31,7 +31,7 @@ from typing import Any
 
 import numpy as np
 
-from modelly.couple.events import Event, EventLog, _cut, _locate
+from modelly.couple.events import EventLog, ODEEvent, _cut, _locate
 from modelly.couple.schedule import CouplingError
 
 # scipy.integrate._ivp.rk: the step-size controller's constants.
@@ -206,7 +206,7 @@ def solve_batch(
     method: str = "RK45",
     rtol: float = 1e-3,
     atol: float = 1e-6,
-    events: Sequence[Event] = (),
+    events: Sequence[ODEEvent] = (),
 ) -> BatchResult:
     """Integrate ``k`` independent systems from ``t_span[0]`` to ``t_span[1]``.
 
@@ -219,7 +219,7 @@ def solve_batch(
         method: ``"RK45"`` (the default, as in ``solve_ivp``) or ``"RK23"``.
         rtol: the relative tolerance, as in ``solve_ivp``.
         atol: the absolute tolerance, as in ``solve_ivp``.
-        events: ``Event`` objects located on every accepted step.
+        events: ``ODEEvent`` objects located on every accepted step.
 
     Returns:
         The final times and states, the event crossings and the work counts.

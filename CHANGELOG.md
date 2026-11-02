@@ -13,7 +13,7 @@ versioning.
   right-hand side is evaluated once per stage for all of them. Tested against `solve_ivp` on
   200 random systems: the same number of accepted steps for every one, the same final state to
   round-off.
-- `modelly.couple.Event`: zero crossings located per system on the step's interpolant, terminal
+- `modelly.couple.ODEEvent`: zero crossings located per system on the step's interpolant, terminal
   or not, with a direction.
 - `modelly.couple.AgentODE`: an ODE in every agent of a class, its state in columns, integrated
   each step with `solve_batch` (or, for `BDF`, `Radau` and `LSODA`, one stacked `solve_ivp` call

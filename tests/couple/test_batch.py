@@ -5,7 +5,7 @@ import pytest
 from scipy.integrate import solve_ivp
 
 from modelly.couple.batch import solve_batch
-from modelly.couple.events import Event
+from modelly.couple.events import ODEEvent
 from modelly.couple.schedule import CouplingError
 
 SYSTEMS = 200
@@ -92,7 +92,7 @@ def test_each_system_has_its_own_time_span():
 def test_a_terminal_event_stops_each_system_at_its_crossing():
     """Exponential decay crosses one half at ``ln 2 / rate``; the state there is one half."""
     rate = np.linspace(0.5, 2.0, 50)
-    event = Event(below_half, terminal=True, direction=-1)
+    event = ODEEvent(below_half, terminal=True, direction=-1)
     result = solve_batch(decay, (0.0, 10.0), np.ones((1, 50)), {"rate": rate},
                          rtol=1e-10, atol=1e-12, events=[event])  # fmt: skip
     assert result.stopped.all()
@@ -105,8 +105,8 @@ def test_non_terminal_events_record_every_crossing_in_its_direction():
     """``cos(w t)`` falls through zero at ``(2n + 1/2) pi / w``, rises at ``(2n + 3/2) pi / w``."""
     w = np.array([1.0, 2.0])
     y0 = np.array([[1.0, 1.0], [0.0, 0.0]])
-    falling = Event(position, direction=-1)
-    both = Event(position)
+    falling = ODEEvent(position, direction=-1)
+    both = ODEEvent(position)
     result = solve_batch(oscillator, (0.0, 20.0), y0, {"w": w}, rtol=1e-10, atol=1e-12,
                          events=[falling, both])  # fmt: skip
     for j in range(2):

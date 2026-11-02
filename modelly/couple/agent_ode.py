@@ -8,7 +8,7 @@ runs once per stage for the whole population. With a stiff method (``"BDF"``, ``
 ``"LSODA"``) it stacks the agents into one ``solve_ivp`` system and passes a block-diagonal
 Jacobian sparsity, since an agent's equations involve only its own state.
 
-Events (``modelly.couple.events.Event``) are located per agent. A terminal event stops the
+Events (``modelly.couple.events.ODEEvent``) are located per agent. A terminal event stops the
 agent at the crossing; after the whole population has been integrated, each event's
 ``action(table, rows, times)`` runs, and the stopped agents resume from their crossing to
 the end of the step. Actions may change columns, not add or remove agents (do that in an
@@ -23,7 +23,7 @@ from typing import Any
 import numpy as np
 
 from modelly.couple.batch import METHODS, solve_batch
-from modelly.couple.events import Event
+from modelly.couple.events import ODEEvent
 from modelly.couple.ode import Solver
 from modelly.couple.schedule import Coupling, CouplingError
 
@@ -64,7 +64,7 @@ class AgentODE:
         params: Sequence[str] = (),
         reads: Iterable[str] = (),
         solver: Solver | None = None,
-        events: Sequence[Event] = (),
+        events: Sequence[ODEEvent] = (),
     ) -> None:
         """Integrate the columns ``state`` of ``agent_class``; ``params`` are read-only columns.
 

@@ -6,7 +6,7 @@ import pytest
 from modelly import Agent, Model
 from modelly.core.columns import Column
 from modelly.couple.agent_ode import AgentODE
-from modelly.couple.events import Event
+from modelly.couple.events import ODEEvent
 from modelly.couple.ode import Solver
 from modelly.couple.schedule import Coupling, CouplingError, Phase
 
@@ -42,7 +42,7 @@ def fire(table, rows, times):
     table["v"][rows] = 0.0
 
 
-SPIKE = Event(threshold, terminal=True, direction=1, action=fire)
+SPIKE = ODEEvent(threshold, terminal=True, direction=1, action=fire)
 
 
 def neurons(currents):

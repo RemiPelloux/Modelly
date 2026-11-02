@@ -7,7 +7,7 @@ every agent its own ODE and integrates the whole population at once:
 | | What it is | When to use it |
 |---|---|---|
 | `solve_batch` | `solve_ivp` for many independent systems: each keeps its own adaptive step and tolerance, the right-hand side runs once per stage for all of them | integrating many systems outside a model, or inside your own step |
-| `Event` | a zero crossing located per system on the step's interpolant, terminal or not, upward, downward or both | "the moment the virus passes this level" |
+| `ODEEvent` | a zero crossing located per system on the step's interpolant, terminal or not, upward, downward or both | "the moment the virus passes this level" |
 | `AgentODE` | a coupling component: the state variables are columns of an agent class, integrated with `solve_batch` (or a stiff `solve_ivp`) each step, events calling back into the model | an ODE per agent inside a model |
 
 They need only numpy and scipy and work the same on Windows, macOS and Linux. For a single ODE
@@ -76,17 +76,17 @@ measured times are in [Performance](#performance).
 
 ## Events
 
-An `Event` wraps an event function as `solve_ivp`'s `events=` does, one value per system:
+An `ODEEvent` wraps an event function as `solve_ivp`'s `events=` does, one value per system:
 
 ```python
-from modelly.couple import Event
+from modelly.couple import ODEEvent
 
 
 def below_half(t, y, params):
     return y[0] - 0.5
 
 
-half_life = Event(below_half, terminal=True, direction=-1)
+half_life = ODEEvent(below_half, terminal=True, direction=-1)
 result = solve_batch(
     decay,
     (0.0, 10.0),
@@ -132,7 +132,7 @@ import numpy as np
 
 from modelly import Agent, Model
 from modelly.core.columns import Column
-from modelly.couple import AgentODE, Coupling, Event, Phase, Solver
+from modelly.couple import AgentODE, Coupling, ODEEvent, Phase, Solver
 
 THRESHOLD = 1e-2  # virus load above which a host is infectious
 
@@ -176,8 +176,8 @@ class Outbreak(Model):
         self.table.virus[:10] = 1e-3  # ten index cases
         self.contacts = contacts
         events = [
-            Event(above, direction=1, action=becomes_infectious),
-            Event(above, direction=-1, action=recovers),
+            ODEEvent(above, direction=1, action=becomes_infectious),
+            ODEEvent(above, direction=-1, action=recovers),
         ]
         self.coupling = Coupling()
         self.coupling.add(Phase(self.transmit))
@@ -282,7 +282,7 @@ compare results between machines with a tolerance, as for any `solve_ivp` result
   with `np.where`. They must be module-level functions or methods for the model to be saved.
 - A parameter is cut per system when its last axis has length `k`; a shared array that happens
   to have that length would be cut too, so give it another shape.
-- Event actions may change columns but not add or remove agents (rows are positions in the
+- ODEEvent actions may change columns but not add or remove agents (rows are positions in the
   column table): add or remove them in an agent phase.
 - An agent whose state does not move still costs a few steps per call, from the initial step
   heuristic (about seven for a day), as in `solve_ivp`.

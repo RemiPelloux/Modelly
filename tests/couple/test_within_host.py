@@ -4,7 +4,7 @@ import numpy as np
 
 from modelly import Agent, Model
 from modelly.core.columns import Column
-from modelly.couple import AgentODE, Coupling, Event, Phase, Solver
+from modelly.couple import AgentODE, Coupling, ODEEvent, Phase, Solver
 
 THRESHOLD = 1e-2  # virus load above which a host is infectious
 
@@ -57,8 +57,8 @@ class Outbreak(Model):
         self.table.virus[:10] = 1e-3
         self.contacts = contacts
         events = [
-            Event(above, direction=1, action=becomes_infectious),
-            Event(above, direction=-1, action=recovers),
+            ODEEvent(above, direction=1, action=becomes_infectious),
+            ODEEvent(above, direction=-1, action=recovers),
         ]
         self.coupling = Coupling()
         self.coupling.add(Phase(self.transmit))

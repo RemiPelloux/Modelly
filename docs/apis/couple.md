@@ -45,5 +45,5 @@ How to use them is in [ODEs in every agent](../agent_odes.md).
 
 ```{eval-rst}
 .. automodule:: modelly.couple.events
-   :members: Event, EventLog
+   :members: ODEEvent, EventLog
 ```
