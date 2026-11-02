@@ -36,6 +36,8 @@ then covers the options.
   contact structures that change over time and have several layers at once.
 - [Coupling fields and ODEs](coupling.md)\
   join agents to diffusing fields, ODEs and stock-flow models, each on its own clock.
+- [ODEs in every agent](agent_odes.md)\
+  one ODE per agent, integrated as one batch with each agent's own `solve_ivp` steps, and events.
 - [Language-model agents](llm_agents.md)\
   agents that decide through a language model, with schema-checked, cached, reproducible calls.
 - [Differentiable models](differentiable.md)\
@@ -81,6 +83,7 @@ Geospatial models <geospatial>
 Synthetic populations <population>
 Networks <networks>
 Coupling fields and ODEs <coupling>
+ODEs in every agent <agent_odes>
 Language-model agents <llm_agents>
 Differentiable models <differentiable>
 ```

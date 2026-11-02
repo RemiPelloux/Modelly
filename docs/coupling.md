@@ -11,6 +11,7 @@ on Windows, macOS and Linux.
 | `Field` | a grid property layer: diffusion, advection, decay | finite volumes, explicit sub-steps or backward Euler |
 | `ODE` | named state variables, `dy/dt = rhs(t, y, inputs)` | `scipy.integrate.solve_ivp` |
 | `StockFlow` | stocks joined by flows | `solve_ivp`, with every flow's running total |
+| `AgentODE` | an ODE in every agent of a class, its state in columns | `solve_batch`, each agent with its own steps ([ODEs in every agent](agent_odes.md)) |
 | `Phase` | an agent step phase (any method) | calls it |
 | `Coupling` | all of the above, once per step | phase by phase, writers before readers |
 

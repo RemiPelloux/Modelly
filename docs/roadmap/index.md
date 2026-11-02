@@ -11,7 +11,7 @@ people use to **build, calibrate, explain, scale, share and publish** a model, i
 |---|---|---|
 | [1.3.0](1.3.0.md) | Answers and trust | Calibrate, explain and publish a model: experiments, calibration, sensitivity, provenance, Studio, model zoo |
 | [1.4.0](1.4.0.md) | Scale out and connect | Split runs over MPI and Dask, a GPU backend, differentiable models, data assimilation, coupled fields and ODEs, synthetic populations, emulators, Modelly in the browser |
-| [1.5.0](1.5.0.md) | Ecosystem and collaboration | Model hub, model cards, policy and causal tools, LLM agents II, R and Julia bindings |
+| [1.5.0](1.5.0.md) | Ecosystem and collaboration | Model hub, model cards, policy and causal tools, LLM agents II, R and Julia bindings, differential equations in agents |
 | [2.0.0](2.0.0.md) | Clean foundations | One space API, one clock, columns by default, typed scenarios, stable ABI and checkpoint format |
 
 Every feature on these pages must work on Windows, macOS and Linux before it ships. How that is

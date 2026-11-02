@@ -5,7 +5,21 @@ versioning.
 
 ## Unreleased
 
-No change to the `modelly` package since 1.4.2; benchmarks, CI and documentation only.
+### Added
+
+- `modelly.couple.solve_batch`: `solve_ivp` for many independent systems at once. It runs
+  scipy's `RK45` and `RK23` pairs with scipy's step selection and error control applied to each
+  system separately, so every system takes the steps of its own `solve_ivp` call, while the
+  right-hand side is evaluated once per stage for all of them. Tested against `solve_ivp` on
+  200 random systems: the same number of accepted steps for every one, the same final state to
+  round-off.
+- `modelly.couple.Event`: zero crossings located per system on the step's interpolant, terminal
+  or not, with a direction.
+- `modelly.couple.AgentODE`: an ODE in every agent of a class, its state in columns, integrated
+  each step with `solve_batch` (or, for `BDF`, `Radau` and `LSODA`, one stacked `solve_ivp` call
+  with a block-diagonal Jacobian pattern); event actions call back into the model, and terminal
+  events resume within the step. Guide: `docs/agent_odes.md`; benchmark:
+  `benchmarks/ode/compare.py`.
 
 ### Benchmarks
 
