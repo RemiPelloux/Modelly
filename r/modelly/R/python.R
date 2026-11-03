@@ -14,13 +14,17 @@ bindings <- function() {
 
 #' Install Modelly in a Python environment for reticulate
 #'
+#' Installs modelly-abm with its "experiments" extra, which calibration needs to store its
+#' runs (pyarrow).
+#'
 #' @param envname The virtual environment to install into.
 #' @param version A Modelly version, such as "1.5.0", or NULL for the latest.
 #' @param ... Passed to reticulate::py_install().
 #' @return Invisibly, what reticulate::py_install() returns.
 #' @export
 install_modelly <- function(envname = "r-modelly", version = NULL, ...) {
-  package <- if (is.null(version)) "modelly-abm" else paste0("modelly-abm==", version)
+  package <- if (is.null(version)) "modelly-abm[experiments]" else
+    paste0("modelly-abm[experiments]==", version)
   invisible(reticulate::py_install(package, envname = envname, pip = TRUE, ...))
 }
 

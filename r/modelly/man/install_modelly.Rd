@@ -13,7 +13,8 @@ install_modelly(envname = "r-modelly", version = NULL, ...)
 Invisibly, what reticulate::py_install() returns.
 }
 \description{
-Install Modelly in a Python environment for reticulate.
+Install Modelly in a Python environment for reticulate, with its "experiments"
+extra, which calibration needs to store its runs (pyarrow).
 }
 \examples{
 \dontrun{
