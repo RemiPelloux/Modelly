@@ -3,6 +3,8 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## 1.5.0rc1 - 2026-11-03
+
 ## 1.5.0b1 - 2026-11-03
 
 ### Added
