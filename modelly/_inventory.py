@@ -89,6 +89,12 @@ DEPRECATIONS: tuple[Deprecation, ...] = (
     Deprecation("`modelly.space.geo.population.MAX_ITERATIONS`, `REGION`, `TOLERANCE`",
                 "the same names in `modelly.population.fitting`", "1.4",
                 "modelly.space.geo.population", (), ("MAX_ITERATIONS", "REGION", "TOLERANCE")),
+    Deprecation("a `Scenario` subclass attribute without an annotation",
+                "an annotated field (`beta: float = 0.3`)", "1.5", "modelly.scenarios.typed",
+                (), ("Scenario",)),
+    Deprecation("a parameter a `Scenario` subclass does not declare, or of another type than "
+                "its annotation", "an annotated field, and a value of its type", "1.5",
+                "modelly.scenarios.typed", (), ("Scenario",)),
 )  # fmt: skip
 
 CHANGES: tuple[Change, ...] = (
@@ -96,14 +102,15 @@ CHANGES: tuple[Change, ...] = (
     Change("H1", "every name deprecated in 1.3 to 1.5 is removed", "now"),
     Change("H6", "per-agent random streams become the default", "never",
            "the numbers drawn change, no call does; agent_streams = True gives them now"),
-    Change("H2", "one space protocol; property layers become fields on every space", "pending",
-           "warns once the protocol ships in 1.x"),
+    Change("H2", "one space protocol; property layers become fields on every space", "never",
+           "today's space classes stay as thin aliases through 2.x where they map cleanly; "
+           "one that does not map warns in 2.x before it goes in 3.0"),
     Change("H3", "typed attributes become columns by default", "never",
            "models keep their attributes; only where they are stored changes"),
-    Change("H4", "one clock, one documented tie-breaking order", "pending",
-           "warns for calls whose order changes once the ordering specification ships"),
-    Change("H5", "Scenario becomes typed and validated, loadable from TOML and YAML", "pending",
-           "warns once typed scenarios ship"),
+    Change("H4", "one clock, one documented tie-breaking order", "never",
+           "1.x already orders events by time, priority, then insertion order, the 2.0 rule; "
+           "docs/event_ordering.md and its tests pin it"),
+    Change("H5", "Scenario becomes typed and validated, loadable from TOML and YAML", "now"),
     Change("H8", "checkpoint and result formats v2", "never",
            "1.x files keep loading in 1.x; modelly checkpoint upgrade converts them"),
     Change("H9", "Python 3.13 minimum", "never", "the package metadata says it"),

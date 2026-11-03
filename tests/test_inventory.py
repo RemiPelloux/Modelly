@@ -61,4 +61,4 @@ def test_every_change_points_at_a_2_0_epic():
     assert {change.epic for change in CHANGES} <= epics
     assert all(change.warns in {"now", "pending", "never"} for change in CHANGES)
     assert all(change.reason for change in CHANGES if change.warns != "now")
-    assert {change.epic for change in pending()} == {"H2", "H4", "H5"}
+    assert pending() == []  # the 1.5.0 gate: every 2.0 change warns or changes no call

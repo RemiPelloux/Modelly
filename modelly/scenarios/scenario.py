@@ -13,16 +13,14 @@ import numpy as np
 import pandas as pd
 from numpy.random import SeedSequence
 
+from modelly.scenarios import typed
 from modelly.scenarios.sampling import rescale_samples  # noqa: F401 (re-export)
 
 SeedLike = int | np.integer | Sequence[int] | np.random.SeedSequence
 RNGLike = np.random.Generator | np.random.BitGenerator
 
-# Reserved replication_id for a source/parent scenario: one not derived from
-# spawn_replications (its rng is the original seed, not a spawned child). Kept as
-# an int so RunID only uses ints for unique keys, which keeps Store implementations
-# clean (see e.g. InMemoryStore.status()). Safe as a sentinel because spawned
-# replications are always 0..n-1, so -1 never collides with a real replication_id.
+# The replication_id of a parent scenario, not made by spawn_replications: an int, so RunID
+# keys stay ints (see InMemoryStore.status()); spawned replications are 0..n-1, never -1.
 PARENT_REPLICATION_ID = -1
 
 
@@ -80,6 +78,7 @@ class Scenario:
                     defaults[key] = getattr(base, key)
 
         cls._scenario_defaults = defaults
+        typed.check_class(cls)
 
     @classmethod
     def _reset_counter(cls) -> None:
@@ -116,6 +115,8 @@ class Scenario:
         self.seed_sequence = cast(SeedSequence, self.rng.bit_generator.seed_seq)
         self._generator_class = self.rng.bit_generator.__class__.__name__
 
+        if type(self) is not Scenario:
+            typed.check_call(type(self), self._scenario_defaults, kwargs)
         self.__dict__.update(self._scenario_defaults)
         self.__dict__.update(kwargs)
         self._frozen = True

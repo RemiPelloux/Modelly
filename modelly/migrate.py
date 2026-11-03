@@ -141,7 +141,7 @@ def migrate(paths: list[Path], write: bool = False) -> list[FileResult]:
     return results
 
 
-EXIT_OK, EXIT_USAGE = 0, 2
+EXIT_OK, EXIT_CHANGES, EXIT_USAGE = 0, 1, 2
 PROG = "python -m modelly.migrate"
 
 DESCRIPTION = """\
@@ -160,6 +160,7 @@ examples:
 
 exit status:
   {EXIT_OK}  done (lines left to review are reported, not an error)
+  {EXIT_CHANGES}  with --check-2.0: changes to make before Modelly 2.0 were found
   {EXIT_USAGE}  usage error: bad arguments or an unreadable path
 
 guide: {GUIDE}"""
@@ -179,12 +180,24 @@ def build_parser(prog: str = PROG) -> argparse.ArgumentParser:
     parser.add_argument(
         "--write", action="store_true", help="apply the rewrites in place"
     )
+    parser.add_argument(
+        "--check-2.0",
+        dest="check_2_0",
+        action="store_true",
+        help="report what a Modelly 1.x project must change before 2.0 (exit 1 if anything)",
+    )
     return parser
 
 
 def main(argv: list[str] | None = None, prog: str = PROG) -> int:
     """Command-line entry point; ``prog`` names the command in --help."""
     args = build_parser(prog).parse_args(argv)
+    if args.check_2_0:
+        from modelly.check_2_0 import CHANGE, check, report  # noqa: PLC0415
+
+        findings = check(args.paths)
+        sys.stdout.write(report(findings) + "\n")
+        return EXIT_CHANGES if any(f.kind == CHANGE for f in findings) else EXIT_OK
     try:
         results = migrate(args.paths, write=args.write)
     except OSError as error:
