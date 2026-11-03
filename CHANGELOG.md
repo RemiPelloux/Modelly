@@ -7,6 +7,17 @@ versioning.
 
 ### Added
 
+- Language-model agents II (`modelly.llm`): `MemoryAgent` with episodic memory summarised past
+  its capacity and saved in checkpoints; `plan`, `reflect` and `use_tools` (tool calls with the
+  results sent back, bounded rounds); `converse` and `converse_many`, conversations with turn
+  order, every group's turn sent as one batch; `evaluate`, a harness reporting behaviour,
+  agreement across seeds, calls, tokens and cost per provider. `modelly.llm.market`: a
+  500-trader conversational market that runs, caches and replays offline (2,000 calls for two
+  rounds, all served from the cache on replay).
+- The Julia package `Modelly.jl` (`julia/Modelly.jl`): `simulate`, `parameters`, `model`,
+  `calibrate` with priors, and `column`, agent columns as arrays without a copy, through
+  PythonCall. The SIR calibration tutorial gives the Python posterior exactly.
+- `modelly.bindings.column`: the numpy array of an agent class's column, not a copy.
 - `modelly.explain`: `treatment_effect` with paired intervals on common random numbers and
   the variance reduction they bring, measured against independent seeds (49.8 times on the
   Bass zoo model for a small change in imitation; none on age_seir vaccination, whose cohort

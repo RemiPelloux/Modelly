@@ -19,6 +19,14 @@ whose notes are missing (see "Release notes" in
   tight intervals; see which are cost-effective and at what price; check which hold up across
   many possible futures; and search a policy's parameters. A worked study asks which age group
   should get 10,000 vaccine doses. [Decisions](decide.md)
+- **Language-model agents that remember, plan and talk**: agents keep a memory that is
+  summarised as it grows, write plans, reflect, call functions of the model before answering,
+  and hold conversations with each other, many at once. A 500-trader market runs offline and
+  replays from its cache, and an evaluation harness compares providers on behaviour,
+  consistency and cost. [Language-model agents](llm_agents.md#memory)
+- **Modelly from Julia**: `Modelly.jl` runs and calibrates models from Julia, returns
+  DataFrames and hands over agent columns without copying them.
+  [From R and Julia](r_and_julia.md#the-julia-package)
 - **Modelly from R**: the `modelly` R package runs and calibrates models from R and returns
   data frames, with no Python to write: `modelly_calibrate(...)` fits the SIR tutorial and
   prints its posterior. [From R and Julia](r_and_julia.md#the-r-package)
