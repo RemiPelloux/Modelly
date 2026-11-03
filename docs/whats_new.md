@@ -53,6 +53,11 @@ whose notes are missing (see "Release notes" in
   `modelly new --template plugin` starts one, and `modelly plugins --check` shows what is
   installed. [Plugins](plugins.md)
 
+### Fixed
+
+- **Pages made by `modelly export-web`** keep small parameters as they are: a tolerance of
+  one in a billion used to be rounded to zero by its slider.
+
 ## 1.4.3 - 2026-11-02
 
 **An ODE in every agent.** Continuous dynamics inside each agent (the virus in a host, the

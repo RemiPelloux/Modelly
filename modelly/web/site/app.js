@@ -33,11 +33,18 @@ function input(parameter) {
   element.type = types[kind] ?? "text";
   if (kind === "int") element.step = "1";
   if (kind === "float") element.step = "any";
-  if (kind === "fraction") Object.assign(element, { min: 0, max: 1, step: 0.01 });
+  if (kind === "fraction" && onSliderGrid(value)) Object.assign(element, { min: 0, max: 1, step: 0.01 });
+  // A slider would snap a small fraction (a tolerance of 1e-9, a dose of 1e-6) to 0.
+  else if (kind === "fraction") Object.assign(element, { type: "number", min: 0, max: 1, step: "any" });
   if (kind === "bool") element.checked = value;
   else element.value = value;
   element.disabled = kind === "fixed";
   return element;
+}
+
+// Whether a fraction's default is a multiple of the slider's step, 0.01.
+function onSliderGrid(value) {
+  return Math.abs(value * 100 - Math.round(value * 100)) < 1e-9;
 }
 
 function buildPanel() {
@@ -46,7 +53,7 @@ function buildPanel() {
     const element = input(parameter);
     fields.set(parameter.name, element);
     label.append(parameter.name, element);
-    if (parameter.kind === "fraction") {
+    if (parameter.kind === "fraction" && element.type === "range") {
       const shown = document.createElement("output");
       shown.value = element.value;
       element.addEventListener("input", () => (shown.value = element.value));

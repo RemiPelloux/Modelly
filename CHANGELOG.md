@@ -72,6 +72,12 @@ versioning.
   installed plugins with their declaration and status; `modelly new --template plugin` writes
   a tested plugin package. The example plugin declares `modelly-abm>=1.4,<2`.
 
+### Fixed
+
+- `modelly export-web` pages: a fraction parameter whose default is not a multiple of 0.01
+  (a tolerance of `1e-9`, a dose of `1e-6`) is a number field instead of a slider, which
+  snapped it to 0; the within-host zoo model, whose tolerances were zeroed, ran forever.
+
 ### Documentation
 
 - `scripts/release.py` cuts pre-releases (`X.Y.ZaN`, `bN`, `rcN`): the changelog gets their
