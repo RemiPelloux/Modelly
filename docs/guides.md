@@ -55,6 +55,8 @@ then covers the options.
   screen many parameters cheaply, then split an output's variance between the few that matter.
 - [Emulators](emulators.md)\
   a fast statistical stand-in for a slow model, with active learning and history matching.
+- [Decisions](decide.md)\
+  compare strategies with paired intervals, cost them, and test them across many futures.
 - [Live data and assimilation](assimilation.md)\
   correct a running model as new data arrives, and forecast from the corrected state.
 - [Reproducible studies](provenance.md)\
@@ -100,6 +102,7 @@ Experiments and sweeps <experiments>
 Calibration <calibration>
 Sensitivity analysis <sensitivity>
 Emulators <emulators>
+Decisions <decide>
 Live data and assimilation <assimilation>
 Reproducible studies <provenance>
 Model cards <model_cards>

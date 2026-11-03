@@ -117,6 +117,10 @@ gpu = [
 diff = [
   "jax",
 ]
+# Intervention optimisation in modelly.decide (Optuna's TPE sampler)
+decide = [
+  "optuna",
+]
 # xarray datasets of collected data (DataCollector.to_xarray), gridded series included
 xarray = [
   "xarray",

@@ -48,7 +48,16 @@ def build_parser(prog: str) -> argparse.ArgumentParser:
     get = commands.add_parser("install", help="install a model")
     get.add_argument("name")
     get.add_argument("folder", nargs="?", type=Path, help="for a zoo model")
-    put = commands.add_parser("publish", help="write the hub entry of a project")
+    _publish_options(
+        commands.add_parser("publish", help="write the hub entry of a project")
+    )
+    commands.add_parser("check", help="check an index").add_argument("index", type=Path)
+    commands.add_parser("zoo-index", help="print the zoo models' index")
+    return parser
+
+
+def _publish_options(put: argparse.ArgumentParser) -> None:
+    """The options of ``publish``."""
     put.add_argument("folder", type=Path)
     put.add_argument(
         "--zenodo",
@@ -62,9 +71,6 @@ def build_parser(prog: str) -> argparse.ArgumentParser:
         "--sign", metavar="IDENTITY", help="sign with Sigstore as IDENTITY"
     )
     put.add_argument("--no-dry-run", dest="dry_run", action="store_false")
-    commands.add_parser("check", help="check an index").add_argument("index", type=Path)
-    commands.add_parser("zoo-index", help="print the zoo models' index")
-    return parser
 
 
 def _search(args: argparse.Namespace) -> int:

@@ -15,6 +15,10 @@ whose notes are missing (see "Release notes" in
 
 ### New
 
+- **Decisions**: compare strategies on the same chance events, so their differences come with
+  tight intervals; see which are cost-effective and at what price; check which hold up across
+  many possible futures; and search a policy's parameters. A worked study asks which age group
+  should get 10,000 vaccine doses. [Decisions](decide.md)
 - **The model hub**: `modelly hub search malaria` finds published models, `modelly hub info`
   shows what each is for and how to cite it, and `modelly hub install` gets one, checking its
   hash and signature first. `modelly hub publish` prepares your model's entry, with a DOI from

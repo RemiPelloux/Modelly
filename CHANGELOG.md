@@ -15,6 +15,15 @@ versioning.
   that reads every system at any time of its span on the Runge-Kutta interpolant;
   `AgentODE(..., dense_output=True).at(t)` reads every agent's state inside the last step,
   after event resets too, on the batched and the stiff path.
+- `modelly.decide`: `compare` runs strategies (`Strategy`: parameters and a cost) on common
+  random numbers, with intervals, paired differences and rankings with the share of
+  replicates each strategy wins; `cost_effectiveness` (dominance, extended dominance, ICERs)
+  and `net_benefit`; `robust` across futures from `sample_futures` (Latin hypercube), ranked by
+  minimax regret with satisficing shares; `optimise`, seeded Optuna search of a policy's
+  parameters (the new `decide` extra). The vaccination study (`modelly.decide.vaccination`)
+  ranks four strategies reproducibly. Guide: `docs/decide.md`.
+- Zoo model `age_seir`: `vaccinated`, people immune from the start per group (none by
+  default, which leaves every result as it was); the final-size relation and its test cover it.
 - The model hub (`modelly.hub`, `modelly hub search|info|install|publish|check|zoo-index`): a
   static index of published models (the public one in the RemiPelloux/modelly-hub repository,
   on GitHub Pages; `MODELLY_HUB` or `modelly.hub_sources` plugins add others), each entry with
@@ -65,6 +74,9 @@ versioning.
 
 ### Documentation
 
+- `scripts/release.py` cuts pre-releases (`X.Y.ZaN`, `bN`, `rcN`): the changelog gets their
+  heading, the What's new notes stay under Unreleased for the final release. The release
+  workflow's wheel tests run `scripts/hub-smoke.py` on every operating system.
 - The 2.0 inventory (`modelly/_inventory.py`): every deprecation that warns now, with its
   replacement and the identifiers that find it, and every 2.0 change with when it starts to
   warn (three wait for their 1.x replacement: one space protocol, one clock, typed scenarios).
