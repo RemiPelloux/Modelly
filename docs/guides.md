@@ -57,6 +57,8 @@ then covers the options.
   a fast statistical stand-in for a slow model, with active learning and history matching.
 - [Decisions](decide.md)\
   compare strategies with paired intervals, cost them, and test them across many futures.
+- [Causes and explanations](explain.md)\
+  treatment effects on common random numbers, the agents an outcome hangs on, counterfactuals, Shapley values.
 - [Live data and assimilation](assimilation.md)\
   correct a running model as new data arrives, and forecast from the corrected state.
 - [Reproducible studies](provenance.md)\
@@ -103,6 +105,7 @@ Calibration <calibration>
 Sensitivity analysis <sensitivity>
 Emulators <emulators>
 Decisions <decide>
+Causes and explanations <explain>
 Live data and assimilation <assimilation>
 Reproducible studies <provenance>
 Model cards <model_cards>
