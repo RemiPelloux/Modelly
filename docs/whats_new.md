@@ -11,7 +11,10 @@ whose notes are missing (see "Release notes" in
 
 ## Unreleased
 
-**Ecosystem and collaboration** (in progress, see the [1.5.0 roadmap](roadmap/1.5.0.md)).
+**Ecosystem and collaboration.** Publish a model on the hub with its card, decide and explain
+with intervals, give agents memories and inner dynamics, and work from R, Julia, a classroom or
+another language. The last release before 2.0: everything 2.0 changes now warns or changes no
+call, and `modelly migrate --check-2.0` lists what a project must change.
 
 ### New
 
@@ -79,6 +82,13 @@ whose notes are missing (see "Release notes" in
   plugin built for another version is skipped instead of breaking the run.
   `modelly new --template plugin` starts one, and `modelly plugins --check` shows what is
   installed. [Plugins](plugins.md)
+
+### Deprecated
+
+- **Typed scenarios**: in 2.0 a `Scenario` subclass is typed and validated. An attribute
+  without an annotation, a parameter the scenario does not declare, or a value of another type
+  than its annotation now warns and says what to write. `modelly migrate --check-2.0 src/`
+  lists everything a project must change before 2.0. [Deprecations](deprecations.md)
 
 ### Fixed
 

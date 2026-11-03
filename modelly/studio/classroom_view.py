@@ -22,26 +22,33 @@ def ClassroomTab(state: Any):
                 t("Start Studio with --classroom FOLDER to share runs with a class.")
             )
             return
-
-        def send() -> None:
-            try:
-                submit(state.session, folder, student.value)
-            except ValueError as error:
-                message.set(str(error))
-                return
-            message.set(t("Run submitted."))
-            revision.set(revision.value + 1)
-
-        def publish() -> None:
-            share(state.session, folder)
-            message.set(t("Parameters shared: new sessions start from them."))
-
-        solara.InputText(t("your name"), value=student, continuous_update=True)
-        with solara.Row():
-            solara.Button(t("Submit this run"), on_click=send)
-            solara.Button(t("Share these parameters"), on_click=publish)
+        _actions(state.session, folder, student, message, revision)
         if message.value:
             solara.Info(message.value)
         runs = submissions(folder)
         if len(runs):
             solara.DataFrame(runs)
+
+
+def _actions(
+    session: Any, folder: str, student: Any, message: Any, revision: Any
+) -> None:
+    """The name field and the two buttons: submit this run, share these parameters."""
+
+    def send() -> None:
+        try:
+            submit(session, folder, student.value)
+        except ValueError as error:
+            message.set(str(error))
+            return
+        message.set(t("Run submitted."))
+        revision.set(revision.value + 1)
+
+    def publish() -> None:
+        share(session, folder)
+        message.set(t("Parameters shared: new sessions start from them."))
+
+    solara.InputText(t("your name"), value=student, continuous_update=True)
+    with solara.Row():
+        solara.Button(t("Submit this run"), on_click=send)
+        solara.Button(t("Share these parameters"), on_click=publish)

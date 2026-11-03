@@ -3,6 +3,36 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Added
+
+- `modelly migrate --check-2.0`: reads a project's Python files and reports, with the line,
+  every change it must make before Modelly 2.0 (the deprecated visualisation calls, dict
+  portrayals, the population names of the geographic space, Scenario attributes without an
+  annotation) and, as notes, what changes without a warning (models without
+  `agent_streams = True`, a `requires-python` below 3.13); exit 1 when there is a change to
+  make (`modelly.check_2_0`).
+- An installation guide for Windows machines without administrator rights, behind a proxy or
+  offline (`docs/windows_no_admin.md`), and the event-ordering rule as a docs page with a test
+  per rule (`docs/event_ordering.md`).
+
+### Deprecated
+
+- Typed scenarios (2.0 epic H5): a `Scenario` subclass attribute without an annotation, a
+  parameter the subclass does not declare, and a value whose type does not match a plain
+  annotation warn, naming the fix (`modelly.scenarios.typed`). The plain `Scenario(...)` stays
+  free-form. With this, every 2.0 change warns or changes no call (the 2.0 inventory has
+  nothing pending).
+
+### Changed
+
+- The local gate runs the tests on every core with pytest-xdist (a dev dependency), about
+  half the time; a full pass of `scripts/ci-local.sh` on a clean commit is recorded, and
+  `scripts/release.py` does not run the same gate again on it. The release workflow builds the
+  two macOS architectures on two runners in parallel, and runs the hub smoke test once per
+  operating system instead of once per wheel.
+
 ## 1.5.0rc1 - 2026-11-03
 
 ## 1.5.0b1 - 2026-11-03

@@ -23,6 +23,10 @@ then covers the options.
   `modelly export-web` turns a model into a static page that runs with no Python on the reader's machine.
 - [Plugins](plugins.md)\
   add spaces, executors, samplers, collectors, Studio views and lint rules from a separate package.
+- [Installing on a locked-down Windows machine](windows_no_admin.md)\
+  no administrator rights, a proxy, or no internet access at all.
+- [Event ordering](event_ordering.md)\
+  what runs first when several events are due at the same time.
 - [Accessibility and languages](accessibility.md)\
   Studio and the docs checked against WCAG 2.2 AA; Studio in French, Spanish, Portuguese and Chinese.
 ```
@@ -83,6 +87,8 @@ Figures and animations <figures>
 Studio <studio>
 In the browser <browser>
 Plugins <plugins>
+Installing on locked-down Windows <windows_no_admin>
+Event ordering <event_ordering>
 Accessibility and languages <accessibility>
 ```
 
