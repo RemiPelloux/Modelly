@@ -26,6 +26,7 @@ from modelly.studio.config import (
     DEFAULT_SEED,
     StudioConfig,
 )
+from modelly.studio.i18n import catalog
 from modelly.studio.options import INPUT_OPTIONS, INPUT_PANELS, inputs_from, target_from
 
 EXIT_OK, EXIT_MODEL_ERROR, EXIT_USAGE = 0, 1, 2
@@ -271,7 +272,14 @@ def main(argv: list[str] | None = None, prog: str = PROG) -> int:
     args = build_parser(prog).parse_args(argv)
     try:
         config = config_from(args)
-    except (argparse.ArgumentTypeError, KeyError, OSError, RuntimeError) as error:
+        catalog(config.language)
+    except (
+        argparse.ArgumentTypeError,
+        KeyError,
+        OSError,
+        RuntimeError,
+        ValueError,
+    ) as error:
         sys.stderr.write(f"modelly studio: {error}\n")
         return EXIT_USAGE
     failed = check_target(config)

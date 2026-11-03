@@ -36,6 +36,11 @@ def languages() -> list[str]:
     return [ENGLISH, *sorted(shipped)]
 
 
+def supported() -> list[str]:
+    """The languages ``--language`` takes: the catalogs, and the right-to-left ones."""
+    return sorted({*languages(), *RIGHT_TO_LEFT})
+
+
 @functools.cache
 def catalog(language: str) -> dict[str, str]:
     """The translations of ``language``, keyed by the English text; empty for English.
@@ -46,7 +51,9 @@ def catalog(language: str) -> dict[str, str]:
     if language == ENGLISH:
         return {}
     if language not in languages():
-        raise ValueError(f"Studio speaks {languages()}, not {language!r}")
+        if language in RIGHT_TO_LEFT:  # direction supported, labels not translated yet
+            return {}
+        raise ValueError(f"Studio speaks {supported()}, not {language!r}")
     text = files(__package__).joinpath("locales", f"{language}.json").read_text("utf-8")
     return dict(json.loads(text))
 

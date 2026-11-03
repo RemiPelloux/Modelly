@@ -66,6 +66,9 @@ def test_studio_speaks_french_and_back_to_english():
 def test_right_to_left_languages_turn_the_page():
     """Arabic, Hebrew, Persian and Urdu read right to left; an unknown catalog is refused."""
     assert i18n.direction("ar") == "rtl" and i18n.direction("fr") == "ltr"
+    assert i18n.catalog("ar") == {}  # no catalog yet: English labels, right to left
+    rendered = render("ar")
+    assert rendered.find(v.Btn, children=["Step"]).widgets
     with pytest.raises(ValueError, match="speaks"):
         i18n.set_language("xx")
     assert i18n.languages() == ["en", "es", "fr", "pt", "zh"]

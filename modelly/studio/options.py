@@ -41,7 +41,8 @@ INPUT_OPTIONS = (
         ("--language",),
         {
             "default": "en",
-            "help": "the language of Studio's labels: en, es, fr, pt, zh (default: %(default)s)",
+            "help": "the labels in en, es, fr, pt or zh; ar, fa, he and ur turn the page "
+            "right to left (default: %(default)s)",
         },
     ),
     (
