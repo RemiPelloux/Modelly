@@ -20,6 +20,12 @@ Example:
     >>> Voter(model).decide("Vote?", {"properties": {"vote": {"enum": ["yes", "no"]}}})
     {'vote': 'yes'}
 
+Agents with more: :class:`MemoryAgent` (episodic memory, summarised), ``plan``,
+``reflect`` and ``use_tools`` (``modelly.llm.reasoning``), ``converse`` and
+``converse_many`` (``modelly.llm.conversation``) and ``evaluate``, a harness reporting
+behaviour, consistency and cost per provider (``modelly.llm.evaluate``).
+``modelly.llm.market`` is a 500-trader conversational market that runs offline.
+
 See ``docs/llm_agents.md`` for reproducibility, budgets, keys and limitations.
 """
 
@@ -27,6 +33,7 @@ from modelly.llm.agent import LLMAgent, decide_all
 from modelly.llm.budget import Budget, Price, Usage
 from modelly.llm.cache import ResponseCache
 from modelly.llm.client import Client
+from modelly.llm.conversation import Turn, converse, converse_many
 from modelly.llm.errors import (
     BudgetExceeded,
     CacheMiss,
@@ -35,8 +42,11 @@ from modelly.llm.errors import (
     ProviderError,
     SchemaError,
 )
+from modelly.llm.evaluate import Evaluation, evaluate
 from modelly.llm.fake import FakeProvider
+from modelly.llm.memory import Memory, MemoryAgent
 from modelly.llm.providers import AnthropicProvider, OpenAICompatibleProvider, Provider
+from modelly.llm.reasoning import Tool, ToolUse, plan, reflect, use_tools
 from modelly.llm.request import Message, Request, Response
 from modelly.llm.retry import RetryPolicy
 from modelly.llm.schema import parse_json, validate
@@ -48,9 +58,12 @@ __all__ = [
     "CacheMiss",
     "Client",
     "DecisionError",
+    "Evaluation",
     "FakeProvider",
     "LLMAgent",
     "LLMError",
+    "Memory",
+    "MemoryAgent",
     "Message",
     "OpenAICompatibleProvider",
     "Price",
@@ -61,8 +74,17 @@ __all__ = [
     "ResponseCache",
     "RetryPolicy",
     "SchemaError",
+    "Tool",
+    "ToolUse",
+    "Turn",
     "Usage",
+    "converse",
+    "converse_many",
     "decide_all",
+    "evaluate",
     "parse_json",
+    "plan",
+    "reflect",
+    "use_tools",
     "validate",
 ]

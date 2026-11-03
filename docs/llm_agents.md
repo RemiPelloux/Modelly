@@ -155,8 +155,121 @@ conversation, the reply, and the reason it failed); `repairs=` sets how many rou
 `DecisionError`. A repair is a call of its own with the agent's next call index, so a replay
 asks for exactly the same repairs.
 
-Agents have no memory of earlier calls: each call sends the persona and the prompt only. Put
-what an agent should remember into its prompt.
+An `LLMAgent` has no memory of earlier calls: each call sends the persona and the prompt
+only. A `MemoryAgent` remembers (below).
+
+## Memory
+
+Mix in `MemoryAgent` instead of `LLMAgent` and the agent keeps a `Memory`:
+
+```python
+from modelly.llm import MemoryAgent
+
+
+class Trader(MemoryAgent, Agent):
+    persona = "You trade apples."
+    memory_capacity = 20  # episodes kept verbatim
+    memory_keep = 10  # left verbatim after a summary
+
+
+trader.remember("Sold 3 crates to agent 12 at 54.")
+trader.decide("Your asking price?", schema)  # the prompt starts with what it remembers
+```
+
+Every call the agent makes starts with its memory: a summary of older episodes, then the
+recent ones with the time they happened. Past `memory_capacity` episodes, the oldest are
+folded into the summary by one call to the model, and the newest `memory_keep` stay verbatim,
+so the prompt stays bounded however long the run. The memory is an attribute of the agent,
+saved in checkpoints with it, and the summary call is cached like any other.
+
+## Plans, reflections and tools
+
+```python
+from modelly.llm import Tool, plan, reflect, use_tools
+
+steps = plan(trader, "end the season with more cash")  # a JSON list, remembered
+lesson = reflect(trader)  # what it has learned, from its memory, remembered
+price = Tool(
+    "price", "today's price of an item", lambda item: book[item], {"item": "the item"}
+)
+used = use_tools(trader, "Should you buy apples today?", [price])
+used.answer, used.calls  # the answer, and every (tool, arguments, result) on the way
+```
+
+`use_tools` lets the agent call functions of the model before it answers. Each round it
+replies with a tool and its arguments, or with its answer; a tool's result is sent back in the
+same conversation. After `max_rounds` tool calls (3 by default) it must answer, or
+`DecisionError` is raised. Tools are plain Python functions; give them module-level functions
+for a model that is saved.
+
+## Conversations
+
+`converse(agents, topic, turns)` runs one conversation; `converse_many(groups, topic,
+turns)` runs one per group, and sends all the groups' calls of a turn together, so 250 pairs
+talk in `turns` rounds of concurrent calls. Speakers take turns in order, or are drawn from a
+generator, `order=model.rng`, never the same agent twice in a row. The result is one
+transcript per group, each a list of `Turn(speaker, text, time)`, and every participant with a
+memory remembers its conversation.
+
+## A conversational market
+
+`modelly.llm.market.Market` puts it together: 500 traders, half selling and half buying,
+paired each round. A pair talks for two turns, the seller states an asking price, the buyer
+accepts or refuses, and both remember the round. Its default client answers with
+`local_trader`, an offline stand-in that plays each trader in character from the value in its
+persona, so the market runs with no network and no key:
+
+```python
+from modelly.llm import Client, ResponseCache
+from modelly.llm.market import Market, local_trader
+
+cache = ResponseCache("market.sqlite")
+market = Market(
+    traders=500, rng=11, client=Client(FakeProvider(local_trader), cache=cache)
+)
+market.run_for(2)  # 2,000 calls: conversations, prices, decisions
+cache.export("replies.jsonl.gz")
+
+replay = Client(AnthropicProvider(), cache=ResponseCache.from_file("replies.jsonl.gz"))
+Market(traders=500, rng=11, client=replay).run_for(2)  # same trades, no call sent
+```
+
+`tests/llm/test_llm_agents2.py` runs the 500 traders for two rounds, exports the replies and
+replays them with a provider that fails the test if it is ever called: the trades are the same
+and all 2,000 replies come from the cache. Give the market a real provider to study what a
+language model does as a trader.
+
+## Evaluating providers
+
+`evaluate(build, clients, seeds=..., steps=..., metrics=...)` runs the same model with each
+client (a hosted model, a local one, a stand-in) on each seed:
+
+```python
+from modelly.llm import evaluate
+
+result = evaluate(
+    lambda seed, client: Market(traders=100, rng=seed, client=client),
+    {
+        "claude": lambda: Client(AnthropicProvider()),
+        "local": lambda: Client(
+            OpenAICompatibleProvider(
+                base_url="http://localhost:11434/v1", model="llama3.1"
+            )
+        ),
+        "stand-in": lambda: Client(FakeProvider(local_trader)),
+    },
+    seeds=[1, 2, 3],
+    steps=5,
+    metrics={"trades": lambda m: len(m.prices), "price": Market.mean_price},
+    choices=lambda m: [a.traded for a in m.agents],
+)
+result.report()  # per client: each metric's mean and sd, agreement across seeds, calls, tokens, cost
+```
+
+The report gives, per client, how it behaves (each metric's mean and spread over the seeds),
+how consistently its agents chose the same thing from one seed to the next (`agreement`, the
+share of matching choices over every pair of seeds), and what it cost (calls, cache hits,
+tokens and, with prices in the client's `Budget`, money).
 
 ## Privacy of API keys
 
