@@ -19,7 +19,9 @@ Validation: the final-size relation. Summing the force of infection over the epi
 the share of group ``a`` never infected; with one group this is the Kermack-McKendrick
 relation ``s = s0 * exp(-R0 * (1 - s))``. ``final_size()`` solves it and the test compares
 it with the simulated epidemic. ``r0()`` is ``beta / recovery`` times the spectral radius
-of the next-generation matrix.
+of the next-generation matrix. People vaccinated at the start (``vaccinated``) are immune:
+the relation holds with their share ``v_a`` removed, ``log(s_a) = log(s0_a) - (beta /
+recovery) * sum_b C[a, b] * (1 - v_b - s_b)``.
 
 Starting from a synthetic population: ``scenario_from_population(people, network, levels)``
 takes the group sizes from the people's age levels and the contact matrix from their
@@ -76,6 +78,7 @@ class SEIRScenario(Scenario):
         incubation: probability per step that an exposed person becomes infectious.
         recovery: probability per step that an infectious person recovers.
         initial_infected: infectious people at the start, per group.
+        vaccinated: people immune from the start (vaccinated), per group; empty for none.
         steps: default run length used by ``run``.
     """
 
@@ -85,6 +88,7 @@ class SEIRScenario(Scenario):
     incubation: float = 0.25
     recovery: float = 0.2
     initial_infected: tuple = (10, 10, 10)
+    vaccinated: tuple = ()
     steps: int = 400
 
 
@@ -107,9 +111,14 @@ class AgeSEIR(Model):
         self.n_groups = self.sizes.shape[0]
         groups = np.arange(self.n_groups)
         seeds = np.asarray(s.initial_infected, dtype=np.int64)
+        self.immune = np.asarray(
+            s.vaccinated or np.zeros(self.n_groups), dtype=np.int64
+        )
         self.people = CohortTable(self.rng, group=np.int16, state=np.int8)
-        self.people.add(self.sizes - seeds, group=groups, state=State.S)
+        self.people.add(self.sizes - seeds - self.immune, group=groups, state=State.S)
         self.people.add(seeds, group=groups, state=State.I)
+        if self.immune.any():
+            self.people.add(self.immune, group=groups, state=State.R)
         self.datacollector = DataCollector(
             model_reporters={
                 state.name: partial(count_in, state=state) for state in State
@@ -157,19 +166,20 @@ class AgeSEIR(Model):
     def final_size(self, tolerance: float = 1e-12) -> np.ndarray:
         """Share of each group ever infected, from the final-size relation."""
         s = self.scenario
-        s0 = 1.0 - np.asarray(s.initial_infected) / self.sizes
+        immune = self.immune / self.sizes
+        s0 = 1.0 - np.asarray(s.initial_infected) / self.sizes - immune
         ngm = (s.beta / s.recovery) * self.contacts
         escape = np.zeros(self.n_groups)
         for _ in range(_MAX_ITERATIONS):
-            new = s0 * np.exp(-ngm @ (1.0 - escape))
+            new = s0 * np.exp(-ngm @ (1.0 - immune - escape))
             if np.max(np.abs(new - escape)) < tolerance:
                 break
             escape = new
-        return 1.0 - new
+        return 1.0 - immune - new
 
     def attack_rate(self) -> np.ndarray:
-        """Share of each group ever infected so far."""
-        return 1.0 - self.counts()[:, State.S] / self.sizes
+        """Share of each group ever infected so far (the vaccinated were not)."""
+        return 1.0 - (self.counts()[:, State.S] + self.immune) / self.sizes
 
 
 # Iterating from "nobody escapes" converges monotonically to the epidemic root.

@@ -50,10 +50,14 @@ check = "each age group's attack rate against the multi-group final-size relatio
 test = "tests/zoo/test_age_seir.py::test_final_size_by_age_group"
 
 [[validation]]
+check = "with vaccinated people in one group, each group's attack rate follows the final-size relation without them"
+test = "tests/zoo/test_age_seir.py::test_final_size_with_vaccination"
+
+[[validation]]
 check = "an outbreak with R0 below one stays small; nobody is created or lost; same seed, same epidemic"
 test = "tests/zoo/test_age_seir.py"
 
 [validated]
-source = "sha256:6a004228a934a9d59400cb7b31af0b0c140936de7e90e92b47c76c84d4f7f834"
-modelly = "1.4.3"
+source = "sha256:bd3b5f41054937fb59585c0248fc8351f967da7b6f995a1baf0b88e2b732bdb7"
+modelly = "1.5.0.dev0"
 date = "2026-11-03"

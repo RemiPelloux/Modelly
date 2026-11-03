@@ -95,3 +95,12 @@ def test_same_seed_same_run():
 
     assert curve(4).equals(curve(4))
     assert not curve(4).equals(curve(5))
+
+
+@pytest.mark.parametrize("vaccinated", [(6000, 0, 0), (0, 12000, 0), (0, 0, 8000)])
+def test_final_size_with_vaccination(vaccinated):
+    """The vaccinated are immune: each group's attack rate follows the relation without them."""
+    model = AgeSEIR(SEIRScenario(rng=21, vaccinated=vaccinated))
+    model.run()
+    np.testing.assert_allclose(model.attack_rate(), model.final_size(), atol=0.01)
+    assert model.counts().sum() == sum(model.scenario.group_sizes)

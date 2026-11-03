@@ -36,6 +36,7 @@ model.datacollector.get_model_vars_dataframe()  # S, E, I, R per step
 | `incubation` | `0.25` | probability per step that an exposed person becomes infectious |
 | `recovery` | `0.2` | probability per step that an infectious person recovers |
 | `initial_infected` | `(10, 10, 10)` | infectious people per group at the start |
+| `vaccinated` | `()` | people immune from the start, per group (none by default) |
 | `steps` | `400` | run length of `run()` |
 
 The default contact matrix is illustrative, not survey data.
