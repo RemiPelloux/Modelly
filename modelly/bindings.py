@@ -90,6 +90,18 @@ def simulate(
     return frame
 
 
+def column(built: Any, agent_class: str, name: str) -> Any:
+    """The numpy array of column ``name`` of ``agent_class`` (by class name), not a copy.
+
+    Julia wraps it without copying (``PyArray``): writing to it writes the agents' column.
+    The view is valid until agents of that class are added or removed.
+    """
+    for cls in built.columns._tables:
+        if cls.__name__ == agent_class:
+            return built.columns[cls][name]
+    raise KeyError(f"no columns of an agent class named {agent_class!r}")
+
+
 def prior(spec: Any) -> Prior:
     """A prior from ``Prior`` itself or ``[kind, a, b]`` (``["uniform", 0.05, 1]``)."""
     if isinstance(spec, Prior):
@@ -128,4 +140,4 @@ def calibrate(
     }
 
 
-__all__ = ["calibrate", "model", "parameters", "prior", "simulate"]
+__all__ = ["calibrate", "column", "model", "parameters", "prior", "simulate"]

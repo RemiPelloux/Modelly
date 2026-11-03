@@ -215,6 +215,36 @@ experiment$run(executor = "serial")
 Your own model works the same way: `import_from_path("model", path = "my_model")` imports a
 `model.py` from a folder of your project.
 
+## The Julia package
+
+`Modelly.jl` (in `julia/Modelly.jl` of the repository) does from Julia what the R package does
+from R, on the same `modelly.bindings`, and gives agent columns as arrays without a copy:
+
+```julia
+using Pkg; Pkg.add(url = "https://github.com/RemiPelloux/Modelly", subdir = "julia/Modelly.jl")
+using Modelly
+
+target = Modelly.tutorial() * ":Epidemic"
+run = simulate(target; seed = 99, steps = 40, beta = 0.4, gamma = 0.1)   # a DataFrame
+fit = calibrate(target;
+    priors = (beta = prior_uniform(0.05, 1.0), gamma = prior_uniform(0.02, 0.5)),
+    observed = (infected = run.infected[2:end],), steps = 40, seed = 2027)
+fit.summary   # beta 0.423, gamma 0.098: the posterior of Python and R
+
+m = model("modelly.examples.basic.boltzmann_wealth_model.model:BoltzmannWealth"; seed = 1)
+wealth = column(m, "MoneyAgent", "wealth")   # shares memory with the agents
+wealth[1] = 99                               # the first agent's wealth is now 99
+```
+
+Give priors as a NamedTuple or a vector of pairs: the draws follow the priors' order, so a
+`Dict`, which has none, gives a valid posterior that differs from the one Python and R give
+for the same seed. `column` wraps the model's numpy array with `PyArray`, so reading and
+writing it costs no copy; it is valid until agents of that class are added or removed. The
+first `using Modelly` installs Python and modelly-abm through CondaPkg; set
+`JULIA_CONDAPKG_BACKEND=Null` and `JULIA_PYTHONCALL_EXE` to use an environment you have. Its
+tests (the tutorial's posterior to the last digit, a column written without a copy) pass with
+Julia 1.13 on Linux; Windows and macOS remain for the three-OS run.
+
 ## Running Modelly from Julia (PythonCall)
 
 PythonCall manages its own Python by default; to use the environment Modelly is installed in,

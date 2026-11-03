@@ -50,3 +50,15 @@ def test_a_bad_prior_is_refused():
     """Only the four kinds by name."""
     with pytest.raises(ValueError, match="prior"):
         bindings.prior(["cauchy", 0, 1])
+
+
+def test_a_column_is_the_agents_array_not_a_copy():
+    """Writing to the array writes the agent's value; an unknown class is named."""
+    model = bindings.model(
+        "modelly.examples.basic.boltzmann_wealth_model.model:BoltzmannWealth"
+    )
+    wealth = bindings.column(model, "MoneyAgent", "wealth")
+    wealth[0] = 99
+    assert next(iter(model.agents)).wealth == 99 and not wealth.flags["OWNDATA"]
+    with pytest.raises(KeyError, match="Nobody"):
+        bindings.column(model, "Nobody", "wealth")
