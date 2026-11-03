@@ -13,12 +13,20 @@ jobs:
   wheels:
     # Platform wheels with the compiled modules (modelly/_native/fastrng.c, fastloop.c,
     # fastcell.c, fastset.c), for the GIL and the free-threaded interpreters.
-    name: Wheels (${{ matrix.os }})
+    name: Wheels (${{ matrix.os }}${{ matrix.macos_archs && format(' {0}', matrix.macos_archs) || '' }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest, windows-11-arm]
+        # macOS builds each architecture on its own runner, in parallel: one runner building
+        # both took about twice as long as any other row.
+        include:
+          - {os: ubuntu-latest, macos_archs: ""}
+          - {os: ubuntu-24.04-arm, macos_archs: ""}
+          - {os: macos-latest, macos_archs: arm64}
+          - {os: macos-latest, macos_archs: x86_64}  # built and tested under Rosetta
+          - {os: windows-latest, macos_archs: ""}
+          - {os: windows-11-arm, macos_archs: ""}
     steps:
       - uses: actions/checkout@v7
       - name: Build wheels
@@ -27,17 +35,17 @@ jobs:
           CIBW_BUILD: "cp312-* cp313-* cp314-* cp315-* cp314t-* cp315t-*"
           # The C modules declare Py_MOD_GIL_NOT_USED (see modelly/_native/ftcompat.h).
           CIBW_SKIP: "*-*linux_i686"
-          CIBW_ARCHS_MACOS: "x86_64 arm64"
+          CIBW_ARCHS_MACOS: ${{ matrix.macos_archs || 'native' }}
           # Each Windows runner builds its own architecture only (AMD64 on windows-latest,
           # ARM64 on windows-11-arm): the build hook links for the running interpreter,
           # so a cross-compiled wheel would be mis-tagged and could not be tested.
           CIBW_ARCHS_WINDOWS: "native"
           CIBW_ENVIRONMENT: "MODELLY_REQUIRE_NATIVE=1"
           CIBW_TEST_COMMAND: >-
-            python -c "import sys, sysconfig, modelly.core.rng as r, modelly._native.loops as l, modelly._native.cells as c, modelly._native.sets as s, modelly._native.events as e; assert r.NATIVE and l.NATIVE and c.NATIVE and s.NATIVE and e.NATIVE, 'compiled modules not active'; assert not (sysconfig.get_config_var('Py_GIL_DISABLED') and sys._is_gil_enabled()), 'a compiled module turned the GIL back on'" && python {project}/scripts/hub-smoke.py
+            python -c "import sys, sysconfig, modelly.core.rng as r, modelly._native.loops as l, modelly._native.cells as c, modelly._native.sets as s, modelly._native.events as e; assert r.NATIVE and l.NATIVE and c.NATIVE and s.NATIVE and e.NATIVE, 'compiled modules not active'; assert not (sysconfig.get_config_var('Py_GIL_DISABLED') and sys._is_gil_enabled()), 'a compiled module turned the GIL back on'"
       - uses: actions/upload-artifact@v7
         with:
-          name: wheels-${{ matrix.os }}
+          name: wheels-${{ matrix.os }}-${{ matrix.macos_archs || 'native' }}
           path: wheelhouse/*.whl
 
   pure:
@@ -113,6 +121,10 @@ jobs:
           wheel=$(ls dist/*-py3-none-any.whl)
           python -m pip install "${wheel}[experiments]"
           echo "MODELLY_PYTHON=$(python -c 'import sys; print(sys.executable)')" >> "$GITHUB_ENV"
+      # Once per operating system, not once per wheel: a zoo model installed from the public
+      # hub index and run, and every zoo card checked.
+      - name: Hub smoke test
+        run: python scripts/hub-smoke.py
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true

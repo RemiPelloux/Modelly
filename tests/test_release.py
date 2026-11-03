@@ -190,3 +190,23 @@ def test_a_pre_release_records_the_changelog_and_keeps_the_notes(repo):
         "CHANGELOG.md", "CITATION.cff", "modelly/__init__.py",
     ]  # fmt: skip
     assert release.main(["1.3.0c1", "--root", str(repo)]) == EXIT_USAGE
+
+
+def test_a_gate_passed_on_this_commit_is_not_run_again(repo, monkeypatch, capsys):
+    """ci-local.sh's stamp of HEAD skips the gate; a stamp of another commit does not."""
+    calls, real = [], release.subprocess.run
+
+    def fake(command, *args, **kwargs):
+        if command[0] == release.GIT:
+            return real(command, *args, **kwargs)
+        calls.append(command)
+        return type("Done", (), {"returncode": 1})()
+
+    monkeypatch.setattr(release.subprocess, "run", fake)
+    stamp = repo / ".git" / release.GATE_STAMP
+    stamp.write_text(_git(repo, "rev-parse", "HEAD") + "\n", encoding="utf-8")
+    assert release.main([VERSION, "--root", str(repo), "--date", DATE]) == EXIT_OK
+    assert "already passed on this commit" in capsys.readouterr().out and not calls
+    stamp.write_text("0" * 40, encoding="utf-8")
+    assert release.main([VERSION, "--root", str(repo), "--date", DATE]) == EXIT_FAILED
+    assert calls

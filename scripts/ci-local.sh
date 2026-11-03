@@ -39,6 +39,10 @@ if ! "$PYTHON" -c "import solara" 2>/dev/null; then
   OPTIONAL_SKIPS=(--ignore=tests/viz --ignore=tests/examples)
 fi
 
+# pytest-xdist (a dev dependency) spreads the tests over every core; without it, one process.
+PARALLEL=()
+"$PYTHON" -c "import xdist" 2>/dev/null && PARALLEL=(-n auto)
+
 run_stage() {
   case "$1" in
     lint)   "$RUFF" check . ;;
@@ -46,7 +50,7 @@ run_stage() {
     types)  if "$PYTHON" -c "import mypy" 2>/dev/null; then "$PYTHON" -m mypy
             elif command -v uvx >/dev/null; then uvx "$MYPY_PIN" --python-executable "$PYTHON"
             else echo "types: skipped (mypy not installed: pip install mypy or install uv)"; fi ;;
-    test)   "$PYTHON" -m pytest -q -W error -W default::PendingDeprecationWarning -p pytest_cov --cov --cov-report=xml ${OPTIONAL_SKIPS[@]+"${OPTIONAL_SKIPS[@]}"} \
+    test)   "$PYTHON" -m pytest -q ${PARALLEL[@]+"${PARALLEL[@]}"} -W error -W default::PendingDeprecationWarning -p pytest_cov --cov --cov-report=xml ${OPTIONAL_SKIPS[@]+"${OPTIONAL_SKIPS[@]}"} \
               && "$PYTHON" scripts/coverage_badge.py coverage.xml "$BADGE" ;;
     audit)  bash scripts/audit-pelloux.sh ;;
   esac
@@ -88,4 +92,9 @@ for name in "${selected[@]}"; do
     echo "  passed  $name"
   fi
 done
-[[ ${#failed[@]} -eq 0 ]]
+[[ ${#failed[@]} -eq 0 ]] || exit 1
+# Every stage passed on a clean tree: record the commit, so scripts/release.py does not run
+# the same gate again on it.
+if [[ ${#selected[@]} -eq ${#STAGES[@]} && -z "$(git status --porcelain 2>/dev/null)" ]]; then
+  git rev-parse HEAD > "$(git rev-parse --git-dir)/modelly-gate-pass" 2>/dev/null || true
+fi

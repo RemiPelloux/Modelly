@@ -10,7 +10,8 @@
 Steps, in order; the first that fails stops the release:
 
 1. the work tree is clean and on ``main``;
-2. ``python -m modelly.dev gate`` passes (``--no-gate`` skips it, for a rehearsal);
+2. ``python -m modelly.dev gate`` passes (``--no-gate`` skips it, for a rehearsal); a full
+   pass of ``scripts/ci-local.sh`` on this commit with a clean tree counts, without a rerun;
 3. the version in ``modelly/__init__.py`` and ``CITATION.cff`` becomes X.Y.Z, and the
    CITATION date the release date (today, or ``--date``);
 4. the CHANGELOG gets the heading ``## X.Y.Z - DATE``: an ``## Unreleased`` heading is
@@ -102,8 +103,23 @@ def check_tree(release: Release) -> None:
         raise ReleaseError(f"tag v{release.version} already exists")
 
 
+GATE_STAMP = "modelly-gate-pass"  # written by scripts/ci-local.sh after a full pass
+
+
+def gate_passed(release: Release) -> bool:
+    """Whether ``scripts/ci-local.sh`` passed every stage on this very commit, clean."""
+    stamp = Path(git(release, "rev-parse", "--absolute-git-dir")) / GATE_STAMP
+    head = git(release, "rev-parse", "HEAD")
+    return stamp.is_file() and stamp.read_text(encoding=ENCODING).strip() == head
+
+
 def run_gate(release: Release) -> None:
-    """``python -m modelly.dev gate`` in the checkout must pass."""
+    """``python -m modelly.dev gate`` in the checkout must pass, unless it passed on HEAD."""
+    if gate_passed(release):
+        sys.stdout.write(
+            "the gate already passed on this commit (ci-local.sh); not run again\n"
+        )
+        return
     done = subprocess.run(
         [sys.executable, "-m", "modelly.dev", "gate"], cwd=release.root, check=False
     )

@@ -79,11 +79,28 @@ def skip_reason(name: str) -> str | None:
     return None
 
 
+def parallel() -> list[str]:
+    """``-n auto`` when pytest-xdist is installed: the tests on every core."""
+    import importlib.util  # noqa: PLC0415
+
+    return ["-n", "auto"] if importlib.util.find_spec("xdist") else []
+
+
 def stage_commands(name: str, python: str = sys.executable) -> list[Command]:
     """The commands of stage ``name``, run in order until one fails."""
     # Warnings are errors, as in the hosted build workflow (-Werror).
     warnings = ["-W", "error", "-W", "default::PendingDeprecationWarning"]
-    pytest = [python, "-m", "pytest", "-q", *warnings, "-p", "pytest_cov", "--cov"]
+    pytest = [
+        python,
+        "-m",
+        "pytest",
+        "-q",
+        *parallel(),
+        *warnings,
+        "-p",
+        "pytest_cov",
+        "--cov",
+    ]
     commands = {
         "lint": [[python, "-m", "ruff", "check", "."]],
         "format": [[python, "-m", "ruff", "format", "--check", "."]],

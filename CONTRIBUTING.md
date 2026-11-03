@@ -314,7 +314,7 @@ user would notice them, and never a What's new entry.
 when the What's new page has no Unreleased notes or empty ones: no version ships without them.
 A pre-release (`1.5.0a1`, `1.5.0b1`, `1.5.0rc1`) gets its changelog heading but leaves the
 What's new notes under `## Unreleased`, where they grow until the final release. The release
-workflow's wheel tests run `scripts/hub-smoke.py` on every operating system: a zoo model
+workflow runs `scripts/hub-smoke.py` once per operating system: a zoo model
 installed from the public hub index and run, and every zoo card checked.
 
 ## Questions
