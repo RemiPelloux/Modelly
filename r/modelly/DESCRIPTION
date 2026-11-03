@@ -1,0 +1,20 @@
+Package: modelly
+Title: Agent-Based Models with 'Modelly' from R
+Version: 0.1.0
+Authors@R: person("Remi", "Pelloux", role = c("aut", "cre"),
+    email = "rp@openpro.ai")
+Description: Run, sweep and calibrate agent-based models written with the
+    'Modelly' Python framework <https://github.com/RemiPelloux/Modelly> from R.
+    Results come back as data frames; calibration by approximate Bayesian
+    computation (ABC-SMC) returns posterior summaries and particles.
+    'Modelly' runs in Python through 'reticulate'; install_modelly() sets it up.
+License: Apache License (== 2.0)
+URL: https://remipelloux.github.io/Modelly/dev/r_and_julia.html
+BugReports: https://github.com/RemiPelloux/Modelly/issues
+Encoding: UTF-8
+Imports:
+    reticulate (>= 1.30)
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+SystemRequirements: Python (>= 3.12) with the modelly-abm package (>= 1.5)

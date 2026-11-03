@@ -139,6 +139,48 @@ grid.to_netcdf("out/heat.nc")
 R reads it with `stars::read_ncdf("out/heat.nc")` or `ncdf4::nc_open("out/heat.nc")`; Julia
 with `NCDatasets.NCDataset("out/heat.nc")["heat"]`.
 
+## The R package
+
+The `modelly` R package (in `r/modelly` of the repository) runs, inspects and calibrates
+Modelly models from R without writing any Python. Results come back as data frames.
+
+```r
+install.packages("reticulate")
+remotes::install_github("RemiPelloux/Modelly", subdir = "r/modelly")
+modelly::install_modelly()  # once: a Python environment "r-modelly" with modelly-abm
+
+library(modelly)
+target <- paste0(modelly_tutorial(), ":Epidemic")  # the SIR model of the calibration guide
+modelly_parameters(target)                          # name, type and default of each
+run <- modelly_run(target, beta = 0.4, gamma = 0.1, seed = 99, steps = 40)
+plot(run$step, run$infected, type = "l")
+
+fit <- modelly_calibrate(
+  target,
+  priors = list(beta = prior_uniform(0.05, 1), gamma = prior_uniform(0.02, 0.5)),
+  observed = list(infected = run$infected[-1]),
+  steps = 40, particles = 100, generations = 6, seed = 2027
+)
+fit        # the posterior summary: beta 0.423 (0.332 to 0.553), gamma 0.098 (0.067 to 0.139)
+plot(fit)  # a histogram of each parameter's particles
+fit$particles; fit$trace
+```
+
+That is the [calibration guide](calibration.md)'s SIR tutorial, end to end from R. It gives
+the posterior the guide shows for Python, number for number, because the same seed drives
+the same runs. Any model works as a target: `"path/to/model.py:MyModel"` or
+`"package.module:MyModel"`. Scenario parameters are passed by name. Whole numbers need no
+`L`: the package converts a value to an integer when the scenario field is an `int`.
+`modelly_model(target, ...)` returns the model object itself, for stepping it from R
+(`model$step()`).
+
+The package is a thin layer over `modelly.bindings`, a Python module of plain functions that
+the Julia package uses too. Calibration runs serially, because an R session embedding Python
+has no script for worker processes to re-import. `R CMD check` passes with no note, and the
+package's tests run the tutorial and check that the posterior's intervals contain the true
+values. Its tests are run with R 4.5 on Linux; Windows and macOS remain for the three-OS run
+of the 1.5.0 roadmap.
+
 ## Running Modelly from R (reticulate)
 
 Install Modelly in a Python environment and point reticulate at it; every Modelly class and
