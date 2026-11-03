@@ -178,8 +178,8 @@ The package is a thin layer over `modelly.bindings`, a Python module of plain fu
 the Julia package uses too. Calibration runs serially, because an R session embedding Python
 has no script for worker processes to re-import. `R CMD check` passes with no note, and the
 package's tests run the tutorial and check that the posterior's intervals contain the true
-values. Its tests are run with R 4.5 on Linux; Windows and macOS remain for the three-OS run
-of the 1.5.0 roadmap.
+values. The release workflow runs `R CMD check` on Linux, macOS and Windows before every
+release.
 
 ## Running Modelly from R (reticulate)
 
@@ -243,7 +243,7 @@ writing it costs no copy; it is valid until agents of that class are added or re
 first `using Modelly` installs Python and modelly-abm through CondaPkg; set
 `JULIA_CONDAPKG_BACKEND=Null` and `JULIA_PYTHONCALL_EXE` to use an environment you have. Its
 tests (the tutorial's posterior to the last digit, a column written without a copy) pass with
-Julia 1.13 on Linux; Windows and macOS remain for the three-OS run.
+the latest stable Julia on Linux, macOS and Windows in the release workflow.
 
 ## Running Modelly from Julia (PythonCall)
 
