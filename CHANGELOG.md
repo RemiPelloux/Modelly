@@ -15,6 +15,19 @@ versioning.
   that reads every system at any time of its span on the Runge-Kutta interpolant;
   `AgentODE(..., dense_output=True).at(t)` reads every agent's state inside the last step,
   after event resets too, on the batched and the stiff path.
+- The model hub (`modelly.hub`, `modelly hub search|info|install|publish|check|zoo-index`): a
+  static index of published models (the public one in the RemiPelloux/modelly-hub repository,
+  on GitHub Pages; `MODELLY_HUB` or `modelly.hub_sources` plugins add others), each entry with
+  its model card, supported Modelly versions, source and sha256, and optionally a Zenodo DOI
+  and a Sigstore signature. `install` checks compatibility, the hash and the signature before
+  pip runs; `publish` writes a project's entry, archiving it on Zenodo (sandbox by default)
+  and signing it when asked, as a dry run unless `--no-dry-run`; `check` is what a pull
+  request to the index must pass. The eighteen zoo models are on the hub. Guide:
+  `docs/hub.md`.
+- The `modelly.hub_sources` plugin group (plugin API v1): an extra hub index, a URL or path,
+  or a function returning them.
+- Compatibility checks (plugins, the hub) compare the release part of the running version, so
+  a pre-release or development build of 1.5 supports what 1.5 will.
 - Delay equations: `AgentODE(delays={name: Delay(variable, tau, before)})` passes each agent's
   state `tau` ago to the right-hand side, by the method of steps on the kept dense output,
   keyed by agent id (births and deaths keep their own past) and saved in checkpoints. Equal to

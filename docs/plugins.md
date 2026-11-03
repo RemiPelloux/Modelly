@@ -28,6 +28,7 @@ working in every later 1.x release.
 | `modelly.collectors` | a data collector or a reporter factory |
 | `modelly.studio_views` | a view for Modelly Studio |
 | `modelly.lint_rules` | a rule for `modelly lint` |
+| `modelly.hub_sources` | an extra hub index: a URL or path, or a function returning one or several |
 
 The groups are listed in `modelly.plugins.GROUPS`. What each kind of object must provide is
 set by the feature that uses it; the discovery mechanism below is the same for all.
@@ -39,6 +40,7 @@ set by the feature that uses it; the discovery mechanism below is the same for a
 | `modelly.executors` | `Experiment.run(executor=name)`, `modelly experiment` | an `Executor` subclass (or a factory taking the executor's options) |
 | `modelly.samplers` | `[design] kind = "name"` in an experiment file; `modelly.experiments.designs.design_factory(name)` | a factory `n -> Design`, as `designs.latin_hypercube` |
 | `modelly.lint_rules` | `modelly lint` (and the Studio lint panel) | an object with `rule`, a `modelly.lint.Rule` with a code of its own, and `check(tree)`, yielding the `(line, column)` of each hit in the parsed module |
+| `modelly.hub_sources` | `modelly hub search`, `info` and `install`, after the public index | a URL or path string, or a function returning one or a list |
 | `modelly.studio_views` | `modelly studio`: one more tab, named after the entry point | a Solara component taking the Studio state, as the built-in views |
 | `modelly.spaces` | your model, through `discover("modelly.spaces")[name].load()` | a space class |
 | `modelly.collectors` | your model, through `discover("modelly.collectors")[name].load()` | a reporter or a reporter factory for `DataCollector` |
@@ -53,7 +55,8 @@ reuses a built-in code, or a view or rule that fails to load, is skipped with a
 [`examples/plugins/modelly-example-plugin`](https://github.com/RemiPelloux/Modelly/tree/main/examples/plugins/modelly-example-plugin)
 is a complete third-party package with one entry point in every group: a ring of cells, a
 uniform random sampler, a share-of-agents reporter, an executor, the lint rule `EXP001`
-(`print()` in model code) and a Studio tab showing the scenario. `pip install -e` it next to
+(`print()` in model code), a Studio tab showing the scenario and a hub source (an empty
+private index). `pip install -e` it next to
 Modelly to try it; `tests/test_example_plugin.py` checks each entry point the way Modelly reads
 it.
 

@@ -46,6 +46,22 @@ def _compare(version: str, op: str, bound: str) -> bool:
     }[op]  # fmt: skip
 
 
+def release(version: str) -> str:
+    """The release part of a version: ``"1.5.0rc1"`` and ``"1.5.0.dev0"`` give ``"1.5.0"``.
+
+    Compatibility checks use it, so a pre-release or a development build of 1.5 supports
+    what 1.5 will.
+
+    Example:
+        >>> release("1.5.0.dev0"), release("2.0.0rc1")
+        ('1.5.0', '2.0.0')
+    """
+    match = _VERSION.match(version)
+    if match is None:
+        raise ValueError(f"not a version: {version!r}")
+    return match.group(1)
+
+
 def satisfies(version: str, specifier: str) -> bool:
     """Whether ``version`` meets every clause of ``specifier`` (``">=1.5,<2"``).
 

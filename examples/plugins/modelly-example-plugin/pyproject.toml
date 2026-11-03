@@ -30,3 +30,6 @@ no_print = "modelly_example_plugin.lint:NO_PRINT"
 
 [project.entry-points."modelly.studio_views"]
 Scenario = "modelly_example_plugin.studio:ScenarioView"
+
+[project.entry-points."modelly.hub_sources"]
+example = "modelly_example_plugin.hub:sources"

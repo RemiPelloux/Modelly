@@ -61,6 +61,8 @@ then covers the options.
   from one run on your machine to an archive a reviewer reruns with a single command.
 - [Model cards](model_cards.md)\
   what a model is for, how it was validated and where it must not be used, checked against its code.
+- [The model hub](hub.md)\
+  publish a model with a DOI; find, install and cite other people's with one command.
 ```
 
 ```{toctree}
@@ -101,4 +103,5 @@ Emulators <emulators>
 Live data and assimilation <assimilation>
 Reproducible studies <provenance>
 Model cards <model_cards>
+The model hub <hub>
 ```

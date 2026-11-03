@@ -15,6 +15,11 @@ whose notes are missing (see "Release notes" in
 
 ### New
 
+- **The model hub**: `modelly hub search malaria` finds published models, `modelly hub info`
+  shows what each is for and how to cite it, and `modelly hub install` gets one, checking its
+  hash and signature first. `modelly hub publish` prepares your model's entry, with a DOI from
+  Zenodo and a Sigstore signature when you ask. All eighteen zoo models are on it.
+  [The model hub](hub.md)
 - **Inputs that change inside a step**: `Forcing(function)` and `Series(times, values)` drive
   an `AgentODE` or `solve_batch` at the times each system's own steps land on (daylight, a
   dosing schedule, a measured series), instead of holding the value over the model's step.

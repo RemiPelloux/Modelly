@@ -12,7 +12,7 @@ imported the first time it is loaded.
 **Plugin API v1.** The groups, ``Plugin``, ``discover`` and ``load_all`` are frozen for the
 1.x line (``API_VERSION``). A plugin declares the Modelly versions it supports as an ordinary
 dependency, ``"modelly-abm>=1.5,<2"``; ``Plugin.compatible`` checks it against the running
-Modelly, and loading a plugin whose declaration excludes it raises ``PluginError`` instead of
+Modelly (a pre-release or development build counts as its release), and loading a plugin whose declaration excludes it raises ``PluginError`` instead of
 importing code written for another version. A plugin that fails to import raises
 ``PluginError`` naming the plugin and its distribution, and never stops the others from
 being found or loaded: ``load_all`` returns the loaded objects and the errors apart.
@@ -30,7 +30,7 @@ from dataclasses import dataclass, field
 from importlib.metadata import EntryPoint, entry_points
 from typing import Any
 
-from modelly._versions import requirement_on, satisfies
+from modelly._versions import release, requirement_on, satisfies
 
 API_VERSION = 1
 DISTRIBUTION = "modelly-abm"
@@ -41,6 +41,7 @@ GROUPS = (
     "modelly.collectors",
     "modelly.studio_views",
     "modelly.lint_rules",
+    "modelly.hub_sources",
 )
 
 
@@ -106,7 +107,7 @@ class Plugin:
         if not self.requires:
             return True
         try:
-            return satisfies(_modelly_version(), self.requires)
+            return satisfies(release(_modelly_version()), self.requires)
         except ValueError:  # a specifier this reader does not understand: let it load
             return True
 

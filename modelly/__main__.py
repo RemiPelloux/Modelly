@@ -99,6 +99,11 @@ COMMANDS = (
         "write an ODD protocol skeleton of a model",
     ),
     (
+        "hub",
+        "modelly.hub.__main__",
+        "search, install, publish and check models on the Modelly hub",
+    ),
+    (
         "plugins",
         "modelly._plugins_cli",
         "list the installed plugins and the Modelly versions they support",
@@ -137,6 +142,7 @@ examples:
   modelly bundle runs/ --out study.zip  code, lock file, seeds and outputs
   modelly odd model.py:MyModel > ODD.md ODD protocol skeleton
   modelly card check --zoo              every zoo card complete and validated
+  modelly hub search epidemic           published models, best match first
   modelly COMMAND --help                every option of one command
 
 exit status:
