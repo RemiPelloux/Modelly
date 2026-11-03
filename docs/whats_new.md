@@ -19,6 +19,13 @@ whose notes are missing (see "Release notes" in
   tight intervals; see which are cost-effective and at what price; check which hold up across
   many possible futures; and search a policy's parameters. A worked study asks which age group
   should get 10,000 vaccine doses. [Decisions](decide.md)
+- **Modelly from R**: the `modelly` R package runs and calibrates models from R and returns
+  data frames, with no Python to write: `modelly_calibrate(...)` fits the SIR tutorial and
+  prints its posterior. [From R and Julia](r_and_julia.md#the-r-package)
+- **Causes and explanations**: the effect of an intervention with an interval, and how much
+  running both arms on the same chance events tightened it; the agents an outcome depended on
+  (it finds an outbreak's index case); what a recorded run would have done with one change;
+  and how much each parameter moved an emulator's prediction. [Causes and explanations](explain.md)
 - **The model hub**: `modelly hub search malaria` finds published models, `modelly hub info`
   shows what each is for and how to cite it, and `modelly hub install` gets one, checking its
   hash and signature first. `modelly hub publish` prepares your model's entry, with a DOI from

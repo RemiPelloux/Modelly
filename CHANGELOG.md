@@ -3,6 +3,24 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Added
+
+- `modelly.explain`: `treatment_effect` with paired intervals on common random numbers and
+  the variance reduction they bring, measured against independent seeds (49.8 times on the
+  Bass zoo model for a small change in imitation; none on age_seir vaccination, whose cohort
+  rows reorder the draws, which the guide explains); `attribute`, the agents whose removal or
+  change moves the outcome most (finds the index case of a network outbreak); `counterfactual`,
+  a change applied at a recorded step through time travel; `shapley`, exact Shapley values of
+  an emulator's prediction. Guide: `docs/explain.md`.
+- The R package `modelly` (`r/modelly`): `modelly_run`, `modelly_parameters`,
+  `modelly_model`, `modelly_calibrate` with `prior_uniform` and the other priors, print and
+  plot methods, `install_modelly`; data frames in and out through reticulate. The SIR
+  calibration tutorial runs end to end from R and gives the Python posterior exactly;
+  `R CMD check` passes with no note. It calls `modelly.bindings`, plain functions shared with
+  the Julia package.
+
 ## 1.5.0a1 - 2026-11-03
 
 ### Added
