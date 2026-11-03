@@ -117,7 +117,10 @@ jobs:
         with:
           use-public-rspm: true
       - name: Install reticulate and testthat
-        run: Rscript -e 'install.packages(c("reticulate", "testthat"))'
+        # setup-r points Linux and macOS at Posit's binaries; Windows gets CRAN's.
+        run: >-
+          Rscript -e 'r <- getOption("repos"); if (is.null(r) || isTRUE(r[["CRAN"]] == "@CRAN@"))
+          r <- c(CRAN = "https://cloud.r-project.org"); install.packages(c("reticulate", "testthat"), repos = r)'
       - name: R CMD check
         env:
           RETICULATE_PYTHON: ${{ env.MODELLY_PYTHON }}
@@ -128,7 +131,7 @@ jobs:
       - uses: julia-actions/setup-julia@v2
         if: ${{ !cancelled() }}
         with:
-          version: "1.11"
+          version: "1"
       - name: Julia tests
         if: ${{ !cancelled() }}
         env:
