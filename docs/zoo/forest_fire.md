@@ -52,6 +52,9 @@ reaches the east edge and burns over 90 %; that the mean burnt share rises with 
 a cover raster confines the trees; that succession mode keeps burning and conserves cells; and
 that the same seed gives the same fire.
 
+```{include} cards/forest_fire.md
+```
+
 ## References
 
 - Drossel, B. and Schwabl, F. (1992). Self-organized critical forest-fire model. *Physical

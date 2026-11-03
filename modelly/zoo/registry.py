@@ -46,6 +46,11 @@ class ZooModel:
         """The path of the model's source file."""
         return Path(importlib.util.find_spec(self.module).origin)
 
+    @property
+    def card(self) -> Path:
+        """The path of the model's card, ``card.toml`` next to its module."""
+        return self.source.parent / "card.toml"
+
     def load(self) -> tuple[type, type]:
         """Import the module and return ``(model class, scenario class)``."""
         module = importlib.import_module(self.module)

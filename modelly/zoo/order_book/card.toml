@@ -1,0 +1,56 @@
+schema = 1
+name = "order_book"
+title = "Continuous double auction (zero-intelligence order book)"
+model = "modelly.zoo.order_book.model:OrderBook"
+summary = "A limit order book on an integer price grid fed by random market, limit and cancel orders, in the zero-intelligence style of Farmer, Patelli and Zovko: no trader has a strategy, yet returns have fat tails."
+
+intended_use = [
+  "Teaching how a limit order book works: best quotes, the spread, market orders that take liquidity and limit orders that provide it.",
+  "Showing that a stylised fact (fat-tailed returns) can come from the mechanics of the book alone, with no strategic traders.",
+  "A starting point for order-book models, with a validated core to extend (order sizes, informed traders, other placement rules).",
+]
+
+out_of_scope = [
+  "Forecasting prices or returns of a real asset: the order flow is random and nothing is calibrated to market data.",
+  "Designing or testing trading strategies: there are no strategic traders, and the book does not respond to them as a real market would.",
+  "Claims about stylised facts beyond fat tails (volatility clustering, the shape of the spread distribution): the tests check only kurtosis and a valid book.",
+]
+
+data = [
+  "None by default: the price grid, the order rates and the initial depth are illustrative values in `OrderBookScenario`.",
+]
+
+limits = [
+  "Every order is one unit and limit prices are uniform within `window` ticks of the opposite best quote; real order sizes and placements are far from uniform.",
+  "Order flow is zero-intelligence: rates do not depend on prices, the spread or past returns.",
+  "A side is never emptied: an event that would remove its last order becomes a limit order on that side, which a real book does not guarantee.",
+  "Prices live on a fixed grid of `ticks` levels; limit orders that would fall outside it are clipped to its edges.",
+]
+
+ethics = [
+  "This is a toy market; results presented as evidence about a real market or a regulation (tick sizes, cancellation rules) would overstate what it shows.",
+]
+
+references = [
+  "Farmer, J. D., Patelli, P. and Zovko, I. I. (2005). The predictive power of zero intelligence in financial markets. PNAS, 102(6), 2254-2259.",
+  "Cont, R. (2001). Empirical properties of asset returns: stylized facts and statistical issues. Quantitative Finance, 1, 223-236.",
+]
+
+sources = []
+
+[[validation]]
+check = "excess kurtosis of mid-price returns above five times its sqrt(24 / n) standard error under normal returns (three seeds)"
+test = "tests/zoo/test_order_book.py::test_returns_have_fat_tails"
+
+[[validation]]
+check = "the spread is at least one tick at every step and no level holds a negative number of orders"
+test = "tests/zoo/test_order_book.py::test_spread_is_at_least_one_tick"
+
+[[validation]]
+check = "aggressive market orders never empty a side of a one-order book; same seed, same price path"
+test = "tests/zoo/test_order_book.py"
+
+[validated]
+source = "sha256:23303fbeaf511a5e38895017cd28e768cc8e1bce266f3f29f7679605c9ee7c1c"
+modelly = "1.4.3"
+date = "2026-11-03"

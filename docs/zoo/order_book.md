@@ -50,6 +50,9 @@ the returns were normal; it is about thirty standard errors in practice. It also
 spread is always at least one tick, that aggressive market orders never empty a side of a
 one-order book, and that the same seed gives the same price path.
 
+```{include} cards/order_book.md
+```
+
 ## References
 
 - Farmer, J. D., Patelli, P. and Zovko, I. I. (2005). The predictive power of zero

@@ -74,6 +74,9 @@ occupancy and the attack rate, that the population is conserved, that a run resu
 checkpoint is identical, bit for bit, to a straight one, and that the same seed gives the same
 run.
 
+```{include} cards/hospital_epidemic.md
+```
+
 ## References
 
 - Kermack, W. O. and McKendrick, A. G. (1927). A contribution to the mathematical theory of

@@ -47,6 +47,9 @@ exact marginal, in total variation, than the expected distance of a single histo
 1,000 independent draws. It also checks conservation of money with an odd population and
 that the same seed gives the same run.
 
+```{include} cards/kinetic_wealth.md
+```
+
 ## References
 
 - Dragulescu, A. and Yakovenko, V. M. (2000). Statistical mechanics of money. *European

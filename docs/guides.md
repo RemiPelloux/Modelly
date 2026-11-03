@@ -59,6 +59,8 @@ then covers the options.
   correct a running model as new data arrives, and forecast from the corrected state.
 - [Reproducible studies](provenance.md)\
   from one run on your machine to an archive a reviewer reruns with a single command.
+- [Model cards](model_cards.md)\
+  what a model is for, how it was validated and where it must not be used, checked against its code.
 ```
 
 ```{toctree}
@@ -98,4 +100,5 @@ Sensitivity analysis <sensitivity>
 Emulators <emulators>
 Live data and assimilation <assimilation>
 Reproducible studies <provenance>
+Model cards <model_cards>
 ```

@@ -1,0 +1,57 @@
+schema = 1
+name = "nagel_schreckenberg"
+title = "Nagel-Schreckenberg traffic"
+model = "modelly.zoo.nagel_schreckenberg.model:NagelSchreckenberg"
+summary = "The Nagel-Schreckenberg cellular automaton: cars on a single-lane ring road accelerate, brake to the gap ahead and dawdle at random, and jams form on their own and travel backwards."
+
+intended_use = [
+  "Teaching the fundamental diagram of traffic: free flow below a critical density, jams above it, and how random dawdling lowers the peak flow.",
+  "A starting point for cellular-automaton traffic models with a validated core to extend (lanes, on-ramps, signals).",
+  "Comparing densities, speed limits or dawdling probabilities in relative terms.",
+]
+
+out_of_scope = [
+  "Predicting flows, speeds or travel times on a real road: cells, steps and dawdling are not calibrated to any road or driver population.",
+  "Road design or safety decisions: there are no lanes, junctions, vehicle types or crashes.",
+]
+
+data = [
+  "None by default: road length, density, speed limit and dawdling probability are illustrative values in `TrafficScenario`.",
+]
+
+limits = [
+  "One lane on a closed ring: no overtaking, entries, exits or junctions, and the number of cars is fixed.",
+  "Space and time are discrete (one cell, one step) and every car follows the same rule with the same speed limit and dawdling probability.",
+  "The exact checks hold away from the critical density `1 / (max_speed + 1)`, where transients are longest.",
+]
+
+ethics = [
+  "Results could be quoted in decisions about real roads that affect the people who use and live near them; present them as properties of an uncalibrated toy road, not as estimates for a real one.",
+]
+
+references = [
+  "Nagel, K. and Schreckenberg, M. (1992). A cellular automaton model for freeway traffic. Journal de Physique I, 2(12), 2221-2229.",
+]
+
+sources = []
+
+[[validation]]
+check = "without dawdling the steady flow is exactly min(density * max_speed, 1 - density) at seven densities on both sides of the critical density"
+test = "tests/zoo/test_nagel_schreckenberg.py::test_deterministic_flow_is_exact"
+
+[[validation]]
+check = "with dawdling the flow peaks at an interior density and falls steadily on the jammed branch"
+test = "tests/zoo/test_nagel_schreckenberg.py::test_flow_rises_then_falls"
+
+[[validation]]
+check = "at low density the flow is density * (max_speed - dawdle) within five standard deviations of the mean of independent Bernoulli dawdles"
+test = "tests/zoo/test_nagel_schreckenberg.py::test_free_flow_speed_is_max_speed_minus_dawdle"
+
+[[validation]]
+check = "cars never share a cell and never exceed the speed limit; impossible densities are rejected; same seed, same run"
+test = "tests/zoo/test_nagel_schreckenberg.py"
+
+[validated]
+source = "sha256:9105865a84318fd35163601c27e6fa6f0034edbdddfdd6c48c04416259f34c16"
+modelly = "1.4.3"
+date = "2026-11-03"

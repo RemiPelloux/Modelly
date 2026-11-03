@@ -69,6 +69,9 @@ closes to round-off; that the density near the river is ten times that of the ea
 that a run resumed from a checkpoint is identical, bit for bit, to a straight one; and that the
 same seed gives the same run.
 
+```{include} cards/nutrient_foragers.md
+```
+
 ## References
 
 - Grimm, V. and Railsback, S. F. (2005). *Individual-based Modeling and Ecology*. Princeton

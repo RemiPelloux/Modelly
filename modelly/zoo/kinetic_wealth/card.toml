@@ -1,0 +1,54 @@
+schema = 1
+name = "kinetic_wealth"
+title = "Boltzmann wealth exchange"
+model = "modelly.zoo.kinetic_wealth.model:KineticWealth"
+summary = "Random pairs of agents pass one unit of money at a time; money is conserved and nobody goes into debt, yet equal shares turn into an exponential (Boltzmann-Gibbs) distribution of wealth."
+
+intended_use = [
+  "Teaching how inequality can emerge from random exchange alone, with equal agents and no skill or saving.",
+  "Comparing a simulated wealth distribution with an exact stationary law, as a worked example of validating a stochastic model.",
+  "A starting point for kinetic exchange models, with a validated core to extend (saving propensities, taxes, unequal exchange).",
+]
+
+out_of_scope = [
+  "Describing or forecasting the wealth distribution of a real economy: nothing is calibrated, and real distributions have Pareto tails this model lacks.",
+  "Arguing that real inequality is, or is not, deserved or random: the model has no production, work, inheritance or institutions.",
+  "Evaluating redistribution policies: there are no taxes, transfers or prices in the model.",
+]
+
+data = [
+  "None by default: the number of agents and the starting money are illustrative values in `KineticScenario`.",
+]
+
+limits = [
+  "Every exchange moves exactly one unit and every agent meets one random partner per step: no network, no geography, no preferences.",
+  "Money is conserved and the population is closed: no production, consumption, debt, births or deaths.",
+  "The validation is of the stationary law only; how fast equal shares spread out depends on the one-unit, one-matching-per-step rule.",
+]
+
+ethics = [
+  "Results can be read as saying inequality is natural or inevitable; the model shows only what random exchange does, so present it with the assumptions above.",
+]
+
+references = [
+  "Dragulescu, A. and Yakovenko, V. M. (2000). Statistical mechanics of money. European Physical Journal B, 17, 723-729.",
+]
+
+sources = []
+
+[[validation]]
+check = "time-averaged Gini within three single-snapshot standard deviations of the exact stationary law's Gini, which is about one half (three seeds)"
+test = "tests/zoo/test_kinetic_wealth.py::test_stationary_gini"
+
+[[validation]]
+check = "pooled wealth histogram closer to the exact marginal, in total variation, than one histogram of n independent draws (three seeds)"
+test = "tests/zoo/test_kinetic_wealth.py::test_stationary_histogram"
+
+[[validation]]
+check = "the exact marginal sums to one with mean `money`; money is conserved and never negative; same seed, same run"
+test = "tests/zoo/test_kinetic_wealth.py"
+
+[validated]
+source = "sha256:49fdc31cdb0163501d04b0c1646e264861a7d7655b5a1a9d5848fa6e8d253388"
+modelly = "1.4.3"
+date = "2026-11-03"

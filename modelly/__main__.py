@@ -98,6 +98,11 @@ COMMANDS = (
         "modelly.provenance.commands.odd",
         "write an ODD protocol skeleton of a model",
     ),
+    (
+        "card",
+        "modelly.card.__main__",
+        "write, check and show model cards (intended use, validation, limits)",
+    ),
 )
 
 DESCRIPTION = "Command-line tools for Modelly models."
@@ -126,6 +131,7 @@ examples:
   modelly verify runs/manifest.json     rerun and compare the outputs
   modelly bundle runs/ --out study.zip  code, lock file, seeds and outputs
   modelly odd model.py:MyModel > ODD.md ODD protocol skeleton
+  modelly card check --zoo              every zoo card complete and validated
   modelly COMMAND --help                every option of one command
 
 exit status:

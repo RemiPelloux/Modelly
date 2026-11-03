@@ -68,9 +68,11 @@ def staged(tmp_path: Path) -> Path:
 
 
 def test_hook_definitions():
-    """Both hooks run ``modelly lint`` on Python files, once with every file."""
+    """Both lint hooks run ``modelly lint`` on Python files, once with every file."""
     found = hooks()
-    assert set(found) == {"modelly-lint", "modelly-lint-fix"}
+    assert set(found) == {"modelly-lint", "modelly-lint-fix", "modelly-card-check"}
+    card = found.pop("modelly-card-check")
+    assert card["entry"] == "modelly card check" and card["pass_filenames"] is False
     for hook in found.values():
         assert hook["entry"].startswith("modelly lint")
         assert hook["language"] == "python" and hook["types"] == ["python"]

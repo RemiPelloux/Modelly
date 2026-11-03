@@ -1,0 +1,60 @@
+schema = 1
+name = "bass_diffusion"
+title = "Bass diffusion of innovation on a network"
+model = "modelly.zoo.bass_diffusion.model:BassDiffusion"
+summary = "Households adopt an innovation, rooftop solar for instance, from advertising and from adopting neighbours, either well mixed as in Bass's model or over a random network."
+
+intended_use = [
+  "Teaching the Bass diffusion curve and the roles of innovation (p) and imitation (q).",
+  "Showing how network structure changes diffusion: a sparse network adopts more slowly than the well-mixed curve.",
+  "A starting point for adoption models (solar, heat pumps) with a validated core to extend (subsidies, heterogeneous households, real networks).",
+]
+
+out_of_scope = [
+  "Forecasting real adoption of a product or technology: the default p and q are illustrative, not fitted to sales or installation data.",
+  "Decisions about subsidies or targeting real households without parameters and a network estimated on them.",
+  "Products that can be abandoned or bought repeatedly: adoption here is once and for ever.",
+]
+
+data = [
+  "None by default: the number of households, p, q, the step and the mean degree are illustrative values in `BassScenario`.",
+  "The network, when used, is a random graph drawn by the model (`households * degree / 2` random distinct pairs), not a measured social network.",
+]
+
+limits = [
+  "Every household has the same p and q; there are no prices, incomes, dwelling types or capacity limits.",
+  "Adoption is drawn once per step of length `dt`, so the curve carries an Euler discretisation error against the Bass equation.",
+  "The network is Erdos-Renyi-like with no clustering or communities beyond chance; real acquaintance networks are not represented.",
+  "Closed population: no new households and no abandonment.",
+]
+
+ethics = [
+  "Results on who adopts first could inform which households a programme targets; present them with the assumptions above, since the model knows nothing about who can afford an innovation.",
+]
+
+references = [
+  "Bass, F. M. (1969). A new product growth for model consumer durables. Management Science, 15(5), 215-227.",
+]
+
+sources = []
+
+[[validation]]
+check = "well mixed, for three seeds, the adoption share is within the Euler error plus five linear-noise standard deviations of the Bass equation at every step"
+test = "tests/zoo/test_bass_diffusion.py::test_well_mixed_follows_bass_equation"
+
+[[validation]]
+check = "a dense network (50 neighbours) stays within the same bound"
+test = "tests/zoo/test_bass_diffusion.py::test_dense_network_is_close_to_well_mixed"
+
+[[validation]]
+check = "a sparse network (4 neighbours) lags the well-mixed recursion by more than three standard deviations at mid-diffusion"
+test = "tests/zoo/test_bass_diffusion.py::test_sparse_network_adopts_more_slowly"
+
+[[validation]]
+check = "adoption never reverts; unknown mixing is rejected; same seed, same curve"
+test = "tests/zoo/test_bass_diffusion.py"
+
+[validated]
+source = "sha256:fb359feb19e8eecbe8b781b72a5dc84f3f69abeedf30948f7d43d28de7ff684f"
+modelly = "1.4.3"
+date = "2026-11-03"

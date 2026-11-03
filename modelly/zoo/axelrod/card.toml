@@ -1,0 +1,58 @@
+schema = 1
+name = "axelrod"
+title = "Axelrod culture dissemination"
+model = "modelly.zoo.axelrod.model:Axelrod"
+summary = "Axelrod's model of the dissemination of culture: sites of a grid copy traits from neighbours with a probability set by their similarity, until the map freezes into regions of identical culture."
+
+intended_use = [
+  "Teaching how local convergence can produce global polarisation: one culture for few traits per feature, many regions for many.",
+  "Exploring the transition in the number of regions as traits, features or grid size change.",
+  "A starting point for social-influence models with a validated core to extend (noise, media, other networks).",
+]
+
+out_of_scope = [
+  "Describing or predicting real cultures, opinions or political views: features and traits are abstract integers with no measured meaning.",
+  "Drawing conclusions about real communities, migration or policy from the number or size of regions.",
+]
+
+data = [
+  "None by default: cultures are drawn uniformly at random, and grid size, features and traits are illustrative values in `AxelrodScenario` (the 10 x 10, five-feature setting of the original paper).",
+]
+
+limits = [
+  "A small square grid without wrapping, von Neumann neighbours only: sites at the edge have fewer neighbours, and nobody moves.",
+  "Traits are nominal and all features weigh the same; there is no noise, so the absorbing state is reached and kept for ever.",
+  "Validation is qualitative, against the original paper's regimes on a small grid; regions on larger grids and the exact transition point are not checked.",
+]
+
+ethics = [
+  "Results about polarisation or the persistence of minority cultures can be read as statements about real groups; present them as properties of an abstract rule, not of any society.",
+]
+
+references = [
+  "Axelrod, R. (1997). The dissemination of culture: a model with local convergence and global polarization. Journal of Conflict Resolution, 41(2), 203-226.",
+  "Castellano, C., Marsili, M. and Vespignani, A. (2000). Nonequilibrium phase transition in a model for social influence. Physical Review Letters, 85(16), 3536-3539.",
+]
+
+sources = []
+
+[[validation]]
+check = "on the 10 x 10, five-feature grid, two traits end in a single region for at least four seeds of five"
+test = "tests/zoo/test_axelrod.py::test_few_traits_end_in_monoculture"
+
+[[validation]]
+check = "thirty traits leave more than 25 regions in every one of five runs"
+test = "tests/zoo/test_axelrod.py::test_many_traits_leave_many_regions"
+
+[[validation]]
+check = "the mean number of regions grows from two to fifteen to sixty traits"
+test = "tests/zoo/test_axelrod.py::test_regions_grow_with_traits"
+
+[[validation]]
+check = "in the frozen map every bond has overlap 0 or all features; the interaction rule on hand-made pairs; same seed, same culture map"
+test = "tests/zoo/test_axelrod.py"
+
+[validated]
+source = "sha256:1698a96d5044bd3a59afd43a0f73bd6f8c4ecf693bf0da76156add40fdc8d4c8"
+modelly = "1.4.3"
+date = "2026-11-03"

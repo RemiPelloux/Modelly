@@ -1,0 +1,58 @@
+schema = 1
+name = "vector_borne"
+title = "Vector-borne transmission on a landscape"
+model = "modelly.zoo.vector_borne.model:VectorBorne"
+summary = "Ross-Macdonald transmission between hosts that move on a landscape grid and mosquitoes held as binomial cohorts per cell, with an optional habitat raster setting where the mosquitoes are."
+
+intended_use = [
+  "Teaching the Ross-Macdonald model: how vector density, biting rate, mosquito survival and incubation combine into R0, and why R0 is linear in the density `m`.",
+  "Exploring in relative terms how a habitat raster and host movement shape where and how far an outbreak spreads.",
+  "A starting point for vector-borne models on real landscapes, with a validated transmission core to extend (vector control, seasonality, more host states).",
+]
+
+out_of_scope = [
+  "Forecasting a real malaria, dengue or other vector-borne outbreak: the bionomics are illustrative and nothing is calibrated.",
+  "Planning vector control for a specific place without entomological data measured there (densities, biting and survival rates, habitat).",
+  "Diseases with a host latent period, waning immunity, several vector species or human-to-human transmission, none of which the model has.",
+]
+
+data = [
+  "None by default: the 10 x 10 landscape, 20 hosts per cell and the daily rates are illustrative values in `VectorScenario`.",
+  "Optionally, a habitat suitability raster of shape `(width, height)`, for example the values of a `modelly.space.geo.RasterLayer`, passed as `habitat`.",
+]
+
+limits = [
+  "Mosquitoes do not move between cells and bite only hosts of their own cell, chosen at random; hosts move to a random neighbouring cell.",
+  "One step is one day with every transition drawn once per step, so the infectious and incubation periods are geometric.",
+  "Emergence keeps the vector density at `m`: no seasonality, weather or density dependence in the mosquito population.",
+  "Closed host population with no births, deaths or loss of immunity; the validation orders outbreak sizes by R0, it does not check the time course.",
+]
+
+ethics = [
+  "Results about where an outbreak spreads can steer spraying, bed-net or other resources towards some communities and away from others; present them as illustrative, with the assumptions above.",
+  "A habitat raster can make one area look like the source of transmission; say where the raster comes from whenever results are shown.",
+]
+
+references = [
+  "Ross, R. (1911). The Prevention of Malaria, 2nd ed. John Murray.",
+  "Macdonald, G. (1957). The Epidemiology and Control of Malaria. Oxford University Press.",
+]
+
+sources = []
+
+[[validation]]
+check = "R0 is linear in the vector density, below one at m = 0.5 and above one at m = 2 and 4, and matches the Ross-Macdonald formula"
+test = "tests/zoo/test_vector_borne.py::test_r0_is_linear_in_vector_density"
+
+[[validation]]
+check = "attack rates come out in the order of R0 for three seeds: under 5 % when R0 < 1, over 80 % at R0 about 4"
+test = "tests/zoo/test_vector_borne.py::test_attack_rates_follow_r0"
+
+[[validation]]
+check = "a habitat raster confines the mosquitoes; hosts are conserved; same seed, same epidemic"
+test = "tests/zoo/test_vector_borne.py"
+
+[validated]
+source = "sha256:ee8b354bc1e7f8bd6d5b1831764b6434a0982d8eedb6ca299337d445ff7a6058"
+modelly = "1.4.3"
+date = "2026-11-03"

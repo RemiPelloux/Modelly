@@ -61,6 +61,9 @@ equal weights give the shares of the raster's area, and that the same seed gives
 ESA WorldCover consortium, under CC BY 4.0. The window's source and checksum are in
 `modelly/space/geo/data/NOTICE.md`.
 
+```{include} cards/habitat_selection.md
+```
+
 ## References
 
 - Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H. and Teller, E. (1953).

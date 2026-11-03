@@ -45,6 +45,9 @@ not grow over the sweep `epsilon = 0.05, 0.1, 0.2, 0.4`. It also checks that the
 is conserved by every compromise, that `epsilon = 0` freezes the opinions, and that the same
 seed gives the same run.
 
+```{include} cards/deffuant.md
+```
+
 ## References
 
 - Deffuant, G., Neau, D., Amblard, F. and Weisbuch, G. (2000). Mixing beliefs among

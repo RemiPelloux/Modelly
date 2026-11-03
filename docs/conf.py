@@ -30,7 +30,9 @@ sys.path.insert(0, HERE)
 from sphinx.util import logging
 from versioning import SITE_URL, apply_versioning  # docs/versioning.py
 
+from modelly.card import card_markdown, read_card
 from modelly.web import WebExport, export_web
+from modelly.zoo.registry import MODELS
 
 # -- General configuration ------------------------------------------------
 
@@ -89,7 +91,9 @@ version = release.rsplit(".", 1)[0]  # The short X.Y version.
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ["_build", "README.md"]  # README.md is the folder guide on GitHub
+# README.md is the folder guide on GitHub; zoo/cards/ holds the generated model cards that the
+# zoo pages include.
+exclude_patterns = ["_build", "README.md", "zoo/cards"]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -465,9 +469,22 @@ def export_live_models():
             logger.warning("live model %s not exported: %s", target, error)
 
 
+def write_zoo_cards():
+    """Render every zoo model's card.toml into zoo/cards/<name>.md (gitignored).
+
+    Each zoo page includes its card, so the page and ``modelly card show`` say the same.
+    """
+    folder = pathlib.Path(HERE, "zoo", "cards")
+    folder.mkdir(exist_ok=True)
+    for entry in MODELS:
+        text = card_markdown(read_card(entry.card), references=False)
+        (folder / f"{entry.name}.md").write_text(text, encoding="utf-8")
+
+
 def setup(app):
     setup_examples_pages()
     export_live_models()
+    write_zoo_cards()
 
 
 #

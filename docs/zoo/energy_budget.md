@@ -52,6 +52,9 @@ about 2 % of `K`, and averaging 250 steps leaves well under 1 %); that the uneat
 bounded; that the population dies out without inflow; and that the same seed gives the same
 population curve.
 
+```{include} cards/energy_budget.md
+```
+
 ## References
 
 - Grimm, V. and Railsback, S. F. (2005). *Individual-based Modeling and Ecology*. Princeton

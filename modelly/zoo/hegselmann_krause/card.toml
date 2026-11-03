@@ -1,0 +1,58 @@
+schema = 1
+name = "hegselmann_krause"
+title = "Hegselmann-Krause bounded-confidence opinion dynamics"
+model = "modelly.zoo.hegselmann_krause.model:HegselmannKrause"
+summary = "Every agent moves, all at once, to the mean opinion of those within its confidence bound; the population freezes into clusters after finitely many steps, one cluster for a wide bound. A step costs O(n log n)."
+
+intended_use = [
+  "Teaching bounded confidence with synchronous averaging: how the confidence bound decides between consensus and frozen clusters.",
+  "Exploring how the number of opinion clusters falls as the confidence bound grows.",
+  "A starting point for opinion-dynamics models, with a validated core to extend (networks, stubborn agents, heterogeneous bounds).",
+]
+
+out_of_scope = [
+  "Predicting real opinions, votes or polarisation: opinions are one abstract number and nothing is calibrated to survey data.",
+  "Designing interventions on a real population (moderation, messaging): the model has no media, networks or identities.",
+]
+
+data = [
+  "None by default: initial opinions are drawn uniformly on [0, 1], and the bound and other parameters are illustrative values in `HKScenario`.",
+]
+
+limits = [
+  "Every agent hears every other agent within the bound: no social network, and everybody updates at the same time.",
+  "All agents share the same confidence bound; the dynamics are deterministic once the initial opinions are drawn.",
+  "The run stops when no opinion moves by more than `tolerance`, or after `steps` steps.",
+  "Cluster counts depend on how clusters are measured (a gap of half the bound, and clusters under `min_cluster_share` of the agents not counted).",
+]
+
+ethics = [
+  "Results can be read as saying that people with distant views cannot be reached; present them as a property of this stylised rule, not of a real population.",
+]
+
+references = [
+  "Hegselmann, R. and Krause, U. (2002). Opinion dynamics and bounded confidence: models, analysis and simulation. Journal of Artificial Societies and Social Simulation, 5(3).",
+]
+
+sources = []
+
+[[validation]]
+check = "epsilon = 0.3 settles into a single cluster and the run stops (three seeds)"
+test = "tests/zoo/test_hegselmann_krause.py::test_wide_bound_reaches_consensus"
+
+[[validation]]
+check = "epsilon = 0.05 and 0.1 leave more than two and at most 1 / (2 epsilon) clusters (three seeds)"
+test = "tests/zoo/test_hegselmann_krause.py::test_narrow_bound_leaves_several_clusters"
+
+[[validation]]
+check = "the O(n log n) step matches the O(n^2) definition to 1e-12 on 200 agents over five steps"
+test = "tests/zoo/test_hegselmann_krause.py::test_step_matches_the_quadratic_definition"
+
+[[validation]]
+check = "mean cluster count non-increasing over epsilon = 0.05, 0.1, 0.2, 0.3 and one at 0.3; a zero bound stops after one step; same seed, same run"
+test = "tests/zoo/test_hegselmann_krause.py"
+
+[validated]
+source = "sha256:8108742edfb232e0ea3c6c93916d7c6360e59c4141897bd3f57ac8de1c85d754"
+modelly = "1.4.3"
+date = "2026-11-03"

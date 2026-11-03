@@ -1,0 +1,55 @@
+schema = 1
+name = "energy_budget"
+title = "Individual-based population with energy budgets"
+model = "modelly.zoo.energy_budget.model:EnergyBudget"
+summary = "Foragers that walk a resource grid, eat, pay a metabolic cost, reproduce by splitting their energy and starve, so the energy balance sets the carrying capacity."
+
+intended_use = [
+  "Teaching how an energy budget regulates an individual-based population, and how the carrying capacity follows from inflow, efficiency and cost.",
+  "A starting point for individual-based ecology models with a validated energy core to extend (age, spatial variation in inflow, predators).",
+  "Comparing in relative terms how resource inflow, assimilation efficiency or metabolic cost move the equilibrium population.",
+]
+
+out_of_scope = [
+  "Predicting the abundance of a real species: the parameters are illustrative and nothing is calibrated.",
+  "Management decisions such as harvest or stocking levels for a real population.",
+  "Questions that depend on age, sex, size or behaviour beyond a random walk, none of which the foragers have.",
+]
+
+data = [
+  "None by default: the 30 x 30 grid, the inflow, efficiency, cost and birth threshold are illustrative values in `EnergyScenario`.",
+]
+
+limits = [
+  "Foragers move to a random neighbouring cell every step and do not seek food; the foragers in a cell share its resource equally.",
+  "The resource is never capped and is eaten whenever a forager visits, which is what makes the long-run intake equal the inflow.",
+  "Reproduction is a split of energy at a fixed threshold, with no age, mates or maturation; death comes only from starvation.",
+  "The validation checks the mean population against the carrying capacity, not the size or period of fluctuations around it.",
+]
+
+ethics = [
+  "This is a teaching model with no real population behind it; results carry no direct consequences for people, but say it is illustrative if they are used to argue about a real population.",
+]
+
+references = [
+  "Grimm, V. and Railsback, S. F. (2005). Individual-based Modeling and Ecology. Princeton University Press.",
+]
+
+sources = []
+
+[[validation]]
+check = "mean population after a burn-in of 150 steps is within 3 % of the carrying capacity from the energy balance (three seeds, two inflows)"
+test = "tests/zoo/test_energy_budget.py::test_equilibrium_density_is_the_carrying_capacity"
+
+[[validation]]
+check = "after the burn-in the uneaten resource stock does not grow: its mean over the second half is within 5 % of the first half"
+test = "tests/zoo/test_energy_budget.py::test_resource_stock_stays_bounded"
+
+[[validation]]
+check = "without inflow the population dies out; energy columns stay in range and follow the agents; same seed, same population curve"
+test = "tests/zoo/test_energy_budget.py"
+
+[validated]
+source = "sha256:9fb0746f6abe0e6198c169849a3d5c38ee148869faa1bc5fb479030c95df4bb0"
+modelly = "1.4.3"
+date = "2026-11-03"

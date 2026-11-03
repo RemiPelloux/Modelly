@@ -1,0 +1,58 @@
+schema = 1
+name = "habitat_selection"
+title = "Habitat selection on a real land-cover raster"
+model = "modelly.zoo.habitat_selection.model:HabitatSelection"
+summary = "Animals disperse over a land-cover raster by a Metropolis rule weighted by a preference per land-cover class, and settle in proportion to habitat quality and area."
+
+intended_use = [
+  "Teaching the link between movement and habitat use: a Metropolis walk whose stationary law is the resource-selection-function view of occupancy.",
+  "A starting point for dispersal models on real land cover, with any `RasterLayer`'s values in place of the bundled window.",
+  "Comparing in relative terms how preference weights and jump radius change occupancy across land-cover classes.",
+]
+
+out_of_scope = [
+  "Predicting where a real species lives: the default weights describe an illustrative woodland species and are not fitted to any species.",
+  "Conservation or land-use decisions without preference weights estimated from data on the species in question.",
+  "Questions about population dynamics, territories or interactions between animals: the animals are independent and never born or die.",
+]
+
+data = [
+  "A bundled 120 x 120 window of ESA WorldCover 2021 at 10 m over the Intervale in Burlington, Vermont (CC BY 4.0, © ESA WorldCover project 2021); its source and checksum are in `modelly/space/geo/data/NOTICE.md`. Reading it needs the `geo` extra.",
+  "Preference weights per class are illustrative values (`WOODLAND` in the model); any `(width, height)` land-cover array can replace the raster through `cover`.",
+]
+
+limits = [
+  "Animals are independent: no density dependence, competition or social behaviour, so occupancy depends only on the weights and the cover.",
+  "Movement is a symmetric jump within a square of side `2 * radius + 1` accepted by the Metropolis rule, not a model of real movement paths or barriers between cells.",
+  "Weights depend on the land-cover class alone, not on distance to edges, patch size or neighbouring classes.",
+  "The validation checks the stationary law, not how fast animals reach it on a given raster.",
+]
+
+ethics = [
+  "Occupancy maps can be read as statements about where a species needs protection; with illustrative weights they say nothing about any real species, so say so whenever they are shown.",
+]
+
+references = [
+  "Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H. and Teller, E. (1953). Equation of state calculations by fast computing machines. Journal of Chemical Physics, 21(6), 1087-1092.",
+  "Manly, B. F. J., McDonald, L. L., Thomas, D. L., McDonald, T. L. and Erickson, W. P. (2002). Resource Selection by Animals, 2nd ed. Kluwer.",
+  "Zanaga, D. et al. (2022). ESA WorldCover 10 m 2021 v200. Zenodo, doi:10.5281/zenodo.7254221.",
+]
+
+sources = []
+
+[[validation]]
+check = "from a uniform start far from the law, every class share is within five multinomial standard deviations of the stationary law (three seeds)"
+test = "tests/zoo/test_habitat_selection.py::test_uniform_start_converges_to_the_law"
+
+[[validation]]
+check = "a population started at the law stays within that bound at every step"
+test = "tests/zoo/test_habitat_selection.py::test_law_is_stationary"
+
+[[validation]]
+check = "a class of weight 0 is never entered; equal weights give area shares; same seed, same walk"
+test = "tests/zoo/test_habitat_selection.py"
+
+[validated]
+source = "sha256:fe74764fc237b39af34eeb345350bddc354733125cee47f91443c9277e1cf73d"
+modelly = "1.4.3"
+date = "2026-11-03"

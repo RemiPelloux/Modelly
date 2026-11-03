@@ -59,6 +59,9 @@ infects over 80 % of the hosts. Spatial structure keeps the attack rates below t
 final size. It also checks that the habitat raster confines the mosquitoes, that hosts are
 conserved, and that the same seed gives the same epidemic curve.
 
+```{include} cards/vector_borne.md
+```
+
 ## References
 
 - Ross, R. (1911). *The Prevention of Malaria*, 2nd ed. John Murray.

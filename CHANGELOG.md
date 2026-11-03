@@ -15,7 +15,13 @@ versioning.
   that reads every system at any time of its span on the Runge-Kutta interpolant;
   `AgentODE(..., dense_output=True).at(t)` reads every agent's state inside the last step,
   after event resets too, on the batched and the stiff path.
-
+- Model cards (`modelly.card`, `modelly card new|check|show|stamp`): a `card.toml` next to a
+  model with its intended use, out-of-scope use, data, validation (claim and pytest target),
+  known limits, ethical considerations and references. `stamp` runs the validation tests and
+  records a digest of the model's source; `check` reports a card that is incomplete or stale
+  (the model changed since). Every zoo model has a card, rendered at the end of its docs page
+  and checked by the test suite; a `modelly-card-check` pre-commit hook. Guide:
+  `docs/model_cards.md`.
 ### Documentation
 
 - What's new (`docs/whats_new.md`): each release from 1.0.0 to 1.4.3 in a few lines per

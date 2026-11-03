@@ -1,0 +1,62 @@
+schema = 1
+name = "hospital_epidemic"
+title = "Epidemic coupled to hospital capacity"
+model = "modelly.zoo.hospital_epidemic.model:HospitalEpidemic"
+summary = "SIR agents whose severe cases fill a hospital stock-flow model that opens surge beds, while the pressure on beds feeds back to lower contacts."
+
+intended_use = [
+  "Teaching how an agent-based epidemic couples to a system-dynamics model: admissions flow one way, bed pressure the other, with a lag of one step.",
+  "Comparing scenarios in relative terms: how surge capacity, length of stay or the strength of the contact response change peak occupancy and the attack rate.",
+  "A starting point for epidemic and health-system models, with a validated epidemic core, an exactly checked hospital and a closed mass balance.",
+]
+
+out_of_scope = [
+  "Forecasting bed demand for a real hospital or health system: the rates, the severe share and the bed numbers are illustrative and nothing is calibrated.",
+  "Capacity or triage decisions for a specific hospital without its own admission, stay and staffing data.",
+  "Epidemics whose natural history is not SIR with geometric periods, or where severity depends on age or other attributes.",
+]
+
+data = [
+  "None by default: the population of 20,000, the transmission and recovery rates, the 2 % severe share and the hospital parameters are illustrative values in `HospitalScenario`.",
+]
+
+limits = [
+  "Homogeneous mixing: no households, places or networks, and everyone responds to bed pressure in the same way.",
+  "Admitted patients only occupy beds and are discharged at rate `occupied / stay`; there are no deaths, no staff limits and no turned-away patients when beds run out.",
+  "One step is one unit of time with transitions drawn once per step, and the hospital sees each step's admissions held constant over that step.",
+  "Closed population with no births, deaths or waning immunity; the final-size check holds only without the contact response.",
+]
+
+ethics = [
+  "Results about bed capacity and contact reductions bear on decisions that affect patients and health workers; present them as illustrative, with the assumptions above, never as a forecast.",
+  "The contact response is one illustrative rule; do not read it as a measured behaviour of any population.",
+]
+
+references = [
+  "Kermack, W. O. and McKendrick, A. G. (1927). A contribution to the mathematical theory of epidemics. Proceedings of the Royal Society A, 115, 700-721.",
+  "Andersson, H. and Britton, T. (2000). Stochastic Epidemic Models and Their Statistical Analysis. Lecture Notes in Statistics 151, Springer.",
+  "Sterman, J. D. (2000). Business Dynamics: Systems Thinking and Modeling for a Complex World. Irwin/McGraw-Hill.",
+]
+
+sources = []
+
+[[validation]]
+check = "without the response, the attack rate is within five standard deviations of the final-size relation (three seeds)"
+test = "tests/zoo/test_hospital_epidemic.py::test_final_size_relation_without_response"
+
+[[validation]]
+check = "occupancy and beds match the exact matrix-exponential solution within 1e-6, with and without the response"
+test = "tests/zoo/test_hospital_epidemic.py::test_hospital_matches_the_exact_linear_solution"
+
+[[validation]]
+check = "admissions equal patients in hospital plus those discharged, to round-off, and beds equal base beds plus the net amount opened"
+test = "tests/zoo/test_hospital_epidemic.py::test_admissions_balance_occupancy_and_discharges"
+
+[[validation]]
+check = "a stronger response lowers peak occupancy and the attack rate; people are conserved; a resumed checkpoint is identical; same seed, same run"
+test = "tests/zoo/test_hospital_epidemic.py"
+
+[validated]
+source = "sha256:510d3871dec98900d1f07699f8710115a0447a746dd6d09dcbe74f5a5b3d1db7"
+modelly = "1.4.3"
+date = "2026-11-03"

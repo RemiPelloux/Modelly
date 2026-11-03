@@ -62,6 +62,9 @@ seed gives the same history.
 U.S. Census Bureau, 2023 cartographic boundary files, public domain. The source and checksum
 are in `modelly/space/geo/data/NOTICE.md`.
 
+```{include} cards/schelling_regions.md
+```
+
 ## References
 
 - Schelling, T. C. (1971). Dynamic models of segregation. *Journal of Mathematical

@@ -5,6 +5,7 @@
 #     hooks:
 #       - id: modelly-lint        # report findings, fail the commit on any
 #       # - id: modelly-lint-fix  # or: apply the safe fixes first, then report the rest
+#       - id: modelly-card-check  # card.toml complete, and validated on the current source
 #
 # Both read [tool.modelly.lint] from your pyproject.toml (see docs/lint.md). They run once
 # with every staged Python file, so MDL107 sees the agent classes a model imports.
@@ -21,4 +22,12 @@
   entry: modelly lint --fix
   language: python
   types: [python]
+  require_serial: true
+- id: modelly-card-check
+  name: modelly card check
+  description: The model card is complete and its validation ran on the current source
+  entry: modelly card check
+  language: python
+  files: (card\.toml|\.py)$
+  pass_filenames: false
   require_serial: true

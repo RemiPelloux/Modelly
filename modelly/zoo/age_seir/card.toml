@@ -1,0 +1,59 @@
+schema = 1
+name = "age_seir"
+title = "Age-structured SEIR with contact matrices"
+model = "modelly.zoo.age_seir.model:AgeSEIR"
+summary = "An SEIR epidemic over age groups that mix through a contact matrix, written as binomial cohorts so a million people cost what a hundred do."
+
+intended_use = [
+  "Teaching how age mixing shapes an epidemic: attack rates by group, the role of the contact matrix, R0 as a spectral radius.",
+  "A starting point for age-structured epidemic models, with a validated core to extend (vaccination, interventions on contacts).",
+  "Comparing scenarios in relative terms (contact reductions in one group against another) on a stated contact matrix.",
+]
+
+out_of_scope = [
+  "Forecasting a real epidemic: the default contact matrix is illustrative, not survey data, and nothing is calibrated.",
+  "Decisions about a specific population without a contact matrix measured on it (social-contact surveys, or `scenario_from_population`).",
+  "Diseases whose natural history is not SEIR with geometric periods (waning immunity, asymptomatic carriers, age-dependent severity).",
+]
+
+data = [
+  "None by default: group sizes, the 3 x 3 contact matrix and the rates are illustrative values in `SEIRScenario`.",
+  "Optionally, a synthetic population from census tables (`modelly.population`), from which `scenario_from_population` takes group sizes and measures the contact matrix.",
+]
+
+limits = [
+  "Homogeneous mixing within each age group: no households, places or networks, so local saturation and clustering are absent.",
+  "One step is one unit of time with transitions drawn once per step; the exposed and infectious periods are geometric, not fixed or gamma-distributed.",
+  "Closed population: no births, deaths or migration, so runs longer than one epidemic wave are not meaningful.",
+  "The final-size check validates the transmission core, not the time course: peak timing depends on the step and the periods.",
+]
+
+ethics = [
+  "Age-targeted results (who to protect or restrict first) affect real groups; present them with their intervals and with the assumptions above, never as a forecast.",
+  "An illustrative contact matrix can make one age group look responsible for spread; say where the matrix comes from whenever results are shown.",
+]
+
+references = [
+  "Kermack, W. O. and McKendrick, A. G. (1927). A contribution to the mathematical theory of epidemics. Proceedings of the Royal Society A, 115, 700-721.",
+  "Mossong, J. et al. (2008). Social contacts and mixing patterns relevant to the spread of infectious diseases. PLoS Medicine, 5(3), e74.",
+  "Andersson, H. and Britton, T. (2000). Stochastic Epidemic Models and Their Statistical Analysis. Lecture Notes in Statistics 151, Springer.",
+]
+
+sources = []
+
+[[validation]]
+check = "attack rate within five standard deviations of the final-size relation (one group and three equal groups, three seeds)"
+test = "tests/zoo/test_age_seir.py::test_final_size_relation_homogeneous"
+
+[[validation]]
+check = "each age group's attack rate against the multi-group final-size relation"
+test = "tests/zoo/test_age_seir.py::test_final_size_by_age_group"
+
+[[validation]]
+check = "an outbreak with R0 below one stays small; nobody is created or lost; same seed, same epidemic"
+test = "tests/zoo/test_age_seir.py"
+
+[validated]
+source = "sha256:6a004228a934a9d59400cb7b31af0b0c140936de7e90e92b47c76c84d4f7f834"
+modelly = "1.4.3"
+date = "2026-11-03"

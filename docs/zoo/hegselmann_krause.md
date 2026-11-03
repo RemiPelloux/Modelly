@@ -43,6 +43,9 @@ into consensus, that `epsilon = 0.05` and `0.1` leave more than two and at most
 agents over five steps, to within rounding (`1e-12`). A zero bound stops the run after one
 step, and the same seed gives the same run.
 
+```{include} cards/hegselmann_krause.md
+```
+
 ## References
 
 - Hegselmann, R. and Krause, U. (2002). Opinion dynamics and bounded confidence: models,

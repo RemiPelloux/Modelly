@@ -46,6 +46,9 @@ from two to fifteen to sixty traits. It also checks the absorbing state (every b
 overlap 0 or `features`), the interaction rule on hand-made pairs, and that the same seed
 gives the same culture map.
 
+```{include} cards/axelrod.md
+```
+
 ## References
 
 - Axelrod, R. (1997). The dissemination of culture: a model with local convergence and

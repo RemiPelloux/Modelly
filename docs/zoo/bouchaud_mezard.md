@@ -50,6 +50,9 @@ identity `G = 1 - int (1 - F)^2`. Both the analytic and the simulated Gini must 
 `sigma^2 / J`. It also checks that an unstable step length is rejected and that the same
 seed gives the same run.
 
+```{include} cards/bouchaud_mezard.md
+```
+
 ## References
 
 - Bouchaud, J.-P. and Mezard, M. (2000). Wealth condensation in a simple model of economy.

@@ -51,6 +51,9 @@ network (50 neighbours) stays within the same bound, that a sparse one (4 neighb
 well-mixed curve at mid-diffusion, because non-adopters cluster together, and that the same
 seed gives the same curve.
 
+```{include} cards/bass_diffusion.md
+```
+
 ## References
 
 - Bass, F. M. (1969). A new product growth for model consumer durables. *Management

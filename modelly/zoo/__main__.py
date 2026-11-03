@@ -52,7 +52,8 @@ def describe(entry: ZooModel) -> str:
         f"{entry.title} ({entry.field})\n\n"
         f"from {entry.module} import {entry.model}, {entry.scenario}\n\n"
         f"Parameters ({entry.scenario}):\n{params}\n\n"
-        f"Validation: {entry.validation}\n\n{entry.doc().strip()}"
+        f"Validation: {entry.validation}\n"
+        f"Model card: modelly card show {entry.name}\n\n{entry.doc().strip()}"
     )
 
 

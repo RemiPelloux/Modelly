@@ -1,0 +1,62 @@
+schema = 1
+name = "schelling_regions"
+title = "Schelling segregation on real neighbourhoods"
+model = "modelly.zoo.schelling_regions.model:SchellingRegions"
+summary = "Schelling's segregation model with census tracts in place of grid cells: households of two groups move between the 41 tracts of Chittenden County, Vermont, when too few of their neighbours are like them."
+
+intended_use = [
+  "Teaching Schelling's result that mild preferences give strong segregation, on the topology of real neighbourhoods rather than a grid.",
+  "A starting point for segregation models over other regions, by passing any tract adjacency (`GeoSpace(regions).contiguity(...)`).",
+  "Comparing thresholds or group shares in relative terms through Duncan's dissimilarity index.",
+]
+
+out_of_scope = [
+  "Describing or predicting segregation in Chittenden County or any real place: only the tracts' adjacency is real; every tract has the same number of dwellings and the households are random.",
+  "Explaining why real households move: the model has one preference rule and no prices, incomes, housing markets or discrimination.",
+  "Judging any group, tract or community from its results.",
+]
+
+data = [
+  "The 41 census tracts of Chittenden County, Vermont, bundled from the U.S. Census Bureau's 2023 cartographic boundary file (public domain); source and checksum in `modelly/space/geo/data/NOTICE.md`.",
+  "Only their queen contiguity is used; capacity, density, group share and threshold are illustrative values in `SchellingRegionsScenario`.",
+]
+
+limits = [
+  "Every tract has the same number of dwellings; real tract sizes and populations are ignored.",
+  "A household sees all households of its own and adjacent tracts with equal weight, and all unhappy households move at once into random free dwellings, at no cost.",
+  "Two groups only, with one shared threshold; the run stops when everybody is happy, which says nothing about real time scales.",
+  "There is no closed form: validation is qualitative (segregation far above random allocation), not a quantitative match.",
+]
+
+ethics = [
+  "The tracts are real neighbourhoods where real people live; results must not be read as a statement about their residents or how they choose where to live.",
+  "Segregation results can be taken to blame one group or to suggest that segregation is natural or harmless; present them as the outcome of a toy preference rule, with the assumptions above.",
+]
+
+references = [
+  "Schelling, T. C. (1971). Dynamic models of segregation. Journal of Mathematical Sociology, 1(2), 143-186.",
+  "Duncan, O. D. and Duncan, B. (1955). A methodological analysis of segregation indexes. American Sociological Review, 20(2), 210-217.",
+]
+
+sources = []
+
+[[validation]]
+check = "with threshold 0 nobody moves and the allocation never changes"
+test = "tests/zoo/test_schelling_regions.py::test_no_preference_no_moves"
+
+[[validation]]
+check = "at threshold 0.45, for three seeds, the final dissimilarity is more than five standard deviations above random allocation (30 random allocations) and more than twice its mean"
+test = "tests/zoo/test_schelling_regions.py::test_mild_preferences_segregate"
+
+[[validation]]
+check = "mean dissimilarity grows from threshold 0 to 0.3 to 0.5, ending above 0.9"
+test = "tests/zoo/test_schelling_regions.py::test_segregation_grows_with_the_threshold"
+
+[[validation]]
+check = "the 41 tracts form one connected, symmetric neighbourhood graph; households and dwellings are conserved; same seed, same moves"
+test = "tests/zoo/test_schelling_regions.py"
+
+[validated]
+source = "sha256:55111a119d2e5e4152540accf04fa5788731106ca4b899fb50a0bb5a5fd30f47"
+modelly = "1.4.3"
+date = "2026-11-03"

@@ -52,6 +52,9 @@ density. `tests/zoo/test_nagel_schreckenberg.py` checks that:
 - cars never share a cell, impossible densities are rejected, and the same seed gives the same
   run.
 
+```{include} cards/nagel_schreckenberg.md
+```
+
 ## References
 
 - Nagel, K. and Schreckenberg, M. (1992). A cellular automaton model for freeway traffic.

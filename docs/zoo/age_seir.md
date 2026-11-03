@@ -70,6 +70,9 @@ from the central limit theorem for the final size (Andersson and Britton). It al
 three age groups against the multi-group relation, that an outbreak with `R0 < 1` stays small,
 that nobody is created or lost, and that the same seed gives the same epidemic curve.
 
+```{include} cards/age_seir.md
+```
+
 ## References
 
 - Kermack, W. O. and McKendrick, A. G. (1927). A contribution to the mathematical theory of

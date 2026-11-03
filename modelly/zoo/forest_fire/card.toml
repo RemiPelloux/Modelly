@@ -1,0 +1,58 @@
+schema = 1
+name = "forest_fire"
+title = "Forest fire and succession on a raster"
+model = "modelly.zoo.forest_fire.model:ForestFire"
+summary = "Fire spreads from the west edge through a raster of trees, with optional regrowth and lightning (Drossel-Schwabl); without them it is site percolation on the square lattice."
+
+intended_use = [
+  "Teaching percolation: how the burnt share jumps at the threshold density `p_c = 0.592746` of the square lattice.",
+  "Teaching self-organised disturbance regimes with regrowth and lightning switched on (the Drossel-Schwabl model).",
+  "A starting point for raster disturbance models, with a per-cell tree probability from a `cover` raster in place of a uniform density.",
+]
+
+out_of_scope = [
+  "Predicting the spread of a real wildfire: there is no wind, slope, fuel moisture, weather or fire suppression, and nothing is calibrated.",
+  "Fire-risk, evacuation or land-management decisions for a real place.",
+  "Questions about fire intensity or duration: a cell is empty, a tree, burning or burnt, and burns out in one step.",
+]
+
+data = [
+  "None by default: the 100 x 100 raster and the tree density of 0.6 are illustrative values in `ForestScenario`.",
+  "Optionally, a per-cell tree probability of shape `(width, height)`, for example the values of a `modelly.space.geo.RasterLayer`, passed as `cover`.",
+]
+
+limits = [
+  "Fire spreads to the four von Neumann neighbours of a burning cell with certainty, and every burning cell burns out after one step.",
+  "The fire starts from all trees on the west edge, so results describe a front crossing the raster, not ignition at a point.",
+  "Growth and lightning are constant probabilities per cell and step, with no age, species or seasons.",
+  "The validation covers the percolation case without growth and lightning; succession mode is only checked to keep burning and conserve cells.",
+]
+
+ethics = [
+  "Fire results can look like statements about real fire risk; this model has none of the physics of a real fire, so say it is illustrative whenever results are shown.",
+]
+
+references = [
+  "Drossel, B. and Schwabl, F. (1992). Self-organized critical forest-fire model. Physical Review Letters, 69(11), 1629-1632.",
+  "Newman, M. E. J. and Ziff, R. M. (2000). Efficient Monte Carlo algorithm and high-precision results for percolation. Physical Review Letters, 85(19), 4104-4107.",
+  "Stauffer, D. and Aharony, A. (1994). Introduction to Percolation Theory, 2nd ed. Taylor and Francis.",
+]
+
+sources = []
+
+[[validation]]
+check = "at p_c - 0.15 the fire never reaches the east edge and burns under 10 % of the trees (three seeds)"
+test = "tests/zoo/test_forest_fire.py::test_below_threshold_the_fire_stays_near_the_edge"
+
+[[validation]]
+check = "at p_c + 0.15 the fire always reaches the east edge and burns over 90 % of the trees (three seeds)"
+test = "tests/zoo/test_forest_fire.py::test_above_threshold_the_fire_crosses_the_forest"
+
+[[validation]]
+check = "the mean burnt share rises with density; a cover raster confines the trees; succession keeps burning and conserves cells; same seed, same fire"
+test = "tests/zoo/test_forest_fire.py"
+
+[validated]
+source = "sha256:0f0985a3e857176b802866a91f4ebf11a9244105d7e5e6d795acda9629ec28a7"
+modelly = "1.4.3"
+date = "2026-11-03"

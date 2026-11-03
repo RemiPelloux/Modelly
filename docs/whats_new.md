@@ -22,6 +22,11 @@ whose notes are missing (see "Release notes" in
 - **The state inside a step**: with `dense_output=True`, `ode.at(t)` reads every agent's state
   at any time of the last step on the solver's interpolant, so an agent acting at 14:00 sees
   the value at 14:00. [ODEs in every agent](agent_odes.md#reading-the-state-inside-the-step)
+- **Model cards**: a short `card.toml` beside a model says what it is for, what it must not be
+  used for, its data, how it was validated, its limits and who decisions taken with it could
+  affect. `modelly card stamp` runs the validation tests and records the source they passed
+  on, and `modelly card check` fails once the model has changed since. All seventeen zoo models
+  have one, at the end of their page. [Model cards](model_cards.md)
 
 ## 1.4.3 - 2026-11-02
 
