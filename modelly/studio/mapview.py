@@ -12,6 +12,7 @@ import ipyvuetify
 import solara
 import traitlets
 
+from modelly.studio.i18n import t
 from modelly.studio.scene import encode, scene_of
 from modelly.studio.state import StudioState
 from modelly.viz.render.portrayal import ClassColours
@@ -36,7 +37,7 @@ class MapWidget(ipyvuetify.VuetifyTemplate):
 def _legend(legend: list[tuple[str, str]], portrayed: bool) -> None:
     """The agent classes and their colours, or a note that the portrayal colours them."""
     if portrayed:
-        solara.Text("Colours from the portrayal.")
+        solara.Text(t("Colours from the portrayal."))
         return
     with solara.Row():
         for name, colour in legend:
@@ -57,9 +58,9 @@ def MapView(state: StudioState):
     portrayal = None if default else session.portrayal
     with session.lock:
         scene = scene_of(session.shown, portrayal)
-    with solara.Card("Map (WebGL)"):
+    with solara.Card(t("Map (WebGL)")):
         if scene is None:
-            solara.Text("This model has no space to draw.")
+            solara.Text(t("This model has no space to draw."))
             return
         renderer = "canvas" if canvas.value else "webgl"
         MapWidget.element(
@@ -67,8 +68,8 @@ def MapView(state: StudioState):
         ).key(f"map-{renderer}")
         _legend(scene.legend, scene.colours is not None)
         with solara.Row():
-            solara.SliderFloat("point size", value=size, **POINT_SIZES)
-            solara.Checkbox(label="Canvas 2D instead of WebGL", value=canvas)
+            solara.SliderFloat(t("point size"), value=size, **POINT_SIZES)
+            solara.Checkbox(label=t("Canvas 2D instead of WebGL"), value=canvas)
 
 
 __all__ = ["MapView", "MapWidget"]

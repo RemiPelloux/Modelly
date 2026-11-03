@@ -5,6 +5,7 @@ from __future__ import annotations
 import solara
 
 from modelly.studio import data
+from modelly.studio.i18n import t
 from modelly.studio.scene import MATPLOTLIB_LIMIT, element_count
 from modelly.studio.state import StudioState
 from modelly.viz.mpl.figure import can_draw, space_figure
@@ -15,12 +16,12 @@ def _scrub_buttons(state: StudioState, last: int) -> None:
     session = state.session
     with solara.Row():
         solara.Button(
-            "Back to live",
+            t("Back to live"),
             on_click=lambda: state.act(session.scrub, last),
             disabled=session.view is None,
         )
         solara.Button(
-            "Replay from here",
+            t("Replay from here"),
             on_click=lambda: state.act(session.replay),
             disabled=session.view is None,
         )
@@ -34,7 +35,7 @@ def Scrubber(state: StudioState):
     first, last = (int(bound) for bound in session.timeline.span)
     shown = int(session.shown.time)
     how = "replays the run" if session.replaying else "restores a checkpoint"
-    with solara.Card("Timeline"):
+    with solara.Card(t("Timeline")):
         solara.SliderInt(
             f"step (live: {last}); scrubbing {how}",
             value=shown,
@@ -55,9 +56,9 @@ def SpaceView(state: StudioState):
     """The model's space, drawn with the shared Matplotlib portrayal."""
     state.revision.get()
     session = state.session
-    with solara.Card("Space"):
+    with solara.Card(t("Space")):
         if not can_draw(session.shown):
-            solara.Text("This model has no grid or space Modelly can draw.")
+            solara.Text(t("This model has no grid or space Modelly can draw."))
             return
         count = element_count(session.shown)
         if count > MATPLOTLIB_LIMIT:
@@ -78,11 +79,13 @@ def SeriesView(state: StudioState):
     """The DataCollector's numeric model reporters over the run."""
     state.revision.get()
     session = state.session
-    with solara.Card("Model reporters"):
+    with solara.Card(t("Model reporters")):
         with session.lock:
             figure = data.series_figure(session.shown)
         if figure is None:
-            solara.Text("No numeric model reporters: give the model a DataCollector.")
+            solara.Text(
+                t("No numeric model reporters: give the model a DataCollector.")
+            )
             return
         solara.FigureMatplotlib(
             figure, format="png", dependencies=[state.revision.value]
@@ -101,9 +104,9 @@ def AgentTable(state: StudioState):
             chosen.value = data.ALL_CLASSES
         table = data.agent_table(session.shown, chosen.value, session.config.table_rows)
     with solara.Card(f"Agents (first {session.config.table_rows})"):
-        solara.Select("class", values=classes, value=chosen)
+        solara.Select(t("class"), values=classes, value=chosen)
         if table.empty:
-            solara.Text("No agents.")
+            solara.Text(t("No agents."))
             return
         solara.DataFrame(
             table, items_per_page=session.config.table_rows, scrollable=True

@@ -20,6 +20,7 @@ import numpy as np
 from modelly.lint import lint_paths
 from modelly.profile.loader import build_model
 from modelly.profile.profiler import DEFAULT_TOP, Profiler
+from modelly.studio import classroom
 from modelly.studio.params import parameters_of
 from modelly.studio.recording import SessionRecording
 from modelly.studio.timeline import ReplayTimeline, fall_back, track
@@ -71,6 +72,13 @@ class StudioSession:
         self.config = config
         self.parameters = parameters_of(model_class)
         self.values = {p.name: p.default for p in self.parameters if p.editable}
+        if config.classroom is not None:
+            shared = classroom.shared_values(config.classroom)
+            self.values |= {
+                k: tuple(v) if isinstance(v, list) else v
+                for k, v in shared.items()
+                if k in self.values
+            }
         self.seed = config.seed
         self.portrayal = agent_portrayal or ClassColours()
         self.lock = threading.RLock()

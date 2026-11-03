@@ -1,0 +1,59 @@
+{#- Modelly Studio's page: Solara's own, with an accessibility layer (WCAG 2.2 AA).
+    Solara looks for templates next to the app's package (modelly/studio -> modelly/templates)
+    before its own, so this file is used for `modelly studio` only. See
+    modelly/studio/a11y.py for what the script below fixes and why. -#}
+{% extends "solara.html.j2" %}
+{% block header %}
+{{ super() }}
+<style>
+  /* Field labels and hints at 4.5:1 or better on Studio's backgrounds. */
+  .v-label, .v-field-label, .v-messages, .v-input__details, .v-slider-thumb__label {
+    color: rgba(0, 0, 0, 0.78) !important;
+    opacity: 1 !important;
+  }
+  /* The app bar in Modelly's blue: white text on it at 6.8:1 (Vuetify's purple is 2.6:1). */
+  .v-app-bar.v-toolbar, .v-toolbar.bg-primary { background-color: #2c46d6 !important; color: #fff !important; }
+  :focus-visible { outline: 3px solid #0072b2 !important; outline-offset: 2px; }
+</style>
+<script>
+(function () {
+  // Zooming must stay possible (WCAG 1.4.4): Solara's template turns it off.
+  var meta = document.querySelector('meta[name="viewport"]');
+  if (meta) { meta.setAttribute("content", "width=device-width, initial-scale=1"); }
+  function text(element) { return (element && element.textContent || "").trim(); }
+  function nearestLabel(element) {
+    var field = element.closest(".v-input, .v-slider, .v-field");
+    var label = field && field.querySelector("label, .v-label");
+    return text(label);
+  }
+  function cardTitle(element) {
+    var card = element.closest(".v-card");
+    return text(card && card.querySelector(".v-card-title, .v-card__title"));
+  }
+  function fix() {
+    var marker = document.querySelector("[data-modelly-language]");
+    if (marker) {
+      document.documentElement.lang = marker.getAttribute("data-modelly-language");
+      document.documentElement.dir = marker.getAttribute("data-modelly-direction");
+    } else if (!document.documentElement.lang) {
+      document.documentElement.lang = "en";
+    }
+    document.querySelectorAll('[role="slider"]:not([aria-label]):not([aria-labelledby])').forEach(function (s) {
+      s.setAttribute("aria-label", nearestLabel(s) || "value");
+    });
+    document.querySelectorAll("button:not([aria-label])").forEach(function (b) {
+      if (!text(b)) {
+        var icon = b.querySelector("i, .v-icon");
+        var name = (b.getAttribute("title") || (icon && icon.className.match(/mdi-([a-z-]+)/) || [])[1] || "menu");
+        b.setAttribute("aria-label", name.replace(/-/g, " "));
+      }
+    });
+    document.querySelectorAll("img:not([alt])").forEach(function (img) {
+      img.setAttribute("alt", cardTitle(img) || "figure");
+    });
+  }
+  new MutationObserver(fix).observe(document.documentElement, { childList: true, subtree: true });
+  document.addEventListener("DOMContentLoaded", fix);
+})();
+</script>
+{% endblock %}

@@ -31,6 +31,20 @@ INPUT_OPTIONS = (
         },
     ),
     (
+        ("--classroom",),
+        {
+            "metavar": "DIR",
+            "help": "a folder shared by a class: shared parameters and submitted runs",
+        },
+    ),
+    (
+        ("--language",),
+        {
+            "default": "en",
+            "help": "the language of Studio's labels: en, es, fr, pt, zh (default: %(default)s)",
+        },
+    ),
+    (
         ("--hub",),
         {
             "metavar": "NAME",
@@ -55,6 +69,7 @@ INPUT_PANELS = """\
   compare        one parameter varied, the scenarios ranked on paired replicates
   card           the model card
   builder        a model from a form, its code to read and download
+  classroom      with --classroom: submit runs, share parameters, see the class's runs
 """
 
 
@@ -65,6 +80,8 @@ def inputs_from(args: argparse.Namespace) -> dict[str, Any]:
         "observations": args.observations,
         "analysis": args.analysis,
         "mode": "no-code" if args.no_code else "full",
+        "language": args.language,
+        "classroom": args.classroom,
     }
 
 

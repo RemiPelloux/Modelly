@@ -9,6 +9,7 @@ import solara
 
 from modelly.studio import data, exports
 from modelly.studio.everyone import report_downloads
+from modelly.studio.i18n import t
 from modelly.studio.params import (
     BOOL,
     CHOICE,
@@ -78,14 +79,14 @@ def ParameterPanel(state: StudioState):
     state.revision.get()
     session = state.session
     restart = solara.use_reactive(True)
-    with solara.Card("Parameters"):
+    with solara.Card(t("Parameters")):
         for param in session.parameters:
             value = session.values.get(param.name, param.default)
             _parameter_widget(param, value, _on_change(state, restart, param.name))
         solara.InputInt(
             "seed", value=session.seed, on_value=_on_change(state, restart, None)
         )
-        solara.Checkbox(label="Restart the run when a value changes", value=restart)
+        solara.Checkbox(label=t("Restart the run when a value changes"), value=restart)
 
 
 def _play(state: StudioState) -> None:
@@ -107,20 +108,20 @@ def _buttons(state: StudioState, steps) -> None:
     idle = not playing and session.model.running
     with solara.Row():
         solara.Button(
-            "Step", on_click=lambda: state.act(session.step, 1), disabled=not idle
+            t("Step"), on_click=lambda: state.act(session.step, 1), disabled=not idle
         )
         solara.Button(
-            "Pause" if playing else "Play",
+            t("Pause") if playing else t("Play"),
             on_click=lambda: state.playing.set(not playing),
             disabled=not (playing or idle),
         )
         solara.Button(
-            "Reset", on_click=lambda: state.act(session.reset), disabled=playing
+            t("Reset"), on_click=lambda: state.act(session.reset), disabled=playing
         )
     with solara.Row():
-        solara.InputInt("steps", value=steps)
+        solara.InputInt(t("steps"), value=steps)
         solara.Button(
-            f"Run {steps.value}",
+            t("Run {steps}").format(steps=steps.value),
             on_click=lambda: state.act(session.step, steps.value or 0),
             disabled=not idle,
         )
@@ -135,7 +136,7 @@ def RunControls(state: StudioState):
     solara.lab.use_task(
         lambda: _play(state), dependencies=[state.playing.value], prefer_threaded=True
     )
-    with solara.Card("Run"):
+    with solara.Card(t("Run")):
         stopped = "" if model.running else " (stopped)"
         solara.Text(f"step {model.time:g}{stopped}")
         _buttons(state, steps)
@@ -230,6 +231,6 @@ def downloads(state: StudioState) -> list[tuple]:
 def ExportPanel(state: StudioState):
     """Download the figures, the collected data, a checkpoint and an animation."""
     state.revision.get()
-    with solara.Card("Export"):
+    with solara.Card(t("Export")):
         for make, filename, label in downloads(state):
             solara.FileDownload(_locked(state.session, make), filename, label=label)

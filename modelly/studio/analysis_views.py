@@ -10,6 +10,7 @@ import solara
 from modelly.studio.analyses import load_analyses, view_of
 from modelly.studio.browser import ExperimentBrowser
 from modelly.studio.figures import against_figure, series_figure
+from modelly.studio.i18n import t
 from modelly.studio.state import StudioState
 
 # A parameter with more distinct values than this is filtered by a range.
@@ -71,7 +72,7 @@ def _plots(browser: ExperimentBrowser, runs: pd.DataFrame, chosen: dict) -> None
     """The output against the parameter, and the selected runs step by step."""
     parameter, output = chosen["parameter"].value, chosen["output"].value
     if runs.empty:
-        solara.Warning("No run matches the filters.")
+        solara.Warning(t("No run matches the filters."))
         return
     if parameter:
         summary = browser.against(parameter, output, runs)
@@ -89,8 +90,10 @@ def _controls(browser: ExperimentBrowser, selection, chosen: dict) -> None:
     for name in browser.parameters:
         _filter(name, every[name], selection)
     with solara.Row():
-        solara.Select("parameter", values=browser.parameters, value=chosen["parameter"])
-        solara.Select("output", values=browser.outputs, value=chosen["output"])
+        solara.Select(
+            t("parameter"), values=browser.parameters, value=chosen["parameter"]
+        )
+        solara.Select(t("output"), values=browser.outputs, value=chosen["output"])
 
 
 @solara.component
@@ -106,7 +109,7 @@ def ExperimentsTab(state: StudioState):
         "parameter": solara.use_reactive(first),
         "output": solara.use_reactive(browser.outputs[0] if browser else None),
     }
-    with solara.Card("Experiments"):
+    with solara.Card(t("Experiments")):
         if browser is None:
             solara.Markdown(problem or EXPERIMENTS_HELP)
             return
@@ -118,7 +121,7 @@ def ExperimentsTab(state: StudioState):
         solara.FileDownload(
             lambda: runs.to_csv(index=False).encode("utf-8"),
             "selected-runs.csv",
-            label="Selected runs (CSV)",
+            label=t("Selected runs (CSV)"),
         )
 
 
@@ -141,7 +144,7 @@ def gather(state: StudioState) -> tuple[list[tuple[str, Any]], str | None]:
 def AnalysisTab(state: StudioState):
     """Calibration posteriors (marginals, pairs, fits) and sensitivity results."""
     items, problem = solara.use_memo(lambda: gather(state), [])
-    with solara.Card("Analysis"):
+    with solara.Card(t("Analysis")):
         if problem:
             solara.Error(problem)
         if not items:

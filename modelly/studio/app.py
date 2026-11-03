@@ -13,10 +13,13 @@ import warnings
 import solara
 
 from modelly.plugins import load_all
+from modelly.studio.a11y import LanguageMarker
 from modelly.studio.analysis_views import AnalysisTab, ExperimentsTab
+from modelly.studio.classroom_view import ClassroomTab
 from modelly.studio.config import StudioConfig
 from modelly.studio.ensemble_views import AssimilationTab, EnsembleTab
 from modelly.studio.everyone import NO_CODE_TABS, BuilderTab, CardTab, CompareTab
+from modelly.studio.i18n import direction, set_language, t
 from modelly.studio.loader import load_model_class, load_portrayal
 from modelly.studio.mapview import MapView
 from modelly.studio.panels import ExportPanel, ParameterPanel, RunControls
@@ -31,8 +34,12 @@ TITLE = "Modelly Studio"
 @solara.component
 def StudioApp(session: StudioSession):
     """The Studio layout for one session: sidebar controls, views and tool tabs."""
+    set_language(session.config.language)
     state = use_studio_state(session)
     solara.use_effect(state.drawn.set, [state.revision.value])
+    LanguageMarker()
+    if direction() == "rtl":
+        solara.Style("body, .v-application { direction: rtl; text-align: right; }")
     solara.Title(f"{TITLE}: {session.model_class.__name__}")
     with solara.AppBar():
         solara.AppBarTitle(f"{TITLE} · {session.model_class.__name__}")
@@ -46,7 +53,7 @@ def StudioApp(session: StudioSession):
         tabs = tabs_for(session.config.mode)
         with solara.v.Tabs(v_model=tab.value, on_v_model=tab.set):
             for name, _ in tabs:
-                solara.v.Tab(children=[name])
+                solara.v.Tab(children=[t(name)])
         tabs[tab.value][1](state)
 
 
@@ -71,6 +78,7 @@ TABS = (
     ("Lint", LintPanel),
     ("Log", LogPanel),
     ("Builder", BuilderTab),
+    ("Classroom", ClassroomTab),
 )
 # A plugin's entry point names a component taking the StudioState, like the TABS views.
 VIEWS_GROUP = "modelly.studio_views"

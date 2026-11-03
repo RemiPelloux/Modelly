@@ -39,6 +39,8 @@ class StudioConfig:
         analysis: ``path/to/file.py:function`` returning posteriors or sensitivity
             results, for the Analysis tab.
         mode: ``"full"``, or ``"no-code"`` for the tabs of people who do not write code.
+        language: the language of the labels (``modelly.studio.i18n``), English by default.
+        classroom: a folder shared by a class (``modelly.studio.classroom``), or None.
     """
 
     target: str
@@ -52,6 +54,8 @@ class StudioConfig:
     observations: str | None = None
     analysis: str | None = None
     mode: str = "full"
+    language: str = "en"
+    classroom: str | None = None
 
     @property
     def memory_budget(self) -> int:

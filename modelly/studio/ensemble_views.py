@@ -32,6 +32,7 @@ from modelly.studio.figures import (
     trajectory_figure,
     weights_figure,
 )
+from modelly.studio.i18n import t
 from modelly.studio.state import StudioState
 
 FRACTION = {"min": 0.05, "max": 1.0, "step": 0.05}
@@ -87,27 +88,27 @@ def EnsembleTab(state: StudioState):
         )
         bands.set(found)
 
-    with solara.Card("Ensemble"):
+    with solara.Card(t("Ensemble")):
         solara.Markdown(ENSEMBLE_HELP)
         with solara.Row():
-            solara.InputInt("replicates", value=replicates)
-            solara.InputInt("ensemble steps", value=steps)
-            solara.Button("Run ensemble", on_click=run)
+            solara.InputInt(t("replicates"), value=replicates)
+            solara.InputInt(t("ensemble steps"), value=steps)
+            solara.Button(t("Run ensemble"), on_click=run)
         if error.value:
             solara.Error(error.value)
         if bands.value is not None:
             _figure(band_figure(bands.value))
             solara.FileDownload(
-                _csv(bands.value), "ensemble-bands.csv", label="Bands (CSV)"
+                _csv(bands.value), "ensemble-bands.csv", label=t("Bands (CSV)")
             )
 
 
 def _settings_inputs(session, values: dict) -> None:
     """The filter's inputs: method, replicates, error, threshold or parameters."""
-    solara.Select("method", values=list(METHODS), value=values["method"])
+    solara.Select(t("method"), values=list(METHODS), value=values["method"])
     with solara.Row():
-        solara.InputInt("replicates", value=values["replicates"])
-        solara.InputFloat("observation sd", value=values["sd"])
+        solara.InputInt(t("replicates"), value=values["replicates"])
+        solara.InputFloat(t("observation sd"), value=values["sd"])
     if values["method"].value == PARTICLE:
         solara.SliderFloat(
             "resample below this share of the ensemble",
@@ -120,7 +121,7 @@ def _settings_inputs(session, values: dict) -> None:
         values=values["parameters"],
         all_values=adjustable(session),
     )
-    solara.SliderFloat("starting spread", value=values["spread"], **FRACTION)
+    solara.SliderFloat(t("starting spread"), value=values["spread"], **FRACTION)
 
 
 def _settings(values: dict) -> FilterSettings:
@@ -148,9 +149,11 @@ def dashboard(result: Assimilation, settings: FilterSettings) -> None:
         _figure(trajectory_figure(result.history, settings.parameters))
     solara.DataFrame(result.history)
     with solara.Row():
-        solara.FileDownload(_csv(result.bands), "filter-bands.csv", label="Bands (CSV)")
         solara.FileDownload(
-            _csv(result.history), "filter-history.csv", label="History (CSV)"
+            _csv(result.bands), "filter-bands.csv", label=t("Bands (CSV)")
+        )
+        solara.FileDownload(
+            _csv(result.history), "filter-history.csv", label=t("History (CSV)")
         )
 
 
@@ -191,14 +194,14 @@ def AssimilationTab(state: StudioState):
     values = use_filter_inputs()
     outcome = solara.use_reactive(None)
     error = solara.use_reactive(None)
-    with solara.Card("Assimilation"):
+    with solara.Card(t("Assimilation")):
         if not path:
             solara.Markdown(ASSIMILATION_HELP)
             return
         solara.Text(f"{len(observations)} observation(s) from {path}")
         _settings_inputs(session, values)
         run = _runner(state, observations, values, (outcome, error))
-        solara.Button("Assimilate", on_click=run)
+        solara.Button(t("Assimilate"), on_click=run)
         if error.value:
             solara.Error(error.value)
         if outcome.value is not None:

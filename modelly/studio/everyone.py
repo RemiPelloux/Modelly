@@ -22,9 +22,18 @@ import solara
 from modelly.card import card_markdown, read_card
 from modelly.new.builder import BEHAVIOURS, BuilderError, ModelSpec, build_code
 from modelly.studio.compare import compare_scenarios, reporters
+from modelly.studio.i18n import t
 from modelly.studio.report import card_path, report_html, report_pdf
 
-NO_CODE_TABS = ("Model", "Map", "Compare", "Card", "Builder", "Experiments")
+NO_CODE_TABS = (
+    "Model",
+    "Map",
+    "Compare",
+    "Card",
+    "Builder",
+    "Classroom",
+    "Experiments",
+)
 
 
 def parse_values(text: str) -> list[Any]:
@@ -97,22 +106,22 @@ def _compare_form(
 ) -> None:
     """The Compare tab's form: output, parameter, values, replicates, steps, the button."""
     output, parameter, text, replicates, steps = fields
-    with solara.Card("Compare scenarios"):
-        solara.Select("output", values=outputs, value=output)
-        solara.Select("parameter", values=names, value=parameter)
+    with solara.Card(t("Compare scenarios")):
+        solara.Select(t("output"), values=outputs, value=output)
+        solara.Select(t("parameter"), values=names, value=parameter)
         solara.InputText(
             "values to try, separated by commas", value=text, continuous_update=True
         )
-        solara.InputInt("replicates", value=replicates)
-        solara.InputInt("steps", value=steps)
-        solara.Button("Compare", on_click=run)
+        solara.InputInt(t("replicates"), value=replicates)
+        solara.InputInt(t("steps"), value=steps)
+        solara.Button(t("Compare"), on_click=run)
 
 
 @solara.component
 def CardTab(state: Any):
     """The model card, or how to write one."""
     path = card_path(state.session.config.target)
-    with solara.Card("Model card"):
+    with solara.Card(t("Model card")):
         if path is None:
             solara.Info(
                 "This model has no card yet: write one with `modelly card new`."
@@ -127,12 +136,14 @@ def BuilderTab(state: Any):
     name, agent = solara.use_reactive("Classroom"), solara.use_reactive("Student")
     count, width = solara.use_reactive(100), solara.use_reactive(20)
     chosen = solara.use_reactive(["walk"])
-    with solara.Card("Model builder"):
-        solara.InputText("model name", value=name)
-        solara.InputText("agent name", value=agent)
-        solara.InputInt("agents", value=count)
-        solara.InputInt("grid size", value=width)
-        solara.SelectMultiple("behaviours", all_values=list(BEHAVIOURS), values=chosen)
+    with solara.Card(t("Model builder")):
+        solara.InputText(t("model name"), value=name)
+        solara.InputText(t("agent name"), value=agent)
+        solara.InputInt(t("agents"), value=count)
+        solara.InputInt(t("grid size"), value=width)
+        solara.SelectMultiple(
+            t("behaviours"), all_values=list(BEHAVIOURS), values=chosen
+        )
         try:
             code = build_code(ModelSpec(name.value, agent.value, count.value, width.value,
                                         width.value, tuple(chosen.value)))  # fmt: skip
@@ -140,7 +151,9 @@ def BuilderTab(state: Any):
             solara.Error(str(error))
             return
         solara.FileDownload(
-            code.encode("utf-8"), f"{name.value.lower()}.py", label="Download model.py"
+            code.encode("utf-8"),
+            f"{name.value.lower()}.py",
+            label=t("Download model.py"),
         )
         solara.Markdown(f"```python\n{code}```")
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import solara
 
 from modelly.lint.explain import explain
+from modelly.studio.i18n import t
 from modelly.studio.state import StudioState
 
 LOG_SHOWN = 50
@@ -29,7 +30,7 @@ def LintPanel(state: StudioState):
     chosen = solara.use_reactive(None)
     path = session.source_file()
     with solara.Card(f"Lint: {path.name if path else 'no source file'}"):
-        solara.Button("Check again", on_click=lambda: checks.set(checks.value + 1))
+        solara.Button(t("Check again"), on_click=lambda: checks.set(checks.value + 1))
         if not findings:
             solara.Success("No findings.")
         for finding in findings:
@@ -48,5 +49,5 @@ def LogPanel(state: StudioState):
     """The run log, newest last."""
     state.revision.get()
     lines = list(state.session.log)[-LOG_SHOWN:]
-    with solara.Card("Run log"):
+    with solara.Card(t("Run log")):
         solara.Preformatted("\n".join(lines) or "(empty)")
