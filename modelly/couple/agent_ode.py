@@ -8,6 +8,11 @@ runs once per stage for the whole population. With a stiff method (``"BDF"``, ``
 ``"LSODA"``) it stacks the agents into one ``solve_ivp`` system and passes a block-diagonal
 Jacobian sparsity, since an agent's equations involve only its own state.
 
+Parameters may vary inside the step: ``forcings`` maps names to inputs of
+``modelly.couple.inputs`` (a ``Forcing`` function of time or a ``Series`` table), read at
+every stage's time. With ``dense_output=True``, ``at(t)`` reads every agent's state at any
+time of the last step, so an agent acting at a sub-step time sees the continuous value.
+
 Events (``modelly.couple.events.ODEEvent``) are located per agent. A terminal event stops the
 agent at the crossing; after the whole population has been integrated, each event's
 ``action(table, rows, times)`` runs, and the stopped agents resume from their crossing to
@@ -17,13 +22,15 @@ agent phase), since rows are positions in the column table.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import Any
 
 import numpy as np
 
 from modelly.couple.batch import METHODS, solve_batch
+from modelly.couple.dense import StackedDense
 from modelly.couple.events import ODEEvent
+from modelly.couple.inputs import Input, evaluated
 from modelly.couple.ode import Solver
 from modelly.couple.schedule import Coupling, CouplingError
 
@@ -65,18 +72,24 @@ class AgentODE:
         reads: Iterable[str] = (),
         solver: Solver | None = None,
         events: Sequence[ODEEvent] = (),
+        forcings: Mapping[str, Input] | None = None,
+        dense_output: bool = False,
     ) -> None:
         """Integrate the columns ``state`` of ``agent_class``; ``params`` are read-only columns.
 
         ``reads`` are coupling quantities passed to ``rhs`` in ``params`` by name, held over
-        the step. ``rhs`` and the events' functions must be module-level functions or
-        methods for the model to be saved.
+        the step; ``forcings`` are inputs passed by name, read at each stage's time.
+        ``dense_output`` keeps the last step's interpolant for ``at``. ``rhs``, the events'
+        functions and the forcings' functions must be module-level functions or methods
+        for the model to be saved.
         """
         self.model, self.agent_class, self.rhs = model, agent_class, rhs
         self.state, self.params = tuple(state), tuple(params)
         self.reads, self.writes = tuple(reads), ()
         self.solver = solver or Solver()
         self.events = tuple(events)
+        self.forcings, self.dense_output = dict(forcings or {}), dense_output
+        self._dense: tuple[float, float, int, list[Any]] | None = None
         if self.solver.method not in METHODS + STIFF:
             raise CouplingError(
                 f"AgentODE supports {METHODS + STIFF}, not {self.solver.method!r}"
@@ -101,7 +114,9 @@ class AgentODE:
         table = self.model.columns[self.agent_class]
         if len(table) == 0:
             return
-        params = {name: table[name] for name in self.params} | (inputs or {})
+        params = {name: table[name] for name in self.params} | self.forcings
+        params |= inputs or {}
+        self._dense = (float(time), float(time + duration), len(table), [])
         if self.solver.method in STIFF:
             self._write(
                 table, self._stacked(self._read(table), params, time, time + duration)
@@ -122,8 +137,11 @@ class AgentODE:
         """One ``solve_batch`` pass; the stopped agents' restart times, or None if none."""
         s = self.solver
         result = solve_batch(self.rhs, (start, end), self._read(table), params,
-                             method=s.method, rtol=s.rtol, atol=s.atol, events=self.events)  # fmt: skip
+                             method=s.method, rtol=s.rtol, atol=s.atol, events=self.events,
+                             dense_output=self.dense_output)  # fmt: skip
         self._write(table, result.y)
+        if result.sol is not None:
+            self._dense[3].append(result.sol)
         for event, log in zip(self.events, result.events):
             if event.action is not None and log.rows.size:
                 event.action(table, log.rows, log.t)
@@ -137,18 +155,51 @@ class AgentODE:
         m, k = y.shape
 
         def fun(t: float, flat: np.ndarray) -> np.ndarray:
+            times = np.full(k, t)
             return np.asarray(
-                self.rhs(np.full(k, t), flat.reshape(m, k), params), float
+                self.rhs(times, flat.reshape(m, k), evaluated(params, times)), float
             ).ravel()
 
         s, extra = self.solver, {}
         if s.method != "LSODA":  # LSODA takes band widths, not a sparsity pattern
             extra["jac_sparsity"] = sparse.kron(np.ones((m, m)), sparse.identity(k))
         result = solve_ivp(fun, (t0, t1), y.ravel(), method=s.method, rtol=s.rtol, atol=s.atol,
-                           **extra)  # fmt: skip
+                           dense_output=self.dense_output, **extra)  # fmt: skip
         if not result.success:
             raise CouplingError(f"{self.label} failed at time {t0}: {result.message}")
+        if self.dense_output:
+            ends = np.full(k, float(t0)), np.full(k, float(t1))
+            self._dense[3].append(StackedDense(result.sol, (m, k), *ends))
         return result.y[:, -1].reshape(m, k)
+
+    def at(self, t: Any, variable: str | None = None) -> np.ndarray:
+        """Every agent's state at ``t`` inside the last step, a time or one per agent.
+
+        Returns the state variables, shape ``(variables, agents)`` in the rows of the
+        column table, or one variable's values with ``variable``. After a terminal event
+        an agent's state is read on the integration that follows the event's action.
+
+        Raises:
+            CouplingError: without ``dense_output``, before the first step, or when agents
+                were added or removed since it.
+            ValueError: for a time outside the last step.
+        """
+        if not self.dense_output or self._dense is None:
+            raise CouplingError(
+                f"{self.label}: at() needs dense_output=True and a step"
+            )
+        start, end, k, passes = self._dense
+        columns = self.model.columns
+        if self.agent_class not in columns or len(columns[self.agent_class]) != k:
+            raise CouplingError(f"{self.label}: agents changed since the last step")
+        t = np.broadcast_to(np.asarray(t, dtype=float), (k,))
+        if np.any((t < start) | (t > end)):
+            raise ValueError(f"at() reads inside the last step [{start}, {end}]")
+        y = np.empty((len(self.state), k))
+        for sol in passes:  # a later pass (after an event's action) wins on its span
+            valid = (t >= sol.start) & (t <= sol.final)
+            y[:, valid] = sol(np.where(valid, t, sol.start))[:, valid]
+        return y if variable is None else y[self.state.index(variable)]
 
     def _read(self, table) -> np.ndarray:
         """The state columns as a float array of shape ``(variables, agents)``."""

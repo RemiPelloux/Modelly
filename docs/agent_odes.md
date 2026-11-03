@@ -218,6 +218,65 @@ gives the same outbreak bit for bit (`tests/couple/test_within_host.py` runs thi
 over the step, as an `ODE` reads them. Per-agent inputs are columns listed in `params`, written
 by an agent phase before the ODE's phase.
 
+### Inputs that change inside the step
+
+An input that varies faster than the model's step (daylight, a dosing schedule, a measured
+temperature series) is passed as a forcing. The right-hand side receives its value at each
+stage's time, so every agent sees it at the times its own steps land on:
+
+```python
+from modelly.couple import AgentODE, Forcing, Series
+
+
+def daylight(t):
+    return np.maximum(np.sin(2 * np.pi * t), 0.0)
+
+
+temperature = Series([0.0, 0.5, 1.0], [12.0, 21.0, 12.0])  # linear between the points
+ode = AgentODE(
+    model,
+    Animal,
+    energy,
+    state=["reserve"],
+    params=["mass"],
+    forcings={"light": Forcing(daylight), "temp": temperature},
+)
+```
+
+`Forcing(function)` calls `function(t)` with one time per agent; it returns a scalar or one
+value per agent. `Series(times, values)` reads a table linearly between its times
+(`kind="previous"` holds each value until the next time) and holds the end values outside
+them; values of shape `(times, agents)` give each agent its own series. The same inputs work in
+`solve_batch` as entries of `params`, and on the stiff path. Against `solve_ivp` with the
+forcing written inside the function, every system takes the same steps and ends at the same
+value (`tests/couple/test_inputs_dense.py`).
+
+### Reading the state inside the step
+
+With `dense_output=True`, `ode.at(t)` returns every agent's state at a time inside the last
+step: one time, or one per agent, read on the step's own interpolant (the polynomial
+`solve_ivp`'s `dense_output` uses), without integrating again. An agent acting at a sub-step
+time, such as a host tested at 14:00, sees the continuous value:
+
+```python
+ode = AgentODE(
+    model,
+    Host,
+    tiv,
+    state=["cells", "infected", "virus"],
+    params=["beta"],
+    dense_output=True,
+)
+ode.advance(day, 1.0)
+load_at_test = ode.at(day + test_hour / 24, "virus")  # one value per host
+```
+
+After a terminal event, a time past the crossing reads the integration that follows the
+event's action, so a neuron read just after it fires reads its reset value. `at` refuses a
+time outside the last step and a population that changed since it. `solve_batch(...,
+dense_output=True)` returns the same reader as `result.sol`, with `result.sol(t)` of shape
+`(m, k)`.
+
 ### Stiff systems
 
 With `Solver(method="BDF")`, `"Radau"` or `"LSODA"`, `AgentODE` stacks the agents into one
@@ -286,7 +345,8 @@ compare results between machines with a tolerance, as for any `solve_ivp` result
   column table): add or remove them in an agent phase.
 - An agent whose state does not move still costs a few steps per call, from the initial step
   heuristic (about seven for a day), as in `solve_ivp`.
-- Inputs are held over the step, as for `ODE`.
+- Coupling quantities in `reads` are held over the step, as for `ODE`; an input that
+  changes inside the step is a forcing (above).
 
 ## References
 

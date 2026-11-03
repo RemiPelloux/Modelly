@@ -11,9 +11,13 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
+from functools import cached_property
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
+
+from modelly.couple.dense import BatchDense, interpolate
+from modelly.couple.inputs import Input, evaluated
 
 if TYPE_CHECKING:
     from modelly.couple.batch import _Batch
@@ -44,7 +48,8 @@ class ODEEvent:
         self, t: np.ndarray, y: np.ndarray, params: Mapping[str, Any]
     ) -> np.ndarray:
         """The condition's value for each system."""
-        return np.asarray(self.condition(t, y, params), dtype=float).reshape(t.shape)
+        values = self.condition(t, y, evaluated(params, t))
+        return np.asarray(values, dtype=float).reshape(t.shape)
 
     def crossed(self, before: np.ndarray, after: np.ndarray) -> np.ndarray:
         """Which systems crossed zero in this event's direction (``solve_ivp``'s rule)."""
@@ -91,18 +96,23 @@ class _Step:
 
     def __init__(self, batch: _Batch, rows: np.ndarray, t_new: np.ndarray, ks) -> None:
         """Keep the start, the step and the interpolant's coefficients."""
+        self.batch, self.rows = batch, rows
         self.t0, self.y0 = batch.t[rows], batch.y[:, rows]
         self.h = t_new - self.t0
         self.t_new = t_new
-        self.Q = np.tensordot(batch.tab.P.T, ks, axes=1)  # (degree, m, systems)
-        self.params = batch.cut(rows)
+        self.Q = np.einsum("sd,s...->d...", batch.tab.P, ks)  # (degree, m, systems)
+
+    @cached_property
+    def params(self) -> dict[str, Any]:
+        """The parameters of the step's systems, cut once when an event needs them."""
+        return self.batch.cut(self.rows)
 
     def at(self, x: np.ndarray, cols) -> tuple[np.ndarray, np.ndarray]:
         """Time and state at the fraction ``x`` of the step, for the columns ``cols``."""
-        powers = np.cumprod(np.broadcast_to(x, (self.Q.shape[0], x.size)), axis=0)
         h = self.h[cols]
-        dy = np.einsum("dmc,dc->mc", self.Q[..., cols], powers)
-        return self.t0[cols] + x * h, self.y0[:, cols] + h * dy
+        return self.t0[cols] + x * h, interpolate(
+            self.Q[..., cols], h, self.y0[:, cols], x
+        )
 
     def root(self, event: ODEEvent, before: np.ndarray, cols: np.ndarray) -> np.ndarray:
         """The fraction of the step where ``event`` crosses, by bisection on the interpolant."""
@@ -118,15 +128,31 @@ class _Step:
         return np.where(sign == 0, 0.0, hi)
 
 
-def _locate(
-    batch: _Batch,
+def _record(
+    step: _Step,
     events: Sequence[ODEEvent],
     logs: list[EventLog],
     previous: list[np.ndarray],
-    rows: np.ndarray,
-    t_new: np.ndarray,
     y_new: np.ndarray,
-    ks: np.ndarray,
+    sol: BatchDense | None,
+) -> np.ndarray:
+    """Keep an accepted step's interpolant and locate its events; which systems stopped."""
+    if sol is not None:
+        sol.add(step.rows, step.t0, step.h, step.y0, step.Q)
+    if not events:
+        return np.zeros(step.rows.size, bool)
+    stop = _locate(step, events, logs, previous, y_new)
+    if sol is not None and np.any(stop):
+        sol.clip(np.flatnonzero(stop), step.batch.t[step.rows[stop]])
+    return stop
+
+
+def _locate(
+    step: _Step,
+    events: Sequence[ODEEvent],
+    logs: list[EventLog],
+    previous: list[np.ndarray],
+    y_new: np.ndarray,
 ) -> np.ndarray:
     """Record the crossings in an accepted step; stop systems at a terminal one.
 
@@ -134,7 +160,7 @@ def _locate(
         Which of ``rows`` a terminal event stopped (their time and state are set to the
         crossing).
     """
-    step = _Step(batch, rows, t_new, ks)
+    batch, rows, t_new = step.batch, step.rows, step.t_new
     fractions = [
         _fractions(step, e, p[rows], t_new, y_new) for e, p in zip(events, previous)
     ]
@@ -173,7 +199,13 @@ def _cut(params: Mapping[str, Any], rows, k: int) -> dict[str, Any]:
     """
     if isinstance(rows, slice):
         return dict(params)
-    return {
-        name: value[..., rows] if np.ndim(value) and np.shape(value)[-1] == k else value
-        for name, value in params.items()
-    }
+    return {name: _cut_one(value, rows, k) for name, value in params.items()}
+
+
+def _cut_one(value: Any, rows: np.ndarray, k: int) -> Any:
+    """One parameter of the systems ``rows``: inputs cut themselves, arrays on their last axis."""
+    if isinstance(value, Input):
+        return value.cut(rows, k)
+    if np.ndim(value) and np.shape(value)[-1] == k:
+        return value[..., rows]
+    return value

@@ -5,6 +5,17 @@ versioning.
 
 ## Unreleased
 
+### Added
+
+- `modelly.couple.Forcing` and `modelly.couple.Series`: parameters of `solve_batch` and
+  `AgentODE` (`forcings=`) that vary inside a step, read at every stage's time; a `Series`
+  interpolates a table linearly or holds each value, shared or one column per system. Against
+  `solve_ivp` with the forcing inside the function, every system takes the same steps.
+- Dense output: `solve_batch(..., dense_output=True)` returns `result.sol`, a `BatchDense`
+  that reads every system at any time of its span on the Runge-Kutta interpolant;
+  `AgentODE(..., dense_output=True).at(t)` reads every agent's state inside the last step,
+  after event resets too, on the batched and the stiff path.
+
 ### Documentation
 
 - What's new (`docs/whats_new.md`): each release from 1.0.0 to 1.4.3 in a few lines per

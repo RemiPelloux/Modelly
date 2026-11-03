@@ -31,7 +31,9 @@ from typing import Any
 
 import numpy as np
 
-from modelly.couple.events import EventLog, ODEEvent, _cut, _locate
+from modelly.couple.dense import BatchDense
+from modelly.couple.events import EventLog, ODEEvent, _cut, _record, _Step
+from modelly.couple.inputs import evaluated, has_inputs
 from modelly.couple.schedule import CouplingError
 
 # scipy.integrate._ivp.rk: the step-size controller's constants.
@@ -57,6 +59,8 @@ class BatchResult:
         nfev: calls of ``rhs``, each on every system still advancing.
         nsteps: accepted steps per system, shape ``(k,)``.
         nrejected: rejected steps per system, shape ``(k,)``.
+        sol: with ``dense_output=True``, a ``BatchDense``: ``sol(t)`` is every system's
+            state at ``t`` (one time, or one per system); otherwise None.
     """
 
     t: np.ndarray
@@ -66,6 +70,7 @@ class BatchResult:
     nfev: int = 0
     nsteps: np.ndarray = field(default_factory=lambda: np.zeros(0, int))
     nrejected: np.ndarray = field(default_factory=lambda: np.zeros(0, int))
+    sol: BatchDense | None = None
 
 
 @dataclass(frozen=True)
@@ -103,6 +108,7 @@ class _Batch:
         self.t = np.broadcast_to(np.asarray(t0, dtype=float), (k,)).copy()
         self.t1 = np.broadcast_to(np.asarray(t1, dtype=float), (k,)).copy()
         self.params = dict(params or {})
+        self.timed = has_inputs(self.params)
         self.rtol, self.atol = max(float(rtol), 100 * EPS), float(atol)
         self.nfev, self.k = 0, k
         self.nsteps, self.nrejected = np.zeros(k, int), np.zeros(k, int)
@@ -119,8 +125,10 @@ class _Batch:
     def call(
         self, t: np.ndarray, y: np.ndarray, params: Mapping[str, Any]
     ) -> np.ndarray:
-        """``rhs`` on some systems, given their parameters."""
+        """``rhs`` on some systems, given their parameters (inputs read at ``t``)."""
         self.nfev += 1
+        if self.timed:
+            params = evaluated(params, t)
         return np.asarray(self.rhs(t, y, params), dtype=float).reshape(y.shape)
 
     def norm(self, x: np.ndarray) -> np.ndarray:
@@ -207,6 +215,7 @@ def solve_batch(
     rtol: float = 1e-3,
     atol: float = 1e-6,
     events: Sequence[ODEEvent] = (),
+    dense_output: bool = False,
 ) -> BatchResult:
     """Integrate ``k`` independent systems from ``t_span[0]`` to ``t_span[1]``.
 
@@ -215,14 +224,18 @@ def solve_batch(
         t_span: start and end, scalars or arrays of shape ``(k,)``; the end must not be
             before the start.
         y0: the initial states, shape ``(m, k)``.
-        params: per-system arrays of length ``k``, or scalars, passed to ``rhs``.
+        params: per-system arrays of length ``k``, scalars, or inputs that vary in time
+            (``modelly.couple.inputs``), passed to ``rhs``.
         method: ``"RK45"`` (the default, as in ``solve_ivp``) or ``"RK23"``.
         rtol: the relative tolerance, as in ``solve_ivp``.
         atol: the absolute tolerance, as in ``solve_ivp``.
         events: ``ODEEvent`` objects located on every accepted step.
+        dense_output: keep every step's interpolant, to read the states at any time
+            (``BatchResult.sol``), as ``solve_ivp``'s ``dense_output``.
 
     Returns:
-        The final times and states, the event crossings and the work counts.
+        The final times and states, the event crossings, the work counts and, if asked,
+        the dense output.
 
     Raises:
         CouplingError: for an unknown method or a step that falls below the minimum.
@@ -231,22 +244,25 @@ def solve_batch(
     stopped = np.zeros(batch.k, bool)
     logs = [EventLog() for _ in events]
     previous = [event.value(batch.t, batch.y, batch.params) for event in events]
+    sol = BatchDense(batch.t.copy(), batch.y.copy()) if dense_output else None
     while True:
         rows = np.flatnonzero((batch.t < batch.t1) & ~stopped)
         if rows.size == 0:
             break
         whole = slice(None) if rows.size == batch.k else rows
         accepted, t_new, y_new, ks = batch.attempt(whole)
-        if events:
+        if events or sol is not None:
             rows, t_new, y_new, ks = _keep(accepted, rows, t_new, y_new, ks)
-            stop = _locate(batch, events, logs, previous, rows, t_new, y_new, ks)
+            stop = _record(_Step(batch, rows, t_new, ks), events, logs, previous, y_new, sol)  # fmt: skip
             stopped[rows[stop]] = True
             accepted = ~stop
         rows, t_new, y_new, f_new = _keep(accepted, rows, t_new, y_new, ks[-1])
         cols = slice(None) if rows.size == batch.k else rows
         batch.t[cols], batch.y[:, cols], batch.f[:, cols] = t_new, y_new, f_new
+    if sol is not None:
+        sol.final = batch.t.copy()
     return BatchResult(batch.t, batch.y, stopped, [log.close() for log in logs], batch.nfev,
-                       batch.nsteps, batch.nrejected)  # fmt: skip
+                       batch.nsteps, batch.nrejected, sol)  # fmt: skip
 
 
 def _advanced(y: np.ndarray, h: np.ndarray, coefficients: np.ndarray, ks: np.ndarray):

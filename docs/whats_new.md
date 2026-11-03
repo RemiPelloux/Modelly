@@ -9,6 +9,20 @@ Each release adds its section here before it is tagged: the release script refus
 whose notes are missing (see "Release notes" in
 [CONTRIBUTING](https://github.com/RemiPelloux/Modelly/blob/main/CONTRIBUTING.md)).
 
+## Unreleased
+
+**Ecosystem and collaboration** (in progress, see the [1.5.0 roadmap](roadmap/1.5.0.md)).
+
+### New
+
+- **Inputs that change inside a step**: `Forcing(function)` and `Series(times, values)` drive
+  an `AgentODE` or `solve_batch` at the times each system's own steps land on (daylight, a
+  dosing schedule, a measured series), instead of holding the value over the model's step.
+  [ODEs in every agent](agent_odes.md#inputs-that-change-inside-the-step)
+- **The state inside a step**: with `dense_output=True`, `ode.at(t)` reads every agent's state
+  at any time of the last step on the solver's interpolant, so an agent acting at 14:00 sees
+  the value at 14:00. [ODEs in every agent](agent_odes.md#reading-the-state-inside-the-step)
+
 ## 1.4.3 - 2026-11-02
 
 **An ODE in every agent.** Continuous dynamics inside each agent (the virus in a host, the
