@@ -7,6 +7,12 @@ versioning.
 
 ### Added
 
+- Studio for everyone: a Compare tab (one parameter varied, scenarios ranked on paired
+  replicates with intervals, `modelly.studio.compare`), a Card tab, a Builder tab (a model from
+  a form, `modelly.new.builder.build_code`: every combination of its four behaviours runs and
+  passes `modelly lint`), HTML and PDF reports in the Export panel (parameters, figures,
+  comparison, model card, run manifest, `modelly.studio.report`), and `modelly studio --hub
+  NAME --no-code`, a hub model opened without the developer tabs.
 - Language-model agents II (`modelly.llm`): `MemoryAgent` with episodic memory summarised past
   its capacity and saved in checkpoints; `plan`, `reflect` and `use_tools` (tool calls with the
   results sent back, bounded rounds); `converse` and `converse_many`, conversations with turn

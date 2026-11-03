@@ -19,6 +19,11 @@ whose notes are missing (see "Release notes" in
   tight intervals; see which are cost-effective and at what price; check which hold up across
   many possible futures; and search a policy's parameters. A worked study asks which age group
   should get 10,000 vaccine doses. [Decisions](decide.md)
+- **Studio for everyone**: open a hub model by name with no code tabs
+  (`modelly studio --hub age_seir --no-code`), compare scenarios with intervals, read the
+  model card, build a teaching model from a form and download its code, and export a report
+  (HTML or PDF) with the figures, the card and how to rerun the run.
+  [Studio](studio.md#studio-for-everyone)
 - **Language-model agents that remember, plan and talk**: agents keep a memory that is
   summarised as it grows, write plans, reflect, call functions of the model before answering,
   and hold conversations with each other, many at once. A 500-trader market runs offline and
