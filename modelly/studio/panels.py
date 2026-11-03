@@ -8,6 +8,7 @@ from functools import partial
 import solara
 
 from modelly.studio import data, exports
+from modelly.studio.everyone import report_downloads
 from modelly.studio.params import (
     BOOL,
     CHOICE,
@@ -221,6 +222,7 @@ def downloads(state: StudioState) -> list[tuple]:
         checkpoint,
         animation,
         *_reproducible(state),
+        *report_downloads(state, stamp),
     ]
 
 

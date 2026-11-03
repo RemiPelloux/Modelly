@@ -24,6 +24,20 @@ INPUT_OPTIONS = (
         },
     ),
     (
+        ("--no-code",),
+        {
+            "action": "store_true",
+            "help": "only the tabs for people who do not write code (compare, card, builder)",
+        },
+    ),
+    (
+        ("--hub",),
+        {
+            "metavar": "NAME",
+            "help": "open a model of the hub by name instead of a target (installed first)",
+        },
+    ),
+    (
         ("--analysis",),
         {
             "metavar": "FILE.py:FUNCTION",
@@ -38,6 +52,9 @@ INPUT_PANELS = """\
   assimilation   particle filter or ensemble Kalman filter on --observations
   experiments    the runs of --results, filtered, an output against a parameter
   analysis       posteriors and sensitivity results from --analysis
+  compare        one parameter varied, the scenarios ranked on paired replicates
+  card           the model card
+  builder        a model from a form, its code to read and download
 """
 
 
@@ -47,7 +64,25 @@ def inputs_from(args: argparse.Namespace) -> dict[str, Any]:
         "results": args.results,
         "observations": args.observations,
         "analysis": args.analysis,
+        "mode": "no-code" if args.no_code else "full",
     }
 
 
-__all__ = ["INPUT_OPTIONS", "INPUT_PANELS", "inputs_from"]
+def target_from(args: argparse.Namespace) -> str:
+    """The target: the positional one, or the hub model ``--hub`` names.
+
+    Raises:
+        SystemExit: (from argparse) with neither, or with both.
+    """
+    if bool(args.target) == bool(args.hub):
+        raise argparse.ArgumentTypeError(
+            "give a target or --hub NAME, not both or neither"
+        )
+    if args.target:
+        return str(args.target)
+    from modelly.hub import load  # noqa: PLC0415
+
+    return load().get(args.hub).target
+
+
+__all__ = ["INPUT_OPTIONS", "INPUT_PANELS", "inputs_from", "target_from"]

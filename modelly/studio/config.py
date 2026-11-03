@@ -38,6 +38,7 @@ class StudioConfig:
             reporter), for the Assimilation tab.
         analysis: ``path/to/file.py:function`` returning posteriors or sensitivity
             results, for the Analysis tab.
+        mode: ``"full"``, or ``"no-code"`` for the tabs of people who do not write code.
     """
 
     target: str
@@ -50,6 +51,7 @@ class StudioConfig:
     results: str | None = None
     observations: str | None = None
     analysis: str | None = None
+    mode: str = "full"
 
     @property
     def memory_budget(self) -> int:

@@ -48,6 +48,8 @@ to it works.
 | `--results DIR` | an experiment's results store, for the [Experiments tab](#experiments) |
 | `--observations FILE.csv` | observations to assimilate, for the [Assimilation tab](#ensembles-and-data-assimilation) |
 | `--analysis FILE.py:FUNCTION` | posteriors and sensitivity results, for the [Analysis tab](#calibration-and-sensitivity) |
+| `--hub NAME` | open a model of the [hub](hub.md) by name instead of a target |
+| `--no-code` | only the tabs for people who do not write code (see [Studio for everyone](#studio-for-everyone)) |
 
 Exit status: 0 when the server stopped normally, 1 when the model raised while being built, 2
 for a bad command line or a target that cannot be found. The model is built once before the
@@ -56,6 +58,45 @@ server starts, so these errors show in the terminal.
 The bundled examples' `app.py` files define portrayals Studio can reuse, for example
 `--portrayal modelly/examples/advanced/wolf_sheep/app.py:wolf_sheep_portrayal`. Without one,
 each agent class gets its own colour from the colour-blind-safe Okabe-Ito palette.
+
+## Studio for everyone
+
+Studio can be used by someone who never writes Python: a policy analyst comparing
+interventions, a teacher, a student.
+
+```bash
+modelly hub install age_seir                   # once (a zoo model needs nothing installed)
+modelly studio --hub age_seir --no-code        # open it by its hub name, without the code tabs
+```
+
+`--no-code` keeps the views (Model, Map), the Experiments tab and three tabs made for this.
+The Profiler, Lint, Log and Agents tabs are left out.
+
+- **Compare**: pick an output (a model reporter), a parameter, and the values to try
+  (`0.02, 0.035, 0.05`). Studio runs every value on the same replicate seeds (common random
+  numbers, as `modelly.decide` does; see [Decisions](decide.md)). It shows each scenario's
+  mean with its 95% interval, the paired difference from the first value, and how often each
+  scenario had the lowest value.
+- **Card**: the [model card](model_cards.md): what the model is for, what it must not be used
+  for, its validation and its limits.
+- **Builder**: a model from a form, for teaching. Name the model and its agents, choose how
+  many and the grid size, and pick behaviours: walk to a random neighbouring cell, give
+  wealth to a cellmate, catch an infection from a cellmate, recover. The tab shows the code of
+  one ordinary `model.py` and downloads it. Every combination of behaviours writes code that
+  runs and that `modelly lint` passes (`tests/studio/test_studio_everyone.py`).
+  `modelly.new.builder.build_code(ModelSpec(...))` does the same from Python.
+
+The Export panel's **Report (HTML)** and **Report (PDF)** write a report to hand to someone
+who will not open Studio. The HTML report is one self-contained file. It holds:
+
+- the parameters and the seed;
+- a figure of every model reporter over the run;
+- the scenarios compared, when there are some;
+- the model card;
+- the run's manifest: the Modelly and Python versions, the model, the sha256 of its source
+  and the steps run.
+
+The PDF holds the same, one figure per page.
 
 ## The panels
 

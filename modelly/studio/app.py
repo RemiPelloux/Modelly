@@ -16,6 +16,7 @@ from modelly.plugins import load_all
 from modelly.studio.analysis_views import AnalysisTab, ExperimentsTab
 from modelly.studio.config import StudioConfig
 from modelly.studio.ensemble_views import AssimilationTab, EnsembleTab
+from modelly.studio.everyone import NO_CODE_TABS, BuilderTab, CardTab, CompareTab
 from modelly.studio.loader import load_model_class, load_portrayal
 from modelly.studio.mapview import MapView
 from modelly.studio.panels import ExportPanel, ParameterPanel, RunControls
@@ -42,7 +43,7 @@ def StudioApp(session: StudioSession):
     tab = solara.use_reactive(0)
     with solara.Column():
         Scrubber(state)
-        tabs = all_tabs()
+        tabs = tabs_for(session.config.mode)
         with solara.v.Tabs(v_model=tab.value, on_v_model=tab.set):
             for name, _ in tabs:
                 solara.v.Tab(children=[name])
@@ -60,6 +61,8 @@ TABS = (
     ("Model", ModelTab),
     ("Map", MapView),
     ("Agents", AgentTable),
+    ("Compare", CompareTab),
+    ("Card", CardTab),
     ("Ensemble", EnsembleTab),
     ("Assimilation", AssimilationTab),
     ("Experiments", ExperimentsTab),
@@ -67,6 +70,7 @@ TABS = (
     ("Profiler", ProfilerPanel),
     ("Lint", LintPanel),
     ("Log", LogPanel),
+    ("Builder", BuilderTab),
 )
 # A plugin's entry point names a component taking the StudioState, like the TABS views.
 VIEWS_GROUP = "modelly.studio_views"
@@ -82,6 +86,15 @@ def all_tabs() -> tuple:
     for error in errors.values():
         warnings.warn(f"{error}; Studio shows the other views", RuntimeWarning, 2)
     return TABS + tuple(loaded.items())
+
+
+def tabs_for(mode: str) -> tuple:
+    """Every tab, or in ``"no-code"`` mode the ones of ``NO_CODE_TABS`` and the plugins'."""
+    tabs = all_tabs()
+    if mode != "no-code":
+        return tabs
+    plugins = tabs[len(TABS) :]
+    return tuple(t for t in TABS if t[0] in NO_CODE_TABS) + plugins
 
 
 @functools.cache

@@ -26,7 +26,7 @@ from modelly.studio.config import (
     DEFAULT_SEED,
     StudioConfig,
 )
-from modelly.studio.options import INPUT_OPTIONS, INPUT_PANELS, inputs_from
+from modelly.studio.options import INPUT_OPTIONS, INPUT_PANELS, inputs_from, target_from
 
 EXIT_OK, EXIT_MODEL_ERROR, EXIT_USAGE = 0, 1, 2
 PROG = "python -m modelly.studio"
@@ -103,7 +103,13 @@ def port_number(text: str) -> int:
 
 
 OPTIONS = (
-    (("target",), {"help": "path/to/model.py:ModelClass or package.module:ModelClass"}),
+    (
+        ("target",),
+        {
+            "nargs": "?",
+            "help": "path/to/model.py:ModelClass or package.module:ModelClass",
+        },
+    ),
     (
         ("--port",),
         {
@@ -183,7 +189,7 @@ def build_parser(prog: str = PROG) -> argparse.ArgumentParser:
 def config_from(args: argparse.Namespace) -> StudioConfig:
     """The Studio settings the command line asks for."""
     return StudioConfig(
-        target=args.target,
+        target=target_from(args),
         portrayal=args.portrayal,
         seed=args.seed,
         every=args.every,
@@ -263,7 +269,11 @@ def check_target(config: StudioConfig) -> int | None:
 def main(argv: list[str] | None = None, prog: str = PROG) -> int:
     """Serve Studio for the model the command line names; the exit status."""
     args = build_parser(prog).parse_args(argv)
-    config = config_from(args)
+    try:
+        config = config_from(args)
+    except (argparse.ArgumentTypeError, KeyError, OSError, RuntimeError) as error:
+        sys.stderr.write(f"modelly studio: {error}\n")
+        return EXIT_USAGE
     failed = check_target(config)
     if failed is not None:
         return failed
