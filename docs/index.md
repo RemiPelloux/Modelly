@@ -174,6 +174,7 @@ for _ in range(100):
 :maxdepth: 2
 
 Get started <getting_started>
+Other languages <translations/index>
 Examples <models>
 Guides <guides>
 Performance <scale>

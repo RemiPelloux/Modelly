@@ -253,3 +253,10 @@ div.highlight:hover button.copybtn { opacity: 1; }
 
 /* A header dropdown never runs past the bottom of the window. */
 .bd-header .dropdown-menu { max-height: calc(100vh - var(--pst-header-height) - 1rem); overflow-y: auto; overscroll-behavior: contain; }
+
+/* Accessibility (WCAG 2.2 AA): code comments at 4.5:1 or better on the code background. */
+html[data-theme="light"] .highlight .c, html[data-theme="light"] .highlight .c1,
+html[data-theme="light"] .highlight .cm, html[data-theme="light"] .highlight .ch,
+html[data-theme="light"] .highlight .cs, html[data-theme="light"] .highlight .cp {
+  color: #57606a;
+}

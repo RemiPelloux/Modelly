@@ -26,11 +26,14 @@ run's outputs. `compare(run, strategies, replicates=..., seed=...)` runs each st
 `replicates` times. `run(params, seed)` builds and runs the model and returns its outputs;
 `model_runner(model_class, outputs, scenario=...)` writes that function for you.
 
-Replicate `r` of every strategy gets the same seed: **common random numbers**. The strategies
-then face the same chance events (the same first infections, the same unlucky contacts), so
-the difference between two strategies in one replicate is the effect of the strategy alone.
-`difference(output)` gives the interval of those paired differences, which is far narrower
-than the two strategies' separate intervals would suggest. `summary(output)` gives each
+Replicate `r` of every strategy gets the same seed: **common random numbers**. When the
+strategies consume the random numbers the same way, they face the same chance events (the
+same first infections, the same unlucky contacts), the difference between two strategies in
+one replicate is close to the effect of the strategy alone, and `difference(output)`, the
+interval of those paired differences, is much narrower than the two separate intervals. When
+a strategy changes the order of the draws, the pairing buys little: measure it with
+`modelly.explain.treatment_effect`, which reports the variance reduction (see
+[Causes and explanations](explain.md#treatment-effects-and-common-random-numbers)). `summary(output)` gives each
 strategy's mean and Student-t interval (95% by default, `confidence=` to change it).
 `rank(output, lower_is_better=True)` orders the strategies and adds `best_share`: the share of
 replicates in which each was the best, an estimate of the probability that it is the right
@@ -65,7 +68,10 @@ Vaccinating the children is the cheapest choice, cheaper than giving no doses at
 because children drive transmission and every infection they would have passed on costs
 care. Vaccinating the seniors averts the most deaths, at 9,942 per extra death averted over
 vaccinating the children. Seniors were the best choice in every replicate (`best_share` 1.0),
-and the paired intervals of the deaths averted are under four deaths wide. Run again with the same seed, the study gives
+and the intervals of the deaths averted are under four deaths wide. Here the pairing is not
+what makes them narrow: vaccinating adds a cohort row, which reorders the draws, so the arms
+are close to independent (variance ratio about 0.8); 100,000 people make each run's result
+precise on its own. Run again with the same seed, the study gives
 the same tables (`tests/decide/test_decide.py`). The fatality ratios and costs are
 illustrative: the model's card, at the end of [its page](zoo/age_seir.md), says what it must
 not be used for.

@@ -23,6 +23,8 @@ then covers the options.
   `modelly export-web` turns a model into a static page that runs with no Python on the reader's machine.
 - [Plugins](plugins.md)\
   add spaces, executors, samplers, collectors, Studio views and lint rules from a separate package.
+- [Accessibility and languages](accessibility.md)\
+  Studio and the docs checked against WCAG 2.2 AA; Studio in French, Spanish, Portuguese and Chinese.
 ```
 
 ## Structure a model
@@ -81,6 +83,7 @@ Figures and animations <figures>
 Studio <studio>
 In the browser <browser>
 Plugins <plugins>
+Accessibility and languages <accessibility>
 ```
 
 ```{toctree}

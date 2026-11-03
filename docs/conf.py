@@ -210,7 +210,7 @@ html_css_files = [
     "modelly.css",
     "landing.css",
 ]
-html_js_files = ["landing-sims.js", "landing.js"]
+html_js_files = ["landing-sims.js", "landing.js", "a11y.js"]
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied

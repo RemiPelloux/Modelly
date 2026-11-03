@@ -1,4 +1,6 @@
 # Getting started
+Also in [Français](translations/fr/getting_started.md), [Español](translations/es/getting_started.md), [Português](translations/pt/getting_started.md) and [中文](translations/zh/getting_started.md).
+
 Modelly is a modular framework for building, analyzing and visualizing agent-based models.
 
 **Agent-based models** are computer simulations involving multiple entities (the agents) acting and interacting with one another based on their programmed behavior. Agents can be used to represent living cells, animals, individual humans, even entire organizations or abstract entities. Sometimes, we may have an understanding of how the individual components of a system behave, and want to see what system-level behaviors and effects emerge from their interaction. Other times, we may have a good idea of how the system overall behaves, and want to figure out what individual behaviors explain it. Or we may want to see how to get agents to cooperate or compete most effectively. Or we may just want to build a cool toy with colorful little dots moving around.
@@ -31,7 +33,7 @@ If you want to learn how to build agent-based models step by step using Modelly,
 - [Modelly best practices](best-practices): an overview of tips and guidelines for using Modelly.
 
 ## Courses and domain tutorials
-- [Course](course/index): eight sessions that take a class from a first model to a validated, reproducible study of its own.
+- [Course](course/index): twelve sessions that take a class from a first model to a validated, reproducible study of its own.
 - [Domain tutorials](tutorials/domains/index): one tutorial per field, each built on a model of the zoo.
 
 ## Coming from another tool

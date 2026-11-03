@@ -49,6 +49,8 @@ to it works.
 | `--observations FILE.csv` | observations to assimilate, for the [Assimilation tab](#ensembles-and-data-assimilation) |
 | `--analysis FILE.py:FUNCTION` | posteriors and sensitivity results, for the [Analysis tab](#calibration-and-sensitivity) |
 | `--hub NAME` | open a model of the [hub](hub.md) by name instead of a target |
+| `--language CODE` | the labels in `fr`, `es`, `pt` or `zh` (see [Accessibility and languages](accessibility.md)) |
+| `--classroom DIR` | a folder shared by a class: the instructor shares parameters, students submit runs (see below) |
 | `--no-code` | only the tabs for people who do not write code (see [Studio for everyone](#studio-for-everyone)) |
 
 Exit status: 0 when the server stopped normally, 1 when the model raised while being built, 2
@@ -85,6 +87,12 @@ The Profiler, Lint, Log and Agents tabs are left out.
   one ordinary `model.py` and downloads it. Every combination of behaviours writes code that
   runs and that `modelly lint` passes (`tests/studio/test_studio_everyone.py`).
   `modelly.new.builder.build_code(ModelSpec(...))` does the same from Python.
+
+**Classroom.** With `--classroom DIR`, a folder every student's Studio can reach (a shared
+drive, or one machine serving the class), the Classroom tab shares the instructor's parameter
+values (new sessions start from them) and lets each student submit their run: name, values,
+seed, steps and the final value of every model reporter. Everyone sees the table of the
+class's runs, to compare them.
 
 The Export panel's **Report (HTML)** and **Report (PDF)** write a report to hand to someone
 who will not open Studio. The HTML report is one self-contained file. It holds:
