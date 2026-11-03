@@ -10,7 +10,8 @@ version = "1.0.0"
 description = "An example plugin for Modelly: a space, a sampler, a collector, an executor, a lint rule and a Studio view"
 requires-python = ">=3.12"
 license = "Apache-2.0"
-dependencies = ["modelly-abm", "networkx"]
+# The Modelly versions the plugin supports (plugin API v1, frozen for 1.x).
+dependencies = ["modelly-abm>=1.4,<2", "networkx"]
 
 [project.entry-points."modelly.spaces"]
 ring = "modelly_example_plugin.space:Ring"

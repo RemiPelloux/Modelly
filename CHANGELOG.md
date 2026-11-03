@@ -22,6 +22,14 @@ versioning.
   (the model changed since). Every zoo model has a card, rendered at the end of its docs page
   and checked by the test suite; a `modelly-card-check` pre-commit hook. Guide:
   `docs/model_cards.md`.
+- Plugin API v1: the entry-point groups, `Plugin`, `discover`, `load_all` and `PluginError`
+  are stable and frozen for 1.x (`modelly.plugins.API_VERSION = 1`). A plugin's requirement on
+  `modelly-abm` (`"modelly-abm>=1.5,<2"`) is read as its compatibility declaration
+  (`Plugin.requires`, `Plugin.compatible`); a plugin excluding the running version raises
+  `PluginError` on load instead of being imported. `modelly plugins [--check]` lists the
+  installed plugins with their declaration and status; `modelly new --template plugin` writes
+  a tested plugin package. The example plugin declares `modelly-abm>=1.4,<2`.
+
 ### Documentation
 
 - What's new (`docs/whats_new.md`): each release from 1.0.0 to 1.4.3 in a few lines per

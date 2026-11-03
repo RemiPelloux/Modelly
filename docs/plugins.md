@@ -5,6 +5,19 @@ rules to Modelly without any change to Modelly itself. It declares them as
 [entry points](https://packaging.python.org/en/latest/specifications/entry-points/) in its
 `pyproject.toml`, and Modelly finds them once the package is installed.
 
+```bash
+modelly new hexworld --template plugin   # a plugin package, tested, for Modelly 1.x
+modelly plugins --check                  # what is installed, for which Modelly, and does it load
+```
+
+## Plugin API v1
+
+The entry-point groups below, `Plugin`, `discover`, `load_all` and `PluginError` are the
+plugin API, version 1 (`modelly.plugins.API_VERSION`). They are **stable and frozen for the
+1.x line**: no group is renamed or removed and the loading rules below do not change before
+2.0, which carries them over unchanged or with a migration path. A plugin written for 1.5 keeps
+working in every later 1.x release.
+
 ## Entry-point groups
 
 | Group | What the entry point names |
@@ -57,6 +70,45 @@ halton = "hexworld.sampling:halton"
 
 After `pip install modelly-hexworld` (or `pip install -e .` while you develop it) the
 entry points are visible to every Python process using that environment.
+
+### Which Modelly a plugin supports
+
+A plugin declares the Modelly versions it works with as an ordinary dependency, with a lower
+bound on the minor version it was written for and an upper bound below the next major:
+
+```toml
+[project]
+dependencies = ["modelly-abm>=1.5,<2"]
+```
+
+Modelly reads that requirement from the installed metadata (`Plugin.requires`, here
+`">=1.5,<2"`). When the running version is outside it, `Plugin.compatible` is false and
+`load()` raises `PluginError` without importing the plugin's code, so a plugin built for
+another version is skipped with a warning by the feature that reads it instead of failing
+inside it. A plugin that does not mention `modelly-abm` loads as before (`requires` is None);
+`modelly plugins` marks it as declaring no version.
+
+### Starting from the template
+
+`modelly new hexworld --template plugin` writes a package with one entry point (a stratified
+design sampler under `modelly.samplers`), the declaration above for the running minor version,
+and tests that check the entry point and that the same seed gives the same points. Replace the
+sampler with your extension, or add modules and entry points next to it.
+
+### Checking what is installed
+
+```text
+$ modelly plugins --check
+Modelly 1.5.0, plugin API v1
+modelly.spaces: 1
+  ring            modelly-example-plugin      modelly-abm>=1.4,<2     ok
+modelly.executors: 1
+  in_order        modelly-example-plugin      modelly-abm>=1.4,<2     ok
+...
+```
+
+Without `--check` nothing is imported; with it every plugin is loaded, and the command exits
+with 1 when one is incompatible or fails to import.
 
 ## Finding and loading plugins
 

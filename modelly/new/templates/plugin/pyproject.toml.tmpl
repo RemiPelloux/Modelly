@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "{project}"
+version = "0.1.0"
+description = "{description}"
+readme = "README.md"
+requires-python = ">=3.12"
+# The Modelly versions this plugin supports: plugin API v1 is frozen for the 1.x line, and
+# `modelly plugins` refuses to load the plugin under a Modelly outside this range.
+dependencies = ["{requirement}"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+# One entry point per extension. The other groups are modelly.spaces, modelly.executors,
+# modelly.collectors, modelly.studio_views and modelly.lint_rules (see docs/plugins.md).
+[project.entry-points."modelly.samplers"]
+{package}_jitter = "{package}.sampler:jittered"
+
+[tool.hatch.build.targets.wheel]
+packages = ["{package}"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

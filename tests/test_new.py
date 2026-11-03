@@ -49,7 +49,8 @@ def test_template_passes_its_test_and_lint(tmp_path, template):
     project = tmp_path / f"demo-{template}"
     written = create_project(project, template)
     names = {path.relative_to(project).as_posix() for path in written}
-    assert names == {name.replace("{package}", f"demo_{template}") for name in EXPECTED}
+    expected = {path for _, path in TEMPLATES[template].files} or EXPECTED
+    assert names == {name.replace("{package}", f"demo_{template}") for name in expected}
     result = run_pytest(project)
     assert result.returncode == 0, result.stdout + result.stderr
     config = load_config(project)
@@ -70,6 +71,22 @@ def test_files_have_no_placeholders_left(tmp_path):
     readme = (project / "README.md").read_text(encoding="utf-8")
     assert "ODD" in readme and "ForestFireModel" in readme
     assert not list(project.rglob("*.sh")) and not list(project.rglob("*.ps1"))
+
+
+def test_the_plugin_template_declares_modelly_1x(tmp_path):
+    """A plugin project requires this minor version and caps below the next major."""
+    create_project(tmp_path / "hex-world", "plugin")
+    pyproject = (tmp_path / "hex-world" / "pyproject.toml").read_text(encoding="utf-8")
+    major, minor = modelly_version().split(".")[:2]
+    assert f'"modelly-abm>={major}.{minor},<{int(major) + 1}"' in pyproject
+    assert 'hex_world_jitter = "hex_world.sampler:jittered"' in pyproject
+
+
+def modelly_version() -> str:
+    """The running Modelly's version."""
+    import modelly  # noqa: PLC0415
+
+    return modelly.__version__
 
 
 def test_names():

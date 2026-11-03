@@ -27,6 +27,11 @@ whose notes are missing (see "Release notes" in
   affect. `modelly card stamp` runs the validation tests and records the source they passed
   on, and `modelly card check` fails once the model has changed since. All seventeen zoo models
   have one, at the end of their page. [Model cards](model_cards.md)
+- **Plugin API v1**: the way packages extend Modelly is now stable and frozen for 1.x. A
+  plugin says which Modelly it supports with its usual `modelly-abm>=1.5,<2` dependency, and a
+  plugin built for another version is skipped instead of breaking the run.
+  `modelly new --template plugin` starts one, and `modelly plugins --check` shows what is
+  installed. [Plugins](plugins.md)
 
 ## 1.4.3 - 2026-11-02
 

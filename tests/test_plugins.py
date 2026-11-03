@@ -9,12 +9,13 @@ from modelly.plugins import GROUPS, PluginError, discover, load_all
 MODULE = "fake_modelly_plugin"
 
 
-def install(root, dist, entry_points, module_source=None):
+def install(root, dist, entry_points, module_source=None, requires=()):
     """Write a ``<dist>-1.0.dist-info`` with ``entry_points`` and, optionally, a module."""
     info = root / f"{dist}-1.0.dist-info"
     info.mkdir()
+    lines = "".join(f"Requires-Dist: {entry}\n" for entry in requires)
     (info / "METADATA").write_text(
-        f"Metadata-Version: 2.1\nName: {dist}\nVersion: 1.0\n", encoding="utf-8"
+        f"Metadata-Version: 2.1\nName: {dist}\nVersion: 1.0\n{lines}", encoding="utf-8"
     )
     lines = []
     for group, entries in entry_points.items():
@@ -84,3 +85,43 @@ def test_other_groups_and_unknown_group(fake_site):
     assert samplers["halton"].load()() == 0
     assert discover("modelly.studio_views") == {}
     assert discover("not.a.group") == {}
+
+
+@pytest.mark.parametrize(
+    ("requires", "declared", "compatible"),
+    [
+        ((), None, True),
+        (("numpy", "modelly-abm>=1.0,<99"), ">=1.0,<99", True),
+        (("Modelly_ABM (<1.0)",), "<1.0", False),
+        (("modelly-abm<1.0 ; extra == 'old'",), None, True),
+    ],
+)
+def test_a_plugin_declares_the_modelly_it_supports(
+    tmp_path, monkeypatch, requires, declared, compatible
+):
+    """The requirement on modelly-abm is read; an excluded version refuses to load."""
+    install(
+        tmp_path, "verplug", {"modelly.samplers": {"v": "json:dumps"}}, None, requires
+    )
+    monkeypatch.syspath_prepend(str(tmp_path))
+    plugin = discover("modelly.samplers")["v"]
+    assert (plugin.requires, plugin.compatible) == (declared, compatible)
+    if compatible:
+        assert callable(plugin.load())
+    else:
+        with pytest.raises(PluginError, match=r"requires modelly-abm<1\.0"):
+            plugin.load()
+        assert set(load_all("modelly.samplers")[1]) == {"v"}
+
+
+def test_modelly_plugins_reports_and_checks(fake_site, capsys):
+    """``modelly plugins`` lists every group; ``--check`` fails on the broken plugin."""
+    from modelly._plugins_cli import main  # noqa: PLC0415
+
+    with pytest.warns(RuntimeWarning):
+        assert main([]) == 0
+    out = capsys.readouterr().out
+    assert "modelly.spaces: 2" in out and "modelly.executors: none" in out
+    with pytest.warns(RuntimeWarning):
+        assert main(["--check"]) == 1
+    assert "fails to load" in capsys.readouterr().out

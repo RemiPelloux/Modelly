@@ -1,0 +1,33 @@
+"""The plugin declares its entry point and its sampler is reproducible."""
+
+import tomllib
+from pathlib import Path
+
+import numpy as np
+
+from modelly.experiments import ScenarioSpace
+from modelly.plugins import discover
+from {package}.sampler import jittered
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_the_entry_point_names_the_factory():
+    """pyproject.toml points modelly.samplers at the factory, and declares modelly-abm."""
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    points = project["project"]["entry-points"]["modelly.samplers"]
+    assert points == {"{package}_jitter": "{package}.sampler:jittered"}
+    assert any(d.startswith("modelly-abm") for d in project["project"]["dependencies"])
+    installed = discover("modelly.samplers").get("{package}_jitter")
+    if installed is not None:  # once `pip install -e .` has run
+        assert installed.compatible and installed.load() is jittered
+
+
+def test_same_seed_same_points_one_per_stratum():
+    """Each dimension gets one point in each of its n strata, the same for the same seed."""
+    space = ScenarioSpace(rate=(0.0, 1.0), share=(0.0, 1.0))
+    first = jittered(8).points(space, np.random.default_rng(1))
+    again = jittered(8).points(space, np.random.default_rng(1))
+    assert first == again
+    rates = sorted(point["rate"] for point in first)
+    assert [int(rate * 8) for rate in rates] == list(range(8))

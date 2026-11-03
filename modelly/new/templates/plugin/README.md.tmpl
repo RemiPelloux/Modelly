@@ -1,0 +1,30 @@
+# {title}
+
+{description}
+
+Made with `modelly new --template plugin`. The package `{package}/` holds a design sampler;
+`pyproject.toml` declares it under the `modelly.samplers` entry-point group and says which
+Modelly versions it supports (`{requirement}`).
+
+## Set up and test
+
+```bash
+python -m venv .venv
+source .venv/bin/activate            # Windows: .venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
+python -m pytest
+modelly plugins --check              # the sampler is found, compatible and loads
+```
+
+## Use it
+
+```toml
+# an experiment file (modelly experiment run study.toml)
+[design]
+kind = "{package}_jitter"
+n = 20
+```
+
+Add a space, an executor, a collector, a Studio view or a lint rule the same way: one module,
+one entry point in its group. The groups and what each entry point must name are in the
+[plugins guide](https://remipelloux.github.io/Modelly/dev/plugins.html).

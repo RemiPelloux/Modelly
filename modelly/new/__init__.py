@@ -20,10 +20,27 @@ __all__ = ["TEMPLATES", "ProjectError", "Template", "create_project", "placehold
 
 @dataclass(frozen=True)
 class Template:
-    """A project template: what it models and the extra it needs from modelly-abm."""
+    """A project template: what it models and the extra it needs from modelly-abm.
+
+    ``files`` replaces the model project's files (a plugin is not a model), and
+    ``pin_major`` caps the requirement below the next major version, as a plugin declares
+    the Modelly versions it supports.
+    """
 
     summary: str
     extra: str = ""
+    files: tuple[tuple[str, str], ...] = ()
+    pin_major: bool = False
+
+
+PLUGIN_FILES = (
+    ("plugin/pyproject.toml.tmpl", "pyproject.toml"),
+    ("plugin/README.md.tmpl", "README.md"),
+    ("common/gitignore.tmpl", ".gitignore"),
+    ("plugin/__init__.py.tmpl", "{package}/__init__.py"),
+    ("plugin/sampler.py.tmpl", "{package}/sampler.py"),
+    ("plugin/test_plugin.py.tmpl", "tests/test_plugin.py"),
+)
 
 
 TEMPLATES = {
@@ -36,6 +53,11 @@ TEMPLATES = {
     ),
     "llm": Template(
         "citizens deciding their opinion by asking a language model, offline"
+    ),
+    "plugin": Template(
+        "a plugin package: a design sampler under an entry point, for Modelly 1.x",
+        files=PLUGIN_FILES,
+        pin_major=True,
     ),
 }
 
@@ -108,6 +130,7 @@ def placeholders(project: str, template: str) -> Placeholders:
     base = base.removesuffix(MODEL_SUFFIX) or base
     version = ".".join(modelly.__version__.split(".")[:2])
     extra = f"[{TEMPLATES[template].extra}]" if TEMPLATES[template].extra else ""
+    cap = f",<{int(version.split('.')[0]) + 1}" if TEMPLATES[template].pin_major else ""
     return Placeholders(
         project=project,
         package=package,
@@ -115,13 +138,21 @@ def placeholders(project: str, template: str) -> Placeholders:
         model_class=base + MODEL_SUFFIX,
         scenario_class=base + "Scenario",
         template=template,
-        description=f"An agent-based model: {TEMPLATES[template].summary}.",
-        requirement=f"modelly-abm{extra}>={version}",
+        description=_description(template),
+        requirement=f"modelly-abm{extra}>={version}{cap}",
     )
+
+
+def _description(template: str) -> str:
+    """The project's one-line description."""
+    kind = "A Modelly plugin" if TEMPLATES[template].files else "An agent-based model"
+    return f"{kind}: {TEMPLATES[template].summary}."
 
 
 def project_files(template: str) -> list[tuple[str, str]]:
     """(template file, project path) for every file a ``template`` project has."""
+    if TEMPLATES[template].files:
+        return list(TEMPLATES[template].files)
     own = [(f"{template}/{module}.tmpl", f"{{package}}/{module}") for module in MODULES]
     return [*own, *COMMON_FILES]
 

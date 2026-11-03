@@ -40,8 +40,12 @@ def _write_dist_info(site: Path) -> None:
     info = site / "modelly_example_plugin-1.0.0.dist-info"
     info.mkdir()
     name = project["project"]["name"]
+    requires = "".join(
+        f"Requires-Dist: {d}\n" for d in project["project"]["dependencies"]
+    )
     (info / "METADATA").write_text(
-        f"Metadata-Version: 2.1\nName: {name}\nVersion: 1.0.0\n", encoding="utf-8"
+        f"Metadata-Version: 2.1\nName: {name}\nVersion: 1.0.0\n{requires}",
+        encoding="utf-8",
     )
     lines = []
     for group, points in project["project"]["entry-points"].items():
@@ -96,8 +100,11 @@ class RingWalk(Model):
 
 
 def test_the_plugin_declares_every_group(installed):
-    """One entry point in each group Modelly defines."""
+    """One entry point in each group Modelly defines, for the Modelly 1.x it supports."""
     assert all(discover(group) for group in GROUPS)
+    ring = discover("modelly.spaces")["ring"]
+    assert ring.requires == ">=1.4,<2"
+    assert ring.compatible
 
 
 def test_space_and_collector_run_in_a_model(installed):

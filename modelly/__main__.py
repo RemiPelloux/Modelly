@@ -99,6 +99,11 @@ COMMANDS = (
         "write an ODD protocol skeleton of a model",
     ),
     (
+        "plugins",
+        "modelly._plugins_cli",
+        "list the installed plugins and the Modelly versions they support",
+    ),
+    (
         "card",
         "modelly.card.__main__",
         "write, check and show model cards (intended use, validation, limits)",

@@ -1,0 +1,42 @@
+"""A design sampler: ``n`` points, one in each of ``n`` strata of every dimension.
+
+Once the plugin is installed, an experiment file selects it by its entry-point name::
+
+    [design]
+    kind = "{package}_jitter"
+    n = 20
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+import numpy as np
+
+from modelly.experiments.designs import Design
+
+
+@dataclass
+class Jittered(Design):
+    """Stratified points: each dimension's range cut in ``n`` strata, one point in each."""
+
+    n: int
+    kind = "{package}_jitter"
+
+    def points(self, space, rng):
+        """The design's points from the experiment's design stream ``rng``.
+
+        The same experiment seed gives the same points.
+        """
+        if not space.dimensions:
+            return [space.complete({})]
+        width = len(space.dimensions)
+        strata = np.repeat(np.arange(self.n)[:, None], width, axis=1)
+        cells = rng.permuted(strata, axis=0)
+        sample = (cells + rng.random((self.n, width))) / self.n
+        return [space.point(row) for row in sample]
+
+
+def jittered(n: int) -> Jittered:
+    """What the entry point names: a factory taking the number of points."""
+    return Jittered(n)

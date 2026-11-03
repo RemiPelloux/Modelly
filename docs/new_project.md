@@ -43,6 +43,7 @@ command in its README is `python -m ...`, which runs the same everywhere.
 | `cohort` | colonies whose individuals are counted by age class, not one object each | `CohortTable` with binomial survival and births |
 | `geo` | news spreads among residents who walk a town of square districts, in metres | `GeoSpace`, `GeoAgent`, a `Column` (the `geo` extra) |
 | `llm` | citizens ask a language model what they now think of a proposal, after talking to a few others | `LLMAgent`, `decide_all`, a `Client` with an offline `FakeProvider` |
+| `plugin` | not a model: a package that extends Modelly, here with a stratified design sampler | a `modelly.samplers` entry point, `modelly-abm>=X.Y,<2` declared (see [Plugins](plugins.md)) |
 
 The `geo` template builds its districts in code, so it runs offline; `districts()` in
 `model.py` is the one function to replace with `geopandas.read_file(...)` for a real town. The
