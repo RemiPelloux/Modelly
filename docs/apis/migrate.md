@@ -7,3 +7,10 @@ is in [Migrating from Mesa](../migrating_from_mesa.md).
 .. automodule:: modelly.migrate
    :members:
 ```
+
+## Checking a project for 2.0
+
+```{eval-rst}
+.. automodule:: modelly.check_2_0
+   :members:
+```

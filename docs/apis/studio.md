@@ -107,3 +107,40 @@ Modelly Studio, the browser app behind `modelly studio`. How to use it is in
 .. automodule:: modelly.studio.app
    :members: StudioApp, Page, new_session
 ```
+
+## Studio for everyone, languages and classrooms
+
+```{eval-rst}
+.. automodule:: modelly.studio.compare
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.studio.report
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.studio.everyone
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.studio.i18n
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.studio.a11y
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.studio.classroom
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.studio.classroom_view
+   :members:
+```

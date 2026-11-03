@@ -33,7 +33,7 @@ time, pandas data collection, browser visualization. Fast by construction, repro
 
 ---
 
-**Status:** stable, Python 3.12+, release 1.4.2. Every public name has a stability level
+**Status:** stable, Python 3.12+, release 1.5.0. Every public name has a stability level
 (`docs/api_stability.toml`): stable names follow semantic versioning and the deprecation policy;
 the newest packages are marked provisional. The current version is `modelly.__version__`.
 
@@ -116,6 +116,8 @@ pip install "modelly-abm[geo]"       # + geopandas, rasterio, pyproj: geographic
 pip install "modelly-abm[distributed]"  # + mpi4py: split runs over MPI (dask, ray extras too)
 pip install "modelly-abm[gpu]"       # + CuPy (CUDA); "modelly-abm[diff]" adds JAX, CPU everywhere
 pip install "modelly-abm[calibrate]" # + optuna; xarray, mqtt and kafka extras likewise
+pip install "modelly-abm[experiments]"  # + pyarrow, duckdb: sweeps, calibration's run store
+pip install "modelly-abm[decide]"    # + optuna: intervention optimisation (modelly.decide)
 ```
 
 To work on Modelly itself, install from a clone instead: see [Development](#development).
@@ -124,7 +126,7 @@ To depend on Modelly from your own project, add it to `pyproject.toml` (the dist
 `modelly-abm`, the import is `modelly`):
 
 ```toml
-dependencies = ["modelly-abm>=1.4"]
+dependencies = ["modelly-abm>=1.5"]
 ```
 
 The full walkthrough, from an empty folder to a tested and replicated model, is
@@ -384,6 +386,30 @@ in the docs it links to, shortfalls included.
   `modelly lint --lsp` for editors, pre-commit hooks, 21 lint rules, strict typing on the
   research packages.
 
+## New in 1.5: ecosystem and collaboration
+
+- **A model hub.** `modelly hub search epidemic`, `modelly hub install within_host`: published
+  models with their card, DOI and checksums, from a public index
+  ([hub](https://github.com/RemiPelloux/modelly-hub)); `modelly hub publish` prepares yours
+  ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/hub.md)).
+- **Model cards.** Every zoo model says what it is for, what it must not be used for and how it
+  was validated; `modelly card check` fails when a model changed since its validation ran
+  ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/model_cards.md)).
+- **Decisions and causes.** Strategies compared on common random numbers with intervals,
+  cost-effectiveness, robust decisions across futures, treatment effects, attribution,
+  counterfactuals ([decisions](https://github.com/RemiPelloux/Modelly/blob/main/docs/decide.md), [causes](https://github.com/RemiPelloux/Modelly/blob/main/docs/explain.md)).
+- **Continuous dynamics in agents.** An ODE in every agent with events, time-varying inputs,
+  delays, stochastic equations, a mean-field companion and gradients; `solve_batch` takes each
+  system's own `solve_ivp` steps for a whole population at once ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/agent_odes.md)).
+- **Language-model agents that remember and talk**: memory, plans, tools, conversations and an
+  evaluation harness ([guide](https://github.com/RemiPelloux/Modelly/blob/main/docs/llm_agents.md)).
+- **R, Julia and Studio for everyone.** `library(modelly)` and `using Modelly`, tested on three
+  OSs; Studio with a no-code mode, scenario comparison, reports, a model builder, a classroom
+  mode, five languages and the WCAG 2.2 AA checks ([R and Julia](https://github.com/RemiPelloux/Modelly/blob/main/docs/r_and_julia.md),
+  [Studio](https://github.com/RemiPelloux/Modelly/blob/main/docs/studio.md), [accessibility](https://github.com/RemiPelloux/Modelly/blob/main/docs/accessibility.md)).
+- **Ready for 2.0.** Plugin API v1 frozen for 1.x; every 2.0 change warns or changes no call, and
+  `modelly migrate --check-2.0` lists what a project must change ([deprecations](https://github.com/RemiPelloux/Modelly/blob/main/docs/deprecations.md)).
+
 ## Modelly, Mesa, NetLogo or Agents.jl?
 
 | | Modelly | Mesa | NetLogo | Agents.jl |
@@ -508,18 +534,23 @@ One package per domain; each `__init__.py` lists its public names in `__all__`.
 | `modelly.gpu` | columns, cohorts and cell operations on CuPy or JAX, Philox streams |
 | `modelly.diff` | JAX-traced phases, gradient checks, `GradientCalibration` |
 | `modelly.stream` | live sources, `Ensemble`, `ParticleFilter`, `EnsembleKalmanFilter` |
-| `modelly.couple` | `Field`, `ODE`, `StockFlow`, the coupling schedule |
+| `modelly.couple` | `Field`, `ODE`, `StockFlow`, the coupling schedule; `AgentODE`, `solve_batch`, `AgentSDE`, delays, the mean-field companion |
+| `modelly.card` | `modelly card`: model cards, checked against the model's source |
+| `modelly.hub` | `modelly hub`: search, install, publish and check published models |
+| `modelly.decide` | strategies compared with intervals, cost-effectiveness, robust decisions, optimisation |
+| `modelly.explain` | treatment effects, attribution, counterfactuals, Shapley values |
+| `modelly.bindings` | the functions the R (`r/modelly`) and Julia (`julia/Modelly.jl`) packages call |
 | `modelly.population` | synthetic populations, households, places, contact networks |
 | `modelly.provenance` | `modelly run`, `verify`, `bundle`, `odd`: manifests and archivable studies |
 | `modelly.timetravel` | checkpoint rings, rewind, replay, branch, run diff |
-| `modelly.llm` | language-model agents with a replayable response cache |
+| `modelly.llm` | language-model agents with a replayable response cache, memory, tools, conversations, evaluation |
 | `modelly.studio` | `modelly studio`, the browser workbench |
 | `modelly.web` | `modelly export-web`, a model as a static site |
 | `modelly.zoo` | 18 validated models, each with a test against a known result and a model card |
 | `modelly.netlogo` | `modelly netlogo`, the NetLogo translator |
 | `modelly.lint` | `python -m modelly.lint`, static checks for models, `--lsp` |
 | `modelly.profile` | `python -m modelly.profile` and `Profiler`, where a running model's time goes |
-| `modelly.migrate` | `python -m modelly.migrate`, the Mesa codemod |
+| `modelly.migrate` | `python -m modelly.migrate`, the Mesa codemod; `--check-2.0` for 1.x projects |
 | `modelly._native` | the five compiled modules (`fastrng`, `fastloop`, `fastcell`, `fastset`, `fastevents`), each with a pure-Python twin |
 
 The top-level names (`modelly.Agent`, `modelly.Model`, `modelly.DataCollector`, `modelly.Column`,
@@ -605,13 +636,13 @@ checks are in [benchmarks/playbooks/results/README.md](https://github.com/RemiPe
 ## Future roadmap
 
 Each release page records what shipped and what fell short, measured: [1.3.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.3.0.md)
-(calibration, sensitivity, experiments, provenance, Studio, the zoo) and [1.4.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.4.0.md)
-(the section above). Next, in order and without dates: [1.5.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.5.0.md),
-a model hub with model cards, policy and causal tools, more language-model agents, R and Julia
-bindings; then [2.0.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/2.0.0.md), one space API, one clock, columns by
-default, typed scenarios, a stable ABI and checkpoint format, with its deprecations already
-announced in [docs/deprecations.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/deprecations.md). Each item keeps today's authoring
-model: you still write a `Model`, an `Agent` subclass and a `Scenario`.
+(calibration, sensitivity, experiments, provenance, Studio, the zoo), [1.4.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.4.0.md)
+(scale out and connect) and [1.5.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.5.0.md) (the section above). Next, without dates:
+[2.0.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/2.0.0.md), one space API, one clock, columns by default, typed scenarios, a
+stable ABI and checkpoint format, with its deprecations already announced in
+[docs/deprecations.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/deprecations.md) and checked by `modelly migrate --check-2.0`. Each
+item keeps today's authoring model: you still write a `Model`, an `Agent` subclass and a
+`Scenario`.
 
 ## Built-in examples
 

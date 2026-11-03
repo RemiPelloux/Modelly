@@ -69,8 +69,11 @@ class ModelCard:
         title: a human-readable title.
         model: the model class, ``package.module:Class``.
         summary: one or two sentences.
-        intended_use, out_of_scope, data, limits, ethics: the sections, a list of
-            statements each.
+        intended_use: the questions the model answers, a list of statements.
+        out_of_scope: the uses it is not fit for.
+        data: the data behind its defaults and inputs.
+        limits: its assumptions and where its results stop holding.
+        ethics: who decisions taken with it could affect.
         validation: the checks and their tests.
         references: citations, one string each.
         sources: globs of the files whose change makes the validation stale, relative to

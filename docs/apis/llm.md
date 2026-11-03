@@ -99,3 +99,30 @@ decisions. How to use them is in [Language-model agents](../llm_agents.md).
 
 .. autoexception:: modelly.llm.DecisionError
 ```
+
+## Memory, reasoning, conversations and evaluation
+
+```{eval-rst}
+.. automodule:: modelly.llm.memory
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.llm.reasoning
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.llm.conversation
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.llm.evaluate
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.llm.market
+   :members:
+```

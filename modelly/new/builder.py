@@ -72,7 +72,8 @@ class ModelSpec:
         name: the model class's name (CapWords); the agent is ``agent``.
         agent: the agent class's name (CapWords).
         count: how many agents.
-        width, height: the grid.
+        width: the grid's width, in cells.
+        height: the grid's height, in cells.
         behaviours: names of ``BEHAVIOURS``, in the order the agent does them each step.
         initially_infected: agents infected at the start (with ``infect``).
     """

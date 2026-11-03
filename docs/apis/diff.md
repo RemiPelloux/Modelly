@@ -43,3 +43,10 @@ respect to their parameters. How to use it, and when the gradients mean somethin
 .. automodule:: modelly.zoo.bass_diffusion.differentiable
    :members:
 ```
+
+## ODEs in a differentiable model
+
+```{eval-rst}
+.. automodule:: modelly.diff.ode
+   :members:
+```

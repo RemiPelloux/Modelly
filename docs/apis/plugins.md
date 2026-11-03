@@ -7,3 +7,10 @@
 .. automodule:: modelly.plugins
    :members:
 ```
+
+## The model builder
+
+```{eval-rst}
+.. automodule:: modelly.new.builder
+   :members:
+```

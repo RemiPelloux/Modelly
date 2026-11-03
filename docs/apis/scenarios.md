@@ -44,3 +44,10 @@ runs many scenarios and keeps their results in a `Store`.
    :members:
    :show-inheritance:
 ```
+
+## Typed scenarios (2.0, announced)
+
+```{eval-rst}
+.. automodule:: modelly.scenarios.typed
+   :members:
+```

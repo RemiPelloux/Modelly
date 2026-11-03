@@ -7,12 +7,12 @@ from the model's own starting state and, after each of the model's steps, record
 model's aggregate state (``observe``) next to the ODE's. ``gap`` is the largest difference,
 which shrinks like ``1 / sqrt(N)`` while sampling noise dominates; ``gap_by_size`` measures it
 over population sizes and fits that exponent, to show where the agent model departs from its
-limit (small populations, extinctions, network structure) and where it does not.
+limit (small populations, extinctions, network structure) and where it does not::
 
     from modelly.couple.meanfield import Companion, MeanField, bass
 
-    companion = Companion(model, MeanField(bass, lambda m: [m.adoption], ("adopted",),
-                                           {"innovation": 0.03, "imitation": 0.38}))
+    rates = {"innovation": 0.03, "imitation": 0.38}
+    companion = Companion(model, MeanField(bass, lambda m: [m.adoption], ("adopted",), rates))
     for _ in range(100):
         model.step()
         companion.advance(model.scenario.dt)

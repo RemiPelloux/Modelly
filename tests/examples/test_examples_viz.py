@@ -59,7 +59,8 @@ def run_model_test(
         if measure_config:
             display(graph_viz)
             page_session.wait_for_selector("img")
-            initial_graph = page_session.locator("img").screenshot()
+            # The space's image may still be on the page: the graph is the last one.
+            initial_graph = page_session.locator("img").last.screenshot()
 
         # Run the model for specified number of steps
         model.run_for(steps)

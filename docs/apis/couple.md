@@ -47,3 +47,37 @@ How to use them is in [ODEs in every agent](../agent_odes.md).
 .. automodule:: modelly.couple.events
    :members: ODEEvent, EventLog
 ```
+
+## Inputs, dense output and delays
+
+```{eval-rst}
+.. automodule:: modelly.couple.inputs
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.couple.dense
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.couple.delay
+   :members:
+```
+
+## Stochastic equations and the mean-field limit
+
+```{eval-rst}
+.. automodule:: modelly.couple.sde
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.couple.agent_sde
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.couple.meanfield
+   :members:
+```
