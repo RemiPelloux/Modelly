@@ -5,6 +5,7 @@
     python scripts/release.py 1.3.0 --apply      do it: commit chore(release) and tag v1.3.0
     python scripts/release.py 1.3.0 --apply --push
                                                  then push main and the tag
+    python scripts/release.py 1.5.0a1 --apply    a pre-release (aN, bN, rcN)
 
 Steps, in order; the first that fails stops the release:
 
@@ -16,8 +17,10 @@ Steps, in order; the first that fails stops the release:
    renamed, otherwise the heading is inserted above the latest release;
 5. the What's new page (``docs/whats_new.md``) must have a written ``## Unreleased``
    section, the release's notes for users, which becomes ``## X.Y.Z - DATE``; without one
-   the release stops, so no version ships without its notes;
-6. one commit ``chore(release): X.Y.Z`` of exactly those four files, with no trailers;
+   the release stops, so no version ships without its notes. A pre-release (``1.5.0a1``,
+   ``1.5.0b1``, ``1.5.0rc1``) checks the notes but leaves them under ``## Unreleased``:
+   they keep growing until the final release, which is the one users read about;
+6. one commit ``chore(release): X.Y.Z`` of exactly those files, with no trailers;
 7. the annotated tag ``vX.Y.Z``; with ``--push``, ``main`` and the tag are pushed.
 
 The release workflow builds the wheels and the docs from the pushed tag. A GitHub release
@@ -46,7 +49,8 @@ INIT = Path("modelly") / "__init__.py"
 CITATION = Path("CITATION.cff")
 CHANGELOG = Path("CHANGELOG.md")
 WHATS_NEW = Path("docs") / "whats_new.md"
-VERSION = re.compile(r"^\d+\.\d+\.\d+$")
+VERSION = re.compile(r"^\d+\.\d+\.\d+((a|b|rc)\d+)?$")
+PRERELEASE = re.compile(r"(a|b|rc)\d+$")
 INIT_LINE = re.compile(r'^__version__ = "[^"]*"$', re.MULTILINE)
 CFF_VERSION = re.compile(r'^version: "[^"]*"$', re.MULTILINE)
 CFF_DATE = re.compile(r'^date-released: "[^"]*"$', re.MULTILINE)
@@ -155,6 +159,8 @@ def bumped_whats_new(text: str, version: str, date: str) -> str:
         raise ReleaseError(
             f"the '## Unreleased' notes in {WHATS_NEW.as_posix()} are empty"
         )
+    if PRERELEASE.search(version):
+        return text
     return UNRELEASED.sub(f"## {version} - {date}", text, count=1)
 
 
@@ -164,12 +170,13 @@ def planned_files(release: Release) -> dict[Path, str]:
     def read(path: Path) -> str:
         return (release.root / path).read_text(encoding=ENCODING)
 
-    return {
+    files = {
         INIT: bumped_init(read(INIT), release.version),
         CITATION: bumped_citation(read(CITATION), release.version, release.date),
         CHANGELOG: bumped_changelog(read(CHANGELOG), release.version, release.date),
         WHATS_NEW: bumped_whats_new(read(WHATS_NEW), release.version, release.date),
     }
+    return {path: text for path, text in files.items() if text != read(path)}
 
 
 def _commit(release: Release, message: str) -> None:
@@ -218,7 +225,7 @@ def build_parser() -> argparse.ArgumentParser:
         description=__doc__.splitlines()[0],
         epilog="Without --apply nothing is written. --push needs --apply.",
     )
-    parser.add_argument("version", help="the version to release, X.Y.Z")
+    parser.add_argument("version", help="the version to release, X.Y.Z or X.Y.ZrcN")
     parser.add_argument("--apply", action="store_true", help="commit and tag")
     parser.add_argument("--push", action="store_true", help="push main and the tag")
     parser.add_argument("--no-gate", action="store_true", help="skip the gate")
@@ -231,7 +238,9 @@ def main(argv: list[str] | None = None) -> int:
     """Parse, validate and cut the release; the exit status says how it went."""
     args = build_parser().parse_args(argv)
     if not VERSION.match(args.version) or (args.push and not args.apply):
-        sys.stderr.write("release: the version is X.Y.Z, and --push needs --apply\n")
+        sys.stderr.write(
+            "release: the version is X.Y.Z or X.Y.ZaN/bN/rcN, and --push needs --apply\n"
+        )
         return EXIT_USAGE
     date = args.date or dt.datetime.now(dt.UTC).date().isoformat()
     release = Release(

@@ -176,3 +176,17 @@ def test_changelog_edits_are_refused_when_impossible():
         release.bumped_changelog("# Changelog\n", VERSION, DATE)
     with pytest.raises(release.ReleaseError, match="__version__"):
         release.bumped_init("nothing", VERSION)
+
+
+def test_a_pre_release_records_the_changelog_and_keeps_the_notes(repo):
+    """1.3.0rc1 gets its changelog heading; What's new stays Unreleased for the final."""
+    assert release.main(["1.3.0rc1", "--root", str(repo), "--date", DATE, "--no-gate",
+                         "--apply"]) == EXIT_OK  # fmt: skip
+    assert "## 1.3.0rc1 - " in (repo / "CHANGELOG.md").read_text(encoding="utf-8")
+    whats_new = (repo / "docs/whats_new.md").read_text(encoding="utf-8")
+    assert whats_new == FILES["docs/whats_new.md"]
+    assert _git(repo, "tag") == "v1.3.0rc1"
+    assert _git(repo, "show", "--name-only", "--format=", "HEAD").split() == [
+        "CHANGELOG.md", "CITATION.cff", "modelly/__init__.py",
+    ]  # fmt: skip
+    assert release.main(["1.3.0c1", "--root", str(repo)]) == EXIT_USAGE
