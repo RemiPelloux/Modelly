@@ -9,7 +9,7 @@ Each release adds its section here before it is tagged: the release script refus
 whose notes are missing (see "Release notes" in
 [CONTRIBUTING](https://github.com/RemiPelloux/Modelly/blob/main/CONTRIBUTING.md)).
 
-## Unreleased
+## 1.5.0 - 2026-11-03
 
 **Ecosystem and collaboration.** Publish a model on the hub with its card, decide and explain
 with intervals, give agents memories and inner dynamics, and work from R, Julia, a classroom or
