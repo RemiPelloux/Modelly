@@ -16,6 +16,7 @@
 #   studio    Studio's views in headless Chromium, Firefox and WebKit (Playwright browsers;
 #             MODELLY_BROWSER_EXECUTABLE points WebKit at a wrapper where its libraries lack)
 #   docs      the documentation builds with warnings as errors
+#   a11y      axe-core finds no WCAG 2.2 A or AA violation on the docs and on Studio (en, fr, ar)
 #   native    the compiled modules and their pure-Python twins, a wheel that must compile
 #             them all, and the free-threaded build when FT_PYTHON names its interpreter
 #   bench     every playbook against the last release (or AGAINST=x.y.z), results identical
@@ -27,10 +28,11 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT" || exit 1
 PYTHON="${PYTHON:-.venv/bin/python}"
 WORK="$ROOT/build/release-checks"
-STAGES=(native mpi slurm bundles pyodide browser studio docs bench)
+STAGES=(native mpi slurm bundles pyodide browser studio docs a11y bench)
 STEPS=20
 SEED=7
 PYODIDE_VERSION=314.0.7  # keep in step with modelly.web.export.PYODIDE_VERSION
+AXE_VERSION=4.10.3
 WEBKIT_WRAPPER="${WEBKIT_WRAPPER:-$ROOT/build/webkit-libs/MiniBrowser}"
 STUDIES=(
   "boltzmann modelly.examples.basic.boltzmann_wealth_model.model:BoltzmannWealth"
@@ -115,6 +117,17 @@ stage_studio() {
 
 stage_docs() {
   "$PYTHON" -m sphinx -b html -W --keep-going -q docs "$WORK/docs"
+}
+
+stage_a11y() {
+  need npm "comes with Node.js" || return 1
+  "$PYTHON" -c "import playwright" 2>/dev/null ||
+    { echo "missing: playwright for Python (pip install playwright; playwright install chromium)"; return 1; }
+  local dir="$WORK/a11y"
+  mkdir -p "$dir" &&
+    (cd "$dir" && npm install --no-save --no-audit --no-fund "axe-core@$AXE_VERSION" >/dev/null) &&
+    MODELLY_NB_EXECUTION=off "$PYTHON" -m sphinx -b html -q docs "$dir/html" &&
+    "$PYTHON" scripts/a11y-audit.py "$dir/node_modules/axe-core/axe.min.js" "$dir/html"
 }
 
 if [[ "${1:-}" == "--list" ]]; then
