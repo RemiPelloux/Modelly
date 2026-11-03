@@ -19,6 +19,13 @@ whose notes are missing (see "Release notes" in
   tight intervals; see which are cost-effective and at what price; check which hold up across
   many possible futures; and search a policy's parameters. A worked study asks which age group
   should get 10,000 vaccine doses. [Decisions](decide.md)
+- **Accessible, and in five languages**: Studio and the docs pass the automated WCAG 2.2 AA
+  checks; Studio can be zoomed, works with screen readers and the keyboard, and speaks
+  French, Spanish, Portuguese and Chinese (`--language fr`), right to left where the language
+  is. The getting-started page is translated too. [Accessibility and languages](accessibility.md)
+- **For classes**: a twelve-session course with instructor notes and assessments, a track for
+  instructors coming from NetLogo, and a classroom mode in Studio where the instructor shares
+  parameters and every student's run lands in one table. [Course](course/index.md)
 - **Studio for everyone**: open a hub model by name with no code tabs
   (`modelly studio --hub age_seir --no-code`), compare scenarios with intervals, read the
   model card, build a teaching model from a form and download its code, and export a report

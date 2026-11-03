@@ -7,6 +7,25 @@ versioning.
 
 ### Added
 
+- Accessibility: Studio and the docs pass axe-core's WCAG 2.0 to 2.2 A and AA rules on the
+  pages audited, Studio in English, French (no-code) and Arabic (right to left). Studio's page
+  can be zoomed, names its sliders, icon buttons and plots, raises the contrast of labels and
+  the app bar, shows a focus ring and declares its language
+  (`modelly/templates/index.html.j2`, `modelly/studio/a11y.py`). The docs name the sidebar's
+  toggles and darken code comments. `scripts/release-checks.sh a11y` fails on any violation.
+  Guide: `docs/accessibility.md`.
+- Studio in other languages: `modelly studio --language fr|es|pt|zh` (`modelly.studio.i18n`,
+  catalogs in `modelly/studio/locales/`, a test that every label is in every catalog), right
+  to left for Arabic, Hebrew, Persian and Urdu. The getting-started page in French, Spanish,
+  Portuguese and Chinese (`docs/translations/`), drafted and open to review.
+- Classroom mode: `modelly studio --classroom DIR` (`modelly.studio.classroom`): the
+  instructor shares parameters, students submit runs, the Classroom tab shows the class's
+  table.
+- Course pack v2: twelve sessions (model cards and the hub, decisions, causes, ODEs inside
+  agents), instructor notes with timings and assessments (a project rubric, two graded
+  exercises), and a track for instructors moving a NetLogo course (`docs/course/`).
+- The release workflow tests the R and Julia packages on Linux, macOS and Windows before
+  publishing.
 - Studio for everyone: a Compare tab (one parameter varied, scenarios ranked on paired
   replicates with intervals, `modelly.studio.compare`), a Card tab, a Builder tab (a model from
   a form, `modelly.new.builder.build_code`: every combination of its four behaviours runs and
