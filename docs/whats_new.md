@@ -22,6 +22,13 @@ whose notes are missing (see "Release notes" in
 - **The state inside a step**: with `dense_output=True`, `ode.at(t)` reads every agent's state
   at any time of the last step on the solver's interpolant, so an agent acting at 14:00 sees
   the value at 14:00. [ODEs in every agent](agent_odes.md#reading-the-state-inside-the-step)
+- **Delays, noise and the mean-field limit**: an agent's equation can read its own state some
+  time ago (`Delay`), carry noise drawn from the model's seed (`AgentSDE`, Euler-Maruyama or
+  Milstein), and run next to its ODE limit to show how far the agents stray from it
+  (`Companion`). [ODEs in every agent](agent_odes.md#delay-equations)
+- **ODE parameters by gradient**: `ode_phase` puts an ODE into a differentiable model, so a
+  clearance or growth rate is fitted to data by gradient descent.
+  [Differentiable models](differentiable.md#odes-in-a-differentiable-model)
 - **A zoo model with an ODE in every host**: `within_host`, an outbreak whose hosts each carry
   a viral-load ODE and become infectious the instant their load crosses a threshold. A hundred
   thousand hosts run sixty days in about fourteen seconds.

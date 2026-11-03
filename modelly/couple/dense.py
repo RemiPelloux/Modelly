@@ -72,6 +72,10 @@ class BatchDense:
                 f"time {t[i]} is outside system {i}'s span "
                 f"[{self.start[i]}, {self.final[i]}]"
             )
+        return self.values(t)
+
+    def values(self, t: np.ndarray) -> np.ndarray:
+        """The states at ``t`` (one time per system), unchecked; a NaN time reads ``y0``."""
         out = self.y0.copy()
         for seg in self.segments:
             tq = t[seg.rows]

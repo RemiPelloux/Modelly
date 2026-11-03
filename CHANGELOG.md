@@ -15,6 +15,21 @@ versioning.
   that reads every system at any time of its span on the Runge-Kutta interpolant;
   `AgentODE(..., dense_output=True).at(t)` reads every agent's state inside the last step,
   after event resets too, on the batched and the stiff path.
+- Delay equations: `AgentODE(delays={name: Delay(variable, tau, before)})` passes each agent's
+  state `tau` ago to the right-hand side, by the method of steps on the kept dense output,
+  keyed by agent id (births and deaths keep their own past) and saved in checkpoints. Equal to
+  the closed form of `y' = -a y(t - 1)` to `rtol` for any model step.
+- Stochastic equations: `modelly.couple.AgentSDE` and `solve_sde_batch`, Euler-Maruyama or the
+  derivative-free Milstein scheme with diagonal noise, increments from `model.rng` (a resumed
+  run equals a straight one). Strong orders measured on geometric Brownian motion: 0.53 and
+  0.95.
+- The mean-field companion: `modelly.couple.Companion` runs an agent model's ODE limit
+  (`MeanField`; `sir`, `lotka_volterra` and `bass` included) next to it and reports the gap;
+  `gap_by_size` fits its power of the population size (-0.47 on the Bass zoo model).
+- `modelly.diff.ode_phase`: an ODE per agent in a differentiable model, fourth-order
+  Runge-Kutta differentiated through its steps, so ODE parameters are fitted by gradient
+  (checked against finite differences; the viral rates of the target-cell-limited model
+  recovered to 2%).
 - Zoo model `within_host`: an epidemic between hosts whose infections run as the
   target-cell-limited viral ODE inside each host, integrated with `AgentODE`, onsets and
   clearances located as events. Validated against one `solve_ivp` call per host and against

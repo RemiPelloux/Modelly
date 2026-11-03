@@ -152,3 +152,44 @@ zoo model at known parameters:
 
 The Bouchaud-Mezard estimate is limited by the noise of the observed Gini series (two runs of
 1,000 agents), not by the gradient: with four replicates the same fit gives 1.54 and 1.09.
+
+## ODEs in a differentiable model
+
+`ode_phase(rhs, state, duration=1.0, substeps=64)` is a phase that integrates
+`dy/dt = rhs(t, y, params)` for every agent over one step, `y` of shape
+`(len(state), agents)`, `rhs` written with `jax.numpy`:
+
+```python
+from modelly.diff import DiffModel, GradientCalibration, ode_phase
+
+
+def tiv(t, y, p):
+    cells, infected, virus = y
+    infection = p["beta"] * cells * virus
+    return jnp.stack(
+        [
+            -infection,
+            infection - 2.0 * infected,
+            20.0 * infected - p["clearance"] * virus,
+        ]
+    )
+
+
+model = DiffModel(
+    init,
+    [ode_phase(tiv, ["cells", "infected", "virus"])],
+    outputs={"load": mean_log_virus},
+)
+```
+
+It runs the classical fourth-order Runge-Kutta method on `substeps` equal steps with
+`lax.scan`, and JAX differentiates through those steps: the gradient is the exact gradient of
+the computed solution. An adaptive solver with an adjoint (`jax.experimental.ode.odeint`) is
+not used: its adjoint rebuilds the state by integrating backwards in time, which is unstable
+for systems that decay, such as a virus being cleared, and its gradients then blow up. Check
+the accuracy by halving the step: the error falls sixteen-fold per halving.
+
+`tests/diff/test_ode.py` checks the gradients of the target-cell-limited model against
+central differences, and fits its infection and clearance rates by `GradientCalibration` from
+the prior medians to within 2% of the values that produced the observed loads, computed by
+`solve_batch`.

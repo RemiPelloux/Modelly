@@ -7,7 +7,9 @@
   straight-through, Gumbel-softmax or score-function gradients, which warn
   (:class:`GradientApproximationWarning`) because they are approximations;
 * :func:`check_gradients`: automatic derivatives against finite differences;
-* :class:`GradientCalibration`: Adam on the targets of ``modelly.calibrate``.
+* :class:`GradientCalibration`: Adam on the targets of ``modelly.calibrate``;
+* :func:`ode_phase`: an ODE per agent as a differentiable phase, for ODE parameters
+  fitted by gradient (``modelly.diff.ode``).
 
 ``pip install "modelly-abm[diff]"`` installs JAX (CPU on every OS; add the
 CUDA plugin, or ``jax-metal`` on macOS, for a GPU). ``import modelly.diff``
@@ -24,6 +26,7 @@ from modelly.diff.estimators import (
     GradientApproximationWarning,
 )
 from modelly.diff.model import DiffModel, Phase, Trace, phase
+from modelly.diff.ode import ode_phase
 
 __all__ = [
     "GUMBEL_SOFTMAX",
@@ -39,5 +42,6 @@ __all__ = [
     "Phase",
     "Trace",
     "check_gradients",
+    "ode_phase",
     "phase",
 ]

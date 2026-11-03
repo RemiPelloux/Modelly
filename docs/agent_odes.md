@@ -324,6 +324,111 @@ script has every number.
   depend on the others, the stacked call cannot give it.
 
 
+## Delay equations
+
+When a rate depends on the state some time ago (an immune response that lags the virus, a
+maturation time, a gestation), declare the delayed variable and read it from `params`:
+
+```python
+from modelly.couple import AgentODE, Delay
+
+
+def lagged(t, y, p):
+    return -p["rate"] * p["past"]  # y'(t) = -rate * y(t - 1)
+
+
+ode = AgentODE(
+    model,
+    Cell,
+    lagged,
+    state=["y"],
+    params=["rate"],
+    delays={"past": Delay("y", tau=1.0, before=1.0)},
+)
+```
+
+`p["past"]` is each agent's `y` at `t - tau`. `AgentODE` uses the method of steps: it cuts each
+step into pieces no longer than the shortest delay, so every delayed time falls in a part
+already integrated, and reads it on the dense output of the steps that integrated it. Before an
+agent's first integration it reads `before`, a number or a function of time. The past is kept
+by the agents' unique ids, so agents added or removed between steps keep their own; only as
+much as the longest delay can reach is kept, and it is saved with the model, so a resumed run
+reads the same past. For `y' = -a y(t - 1)` with `y = 1` before 0 the result equals the
+piecewise-polynomial closed form to `rtol` whatever the model's step
+(`tests/couple/test_delay.py`). Delays need an explicit method.
+
+## Stochastic equations
+
+`AgentSDE` integrates an Ito equation with diagonal noise in every agent,
+`dy = drift dt + diffusion dW`, on a fixed sub-step `dt`:
+
+```python
+from modelly.couple import AgentSDE
+
+
+def growth(t, y, p):
+    return 0.05 * y
+
+
+def shocks(t, y, p):
+    return p["volatility"] * y  # geometric Brownian motion, one volatility per firm
+
+
+sde = AgentSDE(
+    model,
+    Firm,
+    growth,
+    shocks,
+    state=["capital"],
+    params=["volatility"],
+    dt=0.01,
+    scheme="milstein",
+)
+```
+
+The Wiener increments are drawn from `model.rng`, so a run is a function of its seed and a
+checkpoint, which saves the generator, resumes the same noise bit for bit. `scheme="euler"` is
+Euler-Maruyama, of strong order one half; `scheme="milstein"` is the derivative-free Milstein
+scheme of Kloeden and Platen, of strong order one for diagonal noise, with no derivative of
+the diffusion to write. Measured on geometric Brownian motion against its exact solution, over
+4,000 paths driven by one Brownian path each at five step sizes, the fitted orders are 0.53
+and 0.95 (`tests/couple/test_sde.py`). `solve_sde_batch` is the same integrator without a
+model; `noise=` drives it with given increments, to compare schemes on one path.
+
+## The mean-field limit
+
+Many agent models have an ODE limit as the population grows. `Companion` runs that limit next
+to the model, from the model's own starting state, and records both after each step:
+
+```python
+from modelly.couple import Companion, MeanField
+from modelly.couple.meanfield import bass
+
+limit = MeanField(
+    bass, lambda m: [m.adoption], ("adopted",), {"innovation": 0.03, "imitation": 0.38}
+)
+companion = Companion(model, limit)
+for _ in range(steps):
+    model.step()
+    companion.advance(model.scenario.dt)
+companion.gap()  # the largest difference; companion.frame() has both curves
+```
+
+`modelly.couple.meanfield` has the limits of the well-mixed SIR epidemic (`sir`),
+Lotka-Volterra (`lotka_volterra`) and Bass diffusion (`bass`); any `solve_ivp`-style function
+works. `gap_by_size(run, sizes, seeds)` measures the gap over population sizes and fits its
+power of the size: on the Bass zoo model, from 250 to 16,000 households, the exponent is
+-0.47, the `1 / sqrt(N)` of sampling noise (`tests/couple/test_meanfield.py`). A flatter
+exponent shows where a model departs from its limit: network structure, extinctions, or its
+own time step, which leaves a floor of the order of `dt`.
+
+## Gradients of ODE parameters
+
+`modelly.diff.ode.ode_phase(rhs, state)` puts an ODE per agent into a
+[differentiable model](differentiable.md), so `check_gradients` and `GradientCalibration` fit
+ODE parameters by gradient. It integrates with fourth-order Runge-Kutta on fixed sub-steps and
+JAX differentiates through them; see [Differentiable models](differentiable.md#odes-in-a-differentiable-model).
+
 ## Checkpoints and determinism
 
 `solve_batch` draws no random numbers and starts every call from the state it is given, so an
@@ -350,6 +455,10 @@ compare results between machines with a tolerance, as for any `solve_ivp` result
 
 ## References
 
+- Kloeden, P. E. and Platen, E. (1992). *Numerical Solution of Stochastic Differential
+  Equations*. Springer.
+- Bellen, A. and Zennaro, M. (2003). *Numerical Methods for Delay Differential Equations*.
+  Oxford University Press.
 Baccam, P., Beauchemin, C., Macken, C. A., Hayden, F. G. and Perelson, A. S. (2006). Kinetics of
 influenza A virus infection in humans. *Journal of Virology*, 80(15), 7590-7599.
 

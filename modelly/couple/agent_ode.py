@@ -27,7 +27,9 @@ from typing import Any
 
 import numpy as np
 
+from modelly.core.columns import ID_COLUMN
 from modelly.couple.batch import METHODS, solve_batch
+from modelly.couple.delay import Delay, Delayed, History, chunks
 from modelly.couple.dense import StackedDense
 from modelly.couple.events import ODEEvent
 from modelly.couple.inputs import Input, evaluated
@@ -74,14 +76,16 @@ class AgentODE:
         events: Sequence[ODEEvent] = (),
         forcings: Mapping[str, Input] | None = None,
         dense_output: bool = False,
+        delays: Mapping[str, Delay] | None = None,
     ) -> None:
         """Integrate the columns ``state`` of ``agent_class``; ``params`` are read-only columns.
 
         ``reads`` are coupling quantities passed to ``rhs`` in ``params`` by name, held over
         the step; ``forcings`` are inputs passed by name, read at each stage's time.
-        ``dense_output`` keeps the last step's interpolant for ``at``. ``rhs``, the events'
-        functions and the forcings' functions must be module-level functions or methods
-        for the model to be saved.
+        ``dense_output`` keeps the last step's interpolant for ``at``. ``delays`` maps names
+        to ``Delay`` objects: ``rhs`` reads each agent's state variable ``tau`` ago
+        (``modelly.couple.delay``). ``rhs``, the events' functions and the forcings'
+        functions must be module-level functions or methods for the model to be saved.
         """
         self.model, self.agent_class, self.rhs = model, agent_class, rhs
         self.state, self.params = tuple(state), tuple(params)
@@ -96,7 +100,22 @@ class AgentODE:
             )
         if self.events and self.solver.method in STIFF:
             raise CouplingError(f"AgentODE events need an explicit method {METHODS}")
+        self.delays = dict(delays or {})
+        self.history = self._history()
         self.label = f"AgentODE {getattr(rhs, '__name__', type(rhs).__name__)!r}"
+
+    def _history(self) -> History | None:
+        """The past states the delays read, or None without delays."""
+        if not self.delays:
+            return None
+        if self.solver.method in STIFF:
+            raise CouplingError(f"AgentODE delays need an explicit method {METHODS}")
+        unknown = {d.variable for d in self.delays.values()} - set(self.state)
+        if unknown:
+            raise CouplingError(
+                f"delayed variables {sorted(unknown)} are not in the state"
+            )
+        return History(max(d.tau for d in self.delays.values()))
 
     def start(self, coupling: Coupling) -> None:
         """Nothing to publish: the state lives in the agents' columns."""
@@ -122,9 +141,33 @@ class AgentODE:
                 table, self._stacked(self._read(table), params, time, time + duration)
             )
             return
-        start = np.full(len(table), float(time))
+        for t0, t1 in self._spans(float(time), float(time + duration)):
+            self._explicit(table, self._with_delays(table, params), t0, t1)
+        if self.history is not None:
+            self.history.prune(float(time + duration))
+
+    def _spans(self, t0: float, t1: float) -> list[tuple[float, float]]:
+        """The step, cut no longer than the shortest delay (the method of steps)."""
+        if self.history is None:
+            return [(t0, t1)]
+        return chunks(t0, t1, min(d.tau for d in self.delays.values()))
+
+    def _with_delays(self, table, params: dict[str, Any]) -> dict[str, Any]:
+        """``params`` with one ``Delayed`` input per delay, for the agents now in the table."""
+        if self.history is None:
+            return params
+        ids = np.array(table[ID_COLUMN])
+        delayed = {
+            name: Delayed(self.history, self.state.index(d.variable), d, ids)
+            for name, d in self.delays.items()
+        }
+        return params | delayed
+
+    def _explicit(self, table, params: dict[str, Any], t0: float, t1: float) -> None:
+        """Integrate from ``t0`` to ``t1``, resuming after terminal events."""
+        start = np.full(len(table), t0)
         for _ in range(MAX_RESTARTS):
-            start = self._batched(table, params, start, time + duration)
+            start = self._batched(table, params, start, t1)
             if start is None:
                 return
         raise CouplingError(
@@ -135,13 +178,15 @@ class AgentODE:
         self, table, params, start: np.ndarray, end: float
     ) -> np.ndarray | None:
         """One ``solve_batch`` pass; the stopped agents' restart times, or None if none."""
-        s = self.solver
+        s, dense = self.solver, self.dense_output or self.history is not None
         result = solve_batch(self.rhs, (start, end), self._read(table), params,
                              method=s.method, rtol=s.rtol, atol=s.atol, events=self.events,
-                             dense_output=self.dense_output)  # fmt: skip
+                             dense_output=dense)  # fmt: skip
         self._write(table, result.y)
-        if result.sol is not None:
+        if self.dense_output:
             self._dense[3].append(result.sol)
+        if self.history is not None:
+            self.history.add(np.array(table[ID_COLUMN]), result.sol)
         for event, log in zip(self.events, result.events):
             if event.action is not None and log.rows.size:
                 event.action(table, log.rows, log.t)
