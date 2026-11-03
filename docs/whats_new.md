@@ -22,10 +22,14 @@ whose notes are missing (see "Release notes" in
 - **The state inside a step**: with `dense_output=True`, `ode.at(t)` reads every agent's state
   at any time of the last step on the solver's interpolant, so an agent acting at 14:00 sees
   the value at 14:00. [ODEs in every agent](agent_odes.md#reading-the-state-inside-the-step)
+- **A zoo model with an ODE in every host**: `within_host`, an outbreak whose hosts each carry
+  a viral-load ODE and become infectious the instant their load crosses a threshold. A hundred
+  thousand hosts run sixty days in about fourteen seconds.
+  [Within-host epidemic](zoo/within_host.md)
 - **Model cards**: a short `card.toml` beside a model says what it is for, what it must not be
   used for, its data, how it was validated, its limits and who decisions taken with it could
   affect. `modelly card stamp` runs the validation tests and records the source they passed
-  on, and `modelly card check` fails once the model has changed since. All seventeen zoo models
+  on, and `modelly card check` fails once the model has changed since. All eighteen zoo models
   have one, at the end of their page. [Model cards](model_cards.md)
 - **Plugin API v1**: the way packages extend Modelly is now stable and frozen for 1.x. A
   plugin says which Modelly it supports with its usual `modelly-abm>=1.5,<2` dependency, and a

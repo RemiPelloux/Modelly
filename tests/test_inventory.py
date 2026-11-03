@@ -45,7 +45,7 @@ def test_every_deprecated_call_is_in_the_inventory():
 
 
 def test_the_documentation_lists_the_inventory():
-    """ "Deprecated now" is the inventory's rows; "Announced for 2.0" has one row per change."""
+    """The table of deprecations is the inventory; the 2.0 table has a row per change."""
     rows = table("Deprecated now")
     assert [(row[0], row[1]) for row in rows] == [
         (d.doc, d.replacement) for d in DEPRECATIONS

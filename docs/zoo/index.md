@@ -10,6 +10,7 @@ gate.
 | Model | Field | Validated against |
 |---|---|---|
 | [Age-structured SEIR](age_seir.md) | epidemiology | final-size relation, within its central-limit bound |
+| [Within-host and between-host epidemic](within_host.md) | epidemiology | each host's ODE equals its own `solve_ivp` call; analytic clearance time |
 | [Vector-borne transmission](vector_borne.md) | epidemiology | outbreak size ordered like the Ross-Macdonald R0 |
 | [Habitat selection on real land cover](habitat_selection.md) | ecology | Metropolis stationary law of habitat use |
 | [Epidemic and hospital capacity](hospital_epidemic.md) | epidemiology | final size; exact hospital solution; admissions mass balance |
@@ -82,6 +83,7 @@ reference. Community models that do not belong in the zoo go to the
 :hidden: true
 
 age_seir
+within_host
 vector_borne
 habitat_selection
 hospital_epidemic

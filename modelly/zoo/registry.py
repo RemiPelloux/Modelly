@@ -72,6 +72,15 @@ MODELS: tuple[ZooModel, ...] = (
         "attack rate against the final-size relation, within the CLT bound",
     ),
     ZooModel(
+        "within_host",
+        "Within-host and between-host epidemic",
+        "epidemiology",
+        "WithinHost",
+        "WithinHostScenario",
+        "Hosts infect each other; each infection is a viral ODE inside its host.",
+        "every host's ODE equals its own solve_ivp call; clearance at the analytic time",
+    ),
+    ZooModel(
         "vector_borne",
         "Vector-borne transmission on a landscape",
         "epidemiology",

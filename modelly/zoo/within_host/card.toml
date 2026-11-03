@@ -1,0 +1,59 @@
+schema = 1
+name = "within_host"
+title = "Within-host and between-host epidemic"
+model = "modelly.zoo.within_host.model:WithinHost"
+summary = "Hosts infect each other while each infection runs as a target-cell-limited viral ODE inside its host, all hosts integrated as one batch with each host's own solve_ivp steps."
+
+intended_use = [
+  "Teaching how within-host dynamics (viral growth, a threshold for infectiousness) shape an epidemic between hosts.",
+  "A starting point for nested models: per-host treatment, immunity or dose effects on top of a validated viral core.",
+  "Showing per-agent ODEs with events at scale: onsets and clearances located to the instant for a hundred thousand hosts.",
+]
+
+out_of_scope = [
+  "Forecasting an influenza season or any real outbreak: contacts and transmissibility are illustrative and nothing is calibrated to case data.",
+  "Clinical questions about individual patients: the viral parameters are of the order fitted for influenza A, in relative units, not a patient's.",
+  "Infections with a latent reservoir, an immune response or reinfection, which the three-equation model does not have.",
+]
+
+data = [
+  "None by default: the viral rates are of the order Baccam et al. (2006) fitted for influenza A, in relative units, and the contact parameters in `WithinHostScenario` are illustrative.",
+  "The infection rate of each host is drawn from a lognormal law with the scenario's median and spread, from the model's seed.",
+]
+
+limits = [
+  "Homogeneous mixing between hosts: the chance of exposure depends only on the share infectious, with no households, places or networks.",
+  "Infectiousness is all or nothing at a virus threshold; transmission does not grow with the load.",
+  "No immune response: a host's infection ends only when its target cells are used up, and an exposed host is never exposed again.",
+  "Exposure happens once a day in the transmission phase; only the course of each infection is continuous in time.",
+]
+
+ethics = [
+  "Results about who becomes infectious when could be read as advice on isolation periods; they rest on illustrative parameters and must not be presented as such.",
+  "Host-to-host variation comes from a drawn infection rate, not from data on people; say so when the spread of outcomes between hosts is shown.",
+]
+
+references = [
+  "Baccam, P., Beauchemin, C., Macken, C. A., Hayden, F. G. and Perelson, A. S. (2006). Kinetics of influenza A virus infection in humans. Journal of Virology, 80(15), 7590-7599.",
+  "Hairer, E., Norsett, S. P. and Wanner, G. (1993). Solving Ordinary Differential Equations I: Nonstiff Problems, 2nd ed. Springer.",
+  "Mideo, N., Alizon, S. and Day, T. (2008). Linking within- and between-host dynamics in the evolutionary epidemiology of infectious diseases. Trends in Ecology and Evolution, 23(9), 511-517.",
+]
+
+sources = []
+
+[[validation]]
+check = "one day of the whole population equals one solve_ivp call per exposed host, final states and onset times, to round-off"
+test = "tests/zoo/test_within_host.py::test_each_host_follows_its_own_solve_ivp_call"
+
+[[validation]]
+check = "with no target cells the virus clears at log(V0 / threshold) / c, to a relative 1e-6, for fifty initial loads"
+test = "tests/zoo/test_within_host.py::test_clearance_without_target_cells_is_exponential"
+
+[[validation]]
+check = "cells stay in [0, 1]; an outbreak needs contacts; same seed same outbreak, straight or resumed from a checkpoint"
+test = "tests/zoo/test_within_host.py"
+
+[validated]
+source = "sha256:64f831f6ef170ecc5159627270cd6425a0bcd92fd2f00f02478f88e9c6a070fa"
+modelly = "1.4.3"
+date = "2026-11-03"

@@ -15,6 +15,11 @@ versioning.
   that reads every system at any time of its span on the Runge-Kutta interpolant;
   `AgentODE(..., dense_output=True).at(t)` reads every agent's state inside the last step,
   after event resets too, on the batched and the stiff path.
+- Zoo model `within_host`: an epidemic between hosts whose infections run as the
+  target-cell-limited viral ODE inside each host, integrated with `AgentODE`, onsets and
+  clearances located as events. Validated against one `solve_ivp` call per host and against
+  the analytic clearance time; 100,000 hosts run sixty days in about 14 s, and one day at the
+  epidemic's rise is 34 times faster than a `solve_ivp` loop (`benchmarks/ode/within_host.py`).
 - Model cards (`modelly.card`, `modelly card new|check|show|stamp`): a `card.toml` next to a
   model with its intended use, out-of-scope use, data, validation (claim and pytest target),
   known limits, ethical considerations and references. `stamp` runs the validation tests and

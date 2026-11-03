@@ -32,6 +32,11 @@ highest.
 
 ![Infectious share of three age groups over time](images/gallery/age_seir.png)
 
+**[Within-host and between-host epidemic](zoo/within_host.md).** Each host's virus rises and
+clears on its own course while the outbreak passes through the population.
+
+![Virus loads of five hosts infected at different times, and the share infectious](images/gallery/within_host.png)
+
 **[Vector-borne transmission](zoo/vector_borne.md).** Outbreaks grow with mosquito density,
 in the order of the Ross-Macdonald R0.
 

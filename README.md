@@ -515,7 +515,7 @@ One package per domain; each `__init__.py` lists its public names in `__all__`.
 | `modelly.llm` | language-model agents with a replayable response cache |
 | `modelly.studio` | `modelly studio`, the browser workbench |
 | `modelly.web` | `modelly export-web`, a model as a static site |
-| `modelly.zoo` | 17 validated models, each with a test against a known result |
+| `modelly.zoo` | 18 validated models, each with a test against a known result and a model card |
 | `modelly.netlogo` | `modelly netlogo`, the NetLogo translator |
 | `modelly.lint` | `python -m modelly.lint`, static checks for models, `--lsp` |
 | `modelly.profile` | `python -m modelly.profile` and `Profiler`, where a running model's time goes |
@@ -630,7 +630,7 @@ Real, runnable models that ship with the package, good reading material for the 
 | Prisoner's Dilemma | Pairwise strategic interaction | `modelly/examples/advanced/pd_grid` |
 | Alliance Formation | Network structure and group formation | `modelly/examples/advanced/alliance_formation` |
 
-The zoo adds 17 research models with validation tests (age-structured SEIR, Bass diffusion,
+The zoo adds 18 research models with validation tests (age-structured SEIR, Bass diffusion,
 Schelling on real census tracts, traffic on OpenStreetMap streets, a hospital-capacity
 epidemic): `python -m modelly.zoo list`, documented in [docs/zoo](https://github.com/RemiPelloux/Modelly/blob/main/docs/zoo/index.md).
 
