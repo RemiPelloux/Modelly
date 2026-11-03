@@ -214,3 +214,82 @@ body:has(.ml-landing) { overflow-x: clip; }
   .ml-bar i, .ml-btn, .ml-hint { transition: none; }
   .ml-bench:not(.is-shown) .ml-bar i { transform: none; }
 }
+
+/* The finder: type a task, the matching guides appear under the field. */
+.ml-finder { margin: 0 0 1.75rem; max-width: 34rem; position: relative; }
+.ml-finder label { display: block; font-weight: 600; color: #fff; margin-bottom: 0.45rem; font-size: 1rem; }
+.ml-finder input {
+  width: 100%; font: inherit; font-size: 1.05rem; padding: 0.8rem 1rem; border-radius: 0.6rem;
+  border: 1px solid #3b4d75; background: #16233f; color: #fff;
+}
+.ml-finder input::placeholder { color: #93a1bf; }
+.ml-finder input:focus-visible { outline: 3px solid var(--ml-s); outline-offset: 2px; border-color: var(--ml-s); }
+.ml-find-help { margin: 0.45rem 0 0; font-size: 0.85rem; color: #93a1bf; }
+.ml-find-results { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; gap: 0.25rem; }
+.ml-find-results:empty { display: none; }
+.ml-find-results a {
+  display: block; padding: 0.55rem 0.8rem; border-radius: 0.45rem; text-decoration: none;
+  color: #e7ecf5; background: #1b2944; border-left: 3px solid var(--ml-s);
+}
+.ml-find-results a:hover, .ml-find-results a:focus-visible { background: #24365a; outline: none; border-left-color: var(--ml-i); }
+.ml-find-results strong { display: block; font-weight: 600; }
+.ml-find-results span { font-size: 0.85rem; color: #b8c3da; }
+
+/* Benchmarks as one dot plot: Mesa 3.5 and Modelly on one log axis per model. */
+.ml-dots { margin-top: 2.5rem; display: grid; gap: 0; }
+.ml-dot-row, .ml-dots-axis { display: grid; grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr) 4.5rem; gap: 1.25rem; align-items: center; }
+.ml-dot-row { padding: 0.7rem 0; border-top: 1px solid var(--ml-line); }
+.ml-dot-row strong { display: block; font-weight: 600; line-height: 1.25; }
+.ml-dot-row small { display: block; color: var(--ml-ink-soft); font-size: 0.82rem; }
+.ml-track, .ml-axis { position: relative; height: 1.4rem; }
+.ml-track::before { content: ""; position: absolute; inset: 50% 0 auto; height: 1px; background: var(--ml-line); }
+.ml-span { position: absolute; top: calc(50% - 2px); height: 4px; left: calc(var(--a) * 1%); width: calc((var(--b) - var(--a)) * 1%); background: linear-gradient(90deg, var(--ml-i), var(--ml-line)); border-radius: 2px; }
+.ml-track b { position: absolute; top: 50%; left: calc(var(--x) * 1%); width: 0.85rem; height: 0.85rem; margin: -0.425rem 0 0 -0.425rem; border-radius: 50%; }
+.ml-pt-mesa { background: var(--ml-paper); box-shadow: inset 0 0 0 2px var(--ml-ink-soft); }
+.ml-pt-mod { background: var(--ml-i); }
+.ml-speed { font-family: var(--ml-display); font-weight: 700; font-size: 1.35rem; text-align: right; }
+.ml-dots-axis { padding-bottom: 0.35rem; }
+.ml-axis i { position: absolute; left: calc(var(--x) * 1%); transform: translateX(-50%); font-style: normal; font-size: 0.78rem; color: var(--ml-ink-soft); white-space: nowrap; }
+.ml-axis i:first-child { transform: none; }
+.ml-axis i:last-child { transform: translateX(-100%); }
+.ml-dots-axis > span:last-child { font-size: 0.78rem; color: var(--ml-ink-soft); text-align: right; }
+.ml-dots-key { display: flex; gap: 1.5rem; margin: 1rem 0 0; font-size: 0.88rem; color: var(--ml-ink-soft); }
+.ml-dots-key span::before { content: ""; display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 50%; margin-right: 0.4rem; vertical-align: -0.05rem; }
+.ml-key-mesa::before { box-shadow: inset 0 0 0 2px var(--ml-ink-soft); }
+.ml-key-mod::before { background: var(--ml-i); }
+
+/* Start from what you need: task groups as plain link lists. */
+.ml-paths-grid { margin-top: 2rem; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2rem; }
+.ml-paths-grid h3 { font-family: var(--ml-display); font-size: 1.15rem; margin: 0 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 3px solid var(--ml-s); }
+.ml-paths-grid nav:nth-child(2) h3 { border-color: var(--ml-i); }
+.ml-paths-grid nav:nth-child(3) h3 { border-color: var(--ml-r); }
+.ml-paths-grid nav:nth-child(4) h3 { border-color: var(--ml-ink-soft); }
+.ml-paths-grid nav:nth-child(5) h3 { border-color: var(--ml-line); }
+.ml-paths-grid ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
+.ml-paths-grid li { font-size: 0.93rem; line-height: 1.45; color: var(--ml-ink-soft); }
+.ml-paths-grid a { font-weight: 600; }
+
+/* New in 1.5. */
+.ml-new { background: var(--ml-paper); }
+.ml-new-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 3rem; align-items: start; }
+.ml-new dl { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 2.25rem; }
+.ml-new dt { font-weight: 700; margin-bottom: 0.2rem; }
+.ml-new dd { margin: 0; color: var(--ml-ink-soft); line-height: 1.5; font-size: 0.95rem; }
+
+/* For AI assistants. */
+.ml-ai { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 3rem; align-items: center; }
+.ml-ai-links { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; }
+.ml-ai-links li { color: var(--ml-ink-soft); line-height: 1.5; }
+.ml-ai-links a { display: inline-block; margin-right: 0.6rem; font-weight: 600; }
+
+@media (max-width: 60rem) {
+  .ml-paths-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ml-new-grid, .ml-ai { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; }
+}
+@media (max-width: 40rem) {
+  .ml-paths-grid, .ml-new dl { grid-template-columns: minmax(0, 1fr); }
+  .ml-dot-row, .ml-dots-axis { grid-template-columns: minmax(0, 1fr) 3.5rem; gap: 0.5rem 1rem; }
+  .ml-dot-row > span:first-child { grid-column: 1 / -1; }
+  .ml-dots-axis > span:first-child { display: none; }
+}
+.ml-sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

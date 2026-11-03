@@ -1,11 +1,8 @@
 ---
 myst:
   html_meta:
-    description: "Modelly is an agent-based modeling (ABM) framework for Python: typed scenarios, seeded reproducible runs, numpy-backed agents, grids, networks, continuous space, discrete-event time, pandas data collection and browser visualization."
-    keywords: "agent-based modeling, ABM, agent-based simulation, Python, multi-agent systems, complex systems, discrete-event simulation, Mesa alternative"
-    "og:title": "Modelly: agent-based modeling in Python"
-    "og:description": "Build, run, measure and replay agent-based models in Python. Fast by construction, reproducible by default."
-    "og:type": "website"
+    description: "Modelly is an open-source Python framework for agent-based modeling (ABM): agents in numpy columns, grids, networks and continuous space, seeded reproducible runs, calibration, a model hub, and 2.9 to 135 times the speed of Mesa 3.5."
+    keywords: "agent-based modeling, agent-based model, ABM, Python, simulation, epidemic model, SIR, ecology, computational social science, Mesa alternative, NetLogo alternative, calibration, model hub"
 ---
 
 # Modelly: agent-based modeling in Python
@@ -16,13 +13,18 @@ myst:
 <div>
 <p class="ml-hero-title" id="ml-hero-title" role="heading" aria-level="2">Agent-based models in Python, fast enough to explore.</p>
 <p class="ml-hero-sub">Modelly is an open-source framework for agent-based modeling. Write agents with a <code>step()</code>, keep their state in numpy columns as the model grows, and get the same result from the same seed every time.</p>
+<form class="ml-finder" role="search" action="search.html" method="get" autocomplete="off">
+<label for="ml-find">What do you want to do?</label>
+<input id="ml-find" name="q" type="search" placeholder="for example: calibrate, GPU, from R" aria-describedby="ml-find-help" aria-controls="ml-find-results">
+<p id="ml-find-help" class="ml-find-help">Type a task; the matching guides appear below. Enter searches the whole documentation.</p>
+<ul id="ml-find-results" class="ml-find-results" aria-live="polite"></ul>
+</form>
 <div class="ml-actions">
 <a class="ml-btn ml-btn-primary" href="tutorials/0_first_model.html">Build your first model</a>
-<a class="ml-btn ml-btn-ghost" href="#ml-bench-title">See the benchmarks</a>
-</div>
 <button type="button" class="ml-pip" data-copy="pip install modelly-abm" aria-label="Copy the install command"><span>$</span><code title="pip install modelly-abm">pip install modelly-abm</code><em><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 3.5V3a1.5 1.5 0 0 0-1.5-1.5h-6A1.5 1.5 0 0 0 2 3v6a1.5 1.5 0 0 0 1.5 1.5H4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></em></button>
 </div>
-<figure class="ml-lab" aria-label="A live epidemic simulation">
+</div>
+<figure class="ml-lab" aria-label="A live epidemic simulation" data-md="skip">
 <span class="ml-hint">Click or drag to infect cells</span>
 <canvas class="ml-lab-world" role="img" aria-label="Grid of cells: blue susceptible, pink infected, green recovered"></canvas>
 <canvas class="ml-lab-curve" role="img" aria-label="Share of infected and recovered cells over time"></canvas>
@@ -36,23 +38,41 @@ myst:
 <section class="ml-section" aria-labelledby="ml-bench-title">
 <div class="ml-wrap">
 <h2 id="ml-bench-title">The same models, 2.9 to 135 times faster than Mesa 3.5</h2>
-<p class="ml-lede">Eight playbooks, each written in the idiom of Mesa 2.3, of the current Mesa 3.5 and of Modelly, four also for mesa-frames. Three also have a hand-vectorised Mesa 3.5 baseline that gives up agent objects for numpy arrays; it is faster than Modelly's columns (1.8 to 4.5 times), which keep an agent per individual. Median CPU seconds of the steps over ten rounds, a fresh interpreter per run, pinned to one performance core at a fixed 1.9 GHz base frequency, turbo off: absolute seconds are longer than with turbo, the ratios are the point.</p>
-<div class="ml-bench" role="list">
-<div class="ml-row" role="listitem"><div class="ml-row-name">Grid epidemic<small>20,000 agents, 60 steps</small></div><div class="ml-bars"><div class="ml-bar ml-bar-mesa"><span>Mesa 2.3 6.52 s</span><b><i style="--w:100.00"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 3.99 s</span><b><i style="--w:61.23"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 + numpy, no agent objects 0.03 s</span><b><i style="--w:0.53"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>mesa-frames 1.07 s</span><b><i style="--w:16.38"></i></b></div><div class="ml-bar ml-bar-cells"><span>Modelly, cell lists 2.67 s</span><b><i style="--w:40.99"></i></b></div><div class="ml-bar ml-bar-mod"><span>Modelly, columns 0.16 s</span><b><i style="--w:2.38"></i></b></div></div><div class="ml-x" aria-label="26 times faster than Mesa 3.5">26<small>x</small></div></div>
-<div class="ml-row" role="listitem"><div class="ml-row-name">Predator-prey<small>~5,400 agents, 200 steps</small></div><div class="ml-bars"><div class="ml-bar ml-bar-mesa"><span>Mesa 2.3 3.33 s</span><b><i style="--w:90.76"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 3.67 s</span><b><i style="--w:100.00"></i></b></div><div class="ml-bar ml-bar-cells"><span>Modelly, cell lists 2.17 s</span><b><i style="--w:59.16"></i></b></div><div class="ml-bar ml-bar-mod"><span>Modelly, columns 0.52 s</span><b><i style="--w:14.18"></i></b></div></div><div class="ml-x" aria-label="7.1 times faster than Mesa 3.5">7.1<small>x</small></div></div>
-<div class="ml-row" role="listitem"><div class="ml-row-name">Flocking<small>4,000 agents, 50 steps</small></div><div class="ml-bars"><div class="ml-bar ml-bar-mesa"><span>Mesa 2.3 24.44 s</span><b><i style="--w:99.80"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 24.49 s</span><b><i style="--w:100.00"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 + KD-tree 9.20 s</span><b><i style="--w:37.56"></i></b></div><div class="ml-bar ml-bar-mod"><span>Modelly, columns 0.75 s</span><b><i style="--w:3.06"></i></b></div></div><div class="ml-x" aria-label="33 times faster than Mesa 3.5">33<small>x</small></div></div>
-<div class="ml-row" role="listitem"><div class="ml-row-name">Virus on a network<small>30,000 agents, 100 steps</small></div><div class="ml-bars"><div class="ml-bar ml-bar-mesa"><span>Mesa 2.3 7.85 s</span><b><i style="--w:100.00"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 2.52 s</span><b><i style="--w:32.14"></i></b></div><div class="ml-bar ml-bar-mod"><span>Modelly, columns 0.19 s</span><b><i style="--w:2.48"></i></b></div></div><div class="ml-x" aria-label="13 times faster than Mesa 3.5">13<small>x</small></div></div>
-<div class="ml-row" role="listitem"><div class="ml-row-name">Insects, individuals<small>~26,000 agents, 120 days</small></div><div class="ml-bars"><div class="ml-bar ml-bar-mesa"><span>Mesa 2.3 3.72 s</span><b><i style="--w:100.00"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 2.00 s</span><b><i style="--w:53.70"></i></b></div><div class="ml-bar ml-bar-mod"><span>Modelly, columns 0.70 s</span><b><i style="--w:18.79"></i></b></div></div><div class="ml-x" aria-label="2.9 times faster than Mesa 3.5">2.9<small>x</small></div></div>
-<div class="ml-row" role="listitem"><div class="ml-row-name">Insects, cohorts<small>~26,000 agents, 120 days</small></div><div class="ml-bars"><div class="ml-bar ml-bar-mesa"><span>Mesa 2.3 3.72 s</span><b><i style="--w:100.00"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 2.00 s</span><b><i style="--w:53.70"></i></b></div><div class="ml-bar ml-bar-mod"><span>Modelly, cohorts 0.01 s</span><b><i style="--w:0.40"></i></b></div></div><div class="ml-x" aria-label="135 times faster than Mesa 3.5">135<small>x</small></div></div>
-<div class="ml-row" role="listitem"><div class="ml-row-name">Schelling segregation<small>~32,000 residents, 40 steps</small></div><div class="ml-bars"><div class="ml-bar ml-bar-mesa"><span>Mesa 2.3 4.55 s</span><b><i style="--w:100.00"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 3.57 s</span><b><i style="--w:78.48"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 + numpy, no agent objects 0.11 s</span><b><i style="--w:2.46"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>mesa-frames 1.94 s</span><b><i style="--w:42.63"></i></b></div><div class="ml-bar ml-bar-cells"><span>Modelly, cell lists 0.32 s</span><b><i style="--w:7.08"></i></b></div><div class="ml-bar ml-bar-mod"><span>Modelly, columns 0.20 s</span><b><i style="--w:4.42"></i></b></div></div><div class="ml-x" aria-label="18 times faster than Mesa 3.5">18<small>x</small></div></div>
-<div class="ml-row" role="listitem"><div class="ml-row-name">Boltzmann wealth<small>10,000 agents, 100 steps</small></div><div class="ml-bars"><div class="ml-bar ml-bar-mesa"><span>Mesa 2.3 2.09 s</span><b><i style="--w:100.00"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 1.14 s</span><b><i style="--w:54.51"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 + numpy, no agent objects 0.12 s</span><b><i style="--w:5.82"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>mesa-frames 1.00 s</span><b><i style="--w:47.68"></i></b></div><div class="ml-bar ml-bar-mod"><span>Modelly, columns 0.33 s</span><b><i style="--w:15.70"></i></b></div></div><div class="ml-x" aria-label="3.5 times faster than Mesa 3.5">3.5<small>x</small></div></div>
-<div class="ml-row" role="listitem"><div class="ml-row-name">Sugarscape<small>1,600 foragers, 100 steps</small></div><div class="ml-bars"><div class="ml-bar ml-bar-mesa"><span>Mesa 2.3 1.49 s</span><b><i style="--w:70.00"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>Mesa 3.5 1.44 s</span><b><i style="--w:67.71"></i></b></div><div class="ml-bar ml-bar-mesa3"><span>mesa-frames 2.12 s</span><b><i style="--w:100.00"></i></b></div><div class="ml-bar ml-bar-cells"><span>Modelly, cell lists 1.12 s</span><b><i style="--w:52.81"></i></b></div><div class="ml-bar ml-bar-mod"><span>Modelly, columns 0.33 s</span><b><i style="--w:15.38"></i></b></div></div><div class="ml-x" aria-label="4.4 times faster than Mesa 3.5">4.4<small>x</small></div></div>
+<p class="ml-lede">Nine playbooks written in the idiom of Mesa 3.5 and of Modelly: median CPU seconds over ten rounds, one fresh interpreter per run, on one pinned core. The scale is logarithmic.</p>
+<div class="ml-dots" aria-hidden="true">
+<div class="ml-dots-axis" aria-hidden="true"><span></span><span class="ml-axis"><i style="--x:0">0.01 s</i><i style="--x:33.3">0.1 s</i><i style="--x:66.7">1 s</i><i style="--x:100">10 s</i></span><span>faster</span></div>
+<div class="ml-dot-row"><span><strong>Grid epidemic</strong><small>20,000 agents, 60 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:40.14;--b:86.7"></i><b class="ml-pt-mesa" style="--x:86.7"></b><b class="ml-pt-mod" style="--x:40.14"></b></span><span class="ml-speed">26&times;</span></div>
+<div class="ml-dot-row"><span><strong>Predator-prey</strong><small>~5,400 agents, 200 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:57.2;--b:85.49"></i><b class="ml-pt-mesa" style="--x:85.49"></b><b class="ml-pt-mod" style="--x:57.2"></b></span><span class="ml-speed">7.1&times;</span></div>
+<div class="ml-dot-row"><span><strong>Flocking</strong><small>4,000 agents, 50 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:62.5;--b:100"></i><b class="ml-pt-mesa" style="--x:100"></b><b class="ml-pt-mod" style="--x:62.5"></b></span><span class="ml-speed">33&times;</span></div>
+<div class="ml-dot-row"><span><strong>Virus on a network</strong><small>30,000 agents, 100 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:42.63;--b:80.05"></i><b class="ml-pt-mesa" style="--x:80.05"></b><b class="ml-pt-mod" style="--x:42.63"></b></span><span class="ml-speed">13&times;</span></div>
+<div class="ml-dot-row"><span><strong>Insects, individuals</strong><small>~26,000 agents, 120 days</small></span><span class="ml-track"><i class="ml-span" style="--a:61.5;--b:76.7"></i><b class="ml-pt-mesa" style="--x:76.7"></b><b class="ml-pt-mod" style="--x:61.5"></b></span><span class="ml-speed">2.9&times;</span></div>
+<div class="ml-dot-row"><span><strong>Insects, cohorts</strong><small>~26,000 agents, 120 days</small></span><span class="ml-track"><i class="ml-span" style="--a:5.68;--b:76.7"></i><b class="ml-pt-mesa" style="--x:76.7"></b><b class="ml-pt-mod" style="--x:5.68"></b></span><span class="ml-speed">135&times;</span></div>
+<div class="ml-dot-row"><span><strong>Schelling segregation</strong><small>~32,000 residents, 40 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:43.37;--b:85.09"></i><b class="ml-pt-mesa" style="--x:85.09"></b><b class="ml-pt-mod" style="--x:43.37"></b></span><span class="ml-speed">18&times;</span></div>
+<div class="ml-dot-row"><span><strong>Boltzmann wealth</strong><small>10,000 agents, 100 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:50.62;--b:68.56"></i><b class="ml-pt-mesa" style="--x:68.56"></b><b class="ml-pt-mod" style="--x:50.62"></b></span><span class="ml-speed">3.5&times;</span></div>
+<div class="ml-dot-row"><span><strong>Sugarscape</strong><small>1,600 foragers, 100 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:50.62;--b:71.95"></i><b class="ml-pt-mesa" style="--x:71.95"></b><b class="ml-pt-mod" style="--x:50.62"></b></span><span class="ml-speed">4.4&times;</span></div>
 </div>
+<div class="ml-sr-only">
+<table>
+<caption>Seconds per run, median of ten rounds</caption>
+<thead><tr><th scope="col">Model</th><th scope="col">Size</th><th scope="col">Mesa 3.5</th><th scope="col">Modelly</th><th scope="col">Speed-up</th></tr></thead>
+<tbody>
+<tr><th scope="row">Grid epidemic</th><td>20,000 agents, 60 steps</td><td>3.99 s</td><td>0.16 s</td><td>26&times;</td></tr>
+<tr><th scope="row">Predator-prey</th><td>~5,400 agents, 200 steps</td><td>3.67 s</td><td>0.52 s</td><td>7.1&times;</td></tr>
+<tr><th scope="row">Flocking</th><td>4,000 agents, 50 steps</td><td>24.49 s</td><td>0.75 s</td><td>33&times;</td></tr>
+<tr><th scope="row">Virus on a network</th><td>30,000 agents, 100 steps</td><td>2.52 s</td><td>0.19 s</td><td>13&times;</td></tr>
+<tr><th scope="row">Insects, individuals</th><td>~26,000 agents, 120 days</td><td>2 s</td><td>0.7 s</td><td>2.9&times;</td></tr>
+<tr><th scope="row">Insects, cohorts</th><td>~26,000 agents, 120 days</td><td>2 s</td><td>0.015 s</td><td>135&times;</td></tr>
+<tr><th scope="row">Schelling segregation</th><td>~32,000 residents, 40 steps</td><td>3.57 s</td><td>0.2 s</td><td>18&times;</td></tr>
+<tr><th scope="row">Boltzmann wealth</th><td>10,000 agents, 100 steps</td><td>1.14 s</td><td>0.33 s</td><td>3.5&times;</td></tr>
+<tr><th scope="row">Sugarscape</th><td>1,600 foragers, 100 steps</td><td>1.44 s</td><td>0.33 s</td><td>4.4&times;</td></tr>
+</tbody>
+</table>
+</div>
+<p class="ml-dots-key" aria-hidden="true"><span class="ml-key-mesa">Mesa 3.5</span> <span class="ml-key-mod">Modelly</span></p>
 <div class="ml-proof">
-<p><strong>Same answers</strong>Every variant runs the same seeds. Over 100 paired seeds, no summary statistic differs from Mesa's after a Holm correction.</p>
-<p><strong>Same seed, same run</strong>The first seed runs twice per implementation and must reproduce exactly.</p>
-<p><strong>Same code, too</strong>A research model migrated line for line from Mesa 2.3, with nothing vectorised, gives bit-identical output and runs from Mesa's speed to 4.8 times faster, depending on how much of its time goes to framework calls. Five Mesa 3.5 playbooks migrated by the codemod alone run at 0.44 to 0.91 of Mesa 3.5's time and agree with it in distribution.</p>
-<p><strong>Re-run it yourself</strong>The playbooks and the runner are in <a href="https://github.com/RemiPelloux/Modelly/tree/main/benchmarks/playbooks">benchmarks/playbooks</a>; the method is on the <a href="performance.html">performance page</a>.</p>
+<p><strong>Same answers</strong> Every variant runs the same seeds. Over 100 paired seeds, no summary statistic differs from Mesa's after a Holm correction.</p>
+<p><strong>Same seed, same run</strong> Each implementation runs its first seed twice and must reproduce it exactly.</p>
+<p><strong>Re-run it yourself</strong> The playbooks and the runner are in <a href="https://github.com/RemiPelloux/Modelly/tree/main/benchmarks/playbooks">benchmarks/playbooks</a>; the method, the other baselines (Mesa 2.3, mesa-frames, hand-vectorised Mesa) and the variance are on the <a href="performance.html">performance page</a>.</p>
 </div>
 </div>
 </section>
@@ -68,6 +88,63 @@ myst:
 <article class="ml-use"><canvas data-sim="insects" role="img" aria-label="Animated sketch: Pest control by sterile release"></canvas><div><h3>Pest control by sterile release</h3><p>A stage-structured insect population under sterile-male releases, the shaded bands. Grouping identical insects into cohorts keeps the law of the individual model and runs 120 days in 13 ms.</p><a href="vectorised_phases.html">See how cohorts stay exact</a></div></article>
 <article class="ml-use"><canvas data-sim="schelling" role="img" aria-label="Animated sketch: Segregation from mild preferences"></canvas><div><h3>Segregation from mild preferences</h3><p>Schelling's model: agents who only want half their neighbours to match them still end up in sharply separated neighbourhoods.</p><a href="examples/basic/schelling.html">Open the Schelling example</a></div></article>
 </div>
+</div>
+</section>
+<section class="ml-section" aria-labelledby="ml-paths-title">
+<div class="ml-wrap">
+<h2 id="ml-paths-title">Start from what you need</h2>
+<div class="ml-paths-grid">
+<nav aria-labelledby="ml-p1"><h3 id="ml-p1">Build a model</h3><ul>
+<li><a href="getting_started.html">Getting started</a>, then twelve tutorials</li>
+<li><a href="zoo/index.html">The model zoo</a>: 18 validated models to start from</li>
+<li><a href="performance.html">Columns and cohorts</a> for large populations</li>
+<li><a href="agent_odes.html">ODEs inside agents</a>, with events and delays</li>
+<li><a href="geospatial.html">Real maps</a> and <a href="networks.html">networks</a></li>
+<li><a href="migrating_from_mesa.html">Coming from Mesa</a> or <a href="netlogo.html">NetLogo</a></li>
+</ul></nav>
+<nav aria-labelledby="ml-p2"><h3 id="ml-p2">Run a study</h3><ul>
+<li><a href="experiments.html">Sweeps and replications</a>, on a laptop or a cluster</li>
+<li><a href="calibration.html">Calibrate</a> to data, with posteriors</li>
+<li><a href="sensitivity.html">Sensitivity analysis</a> and <a href="emulators.html">emulators</a></li>
+<li><a href="decide.html">Compare strategies</a> with intervals and costs</li>
+<li><a href="explain.html">Causes</a>: effects, attribution, counterfactuals</li>
+</ul></nav>
+<nav aria-labelledby="ml-p3"><h3 id="ml-p3">Trust and share it</h3><ul>
+<li><a href="provenance.html">Reproducible studies</a> a reviewer reruns</li>
+<li><a href="model_cards.html">Model cards</a> checked against the code</li>
+<li><a href="hub.html">The model hub</a>: publish, install, cite</li>
+<li><a href="lint.html">Checking a model</a> for reproducibility bugs</li>
+</ul></nav>
+<nav aria-labelledby="ml-p4"><h3 id="ml-p4">Work your way</h3><ul>
+<li><a href="studio.html">Studio</a> in the browser, with no code</li>
+<li><a href="r_and_julia.html">From R and Julia</a></li>
+<li><a href="browser.html">A model as a web page</a></li>
+<li><a href="windows_no_admin.html">Windows without admin rights</a></li>
+<li><a href="accessibility.html">Five languages</a>, WCAG 2.2 AA</li>
+</ul></nav>
+<nav aria-labelledby="ml-p5"><h3 id="ml-p5">Teach with it</h3><ul>
+<li><a href="course/index.html">A twelve-session course</a></li>
+<li><a href="course/instructors.html">Instructor notes</a> and assessments</li>
+<li><a href="course/from_netlogo.html">Moving a NetLogo course</a></li>
+<li><a href="studio.html#studio-for-everyone">Classroom mode</a> in Studio</li>
+</ul></nav>
+</div>
+</div>
+</section>
+<section class="ml-section ml-new" aria-labelledby="ml-new-title">
+<div class="ml-wrap ml-new-grid">
+<div>
+<h2 id="ml-new-title">New in 1.5</h2>
+<p class="ml-lede">Ecosystem and collaboration: everything a colleague, a policy team or a class needs to reuse a model. <a href="whats_new.html">What's new</a> has every release.</p>
+</div>
+<dl>
+<div><dt><a href="hub.html">A model hub</a></dt><dd><code>modelly hub install within_host</code>, with cards, DOIs and checksums.</dd></div>
+<div><dt><a href="decide.html">Decisions</a></dt><dd>Strategies on the same chance events, ranked with intervals and costs.</dd></div>
+<div><dt><a href="agent_odes.html">Dynamics in agents</a></dt><dd>An ODE, a delay or a stochastic equation in every agent, solved as one batch.</dd></div>
+<div><dt><a href="llm_agents.html">Agents that remember</a></dt><dd>Language-model agents with memory, plans, tools and conversations, replayed offline.</dd></div>
+<div><dt><a href="r_and_julia.html">R and Julia</a></dt><dd><code>library(modelly)</code> and <code>using Modelly</code>, tested on three systems.</dd></div>
+<div><dt><a href="deprecations.html">Ready for 2.0</a></dt><dd><code>modelly migrate --check-2.0</code> lists what a project must change.</dd></div>
+</dl>
 </div>
 </section>
 <section class="ml-section" aria-labelledby="ml-code-title">
@@ -130,23 +207,17 @@ for _ in range(100):
 </div>
 </div>
 </section>
-<section class="ml-section" aria-labelledby="ml-blocks-title">
-<div class="ml-wrap">
-<h2 id="ml-blocks-title">Everything a simulation study needs</h2>
-<dl class="ml-blocks"><div><dt>Scenario</dt><dd>Parameters as a typed class: one run, one seed, one config object.</dd></div><div><dt>Agents</dt><dd>Classes with a step(), grouped in ordered AgentSets.</dd></div><div><dt>Columns</dt><dd>Attributes stored in numpy arrays, readable per agent and as a whole.</dd></div><div><dt>Space</dt><dd>Square and hexagonal grids, networks, Voronoi meshes, continuous space.</dd></div><div><dt>Time</dt><dd>Ticks, scheduled events, generators and priorities in one scheduler.</dd></div><div><dt>Data</dt><dd>Reporters and datasets that land in pandas, ready to plot.</dd></div><div><dt>Visualization</dt><dd>Browser dashboards with Solara, matplotlib and altair charts, notebooks.</dd></div><div><dt>Replications</dt><dd>Seeded parameter sweeps spread over processes.</dd></div><div><dt>Dynamics in agents</dt><dd>An ODE, a stochastic or a delay equation in every agent, integrated for the whole population at once, with events.</dd></div><div><dt>Decisions</dt><dd>Strategies compared on the same chance events, with intervals, costs and robustness across futures.</dd></div><div><dt>Model cards and the hub</dt><dd>What a model is for and how it was validated, checked against its code; published, found and installed by name.</dd></div><div><dt>R, Julia and Studio</dt><dd>Run and calibrate from R or Julia, or without code in Studio, in five languages.</dd></div></dl>
+<section class="ml-section" aria-labelledby="ml-ai-title">
+<div class="ml-wrap ml-ai">
+<div>
+<h2 id="ml-ai-title">Reading the docs with an AI assistant</h2>
+<p class="ml-lede">Every page is also plain Markdown. Paste one into a chat with the <em>Copy page</em> button at its top, or point your assistant at the whole documentation in one file.</p>
 </div>
-</section>
-<section class="ml-section" aria-labelledby="ml-next-title">
-<div class="ml-wrap">
-<h2 id="ml-next-title">Where to go next</h2>
-<div class="ml-paths">
-<a class="ml-path ml-path-lead" href="getting_started.html"><strong>Getting started</strong><span>The concepts, then twelve executable tutorials, from your first model to hybrid agent-based and discrete-event simulation.</span></a>
-<a class="ml-path" href="using_modelly_in_your_project.html"><strong>Use Modelly in your project</strong><span>From an empty folder to a tested, replicated model.</span></a>
-<a class="ml-path" href="examples.html"><strong>Examples</strong><span>Boltzmann wealth, Schelling, Game of Life, Sugarscape, Epstein civil violence and more.</span></a>
-<a class="ml-path" href="migrating_from_mesa.html"><strong>Coming from Mesa</strong><span>A construct-by-construct map and the <code>python -m modelly.migrate</code> codemod.</span></a>
-<a class="ml-path" href="whats_new.html"><strong>What's new</strong><span>1.5: the model hub, model cards, decisions and causes, dynamics inside agents, R and Julia.</span></a>
-<a class="ml-path" href="apis/api_main.html"><strong>API reference</strong><span>Every class and function, documented from the source.</span></a>
-</div>
+<ul class="ml-ai-links">
+<li><a href="llms.txt"><code>llms.txt</code></a> the index of every page, with a line on each</li>
+<li><a href="llms-full.txt"><code>llms-full.txt</code></a> the whole documentation as one Markdown file</li>
+<li><a href="getting_started.md"><code>getting_started.md</code></a> any page: replace <code>.html</code> with <code>.md</code></li>
+</ul>
 </div>
 </section>
 <footer class="ml-foot">

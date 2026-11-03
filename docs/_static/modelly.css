@@ -260,3 +260,15 @@ html[data-theme="light"] .highlight .cm, html[data-theme="light"] .highlight .ch
 html[data-theme="light"] .highlight .cs, html[data-theme="light"] .highlight .cp {
   color: #57606a;
 }
+
+/* "Copy page" and "View as Markdown" under each page title (copy-page.js). */
+.ml-copy-page { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: -0.4rem 0 1.6rem; }
+.ml-copy-page__btn {
+  display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.28rem 0.75rem;
+  border: 1px solid var(--pst-color-border); border-radius: 999px; background: var(--pst-color-surface);
+  color: var(--pst-color-text-muted); font-size: 0.82rem; font-weight: 600; line-height: 1.4;
+  text-decoration: none; cursor: pointer;
+}
+.ml-copy-page__btn:hover { border-color: var(--pst-color-primary); color: var(--pst-color-primary); text-decoration: none; }
+.ml-copy-page__btn:focus-visible { outline: 2px solid var(--pst-color-primary); outline-offset: 2px; }
+.ml-copy-page__status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

@@ -9,6 +9,17 @@ Each release adds its section here before it is tagged: the release script refus
 whose notes are missing (see "Release notes" in
 [CONTRIBUTING](https://github.com/RemiPelloux/Modelly/blob/main/CONTRIBUTING.md)).
 
+## Unreleased
+
+### New
+
+- **Docs for AI assistants**: every page of this documentation is also plain Markdown. The
+  *Copy page* button under each title puts it on your clipboard for a chat; replace `.html`
+  with `.md` in any address to read it; [llms.txt](https://remipelloux.github.io/Modelly/llms.txt) lists every page and
+  [llms-full.txt](https://remipelloux.github.io/Modelly/llms-full.txt) holds them all in one file.
+- **A home page that finds the guide**: type a task (calibrate, GPU, from R) and the matching
+  guides are listed; the benchmark against Mesa 3.5 is drawn model by model. [Home](index.md)
+
 ## 1.5.0 - 2026-11-03
 
 **Ecosystem and collaboration.** Publish a model on the hub with its card, decide and explain

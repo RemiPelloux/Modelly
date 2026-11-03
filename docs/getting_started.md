@@ -1,3 +1,9 @@
+---
+myst:
+  html_meta:
+    description: "Start with Modelly, the Python agent-based modeling framework: install it, build a first model in a tutorial, then find the guide, example or API page for what you want to do next."
+---
+
 # Getting started
 Also in [Français](translations/fr/getting_started.md), [Español](translations/es/getting_started.md), [Português](translations/pt/getting_started.md) and [中文](translations/zh/getting_started.md).
 

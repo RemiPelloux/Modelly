@@ -27,6 +27,7 @@ HERE = osp.abspath(osp.dirname(__file__))
 # Modelly is imported from the installed package (pip install -e ".[docs]"), never from a
 # relative path: a relative entry depends on the working directory of sphinx-build.
 sys.path.insert(0, HERE)
+sys.path.insert(0, osp.join(HERE, "_ext"))  # modelly_site, html_markdown
 from sphinx.util import logging
 from versioning import SITE_URL, apply_versioning  # docs/versioning.py
 
@@ -55,6 +56,7 @@ extensions = [
     "myst_nb",  # For Markdown and Jupyter notebooks
     "sphinx_copybutton",  # For copying the code in the documentation
     "sphinxcontrib.mermaid",  # flowcharts and timelines in the roadmap
+    "modelly_site",  # docs/_ext: Markdown copies, llms.txt, sitemap, meta tags
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -210,7 +212,13 @@ html_css_files = [
     "modelly.css",
     "landing.css",
 ]
-html_js_files = ["landing-sims.js", "landing.js", "a11y.js"]
+html_js_files = [
+    "landing-sims.js",
+    "landing.js",
+    "finder.js",
+    "copy-page.js",
+    "a11y.js",
+]
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied

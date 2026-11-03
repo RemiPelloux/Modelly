@@ -69,6 +69,12 @@ Then, in the repository settings: set Pages to "Deploy from a branch", branch `d
 folder `/` (root); and exempt `docs-site` from any ruleset that blocks force pushes, since
 the workflow force-pushes it as a single commit.
 
+Every build also writes, next to its HTML, what search engines and language models read
+(`docs/_ext/modelly_site.py`): a Markdown copy of each page (`decide.md` beside
+`decide.html`), `llms.txt`, `llms-full.txt`, `sitemap.xml`, `robots.txt`, and on every page a
+description, social-preview tags and JSON-LD. A page's description is the `description` in
+its front matter, else its first paragraph.
+
 ## Writing docs
 
 Markdown everywhere, MyST syntax for directives. If you document a function, document the

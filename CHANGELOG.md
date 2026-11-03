@@ -3,6 +3,17 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Added
+
+- The docs site for search engines and language models: a Markdown copy of every page next to
+  its HTML, with "Copy page" and "View as Markdown" buttons under each title; `llms.txt` and
+  `llms-full.txt`; `sitemap.xml` and `robots.txt`; and on every page a description (its own,
+  else its first paragraph), Open Graph and Twitter tags and JSON-LD (`docs/_ext`).
+- A new docs home page: a finder that lists the guides for a typed task, the benchmark as a
+  dot plot with a data table behind it, the guides grouped by task, and what 1.5 added.
+
 ## 1.5.0 - 2026-11-03
 
 ### Added
