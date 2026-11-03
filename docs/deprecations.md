@@ -112,8 +112,11 @@ def old_name(*args, **kwargs):
 ```
 
 `stacklevel` counts from the caller of `deprecated`, like `warnings.warn` counts from its
-caller: the default (2) points the warning at whoever called `old_name`. Add the row to the
-table above and a changelog entry under "Deprecated" in the same change.
+caller: the default (2) points the warning at whoever called `old_name`. In the same change,
+add the row to the table above, the entry to `modelly/_inventory.py` (the 2.0 inventory that
+`modelly migrate --check-2.0` reads, with the identifiers that find the old use in a project)
+and a changelog entry under "Deprecated". `tests/test_inventory.py` fails when a
+`deprecated()` call, a table row and an inventory entry disagree.
 
 The stability level of every public name (stable or provisional) is in
 [`docs/api_stability.toml`](https://github.com/RemiPelloux/Modelly/blob/main/docs/api_stability.toml):

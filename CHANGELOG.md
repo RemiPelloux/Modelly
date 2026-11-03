@@ -32,6 +32,10 @@ versioning.
 
 ### Documentation
 
+- The 2.0 inventory (`modelly/_inventory.py`): every deprecation that warns now, with its
+  replacement and the identifiers that find it, and every 2.0 change with when it starts to
+  warn (three wait for their 1.x replacement: one space protocol, one clock, typed scenarios).
+  A test keeps it, the `deprecated()` calls and `docs/deprecations.md` in agreement.
 - What's new (`docs/whats_new.md`): each release from 1.0.0 to 1.4.3 in a few lines per
   feature, with links to the guides. `scripts/release.py` now requires a written
   `## Unreleased` section there and renames it with the version, as it does in the changelog;
