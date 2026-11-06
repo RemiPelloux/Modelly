@@ -95,6 +95,42 @@ class Execution:
             self._pooled = None
 
 
+class _SharedExecution:
+    """Mixin of a study that runs batches: ``with study:`` keeps one Execution open.
+
+    Inside the block every batch goes to the same Execution, so ``"processes"``
+    starts its pool once instead of once per batch; the pool stops when the
+    outermost block ends. Outside a block each batch gets an Execution of its own.
+    The class using it has ``executor``, ``max_parallel`` and ``options``.
+    """
+
+    executor: Any
+    max_parallel: int | None
+    options: Mapping[str, Any]
+    _shared: Execution | None = None
+    _depth = 0
+
+    def execution(self) -> Execution:
+        """The open Execution of the block, else a new one."""
+        if self._shared is not None:
+            return self._shared
+        return Execution(self.executor, self.max_parallel, self.options)
+
+    def __enter__(self) -> Any:
+        """Open the shared Execution (nested blocks reuse the outer one)."""
+        if not self._depth:
+            self._shared = self.execution().__enter__()
+        self._depth += 1
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        """Close the shared Execution when the outermost block ends."""
+        self._depth -= 1
+        if not self._depth and self._shared is not None:
+            shared, self._shared = self._shared, None
+            shared.__exit__(*exc_info)
+
+
 @dataclass(frozen=True)
 class Batch:
     """Points to simulate under one key; ``common`` reuses the same seeds for every batch."""
@@ -150,17 +186,18 @@ class Simulator:
     ) -> list[list[dict[str, np.ndarray]]]:
         """Run several batches in one submission to the executor; read each back."""
         stores = [ResultsStore(self.folder(batch)) for batch in batches]
+        tasks = [self.tasks(batch) for batch in batches]
         pending: list[RunTask] = []
-        for batch, store in zip(batches, stores):
+        for batch, store, own in zip(batches, stores, tasks):
             store.claim(self._fingerprint(batch))
             finished = store.finished()
-            pending += [task for task in self.tasks(batch) if task.seed not in finished]
+            pending += [task for task in own if task.seed not in finished]
         for outcome in execution.runner().run(pending, execution.max_parallel):
             if outcome.status == FAILED:
                 raise SimulationError(f"run {outcome.run_id} failed:\n{outcome.error}")
         return [
-            self._read(store, self.tasks(batch), len(batch.points))
-            for batch, store in zip(batches, stores)
+            self._read(store, own, len(batch.points))
+            for batch, store, own in zip(batches, stores, tasks)
         ]
 
     def _fingerprint(self, batch: Batch) -> dict[str, Any]:
@@ -179,17 +216,20 @@ class Simulator:
         self, store: ResultsStore, tasks: list[RunTask], count: int
     ) -> list[dict[str, np.ndarray]]:
         """Every point's series, replicates stacked, padded to ``steps + 1`` values."""
+        pa = require("pyarrow", "experiments")
         parquet = require("pyarrow.parquet", "experiments")
         rows: list[dict[str, list[np.ndarray]]] = [
             {name: [] for name in self.outputs} for _ in range(count)
         ]
+        columns = list(self.outputs)
         for task in tasks:
-            # ParquetFile.read is much faster than read_table on many small files.
-            # Closed at once: Windows cannot delete a folder with an open file.
-            with parquet.ParquetFile(store.run_path(task.seed)) as file:
-                table = file.read(columns=list(self.outputs), use_threads=False)
-            for name in self.outputs:
-                values = table.column(name).to_numpy().astype(float)
+            # ParquetFile.read is much faster than read_table on many small files, and
+            # an OSFile skips resolving the filesystem for every file. Closed at once:
+            # Windows cannot delete a folder with an open file.
+            with pa.OSFile(str(store.run_path(task.seed))) as source:
+                table = parquet.ParquetFile(source).read(columns, use_threads=False)
+            for name in columns:
+                values = table.column(name).to_numpy().astype(float, copy=False)
                 rows[task.point][name].append(self._pad(values))
         return [
             {name: np.vstack(series) for name, series in row.items()} for row in rows

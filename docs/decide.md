@@ -39,6 +39,13 @@ strategy's mean and Student-t interval (95% by default, `confidence=` to change 
 replicates in which each was the best, an estimate of the probability that it is the right
 choice.
 
+The runs are independent, so `workers=` spreads them over processes: `compare`, `robust` and
+`optimise` take it (default 1, one run after another; `None` uses every core). The results
+come back in the order the loop gives, with the same seeds, so they are identical whatever
+`workers` is. `run` is sent to each worker; a closure such as `model_runner`'s needs Linux,
+where workers are forked. `optimise` runs one trial's replicates in parallel and its trials
+in turn, since each trial depends on the ones before.
+
 ## A worked example: who gets the vaccine?
 
 `modelly.decide.vaccination` is the study of this section. In the

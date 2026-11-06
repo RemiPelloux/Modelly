@@ -1,12 +1,15 @@
 /*
  * modelly._native.fastloop: the framework's per-agent and per-cell loops in C.
  *
- * Each function here is a line-for-line port of a Python loop that stays in
- * the source as the fallback (see modelly/_native/__init__.py); they visit the
- * same objects in the same order and make the same calls, so a model gives the
- * same results with or without this module.
+ * Each function here does what a Python loop of modelly/_native/loops.py does,
+ * which stays the fallback; they visit the same objects in the same order and
+ * make the same calls, so a model gives the same results with or without this
+ * module.
  *
- * - call_each:  AgentSet.do / shuffle_do's "for agent in order: if alive: call"
+ * - call_each / map_each: _HardKeyAgentSet.do / shuffle_do / map's
+ *   "for agent in order: if agent in members: call"
+ * - call_each_weak / map_each_weak: AgentSet.do / shuffle_do / map's
+ *   "for r in order: if (agent := r()) is not None and r in refs: call"
  * - neighborhood: Cell._bfs_neighborhood's breadth-first walk
  *
  * Free-threaded builds: items are read as new references (item_or_end), and a
@@ -16,68 +19,92 @@
 #include <Python.h>
 
 #include "ftcompat.h"
+#include "agentcall.h" /* call_t, call_init, call_agent, call_release */
 
 static PyObject *str_connections = NULL; /* "connections" */
 static PyObject *str_agents = NULL;      /* "_agents"     */
 
-/* One call's arguments: ``vec[1:]`` holds args' items, slot 0 is the agent's. */
-typedef struct {
-    PyObject *method, *args, *kwargs; /* kwargs NULL when there are none */
-    PyObject **vec;
-    Py_ssize_t extra;
-    int by_name;
-} call_t;
-
-/* ``method(agent, *args, **kwargs)`` with keyword arguments. */
-static PyObject *
-call_with_kwargs(call_t *call, PyObject *agent)
-{
-    PyObject *full = PyTuple_New(call->extra + 1), *result = NULL;
-    if (full != NULL) {
-        PyTuple_SET_ITEM(full, 0, Py_NewRef(agent));
-        for (Py_ssize_t j = 0; j < call->extra; j++)
-            PyTuple_SET_ITEM(full, j + 1, Py_NewRef(call->vec[j + 1]));
-        result = PyObject_Call(call->method, full, call->kwargs);
-        Py_DECREF(full);
-    }
-    return result;
-}
-
-/* ``getattr(agent, method)(*args, **kwargs)`` or ``method(agent, *args, **kwargs)``. */
-static PyObject *
-call_agent(call_t *call, PyObject *agent)
-{
-    if (call->by_name) {
-        PyObject *bound = PyObject_GetAttr(agent, call->method), *result = NULL;
-        if (bound != NULL) {
-            result = call->kwargs == NULL
-                         ? PyObject_Vectorcall(bound, call->vec + 1, call->extra, NULL)
-                         : PyObject_Call(bound, call->args, call->kwargs);
-            Py_DECREF(bound);
-        }
-        return result;
-    }
-    if (call->kwargs != NULL)
-        return call_with_kwargs(call, agent);
-    call->vec[0] = agent;
-    return PyObject_Vectorcall(call->method, call->vec, call->extra + 1, NULL);
-}
-
-/* Call on each agent of ``order`` still in ``members``; -1 at the first error. */
+/* ``r()``: 1 and a new reference when it gives an object, 0 when None (dead), -1 on error. */
 static int
-call_members(call_t *call, PyObject *order, PyObject *members)
+deref(PyObject *ref, PyObject **agent)
 {
-    PyObject *agent;
-    for (Py_ssize_t i = 0; (agent = item_or_end(order, i)) != NULL; i++) {
-        int alive = PyDict_Contains(members, agent);
+    if (PyWeakref_CheckRef(ref))
+        return PyWeakref_GetRef(ref, agent);
+    *agent = PyObject_CallNoArgs(ref); /* not a weakref: call it, as the twin does */
+    if (*agent == NULL)
+        return -1;
+    if (*agent != Py_None)
+        return 1;
+    Py_CLEAR(*agent);
+    return 0;
+}
+
+/* The agent to call for ``item`` of the order, as a new reference in ``agent``: 1 to
+ * call it, 0 to skip it, -1 on error. Strong: ``item in members``. Weak: ``item`` is a
+ * ref, ``(agent := item()) is not None and item in members``. */
+static int
+member(PyObject *item, PyObject *members, int weak, PyObject **agent)
+{
+    *agent = NULL;
+    int alive = weak ? deref(item, agent) : 1;
+    if (alive > 0)
+        alive = PyDict_Contains(members, item);
+    if (alive > 0 && !weak)
+        *agent = Py_NewRef(item);
+    if (alive <= 0)
+        Py_CLEAR(*agent);
+    return alive;
+}
+
+/* Call on each member of ``order``, appending the results to ``results`` unless NULL. */
+static int
+each_member(call_t *call, PyObject *order, PyObject *members, int weak, PyObject *results)
+{
+    PyObject *item, *agent;
+    for (Py_ssize_t i = 0; (item = item_or_end(order, i)) != NULL; i++) {
+        int alive = member(item, members, weak, &agent);
+        Py_DECREF(item);
         PyObject *result = alive > 0 ? call_agent(call, agent) : NULL;
-        Py_DECREF(agent);
+        Py_XDECREF(agent);
         if (alive < 0 || (alive > 0 && result == NULL))
             return -1;
+        int rc = result != NULL && results != NULL ? PyList_Append(results, result) : 0;
         Py_XDECREF(result);
+        if (rc < 0)
+            return -1;
     }
     return 0;
 }
+
+/* The shared body of the four loops: check the arguments, call, return None or the list. */
+static PyObject *
+run_loop(PyObject *const *argv, Py_ssize_t nargs, int weak, int collect, const char *usage)
+{
+    if (nargs != 5 || !PyList_CheckExact(argv[0]) || !PyDict_Check(argv[1])
+        || !PyTuple_CheckExact(argv[3]) || (argv[4] != Py_None && !PyDict_Check(argv[4]))) {
+        PyErr_SetString(PyExc_TypeError, usage);
+        return NULL;
+    }
+    PyObject *results = NULL;
+    if (collect && (results = PyList_New(0)) == NULL)
+        return NULL;
+    call_t call;
+    int rc = call_init(&call, argv[2], argv[3], argv[4] == Py_None ? NULL : argv[4]);
+    if (rc == 0)
+        rc = each_member(&call, argv[0], argv[1], weak, results);
+    call_release(&call);
+    if (rc < 0) {
+        Py_XDECREF(results);
+        return NULL;
+    }
+    return collect ? results : Py_NewRef(Py_None);
+}
+
+#define LOOP(name, weak, collect, usage)                                                  \
+    static PyObject *name(PyObject *Py_UNUSED(module), PyObject *const *argv, Py_ssize_t n) \
+    {                                                                                     \
+        return run_loop(argv, n, weak, collect, #name usage);                             \
+    }
 
 /*
  * call_each(order, members, method, args, kwargs) -> None
@@ -86,29 +113,14 @@ call_members(call_t *call, PyObject *order, PyObject *members)
  * ``members``: call ``getattr(agent, method)(*args, **kwargs)`` when method is
  * a str, else ``method(agent, *args, **kwargs)``. The membership test runs
  * before every call, so an agent removed by an earlier call is skipped.
+ * map_each returns the results as a list; the _weak versions take a list of
+ * weakrefs and their dict and dereference each ref just before its test.
  */
-static PyObject *
-call_each(PyObject *Py_UNUSED(module), PyObject *const *argv, Py_ssize_t nargs)
-{
-    if (nargs != 5 || !PyList_CheckExact(argv[0]) || !PyDict_Check(argv[1])
-        || !PyTuple_CheckExact(argv[3])) {
-        PyErr_SetString(PyExc_TypeError,
-                        "call_each(order: list, members: dict, method, args: tuple, kwargs: dict|None)");
-        return NULL;
-    }
-    call_t call = {argv[2], argv[3], argv[4] == Py_None ? NULL : argv[4], NULL,
-                   PyTuple_GET_SIZE(argv[3]), PyUnicode_Check(argv[2])};
-    call.vec = PyMem_New(PyObject *, call.extra + 1); /* reused for every call */
-    if (call.vec == NULL)
-        return PyErr_NoMemory();
-    for (Py_ssize_t j = 0; j < call.extra; j++)
-        call.vec[j + 1] = PyTuple_GET_ITEM(call.args, j);
-    int rc = call_members(&call, argv[0], argv[1]);
-    PyMem_Free(call.vec);
-    if (rc < 0)
-        return NULL;
-    Py_RETURN_NONE;
-}
+LOOP(call_each, 0, 0, "(order: list, members: dict, method, args: tuple, kwargs: dict|None)")
+LOOP(map_each, 0, 1, "(order: list, members: dict, method, args: tuple, kwargs: dict|None)")
+LOOP(call_each_weak, 1, 0, "(order: list, refs: dict, method, args: tuple, kwargs: dict|None)")
+LOOP(map_each_weak, 1, 1, "(order: list, refs: dict, method, args: tuple, kwargs: dict|None)")
+
 
 /* reached[cell] = cell._agents; append cell to frontier. -1 on error. */
 static int
@@ -248,6 +260,12 @@ fail:
 static PyMethodDef module_methods[] = {
     {"call_each", (PyCFunction)(void (*)(void))call_each, METH_FASTCALL,
      "Call method on each agent of order that is still in members."},
+    {"map_each", (PyCFunction)(void (*)(void))map_each, METH_FASTCALL,
+     "call_each, returning the results as a list."},
+    {"call_each_weak", (PyCFunction)(void (*)(void))call_each_weak, METH_FASTCALL,
+     "Call method on the referent of each weakref of order that is alive and still in refs."},
+    {"map_each_weak", (PyCFunction)(void (*)(void))map_each_weak, METH_FASTCALL,
+     "call_each_weak, returning the results as a list."},
     {"neighborhood", (PyCFunction)(void (*)(void))neighborhood, METH_FASTCALL,
      "Cells within radius hops of cell, mapped to their agent lists, BFS order."},
     {NULL, NULL, 0, NULL},

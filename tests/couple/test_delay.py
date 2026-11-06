@@ -124,3 +124,22 @@ def test_bad_delays_are_refused():
         AgentODE(model, Cell, lagged, ["y"], solver=Solver(method="BDF"),
                  delays={"past": Delay("y", 1.0)})  # fmt: skip
     assert chunks(0.0, 2.5, 1.0) == [(0.0, 2.5 / 3), (2.5 / 3, 5 / 3), (5 / 3, 2.5)]
+
+
+def test_a_kept_lookup_reads_what_a_fresh_one_reads():
+    """``Delayed`` keeps each pass's lookup of its ids; a pass added later gets its own."""
+    model = cells()
+    ode = AgentODE(
+        model, Cell, lagged, ["y"], ["rate"], delays={"past": Delay("y", 1.0)}
+    )
+    ode.advance(0.0, 1.0)
+    table = model.columns[Cell]
+    delayed = ode._with_delays(table, {})["past"]
+    t = np.array([0.3, 0.6, 0.9])
+    first = delayed(t + 1.0)
+    ode.advance(1.0, 1.0)  # a new pass the kept lookups do not cover yet
+    fresh = ode._with_delays(table, {})["past"]
+    for times in (t + 1.0, t + 2.0):
+        np.testing.assert_array_equal(delayed(times), fresh(times))
+    np.testing.assert_array_equal(delayed(t + 1.0), first)
+    assert len(delayed.lookups) == len(ode.history.passes)

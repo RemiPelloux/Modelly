@@ -6,11 +6,22 @@ const MARGIN = 36;
 const DOT = 3;
 const PAD = 0.05;
 
-function extent(points, bounds) {
-  if (bounds) return bounds;
-  const xs = points.map((p) => p[0]);
-  const ys = points.map((p) => p[1]);
-  const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+// The smallest and largest of the non-null values, in one pass, starting from `start`:
+// Math.min(...values) would throw RangeError past about 10^5 values. Empty: [Inf, -Inf].
+export function bounds(values, start = [Infinity, -Infinity]) {
+  let [low, high] = start;
+  for (const v of values) {
+    if (v === null) continue;
+    low = Math.min(low, v);
+    high = Math.max(high, v);
+  }
+  return [low, high];
+}
+
+function extent(points, given) {
+  if (given) return given;
+  const [x0, x1] = bounds(points.map((p) => p[0]));
+  const [y0, y1] = bounds(points.map((p) => p[1]));
   const dx = (x1 - x0 || 1) * PAD;
   const dy = (y1 - y0 || 1) * PAD;
   return [x0 - dx, y0 - dy, x1 + dx, y1 + dy];
@@ -39,8 +50,7 @@ export function drawSpace(canvas, caption, space) {
   if (!space) return void (caption.textContent = "No agent has a place in space.");
   const [x0, y0, x1, y1] = extent(space.points, space.bounds);
   const scale = Math.min(canvas.width / (x1 - x0), canvas.height / (y1 - y0));
-  const values = space.points.map((p) => p[2]).filter((v) => v !== null);
-  const [low, high] = [Math.min(...values), Math.max(...values)];
+  const [low, high] = bounds(space.points.map((p) => p[2]));
   const colour = space.classes.length
     ? (v) => PALETTE[v % PALETTE.length]
     : (v) => ramp(v, low, high);
@@ -55,13 +65,14 @@ export function drawSpace(canvas, caption, space) {
     : [[ramp(low, low, high), `${low}`], [ramp(high, low, high), `${high}`]]);
 }
 
-export function drawPlot(canvas, caption, series) {
+// `range` is the [low, high] of every value so far, kept by the caller as rows arrive;
+// without it, the values are scanned.
+export function drawPlot(canvas, caption, series, range = null) {
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const names = Object.keys(series);
   if (!names.length) return void (caption.textContent = "The model collects no numeric reporter.");
-  const all = names.flatMap((name) => series[name]).filter((v) => v !== null);
-  const [low, high] = [Math.min(...all), Math.max(...all)];
+  const [low, high] = range ?? names.reduce((found, name) => bounds(series[name], found), undefined);
   const length = Math.max(...names.map((name) => series[name].length));
   const x = (i) => MARGIN + (i / Math.max(length - 1, 1)) * (canvas.width - 2 * MARGIN);
   const y = (v) => canvas.height - MARGIN - ((v - low) / (high - low || 1)) * (canvas.height - 2 * MARGIN);

@@ -22,6 +22,7 @@ DEFAULT_STAY = 0.7
 # Added to the covariance diagonal, relative to its scale, so it stays invertible.
 RIDGE = 1e-9
 MAX_REDRAWS = 1000
+FLOATS = (float, np.floating)
 
 
 def joint_logprior(
@@ -35,6 +36,33 @@ def joint_logprior(
         total = density if total is None else total + density
     assert total is not None  # a calibration has at least one prior
     return total
+
+
+def _same(new: Sequence[Any], old: Sequence[Any]) -> np.ndarray:
+    """``new[i] == old[j]`` as a boolean array ``[i, j]``.
+
+    The values are mapped to integer codes (equal values share one) and the codes
+    compared at once; values a dict cannot key the same way as ``==`` (unhashable
+    ones, NaN) are compared pair by pair.
+    """
+    if len(new) and len(old) and not any(map(_not_codable, (*new, *old))):
+        codes: dict[Any, int] = {}
+        a = np.array([codes.setdefault(value, len(codes)) for value in new])
+        b = np.array([codes.setdefault(value, len(codes)) for value in old], int)
+        same: np.ndarray = a[:, None] == b[None, :]
+        return same
+    return np.array([[a == b for b in old] for a in new])
+
+
+def _not_codable(value: Any) -> bool:
+    """Whether a dict key would not match ``value`` exactly as ``==`` does."""
+    if isinstance(value, FLOATS):
+        return bool(math.isnan(value))
+    try:
+        hash(value)
+    except TypeError:
+        return True
+    return False
 
 
 @dataclass
@@ -138,14 +166,16 @@ class Kernel:
         particle; re-moving the same ancestor would over-weight particles near a bound.
         """
         proposal = self._draw(rng, count)
+        outside = np.flatnonzero(np.isneginf(joint_logprior(self.priors, proposal)))
         for _ in range(MAX_REDRAWS):
-            outside = np.flatnonzero(np.isneginf(joint_logprior(self.priors, proposal)))
             if not outside.size:
                 return proposal
             retry = self._draw(rng, outside.size)
             for name, values in retry.items():
                 for slot, value in zip(outside, values):
                     proposal[name][slot] = value
+            # Only the redrawn particles can have changed: score just those.
+            outside = outside[np.isneginf(joint_logprior(self.priors, retry))]
         raise RuntimeError("could not move particles inside the prior's support")
 
     def _draw(self, rng: np.random.Generator, count: int) -> dict[str, list[Any]]:
@@ -161,6 +191,6 @@ class Kernel:
         others = len(self.priors[name].arguments["values"]) - 1
         if others == 0:
             return np.zeros((len(new), len(old)))
-        same = np.array([[a == b for b in old] for a in new])
+        same = _same(new, old)
         jump = math.log((1 - self.stay) / others)
         return np.where(same, math.log(self.stay), jump)

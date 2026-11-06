@@ -80,22 +80,40 @@ class History:
         self.passes = [p for p in self.passes if p.sol.final.max() >= now - self.reach]
 
     def read(
-        self, index: int, ids: np.ndarray, t: np.ndarray, delay: Delay
+        self,
+        index: int,
+        ids: np.ndarray,
+        t: np.ndarray,
+        delay: Delay,
+        cache: dict[int, tuple[Any, ...]] | None = None,
     ) -> np.ndarray:
-        """State variable ``index`` of the agents ``ids`` at times ``t`` (one each)."""
+        """State variable ``index`` of the agents ``ids`` at times ``t`` (one each).
+
+        ``cache`` keeps each pass's lookup of ``ids`` for the next read of the same ids.
+        """
         out = delay.initial(t)
+        cache = {} if cache is None else cache
         for (
             p
         ) in self.passes:  # later passes win where spans meet (after an event's action)
-            slot = np.searchsorted(p.ids, ids, sorter=p.order)
-            slot = p.order[np.minimum(slot, p.ids.size - 1)]
-            found = p.ids[slot] == ids
-            inside = found & (t >= p.sol.start[slot]) & (t <= p.sol.final[slot])
+            hit = cache.get(id(p))
+            if hit is None or hit[0] is not p:
+                hit = cache[id(p)] = (p, *_lookup(p, ids))
+            _, slot, found, start, final = hit
+            inside = found & (t >= start) & (t <= final)
             if inside.any():
                 times = np.full(p.ids.size, np.nan)
-                times[slot[inside]] = t[inside]
-                out[inside] = p.sol.values(times)[index, slot[inside]]
+                rows = slot[inside]
+                times[rows] = t[inside]
+                out[inside] = p.sol.column(times, index)[rows]
         return out
+
+
+def _lookup(p: _Pass, ids: np.ndarray) -> tuple[np.ndarray, ...]:
+    """Where each of ``ids`` sits in the pass, whether it is there, and its span there."""
+    slot = np.searchsorted(p.ids, ids, sorter=p.order)
+    slot = p.order[np.minimum(slot, p.ids.size - 1)]
+    return slot, p.ids[slot] == ids, p.sol.start[slot], p.sol.final[slot]
 
 
 @dataclass(frozen=True)
@@ -106,11 +124,16 @@ class Delayed(Input):
     index: int
     delay: Delay
     ids: np.ndarray
+    lookups: dict[int, tuple[Any, ...]] = field(
+        default_factory=dict, compare=False, repr=False
+    )
 
     def __call__(self, t: np.ndarray) -> np.ndarray:
         """Each agent's variable at ``t - tau``."""
         t = np.broadcast_to(np.asarray(t, dtype=float), self.ids.shape)
-        return self.history.read(self.index, self.ids, t - self.delay.tau, self.delay)
+        return self.history.read(
+            self.index, self.ids, t - self.delay.tau, self.delay, self.lookups
+        )
 
     def cut(self, rows: np.ndarray, k: int) -> Delayed:
         """The input of the agents ``rows``."""

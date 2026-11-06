@@ -14,6 +14,7 @@ O(edges of that layer), on the first call after the layer changed.
 from __future__ import annotations
 
 from collections.abc import Hashable, Iterable, Iterator, Mapping, Sequence
+from types import MappingProxyType
 from typing import TYPE_CHECKING, Any
 
 from modelly.space.networks.base import NodeRows, csr_from_rows
@@ -22,6 +23,7 @@ if TYPE_CHECKING:
     from scipy.sparse import csr_matrix
 
 DEFAULT_WEIGHT = 1.0
+_NO_EDGES: Mapping[int, float] = MappingProxyType({})  # a node with no edge on a layer
 LayerSelection = str | Sequence[str] | None
 
 
@@ -69,6 +71,11 @@ class MultilayerNetwork(NodeRows):
         """Add an empty layer, or change the weight of an existing one."""
         self._edges.setdefault(name, {})
         self.layer_weights[name] = float(weight)
+        self.__dict__.pop("_combined", None)
+
+    def _on_new_node(self, row: int) -> None:
+        """A new node changes the shape of every matrix: forget the combined ones."""
+        self.__dict__.pop("_combined", None)
 
     def add_edge(
         self, u: Hashable, v: Hashable, layer: str, weight: float = DEFAULT_WEIGHT
@@ -81,7 +88,7 @@ class MultilayerNetwork(NodeRows):
         edges.setdefault(i, {})[j] = float(weight)
         if not self.directed:
             edges.setdefault(j, {})[i] = float(weight)
-        self._matrices.pop(layer, None)
+        self._layer_changed(layer)
 
     def add_edges(
         self,
@@ -103,7 +110,12 @@ class MultilayerNetwork(NodeRows):
                 del edges[j][i]
         except KeyError as e:
             raise KeyError(f"No edge {u!r}-{v!r} on layer {layer!r}.") from e
+        self._layer_changed(layer)
+
+    def _layer_changed(self, layer: str) -> None:
+        """Forget the cached matrices that include ``layer``'s edges."""
         self._matrices.pop(layer, None)
+        self.__dict__.pop("_combined", None)
 
     def has_edge(self, u: Hashable, v: Hashable, layer: str | None = None) -> bool:
         """Whether ``u`` and ``v`` are linked on ``layer``, or on any layer."""
@@ -112,7 +124,22 @@ class MultilayerNetwork(NodeRows):
 
     def neighbors(self, node: Hashable, layer: LayerSelection = None) -> list:
         """The nodes linked to ``node`` on the selected layers (all by default)."""
-        return [self.nodes[j] for j in self._neighbor_weights(node, layer)]
+        nodes = self.nodes
+        return [nodes[j] for j in self._neighbor_rows(node, layer)]
+
+    def _neighbor_rows(
+        self, node: Hashable, layer: LayerSelection
+    ) -> Mapping[int, float]:
+        """The neighbour rows of ``node``, in the order ``_neighbor_weights`` lists them."""
+        i = self.row(node)
+        names = self._select(layer)
+        edges = self._edges
+        if len(names) == 1:
+            return edges[names[0]].get(i, _NO_EDGES)
+        rows: dict[int, float] = {}
+        for name in names:
+            rows.update(edges[name].get(i, _NO_EDGES))
+        return rows
 
     def weighted_neighbors(self, node: Hashable, layer: LayerSelection = None) -> dict:
         """Neighbour label to combined weight, ``sum(layer weight * edge weight)``."""
@@ -132,7 +159,7 @@ class MultilayerNetwork(NodeRows):
 
     def degree(self, node: Hashable, layer: LayerSelection = None) -> int:
         """The number of distinct neighbours of ``node`` on the selected layers."""
-        return len(self._neighbor_weights(node, layer))
+        return len(self._neighbor_rows(node, layer))
 
     def edges(self, layer: str) -> Iterator[tuple[Any, Any, float]]:
         """``(u, v, weight)`` for every edge of ``layer`` (each undirected edge once)."""
@@ -149,6 +176,17 @@ class MultilayerNetwork(NodeRows):
         """The combined weighted adjacency of the selected layers, rows in ``nodes`` order."""
         names = self._select(layer)
         n = len(self.nodes)
+        key = (tuple(names), n, tuple(self.layer_weights[name] for name in names))
+        combined = self.__dict__.setdefault("_combined", {})
+        cached = combined.get(key)
+        if cached is not None:
+            return cached.copy()  # a copy: callers may change the matrix they get
+        total = self._combine(names, n)
+        combined[key] = total
+        return total.copy()
+
+    def _combine(self, names: list[str], n: int) -> csr_matrix:
+        """``sum(layer weight * layer matrix)`` over ``names``, rebuilding stale layers."""
         total = None
         for name in names:
             matrix = self._matrices.get(name)

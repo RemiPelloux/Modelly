@@ -7,14 +7,19 @@ from collections import defaultdict
 from collections.abc import Iterator, Sequence
 from functools import partial
 from itertools import count
-from typing import Any, ClassVar, cast
+from typing import TYPE_CHECKING, Any, ClassVar, cast
 
 import numpy as np
-import pandas as pd
 from numpy.random import SeedSequence
 
+from modelly._optional import LazyModule
 from modelly.scenarios import typed
 from modelly.scenarios.sampling import rescale_samples  # noqa: F401 (re-export)
+
+if TYPE_CHECKING:
+    import pandas as pd
+else:
+    pd = LazyModule("pandas")
 
 SeedLike = int | np.integer | Sequence[int] | np.random.SeedSequence
 RNGLike = np.random.Generator | np.random.BitGenerator
@@ -106,14 +111,14 @@ class Scenario:
                             replications for a given scenario, rather than handling this yourself.
             **kwargs: All other scenario parameters (override class-level defaults).
         """
-        self._frozen = False
-        self.scenario_id = (
-            next(self._ids[type(self)]) if scenario_id is None else scenario_id
-        )
-        self.replication_id = replication_id
-        self.rng = np.random.default_rng(rng)
-        self.seed_sequence = cast(SeedSequence, self.rng.bit_generator.seed_seq)
-        self._generator_class = self.rng.bit_generator.__class__.__name__
+        self._frozen = False  # raises on a frozen scenario; plain slot writes follow
+        put, generator = object.__setattr__, np.random.default_rng(rng)
+        fresh = scenario_id is None
+        put(self, "scenario_id", next(self._ids[type(self)]) if fresh else scenario_id)
+        put(self, "replication_id", replication_id)
+        put(self, "rng", generator)
+        put(self, "seed_sequence", cast(SeedSequence, generator.bit_generator.seed_seq))
+        put(self, "_generator_class", generator.bit_generator.__class__.__name__)
 
         if type(self) is not Scenario:
             typed.check_call(type(self), self._scenario_defaults, kwargs)

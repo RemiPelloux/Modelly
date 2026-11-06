@@ -18,7 +18,7 @@ from concurrent.futures import (
     as_completed,
 )
 
-from modelly.batch.runs import default_workers, worker_context
+from modelly.batch.runs import _chunk_size, default_workers, worker_context
 from modelly.experiments.executors import Executor
 from modelly.experiments.tasks import RunOutcome, RunTask, run_task
 
@@ -37,14 +37,32 @@ class SerialExecutor(Executor):
             yield run_task(task)
 
 
-def _pool_outcomes(
-    pool: PoolExecutor, tasks: Sequence[RunTask]
+def _run_tasks(tasks: Sequence[RunTask]) -> list[RunOutcome]:
+    """Run a chunk of tasks one after another in a worker; their outcomes in order."""
+    return [run_task(task) for task in tasks]
+
+
+def _submit_chunks(
+    pool: PoolExecutor, tasks: Sequence[RunTask], workers: int
 ) -> Iterator[RunOutcome]:
-    """Submit every task to ``pool``; yield outcomes as they finish; cancel the rest on exit."""
+    """Submit the tasks to ``pool`` in chunks; yield each outcome as its chunk finishes.
+
+    A submission costs the parent tens of microseconds, so many short runs go
+    a few at a time (one at a time for small batches, see ``_chunk_size``).
+    """
+    size = _chunk_size(len(tasks), workers)
+    chunks = [tasks[start : start + size] for start in range(0, len(tasks), size)]
+    futures = [pool.submit(_run_tasks, chunk) for chunk in chunks]
+    for future in as_completed(futures):
+        yield from future.result()
+
+
+def _pool_outcomes(
+    pool: PoolExecutor, tasks: Sequence[RunTask], workers: int
+) -> Iterator[RunOutcome]:
+    """Run the tasks on ``pool``; yield outcomes as they finish; cancel the rest on exit."""
     try:
-        futures = [pool.submit(run_task, task) for task in tasks]
-        for future in as_completed(futures):
-            yield future.result()
+        yield from _submit_chunks(pool, tasks, workers)
     finally:
         pool.shutdown(wait=True, cancel_futures=True)
 
@@ -67,8 +85,8 @@ class ThreadExecutor(Executor):
         """Run the tasks on up to ``max_parallel`` threads."""
         if not tasks:
             return iter(())
-        pool = ThreadPoolExecutor(max_workers=_workers(max_parallel, tasks))
-        return _pool_outcomes(pool, tasks)
+        workers = _workers(max_parallel, tasks)
+        return _pool_outcomes(ThreadPoolExecutor(max_workers=workers), tasks, workers)
 
 
 class ProcessExecutor(Executor):
@@ -83,7 +101,6 @@ class ProcessExecutor(Executor):
         if not tasks:
             return iter(())
         self.check(tasks)
-        pool = ProcessPoolExecutor(
-            max_workers=_workers(max_parallel, tasks), mp_context=worker_context()
-        )
-        return _pool_outcomes(pool, tasks)
+        workers = _workers(max_parallel, tasks)
+        pool = ProcessPoolExecutor(max_workers=workers, mp_context=worker_context())
+        return _pool_outcomes(pool, tasks, workers)

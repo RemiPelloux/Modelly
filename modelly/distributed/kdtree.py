@@ -21,6 +21,7 @@ from typing import Any
 import numpy as np
 
 HALF = 2
+SLACK = 1e-9  # relative margin of ``reaches``: never skip a box over a rounding error
 
 
 @dataclass(frozen=True)
@@ -103,14 +104,22 @@ class KDLayout:
     def owners(self, points: Any) -> np.ndarray:
         """The box owning each point (an (n, d) array); the domain's top edge included."""
         points = np.asarray(points, dtype=float).reshape(-1, self._lower.shape[1])
-        p = points[:, None, :]
+        owners = np.zeros(len(points), dtype=np.intp)
+        left = np.arange(len(points))  # the first box holding a point owns it
         top = self._upper == self._domain[1]
-        above = p >= self._lower
-        below = (p < self._upper) | (top & (p <= self._upper))
-        inside = (above & below).all(axis=2)
-        if not inside.any(axis=1).all():
+        for box, (lower, upper) in enumerate(
+            zip(self._lower, self._upper, strict=True)
+        ):
+            if not left.size:
+                break
+            p = points[left]
+            below = (p < upper) | (top[box] & (p <= upper))
+            inside = ((p >= lower) & below).all(axis=1)
+            owners[left[inside]] = box
+            left = left[~inside]
+        if left.size:
             raise ValueError("a point lies outside the partitioned domain")
-        return inside.argmax(axis=1)
+        return owners
 
     def owner(self, point: Any) -> int:
         """The box owning ``point``."""
@@ -128,6 +137,22 @@ class KDLayout:
                 wrapped = np.maximum(np.maximum(lower - moved, moved - upper), 0.0)
                 gap = np.minimum(gap, wrapped)
         return np.sqrt((gap * gap).sum(axis=1))
+
+    def reaches(self, index: int, lower: Any, upper: Any, radius: float) -> bool:
+        """Whether some point of the box ``lower``..``upper`` may lie within ``radius``.
+
+        False only when none can: rounding is monotone, so no point of the box is nearer
+        box ``index`` than ``distances`` finds for the box itself (NaN bounds: True).
+        """
+        lower, upper = np.asarray(lower, dtype=float), np.asarray(upper, dtype=float)
+        low, high = self._lower[index], self._upper[index]
+        gap = np.maximum(np.maximum(low - upper, lower - high), 0.0)
+        if self.torus:
+            size = self._domain[1] - self._domain[0]
+            for shift in (size, -size):
+                wrapped = np.maximum(low - (upper + shift), (lower + shift) - high)
+                gap = np.minimum(gap, np.maximum(wrapped, 0.0))
+        return not float(np.sqrt((gap * gap).sum())) > radius * (1 + SLACK)
 
     def near(self, index: int, points: Any, radius: float) -> np.ndarray:
         """Whether each point lies within ``radius`` of box ``index``."""

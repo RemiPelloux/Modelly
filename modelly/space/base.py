@@ -40,6 +40,9 @@ T = TypeVar("T", bound=Cell)
 # sparse space answers in a draw or two; a dense space fails them all once, pays
 # for one O(n) index build, and answers in O(1) ever after.
 EMPTY_SAMPLE_TRIES = 8
+# Leaf size of the cKDTree behind find_nearest_cell: scipy.spatial.KDTree's default,
+# so the tree, and with it the choice among equidistant cells, is the KDTree one.
+KDTREE_LEAFSIZE = 10
 
 
 def space_agents(space: DiscreteSpace) -> Iterator[CellAgent]:

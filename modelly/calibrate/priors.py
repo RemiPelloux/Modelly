@@ -31,9 +31,20 @@ TAIL = 1e-3
 MEDIAN = 0.5
 
 
+# Instance attributes a prior caches (not fields: no effect on equality or pickles).
+DISTRIBUTION, TABLE = "_cached_distribution", "_cached_table"
+CACHED = (DISTRIBUTION, TABLE)
+
+
 def _plain(value: Any) -> Any:
     """A numpy scalar as the Python value it holds."""
     return value.item() if isinstance(value, np.generic) else value
+
+
+def _log_of(table: dict[Any, float], value: Any) -> float:
+    """The log probability ``table`` gives one value of a choice (``-inf`` if none)."""
+    probability = table.get(_plain(value), 0.0)
+    return math.log(probability) if probability > 0 else -math.inf
 
 
 @dataclass(frozen=True)
@@ -121,8 +132,20 @@ class Prior:
         """Whether the prior is a choice among values."""
         return self.kind == CHOICE
 
+    def __getstate__(self) -> dict[str, Any]:
+        """The fields only: the cached distribution and table are rebuilt on use."""
+        return {name: value for name, value in vars(self).items() if name not in CACHED}
+
     def distribution(self) -> Any:
-        """The frozen ``scipy.stats`` distribution of a continuous prior."""
+        """The frozen ``scipy.stats`` distribution of a continuous prior (built once)."""
+        found = vars(self).get(DISTRIBUTION)
+        if found is None:
+            found = self._distribution()
+            object.__setattr__(self, DISTRIBUTION, found)  # a cache, not a field
+        return found
+
+    def _distribution(self) -> Any:
+        """A new frozen ``scipy.stats`` distribution of a continuous prior."""
         from scipy import stats  # noqa: PLC0415 - scipy loads only when needed
 
         args = self.arguments
@@ -159,11 +182,13 @@ class Prior:
 
     def _log_probability(self, value: Any) -> float | np.ndarray:
         """Log probability of one value or an array of values of a choice."""
-        table = dict(zip(self.arguments["values"], self.arguments["probabilities"]))
+        table = vars(self).get(TABLE)
+        if table is None:
+            table = dict(zip(self.arguments["values"], self.arguments["probabilities"]))
+            object.__setattr__(self, TABLE, table)  # a cache, not a field
         if isinstance(value, np.ndarray):
             return np.array([self._log_probability(v) for v in value], dtype=float)
-        probability = table.get(_plain(value), 0.0)
-        return math.log(probability) if probability > 0 else -math.inf
+        return _log_of(table, value)
 
     def bounds(self) -> tuple[float, float]:
         """The support, or the central ``1 - 2 * TAIL`` interval of an unbounded prior."""

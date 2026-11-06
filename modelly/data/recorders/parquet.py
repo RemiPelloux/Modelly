@@ -8,12 +8,16 @@ import pathlib
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import pandas as pd
 
+from modelly._optional import LazyModule
 from modelly.data.recorders.base import BaseDataRecorder
 
 if TYPE_CHECKING:
+    import pandas as pd
+
     from modelly.data.recorders.config import DatasetConfig
+else:
+    pd = LazyModule("pandas")
 
 _BYTES_PER_MB = 1024 * 1024
 # Buffered rows that trigger a write to disk.

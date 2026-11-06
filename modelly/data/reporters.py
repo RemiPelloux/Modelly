@@ -17,7 +17,6 @@ import types
 from collections.abc import Callable, Iterable
 from copy import deepcopy
 from functools import partial
-from itertools import repeat
 from operator import attrgetter
 from typing import Any
 
@@ -26,6 +25,7 @@ import numpy as np
 from modelly._native import sets
 from modelly._native.sets import attr_values
 from modelly.core.columns import ID_COLUMN
+from modelly.data._records import AgentRows
 
 LIST_REPORTER_LENGTH = 2  # [function, [param_1, param_2]]
 
@@ -36,6 +36,8 @@ _IMMUTABLE_TYPES = frozenset(
 )
 _IMMUTABLE_BASES = (str, int, float, tuple, np.generic)
 _unique_id = attrgetter("unique_id")
+# numpy dtype kinds whose ``tolist()`` holds only immutable Python scalars.
+_SCALAR_KINDS = "biufc"
 
 
 def snapshot(value: Any) -> Any:
@@ -45,6 +47,8 @@ def snapshot(value: Any) -> Any:
     """
     if type(value) in _IMMUTABLE_TYPES or isinstance(value, _IMMUTABLE_BASES):
         return value
+    if type(value) is np.ndarray and value.dtype.kind in _SCALAR_KINDS:
+        return value.copy(order="K")  # what deepcopy does for a plain numeric array
     return deepcopy(value)
 
 
@@ -102,7 +106,7 @@ def compile_model_reporter(name: str, reporter: Any) -> Callable[[Any], Any]:
     List reporters are re-checked on every call: the list is user-owned and
     may have been edited after validation.
     """
-    if isinstance(reporter, types.LambdaType | partial):
+    if isinstance(reporter, (types.LambdaType, partial)):
         return reporter
     if isinstance(reporter, str):
         return partial(getattr_or_none, name=reporter)
@@ -134,7 +138,7 @@ def collect_model_value(name: str, reporter: Any, model: Any) -> Any:
     List reporters are re-checked on every call: the list is user-owned and may
     have been edited after validation.
     """
-    if isinstance(reporter, types.LambdaType | partial):
+    if isinstance(reporter, (types.LambdaType, partial)):
         return snapshot(reporter(model))
     if isinstance(reporter, str):
         return snapshot(getattr(model, reporter, None))
@@ -184,33 +188,47 @@ def _call_with_params(agent: Any, func: Callable[..., Any], params: list) -> Any
 
 
 def collect_agent_rows(
-    agents: Iterable[Any], reporters: dict[str, Callable], time: float
-) -> list[tuple]:
-    """Return one ``(time, unique_id, *values)`` row per agent.
+    agents: Iterable[Any],
+    reporters: dict[str, Callable],
+    time: float,
+    one_type: bool = False,
+) -> AgentRows:
+    """Return the ``(time, unique_id, *values)`` rows of every agent, stored by column.
 
     Values are gathered one reporter at a time over all agents (a C-level
-    ``map`` per column) and the columns are zipped into rows, so the per-agent
-    Python work is close to zero. A column is copied only if it holds a mutable
-    value. Attribute reporters use one ``attrgetter``; a missing attribute
-    re-runs the reporter's own getter to produce the descriptive error.
+    ``map`` per column), so the per-agent Python work is close to zero. A
+    column is copied only if it holds a mutable value. Attribute reporters use
+    one ``attrgetter``; a missing attribute re-runs the reporter's own getter
+    to produce the descriptive error.
 
     When every reporter is a ``Column`` of the agents' single class and
     ``agents`` is that class's whole population, the rows are sliced straight
     out of the column table in table order, with no per-agent work at all.
+    ``one_type`` says the caller knows every agent has the same class.
     """
     agents = list(agents)
     funcs = tuple(reporters.values())
     attributes = [getattr(rep, "_modelly_attribute", None) for rep in funcs]
-    table = _whole_column_table(agents, attributes)
+    table = _whole_column_table(agents, attributes, one_type)
     if table is not None:
         n = len(agents)
         ids = table._data[ID_COLUMN][:n].tolist()
-        columns = [table._data[name][:n].tolist() for name in attributes]
+        columns = [_table_column(table._data[name][:n]) for name in attributes]
     else:
-        ids = list(map(_unique_id, agents))
-        columns = _reporter_columns(agents, funcs, attributes)
-    columns = [_snapshot_column(column) for column in columns]
-    return list(zip(repeat(time), ids, *columns))
+        ids = attr_values(agents, "unique_id")
+        columns = [
+            _snapshot_column(column)
+            for column in _reporter_columns(agents, funcs, attributes)
+        ]
+    return AgentRows(time, ids, columns)
+
+
+def _table_column(values: np.ndarray) -> list:
+    """A column-table slice as Python values; only object columns can hold mutables."""
+    column = values.tolist()
+    if values.dtype.kind in _SCALAR_KINDS:
+        return column
+    return _snapshot_column(column)
 
 
 def _reporter_columns(
@@ -252,7 +270,9 @@ def _reporter_column(
     return list(map(reporter, agents))
 
 
-def _whole_column_table(agents: list[Any], attributes: list[str | None]):
+def _whole_column_table(
+    agents: list[Any], attributes: list[str | None], one_type: bool = False
+):
     """Return the column table when ``agents`` is one class's whole population.
 
     Requires every attribute to be a Column of that class; otherwise None.
@@ -263,7 +283,9 @@ def _whole_column_table(agents: list[Any], attributes: list[str | None]):
     if not specs or any(name not in specs for name in attributes):
         return None
     table = agents[0]._column_table
-    if len(table) != len(agents) or len(set(map(type, agents))) != 1:
+    if len(table) != len(agents):
+        return None
+    if not one_type and len(set(map(type, agents))) != 1:
         return None
     return table
 

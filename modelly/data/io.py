@@ -107,7 +107,7 @@ def query(sql: str, connection: Any = None, **tables: Any) -> Any:
 
 def _register(connection: Any, table_name: str, source: Any) -> None:
     """Make ``source`` queryable as ``table_name`` on ``connection``."""
-    if isinstance(source, str | Path):
+    if isinstance(source, (str, Path)):
         pattern = Path(source).as_posix().replace("'", "''")
         connection.sql(
             f'CREATE OR REPLACE VIEW "{table_name}" AS '  # noqa: S608 (local paths)

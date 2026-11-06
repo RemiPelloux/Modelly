@@ -13,6 +13,7 @@ from __future__ import annotations
 import pickle
 import struct
 from collections.abc import Callable, Iterable
+from functools import lru_cache
 from typing import Any
 
 from modelly.core.agent import Agent
@@ -30,6 +31,8 @@ LOCAL_ATTRIBUTES = frozenset({"model", "_modelly_cell"})
 GHOST_ATTRIBUTES = LOCAL_ATTRIBUTES | frozenset(STREAM_ATTRIBUTES)
 RANDOM_ATTRIBUTE = STREAM_ATTRIBUTES[0]
 WORD = "<{}I"  # Mersenne Twister state words: little-endian 32-bit, any platform
+WORD_SIZE = struct.calcsize(WORD.format(1))
+WORD_FORMATS = 4  # compiled formats kept, one per state length
 
 
 # Values that cannot refer to a simulation object, skipped without a check.
@@ -59,9 +62,14 @@ def _check(agent: Agent, state: dict[str, Any]) -> None:
 def _unpack(version: int, words: bytes, gauss: float | None) -> FastRandom:
     """The ``FastRandom`` packed by ``_Packed``."""
     rng = FastRandom.__new__(FastRandom)
-    count = len(words) // struct.calcsize(WORD.format(1))
-    rng.setstate((version, struct.unpack(WORD.format(count), words), gauss))
+    rng.setstate((version, _words(len(words) // WORD_SIZE).unpack(words), gauss))
     return rng
+
+
+@lru_cache(maxsize=WORD_FORMATS)
+def _words(count: int) -> struct.Struct:
+    """The compiled format of ``count`` state words (one length in practice: 624)."""
+    return struct.Struct(WORD.format(count))
 
 
 class _Packed:
@@ -80,7 +88,7 @@ class _Packed:
     def __reduce__(self) -> tuple:
         """Rebuild through ``_unpack``."""
         version, words, gauss = self.rng.getstate()
-        return _unpack, (version, struct.pack(WORD.format(len(words)), *words), gauss)
+        return _unpack, (version, _words(len(words)).pack(*words), gauss)
 
 
 def state_of(agent: Agent, ghost: bool) -> dict[str, Any]:
@@ -94,9 +102,21 @@ def state_of(agent: Agent, ghost: bool) -> dict[str, Any]:
     return state
 
 
-def encode(agents: Iterable[Agent], location: Callable, ghost: bool) -> bytes:
-    """The records of ``agents`` as bytes; ``location(agent)`` gives each place."""
-    rows = [(type(a), a.unique_id, location(a), state_of(a, ghost)) for a in agents]
+def encode(
+    agents: Iterable[Agent],
+    location: Callable,
+    ghost: bool,
+    known: dict[int, dict[str, Any]] | None = None,
+) -> bytes:
+    """The records of ``agents`` as bytes; ``location(agent)`` gives each place.
+
+    ``known`` keeps each agent's state by ``id`` across the calls of one exchange, so an
+    agent sent to several partitions is read once.
+    """
+    known = {} if known is None else known
+    rows = [
+        (type(a), a.unique_id, location(a), _known(a, ghost, known)) for a in agents
+    ]
     try:
         return pickle.dumps(rows, protocol=PROTOCOL)
     except (pickle.PicklingError, TypeError, AttributeError) as error:
@@ -104,6 +124,16 @@ def encode(agents: Iterable[Agent], location: Callable, ghost: bool) -> bytes:
             f"cannot send agents to another partition: {error}. Agent classes of a "
             "split run are defined at module level and their attributes pickle"
         ) from error
+
+
+def _known(
+    agent: Agent[Any], ghost: bool, known: dict[int, dict[str, Any]]
+) -> dict[str, Any]:
+    """``state_of(agent, ghost)``, read once per ``known``."""
+    state = known.get(id(agent))
+    if state is None:
+        state = known[id(agent)] = state_of(agent, ghost)
+    return state
 
 
 def decode(data: bytes) -> list[tuple]:

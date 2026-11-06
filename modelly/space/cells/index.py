@@ -84,7 +84,8 @@ class CellIndex:
 
     def rows(self, cells: Iterable[Cell]) -> np.ndarray:
         """Return the row of each cell in ``cells``."""
-        return np.fromiter((cell.index for cell in cells), dtype=np.intp)
+        count = len(cells) if isinstance(cells, (list, tuple)) else -1
+        return np.fromiter((cell.index for cell in cells), dtype=np.intp, count=count)
 
     def counts(self, rows: np.ndarray, weights: np.ndarray | None = None) -> np.ndarray:
         """Per-cell total of ``weights`` (or of ones) over the agents sitting in ``rows``."""
@@ -125,10 +126,12 @@ class CellIndex:
         adjacency = self.adjacency
         if adjacency.nnz == 0:
             return np.array(rows, copy=True)
-        start = adjacency.indptr[rows]
-        degree = adjacency.indptr[rows + 1] - start
-        pick = start + (rng.random(rows.shape[0]) * degree).astype(np.intp)
-        chosen = adjacency.indices[np.minimum(pick, adjacency.nnz - 1)]
+        indptr = adjacency.indptr
+        start = indptr[rows]
+        degree = indptr[rows + 1] - start
+        pick = (rng.random(rows.shape[0]) * degree).astype(np.intp)
+        pick += start
+        chosen = adjacency.indices[np.minimum(pick, adjacency.nnz - 1, out=pick)]
         return np.where(degree > 0, chosen, rows)
 
     def to_layer(self, values: np.ndarray) -> np.ndarray:

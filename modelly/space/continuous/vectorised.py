@@ -49,7 +49,10 @@ def difference_vectors(
     delta = positions[j] - positions[i]
     if space.torus:
         size = space.size
-        delta = np.mod(delta + size / 2, size) - size / 2
+        half = size / 2
+        delta += half
+        np.mod(delta, size, out=delta)
+        delta -= half
     return delta
 
 
@@ -58,7 +61,9 @@ def move_all(space: ContinuousSpace, positions: np.ndarray) -> None:
     positions = np.asarray(positions, dtype=float)
     low = space.dimensions[:, 0]
     if space.torus:
-        positions = np.mod(positions - low, space.size) + low
+        positions = positions - low
+        np.mod(positions, space.size, out=positions)
+        positions += low
     else:
         positions = np.clip(positions, low, space.dimensions[:, 1])
     space.agent_positions[:] = positions

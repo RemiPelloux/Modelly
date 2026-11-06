@@ -24,6 +24,7 @@
 
 #define SMALL_SET_SIZE 21      /* random.sample: small set minus empty list */
 #define SAMPLE_SET_THRESHOLD 5 /* above this k the set size grows */
+#define SMALL_SAMPLE 32        /* up to this k, sample_set scans its chosen indices */
 
 /* CPython's Modules/_randommodule.c RandomObject, unchanged since 3.2. */
 typedef struct {
@@ -109,10 +110,32 @@ sample_pool(RandomObject *self, PyObject **items, Py_ssize_t n, Py_ssize_t k, Py
     return 0;
 }
 
-/* random.sample's set path: redraw an index already selected. */
+/* Whether ``j`` is one of the first ``count`` indices of ``chosen``. */
+static inline int
+already_chosen(const uint32_t *chosen, Py_ssize_t count, uint32_t j)
+{
+    for (Py_ssize_t i = 0; i < count; i++)
+        if (chosen[i] == j)
+            return 1;
+    return 0;
+}
+
+/* random.sample's set path: redraw an index already selected. For a few draws the
+ * selected indices are scanned; past SMALL_SAMPLE a bitmap of n bits is cheaper. */
 static int
 sample_set(RandomObject *self, PyObject **items, Py_ssize_t n, Py_ssize_t k, PyObject **out)
 {
+    if (k <= SMALL_SAMPLE) {
+        uint32_t chosen[SMALL_SAMPLE];
+        for (Py_ssize_t i = 0; i < k; i++) {
+            uint32_t j = below32(self, (uint32_t)n);
+            while (already_chosen(chosen, i, j))
+                j = below32(self, (uint32_t)n);
+            chosen[i] = j;
+            out[i] = Py_NewRef(items[j]);
+        }
+        return 0;
+    }
     unsigned char *seen = PyMem_Calloc((size_t)(n / 8 + 1), 1);
     if (seen == NULL)
         return -1;
@@ -145,6 +168,30 @@ sample_indices(RandomObject *self, PyObject **items, Py_ssize_t n, Py_ssize_t k)
         return PyErr_NoMemory();
     }
     return result;
+}
+
+/* random.Random.random: genrand_res53, a double in [0, 1) from two words. */
+static inline double
+random_res53(RandomObject *self)
+{
+    uint32_t a = genrand_uint32(self) >> 5, b = genrand_uint32(self) >> 6;
+    return (a * 67108864.0 + b) * (1.0 / 9007199254740992.0);
+}
+
+/* random.Random.choices(items, k=k) without weights, 0 < n: ``items[floor(random() * n)]``
+ * k times, n as a double. -1 (out[i:] NULL) if a product rounds up to n, where the
+ * standard library's indexing raises IndexError. */
+static int
+choices_uniform(RandomObject *self, PyObject **items, Py_ssize_t n, Py_ssize_t k, PyObject **out)
+{
+    double size = (double)n;
+    for (Py_ssize_t i = 0; i < k; i++) {
+        double index = floor(random_res53(self) * size);
+        if (index >= size)
+            return -1;
+        out[i] = Py_NewRef(items[(Py_ssize_t)index]);
+    }
+    return 0;
 }
 
 #endif /* MODELLY_MTDRAWS_H */

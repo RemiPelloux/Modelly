@@ -128,7 +128,9 @@ for name, error in errors.items():
 
 - **Lazy.** `discover(group)` reads the installed metadata only; a plugin's module is imported
   the first time `load()` is called on it, so a slow or heavy plugin costs nothing until it
-  is used.
+  is used. The scan of the installed metadata is kept for the session and redone when
+  `sys.path` or one of its folders changes; `modelly.plugins.clear_cache()` forces it, for
+  example after installing a plugin into a running process.
 - **Isolated.** A plugin that fails to import raises `PluginError` (an `ImportError`) that
   names the plugin, its entry point and its distribution, with the original error as its
   cause. It never stops other plugins from being found or loaded; `load_all` returns the

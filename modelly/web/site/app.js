@@ -4,12 +4,14 @@
 // the page. ?lazy=1 waits for a click before
 // downloading Python (an embedded page in the docs).
 
-import { drawPlot, drawSpace } from "./draw.js";
+import { bounds, drawPlot, drawSpace } from "./draw.js";
 
 const $ = (id) => document.getElementById(id);
 const manifest = await (await fetch("modelly.json")).json();
 const worker = new Worker("worker.js", { type: "module" });
 const series = {};
+// The [low, high] of every series value so far, updated as rows arrive (not rescanned).
+let range = bounds([]);
 // The panel's inputs by parameter name, not by form name: a parameter may be called steps.
 const fields = new Map();
 const RUN_BUTTONS = ["reset", "step", "run"];
@@ -81,9 +83,13 @@ function colourOptions(attributes) {
 
 function show(text) {
   const state = JSON.parse(text);
-  for (const [name, rows] of Object.entries(state.series ?? {})) (series[name] ??= []).push(...rows);
+  for (const [name, rows] of Object.entries(state.series ?? {})) {
+    const kept = (series[name] ??= []);
+    for (const row of rows) kept.push(row); // push(...rows) throws past ~10^5 rows
+    range = bounds(rows, range);
+  }
   drawSpace($("space"), $("space-legend"), state.space);
-  drawPlot($("plot"), $("plot-legend"), series);
+  drawPlot($("plot"), $("plot-legend"), series, range);
   colourOptions(state.attributes);
   document.body.dataset.steps = state.steps;
   document.body.dataset.running = state.running;
@@ -95,6 +101,7 @@ const send = (type, extra = {}) => worker.postMessage({ type, colour: $("colour"
 
 function reset() {
   for (const name of Object.keys(series)) delete series[name];
+  range = bounds([]);
   setState("running", "building the model…");
   send("build", { values: values(), seed: Number($("seed").value) });
 }

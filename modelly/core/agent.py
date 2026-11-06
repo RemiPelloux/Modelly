@@ -12,10 +12,15 @@ from random import Random
 from typing import TYPE_CHECKING, ClassVar
 
 import numpy as np
-import pandas as pd
+
+from modelly._optional import LazyModule
 
 if TYPE_CHECKING:
+    import pandas as pd
+
     from modelly.core.model import Model
+else:
+    pd = LazyModule("pandas")
 
 from modelly.core.agentset import AgentSet, _resolve_per_agent_values
 from modelly.core.column_access import collect_column_specs, install_column_properties
@@ -134,7 +139,7 @@ class Agent[M: Model]:
             pass  # already removed
         if self._extra_hooks:
             if self._column_specs and self._column_row >= 0:
-                model.columns.unregister(self)
+                self._column_table.remove(self)
                 del self._column_table  # its Column attributes now name the agent
             # ensures models are also removed from datasets
             for dataset in self._datasets:
@@ -179,12 +184,10 @@ class Agent[M: Model]:
             ValueError: If a sequence argument's length does not match n.
 
         """
-        agents = []
-
         if not args and not kwargs:
-            for _ in range(n):
-                agents.append(cls(model))
-            return AgentSet(agents, random=model.random)
+            return AgentSet([cls(model) for _ in range(n)], random=model.random)
+
+        agents = []
 
         pos_iter, kw_keys, kw_iter = _per_agent_iters(args, kwargs, n)
 

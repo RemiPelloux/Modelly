@@ -99,10 +99,12 @@ class DeviceTable:
 
     def __getattr__(self, name: str) -> Any:
         """``table.<column>``; only reached for names that are not attributes."""
-        data = self.__dict__.get("_data")
-        if data is not None and name in data:
-            return data[name]
-        raise AttributeError(f"{type(self).__name__} has no column {name!r}")
+        try:
+            return self.__dict__["_data"][name]
+        except KeyError:  # no such column (or no columns yet, while unpickling)
+            raise AttributeError(
+                f"{type(self).__name__} has no column {name!r}"
+            ) from None
 
     def __setattr__(self, name: str, value: Any) -> None:
         """``table.<column> = values`` replaces an existing column."""

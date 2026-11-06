@@ -28,30 +28,69 @@ START_NOISE = 1e-3
 LOG_LENGTH_BOUNDS = (np.log(1e-2), np.log(1e1))
 LOG_NOISE_BOUNDS = (np.log(1e-8), np.log(1.0))
 JITTER = 1e-10
+# Values of the pairwise-difference temporaries the kernel builds at a time (8 MB).
+BLOCK_VALUES = 1 << 20
 LOG_TWO_PI = np.log(2 * np.pi)
 # Extra (length scale, noise) starts of a fit with restarts: short, long and noisy fits.
 RESTARTS = ((0.1, 1e-6), (0.3, 1e-6), (1.0, 1e-6), (3.0, 1e-4))
 
 
+def _differences(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """The pairwise differences ``a[i] - b[j]`` as an array ``[i, j, dimension]``."""
+    differences: np.ndarray = a[:, None, :] - b[None, :, :]
+    return differences
+
+
+def _covariance(differences: np.ndarray, lengths: np.ndarray) -> np.ndarray:
+    """The squared-exponential covariance of precomputed pairwise differences."""
+    scaled = differences / lengths
+    covariance: np.ndarray = np.exp(-0.5 * np.sum(scaled**2, axis=2))
+    return covariance
+
+
 def _kernel(a: np.ndarray, b: np.ndarray, lengths: np.ndarray) -> np.ndarray:
-    """The squared-exponential covariance between the rows of ``a`` and ``b``."""
-    diff = (a[:, None, :] - b[None, :, :]) / lengths
-    return np.exp(-0.5 * np.sum(diff**2, axis=2))
+    """The squared-exponential covariance between the rows of ``a`` and ``b``.
+
+    Built a block of rows of ``a`` at a time, so the ``[i, j, dimension]``
+    temporaries stay near ``BLOCK_VALUES`` values however many points there are.
+    """
+    rows = max(1, BLOCK_VALUES // max(1, b.shape[0] * a.shape[1]))
+    if a.shape[0] <= rows:
+        return _covariance(_differences(a, b), lengths)
+    out = np.empty((a.shape[0], b.shape[0]))
+    for start in range(0, a.shape[0], rows):
+        block = a[start : start + rows]
+        out[start : start + rows] = _covariance(_differences(block, b), lengths)
+    return out
+
+
+def _with_noise(covariance: np.ndarray, noise: float) -> np.ndarray:
+    """``covariance`` with ``noise + JITTER`` added to its diagonal, in place."""
+    diagonal = np.einsum("ii->i", covariance)
+    diagonal += noise + JITTER
+    return covariance
 
 
 def _negative_log_likelihood(theta: np.ndarray, x: np.ndarray, y: np.ndarray) -> float:
     """Minus the log marginal likelihood of standardised ``y`` at log parameters ``theta``."""
+    return _likelihood_of_differences(theta, _differences(x, x), y)
+
+
+def _likelihood_of_differences(
+    theta: np.ndarray, differences: np.ndarray, y: np.ndarray
+) -> float:
+    """:func:`_negative_log_likelihood` from the training points' pairwise differences."""
     from scipy.linalg import cho_factor, cho_solve  # noqa: PLC0415 - lazy import
 
     lengths, noise = np.exp(theta[:-1]), np.exp(theta[-1])
-    covariance = _kernel(x, x, lengths) + (noise + JITTER) * np.eye(len(x))
+    covariance = _with_noise(_covariance(differences, lengths), noise)
     try:
         factor = cho_factor(covariance, lower=True)
     except np.linalg.LinAlgError:
         return float(np.inf)
     alpha = cho_solve(factor, y)
     log_det = 2 * np.sum(np.log(np.diag(factor[0])))
-    return float(0.5 * y @ alpha + 0.5 * log_det + 0.5 * len(x) * LOG_TWO_PI)
+    return float(0.5 * y @ alpha + 0.5 * log_det + 0.5 * len(y) * LOG_TWO_PI)
 
 
 def _hyperparameters(
@@ -63,13 +102,14 @@ def _hyperparameters(
     dims = x.shape[1]
     bounds = [LOG_LENGTH_BOUNDS] * dims + [LOG_NOISE_BOUNDS]
     starts = [(START_LENGTH, START_NOISE), *(RESTARTS if restarts else ())]
+    differences = _differences(x, x)  # the same at every evaluation of the likelihood
     # A finite-difference gradient: an analytic one needs the inverse covariance, a
     # matrix product that a multi-threaded BLAS makes far slower on a busy machine.
     found = [
         minimize(
-            _negative_log_likelihood,
+            _likelihood_of_differences,
             np.append(np.full(dims, np.log(length)), np.log(noise)),
-            (x, standard),
+            (differences, standard),
             "L-BFGS-B",
             bounds=bounds,
         )
@@ -119,7 +159,7 @@ class GaussianProcess:
         from scipy.linalg import cho_factor, cho_solve  # noqa: PLC0415 - lazy import
 
         lengths, noise = hyperparameters
-        covariance = _kernel(x, x, lengths) + (noise + JITTER) * np.eye(len(x))
+        covariance = _with_noise(_kernel(x, x, lengths), noise)
         factor = cho_factor(covariance, lower=True)
         alpha = cho_solve(factor, standard)
         return cls(x, lengths, noise, alpha, factor[0], *standardisation)

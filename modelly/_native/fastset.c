@@ -6,6 +6,7 @@
  * exceptions, so a model gives the same results with or without this module.
  *
  * - live_agents: AgentSet.to_list, the live referents of a dict of weakrefs
+ * - live_refs:   AgentSet.shuffle(inplace=True), the live weakrefs of that dict
  * - make_refs:   AgentSet._make_refs, dict.fromkeys of one weakref per agent
  * - keep_type:   select's ``[a for a in agents if isinstance(a, agent_type)]``
  * - keep_if:     select's ``[a for a in agents if filter_func(a)]``
@@ -111,6 +112,30 @@ dotted_get_cached(PyObject *agent, PyObject *parts, column_cache_t *Py_UNUSED(ca
     return dotted_get(agent, parts);
 }
 
+/* Drop the unset tail of ``out``, a list made by PyList_New(n) of which the first ``used``
+ * items are set: the tail is NULL, and a list only reads its first ob_size items. */
+static PyObject *
+trim(PyObject *out, Py_ssize_t used)
+{
+    if (out != NULL && used < PyList_GET_SIZE(out))
+        Py_SET_SIZE(out, used);
+    return out;
+}
+
+/* Set ``out[i] = value`` (stolen) in a list being filled in order: past the preallocated
+ * length (``agents`` grew meanwhile) it is appended. -1 on error. */
+static int
+put(PyObject *out, Py_ssize_t i, PyObject *value)
+{
+    if (i < PyList_GET_SIZE(out)) {
+        PyList_SET_ITEM(out, i, value);
+        return 0;
+    }
+    int rc = PyList_Append(out, value);
+    Py_DECREF(value);
+    return rc;
+}
+
 /* attr_values(agents: list, name: str) -> list: ``list(map(operator.attrgetter(name), agents))``. */
 static PyObject *
 attr_values(PyObject *Py_UNUSED(module), PyObject *const *argv, Py_ssize_t nargs)
@@ -122,17 +147,18 @@ attr_values(PyObject *Py_UNUSED(module), PyObject *const *argv, Py_ssize_t nargs
         return NULL;
     }
     PyObject *agents = argv[0], *parts = PyUnicode_Split(argv[1], str_dot, -1);
-    PyObject *out = parts == NULL ? NULL : PyList_New(0), *agent;
+    PyObject *out = parts == NULL ? NULL : PyList_New(PyList_GET_SIZE(agents)), *agent;
     column_cache_t cache = {0};
     PyObject *(*get)(PyObject *, PyObject *, column_cache_t *) =
         parts != NULL && PyList_GET_SIZE(parts) == 1 ? single_get : dotted_get_cached;
-    for (Py_ssize_t i = 0; out != NULL && (agent = item_or_end(agents, i)) != NULL; i++) {
+    Py_ssize_t i = 0;
+    for (; out != NULL && (agent = item_or_end(agents, i)) != NULL; i++) {
         PyObject *value = get(agent, parts, &cache);
         Py_DECREF(agent);
-        if (value == NULL || PyList_Append(out, value) < 0)
+        if (value == NULL || put(out, i, value) < 0)
             Py_CLEAR(out);
-        Py_XDECREF(value);
     }
+    out = trim(out, i); /* a getter may have shortened ``agents`` meanwhile */
     forget_columns(&cache);
     Py_XDECREF(parts);
     return out;
@@ -151,24 +177,43 @@ deref(PyObject *ref)
     return PyObject_CallNoArgs(ref); /* not a weakref: call it, as the twin does */
 }
 
+/* The live keys of the weakref dict ``refs`` from a snapshot, in order: their referents
+ * when ``referents``, else the refs themselves. */
+static PyObject *
+live_keys(PyObject *refs, int referents, const char *usage)
+{
+    if (!PyDict_Check(refs)) {
+        PyErr_SetString(PyExc_TypeError, usage);
+        return NULL;
+    }
+    PyObject *keys = PyDict_Keys(refs);
+    PyObject *out = keys == NULL ? NULL : PyList_New(PyList_GET_SIZE(keys));
+    Py_ssize_t used = 0;
+    for (Py_ssize_t i = 0; out != NULL && i < PyList_GET_SIZE(keys); i++) {
+        PyObject *ref = PyList_GET_ITEM(keys, i); /* ``keys`` is ours alone */
+        PyObject *agent = deref(ref);
+        if (agent == NULL)
+            Py_CLEAR(out);
+        else if (agent != Py_None)
+            PyList_SET_ITEM(out, used++, Py_NewRef(referents ? agent : ref));
+        Py_XDECREF(agent);
+    }
+    Py_XDECREF(keys);
+    return trim(out, used);
+}
+
 /* live_agents(refs: dict) -> list: ``[a for r in list(refs) if (a := r()) is not None]``. */
 static PyObject *
 live_agents(PyObject *Py_UNUSED(module), PyObject *refs)
 {
-    if (!PyDict_Check(refs)) {
-        PyErr_SetString(PyExc_TypeError, "live_agents(refs: dict)");
-        return NULL;
-    }
-    PyObject *keys = PyDict_Keys(refs);
-    PyObject *out = keys == NULL ? NULL : PyList_New(0);
-    for (Py_ssize_t i = 0; out != NULL && i < PyList_GET_SIZE(keys); i++) {
-        PyObject *agent = deref(PyList_GET_ITEM(keys, i)); /* ``keys`` is ours alone */
-        if (agent == NULL || (agent != Py_None && PyList_Append(out, agent) < 0))
-            Py_CLEAR(out);
-        Py_XDECREF(agent);
-    }
-    Py_XDECREF(keys);
-    return out;
+    return live_keys(refs, 1, "live_agents(refs: dict)");
+}
+
+/* live_refs(refs: dict) -> list: ``[r for r in list(refs) if r() is not None]``. */
+static PyObject *
+live_refs(PyObject *Py_UNUSED(module), PyObject *refs)
+{
+    return live_keys(refs, 0, "live_refs(refs: dict)");
 }
 
 /* Add ``ref(agent, callback)`` as a key of ``refs`` (value None); -1 on error. */
@@ -214,6 +259,8 @@ static PyMethodDef module_methods[] = {
      "getattr(agent, name) for each agent of a list, in order."},
     {"live_agents", (PyCFunction)(void (*)(void))live_agents, METH_O,
      "The live referents of the weakref keys of a dict, in order."},
+    {"live_refs", (PyCFunction)(void (*)(void))live_refs, METH_O,
+     "The weakref keys of a dict whose referents are alive, in order."},
     {"make_refs", (PyCFunction)(void (*)(void))make_refs, METH_FASTCALL,
      "A dict keyed on one weakref (with callback) per agent, in order."},
     {NULL, NULL, 0, NULL},

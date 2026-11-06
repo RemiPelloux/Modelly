@@ -29,7 +29,12 @@ from typing import Any
 
 import numpy as np
 
-from modelly.calibrate.simulator import DEFAULT_EXECUTOR, Batch, Execution, Simulator
+from modelly.calibrate.simulator import (
+    DEFAULT_EXECUTOR,
+    Batch,
+    Simulator,
+    _SharedExecution,
+)
 from modelly.emulate.base import Statistic, reducer
 from modelly.experiments.scratch import scratch_folder
 from modelly.experiments.space import ScenarioSpace
@@ -54,7 +59,7 @@ def _output_specs(outputs: Outputs) -> dict[str, tuple[Any, Statistic]]:
 
 
 @dataclass
-class Simulation:
+class Simulation(_SharedExecution):
     """A model or function and the outputs an emulator learns.
 
     Args:
@@ -73,6 +78,9 @@ class Simulation:
         executor: where the runs execute (any experiment executor).
         max_parallel: the most runs at once.
         options: the executor's options.
+
+    ``with simulation:`` keeps one pool of workers for every batch run inside the block
+    (``"processes"`` otherwise starts one per batch).
     """
 
     model: Any
@@ -141,7 +149,7 @@ class Simulation:
         simulator = Simulator(
             model, self._records, self.steps, self.replicates, self.seed, root
         )
-        execution = Execution(self.executor, self.max_parallel, self.options)
+        execution = self.execution()
         if self.common:
             batches = [
                 Batch((*key, i), [point], common=True) for i, point in enumerate(points)

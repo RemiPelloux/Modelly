@@ -1,12 +1,15 @@
 """Plugin discovery through entry points, with fake distributions on sys.path."""
 
+import os
 import sys
 
 import pytest
 
+from modelly import plugins
 from modelly.plugins import GROUPS, PluginError, discover, load_all
 
 MODULE = "fake_modelly_plugin"
+LATER_NS = 1_000_000_000  # one second
 
 
 def install(root, dist, entry_points, module_source=None, requires=()):
@@ -125,3 +128,18 @@ def test_modelly_plugins_reports_and_checks(fake_site, capsys):
     with pytest.warns(RuntimeWarning):
         assert main(["--check"]) == 1
     assert "fails to load" in capsys.readouterr().out
+
+
+def test_scan_is_kept_until_a_package_is_installed(tmp_path, monkeypatch):
+    """The entry points are scanned once; installing into a path folder rescans."""
+    monkeypatch.syspath_prepend(str(tmp_path))
+    assert discover("modelly.samplers") == {}
+    first = plugins._installed_entry_points()
+    assert plugins._installed_entry_points() is first
+    install(tmp_path, "lateplug", {"modelly.samplers": {"late": "json:dumps"}})
+    # A distinct modification time, as a real install leaves (timestamps are coarse).
+    stamp = tmp_path.stat().st_mtime_ns + LATER_NS
+    os.utime(tmp_path, ns=(stamp, stamp))
+    assert list(discover("modelly.samplers")) == ["late"]
+    plugins.clear_cache()
+    assert plugins._installed_entry_points() is not first

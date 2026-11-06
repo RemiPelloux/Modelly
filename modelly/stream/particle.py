@@ -154,9 +154,8 @@ class ParticleFilter:
                 for model in self.ensemble
             ]
         )
-        likelihood[
-            np.isnan(likelihood)
-        ] = -np.inf  # an unreadable replicate scores zero
+        # an unreadable replicate scores zero
+        likelihood[np.isnan(likelihood)] = -np.inf
         prior = self._log_weights - _log_sum_exp(self._log_weights)
         posterior = prior + likelihood
         evidence = _log_sum_exp(posterior)
@@ -165,17 +164,20 @@ class ParticleFilter:
                 f"every replicate has zero likelihood at time {observation.time}"
             )
         self._log_weights = posterior - evidence
-        ess = self.ess
+        weights = self.weights  # computed once for the ESS and the resampling
+        ess = effective_sample_size(weights)
         resampled = ess < self.threshold * len(self.ensemble)
         if resampled:
-            self._resample()
+            self._resample(weights)
         step = FilterStep(observation.time, ess, resampled, evidence)
         self._steps.append(step)
         return step
 
-    def _resample(self) -> None:
+    def _resample(self, weights: np.ndarray | None = None) -> None:
         """Systematic resampling, duplicates reseeded, weights back to equal."""
-        indices = systematic_resample(self.weights, float(self._uniforms.random()))
+        if weights is None:
+            weights = self.weights
+        indices = systematic_resample(weights, float(self._uniforms.random()))
         generation = self._generation
         self.ensemble.resample(
             indices, lambda slot: self.ensemble.seed(RESAMPLE_DOMAIN, generation, slot)

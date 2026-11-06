@@ -10,7 +10,9 @@ from random import Random
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import pandas as pd
+
+from modelly._native.sets import attr_values
+from modelly._optional import is_series
 
 if TYPE_CHECKING:
     from modelly.core.agent import Agent
@@ -38,7 +40,7 @@ def _resolve_weights(
         ValueError: If sequence length does not match, if any weight is negative, or if total sum <= 0.
     """
     if isinstance(weights, str):
-        w = [getattr(agent, weights) for agent in agents]
+        w = _attribute_weights(agents, weights)
     elif callable(weights):
         w = [weights(agent) for agent in agents]
     elif isinstance(weights, Sequence):
@@ -55,12 +57,19 @@ def _resolve_weights(
 
     if not all(map(math.isfinite, w)):
         raise ValueError("All weights must be finite.")
-    if any(x < 0 for x in w):
+    if w and min(w) < 0:
         raise ValueError("All weights must be non-negative.")
     if sum(w) <= 0:
         raise ValueError("Sum of weights must be strictly positive.")
 
     return w
+
+
+def _attribute_weights(agents: Sequence[Agent], name: str) -> list:
+    """``getattr(agent, name)`` per agent: one C loop for a list and a plain name."""
+    if type(agents) is list and "." not in name:
+        return attr_values(agents, name)
+    return [getattr(agent, name) for agent in agents]
 
 
 def _resolve_per_agent_values(value: Any, n: int, *, strict: bool = True) -> Iterable:
@@ -84,7 +93,7 @@ def _resolve_per_agent_values(value: Any, n: int, *, strict: bool = True) -> Ite
         ValueError: If ``strict`` and ``value`` is a sequence whose length is
             not ``n``.
     """
-    if isinstance(value, (list, tuple, np.ndarray, pd.Series)):
+    if isinstance(value, (list, tuple, np.ndarray)) or is_series(value):
         if len(value) == n:
             return value
         if strict:

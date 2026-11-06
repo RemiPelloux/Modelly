@@ -109,10 +109,12 @@ def method_logger(name: str) -> Decorator:
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             # hack, because log is applied to methods, we can get
-            # object instance as first arguments in args
-            logger.debug(
-                f"calling {classname}.{func.__name__} with {args[1::]} and {kwargs}"
-            )
+            # object instance as first arguments in args. The message (a repr of
+            # every argument) is only built when DEBUG is on.
+            if logger.isEnabledFor(DEBUG):
+                logger.debug(
+                    f"calling {classname}.{func.__name__} with {args[1::]} and {kwargs}"
+                )
             res = func(*args, **kwargs)
             return res
 
@@ -133,7 +135,8 @@ def function_logger(name: str) -> Decorator:
     def real_decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
-            logger.debug(f"calling {func.__name__} with {args} and {kwargs}")
+            if logger.isEnabledFor(DEBUG):
+                logger.debug(f"calling {func.__name__} with {args} and {kwargs}")
             res = func(*args, **kwargs)
             return res
 

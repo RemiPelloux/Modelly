@@ -22,6 +22,8 @@ from typing import Any
 import numpy as np
 
 RANGE_LENGTH = 2  # a (low, high) tuple
+INTEGERS = (int, np.integer)
+NUMBERS = (float, int)
 
 
 def _plain(value: Any) -> Any:
@@ -31,7 +33,7 @@ def _plain(value: Any) -> Any:
 
 def _is_int(value: Any) -> bool:
     """Whether ``value`` is an integer, booleans excluded."""
-    return isinstance(value, int | np.integer) and not isinstance(value, bool)
+    return isinstance(value, INTEGERS) and not isinstance(value, bool)
 
 
 @dataclass(frozen=True)
@@ -112,11 +114,12 @@ class Fixed:
 
 
 Dimension = Range | Choice
+DIMENSIONS = (Range, Choice, Fixed)
 
 
 def as_dimension(value: Any) -> Range | Choice | Fixed:
     """A Range for a ``(low, high)`` tuple, a Choice for a list, else Fixed."""
-    if isinstance(value, Range | Choice | Fixed):
+    if isinstance(value, DIMENSIONS):
         return value
     if isinstance(value, tuple):
         if len(value) != RANGE_LENGTH:
@@ -177,7 +180,8 @@ class ScenarioSpace:
         values = {
             name: dim.from_unit(float(u)) for (name, dim), u in zip(dims.items(), unit)
         }
-        return {name: values.get(name, self.fixed.get(name)) for name in self.names}
+        fixed = self.fixed
+        return {name: values.get(name, fixed.get(name)) for name in self.names}
 
     def complete(self, values: Mapping[str, Any]) -> dict[str, Any]:
         """``values`` with the fixed parameters added; unknown names are an error."""
@@ -247,7 +251,7 @@ def _typed_range(name: str, dim: Range, hint: type) -> Range:
 def _matches(value: Any, hint: type) -> bool:
     """Whether ``value`` fits a field annotated ``hint`` (an int fits a float)."""
     if hint is float:
-        return isinstance(value, float | int) and not isinstance(value, bool)
+        return isinstance(value, NUMBERS) and not isinstance(value, bool)
     if hint is int:
         return _is_int(value)
     return isinstance(value, hint)

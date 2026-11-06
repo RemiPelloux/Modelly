@@ -14,17 +14,20 @@ posterior summary with highest-density intervals; the ranked indices).
 
 from __future__ import annotations
 
+import sys
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any
 
 import pandas as pd
 
-from modelly.calibrate.posterior import Posterior
-from modelly.sensitivity.results import SensitivityResult
 from modelly.studio.loader import load_portrayal
 
 POSTERIOR, SENSITIVITY = "posterior", "sensitivity"
+# Where the two result classes live. They are looked up only once loaded: a result of
+# either class means its module was imported, so Studio never imports SciPy for this.
+POSTERIOR_MODULE = "modelly.calibrate.posterior"
+SENSITIVITY_MODULE = "modelly.sensitivity.results"
 
 
 @dataclass
@@ -41,7 +44,7 @@ def as_list(found: Any) -> list[tuple[str, Any]]:
     """``(name, result)`` pairs from one result, a list of them or a dict of them."""
     if isinstance(found, Mapping):
         return [(str(name), item) for name, item in found.items()]
-    if isinstance(found, list | tuple):
+    if isinstance(found, (list, tuple)):
         return [(f"result {index + 1}", item) for index, item in enumerate(found)]
     return [("result", found)]
 
@@ -61,11 +64,11 @@ def view_of(name: str, result: Any) -> AnalysisView:
     Raises:
         TypeError: For anything else.
     """
-    if isinstance(result, Posterior):
+    if is_instance(result, POSTERIOR_MODULE, "Posterior"):
         title = f"{name}: {result!r}"
         table = result.summary().rename_axis("parameter").reset_index()
         return AnalysisView(title, POSTERIOR, result.plot, table)
-    if isinstance(result, SensitivityResult):
+    if is_instance(result, SENSITIVITY_MODULE, "SensitivityResult"):
         title = f"{name}: {result.method}, ranked by {result.measure}"
         table = result.ranking().rename_axis("parameter").reset_index()
         return AnalysisView(title, SENSITIVITY, result.plot, table)
@@ -73,6 +76,12 @@ def view_of(name: str, result: Any) -> AnalysisView:
         f"{name} is a {type(result).__name__}: the Analysis tab shows a "
         "modelly.calibrate.Posterior or a modelly.sensitivity result"
     )
+
+
+def is_instance(result: Any, module: str, name: str) -> bool:
+    """Whether ``result`` is a ``module.name``, without importing ``module``."""
+    loaded = sys.modules.get(module)
+    return loaded is not None and isinstance(result, getattr(loaded, name))
 
 
 __all__ = ["AnalysisView", "as_list", "load_analyses", "view_of"]

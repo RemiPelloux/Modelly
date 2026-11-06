@@ -14,6 +14,55 @@ versioning.
 - A new docs home page: a finder that lists the guides for a typed task, the benchmark as a
   dot plot with a data table behind it, the guides grouped by task, and what 1.5 added.
 
+### Performance
+
+A full audit of per-step, per-agent and per-run costs. Results are unchanged: the golden
+digests are byte-identical, compiled and pure Python, under CPython 3.12, 3.14 and 3.15, and
+each change outside them was checked against the old code on varied inputs.
+
+- Scheduling: the recurring event is built without `__init__` from a cached `WeakMethod`;
+  `_set_time` skips `notify` when nothing observes; signal `Message` writes its slots directly
+  and dispatch allocates nothing unless an observer died; `EventList.__contains__` is O(1).
+- Native (`modelly/_native`): methods are called with `PyObject_VectorcallMethod` and keyword
+  names built once (`agentcall.h`); new `call_each_weak`, `map_each_weak`, `map_each` and
+  `live_refs`; `sample` and `choices` accept `k=` on the C path; small samples skip the
+  bitmap; a two-entry cell layout cache; preallocated result lists; an out-of-bounds read in
+  the RNG fallback with more than three arguments is fixed.
+- Columns: `ColumnTable.add`/`remove` write through cached memoryviews; `ColumnStore` lives in
+  `modelly/core/_column_store.py` (still importable from `modelly.core.columns`).
+- Data: agent rows are stored per step as columns (`modelly/data/_records.py`, read as the
+  same tuples); numeric columns skip the type check; the agent DataFrame grows incrementally;
+  the SQL recorder inserts with one prepared statement; replay sources sort only after adds.
+- Spaces: occupancy sorts with numpy's radix sort and caches offsets; continuous bounds are
+  cached (`dimensions` is now read-only in place); `cKDTree` with the same leaf size;
+  network collectors and multilayer adjacency avoid LIL and cache the combined matrix; the
+  Delaunay in-circle test uses Python floats; geo transformers are memoised.
+- Equations and GPU: delayed reads interpolate one column with a cached lookup; event
+  bisection hoists its gathers; field steps reuse a buffer; the JAX Philox key is traced, so
+  a new seed does not recompile; binomial draws sync once per round; split runs carry each
+  rank's status inside the next collective where that keeps failures raised on every rank.
+- Studies: chunked submits in the process, thread and scenario executors; one pool per
+  `with simulation:` block; cached prior distributions and type hints; vectorised choice
+  priors, `training_data`, `predict` and the GP kernel (built in row blocks); new `workers=`
+  in `decide.compare`, `decide.robust`, `decide.optimise`, `treatment_effect`, `attribute`.
+- Import time: `import modelly` no longer imports pandas (`modelly._optional.LazyModule`);
+  `modelly.viz`, `modelly.web`, `modelly.llm` and `modelly.profile` import lazily;
+  `plugins.discover` is memoised (`modelly.plugins.clear_cache`, provisional).
+- Interface: Studio and SolaraViz keep one figure and the static structure between frames;
+  hex edges are cached; grid lines are two collections; Altair colours are vectorised.
+- LLM: `Request.key` is computed once; replies are written in one transaction; lookups use
+  one query; one executor per client; HTTPS connections are kept per thread.
+
+### Fixed
+
+- Matplotlib marker draw order no longer depends on `PYTHONHASHSEED`; `renderer.canvas` no
+  longer returns `None` after initialisation; the browser runner's plot no longer throws a
+  `RangeError` on long runs; `FakeProvider.failures` is a deque.
+- `get_neighbors_in_radius` returns empty results instead of raising IndexError when nothing,
+  not even the agent itself, is in range.
+- A field with a closed or periodic boundary reports zero outflow even when it holds NaN.
+- `python -m modelly.dev perf --against` accepts a tag name (`v1.5.0`) as well as a version.
+
 ### Documentation
 
 - `docs/explain.md` gives the variance reduction of common random numbers as its spread over

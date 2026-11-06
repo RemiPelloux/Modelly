@@ -3,7 +3,8 @@
 The frames are models: the states of one run, one per frame. ``frames_from_run`` steps a
 model and yields it after every ``every`` steps; ``frames_from_timeline`` yields the model
 at each recorded step of a ``modelly.timetravel`` recording. ``save_animation`` draws each
-one with ``modelly.viz.mpl.figure.space_figure`` and writes the file::
+one as ``modelly.viz.mpl.figure.space_figure`` does, on one kept ``_SpaceFigure`` (the
+space's structure is drawn once), and writes the file::
 
     from modelly.viz.animation import frames_from_run, save_animation
 
@@ -23,7 +24,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from modelly.viz.mpl.figure import DEFAULT_DPI, figure_pixels, space_figure
+from modelly.viz.mpl.figure import DEFAULT_DPI, _SpaceFigure, figure_pixels
 
 if TYPE_CHECKING:
     from modelly.core.model import Model
@@ -149,13 +150,10 @@ def save_animation(
     if suffix not in FORMATS:
         raise ValueError(f"unknown animation format {path.suffix!r}; use .gif or .mp4")
     options = options or AnimationOptions()
+    # One kept figure: the space's structure is drawn once, the agents every frame.
+    figure = _SpaceFigure(options.figsize, options.dpi)
     frames = (
-        _pad(
-            figure_pixels(
-                space_figure(model, agent_portrayal, options.figsize, options.dpi)
-            )
-        )
-        for model in models
+        _pad(figure_pixels(figure.draw(model, agent_portrayal))) for model in models
     )
     write = _write_gif if suffix == ".gif" else _write_mp4
     return write(path, frames, options)

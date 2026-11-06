@@ -126,9 +126,14 @@ class ContinuousAdapter:
         """For each other box, the local agents within ``radius`` of it."""
         agents = list(self.space.active_agents)
         positions = self.space.agent_positions
-        out = {}
+        out: dict[int, list[Agent[Any]]] = {}
+        if not len(positions):
+            return out
+        bounds = np.asarray(positions, dtype=np.float64)
+        lower, upper = bounds.min(axis=0), bounds.max(axis=0)
         for other in range(len(self.layout)):
-            if other != self.index:
+            # a box no local agent can reach is skipped without measuring every agent
+            if other != self.index and self.layout.reaches(other, lower, upper, radius):
                 near = np.flatnonzero(self.layout.near(other, positions, radius))
                 if len(near):
                     out[other] = [agents[i] for i in near.tolist()]

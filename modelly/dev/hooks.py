@@ -55,7 +55,7 @@ def run_perf(
     if staged and not staged_code(root):
         return EXIT_PASSED
     try:
-        version = against or baseline_version(root)
+        version = against.removeprefix("v") if against else baseline_version(root)
         out.write(
             f"modelly perf: core operations, this checkout against {version}...\n"
         )

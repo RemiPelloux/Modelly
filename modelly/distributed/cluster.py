@@ -80,11 +80,11 @@ class DistributedModel:
         group.invoke("begin_step")
         for i, phase in enumerate(self.plan.phases):
             if phase.radius > 0:
-                ghosts = group.exchange(group.invoke("ghosts_for", i))
-                group.deliver("accept_ghosts", ghosts)
-            outboxes = group.invoke("act", i)
-            if phase.moves:
-                group.deliver("accept_migrants", group.exchange(outboxes))
+                group.deliver("accept_ghosts", group.invoke_exchange("ghosts_for", i))
+            if phase.moves:  # the migrants travel with the phase's status
+                group.deliver("accept_migrants", group.invoke_exchange("act", i))
+            else:
+                group.invoke("act", i)
         self._record()
 
     def run_for(self, steps: int) -> None:
@@ -94,7 +94,7 @@ class DistributedModel:
 
     def _record(self) -> None:
         """Reduce the reporters across partitions into one row."""
-        reports = self.group.gather(self.group.invoke("report"))
+        reports = self.group.invoke_gather("report")
         row: dict[str, Any] = {TIME: reports[0][0]}
         for name, reducer in self.plan.reporters.items():
             row[name] = reducer.combine([parts[name] for _, parts in reports])
@@ -106,7 +106,7 @@ class DistributedModel:
 
     def info(self) -> list[tuple[int, int, int, bool]]:
         """Per partition: agents built and kept, id counter, own stream keys."""
-        return self.group.gather(self.group.invoke("info"))
+        return self.group.invoke_gather("info")
 
     def population(self) -> list[int]:
         """The number of agents in each partition."""
@@ -114,17 +114,17 @@ class DistributedModel:
 
     def snapshot(self, attributes: tuple[str, ...] = ()) -> pd.DataFrame:
         """Every agent by stream key, with its location and ``attributes``."""
-        parts = self.group.gather(self.group.invoke("snapshot", tuple(attributes)))
+        parts = self.group.invoke_gather("snapshot", tuple(attributes))
         return frame_of((row for part in parts for row in part), attributes)
 
     def states(self) -> list[tuple]:
         """The full state of every agent, in stream-key order (``reduce.states``)."""
-        parts = self.group.gather(self.group.invoke("states"))
+        parts = self.group.invoke_gather("states")
         return sorted(row for part in parts for row in part)
 
     def checkpoint(self, directory: str | Path) -> Path:
         """Write one file per partition and ``index.json`` into ``directory``."""
-        files = self.group.gather(self.group.invoke("save", str(directory)))
+        files = self.group.invoke_gather("save", str(directory))
         if self.group.is_root:
             write_index(Path(directory), self.model_class, self.rows, files)
         return Path(directory)

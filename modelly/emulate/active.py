@@ -157,15 +157,14 @@ class ActiveLearning:
         initial = self.settings.initial or INITIAL_PER_DIMENSION * (self.dimensions + 1)
         if runs < initial:
             raise ValueError(f"runs must be at least the {initial} initial runs")
-        if not len(self.units):
-            start = qmc.LatinHypercube(self.dimensions, rng=self._stream()).random(
-                initial
-            )
-            self._add(start, 0)
-        while len(self.units) < runs:
-            emulator = self.fit()
-            count = min(self.settings.batch, runs - len(self.units))
-            self._add(self._choose(emulator, count), int(self.iterations[-1]) + 1)
+        with self.simulation:  # one pool of workers for every batch
+            if not len(self.units):
+                start = qmc.LatinHypercube(self.dimensions, rng=self._stream())
+                self._add(start.random(initial), 0)
+            while len(self.units) < runs:
+                emulator = self.fit()
+                count = min(self.settings.batch, runs - len(self.units))
+                self._add(self._choose(emulator, count), int(self.iterations[-1]) + 1)
         return ActiveDesign(
             self.simulation, self.units, self.values, self.iterations, self.fit()
         )

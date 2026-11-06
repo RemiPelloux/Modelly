@@ -19,7 +19,7 @@ from typing import Any
 import numpy as np
 
 from modelly.core.exceptions import SpaceException
-from modelly.space.base import DiscreteSpace
+from modelly.space.base import KDTREE_LEAFSIZE, DiscreteSpace
 from modelly.space.cells.cell import Cell
 
 
@@ -60,12 +60,12 @@ class Network(DiscreteSpace[Cell]):
         self._kdtree_dirty = False  # True when KDTree needs a rebuild.
         positions_for_tree = self._create_cells(node_positions, capacity)
 
-        from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
-            KDTree,
-        )
+        from scipy.spatial import cKDTree  # noqa: PLC0415 - scipy is heavy
 
         if positions_for_tree:
-            self._kdtree = KDTree(np.array(positions_for_tree))
+            self._kdtree = cKDTree(
+                np.array(positions_for_tree), leafsize=KDTREE_LEAFSIZE
+            )
         else:
             self._kdtree = None
 
@@ -104,12 +104,10 @@ class Network(DiscreteSpace[Cell]):
             c for c in self._kdtree_cells if cells.get(c.coordinate) is c
         ]
         if self._kdtree_cells:
-            from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
-                KDTree,
-            )
+            from scipy.spatial import cKDTree  # noqa: PLC0415 - scipy is heavy
 
             positions = np.array([c._position for c in self._kdtree_cells])
-            self._kdtree = KDTree(positions)
+            self._kdtree = cKDTree(positions, leafsize=KDTREE_LEAFSIZE)
         else:
             self._kdtree = None
         self._kdtree_dirty = False  # set to false after rebuilding  every time

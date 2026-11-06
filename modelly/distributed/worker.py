@@ -123,8 +123,9 @@ class PartitionWorker:
         """The ghosts each neighbour needs before ``phase``."""
         radius = self.plan.phases[phase].radius
         location = self.adapter.location
+        known: dict[int, dict[str, Any]] = {}  # an agent near two borders: read once
         return {
-            other: encode(agents, location, ghost=True)
+            other: encode(agents, location, ghost=True, known=known)
             for other, agents in self.adapter.outgoing(radius).items()
             if agents
         }

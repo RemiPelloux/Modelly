@@ -24,6 +24,7 @@ bound, so the results are the same in practice and the same law always.
 
 from __future__ import annotations
 
+import itertools
 import math
 from typing import TYPE_CHECKING, Any
 
@@ -51,6 +52,8 @@ TAIL_TABLE = tuple(
     for k in range(TAIL_TABLE_SIZE)
 )
 TAIL_C0, TAIL_C1, TAIL_C2 = 1.0 / 12, 1.0 / 360, 1.0 / 1260
+# TAIL_TABLE on each array library, dtype and device, copied there once.
+_TAIL_TABLES: dict[tuple[str, str, Any], Any] = {}
 
 
 def binomial(draw: PhiloxDraw, count: Any, p: Any, start: int = 0) -> Any:
@@ -115,7 +118,8 @@ def _masked(draw: PhiloxDraw, count: Any, q: Any, positions: Any, masks: tuple) 
 def _power(base: Any, exponent: Any, xp: Any) -> Any:
     """``base ** exponent`` for integer exponents, by squaring (multiplications only)."""
     result = xp.ones_like(base)
-    while bool((exponent > 0).any()):
+    # as many squarings as the largest exponent has bits: one device sync, not one per bit
+    for _ in range(max(int(exponent.max()), 0).bit_length() if exponent.size else 0):
         result = xp.where((exponent & 1) == 1, result * base, result)
         base = base * base
         exponent = exponent >> 1
@@ -133,7 +137,11 @@ def _inversion(draw: PhiloxDraw, n: Any, q: Any, positions: Any) -> Any:
     )
     k = xp.zeros(n.shape, dtype=n.dtype)
     active = u >= cdf
-    while bool(active.any()):
+    every = draw.backend.check_every
+    for walked in itertools.count():
+        # on a device, test for the end only every few steps: a finished step changes nothing
+        if walked % every == 0 and not bool(active.any()):
+            break
         k = k + active.astype(n.dtype)
         step = (n - k + 1) / xp.maximum(k, 1)
         pmf = xp.where(active, pmf * step * ratio, pmf)
@@ -144,11 +152,22 @@ def _inversion(draw: PhiloxDraw, n: Any, q: Any, positions: Any) -> Any:
 
 def _tail(k: Any, xp: Any) -> Any:
     """The Stirling correction of ``log(k!)``: tabulated below 10, a series above."""
-    table = xp.asarray(TAIL_TABLE, dtype=k.dtype)
-    small = table[xp.clip(k, 0, TAIL_TABLE_SIZE - 1).astype(xp.int32)]
+    small = _tail_table(xp, k.dtype)[
+        xp.clip(k, 0, TAIL_TABLE_SIZE - 1).astype(xp.int32)
+    ]
     square = (k + 1) * (k + 1)
     series = (TAIL_C0 - (TAIL_C1 - TAIL_C2 / square) / square) / (k + 1)
     return xp.where(k < TAIL_TABLE_SIZE, small, series)
+
+
+def _tail_table(xp: Any, dtype: Any) -> Any:
+    """``TAIL_TABLE`` as an array of ``xp`` and ``dtype``, copied to the device once."""
+    device = xp.cuda.Device().id if hasattr(xp, "cuda") else None
+    key = (xp.__name__, str(dtype), device)
+    table = _TAIL_TABLES.get(key)
+    if table is None:
+        table = _TAIL_TABLES[key] = xp.asarray(TAIL_TABLE, dtype=dtype)
+    return table
 
 
 def _constants(n: Any, q: Any, xp: Any) -> dict[str, Any]:
@@ -202,7 +221,10 @@ def _btrs(draw: PhiloxDraw, n: Any, q: Any, positions: Any) -> Any:
         result, pending = _btrs_step(
             draw, (n, positions, constants), round_, result, pending
         )
-        if _done(pending, backend.compacts):
+        # a mask's rounds after the last acceptance change nothing: test every few rounds
+        checked = backend.compacts or (round_ + 1) % backend.check_every == 0
+        checked = checked or round_ == MAX_ROUNDS - 1
+        if checked and _done(pending, backend.compacts):
             return result
     raise RuntimeError(
         "binomial rejection did not converge: the uniforms are not uniform"
@@ -220,9 +242,9 @@ def _btrs_step(draw: PhiloxDraw, data: tuple, round_: int, result: Any, pending:
     xp = backend.xp
     n, positions, constants = data
     rows = pending if backend.compacts else slice(None)
-    sub = 2 * round_ + 1
-    u = draw.random_at(positions[rows], sub=sub) - HALF
-    v = 1 - draw.random_at(positions[rows], sub=sub + 1)
+    sub, own_positions = 2 * round_ + 1, positions[rows]
+    u = draw.random_at(own_positions, sub=sub) - HALF
+    v = 1 - draw.random_at(own_positions, sub=sub + 1)
     own = {name: value[rows] for name, value in constants.items()}
     k, accept = _btrs_round(u, v, n[rows], own, xp)
     k = k.astype(result.dtype)

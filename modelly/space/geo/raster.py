@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 import pyproj
 
+from modelly.space.geo import _memo
 from modelly.space.geo._deps import require
 
 if TYPE_CHECKING:
@@ -109,7 +110,8 @@ class RasterLayer:
             crs: the CRS of ``xy`` when it differs from the raster's.
         """
         xy = self._to_raster_crs(np.atleast_2d(np.asarray(xy, dtype=float)), crs)
-        inverse = ~self.transform
+        transform = self.transform
+        inverse = _memo.memo(self, _memo.INVERSE, (transform,), lambda: ~transform)
         cols = np.floor(inverse.a * xy[:, 0] + inverse.b * xy[:, 1] + inverse.c)
         rows = np.floor(inverse.d * xy[:, 0] + inverse.e * xy[:, 1] + inverse.f)
         width, height = self.shape
@@ -191,11 +193,25 @@ class RasterLayer:
         """Reproject ``xy`` from ``crs`` to the raster's CRS when they differ."""
         if crs is None or self.crs is None:
             return xy
-        source = pyproj.CRS.from_user_input(crs)
-        if source == self.crs:
+        target = self.crs
+        transformer = _memo.memo(
+            self, _memo.TRANSFORMER, (crs, target), lambda: _transformer(crs, target)
+        )
+        if transformer is None:
             return xy
-        transformer = pyproj.Transformer.from_crs(source, self.crs, always_xy=True)
         return np.column_stack(transformer.transform(xy[:, 0], xy[:, 1]))
+
+    def __getstate__(self) -> dict:
+        """Drop the memoised inverse transform and CRS transformer."""
+        return _memo.without_memos(self.__dict__.copy())
+
+
+def _transformer(crs: Any, target: pyproj.CRS) -> pyproj.Transformer | None:
+    """The transformer from ``crs`` to ``target``, or ``None`` when they are the same CRS."""
+    source = pyproj.CRS.from_user_input(crs)
+    if source == target:
+        return None
+    return pyproj.Transformer.from_crs(source, target, always_xy=True)
 
 
 def _bounds(transform: Any, cols: int, rows: int) -> tuple[float, float, float, float]:

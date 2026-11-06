@@ -14,6 +14,7 @@ import numpy as np
 from modelly.space.continuous.space import ContinuousSpace
 from modelly.space.grid.base import Grid
 from modelly.timetravel.snapshot import agent_state
+from modelly.web._series import series_rows
 
 if TYPE_CHECKING:
     from modelly.core.agent import Agent
@@ -24,12 +25,15 @@ CLASS = "class"
 MAX_POINTS = 20_000
 PLACE_NAMES = frozenset({"cell", "position"})
 PLANE = 2
+# The types ``isinstance`` checks, built once rather than per call.
+SPACES = (Grid, ContinuousSpace)
+NUMBERS = (bool, int, float, np.number)
 
 
 def _space(model: Model) -> Any:
     """The model's grid or continuous space, the first found among its attributes."""
     for value in vars(model).values():
-        if isinstance(value, Grid | ContinuousSpace):
+        if isinstance(value, SPACES):
             return value
     return None
 
@@ -55,7 +59,7 @@ def _place(agent: Agent) -> tuple[float, float] | None:
 
 def _number(value: Any) -> float | None:
     """``value`` as a float for the colour scale, None when it is not a finite number."""
-    if isinstance(value, bool | int | float | np.number):
+    if isinstance(value, NUMBERS):
         number = float(value)
         return number if math.isfinite(number) else None
     return None
@@ -113,21 +117,6 @@ def space_view(model: Model, colour_by: str = CLASS) -> dict[str, Any] | None:
         "bounds": _bounds(space),
         "classes": classes,
         "points": points,
-    }
-
-
-def series_rows(model: Model, start: int = 0) -> dict[str, list] | None:
-    """The numeric model reporters collected from row ``start`` on, by name, or None."""
-    collector = getattr(model, "datacollector", None)
-    if collector is None or not getattr(collector, "model_reporters", None):
-        return None
-    frame = collector.get_model_vars_dataframe().select_dtypes("number")
-    if frame.empty:
-        return None
-    rows = frame.iloc[start:].astype(float)
-    return {
-        str(name): [None if math.isnan(v) else v for v in rows[name].tolist()]
-        for name in rows.columns
     }
 
 

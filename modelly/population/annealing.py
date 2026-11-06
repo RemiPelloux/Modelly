@@ -94,7 +94,8 @@ def anneal(
     totals = values[selection].sum(axis=0)
     error = float(np.abs(totals - goal).sum())
     temperature = settings.temperature
-    for slot, swap, chance in zip(slots, swaps, chances):
+    # Python scalars: iterating numpy arrays would box a numpy scalar per draw.
+    for slot, swap, chance in zip(slots.tolist(), swaps.tolist(), chances.tolist()):
         if error == 0.0:
             break
         trial = totals - values[selection[slot]] + values[swap]

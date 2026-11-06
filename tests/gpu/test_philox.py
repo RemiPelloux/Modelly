@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 
 from modelly.gpu.philox import (
+    _philox4x32_numpy,
     mulhilo_narrow,
     mulhilo_wide,
     philox4x32,
@@ -83,3 +84,41 @@ def test_jax_without_x64_gives_the_numpy_bits(jax_backend):
     got = jax_backend.philox(jax_backend.asarray(block), (1, 2, 3), (9, 10))
     for mine, theirs in zip(got, expected):
         assert np.array_equal(jax_backend.to_numpy(mine), theirs)
+
+
+def test_in_place_numpy_rounds_match_the_array_version():
+    """The allocation-free numpy rounds give the generic rounds' words, any key."""
+    rng = np.random.default_rng(5)
+    block = rng.integers(0, 2**32, 1000, dtype=np.uint64).astype(np.uint32)
+    for key in ((0, 0), (2**32 - 1, 2**32 - 1), (123456789, 987654321)):
+        expected = philox4x32((block, 7, 11, 13), key, np)
+        got = _philox4x32_numpy((block, 7, 11, 13), key)
+        for mine, theirs in zip(got, expected, strict=True):
+            assert mine.dtype == np.uint32
+            assert np.array_equal(mine, theirs)
+
+
+def test_an_array_key_steps_like_an_integer_key():
+    """A uint32 array key (as JAX traces it) wraps its schedule like Python integers."""
+    block = np.arange(64, dtype=np.uint32)
+    key = (0xFFFFFFF0, 0xFFFFFFFF)
+    arrays = tuple(np.asarray(word, dtype=np.uint32) for word in key)
+    expected = philox4x32((block, 1, 2, 3), key, np)
+    for mine, theirs in zip(
+        philox4x32((block, 1, 2, 3), arrays, np), expected, strict=True
+    ):
+        assert np.array_equal(mine, theirs)
+
+
+def test_jax_draws_a_new_seed_without_compiling_again(jax_backend):
+    """The key is traced: one compiled program serves every seed of a shape."""
+    block = np.arange(257, dtype=np.uint32)
+    compiled = []
+    for seed in range(5):
+        key = (seed * 7919, seed)
+        got = jax_backend.philox(jax_backend.asarray(block), (1, 2, 3), key)
+        compiled.append(jax_backend._philox._cache_size())
+        expected = philox4x32((block, 1, 2, 3), key, np)
+        for mine, theirs in zip(got, expected, strict=True):
+            assert np.array_equal(jax_backend.to_numpy(mine), theirs)
+    assert len(set(compiled)) == 1

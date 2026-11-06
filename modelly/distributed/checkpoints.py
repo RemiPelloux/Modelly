@@ -39,8 +39,13 @@ def write_part(directory: Path, index: int, model: Any, layout: Any) -> dict:
     directory.mkdir(parents=True, exist_ok=True)
     path = directory / PART_NAME.format(index)
     payload = {"index": index, "layout": layout, "model": checkpoint_bytes(model)}
-    path.write_bytes(MAGIC + pickle.dumps(payload, protocol=PROTOCOL))
-    return {"partition": index, "file": path.name, "sha256": digest(path)}
+    body = pickle.dumps(payload, protocol=PROTOCOL)
+    with path.open("wb") as file:  # the header, then the body: no joined copy
+        file.write(MAGIC)
+        file.write(body)
+    sha = hashlib.sha256(MAGIC)
+    sha.update(body)  # the file's bytes, already in memory: no second read
+    return {"partition": index, "file": path.name, "sha256": sha.hexdigest()}
 
 
 def read_part(path: Path, expected: str | None) -> tuple[int, Any, Any]:
@@ -54,7 +59,8 @@ def read_part(path: Path, expected: str | None) -> tuple[int, Any, Any]:
         raise CheckpointError(f"{path} is not a Modelly partition checkpoint")
     if expected is not None and hashlib.sha256(data).hexdigest() != expected:
         raise CheckpointError(f"{path} does not match the digest in its index")
-    payload = pickle.loads(data[len(MAGIC) :])  # noqa: S301 - see the module warning
+    body = memoryview(data)[len(MAGIC) :]  # no copy of the body
+    payload = pickle.loads(body)  # noqa: S301 - see the module warning
     model = model_from_bytes(payload["model"], str(path))
     return payload["index"], payload["layout"], model
 

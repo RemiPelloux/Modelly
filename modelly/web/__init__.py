@@ -13,7 +13,25 @@ model in a Web Worker, with a parameter panel, a plot and a space view. The part
 The guide is ``docs/browser.md``.
 """
 
-from modelly.web.export import PYODIDE_VERSION, WebExport, export_web
-from modelly.web.runtime import BrowserRun
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from modelly._optional import lazy_exports
+
+if TYPE_CHECKING:
+    from modelly.web.export import PYODIDE_VERSION, WebExport, export_web
+    from modelly.web.runtime import BrowserRun
 
 __all__ = ["PYODIDE_VERSION", "BrowserRun", "WebExport", "export_web"]
+
+# Imported on first use: the page's worker imports ``runtime`` without the site writer.
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "PYODIDE_VERSION": "modelly.web.export",
+        "BrowserRun": "modelly.web.runtime",
+        "WebExport": "modelly.web.export",
+        "export_web": "modelly.web.export",
+    },
+)

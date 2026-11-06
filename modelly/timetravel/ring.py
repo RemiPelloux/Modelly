@@ -30,6 +30,7 @@ class _Ring:
             raise ValueError(f"The checkpoint budget must be > 0, got {budget}")
         self.budget = budget
         self._sizes: dict[float, int] = {}
+        self._total = 0  # the sum of _sizes, kept as checkpoints come and go
 
     @property
     def steps(self) -> list[float]:
@@ -39,11 +40,12 @@ class _Ring:
     @property
     def nbytes(self) -> int:
         """The bytes held in all."""
-        return sum(self._sizes.values())
+        return self._total
 
     def add(self, step: float, data: bytes) -> None:
         """Hold ``data`` as the checkpoint of ``step``, then keep to the budget."""
         self._store(step, data)
+        self._total += len(data) - self._sizes.get(step, 0)
         self._sizes[step] = len(data)
         steps = self.steps
         while self.nbytes > self.budget and len(steps) > KEEP:
@@ -51,7 +53,7 @@ class _Ring:
 
     def discard(self, step: float) -> None:
         """Drop the checkpoint of ``step``."""
-        self._sizes.pop(step)
+        self._total -= self._sizes.pop(step)
 
     def get(self, step: float) -> bytes:
         """The checkpoint bytes of ``step``."""

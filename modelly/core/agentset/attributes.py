@@ -42,7 +42,7 @@ class AttributeMixin[A: Agent]:
         """
         values = self.get(attribute)
 
-        if isinstance(func, Callable):
+        if callable(func):
             return func(values)
         else:
             return [f(values) for f in func]

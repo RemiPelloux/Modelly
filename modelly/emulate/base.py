@@ -153,27 +153,56 @@ def reducer(statistic: Statistic) -> Callable[[np.ndarray], float]:
     return statistic
 
 
+def _reducers(
+    outputs: Mapping[str, Statistic] | Sequence[str],
+) -> dict[str, Callable[[np.ndarray], float]]:
+    """Each output's statistic as a function (``"last"`` for a bare name)."""
+    statistics = (
+        dict(outputs)
+        if isinstance(outputs, Mapping)
+        else dict.fromkeys(outputs, "last")
+    )
+    return {name: reducer(s) for name, s in statistics.items()}
+
+
+def _runs(frame: Any) -> tuple[np.ndarray, list[tuple[int, int]], list[list[int]]]:
+    """The rows by point, replicate and step; each run's slice; each point's runs."""
+    point, replicate = frame[POINT].to_numpy(), frame[REPLICATE].to_numpy()
+    order = np.lexsort((frame[STEP].to_numpy(), replicate, point))
+    point, replicate = point[order], replicate[order]
+    new_run = (point[1:] != point[:-1]) | (replicate[1:] != replicate[:-1])
+    starts = np.flatnonzero(np.concatenate([[True], new_run]))
+    slices = list(zip(starts.tolist(), [*starts[1:].tolist(), len(order)]))
+    first = point[starts]
+    points = np.split(
+        np.arange(len(starts)), np.flatnonzero(first[1:] != first[:-1]) + 1
+    )
+    return order, slices, [group.tolist() for group in points]
+
+
 def training_data(
     results: Results,
     space: ScenarioSpace,
     outputs: Mapping[str, Statistic] | Sequence[str],
 ) -> tuple[np.ndarray, np.ndarray]:
     """``(units, values)`` of an experiment's runs, one row per design point."""
-    statistics = (
-        dict(outputs)
-        if isinstance(outputs, Mapping)
-        else dict.fromkeys(outputs, "last")
-    )
-    reducers = {name: reducer(s) for name, s in statistics.items()}
+    reducers = _reducers(outputs)
     frame = results.df()
+    if not len(frame):
+        return np.array([]), np.array([], float)
+    order, slices, points = _runs(frame)
+    params = {name: frame[name].to_numpy() for name in space.dimensions}
+    series = {name: frame[name].to_numpy(float)[order] for name in reducers}
     units, values = [], []
-    for _, point in frame.groupby(POINT, sort=True):
-        first = point.iloc[0]
-        units.append(unit_of(space, {name: first[name] for name in space.dimensions}))
-        runs = [run.sort_values(STEP) for _, run in point.groupby(REPLICATE)]
+    for runs in points:
+        row = order[slices[runs[0]][0]]
+        units.append(
+            unit_of(space, {name: column[row] for name, column in params.items()})
+        )
+        bounds = [slices[run] for run in runs]
         values.append(
             [
-                np.mean([f(run[n].to_numpy(float)) for run in runs])
+                np.mean([f(series[n][a:b]) for a, b in bounds])
                 for n, f in reducers.items()
             ]
         )

@@ -33,6 +33,8 @@ ENCODING = "utf-8"
 FLOAT_TAG = "f:"
 BYTES_TAG = "b:"
 PLAIN = (bool, int, str, type(None))
+SEQUENCES = (list, tuple, np.ndarray)
+SETS = (set, frozenset)
 
 
 class DigestError(TypeError):
@@ -73,9 +75,9 @@ def _structured(value: Any, digits: int | None) -> Any:
     """Canonical form of containers and known library objects, or DigestError."""
     if isinstance(value, Mapping):
         return {str(k): canonical(v, digits) for k, v in value.items()}
-    if isinstance(value, list | tuple | np.ndarray):
+    if isinstance(value, SEQUENCES):
         return [canonical(item, digits) for item in value]
-    if isinstance(value, set | frozenset):
+    if isinstance(value, SETS):
         return sorted((canonical(item, digits) for item in value), key=_key)
     if hasattr(value, "unique_id") and hasattr(value, "model"):
         return {"agent": value.unique_id}

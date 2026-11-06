@@ -270,3 +270,18 @@ def test_hex_grids_are_refused():
     """A hexagonal grid has no Cartesian stencil."""
     with pytest.raises(CouplingError, match="orthogonal"):
         Field(HexGrid((4, 4), random=Random(1)), "u")
+
+
+def test_a_restored_field_advances_like_the_original():
+    """The scratch buffer is not saved; the restored field rebuilds it and agrees."""
+    import pickle  # noqa: PLC0415
+
+    heat = Field(grid((9, 7)), "heat", Transport(diffusion=0.4, boundary="absorbing"))
+    heat.values[4, 3] = 1.0
+    heat.advance(1.0)
+    restored = pickle.loads(pickle.dumps(heat))  # noqa: S301 - our own bytes
+    assert "_work" not in heat.__getstate__()
+    heat.advance(2.0)
+    restored.advance(2.0)
+    np.testing.assert_array_equal(restored.values, heat.values)
+    assert restored.outflow == heat.outflow

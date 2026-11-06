@@ -24,7 +24,7 @@ from typing import Any
 
 import numpy as np
 
-from modelly.gpu.philox import philox4x32
+from modelly.gpu.philox import _philox4x32_numpy
 
 ENV_VARIABLE = "MODELLY_BACKEND"
 NUMPY, CUPY, JAX, AUTO = "numpy", "cupy", "jax", "auto"
@@ -34,6 +34,8 @@ BACKEND_CLASSES = {
     JAX: "modelly.gpu.jax_backend:JaxBackend",
 }
 AUTO_ORDER = (CUPY, JAX)
+# Sampler loop iterations between end tests on a device, where each test waits for it.
+DEVICE_CHECK_EVERY = 4
 
 
 class BackendUnavailableError(ImportError):
@@ -58,6 +60,7 @@ class Backend:
     wide = True  # 64-bit integers available for the Philox products
     compacts = True  # data-dependent shapes are cheap (no compilation per shape)
     fused = False  # uniform_at, bits_at and bounded_at are single kernels
+    check_every = 1  # loop iterations between tests that sync with the device
 
     def __init__(self) -> None:
         """Bind numpy as the array namespace."""
@@ -115,7 +118,7 @@ class Backend:
 
     def philox(self, block: Any, words: tuple[int, int, int], key: tuple[int, int]):
         """Philox4x32-10 at counters ``(block, *words)``: four uint32 arrays."""
-        return philox4x32((block, *words), key, self.xp, wide=self.wide)
+        return _philox4x32_numpy((block, *words), key)
 
     def synchronize(self, array: Any = None) -> None:
         """Wait for the device to finish (for timing); numpy is always finished."""

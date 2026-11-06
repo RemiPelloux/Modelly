@@ -12,9 +12,9 @@ from typing import Any, Self
 
 import numpy as np
 
+from modelly.core._column_store import ColumnStore
 from modelly.core.agent import Agent
 from modelly.core.checkpoint import CheckpointWriter, load_model, save_model
-from modelly.core.columns import ColumnStore
 from modelly.core.display import model_html, model_markdown
 from modelly.core.exceptions import CheckpointError
 from modelly.core.registry import AgentRegistry
@@ -259,8 +259,8 @@ class Model[A: Agent, S: Scenario](AgentRegistry[A], HasSchedule, HasEmitters):
             near where you are calling this method.
 
         """
-        # we need to wrap keys in a list to avoid a RunTimeError: dictionary changed size during iteration
-        for agent in list(self._all_agents):
+        # A copy of the keys (one, not two): agent.remove() shrinks the dict.
+        for agent in self._all_agents.to_list():
             agent.remove()
 
         self.data_registry.close()  # this is needed to ensure GC works properly

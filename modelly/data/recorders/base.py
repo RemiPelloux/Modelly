@@ -25,14 +25,17 @@ import copy
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
-import pandas as pd
-
+from modelly._optional import LazyModule
 from modelly.data.recorders.config import DatasetConfig
 from modelly.time.signals import ModelSignals, ObservableSignals
 
 if TYPE_CHECKING:
+    import pandas as pd
+
     from modelly.core.model import Model
     from modelly.data.recorders.datasets import DataRegistry, DataSet
+else:
+    pd = LazyModule("pandas")
 
 
 class BaseDataRecorder(ABC):

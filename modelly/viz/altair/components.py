@@ -122,7 +122,7 @@ def _measures_to_plot(measure) -> tuple[list, str]:
     if isinstance(measure, str):
         measures_to_plot = [measure]
         y_title = measure
-    elif isinstance(measure, list | tuple):
+    elif isinstance(measure, (list, tuple)):
         measures_to_plot = list(measure)
     elif isinstance(measure, dict):
         measures_to_plot = list(measure.keys())

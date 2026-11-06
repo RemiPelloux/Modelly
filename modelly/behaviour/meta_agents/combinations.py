@@ -13,6 +13,8 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from modelly.core.agent import Agent
 
+_MISSING = object()  # a cache miss, distinct from any stored score
+
 
 def evaluate_combination(
     candidate_group: tuple[Agent, ...],
@@ -50,11 +52,11 @@ def find_combinations(
         List: The list of valuable combinations, in a tuple first agentset of valuable combination  and then the value of
         the combination.
     """
-    if isinstance(size, int):
-        size_range = range(size, size + 1)
-    else:
-        min_size, max_size = size
-        size_range = range(min_size, max_size + 1)
+    size_range = _sizes(size)
+    if evaluation_func is None:
+        # Nothing to score: the iterators are built only for their argument checks.
+        _ = [itertools.combinations(group, k) for k in size_range]
+        return []
 
     combinations = []
     for candidate_group in itertools.chain.from_iterable(
@@ -70,6 +72,14 @@ def find_combinations(
     if combinations and filter_func is not None:
         return filter_func(combinations)
     return combinations
+
+
+def _sizes(size: int | tuple[int, int]) -> range:
+    """The combination sizes: ``size`` alone, or ``min..max`` inclusive."""
+    if isinstance(size, int):
+        return range(size, size + 1)
+    min_size, max_size = size
+    return range(min_size, max_size + 1)
 
 
 class CachedEvaluation:
@@ -101,9 +111,10 @@ class CachedEvaluation:
     def __call__(self, candidate_group: tuple[Agent, ...]) -> Any:
         """Return the cached score of ``candidate_group``, computing it once."""
         key = tuple(candidate_group)
-        if key in self._scores:
+        score = self._scores.get(key, _MISSING)
+        if score is not _MISSING:
             self.hits += 1
-            return self._scores[key]
+            return score
         self.misses += 1
         score = self.evaluation_func(candidate_group)
         if self.maxsize is not None and len(self._scores) >= self.maxsize:

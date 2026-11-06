@@ -130,8 +130,9 @@ class DeviceCohortTable:
         xp = self.backend.xp
         rows = xp.arange(len(self)) if where is None else xp.nonzero(where)[0]
         counts = self._data[COUNT]
-        moving = self.stream.binomial(counts[rows], p)
-        self._data[COUNT] = self.backend.put(counts, rows, counts[rows] - moving)
+        selected = counts[rows]  # binomial copies its counts, so this stays as gathered
+        moving = self.stream.binomial(selected, p)
+        self._data[COUNT] = self.backend.put(counts, rows, selected - moving)
         state = {n: column[rows] for n, column in self._data.items() if n != COUNT}
         return self.add(moving, **(state | changes))
 

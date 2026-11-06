@@ -86,6 +86,8 @@ class EventGenerator:
         self.function = _create_callable_reference(function)
         self.schedule = schedule
         self.priority = priority
+        # The callback of every event this generator schedules, built once.
+        self._reschedule_ref = WeakMethod(self._execute_and_reschedule)
 
         self._active: bool = False
         self._paused: bool = False
@@ -111,19 +113,21 @@ class EventGenerator:
 
     def _get_interval(self) -> float | int:
         """Get the next interval value."""
-        if callable(self.schedule.interval):
-            interval = self.schedule.interval(self.model)
+        interval = self.schedule.interval
+        if callable(interval):
+            interval = interval(self.model)
             if interval <= 0:
                 raise ValueError(f"Interval must be > 0, got {interval}")
-            return interval
-        return self.schedule.interval
+        return interval
 
     def _should_stop(self, next_time: float) -> bool:
         """Check if the generator should stop before scheduling the next event."""
-        return (
-            self.schedule.count is not None
-            and self._execution_count >= self.schedule.count
-        ) or (self.schedule.end is not None and next_time > self.schedule.end)
+        schedule = self.schedule
+        count = schedule.count
+        end = schedule.end
+        return (count is not None and self._execution_count >= count) or (
+            end is not None and next_time > end
+        )
 
     def _execute_and_reschedule(self) -> None:
         """Execute the function and schedule the next event."""
@@ -161,12 +165,9 @@ class EventGenerator:
 
     def _schedule_next(self, time: float) -> None:
         """Schedule the next event at the given time."""
-        self._current_event = Event(
-            time,
-            self._execute_and_reschedule,
-            priority=self.priority,
-        )
-        self.model._event_list.add_event(self._current_event)
+        event = Event._recurring(time, self._reschedule_ref, self.priority._value_)
+        self._current_event = event
+        self.model._event_list.add_event(event)
 
     def start(self) -> EventGenerator:
         """Start the event generator.
@@ -243,6 +244,7 @@ class EventGenerator:
         fn = self.function() if self.function is not None else None
         state["_fn_strong"] = fn
         state["function"] = None
+        state.pop("_reschedule_ref", None)  # weak references cannot be pickled
         return state
 
     def __setstate__(self, state: dict[str, Any]) -> None:
@@ -261,3 +263,4 @@ class EventGenerator:
                 self.function = ref(fn)
         else:
             self.function = None
+        self._reschedule_ref = WeakMethod(self._execute_and_reschedule)

@@ -22,9 +22,11 @@ import numpy as np
 import pandas as pd
 
 from modelly._optional import require
+from modelly.decide._parallel import runs
 from modelly.decide.compare import Outputs, Run, replicate_seeds
 
 type Space = Mapping[str, tuple[float, float] | Sequence[Any]]
+NUMBERS = (int, float)
 
 
 @dataclass(frozen=True)
@@ -49,7 +51,7 @@ def _suggest(trial: Any, space: Space) -> dict[str, Any]:
         if (
             isinstance(domain, tuple)
             and len(domain) == 2
-            and all(isinstance(v, int | float) for v in domain)
+            and all(isinstance(v, NUMBERS) for v in domain)
         ):
             params[name] = trial.suggest_float(name, float(domain[0]), float(domain[1]))
         else:
@@ -60,16 +62,21 @@ def _suggest(trial: Any, space: Space) -> dict[str, Any]:
 def optimise(
     run: Run, space: Space, objective: Callable[[Outputs], float], *, trials: int = 50,
     replicates: int = 5, seed: int = 0, minimise: bool = True,
-    fixed: Mapping[str, Any] | None = None,
+    fixed: Mapping[str, Any] | None = None, workers: int | None = 1,
 ) -> Optimum:  # fmt: skip
-    """Search ``space`` for the parameters with the best mean ``objective``."""
+    """Search ``space`` for the parameters with the best mean ``objective``.
+
+    Trials run one after another (the sampler learns from each); ``workers`` runs a
+    trial's replicates over that many processes, with the same results (1 runs them here).
+    """
     optuna = require("optuna", "decide")
     optuna.logging.set_verbosity(optuna.logging.WARNING)
     seeds = replicate_seeds(seed, replicates)
 
     def evaluate(trial: Any) -> float:
         params = {**(fixed or {}), **_suggest(trial, space)}
-        return float(np.mean([objective(run(params, x)) for x in seeds]))
+        outputs = runs(run, [(params, x) for x in seeds], workers)
+        return float(np.mean([objective(result) for result in outputs]))
 
     sampler = optuna.samplers.TPESampler(seed=seed)
     study = optuna.create_study(

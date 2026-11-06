@@ -18,7 +18,7 @@ from random import Random
 
 import numpy as np
 
-from modelly.space.base import DiscreteSpace
+from modelly.space.base import KDTREE_LEAFSIZE, DiscreteSpace
 from modelly.space.cells.cell import Cell
 from modelly.space.delaunay import Delaunay
 
@@ -66,12 +66,12 @@ class VoronoiGrid(DiscreteSpace):
         self.capacity_function = capacity_function
         self._validate_parameters()
 
-        from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
-            KDTree,
-        )
+        from scipy.spatial import cKDTree  # noqa: PLC0415 - scipy is heavy
 
         # Build KD-tree for fast nearest-centroid lookup
-        self._kdtree = KDTree(np.array(centroids_coordinates))
+        self._kdtree = cKDTree(
+            np.array(centroids_coordinates), leafsize=KDTREE_LEAFSIZE
+        )
 
         self._cells = self._create_cells(capacity, cell_klass)
 

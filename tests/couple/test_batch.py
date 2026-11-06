@@ -155,3 +155,20 @@ def test_a_system_ends_the_same_alone_or_in_a_crowd(population):
     )
     np.testing.assert_array_equal(alone.y, whole.y[:, some])
     np.testing.assert_array_equal(alone.nsteps, whole.nsteps[some])
+
+
+def test_a_kept_cut_is_reused_only_for_the_same_rows():
+    """Consecutive cuts of the same rows share one dict; other rows get their own."""
+    from modelly.couple.batch import _Batch  # noqa: PLC0415
+
+    rates = np.linspace(0.5, 2.0, 6)
+    batch = _Batch(
+        decay, 0.0, 1.0, np.ones((1, 6)), {"rate": rates}, 1e-3, 1e-6, "RK45"
+    )
+    rows = np.array([1, 3, 4])
+    first = batch.cut(rows)
+    assert batch.cut(rows.copy()) is first
+    np.testing.assert_array_equal(first["rate"], rates[rows])
+    other = batch.cut(np.array([1, 3]))
+    np.testing.assert_array_equal(other["rate"], rates[[1, 3]])
+    assert batch.cut(slice(None)) is batch.params

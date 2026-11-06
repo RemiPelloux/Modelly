@@ -26,6 +26,8 @@ from modelly.viz.render.portrayal import (
 OrthogonalGrid = OrthogonalMooreGrid | OrthogonalVonNeumannGrid
 HexGrid = modelly.space.HexGrid
 Network = modelly.space.Network
+# Colour values that are numbers (a colormap index), built once for isinstance.
+NUMBERS = (int, float, np.number)
 
 # Argument names, in the order the collected dict has always had.
 ARGUMENT_KEYS = (
@@ -166,9 +168,7 @@ def collect_agent_data(
         else:
             aps = portray_input
             # default to agent's color if not provided
-            if aps.edgecolors is None and not isinstance(
-                aps.color, int | float | np.number
-            ):
+            if aps.edgecolors is None and not isinstance(aps.color, NUMBERS):
                 aps.edgecolors = aps.color
             if aps.x is None and aps.y is None:  # get position if not specified
                 aps.x, aps.y = _agent_position(agent, space)

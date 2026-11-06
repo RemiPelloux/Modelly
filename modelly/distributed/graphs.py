@@ -1,9 +1,8 @@
 """Split a network into balanced parts with few edges between them.
 
 ``graph(parts)`` describes the split; ``.layout(network)`` applies it to a
-``Network`` (or a networkx graph). The method is deterministic and pure
-numpy: nodes are ordered by breadth-first search from a pseudo-peripheral node
-of each component (the banding order of Cuthill and McKee), the order is cut
+``Network`` (or a networkx graph). The method is deterministic: nodes are
+ordered by breadth-first search from a pseudo-peripheral node of each component (the banding order of Cuthill and McKee), the order is cut
 into ``parts`` runs of nearly equal size, the larger first, and a few passes of
 greedy boundary refinement (the k-way form of Fiduccia and Mattheyses) move a
 border node to the neighbouring part it has most edges to, while every part
@@ -17,7 +16,7 @@ hops of a part (``halo``).
 
 from __future__ import annotations
 
-from collections import deque
+from collections import Counter, deque
 from collections.abc import Hashable, Iterable
 from dataclasses import dataclass
 from typing import Any
@@ -84,36 +83,51 @@ def _initial(order: list[int], parts: int) -> np.ndarray:
     return assignment
 
 
-def _best_move(row: np.ndarray, assignment: np.ndarray, own: int) -> tuple[int, int]:
+def _best_move(counts: Counter[int], own: int) -> tuple[int, int]:
     """The part a node has most edges to (lowest index on ties) and the gain."""
-    counts = np.bincount(assignment[row])
-    best = int(np.argmax(counts))
-    own_count = counts[own] if own < len(counts) else 0
-    return best, int(counts[best] - own_count)
+    top = max(counts.values())
+    best = min(part for part, count in counts.items() if count == top)
+    return best, top - counts.get(own, 0)
 
 
 def _refine(csr: tuple, assignment: np.ndarray, parts: int, imbalance: float):
-    """Greedy boundary passes: move nodes to the part they connect to most."""
+    """Greedy boundary passes: move nodes to the part they connect to most.
+
+    In Python lists: a pass visits every node in turn and looks at a few neighbours
+    each, where numpy calls cost more than the work.
+    """
     indptr, indices, passes = csr
     n = len(assignment)
     cap = int(np.ceil(n / parts * (1 + imbalance)))
     floor = max(1, int(np.floor(n / parts * (1 - imbalance))))
-    sizes = np.bincount(assignment, minlength=parts)
+    sizes = np.bincount(assignment, minlength=parts).tolist()
+    flat, bounds = indices.tolist(), indptr.tolist()
+    rows = [flat[bounds[i] : bounds[i + 1]] for i in range(n)]
+    part = assignment.tolist()
     for _ in range(passes):
-        moved = 0
-        for node in range(n):
-            row = indices[indptr[node] : indptr[node + 1]]
-            own = assignment[node]
-            if not len(row) or (assignment[row] == own).all():
-                continue
-            best, gain = _best_move(row, assignment, own)
-            if gain > 0 and sizes[best] < cap and sizes[own] > floor:
-                assignment[node], moved = best, moved + 1
-                sizes[best] += 1
-                sizes[own] -= 1
-        if not moved:
+        if not _refine_pass(rows, part, sizes, (cap, floor)):
             break
+    assignment[:] = part
     return assignment
+
+
+def _refine_pass(
+    rows: list[list[int]], part: list[int], sizes: list[int], limits: tuple[int, int]
+) -> int:
+    """One pass in node order, updating ``part`` and ``sizes``; how many nodes moved."""
+    cap, floor = limits
+    moved = 0
+    for node, row in enumerate(rows):
+        own = part[node]
+        counts = Counter(part[neighbour] for neighbour in row)
+        if not row or (len(counts) == 1 and own in counts):
+            continue
+        best, gain = _best_move(counts, own)
+        if gain > 0 and sizes[best] < cap and sizes[own] > floor:
+            part[node], moved = best, moved + 1
+            sizes[best] += 1
+            sizes[own] -= 1
+    return moved
 
 
 @dataclass(frozen=True)

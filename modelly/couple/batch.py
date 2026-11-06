@@ -31,6 +31,7 @@ from typing import Any
 
 import numpy as np
 
+from modelly.couple._tableau import Tableau, advanced, combine
 from modelly.couple.dense import BatchDense
 from modelly.couple.events import EventLog, ODEEvent, _cut, _record, _Step
 from modelly.couple.inputs import evaluated, has_inputs
@@ -39,7 +40,6 @@ from modelly.couple.schedule import CouplingError
 # scipy.integrate._ivp.rk: the step-size controller's constants.
 SAFETY, MIN_FACTOR, MAX_FACTOR = 0.9, 0.2, 10.0
 EPS = np.finfo(float).eps
-METHODS = ("RK45", "RK23")
 # select_initial_step's thresholds (Hairer, Norsett and Wanner, II.4).
 TINY_NORM, FIRST_GUESS, FLAT_NORM, SLACK = 1e-5, 1e-6, 1e-15, 0.01
 
@@ -73,36 +73,12 @@ class BatchResult:
     sol: BatchDense | None = None
 
 
-@dataclass(frozen=True)
-class _Tableau:
-    """A Runge-Kutta pair as scipy defines it."""
-
-    A: np.ndarray
-    B: np.ndarray
-    C: np.ndarray
-    E: np.ndarray
-    P: np.ndarray
-    order: int
-    exponent: float
-
-    @classmethod
-    def of(cls, method: str) -> _Tableau:
-        """The tableau of scipy's ``RK45`` or ``RK23``."""
-        from scipy import integrate  # noqa: PLC0415 - scipy is heavy
-
-        if method not in METHODS:
-            raise CouplingError(f"solve_batch supports {METHODS}, not {method!r}")
-        rk = getattr(integrate, method)
-        order = rk.error_estimator_order
-        return cls(rk.A, rk.B, rk.C, rk.E, rk.P, order, -1 / (order + 1))
-
-
 class _Batch:
     """The integrator's state: one column per system, cut to the active ones per stage."""
 
     def __init__(self, rhs: Rhs, t0, t1, y0, params, rtol, atol, method) -> None:
         """Set every system at ``t0`` with its derivative and first step."""
-        self.rhs, self.tab = rhs, _Tableau.of(method)
+        self.rhs, self.tab = rhs, Tableau.of(method)
         self.y = np.array(y0, dtype=float, ndmin=2)
         k = self.y.shape[1]
         self.t = np.broadcast_to(np.asarray(t0, dtype=float), (k,)).copy()
@@ -113,14 +89,23 @@ class _Batch:
         self.nfev, self.k = 0, k
         self.nsteps, self.nrejected = np.zeros(k, int), np.zeros(k, int)
         self.retry = np.zeros(k, bool)
+        self.last_cut: tuple[np.ndarray, dict[str, Any]] | None = None
         self.f = self.call(self.t, self.y, self.params)
         self.h = self.first_step()
 
     def cut(self, rows) -> dict[str, Any]:
-        """The parameters of the systems ``rows`` (a slice keeps them all)."""
-        return (
-            self.params if isinstance(rows, slice) else _cut(self.params, rows, self.k)
-        )
+        """The parameters of the systems ``rows`` (a slice keeps them all).
+
+        The last cut is kept: consecutive steps often advance the same rows.
+        """
+        if isinstance(rows, slice):
+            return self.params
+        last = self.last_cut
+        if last is not None and np.array_equal(last[0], rows):
+            return last[1]
+        params = _cut(self.params, rows, self.k)
+        self.last_cut = (rows, params)
+        return params
 
     def call(
         self, t: np.ndarray, y: np.ndarray, params: Mapping[str, Any]
@@ -162,9 +147,9 @@ class _Batch:
         ks[0] = f
         for s in range(1, len(tab.B)):
             ks[s] = self.call(
-                t + tab.C[s] * h, _advanced(y, h, tab.A[s, :s], ks[:s]), params
+                t + tab.C[s] * h, advanced(y, h, tab.A[s, :s], ks[:s]), params
             )
-        y_new = _advanced(y, h, tab.B, ks[:-1])
+        y_new = advanced(y, h, tab.B, ks[:-1])
         ks[-1] = self.call(t + h, y_new, params)
         return y_new, ks
 
@@ -184,7 +169,7 @@ class _Batch:
         np.maximum(scale, np.abs(y_new), out=scale)
         scale *= self.rtol
         scale += self.atol
-        error = _combine(self.tab.E, ks)
+        error = combine(self.tab.E, ks)
         error *= h
         error /= scale
         error = self.norm(error)
@@ -263,27 +248,6 @@ def solve_batch(
         sol.final = batch.t.copy()
     return BatchResult(batch.t, batch.y, stopped, [log.close() for log in logs], batch.nfev,
                        batch.nsteps, batch.nrejected, sol)  # fmt: skip
-
-
-def _advanced(y: np.ndarray, h: np.ndarray, coefficients: np.ndarray, ks: np.ndarray):
-    """``y + h * sum_j coefficients[j] * ks[j]``, in place on one new array.
-
-    The operations and their order are scipy's (the sum, times ``h``, plus ``y``), so the
-    result is the same; in place, the expression makes one array instead of three.
-    """
-    out = _combine(coefficients, ks)
-    out *= h
-    out += y
-    return out
-
-
-def _combine(coefficients: np.ndarray, ks: np.ndarray) -> np.ndarray:
-    """``sum_j coefficients[j] * ks[j]`` in one pass.
-
-    ``einsum`` rather than ``tensordot``: no BLAS call, so no thread pool to oversubscribe on
-    a busy machine, and the same summation order on every platform.
-    """
-    return np.einsum("s,s...->...", coefficients, ks)
 
 
 def _keep(

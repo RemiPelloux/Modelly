@@ -8,14 +8,17 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import pandas as pd
 
+from modelly._optional import LazyModule
 from modelly.data.recorders.base import BaseDataRecorder
 
 if TYPE_CHECKING:
+    import pandas as pd
+
     from modelly.core.model import Model
     from modelly.data.recorders.config import DatasetConfig
-
+else:
+    pd = LazyModule("pandas")
 
 # Rough per-row size, in bytes, of a snapshot that is not a NumPy array.
 _ESTIMATED_ROW_BYTES = 100
@@ -69,7 +72,7 @@ class DataRecorder(BaseDataRecorder):
         elif config.window_size and len(storage.blocks) >= config.window_size:
             _, old_data = storage.blocks.popleft()
 
-        added_bytes = self._append_block(dataset_name, time, data)
+        added_bytes = self._append_block(dataset_name, storage, time, data)
 
         # Update bookkeeping for evicted data
         if old_data is not None:
@@ -77,13 +80,14 @@ class DataRecorder(BaseDataRecorder):
 
         storage.estimated_size_bytes += added_bytes
 
-    def _append_block(self, dataset_name: str, time: int | float, data: Any) -> int:
+    def _append_block(
+        self, dataset_name: str, storage: DatasetStorage, time: int | float, data: Any
+    ) -> int:
         """Append one snapshot to the dataset's blocks and return its size in bytes."""
-        storage = self.storage[dataset_name]
         match data:
             case np.ndarray():
                 if data.size > 0:
-                    return self._append_array(dataset_name, time, data)
+                    return self._append_array(dataset_name, storage, time, data)
                 return 0
             case list():
                 if not data:
@@ -104,16 +108,17 @@ class DataRecorder(BaseDataRecorder):
         return rows * _ESTIMATED_ROW_BYTES
 
     def _append_array(
-        self, dataset_name: str, time: int | float, data: np.ndarray
+        self,
+        dataset_name: str,
+        storage: DatasetStorage,
+        time: int | float,
+        data: np.ndarray,
     ) -> int:
         """Append a NumPy snapshot with the agent ids as first column; return its bytes."""
-        storage = self.storage[dataset_name]
         dataset = self.registry.datasets[dataset_name]
         ids = getattr(dataset, "agent_ids", None)
-        ids_col = ids.reshape(-1, 1)
-        data_to_store = np.hstack([ids_col, data])
-
-        data_copy = data_to_store.copy()
+        # hstack always returns a new C-contiguous array, so it needs no copy
+        data_copy = np.hstack([ids.reshape(-1, 1), data])
         storage.blocks.append((time, data_copy))
         storage.total_rows += len(data_copy)
 
@@ -169,12 +174,10 @@ class DataRecorder(BaseDataRecorder):
             final_cols = ["agent_id", *columns, "time"]
             return pd.DataFrame(columns=final_cols)
 
-        arrays = []
-        times = []
-        for time, array in storage.blocks:
-            arrays.append(array)
-            times.extend([time] * len(array))
-
+        arrays = [array for _, array in storage.blocks]
+        times = _repeat_times(
+            [time for time, _ in storage.blocks], [len(array) for array in arrays]
+        )
         combined_array = np.vstack(arrays)
         df_cols = ["agent_id", *columns]
         df = pd.DataFrame(combined_array, columns=df_cols)
@@ -236,6 +239,20 @@ class DataRecorder(BaseDataRecorder):
             f"rows={sum(s.total_rows for s in self.storage.values())}, "
             f"memory={memory})"
         )
+
+
+def _repeat_times(times: list, lengths: list[int]) -> Any:
+    """Each block's time once per row: an array when pandas would infer the same dtype.
+
+    A list of all-float (or all-int64) times becomes a float64 (int64) column
+    either way; any other mix keeps the list, so pandas infers as before.
+    """
+    kinds = set(map(type, times))
+    if kinds == {float} or kinds == {int}:
+        values = np.array(times)
+        if values.dtype.kind in "if":
+            return np.repeat(values, lengths)
+    return [time for time, n in zip(times, lengths) for _ in range(n)]
 
 
 def _forget_block(storage: DatasetStorage, old_data: Any) -> None:

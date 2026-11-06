@@ -8,6 +8,7 @@ nor reorder a loop: a profiled run gives the same results as an unprofiled one.
 
 from __future__ import annotations
 
+import weakref
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import wraps
@@ -126,6 +127,8 @@ class Profiler:
         self._steps_seen = 0
         self._born_mark = 0
         self._saved: list[tuple[type, str, Any]] = []
+        # This step's class labels by agent set: id -> (weak reference, size, label).
+        self._labels: dict[int, tuple[Any, int, str]] = {}
 
     def __enter__(self) -> Profiler:
         """Install the timing wrappers."""
@@ -200,12 +203,28 @@ class Profiler:
         ) -> Any:
             if self._record is None:
                 return original(agentset, method, *args, **kwargs)
-            key = (name, agent_classes(agentset), callable_name(method))
+            key = (name, self._classes(agentset), callable_name(method))
             return self._timed(
                 key, len(agentset), original, agentset, method, *args, **kwargs
             )
 
         return loop
+
+    def _classes(self, agentset: Any) -> str:
+        """``agent_classes(agentset)``, worked out once per set and step while its size holds.
+
+        A step usually loops over the same sets several times; naming their classes
+        visits every member, so the label is kept until the set changes size or the
+        step ends.
+        """
+        size = len(agentset)
+        known = self._labels.get(id(agentset))
+        if known is not None and known[0]() is agentset and known[1] == size:
+            label: str = known[2]
+            return label
+        label = agent_classes(agentset)
+        self._labels[id(agentset)] = (weakref.ref(agentset), size, label)
+        return label
 
     def _wrap_collect(self, original: Callable[..., Any]) -> Callable[..., Any]:
         """Time ``DataCollector.collect``."""
@@ -252,6 +271,7 @@ class Profiler:
     def _close_record(self) -> None:
         """Count births and deaths of the running record and store it."""
         record = self._record
+        self._labels.clear()
         if record is None:
             return
         births = self.model.agent_id_counter - self._born_mark

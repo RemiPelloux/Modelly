@@ -118,12 +118,13 @@ class _Step:
         """The fraction of the step where ``event`` crosses, by bisection on the interpolant."""
         sign = np.sign(before[cols])
         lo, hi = np.zeros(cols.size), np.ones(cols.size)
+        h, t0, y0 = self.h[cols], self.t0[cols], self.y0[:, cols]
+        coefficients = self.Q[..., cols]
+        params = _cut(self.params, cols, self.h.size)
         for _ in range(BISECTIONS):
             mid = (lo + hi) / 2
-            t, y = self.at(mid, cols)
-            same = (
-                np.sign(event.value(t, y, _cut(self.params, cols, self.h.size))) == sign
-            )
+            t, y = t0 + mid * h, interpolate(coefficients, h, y0, mid)
+            same = np.sign(event.value(t, y, params)) == sign
             lo, hi = np.where(same, mid, lo), np.where(same, hi, mid)
         return np.where(sign == 0, 0.0, hi)
 
@@ -161,8 +162,10 @@ def _locate(
         crossing).
     """
     batch, rows, t_new = step.batch, step.rows, step.t_new
+    afters = [event.value(t_new, y_new, step.params) for event in events]
     fractions = [
-        _fractions(step, e, p[rows], t_new, y_new) for e, p in zip(events, previous)
+        _fractions(step, e, p[rows], after)
+        for e, p, after in zip(events, previous, afters)
     ]
     stop_at = np.full(rows.size, np.inf)
     for event, x in zip(events, fractions):
@@ -176,16 +179,15 @@ def _locate(
     if np.any(stop):
         cols = np.flatnonzero(stop)
         batch.t[rows[cols]], batch.y[:, rows[cols]] = step.at(stop_at[cols], cols)
-    for event, p in zip(events, previous):
-        p[rows] = event.value(t_new, y_new, step.params)
+    for p, after in zip(previous, afters):
+        p[rows] = after
     return stop
 
 
-def _fractions(step: _Step, event: ODEEvent, before, t_new, y_new) -> np.ndarray:
+def _fractions(step: _Step, event: ODEEvent, before, after) -> np.ndarray:
     """The fraction of the step where each system crosses, ``inf`` where none does."""
-    after = event.value(t_new, y_new, step.params)
     cols = np.flatnonzero(event.crossed(before, after))
-    x = np.full(t_new.size, np.inf)
+    x = np.full(after.size, np.inf)
     if cols.size:
         x[cols] = step.root(event, before, cols)
     return x

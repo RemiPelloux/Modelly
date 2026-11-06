@@ -19,7 +19,7 @@ from typing import Any
 from modelly.llm.cache import ResponseCache
 from modelly.llm.client import Client
 from modelly.llm.replay import replaying
-from modelly.provenance.files import from_posix, hash_file
+from modelly.provenance.files import from_posix, hash_bytes, hash_file
 
 CACHE_FILE = "llm-responses.jsonl.gz"
 FIELD = "llm_cache"
@@ -61,6 +61,22 @@ def cache_problem(manifest: dict[str, Any], folder: Path) -> str | None:
     if hash_file(path) != record["hash"]:
         return f"language-model cache {record['path']} changed since the run"
     return None
+
+
+def _cache_contents(
+    manifest: dict[str, Any], folder: Path
+) -> tuple[str | None, bytes | None]:
+    """``cache_problem`` and the recorded replies' bytes (None without a cache), read once."""
+    record = manifest.get(FIELD)
+    if record is None:
+        return None, None
+    path = from_posix(record["path"], folder)
+    if not path.is_file():
+        return f"language-model cache {record['path']} is missing", None
+    data = path.read_bytes()
+    if hash_bytes(data) != record["hash"]:
+        return f"language-model cache {record['path']} changed since the run", None
+    return None, data
 
 
 def replay_for(

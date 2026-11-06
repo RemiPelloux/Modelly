@@ -297,3 +297,36 @@ def test_growth_exponent_from_synthetic_records():
     flat = [record(500, 2.0) for _ in range(5)]
     assert growth_exponent(flat, key) is None
     assert growth_exponent(growing[:2], key) is None
+
+
+class Quiet(Agent):
+    """An agent whose step does nothing."""
+
+    def step(self):
+        """Nothing."""
+
+
+class Joiner(Model):
+    """Loops over its agents twice a step; a new class joins between the two loops."""
+
+    def __init__(self):
+        """Two quiet walkers."""
+        super().__init__(rng=1)
+        Quiet.create_agents(self, 2)
+
+    def step(self):
+        """Loop, add a walker of another class, loop again."""
+        self.agents.do("step")
+        self.agents.do("step")
+        Walker(self)
+        self.agents.do("step")
+
+
+def test_class_label_follows_the_set_within_a_step():
+    """The kept class label is redone when the set changes during a step."""
+    model = Joiner()
+    with Profiler(model) as prof:
+        model.run_for(1)
+    ops = prof.records[0].ops
+    assert ops[("do", "Quiet", "step")][0] == 2  # the label kept for the second loop
+    assert ops[("do", "Quiet|Walker", "step")][0] == 1

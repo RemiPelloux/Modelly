@@ -105,7 +105,9 @@ class BaseObservable:
 
     def __set__(self, instance: HasEmitters, value):  # noqa: D105
         # Nobody listening: skip fetching the old value and building a Message.
-        if not instance._has_subscribers(self.public_name, ObservableSignals.CHANGED):
+        if instance._quiet or not instance._has_subscribers(
+            self.public_name, ObservableSignals.CHANGED
+        ):
             return
         change_signal = self.signal_types(
             "changed"
@@ -144,7 +146,10 @@ class Observable(BaseObservable):
 
         send_notify = False
         old_value = None
-        if instance._has_subscribers(self.public_name, ObservableSignals.CHANGED):
+        # A quiet instance has no subscriber (tested before the dict lookups).
+        if not instance._quiet and instance._has_subscribers(
+            self.public_name, ObservableSignals.CHANGED
+        ):
             old_value = getattr(instance, self.private_name, None)
             if old_value != value:
                 send_notify = True
@@ -152,10 +157,7 @@ class Observable(BaseObservable):
 
         if send_notify:
             instance.notify(
-                self.public_name,
-                ObservableSignals.CHANGED,
-                old=old_value,
-                new=value,
+                self.public_name, ObservableSignals.CHANGED, old=old_value, new=value
             )
             PROCESSING_SIGNALS.clear()  # we have notified our children, so we can clear this out
 
@@ -184,10 +186,10 @@ class ComputedState(ComputedStateBase):
         global CURRENT_COMPUTED  # noqa: PLW0603
 
         old_computed = CURRENT_COMPUTED
-        # Save and reset PROCESSING_SIGNALS so that `self.func` reading an Observable
-        # derived from this same ComputedState (e.g. a rate function reading the
+        # Save (if not empty) and reset PROCESSING_SIGNALS so that `self.func` reading an
+        # Observable derived from this ComputedState (a rate function reading the
         # ContinuousState it drives) does not trigger a false cyclical-dependency error.
-        old_processing = set(PROCESSING_SIGNALS)
+        old_processing = set(PROCESSING_SIGNALS) if PROCESSING_SIGNALS else None
         PROCESSING_SIGNALS.clear()
         CURRENT_COMPUTED = self
         old_parents = self.parents
@@ -200,7 +202,7 @@ class ComputedState(ComputedStateBase):
             raise
         finally:
             CURRENT_COMPUTED = old_computed
-            PROCESSING_SIGNALS.update(old_processing)
+            PROCESSING_SIGNALS.update(old_processing or ())
 
         _resubscribe(self, old_parents)
 
@@ -237,10 +239,9 @@ def computed_property(
 
         @functools.wraps(computation_func)
         def wrapper(self: HasEmitters):
-            if not hasattr(self, key):
+            state = getattr(self, key, None)
+            if state is None:
                 state = _create_state(self, key, computation_func, dependencies)
-            else:
-                state = getattr(self, key)
 
             if state.is_dirty:
                 # Only recompute when a parent actually changed.

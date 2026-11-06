@@ -1,6 +1,5 @@
 """Drawer for network spaces."""
 
-import altair as alt
 import matplotlib.pyplot as plt
 import networkx as nx
 import pandas as pd
@@ -96,6 +95,8 @@ class NetworkSpaceDrawer(BaseSpaceDrawer):
         Returns:
             Altair chart object representing the network.
         """
+        import altair as alt  # noqa: PLC0415 - Altair loads only for this backend
+
         nodes_df, edge_positions = self._node_and_edge_frames()
 
         node_mark_kwargs = {"filled": True, "opacity": 0.5, "size": 500}
@@ -139,6 +140,8 @@ class NetworkSpaceDrawer(BaseSpaceDrawer):
 
     def _edge_chart(self, edge_positions, edge_mark_kwargs):
         """Return the Altair rule chart drawing every edge."""
+        import altair as alt  # noqa: PLC0415 - Altair loads only for this backend
+
         return (
             alt.Chart(edge_positions)
             .mark_rule(**edge_mark_kwargs)

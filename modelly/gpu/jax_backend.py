@@ -19,8 +19,8 @@ from typing import Any
 import numpy as np
 
 from modelly._optional import require
-from modelly.gpu.backend import JAX, Backend
-from modelly.gpu.philox import philox4x32
+from modelly.gpu.backend import DEVICE_CHECK_EVERY, JAX, Backend
+from modelly.gpu.philox import WORD_MASK, philox4x32
 
 CPU_PLATFORM = "cpu"
 BYTES_LIMIT, BYTES_IN_USE = "bytes_limit", "bytes_in_use"
@@ -31,6 +31,7 @@ class JaxBackend(Backend):
 
     name = JAX
     compacts = False  # every new shape compiles: keep shapes fixed, mask instead
+    check_every = DEVICE_CHECK_EVERY
 
     def __init__(self) -> None:
         """Import JAX, find its default device and jit the Philox rounds."""
@@ -40,8 +41,7 @@ class JaxBackend(Backend):
         self.wide = bool(jax.config.jax_enable_x64)
         self._device = jax.devices()[0]
         self.gpu = self._device.platform != CPU_PLATFORM
-        rounds = partial(philox4x32, xp=self.xp, wide=self.wide)
-        self._philox = jax.jit(rounds, static_argnums=1)
+        self._philox = jax.jit(partial(_rounds, xp=self.xp, wide=self.wide))
 
     @property
     def float_dtype(self) -> Any:
@@ -81,10 +81,10 @@ class JaxBackend(Backend):
         return self.xp.argsort(values, stable=True)
 
     def philox(self, block: Any, words: tuple[int, int, int], key: tuple[int, int]):
-        """The jitted Philox rounds (compiled once per key and shape)."""
+        """The jitted Philox rounds (compiled once per shape; any key, no recompiling)."""
         block = self.xp.asarray(block, dtype=self.xp.uint32)
-        counter = (block, *(self.xp.uint32(word) for word in words))
-        return self._philox(counter, tuple(key))
+        scalars = np.array([*words, *(k & WORD_MASK for k in key)], dtype=np.uint32)
+        return self._philox(block, scalars)
 
     def synchronize(self, array: Any = None) -> None:
         """Block until ``array`` (or every pending computation) is ready."""
@@ -99,3 +99,13 @@ class JaxBackend(Backend):
         if not stats or BYTES_LIMIT not in stats:
             return Backend.free_bytes(self)
         return int(stats[BYTES_LIMIT] - stats.get(BYTES_IN_USE, 0))
+
+
+def _rounds(block: Any, scalars: Any, xp: Any, wide: bool) -> tuple[Any, Any, Any, Any]:
+    """Philox at counters ``(block, *scalars[:3])`` with key ``scalars[3:]``, all traced.
+
+    The key schedule adds the Weyl constants in uint32, which wraps modulo ``2**32`` as the
+    masked Python integers do, so a traced key gives the bits of a static one.
+    """
+    counter = (block, scalars[0], scalars[1], scalars[2])
+    return philox4x32(counter, (scalars[3], scalars[4]), xp, wide)

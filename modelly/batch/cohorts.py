@@ -26,14 +26,21 @@ counts per state have the same distribution as in the individual model; see
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import pandas as pd
 
+from modelly._optional import LazyModule
 from modelly.core.storage import IN_MEMORY, InMemory, pickled, restored
 
+if TYPE_CHECKING:
+    import pandas as pd
+else:
+    pd = LazyModule("pandas")
+
 COUNT = "count"
+# dtype kinds whose values sort and compare exactly (no NaN, no signed zero)
+_EXACT_KINDS = "biu"
 INITIAL_ROWS = 64
 GROWTH_FACTOR = 2
 
@@ -171,14 +178,13 @@ class CohortTable:
         names = [name for name in self._data if name != COUNT]
         if not names or self._n == 0:
             return 0
-        keys = np.rec.fromarrays([self[name] for name in names], names=names)
-        unique, inverse = np.unique(keys, return_inverse=True)
+        columns, inverse = _unique_rows([self[name] for name in names], names)
         sums = np.bincount(inverse, weights=self["count"]).astype(np.int64)
-        removed = self._n - int(unique.shape[0])
-        self._n = unique.shape[0]
+        removed = self._n - int(columns[0].shape[0])
+        self._n = columns[0].shape[0]
         self["count"] = sums
-        for name in names:
-            self[name] = unique[name]
+        for name, column in zip(names, columns):
+            self[name] = column
         return removed
 
     def to_dataframe(self) -> pd.DataFrame:
@@ -196,6 +202,28 @@ class CohortTable:
     def __repr__(self) -> str:
         """Rows, individuals and columns."""
         return f"<CohortTable {self._n} cohorts, {self.total():,} individuals, columns={self.columns}>"
+
+
+def _unique_rows(
+    columns: list[np.ndarray], names: list[str]
+) -> tuple[list[np.ndarray], np.ndarray]:
+    """The distinct rows in lexicographic order (one array per column) and each row's group.
+
+    Integer and boolean states use a stable ``lexsort``; this gives the same
+    rows, order and groups as ``np.unique`` over the record array, which is
+    kept for any other dtype (float NaN and -0.0 sort and compare differently).
+    """
+    if not all(column.dtype.kind in _EXACT_KINDS for column in columns):
+        keys = np.rec.fromarrays(columns, names=names)
+        unique, inverse = np.unique(keys, return_inverse=True)
+        return [unique[name] for name in names], inverse
+    order = np.lexsort(columns[::-1])  # lexsort's last key is the primary one
+    ordered = [column[order] for column in columns]
+    starts = np.ones(order.shape[0], dtype=bool)
+    starts[1:] = np.logical_or.reduce([c[1:] != c[:-1] for c in ordered])
+    inverse = np.empty_like(order)
+    inverse[order] = np.cumsum(starts) - 1
+    return [column[starts] for column in ordered], inverse
 
 
 def from_counts(

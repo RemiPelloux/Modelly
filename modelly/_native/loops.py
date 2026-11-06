@@ -1,8 +1,8 @@
 """The framework's per-agent and per-cell loops: compiled when available.
 
-``call_each`` and ``neighborhood`` come from the C module ``fastloop`` when it
-is built and not disabled (``MODELLY_PURE_PYTHON=1``), else from the Python
-functions below. Both versions visit the same objects in the same order and
+``call_each``, ``map_each``, their ``_weak`` versions and ``neighborhood`` come
+from the C module ``fastloop`` when it is built and not disabled
+(``MODELLY_PURE_PYTHON=1``), else from the Python functions below. Both versions visit the same objects in the same order and
 make the same calls, so a model gives the same results either way
 (``tests/native/test_loops.py`` runs them side by side).
 """
@@ -27,6 +27,57 @@ def py_call_each(
         for agent in order:
             if agent in members:
                 method(agent, *args, **kwargs)
+
+
+def py_map_each(
+    order: list, members: dict, method: str | Callable, args: tuple, kwargs: dict | None
+) -> list:
+    """``py_call_each``, returning the results in order."""
+    kwargs = kwargs or {}
+    if isinstance(method, str):
+        return [
+            getattr(agent, method)(*args, **kwargs)
+            for agent in order
+            if agent in members
+        ]
+    return [method(agent, *args, **kwargs) for agent in order if agent in members]
+
+
+def py_call_each_weak(
+    order: list, refs: dict, method: str | Callable, args: tuple, kwargs: dict | None
+) -> None:
+    """Call ``method`` on the referent of each weakref of ``order`` still a key of ``refs``.
+
+    Each ref is dereferenced just before its membership test, so an agent
+    removed or garbage collected by an earlier call is skipped.
+    """
+    kwargs = kwargs or {}
+    if isinstance(method, str):
+        for r in order:
+            if (agent := r()) is not None and r in refs:
+                getattr(agent, method)(*args, **kwargs)
+    else:
+        for r in order:
+            if (agent := r()) is not None and r in refs:
+                method(agent, *args, **kwargs)
+
+
+def py_map_each_weak(
+    order: list, refs: dict, method: str | Callable, args: tuple, kwargs: dict | None
+) -> list:
+    """``py_call_each_weak``, returning the results in order."""
+    kwargs = kwargs or {}
+    if isinstance(method, str):
+        return [
+            getattr(agent, method)(*args, **kwargs)
+            for r in order
+            if (agent := r()) is not None and r in refs
+        ]
+    return [
+        method(agent, *args, **kwargs)
+        for r in order
+        if (agent := r()) is not None and r in refs
+    ]
 
 
 def py_neighborhood(cell: Any, radius: int) -> dict:
@@ -69,4 +120,7 @@ def _load() -> Any:
 _fastloop = _load()
 NATIVE: bool = _fastloop is not None
 call_each = _fastloop.call_each if NATIVE else py_call_each
+map_each = _fastloop.map_each if NATIVE else py_map_each
+call_each_weak = _fastloop.call_each_weak if NATIVE else py_call_each_weak
+map_each_weak = _fastloop.map_each_weak if NATIVE else py_map_each_weak
 neighborhood = _fastloop.neighborhood if NATIVE else py_neighborhood

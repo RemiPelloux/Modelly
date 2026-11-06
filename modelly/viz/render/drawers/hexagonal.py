@@ -1,12 +1,10 @@
 """Drawer for hexagonal grid spaces."""
 
-from itertools import pairwise
-
-import altair as alt
 import numpy as np
 import pandas as pd
 from matplotlib.collections import LineCollection
 
+from modelly.viz.render._hex_edges import edge_array, unique_edges
 from modelly.viz.render.drawers.base import (
     MARKER_SPAN_POINTS,
     BaseSpaceDrawer,
@@ -20,8 +18,6 @@ from modelly.viz.render.drawers.base import (
 ROW_SPACING_FACTOR = 1.5
 # Margin below/left of the first hexagon, in units of its padding.
 LOWER_MARGIN_FACTOR = 1.8
-# Decimals kept when de-duplicating shared hexagon edges.
-EDGE_ROUNDING_DECIMALS = 6
 
 
 class HexSpaceDrawer(BaseSpaceDrawer):
@@ -51,6 +47,7 @@ class HexSpaceDrawer(BaseSpaceDrawer):
         y_padding = size
 
         self.hexagons = self._get_hexmesh(size)
+        self._edges = self._segments = None
 
         # Parameters for visualization limits
         self.viz_xmin = -LOWER_MARGIN_FACTOR * x_padding
@@ -68,23 +65,10 @@ class HexSpaceDrawer(BaseSpaceDrawer):
         return hexagons
 
     def _get_unique_edges(self):
-        """Helper method to extract unique edges from all hexagons."""
-        edges = set()
-        # Generate edges for each hexagon
-        for vertices in self.hexagons:
-            # Edge logic, connecting each vertex to the next
-            for v1, v2 in pairwise([*vertices, vertices[0]]):
-                # Sort vertices to ensure consistent edge representation and avoid duplicates.
-                edge = tuple(
-                    sorted(
-                        [
-                            tuple(np.round(v1, EDGE_ROUNDING_DECIMALS)),
-                            tuple(np.round(v2, EDGE_ROUNDING_DECIMALS)),
-                        ]
-                    )
-                )
-                edges.add(edge)
-        return edges
+        """The unique edges of all hexagons, computed once per drawer."""
+        if self._edges is None:
+            self._edges = unique_edges(self.hexagons)
+        return self._edges
 
     def draw_matplotlib(self, ax=None, **draw_space_kwargs):
         """Draw the hexagonal grid using matplotlib.
@@ -113,8 +97,9 @@ class HexSpaceDrawer(BaseSpaceDrawer):
         ax.set_ylim(self.viz_ymin, self.viz_ymax)
         ax.set_aspect("equal", adjustable="box")
 
-        edges = self._get_unique_edges()
-        ax.add_collection(LineCollection(list(edges), **line_kwargs))
+        if self._segments is None:
+            self._segments = edge_array(self._get_unique_edges())
+        ax.add_collection(LineCollection(self._segments, **line_kwargs))
         return ax
 
     def draw_altair(self, chart_width=450, chart_height=350, **draw_chart_kwargs):
@@ -132,6 +117,8 @@ class HexSpaceDrawer(BaseSpaceDrawer):
         Returns:
             Altair chart object representing the hexagonal grid.
         """
+        import altair as alt  # noqa: PLC0415 - Altair loads only for this backend
+
         mark_kwargs = line_mark_kwargs(draw_chart_kwargs)
         chart_props = chart_properties(chart_width, chart_height, draw_chart_kwargs)
         source = _edge_frame(self._get_unique_edges())

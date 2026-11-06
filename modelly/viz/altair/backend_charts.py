@@ -19,14 +19,15 @@ def _viz_colors(df: pd.DataFrame) -> tuple[list, list]:
     """Return the fill and stroke color of each agent, honouring ``is_filled``."""
     fill_colors = []
     stroke_colors = []
-    for i in range(len(df)):
-        filled = df["is_filled"][i]
-        main_color = df["original_color"][i]
-        stroke_spec = (
-            df["original_stroke"][i]
-            if isinstance(df["original_stroke"][i], str)
-            else None
-        )
+    # Whole columns as lists: one Series lookup per column, not four per agent.
+    columns = zip(
+        df["is_filled"].tolist(),
+        df["original_color"].tolist(),
+        df["original_stroke"].tolist(),
+        strict=True,
+    )
+    for filled, main_color, stroke in columns:
+        stroke_spec = stroke if isinstance(stroke, str) else None
         if filled:
             fill_colors.append(main_color)
             stroke_colors.append(stroke_spec)

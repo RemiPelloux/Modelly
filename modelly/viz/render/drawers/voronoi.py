@@ -2,7 +2,6 @@
 
 from itertools import pairwise
 
-import altair as alt
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -118,6 +117,8 @@ class VoronoiSpaceDrawer(BaseSpaceDrawer):
         Returns:
             An Altair Chart object representing the Voronoi diagram.
         """
+        import altair as alt  # noqa: PLC0415 - Altair loads only for this backend
+
         final_segments, clip_box = self._get_clipped_segments()
         df = _segment_frame(final_segments)
         mark_kwargs = line_mark_kwargs(draw_chart_kwargs)

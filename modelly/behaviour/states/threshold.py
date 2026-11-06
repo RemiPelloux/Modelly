@@ -14,6 +14,21 @@ from modelly.time.signals.core import BaseObservable
 if TYPE_CHECKING:
     from modelly.behaviour.states.state import ContinuousState
     from modelly.core.agent import Agent
+    from modelly.time.signals import HasEmitters
+
+# Machine epsilon of a float, computed once (np.finfo costs ~120 ns per call).
+_EPS = float(np.finfo(float).eps)
+
+
+def _bind_thresholds(instance: HasEmitters) -> None:
+    """Bind every declarative Threshold on the instance's class hierarchy."""
+    cls = instance.__class__
+    for klass in cls.__mro__:
+        if "_continuous_thresholds" in klass.__dict__:
+            for t_name in klass.__dict__["_continuous_thresholds"]:
+                thresh = getattr(cls, t_name, None)
+                if thresh is not None and hasattr(thresh, "bind"):
+                    thresh.bind(instance)
 
 
 def _crossing_roots(
@@ -51,7 +66,7 @@ def _quadratic_roots(
     discriminant = qb**2 - 4 * qa * qc
 
     # Allow microscopic negative discriminants due to float inaccuracies near tangent touches
-    if discriminant >= -np.finfo(float).eps:
+    if discriminant >= -_EPS:
         disc = max(0.0, discriminant)
         sqrt_disc = math.sqrt(disc)
 
@@ -59,7 +74,7 @@ def _quadratic_roots(
         t2 = (-qb + sqrt_disc) / (2 * qa)
 
         for t in (t1, t2):
-            if t >= -np.finfo(float).eps:
+            if t >= -_EPS:
                 t_clean = max(0.0, t)
                 # Calculate exact velocity at the moment of intersection: v(t) = v0 + a*t
                 v_cross = qb + a * t_clean
@@ -102,6 +117,7 @@ class Threshold:
         self.public_name = name
         self.time_attr = f"_{name}_projected_time"
         self.event_attr = f"_{name}_event"
+        self.trigger_attr = f"_{name}_trigger"
 
         if "_continuous_thresholds" not in owner.__dict__:
             owner._continuous_thresholds = []
@@ -142,7 +158,7 @@ class Threshold:
 
         # Strong references to prevent weakref event queue from silently dropping them
         setattr(instance, f"_{self.public_name}_recalc", _recalc)
-        setattr(instance, f"_{self.public_name}_trigger", _trigger)
+        setattr(instance, self.trigger_attr, _trigger)
 
         instance.observe(self.state.public_name, ObservableSignals.CHANGED, _recalc)
 
@@ -167,7 +183,7 @@ class Threshold:
         v = state_dict["current_rate"]
         a = state_dict["second_order_rate"]
 
-        current_value = self.state.__get__(instance)
+        current_value = self.state._read(instance, state_dict)
         limit = self._resolve_limit(instance)
 
         valid_times = _crossing_roots(v, a, current_value, limit)
@@ -201,7 +217,7 @@ class Threshold:
                 current_value,
                 limit,
                 rel_tol=0,
-                abs_tol=np.finfo(float).eps * abs(limit or 1.0),
+                abs_tol=_EPS * abs(limit or 1.0),
             ):
                 continue
 
@@ -220,7 +236,7 @@ class Threshold:
                 old_event.cancel()
 
         # Retrieve the trigger
-        trigger_func = getattr(instance, f"_{self.public_name}_trigger")
+        trigger_func = getattr(instance, self.trigger_attr)
         new_event = instance.model.schedule_event(trigger_func, at=projected_time)
         setattr(instance, self.event_attr, new_event)
 

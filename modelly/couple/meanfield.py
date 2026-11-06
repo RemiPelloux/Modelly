@@ -27,6 +27,8 @@ from typing import Any
 
 import numpy as np
 
+from modelly.couple.ode import scipy_solve_ivp
+
 type Rhs = Callable[[float, np.ndarray, Mapping[str, Any]], Any]
 
 
@@ -84,9 +86,7 @@ class Companion:
 
         Call it after each model step, with the time that step covers.
         """
-        from scipy.integrate import solve_ivp  # noqa: PLC0415 - scipy is heavy
-
-        lim = self.limit
+        lim, solve_ivp = self.limit, scipy_solve_ivp()
         end = self.time + duration
         result = solve_ivp(lim.rhs, (self.time, end), self.ode[-1], args=(lim.params,),
                            rtol=lim.rtol, atol=lim.atol)  # fmt: skip

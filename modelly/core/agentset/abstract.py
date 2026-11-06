@@ -156,7 +156,7 @@ class AbstractAgentSet[A: Agent](
             of an AbstractAgentSet.
         """
         groups = defaultdict(list)
-        key = by if isinstance(by, Callable) else operator.attrgetter(by)
+        key = by if callable(by) else operator.attrgetter(by)
 
         for agent in self.to_list():
             groups[key(agent)].append(agent)

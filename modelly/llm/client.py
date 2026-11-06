@@ -8,8 +8,9 @@ in the order they were asked for, whatever order the threads finish in.
 from __future__ import annotations
 
 import sys
+import weakref
 from collections.abc import Iterable, Sequence
-from concurrent.futures import Future, ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor, wait
 from dataclasses import replace
 from typing import Any
 
@@ -27,6 +28,8 @@ DEFAULT_TEMPERATURE = 0.0
 MODEL_SCOPE = "model"
 # Pyodide (sys.platform "emscripten") cannot start threads: calls go one at a time.
 THREADS = sys.platform != "emscripten"
+# The attribute holding the thread pool and its size (left out of pickles).
+POOL_SLOT = "_pool"
 
 Prompt = str | Sequence[Message]
 
@@ -149,7 +152,7 @@ class Client:
             ProviderError: The first call (in order) that failed after its retries.
         """
         batch = list(requests)
-        replies: list[Response | None] = [self.lookup(r) for r in batch]
+        replies: list[Response | None] = self.lookup_many(batch)
         pending = [i for i, reply in enumerate(replies) if reply is None]
         allowed, refusal = self.reserve(batch, pending)
         self.dispatch(batch, replies, allowed)
@@ -159,16 +162,29 @@ class Client:
 
     def lookup(self, request: Request) -> Response | None:
         """The cached reply of ``request``; a miss in replay mode raises."""
+        return self.lookup_many([request])[0]
+
+    def lookup_many(self, batch: Sequence[Request]) -> list[Response | None]:
+        """The cached reply of each request (one query); a miss in replay mode raises.
+
+        Hits are counted in order up to the first miss in replay mode, as one
+        :meth:`lookup` per request would.
+        """
         if not self.cache.reads:
-            return None
-        key = request.key()
-        hit = self.cache.get(key)
-        if hit is not None:
-            self.budget.record_hit()
-            return hit
-        if self.cache.mode == READ_ONLY:
-            raise CacheMiss(request.scope, request.call_index, key, request.excerpt())
-        return None
+            return [None] * len(batch)
+        found = self.cache.get_many([request.key() for request in batch])
+        replies: list[Response | None] = []
+        for request in batch:
+            hit = found.get(request.key())
+            if hit is not None:
+                self.budget.record_hit()
+            elif self.cache.mode == READ_ONLY:
+                key = request.key()
+                raise CacheMiss(
+                    request.scope, request.call_index, key, request.excerpt()
+                )
+            replies.append(hit)
+        return replies
 
     def reserve(
         self, batch: list[Request], pending: list[int]
@@ -193,18 +209,56 @@ class Client:
         if workers == 1:
             futures = [self.send_here(batch[i]) for i in allowed]
         else:
-            with ThreadPoolExecutor(max_workers=workers) as pool:
-                futures = [
-                    pool.submit(self.retry.run, self.provider.complete, batch[i])
-                    for i in allowed
-                ]
-        failures = [
-            failure
-            for index, future in zip(allowed, futures)
-            if (failure := self.collect(batch[index], future, replies, index))
-        ]
+            pool = self.executor()
+            futures = [
+                pool.submit(self.retry.run, self.provider.complete, batch[i])
+                for i in allowed
+            ]
+            wait(futures)
+        failures = self.collect_all(batch, replies, allowed, futures)
         if failures:
             raise failures[0]
+
+    def collect_all(
+        self,
+        batch: list[Request],
+        replies: list[Response | None],
+        allowed: list[int],
+        futures: list[Future[Any]],
+    ) -> list[ProviderError]:
+        """Count every finished call in order; cache the replies in one transaction."""
+        stored: list[tuple[Request, Response]] = []
+        try:
+            return [
+                failure
+                for index, future in zip(allowed, futures)
+                if (
+                    failure := self.collect(
+                        batch[index], future, replies, index, stored
+                    )
+                )
+            ]
+        finally:  # the replies counted so far are cached, even when one raised
+            if self.cache.writes and stored:
+                self.cache.put_many(stored)
+
+    def executor(self) -> ThreadPoolExecutor:
+        """The client's thread pool, made on first use and kept for later batches.
+
+        Its threads stop when the client is collected; a pickle leaves it out.
+        """
+        pool, size = self.__dict__.get(POOL_SLOT) or (None, 0)
+        if pool is None or size != self.max_concurrency:
+            if pool is not None:
+                pool.shutdown(wait=False)
+            pool = ThreadPoolExecutor(max_workers=self.max_concurrency)
+            self.__dict__[POOL_SLOT] = (pool, self.max_concurrency)
+            weakref.finalize(self, pool.shutdown, wait=False)
+        return pool
+
+    def __getstate__(self) -> dict[str, Any]:
+        """Every attribute but the thread pool."""
+        return {k: v for k, v in self.__dict__.items() if k != POOL_SLOT}
 
     def send_here(self, request: Request) -> Future[Any]:
         """Send ``request`` in this thread; its outcome as a finished future."""
@@ -221,8 +275,9 @@ class Client:
         future: Future[Any],
         replies: list[Response | None],
         index: int,
+        stored: list[tuple[Request, Response]],
     ) -> ProviderError | None:
-        """Count and cache one finished call, or return its error."""
+        """Count one finished call and queue it in ``stored`` to cache, or return its error."""
         self.budget.release(request)
         try:
             response, retries = future.result()
@@ -230,7 +285,6 @@ class Client:
             return error
         response = replace(response, key=request.key(), cached=False)
         self.budget.record(request, response, retries)
-        if self.cache.writes:
-            self.cache.put(request, response)
+        stored.append((request, response))
         replies[index] = response
         return None

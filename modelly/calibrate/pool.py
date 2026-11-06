@@ -10,12 +10,12 @@ model: about a second each time); this one starts it once and reuses it until
 from __future__ import annotations
 
 from collections.abc import Iterator, Sequence
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor
 from typing import Any
 
 from modelly.batch.runs import default_workers, worker_context
-from modelly.experiments.executors.local import ProcessExecutor
-from modelly.experiments.tasks import RunOutcome, RunTask, run_task
+from modelly.experiments.executors.local import ProcessExecutor, _submit_chunks
+from modelly.experiments.tasks import RunOutcome, RunTask
 
 
 class PooledProcessExecutor(ProcessExecutor):
@@ -25,6 +25,7 @@ class PooledProcessExecutor(ProcessExecutor):
         """No pool until the first batch."""
         super().__init__(**options)
         self._pool: ProcessPoolExecutor | None = None
+        self._workers = 1
 
     def run(
         self, tasks: Sequence[RunTask], max_parallel: int | None = None
@@ -35,12 +36,11 @@ class PooledProcessExecutor(ProcessExecutor):
         self.check(tasks)
         if self._pool is None:
             workers = default_workers() if max_parallel is None else max_parallel
+            self._workers = max(1, workers)
             self._pool = ProcessPoolExecutor(
-                max_workers=max(1, workers), mp_context=worker_context()
+                max_workers=self._workers, mp_context=worker_context()
             )
-        futures = [self._pool.submit(run_task, task) for task in tasks]
-        for future in as_completed(futures):
-            yield future.result()
+        yield from _submit_chunks(self._pool, tasks, self._workers)
 
     def close(self) -> None:
         """Stop the workers."""

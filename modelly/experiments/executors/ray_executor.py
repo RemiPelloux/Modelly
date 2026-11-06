@@ -68,4 +68,4 @@ def _bounded(ray: Any, tasks: Sequence[RunTask], limit: int) -> Iterator[RunOutc
         yield ray.get(done[0])
         following = next(waiting, None)
         if following is not None:
-            pending = [*pending, remote.remote(following)]
+            pending.append(remote.remote(following))

@@ -97,3 +97,29 @@ def model_with_space():
     for position in _points(30):
         ContinuousSpaceAgent(model.space, model).position = position
     return model
+
+
+@pytest.mark.parametrize("torus", [False, True])
+def test_a_box_that_reaches_no_point_has_no_point_near(torus):
+    """``reaches`` is False only when ``near`` finds no point of the bounding box."""
+    layout = _layout(8, torus=torus)
+    rng = np.random.default_rng(3)
+    for _ in range(50):
+        points = rng.random((rng.integers(1, 30), 2)) * rng.uniform(1, SIDE)
+        lower, upper = points.min(axis=0), points.max(axis=0)
+        for index in range(len(layout)):
+            for radius in (0.0, 0.3, 1.0, 4.0):
+                if not layout.reaches(index, lower, upper, radius):
+                    assert not layout.near(index, points, radius).any()
+
+
+def test_owners_take_the_first_box_holding_a_point():
+    """Box by box, the first box whose bounds hold a point owns it, edges included."""
+    layout = _layout(5)
+    points = np.concatenate([_points(500, seed=4), layout._lower, layout._upper])
+    expected = []
+    for p in points:
+        top = layout._upper == layout._domain[1]
+        below = (p < layout._upper) | (top & (p <= layout._upper))
+        expected.append(int(((p >= layout._lower) & below).all(axis=1).argmax()))
+    np.testing.assert_array_equal(layout.owners(points), expected)

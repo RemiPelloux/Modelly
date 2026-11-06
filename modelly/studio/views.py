@@ -8,7 +8,7 @@ from modelly.studio import data
 from modelly.studio.i18n import t
 from modelly.studio.scene import MATPLOTLIB_LIMIT, element_count
 from modelly.studio.state import StudioState
-from modelly.viz.mpl.figure import can_draw, space_figure
+from modelly.viz.mpl.figure import _SpaceFigure
 
 
 def _scrub_buttons(state: StudioState, last: int) -> None:
@@ -56,8 +56,10 @@ def SpaceView(state: StudioState):
     """The model's space, drawn with the shared Matplotlib portrayal."""
     state.revision.get()
     session = state.session
+    # One figure per session: the space's structure is drawn once, the agents per tick.
+    live = solara.use_memo(_SpaceFigure, [])
     with solara.Card(t("Space")):
-        if not can_draw(session.shown):
+        if not live.can_draw(session.shown):
             solara.Text(t("This model has no grid or space Modelly can draw."))
             return
         count = element_count(session.shown)
@@ -68,7 +70,7 @@ def SpaceView(state: StudioState):
             )
             return
         with session.lock:
-            figure = space_figure(session.shown, session.portrayal)
+            figure = live.draw(session.shown, session.portrayal)
         solara.FigureMatplotlib(
             figure, format="png", dependencies=[state.revision.value]
         )

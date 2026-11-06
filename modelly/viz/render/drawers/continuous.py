@@ -1,6 +1,5 @@
 """Drawer for continuous spaces."""
 
-import altair as alt
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -119,6 +118,8 @@ class ContinuousSpaceDrawer(BaseSpaceDrawer):
         Returns:
             An Altair Chart object representing the space.
         """
+        import altair as alt  # noqa: PLC0415 - Altair loads only for this backend
+
         viz_dims = draw_chart_kwargs.pop("viz_dims", None)
         if viz_dims is not None:
             self.set_viz_dims(viz_dims)

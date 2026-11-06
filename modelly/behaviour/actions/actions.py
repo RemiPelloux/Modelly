@@ -263,8 +263,10 @@ class HasActions:
             return
         if self._last_wake_time == self.model.time:
             _modelly_logger.debug(
-                f"suppressed repeat on_idle wake for agent {self.unique_id} "
-                f"at time {self.model.time} (ending action: {previous!r})"
+                "suppressed repeat on_idle wake for agent %s at time %s (ending action: %r)",
+                self.unique_id,
+                self.model.time,
+                previous,
             )
             return
         self._wake_event = self.model.schedule_event(

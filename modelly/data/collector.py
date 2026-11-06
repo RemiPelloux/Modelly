@@ -22,8 +22,8 @@ The DataCollector then stores the data it collects in dictionaries:
     * model_vars maps each reporter to a list of its values
     * tables maps each table to a dictionary, with each column as a key with a
       list as its value.
-    * _agent_records maps each model step to a list of each agent's id
-      and its values.
+    * _agent_records maps each model step to the rows of each agent's id
+      and its values (an AgentRows sequence of tuples, stored by column).
     * _agenttype_records maps each model step to a dictionary of agent types,
       each containing a list of each agent's id and its values.
 
@@ -31,9 +31,8 @@ Finally, DataCollector can create a pandas DataFrame from each collection,
 and a pyarrow Table or a Parquet file (``to_arrow``, ``to_parquet``).
 """
 
-import contextlib
-
 from modelly.core.agent import Agent
+from modelly.data._records import FrameCache
 from modelly.data.frames import DataFrameExportMixin
 from modelly.data.io import ArrowExportMixin
 from modelly.data.reporters import (
@@ -45,9 +44,6 @@ from modelly.data.reporters import (
     validate_model_reporter,
 )
 from modelly.data.tables import TableMixin
-
-with contextlib.suppress(ImportError):
-    import pandas as pd
 
 
 class DataCollector(TableMixin, DataFrameExportMixin, ArrowExportMixin):
@@ -151,9 +147,8 @@ class DataCollector(TableMixin, DataFrameExportMixin, ArrowExportMixin):
         self._agent_records = {}
         self._agenttype_records = {}
         self.tables = {}
-        # (steps already in the frame, frame): get_agent_vars_dataframe only
-        # converts the steps collected since the last call.
-        self._agent_frame_cache: tuple[int, pd.DataFrame] | None = None
+        # the records and frame of the last get_agent_vars_dataframe call
+        self._agent_frame_cache = FrameCache()
 
         # add the signal of the validation of model reporter
         self._validated = False
@@ -223,21 +218,27 @@ class DataCollector(TableMixin, DataFrameExportMixin, ArrowExportMixin):
 
     def _record_agents(self, model):
         """Record agents data in a mapping of functions and agents."""
-        return collect_agent_rows(model.agents, self.agent_reporters, model.time)
+        by_type = model.agents_by_type
+        one_type = sum(1 for agents in by_type.values() if agents) <= 1
+        return collect_agent_rows(
+            model.agents, self.agent_reporters, model.time, one_type
+        )
 
     def _record_agenttype(self, model, agent_type):
         """Record agent-type data in a mapping of functions and agents."""
-        if not (isinstance(agent_type, type) and issubclass(agent_type, Agent)):
-            raise ValueError(
-                f"Agent type {agent_type} is not recognized as an Agent type in the model or Agent subclass. Use an Agent (sub)class, like {model.agent_types}."
-            )
-
         # Collect only agents whose type is exactly agent_type. Subclasses are not
         # included: a reporter keyed on a superclass does not pick up its subclasses.
         # This is consistent regardless of whether agent_type has direct instances.
-        agents = model.agents_by_type.get(agent_type, [])
+        # A key of agents_by_type is the class of a live agent, so it needs no check.
+        agents = model.agents_by_type.get(agent_type)
+        if agents is None:
+            if not (isinstance(agent_type, type) and issubclass(agent_type, Agent)):
+                raise ValueError(
+                    f"Agent type {agent_type} is not recognized as an Agent type in the model or Agent subclass. Use an Agent (sub)class, like {model.agent_types}."
+                )
+            agents = []
         return collect_agent_rows(
-            agents, self.agenttype_reporters[agent_type], model.time
+            agents, self.agenttype_reporters[agent_type], model.time, one_type=True
         )
 
     def collect(self, model):

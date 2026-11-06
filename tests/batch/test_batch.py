@@ -86,9 +86,9 @@ def test_default_workers_reads_the_environment(monkeypatch):
 
 def test_chunks_are_large_for_many_runs_and_single_for_few():
     """Few hand-offs per worker for thousands of short runs; one task at a time for few."""
-    from modelly.batch.runs import _chunksize  # noqa: PLC0415 - private helper
+    from modelly.batch.runs import _chunk_size  # noqa: PLC0415
 
-    assert _chunksize(10, 4) == 1
-    assert _chunksize(20000, 8) == 156
+    assert _chunk_size(10, 4) == 1
+    assert _chunk_size(20000, 8) == 156
     tasks = [{"seed": s, "n": 5} for s in range(300)]
     assert run_batch(season, tasks, workers=3) == [season(t) for t in tasks]

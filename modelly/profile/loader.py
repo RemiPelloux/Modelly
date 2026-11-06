@@ -7,6 +7,7 @@ import importlib
 import importlib.util
 import inspect
 import sys
+import weakref
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -20,6 +21,10 @@ TARGET_MODULE = "_modelly_profile_target"
 # Parameter names tried, in order, for the population when --size-param is not given.
 SIZE_PARAMS = ("n", "N", "num_agents", "population")
 VARIADIC = (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+# Constructor parameters per model class: inspect.signature is slow and runs per build.
+_PARAMETERS: weakref.WeakKeyDictionary[type, dict[str, inspect.Parameter]] = (
+    weakref.WeakKeyDictionary()
+)
 
 
 class TargetError(ValueError):
@@ -68,6 +73,14 @@ def load_class(target: str) -> type[Model[Any, Any]]:
     return cls
 
 
+def _parameters(cls: type[Model[Any, Any]]) -> dict[str, inspect.Parameter]:
+    """The parameters ``cls`` takes, by name (looked up once per class; read only)."""
+    found = _PARAMETERS.get(cls)
+    if found is None:
+        found = _PARAMETERS[cls] = dict(inspect.signature(cls).parameters)
+    return found
+
+
 def scenario_class(parameters: dict[str, inspect.Parameter]) -> type[Scenario] | None:
     """The Scenario class a model's ``scenario`` argument defaults to, if any."""
     scenario = parameters.get("scenario")
@@ -86,7 +99,7 @@ def build_model(
 
     The seed goes to the scenario when the model takes one, else to ``rng``.
     """
-    parameters = dict(inspect.signature(cls).parameters)
+    parameters = _parameters(cls)
     kwargs = {k: v for k, v in params.items() if k in parameters and k != "scenario"}
     rest = {k: v for k, v in params.items() if k not in kwargs}
     scenario = scenario_class(parameters)
@@ -103,7 +116,7 @@ def build_model(
 
 def parameter_names(cls: type[Model[Any, Any]]) -> set[str]:
     """The parameters ``cls`` takes by name, and those its Scenario class declares."""
-    parameters = dict(inspect.signature(cls).parameters)
+    parameters = _parameters(cls)
     own = {k for k, p in parameters.items() if p.kind not in VARIADIC}
     scenario = scenario_class(parameters)
     declared = set(scenario._scenario_defaults) if scenario is not None else set()

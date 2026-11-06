@@ -1,7 +1,7 @@
 """Draw cell grids (orthogonal, hexagonal and Voronoi) with their agents."""
 
 from collections.abc import Callable
-from itertools import pairwise
+from functools import lru_cache
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -18,6 +18,8 @@ from modelly.viz.mpl.layers import (
     _get_hexmesh,
 )
 from modelly.viz.mpl.scatter import _scatter
+from modelly.viz.render._hex_edges import edge_array, unique_edges
+from modelly.viz.render.drawers.base import _draw_grid_lines
 
 # A marker fills about this many points across the longest side of the space.
 MARKER_SPAN_POINTS = 180
@@ -25,8 +27,8 @@ MARKER_SPAN_POINTS = 180
 PADDING_DIVISOR = 20
 # Cell centres sit on integers, so cell edges are half a unit away.
 HALF_CELL = 0.5
-# Decimals kept when de-duplicating shared hexagon edges.
-EDGE_ROUNDING_DECIMALS = 6
+# Grid sizes whose hexmesh edges are kept.
+HEX_EDGE_CACHE = 64
 
 
 def draw_orthogonal_grid(
@@ -67,11 +69,12 @@ def draw_orthogonal_grid(
     _scatter(ax, arguments, **kwargs)
 
     if draw_grid:
-        # Draw grid lines
-        for x in np.arange(-HALF_CELL, space.width - HALF_CELL, 1):
-            ax.axvline(x, color="gray", linestyle=":")
-        for y in np.arange(-HALF_CELL, space.height - HALF_CELL, 1):
-            ax.axhline(y, color="gray", linestyle=":")
+        _draw_grid_lines(
+            ax,
+            np.arange(-HALF_CELL, space.width - HALF_CELL, 1),
+            np.arange(-HALF_CELL, space.height - HALF_CELL, 1),
+            {"color": "gray", "linestyle": ":"},
+        )
 
     return ax
 
@@ -153,25 +156,22 @@ def _set_hex_limits(ax, space, size):
 
 def _hexmesh_lines(width, height):
     """Return the hexmesh as a LineCollection of its unique edges."""
-    edges = set()
+    return LineCollection(
+        _hexmesh_edges(width, height),
+        linestyle=":",
+        color="black",
+        linewidth=1,
+        alpha=1,
+    )
 
-    # Generate edges for each hexagon
-    hexagons = _get_hexmesh(width, height)
-    for vertices in hexagons:
-        # Edge logic, connecting each vertex to the next
-        for v1, v2 in pairwise([*vertices, vertices[0]]):
-            # Sort vertices to ensure consistent edge representation and avoid duplicates.
-            edge = tuple(
-                sorted(
-                    [
-                        tuple(np.round(v1, EDGE_ROUNDING_DECIMALS)),
-                        tuple(np.round(v2, EDGE_ROUNDING_DECIMALS)),
-                    ]
-                )
-            )
-            edges.add(edge)
 
-    return LineCollection(edges, linestyle=":", color="black", linewidth=1, alpha=1)
+@lru_cache(maxsize=HEX_EDGE_CACHE)
+def _hexmesh_edges(width, height):
+    """The unique edges of a ``width`` by ``height`` hexmesh as an (n, 2, 2) array.
+
+    Computed once per size; read-only, since every caller shares it.
+    """
+    return edge_array(unique_edges(_get_hexmesh(width, height)))
 
 
 def draw_voronoi_grid(

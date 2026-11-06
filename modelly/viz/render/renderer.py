@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from modelly.viz.components import PropertyLayerStyle
 
 import modelly
-from modelly.viz.render.altair_canvas import redraw_altair_canvas
 from modelly.viz.render.drawers.base import Network
 from modelly.viz.render.legacy_args import (
     apply_deprecated_agent_args,
@@ -54,6 +53,9 @@ class SpaceRenderer:
         self.space_mesh = None
         self.agent_mesh = None
         self.property_layer_mesh = None
+        # The space and the canvas artists of the structure a viewer keeps across frames;
+        # None after any other redraw of the structure.
+        self.kept_structure: tuple[object, set] | None = None
 
         self.draw_agent_kwargs = {}
         self.draw_space_kwargs = {}
@@ -166,6 +168,7 @@ class SpaceRenderer:
             self.space_drawer = self._get_space_drawer()
             self.backend_renderer.space_drawer = self.space_drawer
 
+        self.kept_structure = None
         self.space_mesh = self.backend_renderer.draw_structure(**self.draw_space_kwargs)
         return self.space_mesh
 
@@ -260,12 +263,16 @@ class SpaceRenderer:
             The backend-specific canvas object.
         """
         if self.backend == "matplotlib":
-            ax = self.backend_renderer.ax
-            if ax is None:
+            if self.backend_renderer.ax is None:
                 self.backend_renderer.initialize_canvas()
-            return ax
+            return self.backend_renderer.ax
 
         elif self.backend == "altair":
+            # Imported here: Altair loads only for the Altair backend.
+            from modelly.viz.render.altair_canvas import (  # noqa: PLC0415
+                redraw_altair_canvas,
+            )
+
             return redraw_altair_canvas(self)
 
     @property

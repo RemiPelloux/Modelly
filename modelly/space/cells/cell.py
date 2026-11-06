@@ -144,7 +144,7 @@ class Cell(CellNeighborhood):
             other (Cell): other cell to remove from connections
 
         """
-        keys_to_remove = [k for k, v in self.connections.items() if v == other]
+        keys_to_remove = [k for k, v in self.connections.items() if v is other]
 
         if not keys_to_remove:
             raise ConnectionMissingException(self, other)

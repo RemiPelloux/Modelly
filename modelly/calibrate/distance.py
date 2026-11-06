@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
+from functools import cached_property
 
 import numpy as np
 
@@ -68,10 +69,17 @@ class Weighted:
 
     weights: tuple[float, ...]
 
+    @cached_property
+    def _array(self) -> np.ndarray:
+        """The weights as a float array, built once (read only)."""
+        array = np.asarray(self.weights, dtype=float)
+        array.flags.writeable = False
+        return array
+
     def __call__(self, simulated: np.ndarray, observed: np.ndarray) -> float:
         """The weighted RMSE of ``simulated`` against ``observed``."""
         sim, obs = _pair(simulated, observed)
-        weights = np.asarray(self.weights, dtype=float)
+        weights = self._array
         if weights.shape != sim.shape:
             raise ValueError(f"{weights.size} weights for {sim.size} values")
         return float(np.sqrt(np.sum(weights * (sim - obs) ** 2) / np.sum(weights)))

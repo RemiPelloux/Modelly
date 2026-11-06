@@ -4,14 +4,13 @@ The DataCollector stores what it collects in plain dictionaries and lists;
 this mixin turns those collections into pandas DataFrames on request.
 """
 
-import contextlib
-import itertools
 import warnings
 
+from modelly._optional import LazyModule
 from modelly.core.exceptions import TableMissingException
+from modelly.data._records import FrameCache, growing_frame, records_frame
 
-with contextlib.suppress(ImportError):
-    import pandas as pd
+pd = LazyModule("pandas")
 
 
 class DataFrameExportMixin:
@@ -49,19 +48,11 @@ class DataFrameExportMixin:
             )
             return pd.DataFrame()
 
-        steps = list(self._agent_records.values())
-        cached = self._agent_frame_cache
-        done = cached[0] if cached is not None and cached[0] <= len(steps) else 0
-        new_rows = itertools.chain.from_iterable(steps[done:])
-        frame = pd.DataFrame.from_records(
-            data=list(new_rows),
-            columns=["Step", "AgentID", *self.agent_reporters],
-            index=["Step", "AgentID"],
-        )
-        if done:
-            frame = pd.concat([cached[1], frame])
-        self._agent_frame_cache = (len(steps), frame)
-        return frame
+        cache = getattr(self, "_agent_frame_cache", None)
+        if not isinstance(cache, FrameCache):  # e.g. a collector pickled by 1.5.0
+            cache = self._agent_frame_cache = FrameCache()
+        records = list(self._agent_records.values())
+        return growing_frame(cache, records, list(self.agent_reporters))
 
     def get_agenttype_vars_dataframe(self, agent_type):
         """Create a pandas DataFrame from the agent-type variables for a specific agent type.
@@ -81,26 +72,12 @@ class DataFrameExportMixin:
             )
             return pd.DataFrame()
 
-        rep_names = list(self.agenttype_reporters[agent_type])
-        return pd.DataFrame.from_records(
-            data=self._agenttype_rows(agent_type),
-            columns=["Step", "AgentID", *rep_names],
-            index=["Step", "AgentID"],
-        )
-
-    def _agenttype_rows(self, agent_type):
-        """Return every collected row for agent_type, across all steps, as a list."""
-        # Materialize to a list: passing an empty generator to
-        # pd.DataFrame.from_records with an index misparses the index labels as
-        # rows (producing spurious all-NaN rows), whereas an empty list does not.
-        # Empty results are normal now that agenttype collection is exact-type.
-        return list(
-            itertools.chain.from_iterable(
-                records[agent_type]
-                for records in self._agenttype_records.values()
-                if agent_type in records
-            )
-        )
+        records = [
+            by_type[agent_type]
+            for by_type in self._agenttype_records.values()
+            if agent_type in by_type
+        ]
+        return records_frame(records, list(self.agenttype_reporters[agent_type]))
 
     def get_table_dataframe(self, table_name):
         """Create a pandas DataFrame from a particular table.

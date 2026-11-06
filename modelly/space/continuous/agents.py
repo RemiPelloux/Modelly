@@ -36,13 +36,14 @@ class ContinuousSpaceAgent(Agent):
 
     @position.setter
     def position(self, value: np.ndarray) -> None:
-        if not self.space.in_bounds(value):
-            if self.space.torus:
-                value = self.space.torus_correct(value)
+        space = self.space
+        if not space.in_bounds(value):
+            if space.torus:
+                value = space.torus_correct(value)
             else:
                 raise ValueError(f"point {value} is outside the bounds of the space")
 
-        self.space.agent_positions[self._modelly_index] = value
+        space.agent_positions[self._modelly_index] = value
 
     def __init__(self, space: ContinuousSpace, model):
         """Initialize a continuous space agent.
@@ -79,10 +80,11 @@ class ContinuousSpaceAgent(Agent):
             radius: radius within which to look for neighbors
 
         """
-        agents, dists = self.space.get_agents_in_radius(self.position, radius=radius)
-        logical = np.asarray([agent is not self for agent in agents])
-        agents = list(compress(agents, logical))
-        return agents, dists[logical]
+        distances, agents = self.space.calculate_distances(self.position)
+        logical = distances <= radius
+        logical[self._modelly_index] = False  # agents[i] is the agent at row i
+        hits = np.flatnonzero(logical)
+        return [agents[i] for i in hits.tolist()], distances[hits]
 
     def get_nearest_neighbors(
         self, k: int = 1

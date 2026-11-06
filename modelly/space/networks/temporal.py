@@ -14,7 +14,8 @@ from __future__ import annotations
 
 import heapq
 import math
-from collections.abc import Hashable, Iterable, Iterator
+from collections.abc import Hashable, Iterable, Iterator, Mapping
+from types import MappingProxyType
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from modelly.space.networks.base import NodeRows, csr_from_rows
@@ -24,6 +25,9 @@ if TYPE_CHECKING:
 
 ALWAYS = (-math.inf, math.inf)
 DEFAULT_WEIGHT = 1.0
+_NO_TARGETS: Mapping[int, dict[int, float]] = MappingProxyType(
+    {}
+)  # a node with no edge
 
 
 class TemporalEdge(NamedTuple):
@@ -167,23 +171,23 @@ class TemporalNetwork(NodeRows):
     def neighbors(self, node: Hashable) -> list:
         """The nodes linked to ``node`` by an active edge."""
         self._sync()
-        return [self.nodes[j] for j in self._adjacency.get(self.row(node), {})]
+        return [self.nodes[j] for j in self._adjacency.get(self.row(node), _NO_TARGETS)]
 
     def weighted_neighbors(self, node: Hashable) -> dict:
         """Neighbour label to the summed weight of the active edges to it."""
         self._sync()
-        targets = self._adjacency.get(self.row(node), {})
+        targets = self._adjacency.get(self.row(node), _NO_TARGETS)
         return {self.nodes[j]: sum(p.values()) for j, p in targets.items()}
 
     def degree(self, node: Hashable) -> int:
         """The number of distinct active neighbours of ``node``."""
         self._sync()
-        return len(self._adjacency.get(self.row(node), {}))
+        return len(self._adjacency.get(self.row(node), _NO_TARGETS))
 
     def has_edge(self, u: Hashable, v: Hashable) -> bool:
         """Whether an active edge links ``u`` to ``v``."""
         self._sync()
-        return self.row(v) in self._adjacency.get(self.row(u), {})
+        return self.row(v) in self._adjacency.get(self.row(u), _NO_TARGETS)
 
     def active_edges(self) -> Iterator[tuple[Any, Any, float]]:
         """``(u, v, weight)`` for every active edge."""

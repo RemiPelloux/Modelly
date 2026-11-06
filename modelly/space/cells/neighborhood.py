@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from modelly.space.cells.cell import Cell, Coordinate
 
 MIN_NEIGHBORHOOD_RADIUS = 1
+DIRECT_NEIGHBORHOOD = (1, False)  # the cache key of ``neighborhood``
 
 
 class CellNeighborhood:
@@ -36,7 +37,10 @@ class CellNeighborhood:
         This is equivalent to cell.get_neighborhood(radius=1)
 
         """
-        return self.get_neighborhood()
+        try:
+            return self._neighborhood_cache[DIRECT_NEIGHBORHOOD]
+        except KeyError:
+            return self.get_neighborhood()
 
     def get_neighborhood(
         self, radius: int = 1, include_center: bool = False
@@ -62,9 +66,12 @@ class CellNeighborhood:
             pass
         # Plain CellCollection(...): calling the subscripted alias CellCollection[Cell]
         # goes through typing's __call__ and costs more than building the collection.
-        collection = CellCollection(
-            self._neighborhood(radius=radius, include_center=include_center),
-            random=self.random,
+        cells = self._neighborhood(radius=radius, include_center=include_center)
+        random = self.random
+        collection = (
+            CellCollection(cells)
+            if random is None
+            else CellCollection._make(cells, random)
         )
         cache[key] = collection
         return collection

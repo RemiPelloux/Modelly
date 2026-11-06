@@ -8,26 +8,50 @@ diff are recorded too; without git the file hashes alone identify the code.
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
 from modelly.provenance.files import hash_bytes, hash_file, hash_mapping
 
 GIT_TIMEOUT_SECONDS = 30
+POSIX = os.name == "posix"
+
+
+def _resolver() -> Callable[[str], Path]:
+    """``Path(name).resolve()``, resolving each folder once rather than every file's path.
+
+    Most modules share a few folders; a file that is itself a link is resolved whole,
+    and so is every file on Windows, where resolving also corrects the name's case.
+    """
+    folders: dict[str, str] = {}
+
+    def resolve(name: str) -> Path:
+        folder, base = os.path.split(name)
+        if not POSIX or not base or os.path.islink(name):
+            return Path(name).resolve()
+        real = folders.get(folder)
+        if real is None:
+            real = folders[folder] = str(Path(folder or os.curdir).resolve())
+        return Path(real, base)
+
+    return resolve
 
 
 def imported_sources(root: Path) -> list[Path]:
     """The ``.py`` files under ``root`` that an imported module was loaded from, sorted."""
     root = root.resolve()
+    resolve = _resolver()
     found = set()
     for module in list(sys.modules.values()):
         name = getattr(module, "__file__", None)
         if not name or not name.endswith(".py"):
             continue
-        path = Path(name).resolve()
+        path = resolve(name)
         if path.is_relative_to(root) and path.is_file():
             found.add(path)
     return sorted(found)
@@ -81,6 +105,21 @@ def code_record(root: Path, root_text: str) -> dict[str, Any]:
         "hash": hash_mapping(hashes),
         "root": root_text,
     }
+
+
+def _read_recorded(
+    root: Path, recorded: dict[str, str]
+) -> tuple[list[str], dict[str, bytes]]:
+    """``changed_files``, and the bytes of each unchanged file (every file read once)."""
+    changed, contents = [], {}
+    for name, expected in sorted(recorded.items()):
+        path = root.joinpath(*name.split("/"))
+        data = path.read_bytes() if path.is_file() else None
+        if data is None or hash_bytes(data) != expected:
+            changed.append(name)
+        else:
+            contents[name] = data
+    return changed, contents
 
 
 def changed_files(root: Path, recorded: dict[str, str]) -> list[str]:

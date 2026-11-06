@@ -20,8 +20,37 @@ whose notes are missing (see "Release notes" in
 - **A home page that finds the guide**: type a task (calibrate, GPU, from R) and the matching
   guides are listed; the benchmark against Mesa 3.5 is drawn model by model. [Home](index.md)
 
+### Faster
+
+Every result is unchanged: the golden digests are identical, compiled and pure Python.
+
+- **Each step costs less**: the schedule's event is reused, the time signal is skipped when
+  nothing listens, and `do`, `shuffle_do` and `map` run in C on every agent set: scheduling
+  an event and running it takes 0.62 times as long as in 1.5.0, `do` 0.81 times.
+- **Random draws**: `select_random`, `random.sample(..., k=)` and `random.choices(..., k=)`
+  take the compiled path, up to ten times faster.
+- **`import modelly`** no longer loads pandas, and `modelly.viz` loads each backend only when
+  used; the Studio starts in a third of the time and redraws only what moves.
+- **Data collection** takes 0.58 times as long per step, and creating and removing an agent
+  with Column attributes 0.66 times; continuous state reads, neighbour queries, occupancy
+  claims and network collectors are faster too.
+- **Studies**: sweeps hand runs to workers in chunks, priors and type hints are cached, an
+  active-learning or history-matching study keeps one pool, and the JAX backend no longer
+  recompiles for each new seed. `decide.compare`, `decide.robust`, `decide.optimise`,
+  `treatment_effect` and `attribute` take `workers=` to run in parallel.
+- **LLM agents** hash each request once and write a batch of replies in one transaction.
+
+### Changed
+
+- `ContinuousSpace.dimensions` is read-only in place; assigning a new array still works.
+- `get_neighbors_in_radius` returns no neighbours, instead of an IndexError, when nothing is
+  in range.
+
 ### Fixed
 
+- Matplotlib draws agents in the same order whatever `PYTHONHASHSEED` is.
+- `python -m modelly.dev perf --against v1.5.0` accepts the tag name as well as `1.5.0`.
+- The browser runner's plots no longer fail on runs longer than about 100,000 values.
 - **Causes and explanations** gives the variance reduction of common random numbers as its
   spread over ten seeds (24 to 62 times on the Bass example, median 42) instead of one seed's
   value. [Causes and explanations](explain.md)

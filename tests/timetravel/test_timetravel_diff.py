@@ -98,7 +98,9 @@ def test_agent_records_and_collection_lengths():
     assert result.data == Difference(5.0, "collections", 7, 5)
     c = EXAMPLES["boltzmann"]()
     c.run_for(6)
-    c.datacollector._agent_records[3.0][0] = (3.0, 1, 99)
+    rows = list(c.datacollector._agent_records[3.0])
+    rows[0] = (3.0, 1, 99)
+    c.datacollector._agent_records[3.0] = rows
     found = diff(a.datacollector, c.datacollector).data
     assert (found.step, found.agent, found.name, found.b) == (3.0, 1, "Wealth", 99)
 

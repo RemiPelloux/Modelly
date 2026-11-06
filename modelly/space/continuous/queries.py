@@ -25,9 +25,8 @@ class NeighborQueriesMixin:
     ) -> tuple[list, np.ndarray]:
         """Return the agents and their distances within a radius for the point."""
         distances, agents = self.calculate_distances(point)
-        logical = distances <= radius
-        hits = np.flatnonzero(logical).tolist()
-        return [agents[i] for i in hits], distances[logical]
+        hits = np.flatnonzero(distances <= radius)
+        return [agents[i] for i in hits.tolist()], distances[hits]
 
     def neighbors_within(self, radius: float | int) -> dict[Agent, list[Agent]]:
         """Return, for every agent, the other agents within ``radius`` of it.
@@ -52,6 +51,16 @@ class NeighborQueriesMixin:
         cached = self._neighbors_cache
         if cached is not None and cached[0] == key:
             return cached[1]
+        hits = self._ball_hits(positions, radius)
+        lists = {
+            agent: [agents[j] for j in indices if j != i]
+            for i, (agent, indices) in enumerate(zip(agents, hits))
+        }
+        self._neighbors_cache = (key, lists)
+        return lists
+
+    def _ball_hits(self, positions: np.ndarray, radius: float | int) -> list[list[int]]:
+        """For every row of ``positions``, the sorted rows within ``radius`` (itself included)."""
         from scipy.spatial import cKDTree  # noqa: PLC0415 - scipy is heavy
 
         if self.torus:
@@ -59,13 +68,13 @@ class NeighborQueriesMixin:
             tree = cKDTree(positions, boxsize=self.size)
         else:
             tree = cKDTree(positions)
-        hits = tree.query_ball_point(positions, radius)
-        lists = {
-            agent: [agents[j] for j in indices if j != i]
-            for i, (agent, indices) in enumerate(zip(agents, hits))
-        }
-        self._neighbors_cache = (key, lists)
-        return lists
+        # The tree against itself finds the same neighbours as one ball query per
+        # point and is faster; sorting (already sorted, so linear) keeps the order
+        # of query_ball_point, which sorts multi-point results.
+        hits: list[list[int]] = tree.query_ball_tree(tree, radius)
+        for indices in hits:
+            indices.sort()
+        return hits
 
     def get_k_nearest_agents(
         self, point: ArrayLike, k: int = 1
@@ -100,5 +109,5 @@ class NeighborQueriesMixin:
 
         # np.argpartition expects zero-based index (k-1) and returns the indices of the k smallest distances
         indices = np.argpartition(dists, k - 1)[:k]
-        agents = [agents[i] for i in indices]
+        agents = [agents[i] for i in indices.tolist()]
         return agents, dists[indices]

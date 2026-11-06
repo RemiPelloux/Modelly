@@ -21,7 +21,8 @@ class HasSchedule:
         """Set ``time`` and notify subscribers when it changes."""
         old = self.time
         self.time = value
-        if old != value:
+        # A quiet model has no subscriber and no batch: notify would do nothing.
+        if old != value and not self._quiet:
             self.notify("time", ObservableSignals.CHANGED, old=old, new=value)
 
     def _wrapped_step(self) -> None:
@@ -45,11 +46,15 @@ class HasSchedule:
             return
         # The heap hands out the next live event only if it is due, so a later
         # one stays where it is instead of being popped and pushed back.
-        while (event := self._event_list._heap.pop_due(until)) is not None:
-            self._set_time(event.time)
+        # Bound once: an event may replace neither the model's list nor its heap
+        # (EventList.clear and compact keep the heap object).
+        pop_due = self._event_list._heap.pop_due
+        set_time = self._set_time
+        while (event := pop_due(until)) is not None:
+            set_time(event.time)
             event.execute()
 
-        self._set_time(until)
+        set_time(until)
 
     def schedule_event(
         self,

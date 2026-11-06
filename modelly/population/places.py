@@ -92,12 +92,50 @@ def assign_places(
     for start in range(0, order.size, BLOCK):
         block = order[start : start + BLOCK]
         distance = np.hypot(*(homes[block, np.newaxis, :] - sites).transpose(2, 0, 1))
-        ranked = np.argsort(distance, axis=1, kind="stable")
-        for person, ranks, row in zip(block, ranked, distance):
-            chosen[person] = _nearest_free(ranks, row, free, spec.max_distance)
+        _choose(block, distance, free, spec.max_distance, chosen)
     assigned = people.copy()
     assigned[spec.name] = chosen
     return assigned
+
+
+def _choose(
+    block: np.ndarray,
+    distance: np.ndarray,
+    free: np.ndarray,
+    reach: float,
+    chosen: np.ndarray,
+) -> None:
+    """Give each person of ``block``, in order, the nearest place with room within reach.
+
+    The nearest open place is an ``argmin`` over the places with room (the
+    first on a tie, as the stable ranking had it). A row with a NaN distance,
+    or a NaN reach, is ranked in full as before, since NaN sorts last.
+    """
+    open_places = np.flatnonzero(free > 0)
+    unusual = np.isnan(distance).any(axis=1) | (reach != reach)
+    for person, row, odd in zip(block, distance, unusual):
+        if odd:
+            place = _nearest_free(np.argsort(row, kind="stable"), row, free, reach)
+        else:
+            place = _nearest_open(row, open_places, free, reach)
+        chosen[person] = place
+        if place != NO_PLACE and free[place] == 0:
+            open_places = np.flatnonzero(free > 0)
+
+
+def _nearest_open(
+    distance: np.ndarray, open_places: np.ndarray, free: np.ndarray, reach: float
+) -> int:
+    """The nearest of ``open_places`` within ``reach``, its room taken; else ``NO_PLACE``."""
+    if not open_places.size:
+        return NO_PLACE
+    near = distance[open_places]
+    best = int(np.argmin(near))
+    if near[best] > reach:
+        return NO_PLACE
+    place = int(open_places[best])
+    free[place] -= 1
+    return place
 
 
 def _nearest_free(

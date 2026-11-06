@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import operator
 from collections.abc import Callable, Hashable
 from typing import TYPE_CHECKING, Any
 
+from modelly._native.sets import attr_values
 from modelly.core.agentset._utils import _MISSING
 
 if TYPE_CHECKING:
@@ -124,9 +124,8 @@ class GroupBy:
         Returns:
             dict[Hashable, Any]: A dictionary mapping group names to the result of applying the aggregation function.
         """
-        getter = operator.attrgetter(attr_name)
         return {
-            group_name: func(list(map(getter, group)))
+            group_name: func(attr_values(_as_list(group), attr_name))
             for group_name, group in self.groups.items()
         }
 
@@ -140,3 +139,10 @@ class GroupBy:
         """Return a representation showing each group's identifier and size."""
         sizes = {name: len(group) for name, group in self.groups.items()}
         return f"{type(self).__name__}({len(self)} groups: {sizes})"
+
+
+def _as_list(group: Any) -> list:
+    """The agents of ``group`` in order: an AgentSet's ``to_list`` (in C), else a list."""
+    if type(group) is list:
+        return group
+    return group.to_list() if hasattr(group, "to_list") else list(group)

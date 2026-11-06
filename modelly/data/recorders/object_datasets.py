@@ -54,9 +54,9 @@ class AgentDataSet[A: Agent](BaseDataSet):
         self._check_closed()
 
         if (not self._use_dirty_flag) or self._is_dirty or self._cache is None:
+            attributes = self._attributes
             snapshot = [
-                dict(zip(self._attributes, self._collector(agent)))
-                for agent in self.agents
+                dict(zip(attributes, row)) for row in map(self._collector, self.agents)
             ]
 
             if not self._use_dirty_flag:
@@ -104,11 +104,11 @@ class ModelDataSet[M: Model](BaseDataSet):
     def data(self) -> dict[str, Any]:
         """Return the data of the dataset."""
         self._check_closed()
+        attributes = self._attributes
         values = self._collector(self.model)
-        if len(self._attributes) == 1:
-            return {self._attributes[0]: values}
-        else:
-            return dict(zip(self._attributes, values))
+        if len(attributes) == 1:
+            return {attributes[0]: values}
+        return dict(zip(attributes, values))
 
     def close(self):
         """Close the data set."""

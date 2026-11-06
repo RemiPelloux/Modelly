@@ -33,6 +33,8 @@
     Py_END_CRITICAL_SECTION();         \
     return result
 
+static PyObject *str_eq, *object_eq; /* "__eq__" and object.__eq__, set at import */
+
 static PyObject *heap_push(heap_t *h, PyObject *event) { LOCKED(h, push_impl(h, event)); }
 static PyObject *heap_pop(heap_t *h, PyObject *Py_UNUSED(x)) { LOCKED(h, pop_impl(h)); }
 static PyObject *heap_pop_due(heap_t *h, PyObject *until) { LOCKED(h, pop_due_impl(h, until)); }
@@ -46,16 +48,35 @@ heap_len(heap_t *h)
     return h->size;
 }
 
-/* ``event in heap``: list membership over the array (identity, then ==). */
+/* Whether ``event`` is an Event (the bound class) whose ``==`` is object's: identity. */
+static int
+compares_by_identity(PyObject *event)
+{
+    if (event_type == NULL || Py_TYPE(event) != event_type)
+        return 0;
+    PyObject *eq = PyObject_GetAttr((PyObject *)event_type, str_eq);
+    Py_XDECREF(eq); /* compared by address only */
+    if (eq == NULL)
+        PyErr_Clear();
+    return eq != NULL && eq == object_eq;
+}
+
+/* ``event in heap``: list membership over the array (identity, then ==). When ``event``
+ * and an entry are both Events that compare by identity, == is not called: it is False. */
 static int
 heap_contains(heap_t *h, PyObject *event)
 {
-    int found = 0;
+    int found = 0, identity = compares_by_identity(event);
     Py_BEGIN_CRITICAL_SECTION(h);
     found = check_idle(h);
     h->busy = found == 0;
-    for (Py_ssize_t i = 0; found == 0 && i < h->size; i++)
-        found = PyObject_RichCompareBool(h->items[i].event, event, Py_EQ);
+    for (Py_ssize_t i = 0; found == 0 && i < h->size; i++) {
+        PyObject *item = h->items[i].event;
+        if (item == event)
+            found = 1;
+        else if (!(identity && Py_TYPE(item) == event_type))
+            found = PyObject_RichCompareBool(item, event, Py_EQ);
+    }
     h->busy = 0;
     Py_END_CRITICAL_SECTION();
     return found;
@@ -176,7 +197,10 @@ PyInit_fastevents(void)
     if (intern(&str_time, "time") < 0 || intern(&str_priority, "priority") < 0
         || intern(&str_uid, "unique_id") < 0 || intern(&str_canceled, "_canceled") < 0
         || intern(&str_owner, "_owner") < 0 || intern(&str_canceled_prop, "CANCELED") < 0
-        || PyType_Ready(&heap_type) < 0)
+        || intern(&str_eq, "__eq__") < 0 || PyType_Ready(&heap_type) < 0)
+        return NULL;
+    object_eq = PyObject_GetAttr((PyObject *)&PyBaseObject_Type, str_eq);
+    if (object_eq == NULL)
         return NULL;
     PyObject *module = PyModule_Create(&module_def);
     if (module != NULL

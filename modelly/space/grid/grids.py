@@ -25,6 +25,7 @@ from typing import TypeVar
 
 import numpy as np
 
+from modelly.space.base import KDTREE_LEAFSIZE
 from modelly.space.cells.cell import Cell
 from modelly.space.grid.base import GRID_2D, Grid
 from modelly.space.grid.cell_class import pickle_gridcell, unpickle_gridcell
@@ -42,6 +43,7 @@ T = TypeVar("T", bound=Cell)
 
 HEX_SIZE = 1.0
 HEX_ROW_SPACING = 1.5  # rows of pointy-topped hexes are 3/4 of a hex apart
+SQRT3 = math.sqrt(3)  # a pointy-topped hex is sqrt(3) hex sizes wide
 
 
 class OrthogonalMooreGrid(Grid[T]):
@@ -165,7 +167,7 @@ class HexGrid(Grid[T]):
 
         for coord, cell in self._cells.items():
             col, row = coord
-            x = HEX_SIZE * math.sqrt(3) * (col + 0.5 * (row % 2))
+            x = HEX_SIZE * SQRT3 * (col + 0.5 * (row % 2))
             y = HEX_SIZE * HEX_ROW_SPACING * row
             position = np.array([x, y])
 
@@ -173,18 +175,16 @@ class HexGrid(Grid[T]):
             positions.append(position)
             self._kdtree_coords.append(coord)
 
-        from scipy.spatial import (  # noqa: PLC0415 - scipy is heavy; import lazily
-            KDTree,
-        )
+        from scipy.spatial import cKDTree  # noqa: PLC0415 - scipy is heavy
 
-        self._kdtree = KDTree(np.array(positions))
+        self._kdtree = cKDTree(np.array(positions), leafsize=KDTREE_LEAFSIZE)
 
     def find_nearest_cell(self, position: np.ndarray) -> T:
         """Find the hex cell at the given position."""
         position = np.asarray(position)
 
         if self.torus:
-            width_pixels = self.dimensions[0] * math.sqrt(3)
+            width_pixels = self.dimensions[0] * SQRT3
             height_pixels = self.dimensions[1] * HEX_ROW_SPACING
             position = np.array(
                 [position[0] % width_pixels, position[1] % height_pixels]

@@ -62,7 +62,16 @@ class MetaAgents(MembershipQueries):
             agent = args[0] if args else signal.additional_kwargs.get("agent")
         else:
             agent = signal
-        if agent is not None:
+        if agent is None:
+            return
+        if (
+            type(self).deactivate is _DEACTIVATE
+            and type(self)._detach_entity is _DETACH
+        ):
+            # deactivate() without the snapshot it returns, which nobody reads here
+            self.backend.remove_agent(agent)
+            self.backend.remove_group(agent)
+        else:
             self.deactivate(agent)
 
     def _detach_entity(self, entity: Hashable) -> MembershipView:
@@ -210,6 +219,9 @@ class MetaAgents(MembershipQueries):
     evaluate_combination = staticmethod(evaluate_combination)
     find_combinations = staticmethod(find_combinations)
 
+
+_DEACTIVATE = MetaAgents.deactivate
+_DETACH = MetaAgents._detach_entity
 
 __all__ = [
     "MembershipEdge",

@@ -19,7 +19,11 @@ integers (JAX without 64-bit types). Both give the same bits.
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+from numbers import Integral
 from typing import Any
+
+import numpy as np
 
 ROUNDS = 10
 MULTIPLIERS = (0xD2511F53, 0xCD9E8D57)
@@ -72,7 +76,7 @@ def philox4x32(
 
     Args:
         counter: four uint32 words; arrays broadcast against each other.
-        key: two 32-bit integers.
+        key: two 32-bit integers (or two uint32 arrays, such as a traced JAX key).
         xp: the array namespace (numpy, CuPy or ``jax.numpy``).
         wide: multiply through 64-bit integers; ``False`` for 32-bit-only JAX.
 
@@ -82,17 +86,60 @@ def philox4x32(
     mulhilo = mulhilo_wide if wide else mulhilo_narrow
     x0, x1, x2, x3 = (xp.asarray(word, dtype=xp.uint32) for word in counter)
     x0, x1, x2, x3 = xp.broadcast_arrays(x0, x1, x2, x3)
-    key0, key1 = key[0] & WORD_MASK, key[1] & WORD_MASK
     m0 = xp.asarray(MULTIPLIERS[0], dtype=xp.uint32)
     m1 = xp.asarray(MULTIPLIERS[1], dtype=xp.uint32)
-    for _ in range(ROUNDS):
+    for k0, k1 in _round_keys(key, xp):
         hi0, lo0 = mulhilo(m0, x0, xp)
         hi1, lo1 = mulhilo(m1, x2, xp)
-        k0 = xp.asarray(key0, dtype=xp.uint32)
-        k1 = xp.asarray(key1, dtype=xp.uint32)
         x0, x1, x2, x3 = hi1 ^ x1 ^ k0, lo1, hi0 ^ x3 ^ k1, lo0
-        key0, key1 = (key0 + WEYL[0]) & WORD_MASK, (key1 + WEYL[1]) & WORD_MASK
     return x0, x1, x2, x3
+
+
+def _philox4x32_numpy(
+    counter: tuple[Any, Any, Any, Any], key: tuple[int, int]
+) -> tuple[Any, Any, Any, Any]:
+    """``philox4x32`` for numpy, in place on four word arrays and two product buffers.
+
+    Integer operations only, so the bits are those of ``philox4x32``; the rounds allocate
+    nothing.
+    """
+    words = np.broadcast_arrays(*(np.asarray(w, dtype=np.uint32) for w in counter))
+    x0, x1, x2, x3 = (np.array(w, dtype=np.uint32) for w in words)
+    product0, product1 = np.empty(x0.shape, np.uint64), np.empty(x0.shape, np.uint64)
+    high = np.empty(x0.shape, np.uint64)
+    m0, m1 = np.uint64(MULTIPLIERS[0]), np.uint64(MULTIPLIERS[1])
+    shift = np.uint64(WORD_BITS)
+    for k0, k1 in _round_keys(key, np):
+        np.multiply(x0, m0, out=product0)
+        np.multiply(x2, m1, out=product1)
+        np.right_shift(product1, shift, out=high)
+        np.bitwise_xor(x1, high, out=x0, casting="unsafe")  # the high word fits
+        x0 ^= k0
+        np.copyto(x1, product1, casting="unsafe")  # the low word: modulo 2**32
+        np.right_shift(product0, shift, out=high)
+        np.bitwise_xor(x3, high, out=x2, casting="unsafe")
+        x2 ^= k1
+        np.copyto(x3, product0, casting="unsafe")
+    return x0, x1, x2, x3
+
+
+def _round_keys(key: tuple[Any, Any], xp: Any) -> Iterator[tuple[Any, Any]]:
+    """The key words of each round, as uint32: the key plus ``WEYL`` per round, mod ``2**32``.
+
+    Integer keys are masked and stepped as Python integers; uint32 array keys (a key traced
+    by ``jax.jit``) are stepped in uint32, whose addition wraps to the same words.
+    """
+    if isinstance(key[0], Integral) and isinstance(key[1], Integral):
+        key0, key1 = int(key[0]) & WORD_MASK, int(key[1]) & WORD_MASK
+        for _ in range(ROUNDS):
+            yield xp.asarray(key0, dtype=xp.uint32), xp.asarray(key1, dtype=xp.uint32)
+            key0, key1 = (key0 + WEYL[0]) & WORD_MASK, (key1 + WEYL[1]) & WORD_MASK
+        return
+    key0, key1 = (xp.asarray(word, dtype=xp.uint32) for word in key)
+    weyl0, weyl1 = (xp.asarray(word, dtype=xp.uint32) for word in WEYL)
+    for _ in range(ROUNDS):
+        yield key0, key1
+        key0, key1 = key0 + weyl0, key1 + weyl1
 
 
 def philox4x32_reference(counter: tuple[int, ...], key: tuple[int, int]) -> tuple:

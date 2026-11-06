@@ -7,12 +7,16 @@ import pathlib
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import pandas as pd
 
+from modelly._optional import LazyModule
 from modelly.data.recorders.base import BaseDataRecorder
 
 if TYPE_CHECKING:
+    import pandas as pd
+
     from modelly.data.recorders.config import DatasetConfig
+else:
+    pd = LazyModule("pandas")
 
 
 class NumpyJSONEncoder(json.JSONEncoder):
@@ -79,10 +83,12 @@ class JSONDataRecorder(BaseDataRecorder):
     def _array_rows(self, dataset_name: str, data: np.ndarray) -> list[dict]:
         """A NumPy snapshot as one record per agent, with its agent_id, as the other recorders."""
         dataset = self.registry.datasets[dataset_name]
-        columns = list(dataset._attributes)
+        # A column named agent_id keeps the first position and takes the row's
+        # value, exactly as {"agent_id": id, **row} did.
+        names = ("agent_id", *dataset._attributes)
         ids = dataset.agent_ids.tolist()
         return [
-            {"agent_id": agent_id, **dict(zip(columns, row, strict=True))}
+            dict(zip(names, (agent_id, *row), strict=True))
             for agent_id, row in zip(ids, data.tolist(), strict=True)
         ]
 

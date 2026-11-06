@@ -437,6 +437,30 @@ def _picklable_handler():
     """Module-level callback, so events holding it can be pickled."""
 
 
+class _Ticker:
+    """A picklable recurring callback that counts its calls."""
+
+    def __init__(self):
+        self.calls = 0
+
+    def tick(self):
+        self.calls += 1
+
+
+def test_generator_keeps_firing_after_pickling():
+    """The generator's cached weak callback is rebuilt when it is unpickled."""
+    model = Model(rng=1)
+    model.ticker = _Ticker()
+    generator = model.schedule_recurring(model.ticker.tick, Schedule(interval=1.0))
+    model.run_for(3)
+    clone = pickle.loads(pickle.dumps((model, generator)))  # noqa: S301
+    clone_model, clone_generator = clone
+    clone_model.run_for(2)
+    assert clone_model.ticker.calls == 5
+    assert clone_generator.execution_count == 5
+    assert clone_generator._current_event in clone_model._event_list
+
+
 def _recount(el):
     """Count the canceled events actually on the heap."""
     return sum(1 for e in el._events if e.CANCELED)

@@ -98,3 +98,24 @@ def install_column_properties(cls: type, specs: dict[str, Column]) -> None:
     """Replace every column of ``cls`` by its fast property."""
     for position, (name, column) in enumerate(specs.items()):
         setattr(cls, name, column_property(name, position, column))
+
+
+# A memoryview refuses some writes numpy accepts (a float into an int column).
+WRITE_ERRORS = (TypeError, ValueError, OverflowError)
+
+
+def _default_writer(view: Any, array: np.ndarray, default: Any) -> tuple[Any, Any]:
+    """``(target, value)`` writing ``default`` as numpy would store it in ``array``.
+
+    Through a memoryview the value is the default converted once by numpy, so
+    the row gets the same bits; if numpy refuses it, the numpy write is kept
+    so ``add`` raises as it always has.
+    """
+    if view is array:
+        return array, default
+    probe = np.empty(1, dtype=array.dtype)
+    try:
+        probe[0] = default
+    except WRITE_ERRORS:
+        return array, default
+    return view, memoryview(probe)[0]

@@ -339,3 +339,32 @@ def test_columns_from_mixins_and_bases_all_get_rows():
     s.savings += 1.5
     s.bonus += 1
     assert (s.wealth, s.bonus, s.savings) == (1, 4, 3.5)
+
+
+class Converted(Agent):
+    """Defaults that numpy converts on the way into the column."""
+
+    whole = Column(int, default=2.9)
+    real = Column(float, default=3)
+    small = Column(np.float32, default=0.1)
+    flag = Column(bool, default=2)
+
+
+def test_defaults_are_stored_as_numpy_converts_them_after_growth_and_pickling():
+    """New rows get numpy's conversion of the default, also once the cached views rebuild."""
+    model = Model(rng=1)
+    agents = [Converted(model) for _ in range(INITIAL_CAPACITY + 1)]  # grows once
+    clone = pickle.loads(pickle.dumps(model))  # noqa: S301
+    newest = {}
+    for m in (model, clone):
+        newest[m] = Converted(m)
+        table = m.columns[Converted]
+        assert table.whole.tolist() == [2] * len(table)
+        assert table.real.tolist() == [3.0] * len(table)
+        assert table.small.tobytes() == np.full(len(table), 0.1, np.float32).tobytes()
+        assert table.flag.tolist() == [True] * len(table)
+    agents[0].remove()  # the last row moves into row 0 through the cached views
+    table = model.columns[Converted]
+    assert table.agents[0] is newest[model]
+    assert table.unique_id[0] == table.agents[0].unique_id
+    assert table.agents[0]._column_row == 0

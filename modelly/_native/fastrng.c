@@ -29,20 +29,19 @@ static PyObject *py_randbelow = NULL; /* random.Random._randbelow_with_getrandbi
 static PyObject *py_sample = NULL;    /* random.Random.sample    */
 #define FALLBACK_COUNT 5
 
+#include "rngsample.h" /* fast_sample, fast_choices, call_fallback_kw, choices_init */
+
 /*
  * Free-threaded builds: every draw holds the generator's critical section, as
  * _random.Random's own methods do, so the two never interleave on one state;
  * a list being read is locked with it (Py_BEGIN_CRITICAL_SECTION2).
  */
 
+/* ``func(self, *args)``: the standard library method, for a call off the fast path. */
 static PyObject *
 call_fallback(PyObject *func, PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 {
-    PyObject *stack[4];
-    stack[0] = self;
-    for (Py_ssize_t i = 0; i < nargs && i < 3; i++)
-        stack[i + 1] = args[i];
-    return PyObject_Vectorcall(func, stack, nargs + 1, NULL);
+    return call_fallback_kw(func, self, args, nargs, NULL);
 }
 
 /* below32 under the generator's lock. */
@@ -127,53 +126,6 @@ fast_shuffle(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
     Py_RETURN_NONE;
 }
 
-/* sample(pop, k) for a list or tuple: a list, NULL with an error, or NULL without one
- * when the fast path does not apply. */
-static PyObject *
-sample_fast(PyObject *self, PyObject *pop, long long k)
-{
-    PyObject *result = NULL;
-    Py_BEGIN_CRITICAL_SECTION2(self, pop);
-    Py_ssize_t n = PySequence_Fast_GET_SIZE(pop);
-    if (n < WORD_RANGE && (k < 0 || k > n))
-        PyErr_SetString(PyExc_ValueError, "Sample larger than population or is negative");
-    else if (n < WORD_RANGE)
-        result = sample_indices((RandomObject *)self, PySequence_Fast_ITEMS(pop), n, (Py_ssize_t)k);
-    Py_END_CRITICAL_SECTION2();
-    return result;
-}
-
-/* The stdlib sample with the original arguments (counts= or a keyword k=). */
-static PyObject *
-sample_fallback(PyObject *self, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
-{
-    Py_ssize_t total = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0);
-    PyObject **full = PyMem_Malloc((size_t)(total + 1) * sizeof(PyObject *));
-    if (full == NULL)
-        return PyErr_NoMemory();
-    full[0] = self;
-    memcpy(full + 1, args, (size_t)total * sizeof(PyObject *));
-    PyObject *res = PyObject_Vectorcall(py_sample, full, (size_t)nargs + 1, kwnames);
-    PyMem_Free(full);
-    return res;
-}
-
-static PyObject *
-fast_sample(PyObject *self, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
-{
-    if (kwnames == NULL && nargs == 2 && PyLong_CheckExact(args[1])
-        && (PyList_CheckExact(args[0]) || PyTuple_CheckExact(args[0]))) {
-        int overflow;
-        long long k = PyLong_AsLongLongAndOverflow(args[1], &overflow);
-        if (!overflow) {
-            PyObject *result = sample_fast(self, args[0], k);
-            if (result != NULL || PyErr_Occurred())
-                return result;
-        }
-    }
-    return sample_fallback(self, args, nargs, kwnames);
-}
-
 static PyObject *
 set_fallbacks(PyObject *Py_UNUSED(module), PyObject *const *args, Py_ssize_t nargs)
 {
@@ -204,6 +156,8 @@ static PyMethodDef core_methods[] = {
      "Random int in [0, n), same stream as random.Random._randbelow."},
     {"sample", (PyCFunction)(void (*)(void))fast_sample, METH_FASTCALL | METH_KEYWORDS,
      "k unique elements, same stream as random.Random.sample."},
+    {"choices", (PyCFunction)(void (*)(void))fast_choices, METH_FASTCALL | METH_KEYWORDS,
+     "k elements with replacement, same stream as random.Random.choices."},
     {NULL, NULL, 0, NULL},
 };
 
@@ -243,8 +197,10 @@ static PyObject *
 core_type(void)
 {
     PyObject *base = random_base();
-    if (base == NULL)
+    if (base == NULL || choices_init(base) < 0) {
+        Py_XDECREF(base);
         return NULL;
+    }
     PyType_Slot slots[] = {
         {Py_tp_methods, core_methods},
         {Py_tp_doc, "random.Random's hot draws in C; subclass together with random.Random."},

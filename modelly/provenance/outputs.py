@@ -15,7 +15,7 @@ import pandas as pd
 
 from modelly.core.model import Model
 from modelly.data.collector import DataCollector
-from modelly.provenance.files import hash_file, write_bytes_atomic
+from modelly.provenance.files import hash_bytes, write_bytes_atomic
 
 PARQUET, CSV = "parquet", "csv"
 # What pyarrow raises for a column it cannot store (its errors subclass these).
@@ -89,7 +89,7 @@ def write_table(
     return {
         "columns": [str(column) for column in frame.columns],
         "format": form,
-        "hash": hash_file(path),
+        "hash": hash_bytes(data),  # the bytes just written
         "path": path.name,
         "rows": len(frame),
         "table": name,

@@ -1,5 +1,7 @@
 """RasterLayer: alignment with a grid, sampling, GeoTIFF round trip and reprojection."""
 
+import pickle
+
 import numpy as np
 import pytest
 
@@ -82,3 +84,19 @@ def test_reproject_and_sample_across_crs():
     assert warped.sample(centre, crs=UTM)[0] == raster.sample(centre)[0]
     with pytest.raises(ValueError):
         RasterLayer(np.zeros((2, 2)), raster.transform).reproject(UTM)
+
+
+def test_new_transform_and_crs_are_followed():
+    """The memoised inverse transform and CRS transformer follow reassignment."""
+    raster = tiny_raster()
+    point = np.array([[50.0, 50.0]])
+    assert raster.cells_of(point).tolist() == [[0, 0]]
+    raster.transform = rasterio.transform.from_origin(0.0, 300.0, 2 * PIXEL, PIXEL)
+    assert raster.cells_of(point).tolist() == [[0, 0]]
+    assert raster.cells_of(np.array([[250.0, 50.0]])).tolist() == [[1, 0]]
+    lonlat = np.array([[3.0, 50.0]])  # far outside the raster once projected
+    assert raster.cells_of(lonlat, crs="EPSG:4326").tolist() == [[-1, -1]]
+    restored = pickle.loads(pickle.dumps(raster))  # noqa: S301
+    assert "_transformer_memo" not in restored.__dict__
+    raster.crs = None  # no CRS: the points are taken as they are
+    assert raster.cells_of(lonlat, crs="EPSG:4326").tolist() == [[0, 0]]

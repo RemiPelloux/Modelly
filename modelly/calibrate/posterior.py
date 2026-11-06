@@ -33,6 +33,7 @@ MEDIAN = 0.5
 # Slack on the cumulative weight, so an interval holding exactly ``probability`` counts.
 ROUNDING = 1e-12
 WEIGHT, DISTANCE, DRAW = "weight", "distance", "draw"
+NUMBERS = (int, float)
 
 
 def weighted_quantile(values: np.ndarray, weights: np.ndarray, q: float) -> float:
@@ -51,19 +52,46 @@ def hdi(
     sorted_values = values[order]
     cumulative = np.concatenate([[0.0], np.cumsum(weights[order]) / np.sum(weights)])
     best = (float(sorted_values[0]), float(sorted_values[-1]))
-    for start in range(len(sorted_values)):
-        stop = int(
-            np.searchsorted(cumulative, cumulative[start] + probability - ROUNDING)
-        )
-        if stop > len(sorted_values):
-            break
-        low, high = (
-            float(sorted_values[start]),
-            float(sorted_values[max(stop - 1, start)]),
-        )
-        if high - low < best[1] - best[0]:
-            best = (low, high)
+    count = len(sorted_values)
+    # Every start's interval at once; scanning stops at the first one past the end.
+    stops = np.searchsorted(cumulative, cumulative[:count] + probability - ROUNDING)
+    beyond = np.flatnonzero(stops > count)
+    starts = np.arange(beyond[0] if beyond.size else count)
+    ends = np.maximum(stops[: starts.size] - 1, starts)
+    as_float = sorted_values.astype(float)
+    widths = as_float[ends] - as_float[starts]
+    shorter = widths < best[1] - best[0]
+    if (
+        shorter.any()
+    ):  # the first of the shortest, as a scan keeping strict improvements
+        start = int(np.argmin(np.where(shorter, widths, np.inf)))
+        best = (float(sorted_values[start]), float(sorted_values[ends[start]]))
     return best
+
+
+def _prediction_frame(
+    indices: list[int],
+    results: list[dict[str, np.ndarray]],
+    replicates: int,
+    steps: int,
+) -> pd.DataFrame:
+    """One row per draw, replicate and step: the draw's sample and every output's value.
+
+    ``results[draw][output]`` is an array ``[replicate, step]``; the columns are built
+    whole rather than row by row.
+    """
+    if not results:
+        return pd.DataFrame()
+    per_draw = replicates * steps
+    columns: dict[str, Any] = {
+        DRAW: np.repeat(np.arange(len(results)), per_draw),
+        "sample": np.repeat(np.asarray(indices, dtype=np.int64), per_draw),
+        "replicate": np.tile(np.repeat(np.arange(replicates), steps), len(results)),
+        "step": np.tile(np.arange(steps), replicates * len(results)),
+    }
+    for name in results[0]:
+        columns[name] = np.concatenate([series[name].ravel() for series in results])
+    return pd.DataFrame(columns)
 
 
 class Posterior:
@@ -119,9 +147,7 @@ class Posterior:
         """The parameters whose values are numbers, as float arrays."""
         found = {}
         for name, values in self.samples.items():
-            if all(
-                isinstance(v, int | float) and not isinstance(v, bool) for v in values
-            ):
+            if all(isinstance(v, NUMBERS) and not isinstance(v, bool) for v in values):
                 found[name] = np.asarray(values, dtype=float)
         return found
 
@@ -161,20 +187,9 @@ class Posterior:
         results = calibration.simulator.run(
             batch, Execution(executor, max_parallel, options)
         )
-        rows = []
-        for draw, (index, series) in enumerate(zip(indices, results)):
-            for replicate in range(calibration.replicates):
-                for step in range(calibration.steps + 1):
-                    row = {
-                        DRAW: draw,
-                        "sample": index,
-                        "replicate": replicate,
-                        "step": step,
-                    }
-                    rows.append(
-                        row | {n: s[replicate, step] for n, s in series.items()}
-                    )
-        return pd.DataFrame(rows)
+        return _prediction_frame(
+            indices, results, calibration.replicates, calibration.steps + 1
+        )
 
     def plot(self, probability: float = DEFAULT_PROBABILITY) -> Any:
         """A Matplotlib figure: marginals and pairs of the parameters, fits against the data."""

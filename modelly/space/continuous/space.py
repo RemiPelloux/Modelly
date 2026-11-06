@@ -11,6 +11,7 @@ import numpy as np
 from numpy.typing import ArrayLike
 
 from modelly.core.agent import Agent, AgentSet
+from modelly.space.continuous._bounds import float_bounds, torus_distances
 from modelly.space.continuous.queries import NeighborQueriesMixin
 
 if TYPE_CHECKING:
@@ -79,7 +80,7 @@ class ContinuousSpace[A: ContinuousSpaceAgent](NeighborQueriesMixin):
             random = Random()  # noqa: MDL001 (a space takes no model: only the rng passed in seeds it)
         self.random = random
 
-        self.dimensions: np.array = np.asanyarray(dimensions)
+        self.dimensions = dimensions
         self.ndims: int = self.dimensions.shape[0]
 
         self.size: np.array = self.dimensions[:, 1] - self.dimensions[:, 0]
@@ -87,6 +88,18 @@ class ContinuousSpace[A: ContinuousSpaceAgent](NeighborQueriesMixin):
 
         self.torus: bool = torus
         self._init_storage(n_agents)
+
+    @property
+    def dimensions(self) -> np.ndarray:
+        """The ``(ndims, 2)`` array of each dimension's minimum and maximum (read-only)."""
+        return self._dimensions
+
+    @dimensions.setter
+    def dimensions(self, value: ArrayLike) -> None:
+        # A read-only copy, so the bounds cached for ``in_bounds`` cannot go stale.
+        self._dimensions = np.array(value, subok=True)
+        self._dimensions.flags.writeable = False
+        self._bounds = float_bounds(self._dimensions)
 
     def _init_storage(self, n_agents: int) -> None:
         """Allocate the position array and the agent bookkeeping."""
@@ -189,7 +202,12 @@ class ContinuousSpace[A: ContinuousSpaceAgent](NeighborQueriesMixin):
 
     def __setstate__(self, state: dict) -> None:
         """Restore state and make ``agent_positions`` a view again."""
+        dimensions = state.pop("dimensions", None)  # pickles from before the property
+        if dimensions is None:
+            dimensions = state.pop("_dimensions")
+        state.pop("_bounds", None)
         self.__dict__.update(state)
+        self.dimensions = dimensions
         self.agent_positions = self._agent_positions[0 : self._n_agents]
 
     def calculate_difference_vector(self, point: np.ndarray, agents=None) -> np.ndarray:
@@ -241,14 +259,7 @@ class ContinuousSpace[A: ContinuousSpaceAgent](NeighborQueriesMixin):
             agents = np.asarray(agents)
 
         if self.torus:
-            delta = np.abs(point - positions)
-            delta = np.minimum(delta, self.size - delta, out=delta)
-
-            # + is much faster than np.sum or array.sum
-            dists = delta[:, 0] ** 2
-            for i in range(1, self.ndims):
-                dists += delta[:, i] ** 2
-            dists = np.sqrt(dists)
+            dists = torus_distances(point, positions, self.size)
         else:
             from scipy.spatial.distance import cdist  # noqa: PLC0415 - scipy is heavy
 
@@ -257,11 +268,19 @@ class ContinuousSpace[A: ContinuousSpaceAgent](NeighborQueriesMixin):
 
     def in_bounds(self, point: ArrayLike) -> bool:
         """Check if point is inside the bounds of the space."""
+        point = np.asanyarray(point)
+        bounds = self._bounds
+        if (
+            bounds is not None
+            and point.dtype == np.float64
+            and point.shape == (len(bounds),)
+        ):
+            for x, (low, high) in zip(point.tolist(), bounds, strict=True):
+                if not low <= x <= high:
+                    return False
+            return True
         return bool(
-            (
-                (np.asanyarray(point) >= self.dimensions[:, 0])
-                & (point <= self.dimensions[:, 1])
-            ).all()
+            ((point >= self.dimensions[:, 0]) & (point <= self.dimensions[:, 1])).all()
         )
 
     def torus_correct(self, point: ArrayLike) -> np.ndarray:

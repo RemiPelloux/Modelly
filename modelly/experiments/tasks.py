@@ -178,17 +178,21 @@ def simulate(task: RunTask) -> Any:
     """
     pa = require("pyarrow", "experiments")
     model = build_model(resolve(task.model), dict(task.params), task.seed_sequence())
-    readers = {name: _reader(spec) for name, spec in task.outputs.items()}
-    columns: dict[str, list[Any]] = {STEP: [], **{name: [] for name in readers}}
+    columns: dict[str, list[Any]] = {STEP: [], **{name: [] for name in task.outputs}}
+    # Each output's name, reader and column, bound once for the step loop.
+    readers = [
+        (name, _reader(spec), columns[name]) for name, spec in task.outputs.items()
+    ]
+    steps = columns[STEP]
     for step in range(task.steps + 1):
         if step and not model.running:
             break
         if step:
             model.step()
-        columns[STEP].append(step)
-        for name, read in readers.items():
-            columns[name].append(_scalar(name, read(model)))
-    rows = len(columns[STEP])
+        steps.append(step)
+        for name, read, column in readers:
+            column.append(_scalar(name, read(model)))
+    rows = len(steps)
     keys = dict(zip(KEYS, (task.run_id, task.point, task.replicate, task.seed)))
     constant = {**keys, **task.params}
     return pa.table({**{k: [v] * rows for k, v in constant.items()}, **columns})

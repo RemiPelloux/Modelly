@@ -16,9 +16,8 @@ while the model gets a zero-copy view of every agent's value at once::
 Rows are in insertion order; removing an agent moves the last row into the
 freed slot, so a view is valid until the next add or remove. Use columns for
 the attributes you aggregate, filter, record or update in bulk; a plain
-attribute is still the cheapest thing to read inside ``step``. On the class a
-column is a fast property (``modelly.core.column_access``); its declaration is in
-``AgentClass.column_specs()``.
+attribute is still the cheapest thing to read inside ``step``. Each column is a
+fast property on the class (``modelly.core.column_access``).
 """
 
 from __future__ import annotations
@@ -27,18 +26,24 @@ from random import Random
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import pandas as pd
 
+from modelly._optional import LazyModule
 from modelly.core.agentset import AgentSet
-from modelly.core.column_access import fast_view
+from modelly.core.column_access import WRITE_ERRORS, _default_writer, fast_view
 from modelly.core.storage import IN_MEMORY, InMemory, layout, pickled, restored
 
 if TYPE_CHECKING:
+    import pandas as pd
+
     from modelly.core.agent import Agent
+else:
+    pd = LazyModule("pandas")
 
 INITIAL_CAPACITY = 64
 GROWTH_FACTOR = 2
 ID_COLUMN = "unique_id"
+# Table attributes rebuilt from ``_data`` by ``_refresh_views``, never pickled.
+_DERIVED = frozenset({"_views", "_all_views", "_defaults", "_capacity"})
 
 
 class Column:
@@ -100,12 +105,27 @@ class ColumnTable:
         self._refresh_views()
 
     def _refresh_views(self) -> None:
-        """One fast view per column, in specs order, for per-agent access."""
-        self.__dict__["_views"] = [fast_view(self._data[name]) for name in self._specs]
+        """Fast views of the arrays, and the defaults as a new row stores them.
+
+        ``_views`` has one view per column in specs order (the column
+        properties read it); ``_all_views`` adds the id column first, for the
+        row moves of ``remove``. Views and capacity change only when the arrays do.
+        """
+        data = self._data
+        state = self.__dict__
+        views = [fast_view(data[name]) for name in self._specs]
+        state["_views"] = views
+        state["_all_views"] = [fast_view(data[ID_COLUMN]), *views]
+        state["_defaults"] = [
+            _default_writer(view, data[name], spec.default)
+            for view, (name, spec) in zip(views, self._specs.items(), strict=True)
+        ]
+        state["_capacity"] = data[ID_COLUMN].shape[0]
 
     def __getstate__(self) -> dict:
         """Drop the memoryviews, which do not pickle; memory-mapped arrays go as rows."""
-        return pickled({k: v for k, v in self.__dict__.items() if k != "_views"})
+        state = self.__dict__.items()
+        return pickled({k: v for k, v in state if k not in _DERIVED})
 
     def __setstate__(self, state: dict) -> None:
         """Restore the arrays into the table's storage and rebuild the views."""
@@ -205,18 +225,25 @@ class ColumnTable:
     def to_dataframe(self) -> pd.DataFrame:
         """Copy the live rows into a DataFrame indexed by ``unique_id``."""
         n = len(self._agents)
-        frame = pd.DataFrame({name: arr[:n].copy() for name, arr in self._data.items()})
+        # The constructor copies the rows; the frame never shares the arrays.
+        frame = pd.DataFrame(
+            {name: arr[:n] for name, arr in self._data.items()}, copy=True
+        )
         return frame.set_index(ID_COLUMN)
 
     def add(self, agent: Agent) -> int:
         """Append a row for ``agent`` (with the column defaults) and return it."""
-        row = len(self._agents)
-        if row >= self._data[ID_COLUMN].shape[0]:
+        agents = self._agents
+        row = len(agents)
+        if row >= self._capacity:
             self._grow()
-        self._agents.append(agent)
-        self._data[ID_COLUMN][row] = agent.unique_id
-        for name, spec in self._specs.items():
-            self._data[name][row] = spec.default
+        agents.append(agent)
+        try:
+            self._all_views[0][row] = agent.unique_id
+        except WRITE_ERRORS:
+            self._data[ID_COLUMN][row] = agent.unique_id
+        for view, default in self._defaults:
+            view[row] = default
         agent._column_table = self
         agent._column_row = row
         return row
@@ -224,18 +251,19 @@ class ColumnTable:
     def remove(self, agent: Agent) -> None:
         """Free ``agent``'s row by moving the last row into it."""
         row = agent._column_row
-        last = len(self._agents) - 1
+        agents = self._agents
+        last = len(agents) - 1
         if row != last:
-            moved = self._agents[last]
-            self._agents[row] = moved
+            moved = agents[last]
+            agents[row] = moved
             moved._column_row = row
-            for arr in self._data.values():
-                arr[row] = arr[last]
-        self._agents.pop()
+            for view in self._all_views:
+                view[row] = view[last]
+        agents.pop()
         agent._column_row = -1
 
     def _grow(self) -> None:
-        capacity = self._data[ID_COLUMN].shape[0] * GROWTH_FACTOR
+        capacity = self._capacity * GROWTH_FACTOR
         columns = layout(self._specs, ID_COLUMN)
         self._data = self._storage.grow_all(self._data, columns, capacity)
         self._refresh_views()
@@ -245,53 +273,13 @@ class ColumnTable:
         return f"<ColumnTable {len(self)} rows, columns={self.columns}>"
 
 
-class ColumnStore:
-    """One ``ColumnTable`` per agent class that declares columns.
+__all__ = ["Column", "ColumnStore", "ColumnTable"]  # noqa: F822 (see __getattr__)
 
-    Indexed by the concrete agent class: ``model.columns[MoneyAgent]``.
-    """
 
-    # Where the tables made from now on keep their arrays (modelly.core.storage).
-    storage: InMemory = IN_MEMORY
+def __getattr__(name: str) -> Any:
+    """``ColumnStore`` lives in ``_column_store``, which imports this module."""
+    if name != "ColumnStore":
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    from modelly.core._column_store import ColumnStore  # noqa: PLC0415
 
-    def __init__(self, random: Random, rng: np.random.Generator) -> None:
-        """Create an empty store; tables appear when agents register."""
-        self._tables: dict[type, ColumnTable] = {}
-        self.random = random
-        self.rng = rng
-
-    def __getitem__(self, agent_class: type) -> ColumnTable:
-        """Return the table of ``agent_class``; KeyError if it has none."""
-        try:
-            return self._tables[agent_class]
-        except KeyError as e:
-            raise KeyError(
-                f"{agent_class.__name__} has no column table: declare at least one "
-                "Column on the class and create an agent first."
-            ) from e
-
-    def __contains__(self, agent_class: type) -> bool:
-        """Return whether ``agent_class`` has a table."""
-        return agent_class in self._tables
-
-    def __iter__(self):
-        """Iterate over the agent classes that have a table."""
-        return iter(self._tables)
-
-    def __len__(self) -> int:
-        """Return the number of tables."""
-        return len(self._tables)
-
-    def register(self, agent: Agent) -> None:
-        """Give ``agent`` a row in its class's table, creating the table if needed."""
-        agent_class = type(agent)
-        table = self._tables.get(agent_class)
-        if table is None:
-            specs = agent_class._column_specs
-            table = ColumnTable(specs, self.random, self.rng, self.storage)
-            self._tables[agent_class] = table
-        table.add(agent)
-
-    def unregister(self, agent: Agent) -> None:
-        """Free ``agent``'s row."""
-        self._tables[type(agent)].remove(agent)
+    return ColumnStore

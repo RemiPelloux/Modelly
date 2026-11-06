@@ -123,14 +123,15 @@ def _compare(a: Model[Any, Any], b: Model[Any, Any]) -> Difference | None:
     return first_state_difference(model_state(a), model_state(b), a.time)
 
 
-def _walk(rec: Recorder, start: float, stop: float) -> Iterator[Model[Any, Any]]:
-    """The recorded run at each step from ``start`` up to before ``stop``.
+def _walk(
+    rec: Recorder, model: Model[Any, Any], stop: float
+) -> Iterator[Model[Any, Any]]:
+    """The recorded run at each step from ``model`` (restored at a step) up to before ``stop``.
 
     One model is replayed forward, restoring a checkpoint instead wherever
     the run has one, so changes recorded with ``checkpoint()`` are seen.
     """
     recorded = set(rec.steps)
-    model = rec.at(start)
     yield model
     while model.time + STEP < stop:
         target = model.time + STEP
@@ -141,10 +142,15 @@ def _walk(rec: Recorder, start: float, stop: float) -> Iterator[Model[Any, Any]]
         yield model
 
 
-def _refine(a: Recorder, b: Recorder, start: float, found: Difference) -> Difference:
-    """Compare both runs step by step from ``start`` up to ``found``."""
+def _refine(
+    a: Recorder,
+    b: Recorder,
+    start: tuple[Model[Any, Any], Model[Any, Any]],
+    found: Difference,
+) -> Difference:
+    """Compare both runs step by step from the models ``start`` up to ``found``."""
     for model_a, model_b in zip(
-        _walk(a, start, found.step), _walk(b, start, found.step)
+        _walk(a, start[0], found.step), _walk(b, start[1], found.step)
     ):
         earlier = _compare(model_a, model_b)
         if earlier is not None:
@@ -158,10 +164,11 @@ def _recorded_difference(a: Recorder, b: Recorder) -> Difference | None:
     common = sorted(s for s in set(a.steps) & set(b.steps) if s < end)
     previous = None
     for step in [*common, end]:
-        found = _compare(a.at(step), b.at(step))
+        models = a.at(step), b.at(step)
+        found = _compare(*models)
         if found is not None:
             return found if previous is None else _refine(a, b, previous, found)
-        previous = step
+        previous = models  # restored once: the refinement replays from them
     return None
 
 

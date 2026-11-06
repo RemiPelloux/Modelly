@@ -79,6 +79,26 @@ def test_compact_and_merge_keep_one_row_per_state():
     assert rows == [(EGG, 0, 107), (ADULT, 4, 55)]
 
 
+@pytest.mark.parametrize("dtype", [np.int8, np.int64, np.uint16, np.float64])
+def test_merge_matches_unique_over_the_state_records(dtype):
+    """Rows, order, dtypes and sums equal np.unique over the record array, NaN included."""
+    rng = np.random.default_rng(3)
+    values = [0, 1, 2] if dtype != np.float64 else [0.0, -0.0, np.nan, 1.5]
+    level = np.array(values, dtype=dtype)[rng.integers(0, len(values), 300)]
+    flag = rng.integers(0, 2, 300).astype(bool)
+    counts = rng.integers(0, 4, 300)
+    table = CohortTable(np.random.default_rng(1), level=dtype, flag=np.bool_)
+    table.add(counts, level=level, flag=flag)
+    live = counts > 0
+    keys = np.rec.fromarrays([level[live], flag[live]], names=["level", "flag"])
+    unique, inverse = np.unique(keys, return_inverse=True)
+    assert table.merge() == live.sum() - len(unique)
+    assert table["level"].tobytes() == unique["level"].tobytes()
+    assert table["flag"].tolist() == unique["flag"].tolist()
+    assert table["level"].dtype == np.dtype(dtype)
+    assert table["count"].tolist() == np.bincount(inverse, counts[live]).tolist()
+
+
 def test_growth_and_dataframe():
     """The table grows past its initial capacity and exports a copy."""
     table = CohortTable(np.random.default_rng(1), stage=np.int8)

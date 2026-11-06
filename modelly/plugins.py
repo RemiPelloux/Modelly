@@ -25,9 +25,11 @@ being found or loaded: ``load_all`` returns the loaded objects and the errors ap
 
 from __future__ import annotations
 
+import os
+import sys
 import warnings
 from dataclasses import dataclass, field
-from importlib.metadata import EntryPoint, entry_points
+from importlib.metadata import EntryPoint, EntryPoints, entry_points
 from typing import Any
 
 from modelly._versions import release, requirement_on, satisfies
@@ -129,6 +131,44 @@ def _plugin(entry_point: EntryPoint, group: str) -> Plugin:
     )
 
 
+# The entry points of every installed distribution, and the state of sys.path they
+# were read from: ``(path entries, their modification times)``.
+_scan: tuple[Any, EntryPoints] | None = None
+
+
+def _installed_entry_points() -> EntryPoints:
+    """Every installed entry point, read once while ``sys.path`` and its folders stay put.
+
+    Scanning every distribution's metadata takes milliseconds, and ``discover`` runs per
+    group, per hub load and per design. The scan is kept until an entry of ``sys.path``
+    changes or one of its folders is modified (installing or removing a package
+    rewrites a ``site-packages`` folder). :func:`clear_cache` forces a new scan.
+    """
+    global _scan  # noqa: PLW0603 - one module-level memo
+    state = _path_state()
+    if _scan is None or _scan[0] != state:
+        _scan = (state, entry_points())
+    return _scan[1]
+
+
+def clear_cache() -> None:
+    """Forget the scanned entry points: the next ``discover`` reads them again."""
+    global _scan  # noqa: PLW0603 - one module-level memo
+    _scan = None
+
+
+def _path_state() -> tuple[tuple[str, int | None], ...]:
+    """Each ``sys.path`` entry with its modification time (None when missing)."""
+    state = []
+    for entry in sys.path:
+        try:
+            stamp: int | None = os.stat(entry or ".").st_mtime_ns
+        except (OSError, TypeError, ValueError):
+            stamp = None
+        state.append((str(entry), stamp))
+    return tuple(state)
+
+
 def discover(group: str) -> dict[str, Plugin]:
     """The installed plugins of ``group``, by name, sorted; nothing is imported.
 
@@ -141,7 +181,9 @@ def discover(group: str) -> dict[str, Plugin]:
         {}
     """
     found: dict[str, Plugin] = {}
-    plugins = [_plugin(ep, group) for ep in entry_points(group=group)]
+    plugins = [
+        _plugin(ep, group) for ep in _installed_entry_points().select(group=group)
+    ]
     for plugin in sorted(plugins, key=lambda p: (p.name, p.distribution or "")):
         if plugin.name in found:
             warnings.warn(

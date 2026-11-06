@@ -16,6 +16,7 @@ import numpy as np
 from modelly.space.base import DiscreteSpace
 from modelly.space.cells.cell import Cell
 from modelly.space.cells.collection import CellCollection
+from modelly.space.grid._coords import floor_coordinate
 from modelly.space.grid.cell_class import (  # noqa: F401 - re-exported for old pickles
     _make_grid_cell_class,
     pickle_gridcell,
@@ -141,7 +142,7 @@ class Grid(HasPropertyLayers, DiscreteSpace[T]):
             ValueError: If position is outside grid bounds and not a torus
         """
         # Floor to get cell coordinate
-        coord = tuple(np.floor(position).astype(int))
+        coord = floor_coordinate(position)
 
         # Handle torus wrapping
         if self.torus:
@@ -233,7 +234,11 @@ class Grid(HasPropertyLayers, DiscreteSpace[T]):
                 if not cell.is_full:
                     return cell
 
-        available = list(self.cells_with_capacity)
+        available = (
+            list(self.all_cells)
+            if self.capacity is None
+            else [cell for cell in self.all_cells if not cell.is_full]
+        )
         if not available:
             raise IndexError(
                 "No available cells exist in the grid: all cells are at full capacity."

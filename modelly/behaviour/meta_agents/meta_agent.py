@@ -71,20 +71,18 @@ def _find_existing_meta_agent(
     membership_api: Any,
 ) -> MetaAgent | None:
     """Find a compatible existing meta-agent among an agent's current groups."""
-    existing_meta_agents = []
-    for agent in agents:
+    # The first compatible group with the smallest id, in the order the groups
+    # are met (agents in order, each agent's groups by id): min() keeps the
+    # first of equal keys, so duplicates need no removal.
+    candidates = (
+        meta_agent
+        for agent in agents
         for meta_agent in sorted(
             membership_api.groups_of(agent), key=_unique_id_sort_key
-        ):
-            if (
-                meta_agent.__class__.__name__ == new_agent_class
-                and meta_agent not in existing_meta_agents
-            ):
-                existing_meta_agents.append(meta_agent)
-
-    if not existing_meta_agents:
-        return None
-    return sorted(existing_meta_agents, key=_unique_id_sort_key)[0]
+        )
+        if meta_agent.__class__.__name__ == new_agent_class
+    )
+    return min(candidates, key=_unique_id_sort_key, default=None)
 
 
 def _build_meta_agent_class(

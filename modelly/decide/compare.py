@@ -18,6 +18,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from modelly.decide._parallel import runs
+
 type Outputs = Mapping[str, float]
 type Run = Callable[[Mapping[str, Any], int], Outputs]
 CONFIDENCE = 0.95
@@ -111,11 +113,21 @@ class Comparison:
         rows = self.runs[self.runs[STRATEGY] == name].sort_values(REPLICATE)
         return rows[output].to_numpy(dtype=float)
 
+    def _table(self, output: str) -> list[np.ndarray]:
+        """``values(output, name)`` of every strategy, in order, from one grouping."""
+        groups = dict(list(self.runs.groupby(STRATEGY, sort=False)))
+        found = [groups.get(name) for name in self.names]
+        return [
+            np.empty(0) if rows is None else
+            rows.sort_values(REPLICATE)[output].to_numpy(dtype=float)
+            for rows in found
+        ]  # fmt: skip
+
     def summary(self, output: str) -> pd.DataFrame:
         """Mean and interval of ``output`` per strategy."""
         rows = [
-            (name, *interval(self.values(output, name), self.confidence))
-            for name in self.names
+            (name, *interval(values, self.confidence))
+            for name, values in zip(self.names, self._table(output))
         ]
         return pd.DataFrame(rows, columns=[STRATEGY, "mean", "low", "high"]).set_index(
             STRATEGY
@@ -125,8 +137,8 @@ class Comparison:
         """Each strategy minus ``baseline`` (the first by default), paired by replicate."""
         base = self.values(output, baseline or self.names[0])
         rows = [
-            (name, *interval(self.values(output, name) - base, self.confidence))
-            for name in self.names
+            (name, *interval(values - base, self.confidence))
+            for name, values in zip(self.names, self._table(output))
         ]
         return pd.DataFrame(rows, columns=[STRATEGY, "mean", "low", "high"]).set_index(
             STRATEGY
@@ -139,7 +151,7 @@ class Comparison:
         value: with common random numbers each replicate is one shared set of chance
         events, so it estimates the probability that the strategy is the best choice.
         """
-        table = np.array([self.values(output, n) for n in self.names])
+        table = np.array(self._table(output))
         best = table.argmin(axis=0) if lower_is_better else table.argmax(axis=0)
         frame = self.summary(output)
         frame["best_share"] = [
@@ -150,9 +162,12 @@ class Comparison:
 
 def compare(
     run: Run, strategies: Sequence[Strategy], *, replicates: int = 20, seed: int = 0,
-    confidence: float = CONFIDENCE,
+    confidence: float = CONFIDENCE, workers: int | None = 1,
 ) -> Comparison:  # fmt: skip
     """Run every strategy ``replicates`` times with common random numbers.
+
+    ``workers`` runs them over that many processes (``modelly.batch.run_batch``): the same
+    results in the same order; 1, the default, runs them here one after another.
 
     Raises:
         ValueError: without strategies, with two of the same name, or with fewer than two
@@ -163,10 +178,12 @@ def compare(
         raise ValueError("compare needs strategies with distinct names")
     if replicates < 2:
         raise ValueError("compare needs at least two replicates for an interval")
+    pairs = [(r, child, s) for r, child in enumerate(replicate_seeds(seed, replicates))
+             for s in strategies]  # fmt: skip
+    results = runs(run, [(s.params, child) for _, child, s in pairs], workers)
     rows = []
-    for r, child in enumerate(replicate_seeds(seed, replicates)):
-        for strategy in strategies:
-            outputs = dict(run(strategy.params, child))
-            rows.append({STRATEGY: strategy.name, REPLICATE: r, SEED: child, **outputs,
-                         COST: strategy.cost_of(outputs)})  # fmt: skip
+    for (r, child, strategy), result in zip(pairs, results):
+        outputs = dict(result)
+        rows.append({STRATEGY: strategy.name, REPLICATE: r, SEED: child, **outputs,
+                     COST: strategy.cost_of(outputs)})  # fmt: skip
     return Comparison(pd.DataFrame(rows), tuple(strategies), confidence)

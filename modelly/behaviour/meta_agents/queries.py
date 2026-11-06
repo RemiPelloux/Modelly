@@ -31,14 +31,13 @@ class MembershipQueries:
             return group
         # Try string name resolution.
         if isinstance(group, str):
-            matches = list(
-                dict.fromkeys(
-                    entity
-                    for entity in self.model.agents
-                    if getattr(entity, "name", None) == group
-                    or entity.__class__.__name__ == group
-                )
-            )
+            # model.agents holds each agent once, so the matches need no dedupe.
+            matches = [
+                entity
+                for entity in self.model.agents
+                if getattr(entity, "name", None) == group
+                or entity.__class__.__name__ == group
+            ]
             if len(matches) == 1:
                 return matches[0]
             if not matches:

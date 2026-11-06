@@ -23,6 +23,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from modelly.decide._parallel import ordered
 from modelly.decide.compare import CONFIDENCE, interval
 
 type Build = Callable[[int], Any]
@@ -65,27 +66,45 @@ def _run(model: Any, steps: int, output: Callable[[Any], float]) -> float:
     return float(output(model))
 
 
+@dataclass(frozen=True)
+class _Rerun:
+    """One seed's rerun with an intervention on one agent: the outcome (runs in a worker)."""
+
+    build: Build
+    intervene: Callable[[Any, Any], None]
+    output: Callable[[Any], float]
+    steps: int
+    seed: int
+
+    def __call__(self, unique_id: int) -> float:
+        """Rebuild, intervene on agent ``unique_id``, run, read the outcome."""
+        model = self.build(self.seed)
+        self.intervene(model, _agent(model, unique_id))
+        return _run(model, self.steps, self.output)
+
+
 def attribute(
     build: Build, candidates: Callable[[Any], Sequence[Any]], output: Callable[[Any], float],
     *, steps: int, seeds: Sequence[int] = (0,),
     intervene: Callable[[Any, Any], None] = remove, confidence: float = CONFIDENCE,
+    workers: int | None = 1,
 ) -> Attribution:  # fmt: skip
     """Intervene on each candidate agent in turn; the outcome's change, per candidate.
 
     ``build(seed)`` makes a fresh model, ``candidates(model)`` lists the agents to try (in
     the freshly built model), ``output(model)`` reads the outcome after ``steps`` steps.
+    ``workers`` reruns a seed's candidates over that many processes
+    (``modelly.batch.run_batch``), with the same results; 1, the default, reruns them here.
     """
     effects: dict[int, list[float]] = {}
     baselines = []
     for seed in seeds:
         base = _run(build(seed), steps, output)
         baselines.append(base)
-        for agent in candidates(build(seed)):
-            model = build(seed)
-            intervene(model, _agent(model, agent.unique_id))
-            effects.setdefault(agent.unique_id, []).append(
-                base - _run(model, steps, output)
-            )
+        ids = [agent.unique_id for agent in candidates(build(seed))]
+        rerun = _Rerun(build, intervene, output, steps, seed)
+        for unique_id, outcome in zip(ids, ordered(rerun, ids, workers)):
+            effects.setdefault(unique_id, []).append(base - outcome)
     rows = [(uid, *interval(np.array(v), confidence)) for uid, v in effects.items()]
     table = pd.DataFrame(rows, columns=["agent", "effect", "low", "high"]).set_index(
         "agent"

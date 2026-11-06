@@ -14,6 +14,8 @@ ROLES = frozenset({USER, ASSISTANT})
 KEY_VERSION = 1
 # How much of a prompt an error message quotes.
 EXCERPT = 60
+# The instance attribute that memoises :meth:`Request.key` (not a dataclass field).
+KEY_SLOT = "_key"
 
 
 @dataclass(frozen=True)
@@ -74,9 +76,21 @@ class Request:
         }
 
     def key(self) -> str:
-        """SHA-256 of the canonical JSON of :meth:`identity`: the cache key."""
-        text = json.dumps(self.identity(), sort_keys=True, separators=(",", ":"))
-        return hashlib.sha256(text.encode("utf-8")).hexdigest()
+        """SHA-256 of the canonical JSON of :meth:`identity`: the cache key.
+
+        Computed once per request and kept outside the dataclass fields, so it takes no
+        part in equality, hashing, ``repr`` or pickles.
+        """
+        cached: str | None = self.__dict__.get(KEY_SLOT)
+        if cached is None:
+            text = json.dumps(self.identity(), sort_keys=True, separators=(",", ":"))
+            cached = hashlib.sha256(text.encode("utf-8")).hexdigest()
+            object.__setattr__(self, KEY_SLOT, cached)
+        return cached
+
+    def __getstate__(self) -> dict[str, Any]:
+        """The fields without the memoised key."""
+        return {k: v for k, v in self.__dict__.items() if k != KEY_SLOT}
 
     def prompt_chars(self) -> int:
         """Characters in the system prompt and every message."""

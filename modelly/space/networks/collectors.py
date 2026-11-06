@@ -42,14 +42,31 @@ def as_adjacency(graph: Any) -> csr_matrix:
         nx_graph = graph.G if hasattr(graph, "G") else graph
         matrix = nx.to_scipy_sparse_array(nx_graph, weight=None, format="csr")
     matrix = (matrix != 0).astype(np.int64)
-    matrix = ((matrix + matrix.T) > 0).astype(np.int64).tolil()
-    matrix.setdiag(0)
-    return sparse.csr_matrix(matrix)
+    matrix = sparse.csr_matrix(((matrix + matrix.T) > 0).astype(np.int64))
+    return _without_diagonal(matrix, sparse)
+
+
+def _without_diagonal(matrix: csr_matrix, sparse: Any) -> csr_matrix:
+    """``matrix`` without its diagonal and stored zeros, entries kept in their order."""
+    matrix.sort_indices()
+    counts = np.diff(matrix.indptr)
+    rows = np.repeat(np.arange(matrix.shape[0], dtype=matrix.indices.dtype), counts)
+    keep = (matrix.indices != rows) & (matrix.data != 0)
+    indptr = np.zeros_like(matrix.indptr)
+    np.cumsum(np.bincount(rows[keep], minlength=matrix.shape[0]), out=indptr[1:])
+    return sparse.csr_matrix(
+        (matrix.data[keep], matrix.indices[keep], indptr), shape=matrix.shape
+    )
 
 
 def degrees(graph: Any) -> np.ndarray:
     """The degree of every node, in node order."""
-    return np.asarray(as_adjacency(graph).sum(axis=1)).ravel()
+    return _degrees(as_adjacency(graph))
+
+
+def _degrees(adjacency: csr_matrix) -> np.ndarray:
+    """Row sums of a 0/1 adjacency without stored zeros: the row lengths, as int64."""
+    return np.diff(adjacency.indptr).astype(np.int64)
 
 
 def degree_distribution(graph: Any) -> np.ndarray:
@@ -63,7 +80,7 @@ def clustering(graph: Any) -> np.ndarray:
     triangles = np.asarray(
         (adjacency @ adjacency).multiply(adjacency).sum(axis=1)
     ).ravel()
-    k = np.asarray(adjacency.sum(axis=1)).ravel().astype(float)
+    k = _degrees(adjacency).astype(float)
     pairs = k * (k - 1)
     return np.divide(triangles, pairs, out=np.zeros_like(pairs), where=pairs > 0)
 

@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import traceback
-from collections.abc import Callable, Iterable
-from concurrent.futures import BrokenExecutor, ProcessPoolExecutor, as_completed
+from collections.abc import Iterable
+from concurrent.futures import BrokenExecutor, ProcessPoolExecutor
 from functools import partial
 from typing import TYPE_CHECKING, Any
 
-import pandas as pd
-
+from modelly._optional import LazyModule
+from modelly.scenarios._collect import abort_pending, chunks, collect_futures, record
 from modelly.scenarios.exceptions import (
     FailureInfo,
     FailureOrigin,
@@ -21,11 +21,15 @@ from modelly.scenarios.exceptions import (
 from modelly.scenarios.store import InMemoryStore, RunId
 
 if TYPE_CHECKING:
-    from concurrent.futures import Executor, Future
+    from concurrent.futures import Executor
+
+    import pandas as pd
 
     from modelly.core.model import Model
     from modelly.scenarios.scenario import Scenario
     from modelly.scenarios.store import Reference, Store, Writer
+else:
+    pd = LazyModule("pandas")
 
 
 class RunConfiguration:
@@ -172,6 +176,13 @@ def _safe_call(
     return ref, None
 
 
+def _call_chunk(
+    config: RunConfiguration, scenarios: list[Scenario], writer: Writer
+) -> list[tuple[Reference, None] | tuple[None, FailureInfo]]:
+    """Run a chunk of scenarios one after another in the worker; their results in order."""
+    return [_safe_call(config, scenario, writer) for scenario in scenarios]
+
+
 def run_scenarios(
     scenarios: Iterable[Scenario],
     config: RunConfiguration,
@@ -221,16 +232,16 @@ def run_scenarios(
     if executor is None:
         # Sequential: run in the loop so the bar advances per scenario.
         for scenario in bar(scenarios):
-            _record(store, scenario, _safe_call(config, scenario, writer))
+            record(store, scenario, _safe_call(config, scenario, writer))
         return store
     futures = {
-        executor.submit(_safe_call, config, scenario, writer): scenario
-        for scenario in scenarios
+        executor.submit(_call_chunk, config, chunk, writer): chunk
+        for chunk in chunks(executor, scenarios)
     }
     try:
-        _collect_futures(futures, store, bar)
+        collect_futures(futures, store, bar)
     except BrokenExecutor as e:
-        _abort_pending(store, e)
+        abort_pending(store, e)
     return store
 
 
@@ -245,53 +256,3 @@ def _progress_bar(iterable: Iterable[Any], progress: bool, total: int) -> Iterab
         return bar
     except ImportError:
         return iterable
-
-
-def _record(
-    store: Store,
-    scenario: Scenario,
-    result: tuple[Reference, None] | tuple[None, FailureInfo],
-) -> None:
-    """Mark the run of scenario as succeeded or failed in store."""
-    ref, failure = result
-    if failure is None:
-        assert ref is not None  # a run without a failure has its output's reference
-        store.mark_succeeded(ref)
-    else:
-        run_id = RunId(scenario.scenario_id, scenario.replication_id)
-        store.mark_failed(run_id, failure)
-
-
-def _failure_info(
-    origin: FailureOrigin, cause: BaseException, exc: BaseException
-) -> FailureInfo:
-    """Describe a failure from its cause, with the traceback of exc."""
-    return FailureInfo(
-        origin=origin,
-        exception_type=type(cause).__name__,
-        message=str(cause),
-        traceback="".join(traceback.format_exception(exc)),
-    )
-
-
-def _collect_futures(
-    futures: dict[Future[Any], Scenario], store: Store, bar: Callable[..., Any]
-) -> None:
-    """Record each future's result as it completes; a broken executor propagates."""
-    for future in bar(as_completed(futures)):
-        scenario = futures[future]
-        try:
-            result = future.result()
-        except BrokenExecutor:
-            raise
-        except Exception as e:
-            # pickling failure or CancelledError on the return trip; record as failed and continue
-            result = (None, _failure_info(FailureOrigin.WRITING, e, e))
-        _record(store, scenario, result)
-
-
-def _abort_pending(store: Store, error: BrokenExecutor) -> None:
-    """Mark every run still pending in store as aborted by a broken executor."""
-    cause = error.__cause__ or error
-    for entry in list(store.pending()):
-        store.mark_aborted(entry, _failure_info(FailureOrigin.ABORTED, cause, error))

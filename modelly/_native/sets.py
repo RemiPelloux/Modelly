@@ -36,6 +36,11 @@ def py_live_agents(refs: dict) -> list:
     return [agent for r in list(refs) if (agent := r()) is not None]
 
 
+def py_live_refs(refs: dict) -> list:
+    """The weakref keys of ``refs`` whose referents are alive, from a snapshot, in order."""
+    return [r for r in list(refs) if r() is not None]
+
+
 def py_make_refs(agents: Iterable, callback: Callable) -> dict:
     """A dict keyed on ``weakref.ref(agent, callback)`` per agent, values None, in order."""
     ref = weakref.ref
@@ -59,4 +64,5 @@ keep_type = _fastset.keep_type if NATIVE else py_keep_type
 keep_if = _fastset.keep_if if NATIVE else py_keep_if
 attr_values = _fastset.attr_values if NATIVE else py_attr_values
 live_agents = _fastset.live_agents if NATIVE else py_live_agents
+live_refs = _fastset.live_refs if NATIVE else py_live_refs
 make_refs = _fastset.make_refs if NATIVE else py_make_refs

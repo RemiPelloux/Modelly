@@ -44,8 +44,12 @@ typedef struct {
     Py_ssize_t agents_at, capacity_at; /* slot offsets, 0: use getattr */
 } layout_t;
 
-/* One per thread on a free-threaded build, so no thread sees another's half-written entry. */
-static THREAD_LOCAL layout_t cached = {NULL, 0, 0, 0, 0, 0, 0};
+/* Two entries, replaced in turn, so agents moving between cells of two types do not
+ * relearn a type on every move. One cache per thread on a free-threaded build, so no
+ * thread sees another's half-written entry. */
+#define LAYOUT_SLOTS 2
+static THREAD_LOCAL layout_t cached[LAYOUT_SLOTS];
+static THREAD_LOCAL unsigned int next_slot = 0;
 
 /* A new reference to one of the bound objects, read under the lock. */
 static PyObject *
@@ -81,19 +85,33 @@ learn(PyTypeObject *type, layout_t *out)
     out->capacity_at = by_offset ? slot_offset(type, str_capacity) : 0;
 }
 
-/* The layout of ``cell``'s type, relearned when the type, its version or the binding changed. */
-static const layout_t *
-layout_of(PyObject *cell)
+/* Whether ``entry`` still describes ``type``: same type and version, no bind since. */
+static inline int
+fresh(const layout_t *entry, PyTypeObject *type)
+{
+    return entry->type == type && entry->version != 0
+           && entry->version == LOAD_RELAXED_U32(&type->tp_version_tag)
+#ifdef Py_GIL_DISABLED /* other threads' caches are cleared by the generation; with the GIL, bind() clears this one */
+           && entry->generation == LOAD_RELAXED_U32(&generation)
+#endif
+        ;
+}
+
+/* Copy into ``out`` the layout of ``cell``'s type, learned again when the type, its version
+ * or the binding changed. A copy: Python code run by the move may relearn the cache. */
+static void
+layout_of(PyObject *cell, layout_t *out)
 {
     PyTypeObject *type = Py_TYPE(cell);
-    if (cached.type != type || cached.version == 0
-        || cached.version != LOAD_RELAXED_U32(&type->tp_version_tag)
-#ifdef Py_GIL_DISABLED /* other threads' caches are cleared by the generation; with the GIL, bind() clears the one cache */
-        || cached.generation != LOAD_RELAXED_U32(&generation)
-#endif
-    )
-        learn(type, &cached);
-    return &cached;
+    for (int i = 0; i < LAYOUT_SLOTS; i++)
+        if (fresh(&cached[i], type)) {
+            *out = cached[i];
+            return;
+        }
+    layout_t *entry = &cached[next_slot];
+    next_slot = (next_slot + 1) % LAYOUT_SLOTS;
+    learn(type, entry);
+    *out = *entry;
 }
 #include "cellbody.h" /* add_agent, remove_agent: Cell's own bodies, inline */
 
@@ -101,9 +119,10 @@ layout_of(PyObject *cell)
 static int
 on_cell(PyObject *cell, PyObject *agent, int adding)
 {
-    const layout_t *layout = layout_of(cell);
-    if (adding ? layout->inline_add : layout->inline_remove)
-        return adding ? add_agent(cell, layout, agent) : remove_agent(cell, layout, agent);
+    layout_t layout;
+    layout_of(cell, &layout);
+    if (adding ? layout.inline_add : layout.inline_remove)
+        return adding ? add_agent(cell, &layout, agent) : remove_agent(cell, &layout, agent);
     return call_method(cell, adding ? str_add_agent : str_remove_agent, agent);
 }
 
@@ -151,7 +170,8 @@ bind(PyObject *Py_UNUSED(module), PyObject *const *argv, Py_ssize_t nargs)
 #ifdef Py_GIL_DISABLED
     STORE_RELAXED_U32(&generation, generation + 1); /* every thread relearns every type */
 #else
-    cached.type = NULL; /* relearn every type against the new references, as in 1.2 */
+    for (int i = 0; i < LAYOUT_SLOTS; i++)
+        cached[i].type = NULL; /* relearn every type against the new references, as in 1.2 */
 #endif
     UNLOCK(binding_lock);
     for (int i = 0; i < BOUND_COUNT; i++)

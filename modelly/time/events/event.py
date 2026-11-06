@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import itertools
 import types
-from collections.abc import Callable
+from collections.abc import Callable, Mapping, Sequence
 from enum import IntEnum
 from types import MethodType
 from typing import TYPE_CHECKING, Any
@@ -40,6 +40,11 @@ def _create_callable_reference(
             raise TypeError("function must be weak referenceable") from exc
 
     return function_ref
+
+
+# The arguments of a recurring event's call: shared, as nothing ever mutates them.
+_NO_ARGS: tuple[Any, ...] = ()
+_NO_KWARGS: dict[str, Any] = {}
 
 
 class Priority(IntEnum):
@@ -108,11 +113,35 @@ class Event:
         self.fn = weak_ref_fn
 
         self.unique_id = next(self._ids)
-        self.function_args = function_args if function_args else []
-        self.function_kwargs = function_kwargs if function_kwargs else {}
+        self.function_args: Sequence[Any] = function_args if function_args else []
+        self.function_kwargs: Mapping[str, Any] = (
+            function_kwargs if function_kwargs else {}
+        )
 
         # Set by EventList.add_event, so cancel() can update the list's count.
         self._owner: ReferenceType[EventList] | None = None
+
+    @classmethod
+    def _recurring(
+        cls, time: int | float, function_ref: WeakMethod, priority: int
+    ) -> Event:
+        """An event without arguments built from a ready weak reference.
+
+        ``EventGenerator`` makes one per firing: the callback is validated and
+        its WeakMethod built once, and ``priority`` is already the enum's value.
+        The event takes its unique id from the same counter as ``Event()``, and
+        has the same attributes in the same order.
+        """
+        event = _new(cls)
+        event.time = time
+        event.priority = priority
+        event._canceled = False
+        event.fn = function_ref
+        event.unique_id = next(cls._ids)
+        event.function_args = _NO_ARGS
+        event.function_kwargs = _NO_KWARGS
+        event._owner = None
+        return event
 
     def execute(self) -> None:
         """Execute this event."""
@@ -164,3 +193,6 @@ class Event:
             self.fn = _create_callable_reference(fn)
         else:
             self.fn = None
+
+
+_new = object.__new__

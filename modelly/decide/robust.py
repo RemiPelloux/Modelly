@@ -24,6 +24,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from modelly.decide._parallel import runs
 from modelly.decide.compare import Run, Strategy
 
 FUTURE = "future"
@@ -84,20 +85,25 @@ class Robustness:
 def robust(
     run: Run, strategies: Sequence[Strategy], futures: Sequence[Mapping[str, Any]], output: str,
     *, lower_is_better: bool = True, replicates: int = 5, seed: int = 0,
-    threshold: float | None = None,
+    threshold: float | None = None, workers: int | None = 1,
 ) -> Robustness:  # fmt: skip
     """Run every strategy in every future; the outcomes and their robustness summary.
 
     A strategy's parameters override the future's where both set one.
+    ``workers`` runs them over that many processes (``modelly.batch.run_batch``): the same
+    results in the same order; 1, the default, runs them here one after another.
     """
-    columns = {}
+    tasks = []
     for f, future in enumerate(futures):
         children = np.random.SeedSequence(seed, spawn_key=(f,)).spawn(replicates)
         seeds = [int(c.generate_state(1)[0]) for c in children]
-        columns[f] = [
-            float(np.mean([run({**future, **s.params}, x)[output] for x in seeds]))
-            for s in strategies
-        ]
+        tasks += [({**future, **s.params}, x) for s in strategies for x in seeds]
+    results = runs(run, tasks, workers)
+    columns = {
+        f: [float(np.mean([next(results)[output] for _ in range(replicates)]))
+            for _ in strategies]
+        for f in range(len(futures))
+    }  # fmt: skip
     outcomes = pd.DataFrame(
         columns, index=pd.Index([s.name for s in strategies], name="strategy")
     )

@@ -87,6 +87,31 @@ class BatchDense:
                 )
         return out
 
+    def column(self, t: np.ndarray, index: int) -> np.ndarray:
+        """``values(t)[index]``, the same numbers, interpolating only that variable."""
+        out: np.ndarray = self.y0[index].copy()
+        for seg in self.segments:
+            tq = t[seg.rows]
+            cols = np.flatnonzero((tq >= seg.t0) & (tq <= seg.end))
+            if cols.size:
+                x = (tq[cols] - seg.t0[cols]) / seg.h[cols]
+                out[seg.rows[cols]] = _one(seg, cols, x, index)
+        return out
+
+
+def _one(seg: _Segment, cols: np.ndarray, x: np.ndarray, index: int) -> np.ndarray:
+    """Variable ``index`` of the segment's interpolant at ``x`` for the systems ``cols``.
+
+    For one system ``einsum`` reduces over the degree in an order that depends on the
+    operand's strides, so that case interpolates every variable, as ``values`` does.
+    """
+    if cols.size == 1:
+        every = interpolate(seg.Q[..., cols], seg.h[cols], seg.y0[:, cols], x)
+        return np.asarray(every[index])
+    one = slice(index, index + 1)
+    only = interpolate(seg.Q[:, one, cols], seg.h[cols], seg.y0[one, cols], x)
+    return np.asarray(only[0])
+
 
 @dataclass
 class StackedDense:
@@ -102,7 +127,11 @@ class StackedDense:
         m, k = self.shape
         t = np.broadcast_to(np.asarray(t, dtype=float), (k,))
         out = np.empty((m, k))
-        for value in np.unique(t):
-            cols = t == value
+        values, group = np.unique(t, return_inverse=True)
+        order = np.argsort(group, kind="stable")
+        bounds = np.searchsorted(group[order], np.arange(values.size + 1))
+        for i, value in enumerate(values):
+            # a NaN time matches no system (NaN != NaN), as with ``t == value``
+            cols = order[bounds[i] : bounds[i + 1]] if value == value else order[:0]
             out[:, cols] = self.solution(value).reshape(m, k)[:, cols]
         return out

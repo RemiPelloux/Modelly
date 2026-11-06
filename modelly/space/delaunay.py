@@ -7,6 +7,18 @@ import numpy as np
 # The four corners of the bounding frame take the first coordinate slots.
 FRAME_CORNERS = 4
 TRIANGLE_SIDES = 3
+# Points whose coordinates convert to float64 exactly as numpy promotes them.
+_EXACT_KINDS = frozenset("biuf")
+_EXACT_SIZE = 8
+
+
+def _as_floats(circle: tuple) -> tuple[float, float, float] | None:
+    """A float64 ``(center, squared radius)`` circle as three Python floats, else ``None``."""
+    center, radius = circle
+    if center.dtype != np.float64 or np.asarray(radius).dtype != np.float64:
+        return None
+    cx, cy = center.tolist()
+    return cx, cy, float(radius)
 
 
 class Delaunay:
@@ -71,28 +83,62 @@ class Delaunay:
         point_index = len(self.coords)
         self.coords.append(np.asarray(point))
 
-        bad_triangles = []
-        for triangle in self.triangles:
-            if self._in_circle(triangle, point):
-                bad_triangles.append(triangle)
-
+        bad_triangles = self._bad_triangles(point)
         boundary = self._cavity_boundary(bad_triangles)
 
+        floats = self._circle_floats()
         for triangle in bad_triangles:
             del self.triangles[triangle]
             del self.circles[triangle]
+            del floats[triangle]
 
         self._fill_cavity(point_index, boundary)
 
+    def _bad_triangles(self, point: Sequence) -> list:
+        """The triangles whose circumcircle holds ``point``, in triangle order.
+
+        Same test as ``_in_circle``, on Python floats: one subtraction, square
+        and sum per coordinate, in numpy's order, so the answers are identical.
+        """
+        xy = np.asarray(point)
+        if (
+            xy.shape != (2,)
+            or xy.dtype.kind not in _EXACT_KINDS
+            or xy.dtype.itemsize > _EXACT_SIZE
+        ):
+            return [t for t in self.triangles if self._in_circle(t, point)]
+        x, y = xy.astype(np.float64).tolist()
+        bad = []
+        for triangle, circle in self._circle_floats().items():
+            if circle is None:  # not float64: numpy's own test
+                if self._in_circle(triangle, point):
+                    bad.append(triangle)
+                continue
+            cx, cy, radius = circle
+            dx = cx - x
+            dy = cy - y
+            if dx * dx + dy * dy <= radius:
+                bad.append(triangle)
+        return bad
+
+    def _circle_floats(self) -> dict:
+        """``circles`` as ``(cx, cy, squared radius)`` floats, in the same order."""
+        floats = self.__dict__.get("_floats")
+        if floats is None:  # first use, or a triangulation pickled before it existed
+            floats = {t: _as_floats(circle) for t, circle in self.circles.items()}
+            self._floats = floats
+        return floats
+
     def _cavity_boundary(self, bad_triangles: list) -> list:
         """Walk the edge of the triangles ``bad_triangles`` covers, in CCW order."""
+        bad = set(bad_triangles)
         boundary = []
         triangle = bad_triangles[0]
         edge = 0
 
         while True:
             opposite_triangle = self.triangles[triangle][edge]
-            if opposite_triangle not in bad_triangles:
+            if opposite_triangle not in bad:
                 boundary.append(
                     (
                         triangle[(edge + 1) % TRIANGLE_SIDES],
@@ -113,9 +159,12 @@ class Delaunay:
     def _fill_cavity(self, point_index: int, boundary: list) -> None:
         """Join the new point to every boundary edge and link the new triangles."""
         new_triangles = []
+        floats = self._circle_floats()
         for e0, e1, opposite_triangle in boundary:
             triangle = (point_index, e0, e1)
-            self.circles[triangle] = self._circumcenter(triangle)
+            circle = self._circumcenter(triangle)
+            self.circles[triangle] = circle
+            floats[triangle] = _as_floats(circle)
             self.triangles[triangle] = [opposite_triangle, None, None]
             if opposite_triangle:
                 for i, neighbor in enumerate(self.triangles[opposite_triangle]):

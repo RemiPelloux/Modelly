@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import numbers
 import typing
+import weakref
 from typing import Any
 
 from modelly._deprecation import deprecated
@@ -28,6 +29,8 @@ from modelly._deprecation import deprecated
 _TO_USER = 3
 NUMBERS = {int: numbers.Integral, float: numbers.Real}
 PLAIN = (int, float, bool, str, tuple, list, dict)
+# Resolved annotations per class: get_type_hints compiles them on every call.
+_HINTS: weakref.WeakKeyDictionary[type, dict[str, Any]] = weakref.WeakKeyDictionary()
 
 
 def _public_attributes(cls: type) -> list[str]:
@@ -55,11 +58,19 @@ def check_class(cls: type) -> None:
 
 
 def _hints(cls: type) -> dict[str, Any]:
-    """The resolved annotations of ``cls``; empty when they cannot be resolved."""
-    try:
-        return typing.get_type_hints(cls)
-    except (NameError, TypeError):
-        return {}
+    """The resolved annotations of ``cls``; empty when they cannot be resolved.
+
+    A resolved result is kept per class; an unresolved one is not, so a name
+    defined later still resolves on a later call.
+    """
+    found = _HINTS.get(cls)
+    if found is None:
+        try:
+            found = typing.get_type_hints(cls)
+        except (NameError, TypeError):
+            return {}
+        _HINTS[cls] = found
+    return found
 
 
 def _matches(value: Any, annotation: Any) -> bool:

@@ -27,14 +27,20 @@ import sys
 import warnings
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from itertools import product
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import pandas as pd
+
+from modelly._optional import LazyModule
+
+if TYPE_CHECKING:
+    import pandas as pd
+else:
+    pd = LazyModule("pandas")
 
 WORKERS_ENV = "MODELLY_WORKERS"
 DEFAULT_MAX_WORKERS = 8
-_HANDOFFS_PER_WORKER = 16  # chunks per worker in a batch (see _chunksize)
+_HANDOFFS_PER_WORKER = 16  # chunks per worker in a batch (see _chunk_size)
 
 _CAN_FORK = sys.platform.startswith("linux") and "fork" in mp.get_all_start_methods()
 # Importable functions go to workers that start clean (no inherited threads).
@@ -80,18 +86,18 @@ def run_batch(
         run: the function computing one run's result.
         tasks: one argument per run (parameters, seed, ...).
         workers: processes to use; ``None`` means ``default_workers()``, 1 runs
-            inline in this process.
+            inline in this process. At most one worker starts per task.
 
     An exception raised by a run propagates, as in the sequential loop.
     """
     global _CURRENT, _TASKS  # handed to forked workers
     tasks = list(tasks)
-    workers = default_workers() if workers is None else workers
+    workers = min(default_workers() if workers is None else workers, len(tasks))
     if workers <= 1 or len(tasks) <= 1:
         return [run(task) for task in tasks]
     if _importable(run):
         with worker_context().Pool(workers) as pool:
-            return pool.map(run, tasks, chunksize=_chunksize(len(tasks), workers))
+            return pool.map(run, tasks, chunksize=_chunk_size(len(tasks), workers))
     if not _CAN_FORK:
         raise TypeError(
             f"{run!r} cannot be sent to worker processes on this platform: define it "
@@ -105,13 +111,13 @@ def run_batch(
             warnings.filterwarnings("ignore", _FORK_WARNING, DeprecationWarning)
             pool = mp.get_context("fork").Pool(workers)
         with pool:
-            chunksize = _chunksize(len(tasks), workers)
+            chunksize = _chunk_size(len(tasks), workers)
             return pool.map(_call_by_index, range(len(tasks)), chunksize=chunksize)
     finally:
         _CURRENT, _TASKS = None, []
 
 
-def _chunksize(tasks: int, workers: int) -> int:
+def _chunk_size(tasks: int, workers: int) -> int:
     """Tasks handed to a worker at a time: a sixteenth of its share, at least one.
 
     One task per hand-off costs a round trip each, which dominates many short runs;

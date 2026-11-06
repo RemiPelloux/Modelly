@@ -61,6 +61,14 @@ class _CoordinatedGroup:
         """The values in partition order."""
         return [values[i] for i in range(len(self.actors))]
 
+    def invoke_exchange(self, method: str, *args: Any) -> Outboxes:
+        """``exchange(invoke(method, *args))``: call, then route the outboxes."""
+        return self.exchange(self.invoke(method, *args))
+
+    def invoke_gather(self, method: str, *args: Any) -> list[Any]:
+        """``gather(invoke(method, *args))``: call, then the values in partition order."""
+        return self.gather(self.invoke(method, *args))
+
 
 class DaskGroup(_CoordinatedGroup):
     """One Dask actor per partition, each on a worker process of its own."""

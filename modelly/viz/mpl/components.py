@@ -153,7 +153,7 @@ def PlotMatplotlib(
         for m, color in measure.items():
             ax.plot(df.loc[:, m], label=m, color=color)
         ax.legend(loc="best")
-    elif isinstance(measure, list | tuple):
+    elif isinstance(measure, (list, tuple)):
         for m in measure:
             ax.plot(df.loc[:, m], label=m)
         ax.legend(loc="best")

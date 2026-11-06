@@ -16,15 +16,15 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
-from modelly.provenance.code import changed_files
+from modelly.provenance.code import _read_recorded
 from modelly.provenance.environment import lock_text
 from modelly.provenance.files import (
     dump_json,
     from_posix,
-    hash_file,
+    hash_bytes,
     write_bytes_atomic,
 )
-from modelly.provenance.llm import FIELD, cache_problem
+from modelly.provenance.llm import FIELD, _cache_contents
 from modelly.provenance.manifest import MANIFEST_NAME, manifest_path, read_manifest
 from modelly.provenance.metadata import citation_cff, zenodo_metadata
 
@@ -40,19 +40,26 @@ class BundleError(ValueError):
     """The run folder does not hold what its manifest records."""
 
 
-def _check_unchanged(manifest: dict[str, Any], folder: Path) -> None:
-    """Raise BundleError if outputs or code changed since the run."""
+def _checked_entries(manifest: dict[str, Any], folder: Path) -> dict[str, bytes]:
+    """Outputs, replies and code, each file read once; BundleError if any changed."""
+    entries: dict[str, bytes] = {}
     for item in manifest["outputs"]:
         path = from_posix(item["path"], folder)
-        if not path.is_file() or hash_file(path) != item["hash"]:
+        data = path.read_bytes() if path.is_file() else None
+        if data is None or hash_bytes(data) != item["hash"]:
             raise BundleError(f"output {item['path']} changed since the run: rerun it")
-    problem = cache_problem(manifest, folder)
+        entries[item["path"]] = data
+    problem, replies = _cache_contents(manifest, folder)
     if problem is not None:
         raise BundleError(f"{problem}: rerun it")
+    if replies is not None:  # the language-model replies, so verify needs no network
+        entries[manifest[FIELD]["path"]] = replies
     root = from_posix(manifest["code"]["root"], folder)
-    changed = changed_files(root, manifest["code"]["files"])
+    changed, code = _read_recorded(root, manifest["code"]["files"])
     if changed:
         raise BundleError(f"code changed since the run: {', '.join(changed)}")
+    entries |= {f"{CODE_DIR}/{name}": data for name, data in code.items()}
+    return entries
 
 
 def _input_entries(
@@ -79,16 +86,7 @@ def bundle_entries(folder: Path) -> dict[str, bytes]:
     path = manifest_path(folder)
     manifest = read_manifest(path)
     folder = path.parent
-    _check_unchanged(manifest, folder)
-    entries: dict[str, bytes] = {}
-    for item in manifest["outputs"]:
-        entries[item["path"]] = from_posix(item["path"], folder).read_bytes()
-    if FIELD in manifest:  # the language-model replies, so verify needs no network
-        replies = manifest[FIELD]["path"]
-        entries[replies] = from_posix(replies, folder).read_bytes()
-    root = from_posix(manifest["code"]["root"], folder)
-    for name in manifest["code"]["files"]:
-        entries[f"{CODE_DIR}/{name}"] = root.joinpath(*name.split("/")).read_bytes()
+    entries = _checked_entries(manifest, folder)
     packed = _input_entries(manifest, folder, entries)
     packed["code"]["root"] = CODE_DIR
     entries[MANIFEST_NAME] = dump_json(packed)

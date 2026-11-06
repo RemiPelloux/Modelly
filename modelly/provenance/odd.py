@@ -148,8 +148,8 @@ def input_data(facts: ModelFacts) -> list[str]:
 def submodels(facts: ModelFacts) -> list[str]:
     """Element 7: each agent method, scheduled ones first."""
     lines = []
+    order = {name: i for i, name in enumerate(facts.dispatched)}
     for agent in facts.agents:
-        order = {name: i for i, name in enumerate(facts.dispatched)}
         methods = sorted(agent.methods, key=lambda m: order.get(m[0], len(order)))
         for method, doc in methods:
             lines += [f"### {agent.name}.{method}", "", doc or f"{TODO}.", ""]

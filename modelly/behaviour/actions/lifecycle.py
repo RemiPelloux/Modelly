@@ -207,6 +207,8 @@ class ActionLifecycle:
 
     def _requirements_met(self, requirements: list[Callable[[Agent], bool]]) -> bool:
         """Whether every requirement in the given list holds right now."""
+        if not requirements:
+            return True
         return all(requirement(self.agent) for requirement in requirements)
 
     def _fail(self) -> None:

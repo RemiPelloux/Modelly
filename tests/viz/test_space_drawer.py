@@ -66,9 +66,12 @@ class TestOrthogonalSpaceDrawer:
         ax = drawer.draw_matplotlib()
 
         assert ax == mock_ax
-        # Should draw grid lines for each row/col + 1
-        assert mock_ax.axvline.call_count == orthogonal_grid.width + 1
-        assert mock_ax.axhline.call_count == orthogonal_grid.height + 1
+        # One collection of lines per direction, a line for each row/col + 1
+        vertical, horizontal = (
+            call.args[0] for call in mock_ax.add_collection.call_args_list
+        )
+        assert len(vertical.get_segments()) == orthogonal_grid.width + 1
+        assert len(horizontal.get_segments()) == orthogonal_grid.height + 1
         mock_ax.set_xlim.assert_called_with(drawer.viz_xmin, drawer.viz_xmax)
         mock_ax.set_ylim.assert_called_with(drawer.viz_ymin, drawer.viz_ymax)
 

@@ -6,7 +6,7 @@ from collections.abc import Callable, Iterable, Iterator
 from random import Random
 from typing import TYPE_CHECKING, Any
 
-from modelly._native.loops import call_each
+from modelly._native.loops import call_each, map_each
 from modelly.core.agentset._utils import _resolve_random
 from modelly.core.agentset.abstract import AbstractAgentSet
 from modelly.core.agentset.weak import AgentSet
@@ -44,7 +44,9 @@ class _HardKeyAgentSet[A: Agent](dict, AbstractAgentSet[A]):
             random (Random | None): The random number generator for this agent set.
         """
         dict.__init__(self, dict.fromkeys(agents))
-        self.random = _resolve_random(random, next(iter(self)) if self else None)
+        if random is None:  # the first key, without __iter__'s snapshot of them all
+            random = _resolve_random(None, next(iter(dict.keys(self)), None))
+        self.random = random
 
     @property
     def _agents(self) -> dict[A, None]:
@@ -135,14 +137,4 @@ class _HardKeyAgentSet[A: Agent](dict, AbstractAgentSet[A]):
 
     def map(self, method: str | Callable, *args, **kwargs) -> list[Any]:
         """Invoke a method and return results."""
-        if isinstance(method, str):
-            return [
-                getattr(agent, method)(*args, **kwargs)
-                for agent in list(dict.keys(self))
-                if agent in self
-            ]
-        return [
-            method(agent, *args, **kwargs)
-            for agent in list(dict.keys(self))
-            if agent in self
-        ]
+        return map_each(list(dict.keys(self)), self, method, args, kwargs or None)

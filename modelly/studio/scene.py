@@ -139,7 +139,7 @@ def _space_bounds(space: Any) -> tuple[np.ndarray, np.ndarray] | None:
     if isinstance(dimensions, np.ndarray) and dimensions.shape[0] >= XY:
         ranges = dimensions[:XY].astype(float)
         return ranges[:, 0], ranges[:, 1]
-    if isinstance(dimensions, tuple | list) and len(dimensions) >= XY:
+    if isinstance(dimensions, (tuple, list)) and len(dimensions) >= XY:
         return np.zeros(XY), np.asarray(dimensions[:XY], dtype=float) - 1
     return None
 

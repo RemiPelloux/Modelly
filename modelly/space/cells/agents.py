@@ -140,10 +140,10 @@ class Grid2DMovingAgent(CellAgent):
         """
         direction = direction.lower()  # Convert direction to lowercase
 
-        if direction not in self.DIRECTION_MAP:
+        move_vector = self.DIRECTION_MAP.get(direction)
+        if move_vector is None:
             raise ValueError(f"Invalid direction: {direction}")
 
-        move_vector = self.DIRECTION_MAP[direction]
         for _ in range(distance):
             self.move_relative(move_vector)
 
@@ -215,8 +215,8 @@ class HexGridMovingAgent(CellAgent):
                 else self.DIRECTION_MAP_ODD
             )
 
-            if direction not in offset_map:
+            move_vector = offset_map.get(direction)
+            if move_vector is None:
                 raise ValueError(f"Invalid hex direction: {direction}")
 
-            move_vector = offset_map[direction]
             self.move_relative(move_vector)

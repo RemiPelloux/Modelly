@@ -24,7 +24,7 @@ import os
 import sqlite3
 import threading
 import weakref
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -49,6 +49,11 @@ SCHEMA = (
 )
 # Built from the constant column names above, never from user input.
 INSERT = f"INSERT OR REPLACE INTO responses VALUES ({', '.join('?' * len(COLUMNS))})"  # noqa: S608
+# Keys per ``SELECT ... IN``: below SQLite's oldest limit of 999 bound variables.
+IN_CHUNK = 900
+SELECT_IN = (
+    "SELECT key, text, input_tokens, output_tokens FROM responses WHERE key IN ({})"
+)
 SELECT_ALL = f"SELECT {', '.join(COLUMNS)} FROM responses ORDER BY key"  # noqa: S608
 
 
@@ -94,27 +99,31 @@ class ResponseCache:
 
     def get(self, key: str) -> Response | None:
         """The stored reply for ``key``, marked ``cached``, or None."""
+        return self.get_many([key]).get(key)
+
+    def get_many(self, keys: Sequence[str]) -> dict[str, Response]:
+        """The stored replies among ``keys``, by key, marked ``cached``.
+
+        One ``SELECT ... IN`` per :data:`IN_CHUNK` keys rather than one per key.
+        """
+        unique = list(dict.fromkeys(keys))
+        found: dict[str, Response] = {}
         with self._lock:
-            row = self._conn.execute(
-                "SELECT text, input_tokens, output_tokens FROM responses WHERE key = ?",
-                (key,),
-            ).fetchone()
-        if row is None:
-            return None
-        return Response(row[0], row[1], row[2], cached=True, key=key)
+            for start in range(0, len(unique), IN_CHUNK):
+                chunk = unique[start : start + IN_CHUNK]
+                marks = ", ".join("?" * len(chunk))
+                rows = self._conn.execute(SELECT_IN.format(marks), chunk).fetchall()
+                for key, text, tokens_in, tokens_out in rows:
+                    found[key] = Response(text, tokens_in, tokens_out, True, key)
+        return found
 
     def put(self, request: Request, response: Response) -> None:
         """Store ``response`` under the key of ``request``, in one transaction."""
-        row = (
-            request.key(),
-            request.provider,
-            request.model,
-            json.dumps(request.identity(), sort_keys=True),
-            response.text,
-            response.input_tokens,
-            response.output_tokens,
-        )
-        self.insert([row])
+        self.put_many([(request, response)])
+
+    def put_many(self, pairs: Iterable[tuple[Request, Response]]) -> None:
+        """Store each ``(request, response)`` pair, all in one transaction."""
+        self.insert([_row_of(request, response) for request, response in pairs])
 
     def insert(self, rows: list[tuple[Any, ...]]) -> None:
         """Write ``rows`` (in :data:`COLUMNS` order) atomically."""
@@ -188,6 +197,19 @@ class ResponseCache:
             path = None
         type(self).__init__(self, path, state["mode"])
         self.insert(state["rows"])
+
+
+def _row_of(request: Request, response: Response) -> tuple[Any, ...]:
+    """The stored row (in :data:`COLUMNS` order) of one reply."""
+    return (
+        request.key(),
+        request.provider,
+        request.model,
+        json.dumps(request.identity(), sort_keys=True),
+        response.text,
+        response.input_tokens,
+        response.output_tokens,
+    )
 
 
 def connect(path: Path | None) -> sqlite3.Connection:

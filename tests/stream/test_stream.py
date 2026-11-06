@@ -31,6 +31,24 @@ def test_replay_hands_out_in_time_order_up_to_until():
     assert [(o.time, dict(o.values)) for o in rest] == [(3.0, {"cases": 8.0})]
 
 
+def test_late_adds_are_sorted_in_and_stale_ones_dropped():
+    """Observations added between polls join in time order, equal times in arrival order."""
+    source = ReplaySource([{"time": 5, "tag": 1}, {"time": 2, "tag": 2}])
+    assert [o.time for o in source.poll(until=2)] == [2.0]
+    source._add(
+        ReplaySource(
+            [{"time": 4, "tag": 3}, {"time": 1, "tag": 4}, {"time": 5, "tag": 5}]
+        ).poll()
+    )
+    tags = [(o.time, o.values["tag"]) for o in source.poll(until=4.5)]
+    assert tags == [(4.0, 3.0)]
+    assert [(o.time, o.values["tag"]) for o in source.poll()] == [
+        (5.0, 1.0),
+        (5.0, 5.0),
+    ]
+    assert source.poll() == []
+
+
 def test_replay_reads_a_dataframe_and_drops_empty_fields():
     """A DataFrame works like records; missing values are left out."""
     frame = pd.DataFrame({"time": [0, 1], "cases": [1.0, None]})

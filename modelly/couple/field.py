@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from functools import cache
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -48,6 +49,8 @@ if TYPE_CHECKING:
 EXPLICIT, IMPLICIT = "explicit", "implicit"
 # The default explicit sub-step, as a share of the stability limit.
 DEFAULT_SAFETY = 0.5
+# Scratch state rebuilt on use, never pickled (LU factorisations do not pickle).
+_TRANSIENT = ("_solvers", "_work")
 
 
 @dataclass(frozen=True)
@@ -128,6 +131,7 @@ class Field:
         self.writes = (name,)
         self.added = self.outflow = self.decayed = 0.0
         self._solvers: dict[float, Any] = {}
+        self._work = _buffer(self.matrix, self.values)
 
     def _time_step(self) -> float:
         """The longest sub-step: the given one, checked, or the default."""
@@ -162,16 +166,30 @@ class Field:
         h = duration / steps
         flat = self.values.reshape(-1)
         keep = math.exp(-self.transport.decay * h)
+        leaks = bool(self.leak.any())  # without an absorbing boundary nothing leaves
         for _ in range(steps):
             if self.transport.scheme == IMPLICIT:
                 flat[:] = self._solver(h)(flat)
-                self.outflow += h * float(self.leak @ flat)
+                if leaks:
+                    self.outflow += h * float(self.leak @ flat)
             else:
-                self.outflow += h * float(self.leak @ flat)
-                flat += h * (self.matrix @ flat)
+                if leaks:
+                    self.outflow += h * float(self.leak @ flat)
+                flat += self._rate(flat, h)
             if keep != 1.0:
                 self.decayed += (1.0 - keep) * float(flat.sum())
                 flat *= keep
+
+    def _rate(self, flat: np.ndarray, h: float) -> np.ndarray:
+        """``h * (matrix @ flat)``, the same operations, in the reused buffer."""
+        work, matrix = self._work, self.matrix
+        work.fill(0.0)
+        rows, cols = matrix.shape
+        _csr_matvec()(
+            rows, cols, matrix.indptr, matrix.indices, matrix.data, flat, work
+        )
+        work *= h
+        return work
 
     def _solver(self, h: float):
         """The LU solve of ``(I - h A) x = b``, factorised once per sub-step length."""
@@ -198,12 +216,26 @@ class Field:
 
     def __getstate__(self) -> dict[str, Any]:
         """Drop the LU factorisations, which do not pickle; they are rebuilt on use."""
-        return {k: v for k, v in self.__dict__.items() if k != "_solvers"}
+        return {k: v for k, v in self.__dict__.items() if k not in _TRANSIENT}
 
     def __setstate__(self, state: dict[str, Any]) -> None:
         """Restore the state with no factorisation cached."""
         self.__dict__.update(state)
         self._solvers = {}
+        self._work = _buffer(self.matrix, self.values)
+
+
+def _buffer(matrix: Any, values: np.ndarray) -> np.ndarray:
+    """The scratch array of the explicit sub-step: one value per cell, in the product's type."""
+    return np.zeros(values.size, np.result_type(matrix.dtype, values.dtype))
+
+
+@cache
+def _csr_matvec() -> Any:
+    """The CSR kernel ``y += A @ x`` that scipy runs for ``A @ x``; imported on first use."""
+    from scipy.sparse._sparsetools import csr_matvec  # noqa: PLC0415 - scipy is heavy
+
+    return csr_matvec
 
 
 def _layer(grid: Grid, name: str) -> np.ndarray:

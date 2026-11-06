@@ -87,6 +87,7 @@ def synthesize_population(
     names = list(categories)
     shape = tuple(len(categories[name]) for name in names)
     seed = np.ones(shape) if seed is None else np.asarray(seed, dtype=float)
+    levels = {name: np.asarray(categories[name], dtype=object) for name in names}
     frames = []
     for region, margins in marginals.items():
         fitted = ipf(seed, [margins[name] for name in names])
@@ -94,10 +95,7 @@ def synthesize_population(
         # repeat takes intp counts: int32 on 32-bit platforms (Pyodide, wasm32).
         repeats = counts.astype(np.intp)
         cells = np.unravel_index(np.repeat(np.arange(counts.size), repeats), shape)
-        columns = {
-            name: np.asarray(categories[name], dtype=object)[idx]
-            for name, idx in zip(names, cells)
-        }
+        columns = {name: levels[name][idx] for name, idx in zip(names, cells)}
         frame = pd.DataFrame(columns)
         frame.insert(0, REGION, region)
         frames.append(frame)
@@ -153,6 +151,9 @@ def trs(expected: np.ndarray, rng: np.random.Generator) -> np.ndarray:
     return counts
 
 
+_NONE = np.array([], dtype=np.intp)  # the rows of a region with no people
+
+
 def marginal_errors(
     people: pd.DataFrame,
     marginals: Mapping[Any, Mapping[str, Sequence[float]]],
@@ -170,8 +171,10 @@ def marginal_errors(
         ``synthetic`` and ``error`` (``synthetic - target``).
     """
     rows = []
+    # Each region's rows found once (by hashing, which matches == for labels).
+    positions = people.groupby(REGION, sort=False).indices if marginals else {}
     for region, margins in marginals.items():
-        members = people[people[REGION] == region]
+        members = people.iloc[positions.get(region, _NONE)]
         for name, targets in margins.items():
             counts = members[name].value_counts()
             for level, target in zip(categories[name], targets):

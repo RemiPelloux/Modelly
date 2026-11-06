@@ -25,7 +25,7 @@ import pyproj
 import shapely
 
 from modelly.space.continuous.space import ContinuousSpace
-from modelly.space.geo import export
+from modelly.space.geo import _memo, export
 from modelly.space.geo.regions import NO_REGION, RegionQueriesMixin
 
 if TYPE_CHECKING:
@@ -89,7 +89,7 @@ class GeoSpace(RegionQueriesMixin, ContinuousSpace):
             "_agent_regions_cache",
         ):
             state.pop(name, None)
-        return state
+        return _memo.without_memos(state)
 
     def __setstate__(self, state: dict) -> None:
         """Restore the position view and start with empty spatial indices."""
@@ -104,13 +104,13 @@ class GeoSpace(RegionQueriesMixin, ContinuousSpace):
             crs: the CRS ``geometry`` is in; GeoPandas objects default to their own CRS.
                 ``None`` for a Shapely geometry means it is already in the space's CRS.
         """
-        if isinstance(geometry, gpd.GeoSeries | gpd.GeoDataFrame):
+        if isinstance(geometry, (gpd.GeoSeries, gpd.GeoDataFrame)):
             if geometry.crs is None or self.crs is None:
                 return geometry if crs is None else geometry.set_crs(crs)
             return geometry.to_crs(self.crs)
         if crs is None or self.crs is None:
             return geometry
-        transformer = pyproj.Transformer.from_crs(crs, self.crs, always_xy=True)
+        transformer = _memo.transformer(self, crs, self.crs)
         return shapely.transform(
             geometry, lambda xy: np.column_stack(transformer.transform(*xy.T))
         )
@@ -120,7 +120,7 @@ class GeoSpace(RegionQueriesMixin, ContinuousSpace):
         xy = np.atleast_2d(np.asarray(xy, dtype=float))
         if crs is None or self.crs is None:
             return xy
-        transformer = pyproj.Transformer.from_crs(crs, self.crs, always_xy=True)
+        transformer = _memo.transformer(self, crs, self.crs)
         return np.column_stack(transformer.transform(xy[:, 0], xy[:, 1]))
 
     def _as_xy(self, point: Any, crs: Any = None) -> np.ndarray:

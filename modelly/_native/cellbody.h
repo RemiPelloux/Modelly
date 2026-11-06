@@ -35,6 +35,11 @@ at_capacity(PyObject *occupants, PyObject *limit)
     Py_ssize_t size = PyObject_Size(occupants);
     if (size < 0)
         return -1;
+    if (PyLong_CheckExact(limit)) { /* int >= int: compared as C numbers, no int built */
+        int overflow;
+        long long bound = PyLong_AsLongLongAndOverflow(limit, &overflow); /* cannot fail on an int */
+        return overflow != 0 ? overflow < 0 : (long long)size >= bound;
+    }
     PyObject *count = PyLong_FromSsize_t(size);
     if (count == NULL)
         return -1;
@@ -102,8 +107,15 @@ remove_from(PyObject *occupants, PyObject *agent)
 #endif
     if (!search_here)
         return call_method(occupants, str_remove, agent);
+    /* When neither type defines ``==`` (both keep object's), ``item == agent`` is identity,
+     * and no comparison is called; any other pair is compared as list.remove does. */
+    richcmpfunc identity = PyBaseObject_Type.tp_richcompare;
+    int plain = Py_TYPE(agent)->tp_richcompare == identity;
     for (Py_ssize_t i = 0; i < PyList_GET_SIZE(occupants); i++) {
-        PyObject *item = Py_NewRef(PyList_GET_ITEM(occupants, i));
+        PyObject *item = PyList_GET_ITEM(occupants, i);
+        if (item != agent && plain && Py_TYPE(item)->tp_richcompare == identity)
+            continue;
+        Py_INCREF(item);
         int same = PyObject_RichCompareBool(item, agent, Py_EQ);
         Py_DECREF(item);
         if (same != 0)

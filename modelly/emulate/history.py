@@ -243,10 +243,11 @@ class HistoryMatch:
         """Run ``waves`` more waves of ``runs`` runs each; stop early if NROY is empty."""
         if runs < 1:
             raise ValueError("a wave needs at least one run")
-        for _ in range(waves):
-            if not self.result.alive.any():
-                break
-            self._wave(runs)
+        with self.simulation:  # one pool of workers for every wave
+            for _ in range(waves):
+                if not self.result.alive.any():
+                    break
+                self._wave(runs)
         return self.result
 
     def _wave(self, runs: int) -> None:

@@ -30,15 +30,15 @@ def create_space_component(renderer: SpaceRenderer):
     return SpaceVisualizationComponent
 
 
-def _clear_matplotlib_canvas(renderer: SpaceRenderer) -> None:
-    """Remove the previously drawn artists and colorbars from the matplotlib canvas."""
-    # Clear the previous plotted data and agents
+def _clear_matplotlib_canvas(renderer: SpaceRenderer, keep: set[Any]) -> None:
+    """Remove the drawn artists (but those in ``keep``) and the colorbars from the canvas."""
+    canvas = renderer.canvas
     all_artists = [
-        renderer.canvas.lines[:],
-        renderer.canvas.collections[:],
-        renderer.canvas.patches[:],
-        renderer.canvas.images[:],
-        renderer.canvas.artists[:],
+        canvas.lines[:],
+        canvas.collections[:],
+        canvas.patches[:],
+        canvas.images[:],
+        canvas.artists[:],
     ]
 
     # Remove duplicate colorbars from the canvas
@@ -46,17 +46,32 @@ def _clear_matplotlib_canvas(renderer: SpaceRenderer) -> None:
         cbar.remove()
     renderer.backend_renderer._active_colorbars.clear()
 
-    # Chain them together into a single iterable
     for artist in itertools.chain.from_iterable(all_artists):
-        artist.remove()
+        if artist not in keep:
+            artist.remove()
+
+
+def _kept_structure(renderer: SpaceRenderer) -> set[Any] | None:
+    """The structure's artists still valid on the canvas, or None to redraw it.
+
+    The structure (grid lines, hexagons, cells, the network) is kept from frame to
+    frame while the space is the same object and nothing redrew it since.
+    """
+    if not renderer.space_mesh or renderer.kept_structure is None:
+        return None
+    space, artists = renderer.kept_structure
+    return artists if space is renderer.space else None
 
 
 def _render_matplotlib_space(renderer: SpaceRenderer, viz_dependencies) -> None:
-    """Redraw the space on the matplotlib canvas and display the figure."""
-    _clear_matplotlib_canvas(renderer)
+    """Redraw the agents and layers (and the structure when needed) and show the figure."""
+    keep = _kept_structure(renderer)
+    _clear_matplotlib_canvas(renderer, keep or set())
 
-    if renderer.space_mesh:
+    if renderer.space_mesh and keep is None:
         renderer.draw_structure()
+        structure = set(renderer.canvas.get_children())
+        renderer.kept_structure = (renderer.space, structure)
     if renderer.agent_mesh:
         renderer.draw_agents()
     if renderer.property_layer_mesh:

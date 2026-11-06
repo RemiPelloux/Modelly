@@ -1,15 +1,18 @@
 """Pick the space drawer and backend for a space, and map agent coordinates."""
 
+from typing import get_args
+
 from modelly.space import VoronoiGrid
 from modelly.space.continuous import ContinuousSpace
-from modelly.viz.altair.backend import AltairBackend
 from modelly.viz.mpl.backend import MatplotlibBackend
 from modelly.viz.render.drawers.base import HexGrid, Network, OrthogonalGrid
 from modelly.viz.render.drawers.continuous import ContinuousSpaceDrawer
 from modelly.viz.render.drawers.hexagonal import HexSpaceDrawer
-from modelly.viz.render.drawers.network import NetworkSpaceDrawer
 from modelly.viz.render.drawers.orthogonal import OrthogonalSpaceDrawer
 from modelly.viz.render.drawers.voronoi import VoronoiSpaceDrawer
+
+# The spaces whose coordinates are drawn as they are (built once, not per call).
+DIRECT_COORDINATES = (*get_args(OrthogonalGrid), VoronoiGrid, ContinuousSpace, Network)
 
 
 def make_space_drawer(space):
@@ -27,6 +30,9 @@ def make_space_drawer(space):
     elif isinstance(space, VoronoiGrid):
         return VoronoiSpaceDrawer(space)
     elif isinstance(space, Network):
+        # Imported here: NetworkX loads only for a network.
+        from modelly.viz.render.drawers.network import NetworkSpaceDrawer  # noqa: PLC0415
+
         return NetworkSpaceDrawer(space)
     raise ValueError(
         f"Unsupported space type: {type(space).__name__}. "
@@ -43,6 +49,9 @@ def make_backend(backend, space_drawer):
     if backend == "matplotlib":
         return MatplotlibBackend(space_drawer)
     if backend == "altair":
+        # Imported here: Altair loads only for the Altair backend.
+        from modelly.viz.altair.backend import AltairBackend  # noqa: PLC0415
+
         return AltairBackend(space_drawer)
     raise ValueError(f"Unsupported backend: {backend}")
 
@@ -55,7 +64,7 @@ def map_coordinates(space, space_drawer, arguments):
     """
     mapped_arguments = arguments.copy()
 
-    if isinstance(space, OrthogonalGrid | VoronoiGrid | ContinuousSpace | Network):
+    if isinstance(space, DIRECT_COORDINATES):
         mapped_arguments["loc"] = arguments["loc"].astype(float)
 
     elif isinstance(space, HexGrid):

@@ -50,7 +50,7 @@ def validate_edge_arguments(arguments, kwargs):
 
 def is_image_marker(mark):
     """Return whether the marker is the path of an image file."""
-    return isinstance(mark, str | os.PathLike) and os.path.isfile(mark)
+    return isinstance(mark, (str, os.PathLike)) and os.path.isfile(mark)
 
 
 def zoom_factor(ax, img, correction):

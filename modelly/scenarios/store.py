@@ -6,8 +6,7 @@ from dataclasses import astuple, dataclass, fields
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Protocol, cast, runtime_checkable
 
-import pandas as pd
-
+from modelly._optional import LazyModule
 from modelly.scenarios.exceptions import (
     ScenarioAbortedException,
     ScenarioFailedException,
@@ -16,8 +15,12 @@ from modelly.scenarios.exceptions import (
 )
 
 if TYPE_CHECKING:
+    import pandas as pd
+
     from modelly.scenarios.exceptions import FailureInfo
     from modelly.scenarios.scenario import Scenario
+else:
+    pd = LazyModule("pandas")
 
 
 class Status(Enum):

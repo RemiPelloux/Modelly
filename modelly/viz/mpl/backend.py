@@ -142,7 +142,8 @@ class MatplotlibBackend(AbstractRenderer):
         validate_edge_arguments(arguments, kwargs)
         image_markers, regular_markers = _split_markers(data.marker)
 
-        self.ax.get_figure().canvas.draw()
+        if image_markers:  # the zoom of an image marker needs the axes laid out
+            self.ax.get_figure().canvas.draw()
 
         for mark in image_markers:
             self._draw_image_marker(mark, data)
@@ -235,14 +236,18 @@ def _scatter_data(arguments, kwargs):
 
 
 def _split_markers(marker):
-    """Separate the image markers from the regular ones."""
-    image_markers = set()
-    regular_markers = set()
+    """Separate the image markers from the regular ones, each in first-seen order.
+
+    Lists, not sets: the draw order (and so the z-order of equal-zorder artists) must
+    not depend on string hashing, which changes with ``PYTHONHASHSEED``.
+    """
+    image_markers = []
+    regular_markers = []
     for mark in dict.fromkeys(marker):  # first-seen order, stable z-order
         if is_image_marker(mark):
-            image_markers.add(mark)
+            image_markers.append(mark)
         else:
-            regular_markers.add(mark)
+            regular_markers.append(mark)
     return image_markers, regular_markers
 
 

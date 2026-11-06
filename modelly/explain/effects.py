@@ -21,6 +21,7 @@ from typing import Any
 
 import numpy as np
 
+from modelly.decide._parallel import runs
 from modelly.decide.compare import CONFIDENCE, Run, interval
 
 STREAM_TREATED = 1  # spawn key of the independent arm's seeds
@@ -60,21 +61,25 @@ def _seeds(seed: int, replicates: int, key: int) -> list[int]:
 def treatment_effect(
     run: Run, control: Mapping[str, Any], treated: Mapping[str, Any], output: str, *,
     replicates: int = 30, seed: int = 0, confidence: float = CONFIDENCE,
-    measure_independent: bool = True,
+    measure_independent: bool = True, workers: int | None = 1,
 ) -> Effect:  # fmt: skip
     """``treated`` minus ``control`` on ``output``, paired on common random numbers.
 
     With ``measure_independent`` the control runs are compared with treated runs on other
     seeds too, which doubles the cost and gives ``variance_reduction``.
+    ``workers`` runs them over that many processes (``modelly.batch.run_batch``): the same
+    results in the same order; 1, the default, runs them here one after another.
     """
     seeds = _seeds(seed, replicates, 0)
-    base = np.array([run(control, x)[output] for x in seeds], dtype=float)
-    paired = np.array([run(treated, x)[output] for x in seeds], dtype=float) - base
+    others = _seeds(seed, replicates, STREAM_TREATED) if measure_independent else []
+    tasks = [(control, x) for x in seeds] + [(treated, x) for x in [*seeds, *others]]
+    found = [result[output] for result in runs(run, tasks, workers)]
+    base = np.array(found[:replicates], dtype=float)
+    paired = np.array(found[replicates : 2 * replicates], dtype=float) - base
     mean, low, high = interval(paired, confidence)
     independent = float("nan")
     if measure_independent:
-        others = _seeds(seed, replicates, STREAM_TREATED)
-        alone = np.array([run(treated, x)[output] for x in others], dtype=float)
+        alone = np.array(found[2 * replicates :], dtype=float)
         independent = float(alone.var(ddof=1) + base.var(ddof=1))
     return Effect(mean, low, high, float(paired.var(ddof=1)), independent, replicates)
 

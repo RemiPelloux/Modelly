@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import heapq
 import numbers
 import operator
 from collections.abc import Callable, Sequence
@@ -113,7 +114,7 @@ class SelectionMixin[A: Agent]:
             if replace:
                 chosen = self.random.choices(items, k=sample_size)
             else:
-                chosen = self.random.sample(items, k=sample_size)
+                chosen = self.random.sample(items, sample_size)  # k by position: C path
         else:
             w = _resolve_weights(items, weights)
 
@@ -126,14 +127,13 @@ class SelectionMixin[A: Agent]:
 
     def _sample_size(self, n: int | float, replace: bool) -> int:
         """Validate ``n`` for ``select_random`` and return the number of agents to draw."""
-        if len(self) == 0:
+        size = len(self)
+        if size == 0:
             raise ValueError("Cannot sample from an empty AgentSet.")
 
-        # numbers.Integral / numbers.Real also cover numpy scalars such as np.int64
-        if isinstance(n, (bool, np.bool_)) or not isinstance(n, numbers.Real):
-            raise TypeError(f"n must be an integer or float, got {type(n).__name__}.")
-
-        if isinstance(n, numbers.Integral):
+        _check_real(n)
+        kind = type(n)
+        if kind is int or (kind is not float and isinstance(n, numbers.Integral)):
             n = int(n)
             if n <= 0:
                 raise ValueError(f"n must be a positive integer, got {n}.")
@@ -143,13 +143,26 @@ class SelectionMixin[A: Agent]:
                 raise ValueError(
                     f"Fractional sample size n must be in the range (0.0, 1.0], got {n}."
                 )
-            sample_size = int(len(self) * n)
+            sample_size = int(size * n)
 
-        if not replace and sample_size > len(self):
+        if not replace and sample_size > size:
             raise ValueError(
-                f"Sample size ({sample_size}) cannot exceed AgentSet size ({len(self)}) when replace=False."
+                f"Sample size ({sample_size}) cannot exceed AgentSet size ({size}) when replace=False."
             )
         return sample_size
+
+
+def _check_real(n: object) -> None:
+    """TypeError unless ``n`` is a real number and not a bool.
+
+    numbers.Integral / numbers.Real also cover numpy scalars such as np.int64; a
+    plain int or float skips those (slow) abstract-class checks.
+    """
+    kind = type(n)
+    if kind is int or kind is float:
+        return
+    if isinstance(n, (bool, np.bool_)) or not isinstance(n, numbers.Real):
+        raise TypeError(f"n must be an integer or float, got {type(n).__name__}.")
 
 
 def _weighted_sample[T](
@@ -165,5 +178,6 @@ def _weighted_sample[T](
             f"agents with positive weights ({positive_weight_count}) when "
             "replace=False."
         )
-    keys.sort(key=operator.itemgetter(0), reverse=True)
-    return [agent for _, agent in keys[:sample_size]]
+    # nlargest is documented to equal sorted(..., reverse=True)[:n], ties included
+    top = heapq.nlargest(sample_size, keys, key=operator.itemgetter(0))
+    return [agent for _, agent in top]

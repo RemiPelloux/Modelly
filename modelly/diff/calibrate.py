@@ -178,11 +178,12 @@ class GradientCalibration:
         )
         z = self._start()
         moment, second = jnp.zeros_like(z), jnp.zeros_like(z)
-        rows, best = [], (np.inf, z)
+        # Kept on the device and read back after the loop: reading each one as it
+        # comes would wait for the device at every iteration.
+        visited, start = [], z
         for iteration in range(1, self.options.iterations + 1):
             value, grad = value_and_grad(z)
-            rows.append({**self._plain(z), LOSS: float(value)})
-            best = min(best, (float(value), z), key=lambda pair: pair[0])
+            visited.append((value, z))
             moment = BETA1 * moment + (1 - BETA1) * grad
             second = BETA2 * second + (1 - BETA2) * grad**2
             step = (
@@ -191,6 +192,10 @@ class GradientCalibration:
                 / (jnp.sqrt(second / (1 - BETA2**iteration)) + EPSILON)
             )
             z = z - self.options.learning_rate * step
+        rows, best = [], (np.inf, start)
+        for value, point in visited:
+            rows.append({**self._plain(point), LOSS: float(value)})
+            best = min(best, (float(value), point), key=lambda pair: pair[0])
         return self._fit(best, pd.DataFrame(rows))
 
     def _plain(self, z: Any) -> dict[str, float]:

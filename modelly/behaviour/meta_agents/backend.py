@@ -111,7 +111,7 @@ class MembershipBackend:
         self, agent: Hashable, relation: RelationKey | None = None
     ) -> set[Hashable]:
         """Return groups for an agent, optionally filtered by relation."""
-        entries = self._by_agent.get(agent, set())
+        entries = self._by_agent.get(agent, ())
         if relation is None:
             return {group for group, _ in entries}
         return {group for group, rel in entries if rel == relation}
@@ -120,7 +120,7 @@ class MembershipBackend:
         self, group: Hashable, relation: RelationKey | None = None
     ) -> set[Hashable]:
         """Return agents for a group, optionally filtered relation."""
-        entries = self._by_group.get(group, set())
+        entries = self._by_group.get(group, ())
         if relation is None:
             return {agent for agent, _ in entries}
         return {agent for agent, rel in entries if rel == relation}
@@ -129,7 +129,7 @@ class MembershipBackend:
         """Return all relation types between one agent and one group."""
         return {
             relation
-            for linked_group, relation in self._by_agent.get(agent, set())
+            for linked_group, relation in self._by_agent.get(agent, ())
             if linked_group == group
         }
 
@@ -153,8 +153,8 @@ class MembershipBackend:
         """Assert internal consistency between triplets and indexes."""
         # Triplets must match both indexes.
         for agent, group, relation in self._triplets:
-            assert (group, relation) in self._by_agent.get(agent, set())
-            assert (agent, relation) in self._by_group.get(group, set())
+            assert (group, relation) in self._by_agent.get(agent, ())
+            assert (agent, relation) in self._by_group.get(group, ())
 
         # Agent index must match triplets
         for agent, edges in self._by_agent.items():

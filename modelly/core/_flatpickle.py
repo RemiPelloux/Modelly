@@ -71,7 +71,7 @@ class ShellPickler(pickle.Pickler):
 def dump_flat(pickler: ShellPickler, model: Model, payload: Any) -> None:
     """Write the shells, their states, then ``payload`` (which holds ``model``)."""
     agents, states = [], []
-    for agent in list(model._all_agents):
+    for agent in model._all_agents.to_list():
         parts = split(agent, pickler.protocol)
         if parts is not None:
             pickler.shells[id(agent)] = parts[0]

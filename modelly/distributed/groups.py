@@ -62,6 +62,14 @@ class LocalGroup:
         """The values in partition order."""
         return [values[i] for i in range(self.size)]
 
+    def invoke_exchange(self, method: str, *args: Any) -> Outboxes:
+        """``exchange(invoke(method, *args))``: call, then route the outboxes."""
+        return self.exchange(self.invoke(method, *args))
+
+    def invoke_gather(self, method: str, *args: Any) -> list[Any]:
+        """``gather(invoke(method, *args))``: call, then the values in partition order."""
+        return self.gather(self.invoke(method, *args))
+
     def close(self) -> None:
         """Drop the workers."""
         self.workers = []
@@ -86,17 +94,9 @@ class MPIGroup:
 
     def _agreed(self, function: Any, *args: Any) -> Any:
         """``function(*args)`` here, raising on every rank if it failed on any."""
-        try:
-            result, failure = function(*args), None
-        # Any error must reach the other ranks, or they would wait forever.
-        except Exception as error:
-            result, failure = None, error
-        reports = self.comm.allgather(None if failure is None else repr(failure))
-        if failure is not None:
-            raise failure
-        for rank, report in enumerate(reports):
-            if report is not None:
-                raise PartitionError(f"MPI rank {rank} failed: {report}")
+        result, failure = _attempt(function, args)
+        reports = self.comm.allgather(_report(failure))
+        _raise_any(failure, reports)
         return result
 
     def invoke(self, method: str, *args: Any) -> dict[int, Any]:
@@ -118,6 +118,50 @@ class MPIGroup:
         """Every rank's value, in rank order, on every rank."""
         return self.comm.allgather(values[self.rank])
 
+    def invoke_exchange(self, method: str, *args: Any) -> Outboxes:
+        """Call ``method`` and route its outbox in one ``alltoall``, the status inside.
+
+        Each part carries the sender's failure, if any, so every rank still learns of a
+        failure on any rank and raises it, without a collective of its own.
+        """
+        outbox, failure = _attempt(getattr(self.worker, method), args)
+        mine = {} if outbox is None else outbox
+        parts = [(_report(failure), mine.get(q)) for q in range(self.size)]
+        received = self.comm.alltoall(parts)
+        _raise_any(failure, [report for report, _ in received])
+        inbox = {p: data for p, (_, data) in enumerate(received) if data is not None}
+        return {self.rank: inbox}
+
+    def invoke_gather(self, method: str, *args: Any) -> list[Any]:
+        """Call ``method`` and gather every rank's value in one ``allgather``, as above."""
+        value, failure = _attempt(getattr(self.worker, method), args)
+        parts = self.comm.allgather((_report(failure), value))
+        _raise_any(failure, [report for report, _ in parts])
+        return [part for _, part in parts]
+
     def close(self) -> None:
         """Drop this rank's worker (MPI itself stays initialised for the script)."""
         self.worker = None
+
+
+def _attempt(function: Any, args: tuple[Any, ...]) -> tuple[Any, Exception | None]:
+    """``(function(*args), None)``, or ``(None, error)`` when it raised."""
+    try:
+        return function(*args), None
+    # Any error must reach the other ranks, or they would wait forever.
+    except Exception as error:
+        return None, error
+
+
+def _report(failure: Exception | None) -> str | None:
+    """What a rank tells the others of its failure: its repr, or None."""
+    return None if failure is None else repr(failure)
+
+
+def _raise_any(failure: Exception | None, reports: Sequence[str | None]) -> None:
+    """Raise this rank's own failure, else the first other rank's; nothing if none."""
+    if failure is not None:
+        raise failure
+    for rank, report in enumerate(reports):
+        if report is not None:
+            raise PartitionError(f"MPI rank {rank} failed: {report}")

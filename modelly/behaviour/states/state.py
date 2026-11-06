@@ -11,7 +11,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 import modelly.time.signals.core as core
-from modelly.behaviour.states.threshold import Threshold
+from modelly.behaviour.states.threshold import Threshold, _bind_thresholds
 from modelly.time.signals import Observable, ObservableSignals
 from modelly.time.signals.core import (
     BaseObservable,
@@ -23,15 +23,11 @@ if TYPE_CHECKING:
     from modelly.time.signals import HasEmitters
 
 
-def _bind_thresholds(instance: HasEmitters) -> None:
-    """Bind every declarative Threshold on the instance's class hierarchy."""
-    cls = instance.__class__
-    for klass in cls.__mro__:
-        if "_continuous_thresholds" in klass.__dict__:
-            for t_name in klass.__dict__["_continuous_thresholds"]:
-                thresh = getattr(cls, t_name, None)
-                if thresh is not None and hasattr(thresh, "bind"):
-                    thresh.bind(instance)
+def _now(model: Any) -> Any:
+    """``model.time`` (0.0 if unset), read without registering a dependency."""
+    if core.CURRENT_COMPUTED is None:
+        return getattr(model, "time", 0.0)
+    return model.peek("time", 0.0)
 
 
 class ContinuousState(BaseObservable):
@@ -89,9 +85,11 @@ class ContinuousState(BaseObservable):
 
     def _get_state(self, instance: HasEmitters) -> dict[str, Any]:
         """Retrieve or initialize the internal state tracking dictionary."""
-        if not hasattr(instance, self.private_state_name):
+        state = getattr(instance, self.private_state_name, None)
+        if state is None:
             self._init_state(instance)
-        return getattr(instance, self.private_state_name)
+            state = getattr(instance, self.private_state_name)
+        return state
 
     def _init_state(self, instance: HasEmitters) -> None:
         """Create the tracking dictionary, binding Thresholds and the rate first."""
@@ -101,7 +99,7 @@ class ContinuousState(BaseObservable):
             instance._thresholds_bound = True
             _bind_thresholds(instance)
 
-        time = instance.model.peek("time", 0.0)
+        time = _now(instance.model)
 
         state: dict[str, Any] = {
             "base_value": self.fallback_value,
@@ -174,7 +172,7 @@ class ContinuousState(BaseObservable):
         #   4. Notify Threshold observers that the trajectory has shifted.
 
         state = self._get_state(instance)
-        current_time = instance.model.peek("time", 0.0)
+        current_time = _now(instance.model)
 
         dt = current_time - state["last_time"]
         current_value = self._extrapolate(state, dt)
@@ -254,13 +252,14 @@ class ContinuousState(BaseObservable):
         """Extrapolate and return the continuous state."""
         if instance is None:
             return self
+        return self._read(instance, self._get_state(instance))
 
-        state = self._get_state(instance)
+    def _read(self, instance: HasEmitters, state: dict[str, Any]) -> float:
+        """The value now, from the instance's tracking state; records a dependency."""
         self._refresh_rate_if_dirty(state, instance)
-        current_time = instance.model.peek("time", 0.0)
-        dt = current_time - state["last_time"]
-        current_value = self._extrapolate(state, dt)
-
+        current_value = self._extrapolate(
+            state, _now(instance.model) - state["last_time"]
+        )
         if core.CURRENT_COMPUTED is not None:
             core.CURRENT_COMPUTED._record_access(
                 instance, self.public_name, current_value
@@ -278,7 +277,7 @@ class ContinuousState(BaseObservable):
             raise ValueError("Cyclical dependency detected in ContinuousState.")
 
         state = self._get_state(instance)
-        current_time = instance.model.peek("time", 0.0)
+        current_time = _now(instance.model)
         has_subscribers = instance._has_subscribers(
             self.public_name, ObservableSignals.CHANGED
         )

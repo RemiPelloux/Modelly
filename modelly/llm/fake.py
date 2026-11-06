@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import math
 import threading
+from collections import deque
 from collections.abc import Callable, Iterable
 from typing import Any
 
@@ -53,7 +54,7 @@ class FakeProvider(Provider):
         """Keep the responder and the failures to play back."""
         super().__init__(base_url="fake://")
         self.responder = responder
-        self.failures = list(failures)
+        self.failures: deque[int] = deque(failures)
         self.calls = 0
         self.requests: list[Request] = []
         self._lock = threading.Lock()
@@ -63,7 +64,7 @@ class FakeProvider(Provider):
         with self._lock:
             self.calls += 1
             self.requests.append(request)
-            status = self.failures.pop(0) if self.failures else None
+            status = self.failures.popleft() if self.failures else None
         if status is not None:
             raise ProviderError(f"fake failure {status}", status=status)
         text = self.responder(request)

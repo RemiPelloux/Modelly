@@ -92,6 +92,17 @@ class CellCollection[T: Cell]:
             random = Random()  # noqa: MDL001 (no cell or agent has a seeded generator)
         self.random = random
 
+    @classmethod
+    def _make(
+        cls, cells: dict[T, list[CellAgent]], random: Random
+    ) -> CellCollection[T]:
+        """Wrap ``cells`` (a fresh dict) with a known generator: ``__init__`` without its checks."""
+        collection = object.__new__(cls)
+        collection._cells = cells
+        collection._capacity = next(iter(cells)).capacity if cells else None
+        collection.random = random
+        return collection
+
     def __iter__(self):  # noqa
         return iter(self._cells)
 
@@ -120,9 +131,9 @@ class CellCollection[T: Cell]:
         Reads the live occupancy lists directly, so it costs one truth test per
         cell rather than a property call per cell.
         """
-        return CellCollection(
+        return CellCollection._make(
             {cell: agents for cell, agents in self._cells.items() if not agents},
-            random=self.random,
+            self.random,
         )
 
     def select_random_cell(self, default=RAISES) -> T | None:
@@ -193,7 +204,7 @@ class CellCollection[T: Cell]:
                 return self
             # One pass straight into the new collection's mapping.
             kept = {cell: cell._agents for cell in self._cells if filter_func(cell)}
-            return CellCollection(kept, random=self.random)
+            return CellCollection._make(kept, self.random)
 
         limit = _validate_at_most(at_most, len(self._cells))
         matches = (
@@ -203,4 +214,4 @@ class CellCollection[T: Cell]:
         )
         # Stop filtering as soon as ``limit`` cells matched.
         kept = {cell: cell._agents for cell in itertools.islice(matches, limit)}
-        return CellCollection(kept, random=self.random)
+        return CellCollection._make(kept, self.random)

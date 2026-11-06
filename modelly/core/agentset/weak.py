@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import contextlib
 import weakref
 from collections.abc import Callable, Iterable, Iterator
 from random import Random
 from typing import TYPE_CHECKING, Any
 
-from modelly._native.sets import live_agents, make_refs
+from modelly._native.loops import call_each_weak, map_each_weak
+from modelly._native.sets import live_agents, live_refs, make_refs
 from modelly.core.agentset._utils import _resolve_random
 from modelly.core.agentset.abstract import AbstractAgentSet
 
@@ -54,7 +54,9 @@ class AgentSet[A: Agent](AbstractAgentSet[A]):
         self._refs: dict[weakref.ReferenceType[A], None] = {}
         self._remove = _make_remover(self)
         self._refs = self._make_refs(agents)
-        self.random = _resolve_random(random, self._first_agent())
+        self.random = (
+            random if random is not None else _resolve_random(None, self._first_agent())
+        )
 
     # --- internal helpers -------------------------------------------------
 
@@ -63,6 +65,10 @@ class AgentSet[A: Agent](AbstractAgentSet[A]):
         return make_refs(agents, self._remove)
 
     def _first_agent(self) -> A | None:
+        for r in self._refs:  # the first ref is almost always alive: no snapshot for it
+            if (agent := r()) is not None:
+                return agent
+            break
         for r in list(self._refs):
             if (agent := r()) is not None:
                 return agent
@@ -140,8 +146,7 @@ class AgentSet[A: Agent](AbstractAgentSet[A]):
         Note:
             This method is an implementation of the abstract method from MutableSet.
         """
-        with contextlib.suppress(KeyError):
-            del self._refs[weakref.ref(agent)]
+        self._refs.pop(weakref.ref(agent), None)
 
     def remove(self, agent: A):
         """Remove an agent from the AgentSet.
@@ -155,6 +160,19 @@ class AgentSet[A: Agent](AbstractAgentSet[A]):
             This method is an implementation of the abstract method from MutableSet.
         """
         del self._refs[weakref.ref(agent)]
+
+    def shuffle(self, inplace: bool = False) -> AgentSet[A]:
+        """Randomly shuffle the order of agents (see ``AbstractAgentSet.shuffle``).
+
+        In place, the set's own weakrefs are reordered rather than rebuilt: the
+        same live agents are shuffled with the same draws, in the same order.
+        """
+        if not inplace:
+            return super().shuffle(inplace)  # type: ignore[return-value]
+        refs = live_refs(self._refs)
+        self.random.shuffle(refs)
+        self._refs = dict.fromkeys(refs)
+        return self
 
     # --- bulk operations ----------------------------------------------------
 
@@ -176,15 +194,7 @@ class AgentSet[A: Agent](AbstractAgentSet[A]):
         # Walk a snapshot of the refs and re-check membership per agent: an earlier
         # agent's call may have removed this agent from the set (or killed it).
         refs = self._refs
-        if isinstance(method, str):
-            for r in list(refs):
-                if (agent := r()) is not None and r in refs:
-                    getattr(agent, method)(*args, **kwargs)
-        else:
-            for r in list(refs):
-                if (agent := r()) is not None and r in refs:
-                    method(agent, *args, **kwargs)
-
+        call_each_weak(list(refs), refs, method, args, kwargs or None)
         return self
 
     def shuffle_do(self, method: str | Callable, *args, **kwargs) -> AgentSet[A]:
@@ -195,16 +205,7 @@ class AgentSet[A: Agent](AbstractAgentSet[A]):
         refs = self._refs
         order = list(refs)
         self.random.shuffle(order)
-
-        if isinstance(method, str):
-            for r in order:
-                if (agent := r()) is not None and r in refs:
-                    getattr(agent, method)(*args, **kwargs)
-        else:
-            for r in order:
-                if (agent := r()) is not None and r in refs:
-                    method(agent, *args, **kwargs)
-
+        call_each_weak(order, refs, method, args, kwargs or None)
         return self
 
     def map(self, method: str | Callable, *args, **kwargs) -> list[Any]:
@@ -223,17 +224,7 @@ class AgentSet[A: Agent](AbstractAgentSet[A]):
            list[Any]: The results of the callable calls
         """
         refs = self._refs
-        if isinstance(method, str):
-            return [
-                getattr(agent, method)(*args, **kwargs)
-                for r in list(refs)
-                if (agent := r()) is not None and r in refs
-            ]
-        return [
-            method(agent, *args, **kwargs)
-            for r in list(refs)
-            if (agent := r()) is not None and r in refs
-        ]
+        return map_each_weak(list(refs), refs, method, args, kwargs or None)
 
     # --- pickling -------------------------------------------------------------
 

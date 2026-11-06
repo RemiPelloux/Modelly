@@ -1,6 +1,5 @@
 """Drawer for orthogonal grid spaces."""
 
-import altair as alt
 import numpy as np
 import pandas as pd
 
@@ -8,6 +7,7 @@ from modelly.viz.render.drawers.base import (
     MARKER_SPAN_POINTS,
     BaseSpaceDrawer,
     OrthogonalGrid,
+    _draw_grid_lines,
     axes_with_figure_kwargs,
     chart_properties,
 )
@@ -63,11 +63,12 @@ class OrthogonalSpaceDrawer(BaseSpaceDrawer):
         ax.set_xlim(self.viz_xmin, self.viz_xmax)
         ax.set_ylim(self.viz_ymin, self.viz_ymax)
 
-        # Draw grid lines
-        for x in np.arange(-HALF_CELL, self.space.width, 1):
-            ax.axvline(x, **line_kwargs)
-        for y in np.arange(-HALF_CELL, self.space.height, 1):
-            ax.axhline(y, **line_kwargs)
+        _draw_grid_lines(
+            ax,
+            np.arange(-HALF_CELL, self.space.width, 1),
+            np.arange(-HALF_CELL, self.space.height, 1),
+            line_kwargs,
+        )
 
         return ax
 
@@ -85,15 +86,9 @@ class OrthogonalSpaceDrawer(BaseSpaceDrawer):
         Returns:
             Altair chart object
         """
-        # for axis and grid styling
-        axis_kwargs = {
-            "xlabel": draw_chart_kwargs.pop("xlabel", "X"),
-            "ylabel": draw_chart_kwargs.pop("ylabel", "Y"),
-            "grid_color": draw_chart_kwargs.pop("grid_color", "lightgray"),
-            "grid_dash": draw_chart_kwargs.pop("grid_dash", [2, 2]),
-            "grid_width": draw_chart_kwargs.pop("grid_width", 1),
-            "grid_opacity": draw_chart_kwargs.pop("grid_opacity", 1),
-        }
+        import altair as alt  # noqa: PLC0415 - Altair loads only for this backend
+
+        axis_kwargs = _axis_kwargs(draw_chart_kwargs)
         chart_props = chart_properties(chart_width, chart_height, draw_chart_kwargs)
 
         x_domain = [self.viz_xmin, self.viz_xmax]
@@ -113,8 +108,22 @@ class OrthogonalSpaceDrawer(BaseSpaceDrawer):
         )
 
 
+def _axis_kwargs(draw_chart_kwargs):
+    """Pop the axis and grid styling from the kwargs, with defaults."""
+    return {
+        "xlabel": draw_chart_kwargs.pop("xlabel", "X"),
+        "ylabel": draw_chart_kwargs.pop("ylabel", "Y"),
+        "grid_color": draw_chart_kwargs.pop("grid_color", "lightgray"),
+        "grid_dash": draw_chart_kwargs.pop("grid_dash", [2, 2]),
+        "grid_width": draw_chart_kwargs.pop("grid_width", 1),
+        "grid_opacity": draw_chart_kwargs.pop("grid_opacity", 1),
+    }
+
+
 def _gridded_axis(title, domain, axis_kwargs):
     """Return the title, scale and gridded axis for one Altair position channel."""
+    import altair as alt  # noqa: PLC0415 - Altair loads only for this backend
+
     return {
         "title": title,
         "scale": alt.Scale(domain=domain, nice=False),

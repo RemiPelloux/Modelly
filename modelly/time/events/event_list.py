@@ -93,7 +93,7 @@ class EventList:
                 terminal, so such an event could never execute.
 
         """
-        if event.CANCELED:
+        if event._canceled:
             raise ValueError(
                 "Cannot add a canceled event to an event list. Cancellation is "
                 "terminal, so the event would never execute."
@@ -155,9 +155,9 @@ class EventList:
         return len(self) == 0
 
     def __contains__(self, event: Event) -> bool:  # noqa
-        if event.CANCELED:
-            return False
-        return event in self._heap
+        # O(1): add_event sets _owner to this list, popping or clearing resets
+        # it, and a canceled event is not counted (compaction drops it).
+        return not event._canceled and event._owner is self._self_ref
 
     def __len__(self) -> int:  # noqa
         heap = self._heap

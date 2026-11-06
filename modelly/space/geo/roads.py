@@ -15,6 +15,7 @@ import numpy as np
 import pyproj
 import shapely
 
+from modelly.space.geo import _memo
 from modelly.space.geo._deps import require
 from modelly.space.network import Network
 
@@ -27,6 +28,7 @@ if TYPE_CHECKING:
 LENGTH = "length"
 TRAVEL_TIME = "travel_time"
 SPEED = "speed"
+_NOT_A_NODE = -1  # tree cells that are not graph nodes (added to the space later)
 
 
 class RoadNetwork:
@@ -71,7 +73,7 @@ class RoadNetwork:
 
     def __getstate__(self) -> dict:
         """Drop the routing matrices; they are rebuilt on first use after a load."""
-        state = self.__dict__.copy()
+        state = _memo.without_memos(self.__dict__.copy())
         state["_csr_cache"] = {}
         return state
 
@@ -90,10 +92,26 @@ class RoadNetwork:
         """Row (position in ``nodes``) of the node nearest to every point of ``xy``."""
         if self.space._kdtree_dirty:
             self.space._rebuild_kdtree()
-        _, rows = self.space._kdtree.query(np.atleast_2d(xy))
+        tree = self.space._kdtree
+        _, rows = tree.query(np.atleast_2d(xy))
         cells = self.space._kdtree_cells
+        table = _memo.memo(
+            self, _memo.TREE_ROWS, (tree,), lambda: self._tree_rows(cells)
+        )
+        found = table[rows]
+        if (found == _NOT_A_NODE).any():  # a cell added to the space, not a graph node
+            return np.fromiter(
+                (self._row[cells[r].coordinate] for r in rows), dtype=np.intp
+            )
+        return found
+
+    def _tree_rows(self, cells: list) -> np.ndarray:
+        """The node row of every KD-tree cell, ``_NOT_A_NODE`` for cells that are not nodes."""
+        row = self._row
         return np.fromiter(
-            (self._row[cells[r].coordinate] for r in rows), dtype=np.intp
+            (row.get(cell.coordinate, _NOT_A_NODE) for cell in cells),
+            dtype=np.intp,
+            count=len(cells),
         )
 
     def shortest_path(

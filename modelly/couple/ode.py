@@ -28,6 +28,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
+from functools import cache
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -106,10 +107,8 @@ class ODE:
         Raises:
             CouplingError: if the integrator fails (``solve_ivp``'s message is included).
         """
-        from scipy.integrate import solve_ivp  # noqa: PLC0415 - scipy is heavy
-
         s = self.solver
-        result = solve_ivp(
+        result = scipy_solve_ivp()(
             self.derivative,
             (time, time + duration),
             self.y,
@@ -225,3 +224,12 @@ def _total(name: str) -> str:
 def _no_rhs(t: float, y: np.ndarray, inputs: dict[str, Any]) -> np.ndarray:
     """Placeholder right-hand side: a ``StockFlow`` computes its own derivative."""
     raise NotImplementedError  # pragma: no cover
+
+
+@cache
+def scipy_solve_ivp() -> Callable[..., Any]:
+    """The ``solve_ivp`` of scipy, imported on first use and kept (scipy is heavy)."""
+    from scipy.integrate import solve_ivp  # noqa: PLC0415
+
+    function: Callable[..., Any] = solve_ivp
+    return function

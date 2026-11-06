@@ -23,23 +23,27 @@ agent phase), since rows are positions in the column table.
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Mapping, Sequence
+from functools import lru_cache
 from typing import Any
 
 import numpy as np
 
 from modelly.core.columns import ID_COLUMN
-from modelly.couple.batch import METHODS, solve_batch
+from modelly.couple._tableau import METHODS
+from modelly.couple.batch import solve_batch
 from modelly.couple.delay import Delay, Delayed, History, chunks
 from modelly.couple.dense import StackedDense
 from modelly.couple.events import ODEEvent
 from modelly.couple.inputs import Input, evaluated
-from modelly.couple.ode import Solver
+from modelly.couple.ode import Solver, scipy_solve_ivp
 from modelly.couple.schedule import Coupling, CouplingError
 
 STIFF = ("BDF", "Radau", "LSODA")
 # A terminal event whose action leaves the state on the crossing fires again at once;
 # past this many restarts in one step the step fails instead of looping.
 MAX_RESTARTS = 1000
+# Jacobian sparsity patterns kept, one per (variables, agents) shape.
+SPARSITY_CACHE = 8
 
 
 class AgentODE:
@@ -194,9 +198,6 @@ class AgentODE:
 
     def _stacked(self, y: np.ndarray, params: dict[str, Any], t0: float, t1: float):
         """The stiff path: every agent in one ``solve_ivp`` system, block-diagonal Jacobian."""
-        from scipy import sparse  # noqa: PLC0415 - scipy is heavy
-        from scipy.integrate import solve_ivp  # noqa: PLC0415
-
         m, k = y.shape
 
         def fun(t: float, flat: np.ndarray) -> np.ndarray:
@@ -205,9 +206,9 @@ class AgentODE:
                 self.rhs(times, flat.reshape(m, k), evaluated(params, times)), float
             ).ravel()
 
-        s, extra = self.solver, {}
+        s, extra, solve_ivp = self.solver, {}, scipy_solve_ivp()
         if s.method != "LSODA":  # LSODA takes band widths, not a sparsity pattern
-            extra["jac_sparsity"] = sparse.kron(np.ones((m, m)), sparse.identity(k))
+            extra["jac_sparsity"] = _sparsity(m, k)
         result = solve_ivp(fun, (t0, t1), y.ravel(), method=s.method, rtol=s.rtol, atol=s.atol,
                            dense_output=self.dense_output, **extra)  # fmt: skip
         if not result.success:
@@ -254,3 +255,11 @@ class AgentODE:
         """Write the state back into the columns, in place."""
         for name, values in zip(self.state, y):
             table[name][:] = values
+
+
+@lru_cache(maxsize=SPARSITY_CACHE)
+def _sparsity(m: int, k: int) -> Any:
+    """The block-diagonal Jacobian pattern of ``k`` agents with ``m`` variables each."""
+    from scipy import sparse  # noqa: PLC0415 - scipy is heavy
+
+    return sparse.kron(np.ones((m, m)), sparse.identity(k))

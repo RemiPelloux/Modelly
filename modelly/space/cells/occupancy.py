@@ -15,6 +15,27 @@ import numpy as np
 
 NO_MATCH = -1
 MAX_VECTOR_ROUNDS = 64
+RADIX_BITS = 16
+RADIX_LIMIT = 1 << RADIX_BITS
+RADIX_MASK = RADIX_LIMIT - 1
+TWO_PASS_LIMIT = 1 << (2 * RADIX_BITS)
+OFFSET_PAD = 3  # a leading zero for cell -1, then one past the last cell, then its end
+
+
+def _stable_order(rows: np.ndarray) -> np.ndarray:
+    """``np.argsort(rows, kind="stable")``, through numpy's radix sort when it can.
+
+    Non-negative integer keys below 2**16 sort as uint16 (radix sort); below
+    2**32 as two stable uint16 passes, low half then high half (LSD radix).
+    Both give the one stable permutation, so the result is identical.
+    """
+    if not _within(rows, TWO_PASS_LIMIT) or rows.shape[0] == 0:
+        return np.argsort(rows, kind="stable")
+    if int(rows.max()) < RADIX_LIMIT:
+        return np.argsort(rows.astype(np.uint16), kind="stable")
+    first = np.argsort((rows & RADIX_MASK).astype(np.uint16), kind="stable")
+    second = np.argsort((rows[first] >> RADIX_BITS).astype(np.uint16), kind="stable")
+    return first[second]
 
 
 class Occupancy:
@@ -24,8 +45,9 @@ class Occupancy:
         """Sort the agents (their table indices) by the cell row they occupy."""
         self.rows = np.asarray(rows)
         self.n_cells = n_cells
-        self.order = np.argsort(self.rows, kind="stable")
+        self.order = _stable_order(self.rows)
         self.sorted_rows = self.rows[self.order]
+        self._offsets = _cell_offsets(self.rows)
 
     def counts(self) -> np.ndarray:
         """How many agents sit in each cell."""
@@ -33,6 +55,12 @@ class Occupancy:
 
     def bounds(self, cells: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """The ``[start, end)`` slice of ``order`` holding the members of each cell."""
+        cells = np.asarray(cells)
+        offsets = self._offsets
+        if offsets is not None and np.can_cast(cells.dtype, np.intp):
+            at = np.clip(cells.astype(np.intp), -1, offsets.shape[0] - OFFSET_PAD)
+            at += 1
+            return offsets[at], offsets[at + 1]
         start = np.searchsorted(self.sorted_rows, cells, side="left")
         end = np.searchsorted(self.sorted_rows, cells, side="right")
         return start, end
@@ -49,6 +77,30 @@ class Occupancy:
         pick = start + (rng.random(cells.shape[0]) * size).astype(np.intp)
         chosen = self.order[np.minimum(pick, max(self.order.shape[0] - 1, 0))]
         return np.where(size > 0, chosen, NO_MATCH)
+
+
+def _cell_offsets(rows: np.ndarray) -> np.ndarray | None:
+    """Prefix sums of the cell counts, padded so any integer cell can index them.
+
+    ``offsets[c + 1]`` and ``offsets[c + 2]`` are the ``[start, end)`` of cell
+    ``c`` for ``-1 <= c <= max(rows) + 1``; cells outside that range clip to the
+    ends, where the slice is empty, as ``searchsorted`` finds. ``None`` when the
+    rows are not non-negative integers (then ``bounds`` searches).
+    """
+    if not _within(rows, TWO_PASS_LIMIT):
+        return None
+    counts = np.bincount(rows) if rows.shape[0] else np.zeros(0, dtype=np.intp)
+    offsets = np.zeros(counts.shape[0] + OFFSET_PAD, dtype=np.intp)
+    np.cumsum(counts, out=offsets[2 : counts.shape[0] + 2])
+    offsets[counts.shape[0] + 2 :] = rows.shape[0]
+    return offsets
+
+
+def _within(keys: np.ndarray, limit: int) -> bool:
+    """Whether ``keys`` are integers in ``[0, limit)`` (an empty array counts)."""
+    if keys.dtype.kind not in "iu" or keys.ndim != 1:
+        return False
+    return keys.shape[0] == 0 or (int(keys.min()) >= 0 and int(keys.max()) < limit)
 
 
 def claim(

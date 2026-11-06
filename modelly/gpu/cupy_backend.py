@@ -19,7 +19,7 @@ from typing import Any
 import numpy as np
 
 from modelly._optional import require
-from modelly.gpu.backend import CUPY, Backend
+from modelly.gpu.backend import CUPY, DEVICE_CHECK_EVERY, Backend
 from modelly.gpu.philox import CUDA_PHILOX
 
 COUNTER_IN = "uint32 c1, uint32 c2, uint32 c3, uint32 k0, uint32 k1"
@@ -84,6 +84,7 @@ class CupyBackend(Backend):
     name = CUPY
     gpu = True
     fused = True
+    check_every = DEVICE_CHECK_EVERY
 
     def __init__(self) -> None:
         """Import CuPy, check a device answers and declare the Philox kernels."""

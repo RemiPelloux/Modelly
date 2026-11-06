@@ -14,8 +14,10 @@ import csv
 import io
 import json
 import urllib.request
+from bisect import bisect_right
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
+from operator import attrgetter
 from pathlib import Path
 from typing import Any
 
@@ -31,36 +33,59 @@ class Observation:
     values: Mapping[str, float] = field(compare=False)
 
 
+_TIME_OF = attrgetter("time")
+
+
 def _observation(row: Mapping[str, Any], time: str) -> Observation:
     """An observation from a record with a ``time`` field; empty fields are dropped."""
     if time not in row:
         raise ValueError(f"record without a {time!r} field: {dict(row)}")
-    values = {k: float(v) for k, v in row.items() if k != time and v not in ("", None)}
-    return Observation(float(row[time]), {k: v for k, v in values.items() if v == v})
+    # One pass: empty fields are dropped, then NaN values (x == x is False for NaN).
+    values = {
+        k: x
+        for k, v in row.items()
+        if k != time and v not in ("", None) and (x := float(v)) == x
+    }
+    return Observation(float(row[time]), values)
 
 
 class _Buffered:
-    """Keeps observations read but not yet handed out, in time order."""
+    """Keeps observations read but not yet handed out, in time order.
+
+    ``_pending[_head:]`` are the observations not handed out. They are sorted
+    (stably, by time, as ``Observation`` orders) only after an add, and a poll
+    finds its cut by bisection instead of re-sorting and copying the rest.
+    """
 
     def __init__(self) -> None:
         """Start empty."""
         self._pending: list[Observation] = []
+        self._head = 0
+        self._sorted = True
         self._last = float("-inf")
 
     def _take(self, until: float | None) -> list[Observation]:
         """Hand out pending observations up to ``until``."""
-        self._pending.sort()
-        cut = len(self._pending)
+        if not self._sorted:
+            self._pending = sorted(self._pending[self._head :], key=_TIME_OF)
+            self._head = 0
+            self._sorted = True
+        pending, head = self._pending, self._head
+        cut = len(pending)
         if until is not None:
-            cut = next((i for i, o in enumerate(self._pending) if o.time > until), cut)
-        out, self._pending = self._pending[:cut], self._pending[cut:]
+            cut = bisect_right(pending, until, head, cut, key=_TIME_OF)
+        out = pending[head:cut]
+        self._head = cut
         if out:
             self._last = out[-1].time
         return out
 
     def _add(self, observations: Iterable[Observation]) -> None:
         """Queue observations later than the last one handed out."""
+        before = len(self._pending)
         self._pending.extend(o for o in observations if o.time > self._last)
+        if len(self._pending) != before:
+            self._sorted = False
 
 
 class ReplaySource(_Buffered):

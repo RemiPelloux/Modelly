@@ -2,16 +2,18 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 import solara
 
 from modelly.studio.analyses import load_analyses, view_of
-from modelly.studio.browser import ExperimentBrowser
 from modelly.studio.figures import against_figure, series_figure
 from modelly.studio.i18n import t
 from modelly.studio.state import StudioState
+
+if TYPE_CHECKING:
+    from modelly.studio.browser import ExperimentBrowser
 
 # A parameter with more distinct values than this is filtered by a range.
 MAX_CHOICES = 12
@@ -31,6 +33,9 @@ ANALYSIS_HELP = (
 def open_store(path: str) -> tuple[ExperimentBrowser | None, str | None]:
     """The browser of the store at ``path``, or None and why it cannot be opened."""
     try:
+        # Imported here: the results store loads modelly.experiments, and SciPy with it.
+        from modelly.studio.browser import ExperimentBrowser  # noqa: PLC0415
+
         return ExperimentBrowser(path), None
     except (LookupError, OSError, ImportError) as error:
         return None, f"cannot open the results store {path}: {error}"
