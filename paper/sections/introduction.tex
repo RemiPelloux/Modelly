@@ -35,11 +35,11 @@ one phase at a time, and gets:
   instantiated (\emph{cohorts}), and the framework's inner loops run in compiled C, each with a
   pure-Python twin that gives the same results (\cref{sec:design}). On eight workloads, with
   those phases written as arrays, the column form runs 2.9 to 33 times faster than Mesa~3.5
-  (12 times on flocking against Mesa~3.5 given the same KD-tree search) and 4.6 to 42 times
+  (12.5 times on flocking against Mesa~3.5 given the same KD-tree search) and 4.6 to 42 times
   faster than Mesa~2.3, and changing the insect model's representation to counted cohorts makes
-  it 135 times faster than individuals on Mesa~3.5, with the
+  it 131 times faster than individuals on Mesa~3.5, with the
   lead growing with the population on the grid epidemic and Schelling's model; a Mesa~3.5 model migrated by the codemod, with no phase
-  rewritten, runs 1.05 to 2.3 times faster. An ablation that changes one thing per rung
+  rewritten, runs 1.04 to 2.2 times faster. An ablation that changes one thing per rung
   (framework, compiled runtime, data structure, search algorithm, array representation)
   attributes the large gains to the array representation of the phases
   (\cref{sec:ablation}). Whether the faster forms compute the same model is tested: against
@@ -52,8 +52,12 @@ one phase at a time, and gets:
   (\cref{sec:performance}).
   \item \textbf{The whole study in one package.} Parameter sweeps, approximate Bayesian
   calibration, Morris, Sobol and PAWN sensitivity analysis, emulators and history matching,
-  provenance manifests, verifiable archive bundles and ODD descriptions \citep{grimm2006odd,
-  grimm2020odd} are part of the framework, each a few lines of code, and share one seeding
+  the comparison of interventions on common random numbers, with the variance reduction the
+  pairing brings measured rather than assumed, causal attribution to agents, provenance
+  manifests, verifiable archive bundles, model cards, a model hub that checks hashes and
+  signatures, and ODD descriptions \citep{grimm2006odd,
+  grimm2020odd} are part of the framework, each a few lines of code, callable from R and Julia
+  as well as Python, and share one seeding
   discipline, so a study's results do not depend on the executor, the number of workers or the
   order in which runs finish (\cref{sec:workflow}). Each method is checked against problems
   whose answers are known (\cref{sec:reproducibility}).
@@ -61,18 +65,18 @@ one phase at a time, and gets:
   random stream; a run's manifest records everything needed to repeat it, and
   \cmd{modelly verify} repeats it and names the first output that differs; a determinism suite
   checks that the bundled examples give the same digests compiled or in pure Python and
-  straight or resumed from a checkpoint, and, run on hosted builds of the checkout and of
-  the released wheels (Linux x86-64 and ARM64, macOS ARM64 and x86-64, Windows, under
-  CPython 3.12, 3.13 and 3.14), that thirteen of seventeen examples give
-  bit-identical digests on all fifteen wheel builds (twelve on the nine builds compiled from
-  the checkout) and the others agree at ten significant digits
-  wherever the suite compares them (\cref{sec:reproducibility}). The paper states each guarantee's scope: determinism on
+  straight or resumed from a checkpoint, and, on one Linux x86-64 machine under CPython 3.12,
+  3.14 and 3.15, compiled and pure, that all seventeen examples give bit-identical digests;
+  macOS, Windows, ARM and the published wheels were not tested for this
+  version (\cref{sec:reproducibility}). The paper states each guarantee's scope: determinism on
   one build, numerical agreement across platforms, and bitwise agreement where it holds.
   \item \textbf{Towards large and data-driven studies.} The same model can be split across
   processes with results byte-identical to one process (a check of correctness; its parallel
-  speed-up beyond one laptop is not yet shown), run its array phases on a GPU (steps 34 times
+  speed-up beyond one laptop is not yet shown), run its array phases on a GPU (steps 28 times
   faster than one CPU core at ten million agents), be differentiated for gradient calibration,
-  assimilate live observations, couple agents to diffusing fields, be emulated when runs are
+  assimilate live observations, couple agents to diffusing fields, carry an ordinary, delay or
+  stochastic differential equation in every agent (each agent taking the steps of its own
+  \code{solve\_ivp} call), be emulated when runs are
   expensive, start from a synthetic population, and be shared as a web page (tested in
   Chromium) (\cref{sec:scale}).
 \end{itemize}
@@ -89,7 +93,7 @@ so that a calibration or a sensitivity analysis is reproducible, resumable and
 executor-independent without extra code (\cref{sec:workflow}); (iii) a Mesa-compatible
 interface with a measured migration path, on Mesa's own examples (\cref{sec:samecode});
 and (iv) tested execution contracts (compiled and pure cores, split runs, GPU backend) whose
-guarantees are stated by scope and checked on several platforms
+guarantees are stated by scope and checked on one machine under three interpreters
 (\cref{sec:reproducibility,sec:scale}). The evidence for (i) is the main empirical work of
 the paper: the speed-ups, the ablation that attributes them, and the equivalence and
 trajectory studies that test whether the faster forms are the same model.

@@ -78,12 +78,10 @@ NP="--variants mesa3np --playbooks grid_epidemic schelling boltzmann_wealth"
 .venv/bin/python paper/scripts/virus_trace.py --seeds 10  # the virus example, level by level
 .venv/bin/python benchmarks/mesa_examples/run.py --only virus_on_network --rounds 1 \
     --seeds 1000 --seed-base 20000 --output paper/data/mesa_examples_virus1000_new.json
-# the determinism suite and exact digests on hosted builds (the checkout, then the
-# released wheels from PyPI), MPI on three systems; then the artifacts
-gh workflow run platform-digests.yml -f source=checkout
-gh workflow run platform-digests.yml -f source=pypi -f version=1.4.2
-gh workflow run mpi.yml
-.venv/bin/python paper/scripts/platform_digests_table.py
+# exact digests under CPython 3.12, 3.14 and 3.15, compiled and pure, and the
+# determinism and split-run suites under each (.venv-py312 and .venv-py314 built like .venv)
+bash paper/measure/measure_150b.sh
+.venv/bin/python paper/scripts/local_digests.py
 # the artifact checks: every table and figure from the published data; every listing
 .venv/bin/python paper/scripts/verify_artifacts.py
 .venv/bin/python paper/scripts/check_listings.py
@@ -108,67 +106,53 @@ rerunning its measurements. \code{verify\_artifacts.py} copies \code{tables/} an
 \code{figures/} aside, regenerates every table and figure from the data files with the
 scripts above (the \code{analyse} commands and the table scripts), reruns the five scripts
 that recompute a data file from the code (the Ishigami estimate, the scramblings, the
-cohort counterexample, the graph cut, the nowcast), and compares: the 29 tables byte for
-byte, the 9 figures pixel for pixel, the 5 data files on their numbers. \code{check\_listings.py}
+cohort counterexample, the graph cut, the nowcast), and compares: the 28 tables of
+\code{tables/} byte for byte (21 of them in the paper, the other seven the full agreement
+tables kept as data), the 9 figures pixel for pixel, the 5 data files on their numbers. \code{check\_listings.py}
 extracts the three Python listings of the paper and runs each as printed (the ABC listing
 against the model module of \code{docs/calibration.md}, which it writes from the
 documentation's own code blocks); the ABC listing's output is the posterior quoted in
 \cref{sec:validation}. Both pass at the commit of this version, in the development
 environment and from a fresh clone in a fresh environment whose dependencies were resolved
-from PyPI at the time (CPython 3.14.8, numpy 2.5.4, scipy 1.18.1, pandas 3.1.0, matplotlib
+from PyPI at the time (CPython 3.14.8, numpy 2.5.4, scipy 1.18.1, pandas 3.1.1, matplotlib
 3.11.2; \code{data/clean\_checkout\_check.json}), where every table, figure and data file
 regenerated identically and the ABC listing gave the same posterior to four decimals.
 These are the author's runs, not an independent party's. One pitfall for a reader: the
 editable install of the listing above compiles the C modules into the checkout; a plain
 \cmd{pip install .} run from the repository root imports the checkout's uncompiled
 sources rather than the installed wheel, so install editable, or run from another
-directory. What the two scripts do not do is rerun a timing, an agreement study or a
-hosted workflow, which the commands above do.
+directory. What the two scripts do not do is rerun a timing, an agreement study or the
+digests under several interpreters, which the commands above do.
 
 The playbook runner starts each run in a fresh interpreter, pins it to one core with
 \code{taskset}, alternates the implementations over rounds, checks determinism, and writes JSON
 results and a Markdown report to \code{benchmarks/playbooks/results/}. The methods, and the
 rules a fair comparison must follow, are described in \code{docs/performance.md}.
 
-\paragraph{Provenance of the measurements.} Every measurement of this paper ran on the code of
-the tagged release v1.4.2 (commit \code{bf7a225}), compiled on the measurement machine with
-GCC~16.2. One session ran, in this order, the timings at the fixed frequency, the GPU, the weak
-scaling, the primary agreement studies, the coverage study, the three data scripts, the
-100-million-row run, the active-learning comparison, the GPU and differentiable tests, the
-browser runs with the pure wheel and the browser's first load, from the checkout at the tag;
-then the Mesa~3.5 + numpy and baseline agreement studies and the two replications on new
-seeds, from commit \code{e3cfb74}, which differs from the tag only in the paper's own files;
-then, at the tag again, the test suite, and the WebAssembly wheel built and every model run
-with it in the browser. A last session ran from commit \code{63e7bd9}, whose \code{modelly}
-package is the tag's and which adds the Mesa~3.5 + KD-tree flocking implementation and the
-scripts for the size sweep and the prior-drawn coverage: the second timing session of every
-playbook, which gives \cref{tab:playbooks} (the first, at the tag, is in
-\code{paper/data/playbooks\_session1/}), the size sweep and the prior-drawn coverage study; and the commits after it, whose
-\code{modelly} package is still the tag's and which add only options to the paper's scripts, ran
-the GPU comparison over five rounds, the coverage study at 100 particles, the virus example on
-new seeds and the run-by-run comparison of the KD-tree implementation with Mesa~3.5. Each result file records what it ran with: the
-playbook, migrated-model, example and agreement files the commit, the machine, the load and the package
-versions; \code{assimilation.json}, \code{ishigami.json} and \code{graph\_cut.json} the commit,
-date, interpreter and package versions, their \code{+dirty} marking the benchmark results
-written earlier in the session, not code; the \code{weak\_*.json} files the interpreter, the
-platform and the load, with the commit and the MPI, mpi4py and Dask versions added from the
-environment afterwards and marked so; and \code{gpu\_speedup.json} the package versions of
-both arms. In these files the package version recorded for \code{modelly-abm} is the stale
-metadata of the development environments' editable installs, not the code: every environment
-imported \modelly{} from the checkout, which the commit field identifies. The result files written since
-record the version the imported code reports (\code{modelly (imported)}: 1.4.2), and the
-editable installs now carry 1.4.2 as well.
-A further session, on 29 October 2026, ran from commits after \code{069f9b4}, whose
-\code{modelly} package and determinism tests are still the tag's (no file under
-\code{modelly/} or \code{tests/determinism/} has changed since it) and which add the
-scripts of these studies and two workflow files: the trajectory study, the ablation, the
-interpreter comparison, the end-to-end sweep, the particle-count sweep, the Sobol
-scramblings and the cohort counterexample on the same laptop (the three timing scripts at
-its default frequency policy, under a load average of 11 to 51), and the hosted runs of
-\code{platform-digests.yml} and \code{mpi.yml} (\code{paper/data/platform\_runs.json}
-records their commits, dates and outcomes).
-The tagged release v1.4.2 is archived by Software Heritage as
-\code{swh:1:rel:661000598425e7a9b958b5a679ca1281aa6f6cc3}.
+\paragraph{Provenance of the measurements.} Every measurement of this paper ran on
+4 November 2026 from commit \code{6cd4ae6}, whose \code{modelly} package is identical to the
+tagged release v1.5.0 (the commit differs from the tag only in documentation and the documentation site's test), compiled on
+the measurement machine with GCC~16.2, by \code{paper/measure/measure\_150.sh}. One session
+ran, in this order: at the fixed frequency, the first timing session of every playbook
+(\code{paper/data/playbooks\_session1/}), the migrated models, Mesa's own examples, the
+mesa-frames threads, the three sizes, the ablation, the end-to-end sweep, the three CPython
+versions, the ODE timings and the second timing session of every playbook, which gives
+\cref{tab:playbooks}; then, at the machine's default frequency policy, the GPU comparison over
+five rounds, the weak scaling, the agreement and trajectory studies, the run-by-run comparison
+of the KD-tree implementation with Mesa~3.5, the virus example's trace and replications on
+new seeds, the calibration studies, the data scripts, the 100-million-row run, the
+active-learning comparison, the GPU and differentiable tests, the browser runs with the pure
+and the WebAssembly wheel, the browser's first load and the test suite. A second session the
+same day, \code{paper/measure/measure\_150b.sh}, wrote the exact digests and ran the
+determinism and distributed suites under three interpreters (\cref{sec:reproducibility}).
+Each result file records what it ran with: the playbook, migrated-model, example and
+agreement files the commit, the machine, the load and the package versions;
+\code{assimilation.json}, \code{ishigami.json}, \code{graph\_cut.json} and the other data
+scripts' files the commit, date, interpreter and package versions, their \code{+dirty}
+marking the benchmark results written earlier in the session, not code; the
+\code{weak\_*.json} files the interpreter and the platform; and \code{gpu\_speedup.json} the
+package versions of both arms. The tagged release v1.5.0 is archived by Software Heritage as
+\code{swh:1:rel:7b7b49f3d26e8411797bb8a29e3c83eff3b98222}.
 
 \section{The workloads}
 \label{app:workloads}
@@ -183,17 +167,18 @@ algorithm, so that their comparison is between data structures; the column and m
 variants find every forager's best visible cell in one array pass and keep only the walk to a
 free cell sequential. The four mesa-frames workloads were also timed in wall-clock time with
 one polars thread and with all 16 (\code{paper/scripts/frames\_threads.py},
-\code{paper/data/frames\_threads.json}): with all threads the grid epidemic takes 1.88~s
-against 1.57~s, Boltzmann wealth 1.69~s against 1.44~s and Sugarscape 3.83~s against 2.86~s,
-while Schelling's model is 1.4 times faster (2.05~s against 2.84~s); these are single runs,
-unpinned, while other jobs loaded the machine (one-minute load average 8.6 at their start),
-which penalises the multi-threaded arm. With that caveat, three of the four workloads' data
-frames appear too small for parallel execution to pay for its overhead, and Schelling's is
-not. Pinned to the four performance cores, five alternating rounds each
-(\code{frames\_threads.py --cores 0-3}, \code{paper/data/frames\_threads\_pinned.json}), four
-threads were slower than one on every workload: 1.98~s against 1.69~s on the grid epidemic,
-3.41~s against 2.86~s on Schelling's model, 2.14~s against 1.82~s on Boltzmann wealth and
-5.46~s against 3.78~s on Sugarscape.
+\code{paper/data/frames\_threads.json}): with all threads the grid epidemic takes 1.68~s
+against 1.36~s, Boltzmann wealth 1.54~s against 1.35~s and Sugarscape 3.61~s against 2.88~s,
+while Schelling's model is 1.5 times faster (1.81~s against 2.63~s); these are single runs,
+unpinned, while other jobs loaded the machine (one-minute load average 7.6 at their start),
+which penalises the multi-threaded arm. Pinned to the four performance cores, five
+alternating rounds each (\code{frames\_threads.py --cores 0-3},
+\code{paper/data/frames\_threads\_pinned.json}), four threads were faster than one on every
+workload: 1.15~s against 1.19~s on the grid epidemic, 1.28~s against 2.11~s on Schelling's
+model, 0.93~s against 1.13~s on Boltzmann wealth and 2.00~s against 2.41~s on Sugarscape.
+Threads therefore pay on Schelling's model and, on cores of their own, modestly on the
+other three, whose data frames gain little (4\% on the grid epidemic); under load they cost
+more than they gain on those three.
 
 \begin{table}[htbp]
   \centering

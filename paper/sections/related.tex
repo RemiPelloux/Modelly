@@ -46,7 +46,12 @@ guidance on which to use \citep{thiele2014facilitating, tenbroeke2016which, hart
 lee2015complexities}. The same holds for history matching with emulators
 \citep{vernon2010galaxy, andrianakis2015bayesian}, the bootstrap particle filter
 \citep{gordon1993novel} and the ensemble Kalman filter \citep{evensen2003ensemble}, and
-gradient estimators for discrete choices \citep{bengio2013estimating, jang2017categorical}.
+gradient estimators for discrete choices \citep{bengio2013estimating, jang2017categorical},
+and for the robust comparison of policies across sampled futures, by minimax regret
+\citep{savage1951theory}, which the EMA Workbench also offers \citep{kwakkel2017ema}.
+Integrators for ordinary and stochastic differential equations are standard
+\citep{virtanen2020scipy, kloeden1992numerical}; Agents.jl documents coupling its agents to
+DifferentialEquations.jl \citep{datseris2024agents}.
 Data assimilation has been applied to agent-based models with particle filters, for
 calibration on line and for crowds in real time \citep{ward2016dynamic, malleson2020simulating};
 differentiable agent-based models have been built for simulation-based optimisation and for
@@ -65,7 +70,12 @@ grimm2010odd, grimm2020odd} and its extension to human decisions, ODD+D
 \citep{grimm2005pattern} guides its validation. Archiving model code remains uncommon
 \citep{janssen2017practice}, and replicating a published model is a study in itself
 \citep{axtell1996aligning, wilensky2007making}. \modelly{} generates an ODD skeleton from the
-model's code and records each run in a manifest that a reviewer can rerun and verify.
+model's code and records each run in a manifest that a reviewer can rerun and verify. Model
+cards, short structured statements of a model's intended use, data, evaluation and limits,
+come from machine learning \citep{mitchell2019model}; \modelly{}'s cards tie each validation
+claim to a test and are reported stale when the model changes, and its model hub checks an
+archive's hash and signature before installing it, where model libraries for agent-based
+models archive code with documentation \citep{janssen2017practice}.
 
 \Cref{tab:features} compares the built-in capabilities of the Python frameworks and of two
 widely used platforms in other languages.
@@ -84,7 +94,8 @@ widely used platforms in other languages.
   Repast4Py). The judgements are the author's, from each project's documentation and source; the
   evidence for every cell is in \code{paper/data/features\_sources.md}. NetLogo's checkpoints are
   \code{export-world} and \code{import-world}; Agents.jl's do not cover its event-queue models.
-  Parallel runs in Mesa, AgentPy, NetLogo and Agents.jl are across runs, not one run. Licences
+  Parallel runs in Mesa, AgentPy, NetLogo and Agents.jl are across runs, not one run. Agents.jl's differential equations come from DifferentialEquations.jl, in a documented example;
+NetLogo's System Dynamics Modeler integrates stocks of the whole model, not one system per agent. Licences
   from the projects' licence files (mesa-frames' development branch; its 0.1.0a0 release is MIT).}
   \label{tab:features}
   \setlength{\tabcolsep}{3pt}
@@ -106,6 +117,7 @@ widely used platforms in other languages.
     Checkpoint and resume & \checkmark & -- & -- & -- & \checkmark & \checkmark & \checkmark \\
     Run manifests and bundles & \checkmark & -- & -- & -- & -- & -- & -- \\
     Interactive visualisation & \checkmark & \checkmark & -- & ext. & \checkmark & -- & \checkmark \\
+    Equations in each agent & \checkmark & -- & -- & -- & -- & -- & ext. \\
     Graphical model editor & -- & -- & -- & -- & \checkmark & -- & -- \\
     \bottomrule
   \end{tabular}

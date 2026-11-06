@@ -15,7 +15,7 @@ while their state lives in arrays, with calibration, sensitivity analysis and pr
 in, benchmarked against Mesa and mesa-frames with a pre-specified equivalence study.
 
 PDF: https://github.com/RemiPelloux/Modelly/blob/main/paper/main.pdf
-Code: https://github.com/RemiPelloux/Modelly (Apache 2.0, release 1.4.2 on PyPI)
+Code: https://github.com/RemiPelloux/Modelly (Apache 2.0, release 1.5.0 on PyPI)
 
 If you are willing and find the paper appropriate for cs.MA, the endorsement takes one click at
 https://arxiv.org/auth/endorse with this code: [ENDORSEMENT CODE FROM ARXIV'S EMAIL]

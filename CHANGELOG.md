@@ -14,6 +14,19 @@ versioning.
 - A new docs home page: a finder that lists the guides for a typed task, the benchmark as a
   dot plot with a data table behind it, the guides grouped by task, and what 1.5 added.
 
+### Documentation
+
+- `docs/explain.md` gives the variance reduction of common random numbers as its spread over
+  ten seeds (24 to 62 times on Bass, median 42; 0.6 to 1.3 on age_seir), measured by
+  `paper/scripts/decisions.py`, instead of a single seed's value.
+- The paper (`paper/`) describes 1.5.0: decisions and causes, equations inside agents, model
+  cards and the hub, the R and Julia packages, with every number measured on 1.5.0
+  (`paper/measure/measure_150.sh`); `paper/scripts/odes.py` and `decisions.py` record the
+  new numbers; `paper/submission/VENUES.md` lists where to submit it. Its reproducibility
+  evidence is local: exact digests identical under CPython 3.12, 3.14 and 3.15, compiled and
+  pure (`measure_150b.sh`, `paper/scripts/local_digests.py`); the hosted-build digest table
+  and its data are removed, and macOS, Windows, ARM and the wheels are stated as untested.
+
 ## 1.5.0 - 2026-11-03
 
 ### Added

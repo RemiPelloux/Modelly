@@ -52,7 +52,7 @@ TABLE_COMMANDS = [
     ("ablation table", [PYTHON, S / "ablation.py", "analyse"]),
     ("Python versions table", [PYTHON, S / "python_versions.py", "analyse"]),
     ("sweep table", [PYTHON, S / "sweep_e2e.py", "analyse"]),
-    ("platform digests table", [PYTHON, S / "platform_digests_table.py"]),
+    ("local digests summary", [PYTHON, S / "local_digests.py"]),
 ]
 # Scripts that recompute a data file from the code; compared on their numbers.
 DATA_COMMANDS = [

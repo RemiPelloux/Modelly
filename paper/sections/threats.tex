@@ -3,7 +3,7 @@
 
 \subsection{Threats to the validity of the measurements}
 
-\paragraph{The baselines.} The playbooks compare against Mesa~2.3.2 and the current Mesa~3.5.1; Mesa~2.3 runs here on CPython
+\paragraph{The baselines.} The playbooks compare against Mesa~2.3.2 and Mesa~3.5.1 (3.5.2 followed on 28 October 2026); Mesa~2.3 runs here on CPython
 3.15, which it does not officially support. The Mesa~3.5 and mesa-frames implementations were
 written for this paper, following each library's documentation and examples, and their
 developers might write them faster. mesa-frames was measured from its development branch
@@ -38,8 +38,8 @@ included, was written by the author of \modelly{}, and no independent party has 
 reviewed them or rerun the benchmarks. Each Mesa version follows Mesa's documented API and
 examples, and all of them are in the repository for inspection. One baseline invites a closer look: our Mesa~3.5 predator-prey, which
 follows Mesa's own examples (\code{CellAgent} on an \code{OrthogonalMooreGrid}, grass in a
-property layer), runs slower than Mesa~2.3's (0.91 times); we have not profiled why, so the
-columns' 7.1 times over Mesa~3.5 there may be larger than a tuned Mesa~3.5 model would allow. What a third party can check without rerunning the timings is
+property layer), runs slower than Mesa~2.3's (0.92 times); we have not profiled why, so the
+columns' 6.9 times over Mesa~3.5 there may be larger than a tuned Mesa~3.5 model would allow. What a third party can check without rerunning the timings is
 that every table and figure regenerates from the published data and that every listing
 runs as printed: \code{paper/scripts/verify\_artifacts.py} and
 \code{paper/scripts/check\_listings.py} do both, and both pass at the commit of this
@@ -55,34 +55,33 @@ cores; the other twelve are efficiency cores), under the \code{intel\_pstate} dr
 \code{performance} governor and turbo disabled, so the core ran at its 1.9~GHz base frequency.
 Absolute times are therefore longer than on a turbo-enabled machine; the ratios are what we
 report. The core was pinned but not isolated: other work shared the machine (one-minute load
-average 5.3 to 28.8 at the start of each workload of the main timings, 37.4 at the start of the
+average 2.3 to 3.9 at the start of each workload of the main timings, 4.2 at the start of the
 size sweep), and \code{taskset} pins the benchmark, not the other processes, so under load
 they can run on the same core; CPU time excludes their time but not their cost in context
 switches, and they compete for the shared cache and memory bandwidth, which may weigh more on the
 memory-bound array code than on interpreter-bound per-agent code. The order of the
 implementations rotated from round to round: every per-round ratio over Mesa~2.3 lies within
-18\% of its median (over Mesa~3.5, within 19\%), for 26 of the 29 non-reference variants
-within 10\% (the exceptions are the insect population's column and cohort forms and the grid
-epidemic's numpy baseline, 18, 12 and 12\%), and the bootstrap intervals of
-\cref{tab:speedup-ci} are a few percent wide (42.0 [41.4, 44.8] for the grid epidemic's
-columns over Mesa~2.3). Those are within-session intervals; between sessions we timed all
+17\% of its median (over Mesa~3.5, within 17\%), for 28 of the 29 non-reference variants
+within 10\% (the exception is the insect population's column form, 16\%), and the bootstrap
+intervals of \cref{tab:speedup-ci} are a few percent wide (42.1 [41.7, 42.5] for the grid
+epidemic's columns over Mesa~2.3). Those are within-session intervals; between sessions we timed all
 eight playbooks twice, in two sessions on the same core and settings
-(\code{paper/data/playbooks\_session1/} and \cref{tab:playbooks}), and every one of the 48 speed-ups the two
-sessions share agrees within 4\% (median 0.9\%). The conclusions rest on that one machine: other processors, with other cache sizes and
-vector units, will give other ratios. The measurements of \cref{sec:scale} were
+(\code{paper/data/playbooks\_session1/} and \cref{tab:playbooks}), and every one of the 50 speed-ups the two
+sessions share agrees within 7\% (median 1.2\%). The conclusions rest on that one machine: other processors, with other cache sizes and
+vector units, will give other ratios. The other measurements of \cref{sec:scale} were
 made on the same laptop without the fixed frequency: the GPU comparison has five rounds and
 the browser's first load is a median of three, while the weak scaling (\cref{tab:scaling}),
 the 100-million-row run and the nowcast are single runs; the claims that carry weight there
-(identical outputs, a 34-fold speed-up, shortfalls by a factor) do not turn on a few percent.
+(identical outputs, a 28-fold speed-up, shortfalls by a factor) do not turn on a few percent.
 
 \paragraph{One machine, three interpreters, few sizes.} Every timing of \cref{tab:playbooks}
 ran on CPython~3.15 on one laptop; \cref{sec:python-versions} repeats the Mesa~3.5 and
 column arms on CPython 3.12 and 3.14 on the same machine, where the speed-ups hold to
 within the session's noise, but no second processor was measured. The ablation, the
-interpreter comparison and the end-to-end sweep (\cref{sec:ablation,sec:python-versions,sec:sweep})
-ran in later sessions at the machine's default frequency policy rather than the fixed
-1.9~GHz of the main timings, so their absolute times are not comparable with
-\cref{tab:playbooks}; their ratios are paired within each session. The playbooks are timed
+interpreter comparison and the end-to-end sweep (\cref{sec:ablation,sec:python-versions,sec:sweep}),
+and the differential equations of \cref{sec:agentode}, ran in the same
+session as the main timings, at the same fixed 1.9~GHz on the same core, but each in its own
+script with its own rounds, so their ratios are paired within each script. The playbooks are timed
 at one population size each, and three of them at three sizes (\cref{tab:sizes}), where the
 columns' lead grows with the population; the other five were not timed at other sizes, and
 the GPU measurement shows how strongly a speed-up can depend on the size (\cref{sec:gpu}).
@@ -107,20 +106,20 @@ the trajectory study are prespecified but ours: another modeller may need a tigh
 tolerance on a peak's timing than $\pm 2$ steps, and at that margin 100 seeds do not
 decide the question for any implementation, Mesa~3.5 included.
 
-\paragraph{Reproducibility.} The determinism suite, the split-run checks and the exact
-digests were run on hosted builds of the checkout and of the released wheels (five
-architectures, three interpreters) and MPI on three operating systems for this version
-(\cref{tab:determinism,tab:platform-digests}); what remains untested is the musl Linux,
-Windows ARM64 and free-threaded wheels, the free-threaded build of the event heap, the Ray
-backend and Apple Metal, and the golden digests cover ten steps of seventeen examples (the
-fourteen bundled examples and three split-run models, distinct from the zoo). Four
-examples (five on the nine checkout builds) are not bitwise reproducible across platforms,
-and boid flockers (with Sugarscape G1MT on the checkout builds) not across interpreter
-versions on one platform either; a study that needs
-bitwise agreement across machines must avoid the transcendental functions and BLAS
-reductions these examples use, or state its guarantee at ten significant digits, as the
-suite does. The suite has not been run for more than ten steps, nor on the musl, Windows ARM64
-or free-threaded wheels.
+\paragraph{Reproducibility.} For this version the determinism suite, the split-run checks,
+MPI and the exact digests ran on one machine, Linux x86-64, under CPython 3.12, 3.14 and
+3.15, compiled and pure (\cref{tab:determinism}); on it every example gives one exact digest
+under all six builds. macOS, Windows and ARM were not run beyond the release workflow's
+import of each wheel, nor were the published wheels, so the bitwise and even the ten-digit
+agreement across operating systems and architectures is untested for this version, as are
+MS-MPI, bundles verified across platforms, the free-threaded wheels and the free-threaded
+build of the event heap, the Ray backend and Apple Metal; the golden digests cover ten
+steps of seventeen examples (the fourteen bundled examples and three split-run models,
+distinct from the zoo). Seven of these pass through transcendental functions or BLAS
+reductions whose last bits depend on the platform's libraries, so their exact digests can
+be expected to differ on other platforms: a study that needs bitwise agreement across
+machines must avoid these operations, or state its guarantee at ten significant digits, as
+the suite does. The suite has not been run for more than ten steps.
 
 \paragraph{A young project.} \modelly{} was first released on 24 October 2026, by one developer,
 who is so far the only maintainer; the other projects of \cref{tab:features} have been in use
@@ -134,14 +133,16 @@ of conduct and a security policy; a stable name keeps working for at least one m
 after it is deprecated, with a warning naming its replacement, and is removed only in a major
 release (\code{docs/deprecations.md}), which no release has yet been, so the notice before a
 removal is counted in major releases; releases are tagged after lint, type checks and the test
-suite pass.
+suite pass. The plugin interface (its entry-point groups, the \code{Plugin} class and its
+loader) is frozen for the 1.x series, and \cmd{modelly migrate --check-2.0} lists, with the
+line, every change a project must make before 2.0.
 
 \subsection{Limitations of the software}
 \label{sec:limitations}
 
 \begin{itemize}[leftmargin=*,itemsep=2pt]
   \item \textbf{Speed comes from the model's form.} A model written agent by agent gains only
-  where the framework's own calls take its time (1.05 to 2.3 times over Mesa~3.5, 2.7 and 4.8 over Mesa~2.3, \cref{sec:samecode}); the
+  where the framework's own calls take its time (1.05 to 2.2 times over Mesa~3.5, 2.6 and 4.8 over Mesa~2.3, \cref{sec:samecode}); the
   large gains of \cref{sec:playbooks} require phases that can be
   expressed over the whole population. Sequential decisions where each agent depends on the
   previous one's move remain per-agent loops.
@@ -151,6 +152,13 @@ suite pass.
   little; the GPU backend is slower at 20,000 agents and faster at ten million, the
   crossover unmeasured, and does not pay for cohort tables or for construction; gradients through discrete choices are approximations; fields
   need orthogonal grids with uniform spacing; the Ray backend and Apple Metal are untested.
+  \item \textbf{Equations and pairing.} Only the RK45 and RK23 pairs integrate each agent with
+  its own steps; stiff systems go through one stacked call whose step all agents share, and the
+  stochastic schemes take diagonal noise only. Common random numbers reduce the variance of a
+  comparison only while the strategies consume the random numbers in the same number and
+  order; an intervention that changes either (a new cohort row, a different branch) loses the
+  gain, which \code{treatment\_effect} measures rather than assumes. Language-model agents
+  reproduce a run only from their cache of replies.
   \item \textbf{Checkpoints and closures.} Checkpoints pickle the model; models that hold
   lambdas, nested functions, classes created at run time or open files cannot be saved: lambdas
   and nested functions are refused with an error naming them, other unpicklable objects fail

@@ -20,7 +20,7 @@ that does the work, and the evidence for it in this paper.
     Populations with many identical individuals (insects, cohorts of patients, age classes)
     & Cohort tables with binomial draws keep the individual model's law under the
     assumptions of the proposition of \cref{sec:storage} (independent, homogeneous,
-    synchronous phases) at a fraction of the cost: on the insect model, 135 times faster
+    synchronous phases) at a fraction of the cost: on the insect model, 131 times faster
     than its individual-based version on Mesa~3.5 (a change of representation, which any
     framework could adopt; \modelly{} provides it built in). \\ \addlinespace
     Parameter sweeps, replicates and cluster runs & Experiments with resumable stores and
@@ -29,13 +29,23 @@ that does the work, and the evidence for it in this paper.
     Morris, Sobol and PAWN on the same seeded engine, checked on known answers, with a
     particle-count protocol for ABC-SMC and scrambling-based uncertainty for Sobol
     (\cref{sec:validation}). \\ \addlinespace
-    A paper whose results a reviewer must be able to rerun & Run manifests, \cmd{modelly verify}, byte-identical bundles for archiving, ODD skeletons, golden digests checked
-    on fifteen hosted builds of the checkout and of the released wheels
-    (\cref{tab:determinism,tab:platform-digests}). \\ \addlinespace
+    Choosing between interventions, and explaining the choice & Strategies compared on common
+    random numbers with intervals, win shares, cost-effectiveness and minimax regret, the
+    pairing's variance reduction measured for the study; attribution to agents and
+    counterfactuals on recorded runs (\cref{sec:decide}). \\ \addlinespace
+    Agents with internal dynamics (a viral load, a physiology, an energy budget) & An ODE,
+    delay or stochastic equation in every agent, each agent taking the steps of its own
+    \code{solve\_ivp} call (\cref{sec:agentode}). \\ \addlinespace
+    A paper whose results a reviewer must be able to rerun & Run manifests, \cmd{modelly verify}, byte-identical bundles for archiving, ODD skeletons,
+    model cards tied to tests, a hub that checks hashes, golden digests identical
+    under three CPython versions, compiled and pure, on one Linux machine
+    (\cref{tab:determinism}). \\ \addlinespace
     An existing Mesa model that has become too slow & Migrate it with the codemod (the same statistics as
-    Mesa~2.3 on every seed tried for the two Mesa~2.3 models migrated, equivalent ones from Mesa~3.5; 1.05 to 2.3 times faster than Mesa~3.5), then move the hot phases to columns one at a time. \\ \addlinespace
+    Mesa~2.3 on every seed tried for the two Mesa~2.3 models migrated, equivalent ones from Mesa~3.5; 1.04 to 2.2 times faster than Mesa~3.5), then move the hot phases to columns one at a time. \\ \addlinespace
     A model others should try without installing anything & A static export that runs the
-    model in a browser tab (\cref{sec:browser}). \\
+    model in a browser tab (\cref{sec:browser}). \\ \addlinespace
+    A team that works in R or Julia & Packages that run, inspect and calibrate a model from
+    either language (\cref{sec:workflow}). \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -44,12 +54,14 @@ A population too large for one process, millions of agents whose phases are arra
 operations, a model kept in step with arriving data, agents on a diffusing resource, or an
 expensive model and few runs are the situations of \cref{sec:scale}.
 
-\paragraph{Starting points by field.} Each of the seventeen reference models comes with its
+\paragraph{Starting points by field.} Each of the eighteen reference models comes with its
 validation test and can be copied into a new project with \cmd{python -m modelly.zoo copy}, so
 a study starts from a working, tested model rather than a blank file. An epidemiologist starts
 from the age-structured SEIR model, fits its rates to case counts with ABC-SMC, ranks the
 interventions by Sobol index and narrows the parameter space by history matching; or from the
-epidemic coupled to hospital capacity, or Ross--Macdonald vector-borne transmission. An
+epidemic coupled to hospital capacity, Ross--Macdonald vector-borne transmission or the
+within-host model, whose hosts carry a viral ODE, and compares vaccination strategies on common
+random numbers. An
 ecologist starts from the energy-budget population, the foragers on a diffusing nutrient or
 habitat selection on real land cover, and runs a stage-structured population as cohorts over a
 factorial of scenarios. An economist starts from kinetic wealth exchange, the Bouchaud--M\'ezard

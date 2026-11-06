@@ -4,7 +4,7 @@
 This appendix gives the design, the measurement conditions and the evidence behind each
 capability of \cref{sec:scale}, with the tests and result files that reproduce every number. The measurements were made on the
 laptop of \cref{sec:performance}, with the machine shared and without the fixed frequency of
-\cref{sec:playbooks}.
+\cref{sec:playbooks}, except the timings of equations inside agents (\cref{app:couple}).
 
 \subsection{Per-agent random streams and split runs}
 \label{app:split}
@@ -60,37 +60,35 @@ no communication, which separates what the machine gives from what the protocol 
     \toprule
     Workers & People & Split, s/step & Copies, s/step & Efficiency & Machine & Protocol & Load \\
     \midrule
-    1  & 10,000  & 0.0150 & 0.0110 & 100\% & 100\% & 74\%  & 3.4 \\
-    2  & 20,000  & 0.0176 & 0.0190 & 85\%  & 58\%  & 108\% & 3.5 \\
-    4  & 40,000  & 0.0491 & 0.0206 & 30\%  & 53\%  & 42\%  & 3.9 \\
-    8  & 80,000  & 0.0775 & 0.0435 & 19\%  & 25\%  & 56\%  & 4.3 \\
-    12 & 120,000 & 0.1389 & 0.0592 & 11\%  & 19\%  & 43\%  & 5.3 \\
-    16 & 160,000 & 0.2732 & 0.1174 & 5\%   & 9\%   & 43\%  & 8.7 \\
+    1  & 10,000  & 0.0114 & 0.0101 & 100\% & 100\% & 89\%  & 1.5 \\
+    2  & 20,000  & 0.0169 & 0.0119 & 68\%  & 85\%  & 71\%  & 1.5 \\
+    4  & 40,000  & 0.0252 & 0.0153 & 45\%  & 66\%  & 61\%  & 1.5 \\
+    8  & 80,000  & 0.0667 & 0.0402 & 17\%  & 25\%  & 60\%  & 1.9 \\
+    12 & 120,000 & 0.0884 & 0.0492 & 13\%  & 21\%  & 56\%  & 3.0 \\
+    16 & 160,000 & 0.1602 & 0.0648 & 7\%   & 16\%  & 40\%  & 4.7 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-With 10,000 people per worker the split run takes 0.9 to 2.4 times as long per step as its
-slowest copy, so the protocol keeps 42 to 56\% of what the machine gives from four workers on
-(the 108\% at two workers, a split run faster than its copies, is within a single run's
-noise). Under MPI the efficiency falls from 85\% at two workers to 30\% at four and 5\% at
-sixteen, with the machine itself, the copies, at 53\% and 9\%. With 40,000 people per worker
-(10 steps, loads of 11 to 16), the efficiency is 91, 68 and 45\% at 2, 4 and 8 workers against
-104, 81 and 50\% for the copies, so the protocol keeps 74 to 80\%: a larger block has more
+With 10,000 people per worker the split run takes 1.1 to 2.5 times as long per step as its
+slowest copy, so the protocol keeps 40 to 61\% of what the machine gives from four workers on.
+Under MPI the efficiency falls from 68\% at two workers to 45\% at four and 7\% at
+sixteen, with the machine itself, the copies, at 66\% and 16\%. With 40,000 people per worker
+(10 steps, loads of 6 to 7), the efficiency is 74, 50 and 33\% at 2, 4 and 8 workers against
+72, 55 and 36\% for the copies, so the protocol keeps 80 to 90\%: a larger block has more
 work per exchanged border. The Dask backend, which routes every exchange through its
-scheduler (eight per step), measured 69, 35 and 22\% at 2, 4 and 8 workers (loads of 9 to 11),
-each split step 2.1 to 4.0 times its copies: the scheduler's round trips, not the model, take
+scheduler (eight per step), measured 65, 32 and 22\% at 2, 4 and 8 workers (loads of 9 to 11),
+each split step 3.0 to 4.4 times its copies: the scheduler's round trips, not the model, take
 its time. Every efficiency here is a single run per worker count, not a median of repeats,
-and a single run varies by tens of percent on this shared machine (the split run faster than
-its copies at two workers shows it), so the table supports the shape of the curve and the
+on a shared machine, so the table supports the shape of the curve and the
 byte-identity claims, not the last digit of an efficiency.
 
 \paragraph{Not met.} Efficiency at 70\% or more from 1 to 64 workers, the level a
 cluster code would aim for, cannot be measured on one laptop, and the laptop's hybrid
 processor is the main limit: eight copies of the same work with no communication at all
-already run at 25\% of one (50\% with 40,000 people per worker), because beyond the four
+already run at 25\% of one (36\% with 40,000 people per worker), because beyond the four
 performance cores the copies land on efficiency cores (at eight workers their step times
-split into two groups, 0.022~s and 0.029 to 0.044~s). The Ray backend is written but untested (Ray does not install on CPython 3.15); and the split-run suite runs on the three
+split into two groups of four, 0.021 to 0.022~s and 0.033 to 0.040~s). The Ray backend is written but untested (Ray does not install on CPython 3.15); and the split-run suite runs on the three
 reference models, not on the zoo, whose models would change their numbers if moved to
 per-agent streams.
 
@@ -116,21 +114,23 @@ than the device run in batches, bit for bit the same as one batch.
 and the raw numbers are in \code{paper/data/gpu\_speedup.json}. The grid epidemic at 10
 million agents on a $1000 \times 1000$ torus, 60 steps, seed 1, in fresh interpreters, wall
 clock around the steps with the device synchronised, the build timed apart, one untimed run
-first to fill CuPy's kernel cache: over five rounds (commit \code{5c67a59}, whose \code{modelly} package is the tag's), the CPU
-column variant (CPython 3.15, one core) takes 21.91, 24.42, 21.04, 19.82 and 20.37~s for the steps and the CuPy variant (CPython 3.14, the GPU environment's interpreter;
-the two interpreters differ, but the steps are dominated by numpy and CuPy kernels) 0.591, 0.579, 0.619, 0.613 and
-0.615~s, per-round ratios of 37.1, 42.2, 34.0, 32.3 and 33.1 and a median of 34.0 on an NVIDIA RTX~5050 laptop GPU
+first to fill CuPy's kernel cache: over five rounds (with the \code{modelly} package of the tag v1.5.0), the CPU
+column variant (CPython 3.15, one core) takes 52.15, 20.51, 20.16, 22.11 and 19.86~s for the
+steps (the first run includes a cold start) and the CuPy variant (CPython 3.14, the GPU environment's interpreter;
+the two interpreters differ, but the steps are dominated by numpy and CuPy kernels) 1.413, 0.803, 0.708, 0.884 and
+0.701~s, per-round ratios of 36.9, 25.6, 28.5, 25.0 and 28.3 and a median of 28.3 on an NVIDIA RTX~5050 laptop GPU
 (8~GB, CUDA runtime 13.2 from the \code{cupy-cuda13x} 14.2.0 wheel). Run on \code{numpy} and on CuPy with the same seed, the variant
 gives the same infected series for all 60 steps and the same SHA-256 of the final state, days
-and row columns of all 10 million agents; on \code{numpy} its steps take 56.1~s, more than the
-column variant's because Philox draws cost more than \code{numpy}'s generator, and 78 times its
-0.72~s on CuPy. Building 10 million agent objects takes 23 to 28~s on either side, so build
-plus steps is only 1.6 to 1.8 times faster: a GPU an order of magnitude faster than the
+and row columns of all 10 million agents; on \code{numpy} its steps take 108.4~s, more than the
+column variant's because Philox draws cost more than \code{numpy}'s generator, and 123 times its
+0.88~s on CuPy. Building 10 million agent objects takes 23 to 30~s on the CPU and 26 to 35~s
+for the GPU variant (83~s in the first, cold round), so build plus steps is only 1.0 to 1.7
+times faster: a GPU an order of magnitude faster than the
 column form at ten million agents is what the steps show, not what a whole run shows.
 
-\paragraph{Where it does not pay.} At the playbook's own 20,000 agents the steps take 0.14
-to 0.16~s on CuPy against 0.08 to 0.14~s on the CPU (three seeds), and the insect cohorts, a
-table of under 200 rows, take 1.52 to 1.53~s on the GPU for 120 days against 7 to 8~ms on the
+\paragraph{Where it does not pay.} At the playbook's own 20,000 agents the steps take 0.15
+to 0.16~s on CuPy against 0.07~s on the CPU (three seeds), and the insect cohorts, a
+table of under 200 rows, take 1.60 to 1.64~s on the GPU for 120 days against 7~ms on the
 CPU: kernel launches cost more than the arithmetic. JAX recompiles whenever a cohort table changes
 length. Apple Metal was not measured (no Apple GPU was available), and against the original
 CPU column variant, which draws from \code{model.rng}, the GPU variant agrees in distribution
@@ -160,7 +160,7 @@ noise, not the gradient's. A pathwise gradient agrees with finite differences to
 one-parameter test model and below $10^{-4}$ on the Bouchaud--Mézard twin, and the
 Gumbel-softmax Bass model within $10^{-3}$; the straight-through
 estimator fails the same check, by design, since it is biased. The tests skip without JAX;
-on the GPU environment all 105 GPU and differentiable tests pass on CuPy and CUDA JAX.
+on the GPU environment all 108 GPU and differentiable tests pass on CuPy and CUDA JAX.
 
 \subsection{Compiled event heap, column gather and memory-mapped columns}
 \label{app:perf2}
@@ -174,9 +174,9 @@ The data collector's attribute reporters, \code{AgentSet.get} and \code{agg} rea
 with identical rows (\code{test\_column\_gather.py}). \code{MemoryMapped(dir)} keeps a
 table's columns in \code{numpy.memmap} files, grown in place, with checkpoints that carry the
 rows. A cohort table of 100 million rows (19 bytes a row) ran three life-cycle steps inside a 16~GB
-\code{systemd} memory limit with a peak of 3.61~GB memory-mapped (4.27~GB in memory); a step
-took 10.4 to 12.0~s memory-mapped and 9.8 to 10.5~s in memory (one run of three steps each);
-and under a 3~GB limit the memory-mapped table finished, its steps taking 10.5 to 13.7~s,
+\code{systemd} memory limit with a peak of 3.61~GB memory-mapped (4.26~GB in memory); a step
+took 11.2 to 14.0~s memory-mapped and 9.9 to 10.9~s in memory (one run of three steps each);
+and under a 3~GB limit the memory-mapped table finished, its steps taking 11.1 to 12.4~s,
 while the in-memory one was killed (\code{benchmarks/large\_columns.py}; the four runs in
 \code{paper/data/large\_columns/}); 100 million \emph{agent objects} cannot fit
 in 16~GB, since the objects alone need over 22~GB.
@@ -224,7 +224,9 @@ float property layer of an orthogonal grid and updates it in place with diffusio
 upwind advection and exact decay, in explicit sub-steps that refuse a time step above the
 stability limit (pointing to the implicit scheme, backward Euler with a sparse LU solve), with
 closed, absorbing or periodic boundaries and a budget of what was added, flowed out and
-decayed. \code{ODE} and \code{StockFlow} components integrate with \code{solve\_ivp}. A
+decayed. \code{ODE} and \code{StockFlow} components integrate with \code{solve\_ivp}, and
+\code{AgentODE}, \code{AgentSDE} and delays integrate one system per agent with
+\code{solve\_batch} (\cref{sec:agentode}). A
 \code{Coupling} orders components phase by phase, writers before readers, and \code{build()}
 rejects a read nobody writes (naming the closest quantity), two writers of one quantity, a
 cycle inside a phase, and a lagged read without an initial value.
@@ -249,6 +251,50 @@ Fields work on orthogonal grids with uniform spacing and coefficients (a hexagon
 refused), the advection scheme smears sharp fronts, and since decay uses \code{exp} and
 \code{solve\_ivp} chooses its steps from an error norm, these two outputs are compared across
 platforms with a tolerance (\cref{sec:reproducibility}).
+
+\paragraph{Equations inside agents} (\code{tests/couple}, \code{paper/scripts/odes.py},
+\code{benchmarks/ode/}). \code{solve\_batch} keeps, per system, the time, the step size, the
+last derivative and a status, and applies SciPy's rules (the initial step, the error norm
+scaled by \code{atol + rtol |y|}, the safety factor and the bounds on the step's growth and
+shrinkage) to each system; a stage evaluates the right-hand side once on every system still
+running, so the systems that need small steps do not slow the others, and a system that has
+finished drops out. Events are located by bisection on each system's Runge--Kutta
+interpolant (\code{solve\_ivp} uses Brent's method on the same interpolant), terminal events
+resume within the step, and the dense output reads any system at any time of its span. A
+delay's history and the stochastic schemes' generator are saved in checkpoints, so a resumed
+run equals a straight one bit for bit. On 200 random
+systems of the viral model, with RK45 and RK23 at \code{rtol} $= 10^{-3}$, \code{atol} $=
+10^{-6}$ and at $10^{-8}$, $10^{-10}$, all 200 take exactly the accepted steps of their own
+\code{solve\_ivp} call in each of the four cases, and the final states differ from it by a
+relative $1.9 \times 10^{-11}$ at most (RK45 at the looser tolerance; $1.2 \times 10^{-14}$ for
+RK23 there, $6 \times 10^{-15}$ for both at the tighter one; \code{paper/data/odes.json}).
+The timings (\code{benchmarks/ode/compare.py} under \code{taskset -c 2} at the fixed frequency
+of \cref{sec:playbooks}, \code{paper/data/ode\_compare.json}) integrate the target-cell-limited
+model of influenza \citep{baccam2006kinetics}, three equations per agent, over ten days with
+RK45 at \code{rtol} $= 10^{-6}$ and \code{atol} $= 10^{-9}$, for 10 to 100,000 agents in two
+populations: alike, whose parameters vary by 10\% between agents, and diverse, whose infection
+rate, virus production and initial virus span one to four orders of magnitude, so that the
+infections peak at different times. Each time is the best of three runs, except the per-agent
+loop, run once past 1,000 agents and not at all past 10,000. The loop takes 0.054, 0.54, 5.4
+and 54.0~s at 10, 100, 1,000 and 10,000 alike agents (0.049, 0.53, 5.2 and 52.1~s diverse),
+about 5~ms per agent; \code{solve\_batch} takes 0.017, 0.019, 0.038, 0.25 and 3.42~s at 10 to
+100,000 alike agents and 0.025, 0.037, 0.079, 0.40 and 4.56~s diverse; one stacked
+\code{solve\_ivp} call takes 0.010, 0.011, 0.025, 0.17 and 2.88~s alike and 0.017, 0.025,
+0.060, 0.41 and 7.28~s diverse. Accuracy is each agent's error against a solution at
+\code{rtol} $= 10^{-12}$, in units of its own tolerance \code{atol + rtol |y|} (root
+mean square over its three equations), for the worst agent: the loop and \code{solve\_batch}
+have the same worst error at every size to nine digits, 0.15 to 0.18 alike and 8.3 to 21.0
+diverse (28.5 for \code{solve\_batch} at 100,000, where the loop was not run), the global
+error that a per-agent control of the local error leaves; the stacked call, whose error norm
+is the root mean square over all agents, has 0.22 to 0.28 alike and 0.81 to 10.0 diverse,
+more accurate on the diverse population because every agent takes the smallest agent's
+steps. The within-host zoo model (\code{benchmarks/ode/within\_host.py}, same core and
+frequency, one run of each, \code{paper/data/ode\_within\_host.json}) runs 100,000 hosts to
+day 20, the epidemic's peak, and integrates the next day twice from the same state: with its
+\code{AgentODE}, onset and clearance events included, in 1.07~s, and with one
+\code{solve\_ivp} call per exposed host (49,850 of them), same method and tolerances
+($10^{-6}$ and $10^{-9}$), in 49.1~s, 46 times as long; the two final states differ by at
+most $4.0 \times 10^{-9}$ of the tolerance.
 
 \subsection{Emulators, active learning and history matching}
 \label{app:emulate}
@@ -315,24 +361,24 @@ with the threshold.
 \cmd{modelly export-web model.py:Model} writes a static site that runs the model with Pyodide
 \citep{pyodide} (pinned version 314.0.7, loaded from its content delivery network): the parameter panel of Studio,
 run controls, a space view, a reporter plot, the model in a Web Worker so the page answers
-during long runs, Modelly as a trimmed pure-Python wheel of about 0.8~MB, and only the
+during long runs, Modelly as a trimmed pure-Python wheel of about 0.9~MB, and only the
 packages the model was observed to import. The C modules also build for WebAssembly with
 Emscripten through \code{pyodide build}, and the export can ship that wheel.
 
 \paragraph{Measured} (\code{tests/web/test\_browser.py}, \code{docs/browser.md}). The 14
 bundled examples (the three split-run reference models were not exported) and
-the 17 zoo models, 31 models, each run from its export in headless Chromium with the pure
-wheel and with the compiled one, 62 of 62 runs without error. Because Pyodide's GDAL reads no Deflate-compressed GeoTIFF and
+the 18 zoo models, 32 models, each run from its export in headless Chromium with the pure
+wheel and with the compiled one, 64 of 64 runs without error. Because Pyodide's GDAL reads no Deflate-compressed GeoTIFF and
 its geopandas has neither pyogrio nor fiona, the bundled land-cover window is stored
 uncompressed and the tracts are read through \code{GeoDataFrame.from\_features}. A cold
-first visit transfers 14.3~MB for the age-structured SEIR model
+first visit transfers 14.5~MB for the age-structured SEIR model
 (Pyodide, its standard library, \code{numpy} and \code{pandas} are 13.6~MB of it) and is
-ready at step 0 after 4.4~s unthrottled, 7.0~s on a 50~Mbit/s line with 40~ms round trips, and
-20.0~s on Chrome's ``Fast 4G'' profile (about 1~MB/s, 165~ms), where the transfer alone takes
+ready at step 0 after 4.3~s unthrottled, 6.5~s on a 50~Mbit/s line with 40~ms round trips, and
+19.4~s on Chrome's ``Fast 4G'' profile (about 1~MB/s, 165~ms), where the transfer alone takes
 14~s; the forest fire, a model that needs \code{scipy} (as the grid, continuous and network
-spaces do), transfers 28.3~MB and takes 5.4~s unthrottled, 10.1~s on the 50~Mbit/s line and
-35.0~s on Fast 4G (medians of three runs; \code{tools/web/measure\_load.py}, reports in
+spaces do), transfers 28.4~MB and takes 4.8~s unthrottled, 9.0~s on the 50~Mbit/s line and
+33.4~s on Fast 4G (medians of three runs; \code{tools/web/measure\_load.py}, reports in
 \code{paper/data/browser\_load/}). A first load
-under ten seconds on a good home connection is reached without \code{scipy}, missed narrowly
+under ten seconds on a good home connection is reached without \code{scipy} and, narrowly,
 with it, and not reached on a mobile profile.
 The documentation gallery embeds three live models.

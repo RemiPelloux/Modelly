@@ -5,7 +5,7 @@
 what it costs to do research with it. A model keeps its agents as objects and has its
 population-wide phases written as array operations, one at a time; on eight workloads those
 phases run 2.9 to 33 times faster than per-agent Mesa~3.5 code, the lead growing with the
-population on two of the three workloads timed at three sizes, within 1.8 to 4.5 times of hand-written numpy that gives agents up, and counted
+population on two of the three workloads timed at three sizes, within 1.8 to 4.7 times of hand-written numpy that gives agents up, and counted
 populations two orders of magnitude faster; an ablation attributes the gain to the array
 form of the phases. Whether the faster forms are the same model is tested: against the author's Mesa~2.3
 reference implementations, 29 of 67 statistic--variant comparisons are shown equivalent within half
@@ -15,21 +15,22 @@ curves, the spatial patterns and the times to converge of the faster forms are a
 Mesa~2.3 as Mesa~3.5's are. What this establishes is close agreement on the dynamics
 tested, at the tolerances stated for each quantity, not a general scientific equivalence
 across all behaviours: 34 of 52 scalar quantities are shown equivalent after Holm
-correction, the rest are undecided at 100 seeds, and one difference is shown, the column
+correction, 17 are undecided at 100 seeds, and one difference is shown, the column
 form's epidemic peak 3.3 steps earlier than Mesa~2.3's ($[-6.6, -0.1]$), so a study for
 which a peak's timing matters to that precision should set its own tolerance and test it
 as \cref{sec:trajectories} does; and Mesa's own examples, migrated with the codemod, give all 35 of
 their statistics within the same margin, and the virus example's migrated copy is the same
 process as Mesa's, draw for draw, once the random streams are aligned (\cref{sec:samecode}). Around that model, the
-steps of a study (sweeps, calibration, sensitivity analysis, emulation, provenance and
-archiving) are part of the framework, built on one seeding discipline and checked against
+steps of a study (sweeps, calibration, sensitivity analysis, emulation, the comparison of
+interventions on common random numbers, provenance, model cards and archiving) are part of the
+framework, usable from Python, R and Julia, built on one seeding discipline and checked against
 problems whose answers are known, and the reproducibility guarantees are stated by scope:
-deterministic on one build; reproducible at ten significant digits on every hosted build
-tested, the released wheels installed from PyPI on fifteen (five architectures, three
-interpreters) among them; and bit-identical across those fifteen for thirteen of seventeen
-examples (twelve of seventeen across the nine builds compiled from the checkout). The same model splits across processes with byte-identical results, runs its array
+deterministic on one build, and bit-identical for all seventeen examples across CPython
+3.12, 3.14 and 3.15, compiled or pure, on the one machine (Linux x86-64) where this version
+was checked; other operating systems and architectures are untested for it. The same model splits across processes with byte-identical results, runs its array
 phases on a GPU (with a bounded gain once construction is counted), connects to live data and
-continuous fields, and can be shared as a web page (\cref{tab:scale}); these capabilities are
+continuous fields, carries an ordinary, delay or stochastic differential equation in every
+agent with each agent's own solver steps, and can be shared as a web page (\cref{tab:scale}); these capabilities are
 validated functionality with the performance evidence of \cref{tab:scale}, not general
 acceleration claims. For a researcher who
 needs many runs, large populations or results that others can check, \modelly{} brings the
@@ -46,9 +47,10 @@ compiled wheels for Linux, macOS and Windows (x86-64 and ARM64) on the tag and a
 wheel for everything else (\cref{tab:determinism}). Source, issue tracker, the tests and the benchmark harness are at
 \href{https://github.com/RemiPelloux/Modelly}{\nolinkurl{github.com/RemiPelloux/Modelly}};
 documentation, tutorials and the roadmap at
-\href{https://remipelloux.github.io/Modelly/}{\nolinkurl{remipelloux.github.io/Modelly}}.
-At the tag, the suite runs 3,054 tests, of which 2,996 pass and 58 skip without an optional
-library (CuPy, Ray, optuna, xarray, a broker) or a browser, with 97.3\% line coverage (\code{paper/data/test\_suite.json}). The version described here is 1.4.2; the provenance of every measurement (commits,
+\href{https://remipelloux.github.io/Modelly/}{\nolinkurl{remipelloux.github.io/Modelly}};
+the R and Julia packages in the repository's \code{r/modelly} and \code{julia/Modelly.jl}
+folders. At this version, the suite runs 3,274 tests, of which 3,215 pass and 59 skip without an optional
+library (CuPy, Ray, optuna, xarray, a broker) or a browser, with 97.2\% line coverage (\code{paper/data/test\_suite.json}). The version described here is 1.5.0; the provenance of every measurement (commits,
 machine, package versions and the Software Heritage identifier of the archived code) is in
 \cref{app:reproduce}, and the data and scripts behind every table and figure of this paper
 are in the repository's \code{paper/} folder. To cite \modelly{}, use the metadata in the
@@ -59,15 +61,16 @@ repository's \code{CITATION.cff}.
 
 \paragraph{Software availability.} Name: \modelly{} (\code{modelly-abm} on PyPI). Developer:
 R\'emi Pelloux, OpenPro (\href{mailto:rp@openpro.ai}{rp@openpro.ai}). First available: 2026.
-Version described: 1.4.2. Language: Python, with five C extension modules. Requirements:
+Version described: 1.5.0. Language: Python, with five C extension modules. Requirements:
 CPython 3.12 or later, \code{numpy}, \code{pandas}, \code{scipy} and \code{tqdm} (and
 \code{pythran} on macOS); optional extras for visualisation, geography, networks, experiment
 storage, Dask and Ray executors, MPI (\code{mpi4py}), GPUs (CuPy), differentiable models (JAX),
-message brokers, an outside optimiser and xarray.
+message brokers, an outside optimiser, a policy search (Optuna) and xarray; R and Julia
+packages that call it.
 Hardware: any machine that runs CPython; the release workflow builds compiled wheels for
 Linux, macOS and Windows on x86-64 and ARM64 and a pure-Python wheel for everything else and
-for the browser. Size: 1.17~MB for the
-Linux x86-64 wheel and 1.12~MB for the pure one. Licence: Apache 2.0. Source:
+for the browser. Size: 1.32~MB for the
+Linux x86-64 wheel and 1.27~MB for the pure one. Licence: Apache 2.0. Source:
 \href{https://github.com/RemiPelloux/Modelly}{\nolinkurl{github.com/RemiPelloux/Modelly}}.
 
 \paragraph{Data availability.} The data and scripts behind every measured table and figure are

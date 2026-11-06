@@ -29,8 +29,10 @@ in it comes from a file or a script in this repository.
 | `scripts/ishigami.py` | Sobol indices of the Ishigami function as quoted (`data/ishigami.json`) |
 | `scripts/assimilation.py` | The nowcasting tutorial's numbers as quoted (`data/assimilation.json`) |
 | `scripts/graph_cut.py` | The graph partitioner's edge cut on a 30 x 30 lattice (`data/graph_cut.json`) |
-| `scripts/environment.py` | The commit, date and package versions the three scripts above record |
+| `scripts/environment.py` | The commit, date and package versions the scripts record |
+| `scripts/local_digests.py` | Checks that the six local builds give one exact digest per golden example (`data/local_digests/summary.json`) |
 | `scripts/package_arxiv.py` | Checks the sources without LaTeX; packs the arXiv archive |
+| `measure/` | The scripts that ran every measurement of the paper on 1.5.0 (`measure_150.sh`), the exact digests under three interpreters (`measure_150b.sh`) and the artifact checks from a fresh clone (`fresh_check_150.sh`) |
 | `Makefile` | `make`, `make figures`, `make check`, `make arxiv`, `make clean` |
 
 ## Build
@@ -54,7 +56,7 @@ Tables and figures are named by their LaTeX labels.
 | Agreement with Mesa: 100 seeds at the small size (`tab:agreement`, `fig:agreement`), 50 at the timed size (`tab:agreement-large`) | `data/agreement_small.json`, `data/agreement_large.json` | `scripts/agreement.py run --size small` (or `large`), then `analyse` |
 | Ishigami indices (Section 6.2) | `tests/sensitivity`, `docs/sensitivity.md` | `pytest tests/sensitivity` |
 | ABC-SMC coverage over 200 datasets per model (`tab:recovery`) | `data/recovery.json` | `scripts/recovery.py run`, then `analyse` |
-| Every agreement comparison (appendix F) | `data/agreement_small_summary.json` | `scripts/agreement.py analyse` |
+| Every agreement comparison (Appendix H) | `data/agreement_small_summary.json` | `scripts/agreement.py analyse` |
 | Grid epidemic at the timed size, replication on 200 new seeds (Section 5.3) | `data/agreement_large_grid200_new.json` | `scripts/agreement.py run --seed-base 10000 --size large --seeds 200 --playbooks grid_epidemic --tag large_grid200_new` |
 | Mesa 3.5 and mesa-frames against Mesa 2.3, 100 seeds (Section 5.3) | `data/agreement_small_baselines.json` | `scripts/agreement.py run --variants mesa3 frames --tag small_baselines` |
 | Schelling, replication on 300 new seeds, every implementation (Section 5.3) | `data/agreement_schelling300_new.json` | `scripts/agreement.py run --seed-base 10000 --seeds 300 --playbooks schelling --variants mesa3 frames modelly modelly-cells --tag schelling300_new` |
@@ -66,22 +68,22 @@ Tables and figures are named by their LaTeX labels.
 | mesa-frames with one thread and with all (Section 5.2) | `data/frames_threads.json` | `scripts/frames_threads.py` |
 | Workload parameters (appendix B) | `benchmarks/playbooks/registry.py` | `make figures` |
 | Determinism (Section 6.1, `tab:determinism`) | `tests/determinism`, `tests/determinism/golden.json` | `pytest tests/determinism` |
-| Split runs equal one process; MPI 2 and 4 ranks (Section 7, Appendix E.1) | `tests/distributed/`, `tests/determinism/test_determinism_partition.py` | `pytest tests/distributed tests/determinism/test_determinism_partition.py` (needs mpi4py for the MPI cases) |
+| Split runs equal one process; MPI 2 and 4 ranks (Section 7, Appendix G.1) | `tests/distributed/`, `tests/determinism/test_determinism_partition.py` | `pytest tests/distributed tests/determinism/test_determinism_partition.py` (needs mpi4py for the MPI cases) |
 | Weak scaling (`tab:scaling`) | `data/weak_mpi_10k.json`, `data/weak_mpi_40k.json`, `data/weak_dask_10k.json` | `benchmarks/distributed/weak_scaling.py` |
-| GPU speed-up and equality at 10 million agents (Section 7, Appendix E.2) | `data/gpu_speedup.json` | `benchmarks/playbooks/gpu_speedup.py` in a CUDA environment (`docs/gpu.md`) |
-| Differentiable recoveries and gradient checks (Section 7, Appendix E.3) | `tests/diff/`, `docs/differentiable.md` | `pytest tests/diff` (needs jax) |
-| Event heap, column gather, memory-mapped 100 M rows (Appendix E.4) | `tests/native/`, `data/large_columns/` (one JSON per run) | `benchmarks/large_columns.py` under `systemd-run -p MemoryMax=16G` and `3G` |
-| Nowcasting error and EnKF recovery (Section 7, Appendix E.5) | `docs/assimilation.md` run by `tests/stream/test_assimilation_tutorial.py` | `pytest tests/stream` |
-| Field numerics and the two coupled zoo models (Section 7, Appendix E.6) | `tests/couple/`, `tests/zoo/test_nutrient_foragers.py`, `test_hospital_epidemic.py` | `pytest tests/couple tests/zoo` |
-| History-matching volumes and active learning against LHS (Section 7, Appendix E.7) | `docs/emulators.md`, `tests/emulate/` | `pytest tests/emulate`; `benchmarks/emulate/active_vs_lhs.py` |
-| Synthetic population and the real-data zoo models (Section 7, Appendix E.8) | `tests/population/test_sample_region.py`, `tests/zoo/`, `modelly/space/geo/data/NOTICE.md` | `pytest tests/population tests/zoo` |
-| Browser runs (62 of 62: 14 examples and 17 zoo models, two wheels) and first load (Section 7, Appendix E.9) | `tests/web/test_browser.py` run by `scripts/release-checks.sh browser`; first load in `data/browser_load/` | `MODELLY_BROWSER_TESTS=1 pytest tests/web/test_browser.py`; `tools/web/measure_load.py` |
-| Graph partitioner's edge cut on a lattice (Appendix E.1) | `data/graph_cut.json` | `scripts/graph_cut.py` |
+| GPU speed-up and equality at 10 million agents (Section 7, Appendix G.2) | `data/gpu_speedup.json` | `benchmarks/playbooks/gpu_speedup.py` in a CUDA environment (`docs/gpu.md`) |
+| Differentiable recoveries and gradient checks (Section 7, Appendix G.3) | `tests/diff/`, `docs/differentiable.md` | `pytest tests/diff` (needs jax) |
+| Event heap, column gather, memory-mapped 100 M rows (Appendix G.4) | `tests/native/`, `data/large_columns/` (one JSON per run) | `benchmarks/large_columns.py` under `systemd-run -p MemoryMax=16G` and `3G` |
+| Nowcasting error and EnKF recovery (Section 7, Appendix G.5) | `docs/assimilation.md` run by `tests/stream/test_assimilation_tutorial.py` | `pytest tests/stream` |
+| Field numerics and the two coupled zoo models (Section 7, Appendix G.6) | `tests/couple/`, `tests/zoo/test_nutrient_foragers.py`, `test_hospital_epidemic.py` | `pytest tests/couple tests/zoo` |
+| History-matching volumes and active learning against LHS (Section 7, Appendix G.7) | `docs/emulators.md`, `tests/emulate/` | `pytest tests/emulate`; `benchmarks/emulate/active_vs_lhs.py` |
+| Synthetic population and the real-data zoo models (Section 7, Appendix G.8) | `tests/population/test_sample_region.py`, `tests/zoo/`, `modelly/space/geo/data/NOTICE.md` | `pytest tests/population tests/zoo` |
+| Browser runs (64 of 64: every model from its export, 32 per wheel, two wheels) and first load (Section 7, Appendix G.9) | `tests/web/test_browser.py` run by `scripts/release-checks.sh browser`; first load in `data/browser_load/` | `MODELLY_BROWSER_TESTS=1 pytest tests/web/test_browser.py`; `tools/web/measure_load.py` |
+| Graph partitioner's edge cut on a lattice (Appendix G.1) | `data/graph_cut.json` | `scripts/graph_cut.py` |
 | Implementation choices, mesa-frames threads (Appendix B) | `docs/performance.md`, `data/frames_threads.json` | `scripts/frames_threads.py` |
 | NetLogo fire percolation threshold (Section 6.2) | `docs/netlogo.md` | `pytest tests/netlogo` |
-| Nowcasting error, resamplings and EnKF recovery as quoted (Section 7, Appendix E.5) | `data/assimilation.json` | `scripts/assimilation.py` |
+| Nowcasting error, resamplings and EnKF recovery as quoted (Section 7, Appendix G.5) | `data/assimilation.json` | `scripts/assimilation.py` |
 | Ishigami estimates as quoted (Section 6.2) | `data/ishigami.json` | `scripts/ishigami.py` |
-| 105 GPU and differentiable tests on CuPy and CUDA JAX (Appendix E.3) | `tests/gpu`, `tests/diff` in the GPU environment (`docs/gpu.md`) | `pytest tests/gpu tests/diff` in `.gpu-venv` |
+| 108 GPU and differentiable tests on CuPy and CUDA JAX (Appendix G.3) | `tests/gpu`, `tests/diff` in the GPU environment (`docs/gpu.md`) | `pytest tests/gpu tests/diff` in `.gpu-venv` |
 | Speed-ups at three population sizes (Section 5.2, Table `tab:sizes`) | `data/sizes.json` | `scripts/sizes.py run --rounds 5 --core 2` |
 | ABC-SMC coverage with true parameters drawn from the prior (Section 6) | `data/prior_coverage.json` | `scripts/prior_coverage.py run --replicates 500` |
 | The first timing session of the playbooks, for the between-session check (Section 9) | `data/playbooks_session1/` | `benchmarks/playbooks/compare.py --rounds 10 --core 2` |
@@ -97,10 +99,13 @@ Tables and figures are named by their LaTeX labels.
 | ABC-SMC coverage and diagnostics at 30, 60, 100 and 200 particles (`tab:abc-sweep`) | `data/abc_sweep_p*.json`, `data/abc_sweep_summary.json` | `scripts/abc_sweep.py run --particles 30 60 100 200 --replicates 500`, then `analyse` |
 | Sobol indices across 32 scramblings (`tab:sobol-scramblings`) | `data/sobol_scramblings.json` | `scripts/sobol_scramblings.py` |
 | The cohort proposition's positive case and two counterexamples (Section 3.2) | `data/cohort_counterexample.json` | `scripts/cohort_counterexample.py` |
-| The determinism suite and exact digests on hosted builds: the checkout on 9 and on 15 (five architectures), the released 1.4.2 wheels from PyPI on 15; MPI on three systems; bundles verified across systems (`tab:determinism`, `tab:platform-digests`) | `data/platform_runs.json`, `data/platform_digests/`, `data/platform_digests_15/`, `data/platform_digests_wheels/` (artifacts of `.github/workflows/platform-digests.yml`) | `gh workflow run platform-digests.yml -f source=checkout` and `-f source=pypi -f version=1.4.2`, `gh workflow run mpi.yml`, download the artifacts, then `scripts/platform_digests_table.py` |
+| The golden digests, exact, under CPython 3.12, 3.14 and 3.15, compiled and pure, on the development machine; the determinism and distributed suites (MPI 2 and 4 ranks) under the three (Section 6.1, `tab:determinism`) | `data/local_digests/` | `paper/measure/measure_150b.sh` (`python -m modelly.dev golden --json` per build, then `pytest tests/determinism tests/distributed`), then `scripts/local_digests.py` |
 | Every table and figure regenerates from the data; every listing runs as printed; the same from a fresh clone and environment | all of the above; `data/clean_checkout_check.json` | `scripts/verify_artifacts.py`; `scripts/check_listings.py` |
 | Mesa's virus example against its migrated copy, level by level (graph, agents, outbreak, aligned streams, Mesa's seed derivation on both arms), and a replication on 1,000 new seeds (Section 5.1) | `data/virus_trace.json`, `data/mesa_examples_virus1000_new.json` | `scripts/virus_trace.py --seeds 10`; `benchmarks/mesa_examples/run.py --only virus_on_network --rounds 1 --seeds 1000 --seed-base 20000` |
 | The ABC-SMC weights against their equation: the proposal density and a closed-form posterior (Section 6.2) | `data/abc_weights_check.json` | `scripts/abc_weights_check.py` |
+| Equations inside agents: `solve_batch` against `solve_ivp` on 200 systems, the delay equation's closed form, SDE strong orders, the mean-field gap, ODE parameters by gradient (Section 7, Appendix G.6) | `data/odes.json` | `scripts/odes.py` |
+| ODE per agent timed against a `solve_ivp` loop and one stacked call; the within-host zoo model (Section 7, Appendix G.6) | `data/ode_compare.json`, `data/ode_within_host.json` (copies of `benchmarks/ode/results.json` and `within_host.json`) | `taskset -c 2 benchmarks/ode/compare.py`; `benchmarks/ode/within_host.py` |
+| Decisions and causes: the vaccination study's ranking, common random numbers' variance reduction on ten seeds, attribution of an outbreak (Section 4) | `data/decisions.json` | `scripts/decisions.py` |
 
 If the benchmark results are rerun (on different hardware, say), run `make figures` and
 update the hardware line at the start of Section 5.
@@ -113,48 +118,51 @@ update the hardware line at the start of Section 5.
       venue, volume, issue, pages, year); the two JASSS articles without DOI and the mesa-frames
       URL checked to resolve.
 - [x] The feature table re-checked against each project's documentation and repository (October 2026).
-- [x] The paper describes one version, 1.4.2, and compares Modelly only with other
+- [x] The paper describes one version, 1.5.0, and compares Modelly only with other
       frameworks, never with its own earlier versions.
-- [x] Every measurement run on the tagged release v1.4.2 (`build/release/measure_142*.sh`:
-      timings at the fixed frequency, GPU, weak scaling, agreement, coverage, 100-million-row
-      run, browser first load, active learning, GPU and differentiable tests, browser runs,
-      test suite; the agreement scripts' follow-up studies from the paper branch, whose code is
-      the tag's), `make figures` run and every number in the text refreshed from the new files.
+- [x] Every measurement run on 1.5.0, the `modelly` package identical to the tag v1.5.0
+      (`paper/measure/measure_150.sh`: timings at the fixed frequency, the ODE comparison,
+      GPU, weak scaling, agreement, coverage, 100-million-row run, browser first load,
+      active learning, GPU and differentiable tests, browser runs on both wheels,
+      accessibility, test suite; `paper/measure/measure_150b.sh`: exact digests and the
+      determinism and distributed suites under CPython 3.12, 3.14 and 3.15), `make figures`
+      run and every number in the text refreshed from the new files.
+- [x] Reproducibility claimed only where it was run for this version: one Linux x86-64
+      machine, three interpreters, compiled and pure; macOS, Windows, ARM and the published
+      wheels stated as untested beyond the release workflow's import test.
 - [x] Follow-up agreement studies are replications on new seeds (`--seed-base 10000`),
       disjoint from the primary studies' seeds.
 - [x] Every model runs from its export in the browser with the pure and the compiled wheel
       (`scripts/release-checks.sh browser`, then `MODELLY_WASM_WHEEL=... pytest -k wasm`).
 - [x] Tests and coverage counted on the tag (see Section 11).
-- [ ] For a journal: Appendix F (every comparison of the agreement study) and the trajectory
+- [ ] For a journal: Appendix H (every comparison of the agreement study) and the trajectory
       study's full tables become CSV supplements generated from
       `data/agreement_small_summary.json` and `data/trajectories_small_summary.json`;
-      Appendix E is the supplementary material for Section 7.
+      Appendix G is the supplementary material for Section 7.
 - [x] Revision after review: nominal and Holm-corrected equivalence counts kept apart
       everywhere; a trajectory-level study with prespecified margins; an ablation ladder;
       three CPython versions; a sweep end to end; ABC particle-count protocol; Sobol
       uncertainty across scramblings; the cohort proposition with counterexamples;
-      the determinism suite on nine hosted builds and MPI on three systems.
+      the determinism suite on several builds and MPI.
 - [x] Second round: the trajectory study's claim bounded (34 of 52 after Holm, the rest
-      undecided); the released wheels installed from PyPI and the determinism suite run on
-      five architectures; `scripts/verify_artifacts.py` (29 tables, 9 figures, 5 data
-      files regenerate identically) and `scripts/check_listings.py` (the three listings
+      undecided); `scripts/verify_artifacts.py` (every table, figure and recomputed data
+      file regenerates identically) and `scripts/check_listings.py` (the three listings
       run as printed) pass; `docs/sensitivity.md` explains the row bootstrap against
       scramblings and shows how to report the latter.
 - [x] Third round: the SMC weights verified against the whole-mixture truncation (the
       proposal density and a closed-form posterior); the artifact checks rerun from a fresh
       clone with dependencies resolved from PyPI; the conclusion bounded to the dynamics
       tested, with the peak-timing difference kept.
-- [x] Fourth round: the conclusion's reproducibility counts reconciled with the abstract
-      (13/17 on the fifteen wheel builds, 12/17 on the nine checkout builds); 29/67 in the
-      abstract; independence across rows made explicit in the cohort proposition; the
+- [x] Fourth round: the conclusion's reproducibility counts reconciled with the abstract;
+      29/67 in the abstract; independence across rows made explicit in the cohort proposition; the
       virus example traced level by level (same process draw for draw; the shift was the
       two frameworks' seed derivations) and replicated on 1,000 new seeds (no shift).
 - [ ] Still open from the review: a second CPU architecture for the timings; an
       independent review or rerun of the benchmark implementations (not by the author);
       the trajectory study at the timed size and on the other five playbooks; multi-node
       scaling; the three timing scripts of the revision at the fixed frequency.
-- [x] Software Heritage archives the tag v1.4.2 (`swh:1:rel:661000598425e7a9b958b5a679ca1281aa6f6cc3`, Appendix A).
-- [x] Compiled with Tectonic and with pdfLaTeX (the engine arXiv uses), no warnings; every page read.
+- [x] Software Heritage archives the tag v1.5.0 (`swh:1:rel:7b7b49f3d26e8411797bb8a29e3c83eff3b98222`, Appendix A).
+- [ ] Compiled with Tectonic and with pdfLaTeX (the engine arXiv uses), no warnings; every page read.
 - [x] All timings re-run at a fixed frequency (performance governor, turbo off, CPU 2).
 - [x] Mesa 3.5 timed on all eight playbooks, mesa-frames on four, a hand-vectorised Mesa 3.5
       (numpy) baseline on three (`tab:playbooks`, `fig:speedups`).

@@ -34,9 +34,9 @@ KEYWORDS = [
 RELATED = [
     {"identifier": "https://github.com/RemiPelloux/Modelly",
      "relation": "isSupplementedBy", "resource_type": "software"},
-    {"identifier": "https://pypi.org/project/modelly-abm/1.4.2/",
+    {"identifier": "https://pypi.org/project/modelly-abm/1.5.0/",
      "relation": "isSupplementedBy", "resource_type": "software"},
-    {"identifier": "swh:1:rel:661000598425e7a9b958b5a679ca1281aa6f6cc3",
+    {"identifier": "swh:1:rel:7b7b49f3d26e8411797bb8a29e3c83eff3b98222",
      "relation": "isSupplementedBy", "resource_type": "software"},
 ]  # fmt: skip
 

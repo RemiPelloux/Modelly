@@ -99,7 +99,7 @@ Individual identities, and histories that differ within a state, are not represe
 model that needs them stays at the object or column level.
 
 \begin{lstlisting}[float=tp,caption={A wealth-exchange model whose agents keep their wealth in a column;
-the step acts on the whole population at once. Run as shown with \modelly{} 1.4.2.},
+the step acts on the whole population at once. Run as shown with \modelly{} 1.5.0.},
 label={lst:columns}]
 import numpy as np
 from modelly import Agent, Column, Model
@@ -160,9 +160,8 @@ two side by side, and \code{MODELLY\_PURE\_PYTHON=1} forces the Python path. Res
 identical either way. The modules build with GCC, Clang and MSVC; the release workflow builds
 them on the tag for Linux (glibc and musl, x86-64 and ARM64), macOS and Windows (x86-64 and
 ARM64), where a module that fails to compile fails the
-build and the release workflow's import test checks four of the five compiled (all but the
-event heap), while the runs of the released wheels from PyPI found all five present, as
-\cref{tab:determinism} states. They also build for free-threaded CPython,
+build and the release workflow's import test checks that every wheel holds all five compiled
+modules. They also build for free-threaded CPython,
 where critical sections and cache generation counters replace the global interpreter lock,
 and the compiled modules' tests, except the event heap's, run on that build on the development
 machine.

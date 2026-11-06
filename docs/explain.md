@@ -26,17 +26,20 @@ By default it also measures what the pairing bought. The treated arm is run agai
 independent seeds, and `variance_reduction` is the variance of the unpaired difference
 divided by that of the paired one: how many times fewer runs the pairing needs for the same
 precision.
+`workers=` runs the replicates over processes with identical results, as in
+[Decisions](decide.md#comparing-strategies); `attribute` takes it too.
 
 On the [Bass diffusion zoo model](zoo/bass_diffusion.md), raising imitation from 0.38 to 0.40
-adds 2.06 percentage points of adoption after 60 steps (1.94 to 2.18, 30 pairs). Common random
-numbers reduce the variance of that estimate 49.8 times; for a larger change, to 0.45, 18.5
-times. Every household draws one number per step whatever the parameters, so the pairs stay
-aligned until their adoptions differ.
+adds about 2.05 percentage points of adoption after 60 steps (1.92 to 2.18 for 30 pairs with
+`seed=0`). Common random numbers reduce the variance of that estimate 24 to 62 times over ten
+seeds of the study (median 42); for a larger change, to 0.45, 10 to 19 times. The ratio is
+itself an estimate from 30 pairs, hence the spread. Every household draws one number per step
+whatever the parameters, so the pairs stay aligned until their adoptions differ.
 
 The pairing only helps while the two arms consume the random numbers the same way. In the
 [age-structured SEIR model](zoo/age_seir.md), vaccinating a group adds a cohort row, which
 changes the order of the binomial draws from the first step. The two arms are then
-effectively independent, and the measured ratio is about 0.8, no gain. On the
+effectively independent, and the measured ratio is 0.6 to 1.3 over ten seeds, no gain. On the
 [hospital epidemic](zoo/hospital_epidemic.md), the contact response changes when people are
 infected, and the gain is 1.9 times on the peak occupancy. `variance_reduction` measures
 this for your model rather than assuming it. To keep the pairing, write interventions that

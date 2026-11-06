@@ -3,18 +3,19 @@
 
 A study often outgrows one process, or needs its model tied to data: a population too large
 for one core, millions of agents whose phases are array operations, parameters to fit by
-gradient, a model kept in step with arriving observations, agents on a diffusing resource, a
+gradient, a model kept in step with arriving observations, agents on a diffusing resource,
+a differential equation inside every agent, a
 model too expensive to run thousands of times, a realistic starting population, or a model
 that colleagues should try without installing anything. \modelly{} covers each of these with
 the same model code. For each capability this section gives the mechanism, what was measured
 and the conditions under which it holds; \cref{tab:scale} collects the numbers, and \cref{app:scale} has the designs, the measurement conditions
 and the file behind every one of them. The measurements were made on the laptop of
 \cref{sec:performance} while it was shared with other work and without the fixed frequency of
-\cref{sec:playbooks}, and \cref{sec:threats} says which are repeated runs and which are single
+\cref{sec:playbooks} (except the timings of equations inside agents), and \cref{sec:threats} says which are repeated runs and which are single
 runs; the conclusions that matter (byte-identical outputs, order-of-magnitude speed-ups) do not
 turn on the last digit of a timing. Each capability is presented as validated functionality
 with the performance evidence stated and bounded, not as a general acceleration claim: the
-GPU's 34-fold step speed-up holds at ten million agents and shrinks to 1.6 to 1.8 once the
+GPU's 28-fold step speed-up holds at ten million agents and shrinks to 1.0 to 1.7 once the
 agents are built, and the split run's byte-identical results are a correctness property
 whose multi-node speed-up has not been shown.
 
@@ -29,17 +30,17 @@ whose multi-node speed-up has not been shown.
     Capability & Measured & Conditions \\
     \midrule
     Split runs & Byte-identical to one process at 1, 2, 4 and 16 partitions on three models;
-    MPI with 2 and 4 ranks; Dask with 2 workers & Weak scaling 85, 30, 19 and 5\% at 2, 4, 8
-    and 16 workers with 10,000 people per worker, 91, 68 and 45\% at 2, 4 and 8 with 40,000
+    MPI with 2 and 4 ranks; Dask with 2 workers & Weak scaling 68, 45, 17 and 7\% at 2, 4, 8
+    and 16 workers with 10,000 people per worker, 74, 50 and 33\% at 2, 4 and 8 with 40,000
     (single runs on a shared laptop whose copies without communication already fall to 25\% at
-    eight); 64 workers unmeasured; MPI with 2 and 4 ranks on Linux and macOS and 2 on Windows; Ray
-    untested \\
+    eight); 64 workers unmeasured; MPI with 2 and 4 ranks on Linux only (Open MPI); macOS, Windows
+    and Ray untested \\
     \addlinespace
-    GPU backend & Steps 34 times faster than the CPU column variant on one core at 10 million agents (78 times
+    GPU backend & Steps 28 times faster than the CPU column variant on one core at 10 million agents (123 times
     the same GPU variant on \code{numpy}); the GPU variant's
     integer state identical on \code{numpy} and CuPy &
-    Construction not faster (1.6 to 1.8 times in total); slower at 20,000 agents, the
-    crossover unmeasured; cohort tables 200 times slower; Metal untested \\ \addlinespace
+    Construction not faster (1.0 to 1.7 times in total); slower at 20,000 agents, the
+    crossover unmeasured; cohort tables 230 times slower; Metal untested \\ \addlinespace
     Differentiable models & Two zoo models' parameters recovered within 2\% and 7\%; pathwise
     gradients within $10^{-6}$ and $10^{-4}$ of finite differences & Gradients through discrete
     choices are approximations; the straight-through estimator is biased \\ \addlinespace
@@ -49,14 +50,20 @@ whose multi-node speed-up has not been shown.
     Fields and coupling & Mass conserved to $10^{-12}$; 1D heat kernel to about $10^{-6}$; two
     zoo models with closed budgets & Orthogonal grids with uniform spacing only; upwind
     advection smears fronts \\ \addlinespace
+    Equations inside agents & 200 of 200 systems take \code{solve\_ivp}'s accepted steps
+    and end within $1.9 \times 10^{-11}$ of it; a delay equation equal to its closed form to
+    $10^{-14}$; strong orders 0.53 and 0.95 for orders $\tfrac12$ and 1; 131 to 217 times faster than a
+    \code{solve\_ivp} loop at 10,000 agents, 46 times in the within-host zoo model &
+    Only RK45 and RK23 are batched; stiff systems share one step; one stacked call is faster
+    on alike agents; timings best of three runs at the fixed frequency \\ \addlinespace
     Emulators & Parameter box reduced from 17.1 to 2.5\% in four waves, truth inside & Half the
     runs of a hypercube only on the zoo model (factors 1.3 to 2.7); Branin 1.1 to 1.4, Ishigami
     0.8 to 1.4 \\ \addlinespace
     Synthetic populations & Totals and ages exact, sexes within 1\%; the SEIR model's final
     size within 0.05; three real-data zoo models & Made-up marginals; no real joint
     distribution to test against \\ \addlinespace
-    Browser & 62 of 62 runs: 31 models, two wheels & First load 7.0 and 10.1~s at 50~Mbit/s
-    without and with \code{scipy}, 20.0 and 35.0~s on Fast 4G \\
+    Browser & 64 of 64 runs: 32 models, two wheels & First load 6.5 and 9.0~s at 50~Mbit/s
+    without and with \code{scipy}, 19.4 and 33.4~s on Fast 4G \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -76,7 +83,7 @@ models every reporter and every agent's state is byte-identical to the single-pr
 shared with other jobs, whose hybrid processor is the main limit: eight copies of the same
 work with no communication at all already run at 25\% of one, because beyond the four
 performance cores the copies land on efficiency cores, and with 10,000 people per worker the
-protocol keeps 42 to 56\% of what the machine gives from four workers on, 74 to 80\% with
+protocol keeps 40 to 61\% of what the machine gives from four workers on, 80 to 90\% with
 40,000 (\cref{tab:scaling}). A split run on one laptop is therefore a check of correctness
 more than a speed-up; scaling to the 64 workers of a cluster was not measured, and the Ray
 backend is untested.
@@ -86,18 +93,18 @@ backend is untested.
 
 Column phases, cohort tables and the cell-space operators run on CuPy or JAX with a
 \code{numpy} fallback, from counter-based (Philox) random streams that draw the same numbers
-on every backend. At ten million agents the grid epidemic's 60 steps take 0.61~s on an
-RTX~5050 laptop GPU against 21~s for the CPU column variant on one core, 34 times faster (median
-of five rounds, 32 to 42), and 78 times faster than the same GPU variant run on \code{numpy}. The GPU variant draws from Philox streams rather than the model's
+on every backend. At ten million agents the grid epidemic's 60 steps take 0.80~s on an
+RTX~5050 laptop GPU against 20.5~s for the CPU column variant on one core (medians of five
+rounds), 28 times faster (median of the rounds' ratios, 25 to 37), and 123 times faster than the same GPU variant run on \code{numpy}. The GPU variant draws from Philox streams rather than the model's
 generator, so it is a different variant of the model from the CPU column one, agreeing with it
 in distribution; run on \code{numpy} and on CuPy it gives the same infected series and the same
 digest of the final state (\cref{app:gpu}). The comparison is with one CPU core: a sweep of independent replicates can instead run one
 per core, which on this 16-core laptop would narrow the GPU's lead in throughput by up to that
 factor (not measured). Building ten million agent objects takes 23 to
-28~s on either side, so build plus steps gains only 1.6 to 1.8 times; at 20,000 agents the GPU
-is slower than the CPU (0.14 to 0.16~s against 0.08 to 0.14~s) and the crossover was not
+35~s on either side (83~s for the GPU's first, cold build), so build plus steps gains only 1.0
+to 1.7 times; at 20,000 agents the GPU is slower than the CPU (0.15 to 0.16~s against 0.07~s) and the crossover was not
 measured; a cohort
-table of under 200 rows is about 200 times slower, because kernel launches cost more than its
+table of under 200 rows is about 230 times slower, because kernel launches cost more than its
 arithmetic; and Apple Metal was not measured.
 
 \subsection{Differentiable models}
@@ -107,7 +114,9 @@ Column phases traced by JAX give gradients of a model's outputs with respect to 
 parameters, exact through normal and uniform draws and approximate through Bernoulli choices
 (straight-through, Gumbel-softmax or score-function estimators, each warning that it is one).
 Gradient calibration recovers two zoo models' parameters from runs of the agent-based
-originals, and pathwise gradients agree with finite differences (\cref{tab:scale},
+originals, and an ODE inside every agent is differentiated through the steps of a
+fourth-order Runge--Kutta integrator, which recovers the two viral rates of a within-host
+model within 0.1\% (\cref{sec:agentode}); and pathwise gradients agree with finite differences (\cref{tab:scale},
 \cref{app:diff}); the straight-through estimator is biased and fails that check, by design, so
 a gradient through a discrete choice is an approximation whose use the documentation delimits.
 
@@ -136,6 +145,48 @@ and an epidemic coupled to hospital capacity, close their budgets to round-off a
 analytical checks (\cref{app:couple}). Fields need orthogonal grids with uniform spacing, and
 upwind advection smears sharp fronts.
 
+\subsection{Differential equations inside agents}
+\label{sec:agentode}
+
+When every agent carries an ODE (a viral load inside a host, a physiology, an energy budget),
+one \code{solve\_ivp} call per agent costs a Python call per agent and step, and stacking the
+agents into one system forces them all onto the step size of the agent that needs the
+smallest. \code{solve\_batch} integrates many independent systems at once: it runs SciPy's
+Dormand--Prince and Bogacki--Shampine pairs \citep{virtanen2020scipy, dormand1980family,
+bogacki1989pair} with SciPy's step selection and error control applied to each system
+separately, and evaluates the right-hand side once per stage for all of them. On 200 random
+systems of a viral model, with both pairs at two tolerances, every system takes exactly the
+accepted steps of its own \code{solve\_ivp} call and ends within a relative $1.9 \times 10^{-11}$ of
+it at the looser tolerance and $6 \times 10^{-15}$ at the tighter (\code{paper/data/odes.json}).
+\code{AgentODE} keeps the state in an agent class's columns, locates zero crossings per agent
+on each step's interpolant (an onset, a clearance), calls back into the model when one occurs,
+and hands stiff systems to BDF, Radau or LSODA as one stacked call with a block-diagonal
+Jacobian pattern. The same machinery integrates delay equations by the method of steps, keyed
+by agent so that newcomers keep their own past (equal to the closed form of
+$y'(t) = -a\,y(t-1)$ to a relative $6 \times 10^{-15}$ at model steps of 0.5, 1 and 3), and
+stochastic equations by Euler--Maruyama or a derivative-free Milstein scheme with diagonal noise
+\citep{kloeden1992numerical}, drawn from the model's generator, whose strong orders on
+geometric Brownian motion measure 0.53 and 0.95 against the theoretical $\tfrac12$ and 1. A
+mean-field companion runs a model's ODE limit beside it and fits how the gap shrinks with the
+population: as $N^{-0.47}$ on the Bass zoo model between 250 and 16,000 households, the
+$N^{-1/2}$ of sampling noise.
+
+Timed against the two alternatives on the target-cell-limited model of influenza
+\citep{baccam2006kinetics}, three equations per agent over ten days with the Dormand--Prince
+pair at a relative tolerance of $10^{-6}$ (best of three runs, one for the loop beyond 1,000 agents, on one core at the fixed
+frequency of \cref{sec:playbooks}), \code{solve\_batch} integrates 10,000 agents in 0.25~s where one
+\code{solve\_ivp} call per agent takes 54~s, 217 times as long, and 131 times as long on a
+population whose rates span orders of magnitude, with the same worst error as the loop at every size
+(\code{paper/data/ode\_compare.json}). One stacked \code{solve\_ivp} call is faster when the
+agents are alike (0.17~s at 10,000 agents; 2.9~s against 3.4~s at 100,000), since it controls
+one step size instead of one per agent; on the diverse population it is level at 10,000 agents
+and 1.6 times slower at 100,000 (7.3~s against 4.6~s), since every agent takes the steps of the
+one that needs the smallest, which also makes it the more accurate there. In the within-host
+zoo model, 100,000 hosts at the epidemic's peak on day 20, \code{AgentODE} advances the hosts
+by one day, events included, in 1.07~s against 49.1~s for one \code{solve\_ivp} call per
+exposed host, 46 times faster in one run of each, and the two final states agree to
+$4 \times 10^{-9}$ of the tolerance (\code{paper/data/ode\_within\_host.json}).
+
 \subsection{Emulators, active learning and history matching}
 \label{sec:emulate}
 
@@ -163,9 +214,9 @@ marginals are made up, so no real joint distribution was tested against.
 
 \cmd{modelly export-web} writes a static site that runs a model with Pyodide in a browser tab,
 with Studio's parameter panel, a space view and a reporter plot. The 14 bundled examples
-and the 17 zoo models each ran from their export in headless Chromium with the
-pure-Python wheel and with the compiled one, 62 of 62 runs (\cref{app:browser}). A cold first
-visit is ready after 7.0~s on a 50~Mbit/s line for a model that needs no \code{scipy}, 10.1~s
-for one that does, and 20.0 and 35.0~s on a Fast~4G profile, so a first load under ten
-seconds is reached only on the faster line and without \code{scipy}: Pyodide, \code{numpy}
+and the 18 zoo models each ran from their export in headless Chromium with the
+pure-Python wheel and with the compiled one, 64 of 64 runs (\cref{app:browser}). A cold first
+visit is ready after 6.5~s on a 50~Mbit/s line for a model that needs no \code{scipy}, 9.0~s
+for one that does, and 19.4 and 33.4~s on a Fast~4G profile, so a first load under ten
+seconds is reached on the faster line, with or without \code{scipy}, and not on Fast~4G: Pyodide, \code{numpy}
 and \code{pandas} alone are 13.6~MB.

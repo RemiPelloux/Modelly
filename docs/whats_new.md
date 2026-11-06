@@ -20,6 +20,12 @@ whose notes are missing (see "Release notes" in
 - **A home page that finds the guide**: type a task (calibrate, GPU, from R) and the matching
   guides are listed; the benchmark against Mesa 3.5 is drawn model by model. [Home](index.md)
 
+### Fixed
+
+- **Causes and explanations** gives the variance reduction of common random numbers as its
+  spread over ten seeds (24 to 62 times on the Bass example, median 42) instead of one seed's
+  value. [Causes and explanations](explain.md)
+
 ## 1.5.0 - 2026-11-03
 
 **Ecosystem and collaboration.** Publish a model on the hub with its card, decide and explain
