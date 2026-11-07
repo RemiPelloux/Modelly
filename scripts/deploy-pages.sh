@@ -7,8 +7,8 @@
 # the same through the same API but cancels the deployment after at most 10 minutes, and
 # GitHub sometimes takes longer than that to sync the whole versioned site. This waits up
 # to WAIT_MINUTES instead. The build version is <commit>, the docs-site commit this run
-pushed: Pages needs a commit of the repository, and that one is new on every run, so a
-release tag on the same commit as main is still published.
+# pushed: Pages needs a commit of the repository, and that one is new on every run, so a
+# release tag on the same commit as main is still published.
 #
 # Needs GH_TOKEN, and the job permissions `pages: write` and `id-token: write`.
 
