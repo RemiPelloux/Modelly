@@ -46,7 +46,11 @@ if [[ "$VERSION" != dev && "$VERSION" == "$newest" ]]; then
   fi
   rsync -a --checksum --delete "${VERSION_FOLDERS[@]}" "${SITE_FILES[@]}" "$BUILD/" "$SITE/"
   echo "root updated to $VERSION"
-  "$PYTHON" "$HERE/docs_redirects.py" "$SITE" "$VERSION"
+fi
+# The root serves the newest minor, so its folder only needs redirects; any run converts a
+# folder that is still a full copy (one stored before redirects existed, or just rebuilt).
+if [[ -n "$newest" && -d "$SITE/$newest" && ! -f "$SITE/$newest/$REDIRECTS" ]]; then
+  "$PYTHON" "$HERE/docs_redirects.py" "$SITE" "$newest"
 fi
 find "$SITE" -path "$SITE/.git" -prune -o -name '*.map' -type f -print0 | xargs -0 rm -f
 
