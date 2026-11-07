@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Build wheels
-        uses: pypa/cibuildwheel@v4.3.4
+        uses: pypa/cibuildwheel@v4.3.5
         env:
           CIBW_BUILD: "cp312-* cp313-* cp314-* cp315-* cp314t-* cp315t-*"
           # The C modules declare Py_MOD_GIL_NOT_USED (see modelly/_native/ftcompat.h).
@@ -85,7 +85,7 @@ jobs:
         with:
           name: pure
           path: dist
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
       - name: Install Pyodide
