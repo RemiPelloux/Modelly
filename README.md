@@ -33,7 +33,7 @@ time, pandas data collection, browser visualization. Fast by construction, repro
 
 ---
 
-**Status:** stable, Python 3.12+, release 1.5.0. Every public name has a stability level
+**Status:** stable, Python 3.12+, release 1.5.1. Every public name has a stability level
 (`docs/api_stability.toml`): stable names follow semantic versioning and the deprecation policy;
 the newest packages are marked provisional. The current version is `modelly.__version__`.
 
