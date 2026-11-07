@@ -42,7 +42,11 @@ The site serves the newest minor release at the root, `main` at `/dev/` and ever
 release at `/X.Y/`. The built HTML of every version is stored on the orphan branch
 `docs-site`; each workflow run builds one version, puts it into that tree with
 `scripts/assemble-docs-site.sh` (which also writes the root `switcher.json` the version
-menu reads) and deploys the whole tree. Build one version as published:
+menu reads) and deploys the whole tree. The newest minor's own `/X.Y/` folder holds small
+redirects to the root, which already serves that release (`scripts/docs_redirects.py`); the
+folder is filled again from the root before a newer minor takes the root. Source maps are not
+published. Both keep the site small enough for GitHub Pages to publish within its time limit.
+Build one version as published:
 
 ```bash
 bash scripts/build-docs-version.sh dev /tmp/docs-dev        # this checkout, as /dev/

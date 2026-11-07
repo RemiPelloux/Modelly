@@ -3,6 +3,14 @@
 All notable changes to Modelly. The format follows Keep a Changelog; versions follow semantic
 versioning.
 
+## Unreleased
+
+### Documentation
+
+- The docs site is smaller: the newest release's version folder holds redirects to the root,
+  which already serves that release, and source maps are no longer published. GitHub Pages
+  timed out publishing the 280 MB site; it is now about 216 MB.
+
 ## 1.5.1 - 2026-11-07
 
 ### Added

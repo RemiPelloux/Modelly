@@ -8,7 +8,10 @@
 # <version> dev or X.Y
 #
 # <build> replaces <site>/<version>. An X.Y at least as new as every X.Y already in the
-# site also replaces the root files, leaving the version folders alone.
+# site also replaces the root files, leaving the version folders alone; its own folder
+# then becomes redirects to the root (scripts/docs_redirects.py), so the site holds one
+# full copy of the newest release, not two. Source maps are dropped everywhere: GitHub
+# Pages publishes the whole site in one go and has to finish within its time limit.
 set -euo pipefail
 
 if [[ $# -ne 3 ]]; then
@@ -27,14 +30,25 @@ if [[ ! "$VERSION" =~ ^(dev|[0-9]+\.[0-9]+)$ ]]; then
   exit 2
 fi
 
+REDIRECTS=.redirects-to-root
+
+# The root holds the newest release; a folder of redirects to it is filled again from the
+# root before a newer release takes the root.
+previous="$("$PYTHON" "$HERE/docs_switcher.py" "$SITE" --newest 2>/dev/null || true)"
 mkdir -p "$SITE/$VERSION"
 rsync -a --checksum --delete "$BUILD/" "$SITE/$VERSION/"
 
 newest="$("$PYTHON" "$HERE/docs_switcher.py" "$SITE" --newest)"
 if [[ "$VERSION" != dev && "$VERSION" == "$newest" ]]; then
+  if [[ -n "$previous" && "$previous" != "$VERSION" && -f "$SITE/$previous/$REDIRECTS" ]]; then
+    rsync -a --checksum --delete "${VERSION_FOLDERS[@]}" "${SITE_FILES[@]}" "$SITE/" "$SITE/$previous/"
+    echo "$previous filled again from the root"
+  fi
   rsync -a --checksum --delete "${VERSION_FOLDERS[@]}" "${SITE_FILES[@]}" "$BUILD/" "$SITE/"
   echo "root updated to $VERSION"
+  "$PYTHON" "$HERE/docs_redirects.py" "$SITE" "$VERSION"
 fi
+find "$SITE" -path "$SITE/.git" -prune -o -name '*.map' -type f -print0 | xargs -0 rm -f
 
 # The roadmap is newer than some releases: until the root version has its own, /roadmap/
 # sends readers to the dev build's.
