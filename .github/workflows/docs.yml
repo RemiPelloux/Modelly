@@ -30,6 +30,8 @@ on:
       - "scripts/build-docs-version.sh"
       - "scripts/assemble-docs-site.sh"
       - "scripts/docs_switcher.py"
+      - "scripts/docs_redirects.py"
+      - "scripts/deploy-pages.sh"
       - ".github/workflows/docs.yml"
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
