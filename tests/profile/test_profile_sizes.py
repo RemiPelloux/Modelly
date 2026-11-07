@@ -70,23 +70,36 @@ def models(tmp_path, monkeypatch):
     return sized_models
 
 
-def test_scan_grows_with_n_and_gets_the_hint(models):
-    """The us per agent of a population scan grows about linearly with N.
+def settled(build, sizes, holds):
+    """``compare_sizes`` run up to ATTEMPTS times, until ``holds(comparison)`` is true.
 
     The small size runs for about a millisecond, so one pause of a loaded machine can
-    hide the growth: the best of a few attempts is kept, as for any timing.
+    hide or invent a growth: like any timing, the best of a few runs is kept.
     """
     for _ in range(ATTEMPTS):
-        comparison = compare_sizes(
-            lambda n: models.Crowd(n=n, rng=1), [LARGE, SMALL], 3
-        )
-        by_label = {growth.label: growth for growth in comparison.growths()}
-        scan = by_label["Scanner.step (shuffle_do)"]
-        if scan.ratio > 2 and scan.exponent > 0.5:
+        comparison = compare_sizes(build, sizes, 3)
+        if holds(comparison):
             break
+    return comparison
+
+
+def scan_growth(comparison):
+    """The growth of the population scan of ``Scanner.step``."""
+    by_label = {growth.label: growth for growth in comparison.growths()}
+    return by_label["Scanner.step (shuffle_do)"]
+
+
+def test_scan_grows_with_n_and_gets_the_hint(models):
+    """The us per agent of a population scan grows about linearly with N."""
+
+    def grows(comparison):
+        scan = scan_growth(comparison)
+        return scan.ratio > 2 and scan.exponent > 0.5
+
+    comparison = settled(lambda n: models.Crowd(n=n, rng=1), [LARGE, SMALL], grows)
     assert comparison.sizes == (SMALL, LARGE)
-    assert scan.ratio > 2 and scan.exponent > 0.5
-    assert STEP_LABEL in by_label
+    assert grows(comparison)
+    assert STEP_LABEL in {growth.label for growth in comparison.growths()}
     hints = comparison.hints()
     assert len(hints) == 1 and "MDL101 / MDL102" in hints[0]
     assert f"N={SMALL} us/agent" in comparison.report()
@@ -94,7 +107,9 @@ def test_scan_grows_with_n_and_gets_the_hint(models):
 
 def test_constant_cost_per_agent_gives_no_hint(models):
     """A step that does not look at other agents keeps its cost per agent."""
-    comparison = compare_sizes(lambda n: models.Flat(num_agents=n), [SMALL, LARGE], 3)
+    comparison = settled(
+        lambda n: models.Flat(num_agents=n), [SMALL, LARGE], lambda c: not c.hints()
+    )
     assert comparison.hints() == []
     frame = comparison.to_dataframe()
     assert list(frame.columns) == ["operation", "size", "us_per_agent"]
