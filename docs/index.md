@@ -9,9 +9,10 @@ myst:
 
 <div class="ml-landing">
 <section class="ml-hero" aria-labelledby="ml-hero-title">
+<div class="ml-wrap">
+<p class="ml-hero-title" id="ml-hero-title" role="heading" aria-level="2">Agent-based models in Python, fast enough to explore.</p>
 <div class="ml-hero-grid">
 <div>
-<p class="ml-hero-title" id="ml-hero-title" role="heading" aria-level="2">Agent-based models in Python, fast enough to explore.</p>
 <p class="ml-hero-sub">Modelly is an open-source framework for agent-based modeling. Write agents with a <code>step()</code>, keep their state in numpy columns as the model grows, and get the same result from the same seed every time.</p>
 <form class="ml-finder" role="search" action="search.html" method="get" autocomplete="off">
 <label for="ml-find">What do you want to do?</label>
@@ -34,6 +35,7 @@ myst:
 </figcaption>
 </figure>
 </div>
+</div>
 </section>
 <section class="ml-section" aria-labelledby="ml-bench-title">
 <div class="ml-wrap">
@@ -41,15 +43,15 @@ myst:
 <p class="ml-lede">Nine playbooks written in the idiom of Mesa 3.5 and of Modelly: median CPU seconds over ten rounds, one fresh interpreter per run, on one pinned core. The scale is logarithmic.</p>
 <div class="ml-dots" aria-hidden="true">
 <div class="ml-dots-axis" aria-hidden="true"><span></span><span class="ml-axis"><i style="--x:0">0.01 s</i><i style="--x:33.3">0.1 s</i><i style="--x:66.7">1 s</i><i style="--x:100">10 s</i></span><span>faster</span></div>
-<div class="ml-dot-row"><span><strong>Grid epidemic</strong><small>20,000 agents, 60 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:40.14;--b:86.7"></i><b class="ml-pt-mesa" style="--x:86.7"></b><b class="ml-pt-mod" style="--x:40.14"></b></span><span class="ml-speed">26&times;</span></div>
-<div class="ml-dot-row"><span><strong>Predator-prey</strong><small>~5,400 agents, 200 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:57.2;--b:85.49"></i><b class="ml-pt-mesa" style="--x:85.49"></b><b class="ml-pt-mod" style="--x:57.2"></b></span><span class="ml-speed">7.1&times;</span></div>
-<div class="ml-dot-row"><span><strong>Flocking</strong><small>4,000 agents, 50 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:62.5;--b:100"></i><b class="ml-pt-mesa" style="--x:100"></b><b class="ml-pt-mod" style="--x:62.5"></b></span><span class="ml-speed">33&times;</span></div>
-<div class="ml-dot-row"><span><strong>Virus on a network</strong><small>30,000 agents, 100 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:42.63;--b:80.05"></i><b class="ml-pt-mesa" style="--x:80.05"></b><b class="ml-pt-mod" style="--x:42.63"></b></span><span class="ml-speed">13&times;</span></div>
-<div class="ml-dot-row"><span><strong>Insects, individuals</strong><small>~26,000 agents, 120 days</small></span><span class="ml-track"><i class="ml-span" style="--a:61.5;--b:76.7"></i><b class="ml-pt-mesa" style="--x:76.7"></b><b class="ml-pt-mod" style="--x:61.5"></b></span><span class="ml-speed">2.9&times;</span></div>
-<div class="ml-dot-row"><span><strong>Insects, cohorts</strong><small>~26,000 agents, 120 days</small></span><span class="ml-track"><i class="ml-span" style="--a:5.68;--b:76.7"></i><b class="ml-pt-mesa" style="--x:76.7"></b><b class="ml-pt-mod" style="--x:5.68"></b></span><span class="ml-speed">135&times;</span></div>
-<div class="ml-dot-row"><span><strong>Schelling segregation</strong><small>~32,000 residents, 40 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:43.37;--b:85.09"></i><b class="ml-pt-mesa" style="--x:85.09"></b><b class="ml-pt-mod" style="--x:43.37"></b></span><span class="ml-speed">18&times;</span></div>
-<div class="ml-dot-row"><span><strong>Boltzmann wealth</strong><small>10,000 agents, 100 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:50.62;--b:68.56"></i><b class="ml-pt-mesa" style="--x:68.56"></b><b class="ml-pt-mod" style="--x:50.62"></b></span><span class="ml-speed">3.5&times;</span></div>
-<div class="ml-dot-row"><span><strong>Sugarscape</strong><small>1,600 foragers, 100 steps</small></span><span class="ml-track"><i class="ml-span" style="--a:50.62;--b:71.95"></i><b class="ml-pt-mesa" style="--x:71.95"></b><b class="ml-pt-mod" style="--x:50.62"></b></span><span class="ml-speed">4.4&times;</span></div>
+<div class="ml-dot-row"><span><strong>Grid epidemic</strong><small>20,000 agents, 60 steps</small></span><span class="ml-track" style="--a:40.14;--b:86.7;--k:0"><i class="ml-span"></i><b class="ml-pt-mesa"></b><b class="ml-pt-mod"></b></span><span class="ml-speed" style="--k:0">26&times;</span></div>
+<div class="ml-dot-row"><span><strong>Predator-prey</strong><small>~5,400 agents, 200 steps</small></span><span class="ml-track" style="--a:57.2;--b:85.49;--k:1"><i class="ml-span"></i><b class="ml-pt-mesa"></b><b class="ml-pt-mod"></b></span><span class="ml-speed" style="--k:1">7.1&times;</span></div>
+<div class="ml-dot-row"><span><strong>Flocking</strong><small>4,000 agents, 50 steps</small></span><span class="ml-track" style="--a:62.5;--b:100;--k:2"><i class="ml-span"></i><b class="ml-pt-mesa"></b><b class="ml-pt-mod"></b></span><span class="ml-speed" style="--k:2">33&times;</span></div>
+<div class="ml-dot-row"><span><strong>Virus on a network</strong><small>30,000 agents, 100 steps</small></span><span class="ml-track" style="--a:42.63;--b:80.05;--k:3"><i class="ml-span"></i><b class="ml-pt-mesa"></b><b class="ml-pt-mod"></b></span><span class="ml-speed" style="--k:3">13&times;</span></div>
+<div class="ml-dot-row"><span><strong>Insects, individuals</strong><small>~26,000 agents, 120 days</small></span><span class="ml-track" style="--a:61.5;--b:76.7;--k:4"><i class="ml-span"></i><b class="ml-pt-mesa"></b><b class="ml-pt-mod"></b></span><span class="ml-speed" style="--k:4">2.9&times;</span></div>
+<div class="ml-dot-row"><span><strong>Insects, cohorts</strong><small>~26,000 agents, 120 days</small></span><span class="ml-track" style="--a:5.68;--b:76.7;--k:5"><i class="ml-span"></i><b class="ml-pt-mesa"></b><b class="ml-pt-mod"></b></span><span class="ml-speed" style="--k:5">135&times;</span></div>
+<div class="ml-dot-row"><span><strong>Schelling segregation</strong><small>~32,000 residents, 40 steps</small></span><span class="ml-track" style="--a:43.37;--b:85.09;--k:6"><i class="ml-span"></i><b class="ml-pt-mesa"></b><b class="ml-pt-mod"></b></span><span class="ml-speed" style="--k:6">18&times;</span></div>
+<div class="ml-dot-row"><span><strong>Boltzmann wealth</strong><small>10,000 agents, 100 steps</small></span><span class="ml-track" style="--a:50.62;--b:68.56;--k:7"><i class="ml-span"></i><b class="ml-pt-mesa"></b><b class="ml-pt-mod"></b></span><span class="ml-speed" style="--k:7">3.5&times;</span></div>
+<div class="ml-dot-row"><span><strong>Sugarscape</strong><small>1,600 foragers, 100 steps</small></span><span class="ml-track" style="--a:50.62;--b:71.95;--k:8"><i class="ml-span"></i><b class="ml-pt-mesa"></b><b class="ml-pt-mod"></b></span><span class="ml-speed" style="--k:8">4.4&times;</span></div>
 </div>
 <div class="ml-sr-only">
 <table>

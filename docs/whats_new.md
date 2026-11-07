@@ -9,6 +9,14 @@ Each release adds its section here before it is tagged: the release script refus
 whose notes are missing (see "Release notes" in
 [CONTRIBUTING](https://github.com/RemiPelloux/Modelly/blob/main/CONTRIBUTING.md)).
 
+## Unreleased
+
+### Changed
+
+- **A clearer home page**: the headline spans the page, the six example models run as large
+  live sketches, the guides are grouped by goal in rows, and the benchmark chart shows each
+  Modelly time leaving Mesa's when it scrolls into view. [Home](index.md)
+
 ## 1.5.1 - 2026-11-07
 
 ### New

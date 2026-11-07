@@ -7,6 +7,10 @@ versioning.
 
 ### Documentation
 
+- The home page is redesigned on one container shared by the hero, every section and the
+  footer: a full-width headline, the six use-case sketches as a large grid, the guides as one
+  row per goal, a benchmark chart whose Modelly dots travel from Mesa's time once in view
+  (not with reduced motion), and the hero epidemic filling its canvas. Unused styles removed.
 - The docs site is smaller: the newest release's version folder holds redirects to the root,
   which already serves that release, and source maps are no longer published. GitHub Pages
   timed out publishing the 280 MB site; it is now about 216 MB.

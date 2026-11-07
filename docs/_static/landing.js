@@ -23,6 +23,7 @@
     const world = lab.querySelector(".ml-lab-world"), curve = lab.querySelector(".ml-lab-curve");
     const { ctx, w, h } = fitCanvas(world), plot = fitCanvas(curve);
     const cols = Math.floor(w / CELL_PX), rows = Math.floor(h / CELL_PX);
+    const cellW = w / cols, cellH = h / rows;
     const sim = window.ModellySims.makeSirs(cols, rows);
     const img = new ImageData(cols, rows), off = document.createElement("canvas");
     off.width = cols; off.height = rows;
@@ -36,17 +37,17 @@
       }
       off.getContext("2d").putImageData(img, 0, 0);
       ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(off, 0, 0, cols * CELL_PX, rows * CELL_PX);
+      ctx.drawImage(off, 0, 0, w, h);
       paintCurve();
       ["s", "i", "r"].forEach((k, j) => { out(k).textContent = sim.counts[j].toLocaleString("en"); });
       out("tick").textContent = ticks.toLocaleString("en");
     }
 
     function paintCurve() {
-      const n = cols * rows, c = plot.ctx, step = plot.w / Math.max(history.length, 1);
+      const n = cols * rows, c = plot.ctx, step = plot.w / Math.max(history.length - 1, 1);
       c.clearRect(0, 0, plot.w, plot.h);
       const layers = [["#2fd4a7", (s) => s[1] + s[2]], ["#ff4f8b", (s) => s[1]]];
-      c.fillStyle = "#22325a"; c.fillRect(0, 0, history.length * step, plot.h);
+      c.fillStyle = "#22325a"; c.fillRect(0, 0, plot.w, plot.h);
       for (const [color, value] of layers) {
         c.fillStyle = color; c.beginPath(); c.moveTo(0, plot.h);
         history.forEach((s, x) => c.lineTo(x * step, plot.h - (value(s) / n) * plot.h));
@@ -67,7 +68,7 @@
 
     function infectAt(ev) {
       const box = world.getBoundingClientRect();
-      const x = Math.floor((ev.clientX - box.left) / CELL_PX), y = Math.floor((ev.clientY - box.top) / CELL_PX);
+      const x = Math.floor((ev.clientX - box.left) / cellW), y = Math.floor((ev.clientY - box.top) / cellH);
       for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
         if (x + dx >= 0 && x + dx < cols && y + dy >= 0 && y + dy < rows) sim.infect((y + dy) * cols + x + dx);
       }
@@ -119,8 +120,19 @@
     root.querySelectorAll(".ml-lab").forEach(hero);
     root.querySelectorAll("canvas[data-sim]").forEach(sketch);
     root.querySelectorAll("[data-copy]").forEach(copyInstall);
-    const bench = root.querySelector(".ml-bench");
-    if (bench) whenVisible(bench, (v) => { if (v) bench.classList.add("is-shown"); });
+    // The benchmark plays once: armed only with JavaScript and motion allowed, so the
+    // chart is complete without either.
+    const bench = root.querySelector(".ml-dots");
+    if (bench && !calm) {
+      bench.classList.add("is-armed");
+      const reveal = new IntersectionObserver((entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        // two frames: the hidden start is painted before the transition begins
+        requestAnimationFrame(() => requestAnimationFrame(() => bench.classList.add("is-shown")));
+        reveal.disconnect();
+      }, { rootMargin: "0px 0px -30% 0px" });
+      reveal.observe(bench);
+    }
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
