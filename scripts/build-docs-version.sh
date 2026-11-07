@@ -3,7 +3,10 @@
 #
 #   bash scripts/build-docs-version.sh dev <out>      # this checkout, as /dev/
 #   bash scripts/build-docs-version.sh v1.1.0 <out>   # tag v1.1.0, as /1.1/
+#   bash scripts/build-docs-version.sh stable <out>   # this checkout, as its release's /X.Y/
 #
+# "stable" republishes the newest release's docs from this checkout, for docs-only fixes
+# between releases: it refuses unless the package is unchanged since the newest tag.
 # A tag is built in place when HEAD is that tag (the docs workflow), otherwise from a
 # temporary git worktree, importing modelly from it. A tag whose docs/conf.py predates
 # the version switcher is built through scripts/docs-overlay/conf.py.
@@ -14,7 +17,7 @@
 set -euo pipefail
 
 if [[ $# -ne 2 ]]; then
-  sed -n '2,13p' "$0" >&2
+  sed -n '2,16p' "$0" >&2
   exit 2
 fi
 REF="$1"
@@ -31,6 +34,13 @@ trap cleanup EXIT
 
 if [[ "$REF" == dev ]]; then
   export MODELLY_DOCS_VERSION=dev
+elif [[ "$REF" == stable ]]; then
+  TAG="$(git -C "$ROOT" describe --tags --abbrev=0 --match 'v[0-9]*')"
+  if ! git -C "$ROOT" diff --quiet "$TAG" -- modelly pyproject.toml; then
+    echo "the package changed since $TAG: release it instead of republishing its docs" >&2
+    exit 1
+  fi
+  export MODELLY_DOCS_RELEASE="${TAG#v}"
 elif [[ "$REF" =~ ^v([0-9]+)\.([0-9]+)\.[0-9]+$ ]]; then
   export MODELLY_DOCS_VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
   export MODELLY_DOCS_RELEASE="${REF#v}"
@@ -39,7 +49,7 @@ elif [[ "$REF" =~ ^v([0-9]+)\.([0-9]+)\.[0-9]+$ ]]; then
     git -C "$ROOT" worktree add --detach --quiet "$TREE" "$REF"
   fi
 else
-  echo "version must be dev or a vX.Y.Z tag, got: $REF" >&2
+  echo "version must be dev, stable or a vX.Y.Z tag, got: $REF" >&2
   exit 2
 fi
 
@@ -48,7 +58,7 @@ if ! grep -q apply_versioning "$TREE/docs/conf.py"; then
   export MODELLY_TAG_CONF="$TREE/docs/conf.py"
   CONF_ARGS=(-c "$ROOT/scripts/docs-overlay")
 fi
-echo "building $REF as /$MODELLY_DOCS_VERSION/ into $OUT"
+echo "building $REF as /${MODELLY_DOCS_VERSION:-${MODELLY_DOCS_RELEASE%.*}}/ into $OUT"
 SPHINXOPTS="${SPHINXOPTS--W --keep-going}"
 PYTHONPATH="$TREE${PYTHONPATH:+:$PYTHONPATH}" "$PYTHON" -m sphinx -b html -q ${SPHINXOPTS} \
   -d "$WORK/doctrees" -D nb_execution_cache_path="$WORK/jupyter_cache" ${CONF_ARGS[@]+"${CONF_ARGS[@]}"} "$TREE/docs" "$OUT"
