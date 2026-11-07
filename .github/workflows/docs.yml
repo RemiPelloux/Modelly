@@ -86,6 +86,7 @@ jobs:
       - name: Assemble the site
         run: bash scripts/assemble-docs-site.sh _build/site _build/version "${{ steps.version.outputs.folder }}"
       - name: Store the site on docs-site
+        id: store
         working-directory: _build/site
         run: |
           git config user.name "github-actions[bot]"
@@ -94,11 +95,12 @@ jobs:
           git add .
           git commit --quiet -m "docs(site): ${{ steps.version.outputs.ref }} at ${GITHUB_SHA::7}"
           git push --quiet --force origin "next:$SITE_BRANCH"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-pages-artifact@v5
         id: upload
         with:
           path: _build/site
       - name: Publish the site
-        run: bash scripts/deploy-pages.sh "${{ steps.upload.outputs.artifact_id }}"
+        run: bash scripts/deploy-pages.sh "${{ steps.upload.outputs.artifact_id }}" "${{ steps.store.outputs.commit }}"
         env:
           GH_TOKEN: ${{ github.token }}
