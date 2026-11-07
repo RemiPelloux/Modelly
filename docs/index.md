@@ -8,32 +8,36 @@ myst:
 # Modelly: agent-based modeling in Python
 
 <div class="ml-landing">
-<section class="ml-hero" aria-labelledby="ml-hero-title">
-<div class="ml-wrap">
+<section class="ml-hero" data-hero aria-labelledby="ml-hero-title">
+<canvas class="ml-hero-world" aria-hidden="true"></canvas>
+<div class="ml-wrap ml-hero-in">
+<div class="ml-hero-copy">
 <p class="ml-hero-title" id="ml-hero-title" role="heading" aria-level="2">Agent-based models in Python, fast enough to explore.</p>
-<div class="ml-hero-grid">
-<div>
 <p class="ml-hero-sub">Modelly is an open-source framework for agent-based modeling. Write agents with a <code>step()</code>, keep their state in numpy columns as the model grows, and get the same result from the same seed every time.</p>
-<form class="ml-finder" role="search" action="search.html" method="get" autocomplete="off">
-<label for="ml-find">What do you want to do?</label>
-<input id="ml-find" name="q" type="search" placeholder="for example: calibrate, GPU, from R" aria-describedby="ml-find-help" aria-controls="ml-find-results">
-<p id="ml-find-help" class="ml-find-help">Type a task; the matching guides appear below. Enter searches the whole documentation.</p>
-<ul id="ml-find-results" class="ml-find-results" aria-live="polite"></ul>
-</form>
 <div class="ml-actions">
 <a class="ml-btn ml-btn-primary" href="tutorials/0_first_model.html">Build your first model</a>
 <button type="button" class="ml-pip" data-copy="pip install modelly-abm" aria-label="Copy the install command"><span>$</span><code title="pip install modelly-abm">pip install modelly-abm</code><em><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 3.5V3a1.5 1.5 0 0 0-1.5-1.5h-6A1.5 1.5 0 0 0 2 3v6a1.5 1.5 0 0 0 1.5 1.5H4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></em></button>
 </div>
 </div>
-<figure class="ml-lab" aria-label="A live epidemic simulation" data-md="skip">
-<span class="ml-hint">Click or drag to infect cells</span>
-<canvas class="ml-lab-world" role="img" aria-label="Grid of cells: blue susceptible, pink infected, green recovered"></canvas>
-<canvas class="ml-lab-curve" role="img" aria-label="Share of infected and recovered cells over time"></canvas>
-<figcaption class="ml-lab-bar">
-<span class="ml-legend"><span><i class="ml-dot" style="background:#6c8cff"></i>Susceptible<b data-out="s">0</b></span><span><i class="ml-dot" style="background:#ff4f8b"></i>Infected<b data-out="i">0</b></span><span><i class="ml-dot" style="background:#2fd4a7"></i>Recovered<b data-out="r">0</b></span></span>
-<span class="ml-legend"><label class="ml-ctl">Transmission <input type="range" min="0.04" max="0.4" step="0.01" value="0.10" data-beta> <b data-out="beta">0.10</b></label><span>Step <b data-out="tick">0</b></span><button type="button" class="ml-btn ml-btn-ghost ml-btn-small" data-toggle>Pause</button></span>
-</figcaption>
-</figure>
+<div class="ml-deck" data-md="skip">
+<p class="ml-deck-title">Running behind this page</p>
+<div class="ml-tabs" role="group" aria-label="Model running behind this page">
+<button type="button" data-pick="epidemic" aria-pressed="true">Epidemic</button><button type="button" data-pick="flocking" aria-pressed="false">Flocking</button><button type="button" data-pick="segregation" aria-pressed="false">Segregation</button>
+</div>
+<p class="ml-deck-how" data-out="how">Click or drag anywhere on the band to infect people.</p>
+<pre class="ml-deck-code"><code data-out="code">class Person(CellAgent):
+    def step(self):
+        if self.state != SUSCEPTIBLE:
+            return
+        near = self.cell.neighborhood.agents
+        sick = sum(a.state == INFECTED for a in near)
+        risk = 1 - (1 - 0.12) ** sick
+        if self.random.random() &lt; risk:
+            self.state = INFECTED</code></pre>
+<div class="ml-deck-ctl">
+<label><span data-out="label">Transmission</span> <input type="range" min="0.04" max="0.4" step="0.01" value="0.12" data-param> <b data-out="value">0.12</b></label>
+</div>
+<p class="ml-deck-stats"><span><b data-out="agents">0</b> agents</span><span>step <b data-out="step">0</b></span><a data-out="source" href="zoo/index.html">The full example</a><button type="button" class="ml-btn ml-btn-ghost ml-btn-small" data-toggle>Pause</button></p>
 </div>
 </div>
 </section>
@@ -95,6 +99,12 @@ myst:
 <section class="ml-section" aria-labelledby="ml-paths-title">
 <div class="ml-wrap">
 <h2 id="ml-paths-title">Start from what you need</h2>
+<form class="ml-finder" role="search" action="search.html" method="get" autocomplete="off">
+<label for="ml-find">What do you want to do?</label>
+<input id="ml-find" name="q" type="search" placeholder="for example: calibrate, GPU, from R" aria-describedby="ml-find-help" aria-controls="ml-find-results">
+<p id="ml-find-help" class="ml-find-help">Type a task; the matching guides appear below. Enter searches the whole documentation.</p>
+<ul id="ml-find-results" class="ml-find-results" aria-live="polite"></ul>
+</form>
 <div class="ml-paths-grid">
 <nav aria-labelledby="ml-p1"><h3 id="ml-p1">Build a model</h3><ul>
 <li><a href="getting_started.html">Getting started</a>, then twelve tutorials</li>

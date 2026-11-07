@@ -215,6 +215,8 @@ html_css_files = [
 html_js_files = [
     "landing-sims.js",
     "landing.js",
+    "hero-models.js",
+    "hero.js",
     "finder.js",
     "copy-page.js",
     "a11y.js",

@@ -16,6 +16,10 @@ whose notes are missing (see "Release notes" in
 - **A clearer home page**: the headline spans the page, the six example models run as large
   live sketches, the guides are grouped by goal in rows, and the benchmark chart shows each
   Modelly time leaving Mesa's when it scrolls into view. [Home](index.md)
+- **An interactive home page hero**: a model runs across the whole top of the page. Pick an
+  epidemic, a flock or Schelling's segregation, move its parameter and watch the line of
+  Python that parameter lives in change; click, drag or move the pointer to disturb it. The
+  guide finder moved to "Start from what you need". [Home](index.md)
 - **The version menu shows the full release**: "1.5.1 (stable)" rather than "1.5", and each
   older version by its last patch.
 

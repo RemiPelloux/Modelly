@@ -14,6 +14,11 @@ versioning.
 - The docs site is smaller: the newest release's version folder holds redirects to the root,
   which already serves that release, and source maps are no longer published. GitHub Pages
   timed out publishing the 280 MB site; it is now about 216 MB.
+- The home page hero is a model running across the whole band (`docs/_static/hero.js`,
+  `hero-models.js`): epidemic, flocking or Schelling segregation, one parameter each, with
+  the Python that parameter lives in shown and updated beside it, and pointer interaction
+  (infect, scatter the flock, scramble a neighbourhood). Paused under reduced motion. The
+  guide finder moved from the hero to "Start from what you need".
 - The version menu names each version by the full release it holds ("1.5.1 (stable)",
   "1.4.3"), read from each build (`scripts/docs_switcher.py`).
 - The docs workflow publishes the site itself (`scripts/deploy-pages.sh`, Pages source
