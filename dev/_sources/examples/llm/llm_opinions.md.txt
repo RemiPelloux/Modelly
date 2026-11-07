@@ -1,0 +1,229 @@
+
+# Opinions of persona agents (`modelly.llm`)
+
+Two hundred citizens of a small town debate a protected bike lane. Each has a persona (a
+retired teacher, a shop owner, a student who cycles, a stubborn councillor...) and sits on a
+small-world friendship network. Every step each citizen is asked, with its persona as the
+system prompt, what it now thinks given its friends' views. The reply must be JSON matching a
+schema (`support`, `neutral` or `oppose`, with an optional reason); an invalid reply gets one
+repair call. All decisions of a step are sent concurrently and applied together, in agent
+order.
+
+## Running it
+
+By default the "language model" is a local function, `responder.town_responder`, so the
+example runs offline, free and deterministically:
+
+```python
+from modelly.examples.llm.llm_opinions.model import LLMOpinions
+
+model = LLMOpinions()
+model.run_for(2)
+model.llm.usage  # calls, cache hits, tokens
+```
+
+Replay the bundled cache (`resources/replay.jsonl.gz`, recorded with `record_replay()`): the
+same decisions, with no call to any provider.
+
+```python
+from modelly.examples.llm.llm_opinions.model import LLMOpinions, replay_client
+
+model = LLMOpinions(client=replay_client())
+model.run_for(2)
+assert model.llm.provider.calls == 0
+```
+
+To ask a real model, pass your own client, with a budget:
+
+```python
+from modelly.llm import AnthropicProvider, Budget, Client, ResponseCache
+
+client = Client(
+    AnthropicProvider(),  # reads ANTHROPIC_API_KEY
+    cache=ResponseCache("opinions.sqlite"),
+    budget=Budget(max_tokens=200_000),
+)
+model = LLMOpinions(client=client)
+```
+
+## What it shows
+
+- Persona agents with `LLMAgent` and `decide_all`.
+- Structured decisions validated against a schema, with a repair call (the hurried commuter
+  first answers in prose).
+- A run that replays bit for bit from its cache, offline.
+
+The local responder follows a clear majority of friends, unless the persona is stubborn. A
+real model will not behave like this function; see the limitations in the
+[language-model agents guide](https://remipelloux.github.io/Modelly/llm_agents.html).
+
+
+## Agents
+
+```python
+"""Citizens with a persona who ask a language model what they now think of a proposal."""
+
+from collections import Counter
+
+from modelly import Agent
+from modelly.llm import LLMAgent
+
+OPINIONS = ("support", "neutral", "oppose")
+REASON_CHARS = 200
+SCHEMA = {
+    "type": "object",
+    "required": ["opinion"],
+    "additionalProperties": False,
+    "properties": {
+        "opinion": {"enum": list(OPINIONS)},
+        "reason": {"type": "string", "maxLength": REASON_CHARS},
+    },
+}
+PROPOSAL = "a protected bike lane on the main street"
+PERSONAS = (
+    "a retired teacher who values safety and is slow to change your mind",
+    "a shop owner worried about parking for customers",
+    "a student who cycles to class every day",
+    "a nurse working night shifts across town",
+    "a hurried commuter who answers in a rush",
+    "a parent of two young children",
+    "a delivery driver who knows every street",
+    "a stubborn local councillor who rarely changes position",
+)
+
+
+class Citizen(LLMAgent, Agent):
+    """A town resident: a persona, an opinion, and the friends it hears from."""
+
+    def __init__(self, model, persona, opinion):
+        """Set the persona (the system prompt) and the starting opinion."""
+        super().__init__(model)
+        self.persona = (
+            f"You are {persona}. You live in a small town that is debating "
+            f"{PROPOSAL}. Answer as this person would."
+        )
+        self.opinion = opinion
+        self.friends = []
+
+    def prompt(self):
+        """What the citizen is asked each step: its view and its friends' views."""
+        counts = Counter(friend.opinion for friend in self.friends)
+        heard = ", ".join(f"{counts[o]} {o}" for o in OPINIONS)
+        return (
+            f"Your current view of {PROPOSAL}: {self.opinion}. Of your {len(self.friends)} "
+            f"friends: {heard}. After talking with them this week, what is your "
+            "opinion now?"
+        )
+
+```
+
+
+## Model
+
+```python
+"""Opinion dynamics with persona agents who decide through a language model.
+
+Citizens sit on a small-world friendship network (a ring where each knows its nearest
+neighbours, with a few ties rewired at random). Each step every citizen is asked, with
+its persona as the system prompt, what it now thinks given its friends' views; the
+replies are validated against a schema and applied together, in agent order.
+
+By default the "model" is a local function (``responder.town_responder``), so the
+example runs offline. ``replay_client()`` replays the bundled cache instead: the same
+decisions with no provider call at all.
+"""
+
+from pathlib import Path
+
+from modelly import DataCollector, Model
+from modelly.examples.llm.llm_opinions.agents import OPINIONS, PERSONAS, SCHEMA, Citizen
+from modelly.examples.llm.llm_opinions.responder import town_responder
+from modelly.llm import Client, FakeProvider, ResponseCache, decide_all
+
+REPLAY_CACHE = Path(__file__).parent / "resources" / "replay.jsonl.gz"
+# The run the bundled cache was recorded from.
+REPLAY_STEPS = 2
+REPLAY_SEED = 42
+DEFAULT_AGENTS = 200
+DEFAULT_DEGREE = 4
+DEFAULT_REWIRE = 0.1
+
+
+def fake_client(cache=None):
+    """A client answering with ``town_responder``; recording into ``cache`` if given."""
+    return Client(
+        FakeProvider(town_responder), cache=ResponseCache() if cache is None else cache
+    )
+
+
+def replay_client(path=REPLAY_CACHE):
+    """A client that answers only from the cache at ``path``; a miss raises CacheMiss."""
+    cache = ResponseCache.from_file(path, mode="read-only")
+    return Client(FakeProvider(town_responder), cache=cache)
+
+
+def share_support(model):
+    """Share of citizens who support the proposal."""
+    return sum(a.opinion == "support" for a in model.agents) / len(model.agents)
+
+
+class LLMOpinions(Model):
+    """Persona agents on a friendship network, deciding their opinion each step."""
+
+    def __init__(
+        self,
+        n_agents=DEFAULT_AGENTS,
+        degree=DEFAULT_DEGREE,
+        rewire=DEFAULT_REWIRE,
+        client=None,
+        rng=REPLAY_SEED,
+    ):
+        """Create the citizens, their friendships and the language-model client."""
+        super().__init__(rng=rng)
+        self.llm = client or fake_client()
+        for _ in range(n_agents):
+            Citizen(self, self.random.choice(PERSONAS), self.random.choice(OPINIONS))
+        self.citizens = list(self.agents)
+        self.connect(degree, rewire)
+        self.datacollector = DataCollector({"support": share_support})
+        self.datacollector.collect(self)
+
+    def connect(self, degree, rewire):
+        """A ring lattice of ``degree`` neighbours with each tie rewired with ``rewire``."""
+        n = len(self.citizens)
+        for i, citizen in enumerate(self.citizens):
+            for offset in range(1, degree // 2 + 1):
+                j = (i + offset) % n
+                if self.random.random() < rewire:
+                    j = self.random.randrange(n)
+                other = self.citizens[j]
+                if other is not citizen and other not in citizen.friends:
+                    citizen.friends.append(other)
+                    other.friends.append(citizen)
+
+    def step(self):
+        """Every citizen decides at once; the new opinions apply together."""
+        decisions = decide_all(self.citizens, Citizen.prompt, SCHEMA)
+        for citizen, decision in zip(self.citizens, decisions):
+            citizen.opinion = decision["opinion"]
+        self.datacollector.collect(self)
+
+    def opinions(self):
+        """Every citizen's opinion, in agent order."""
+        return [citizen.opinion for citizen in self.citizens]
+
+
+def record_replay(path=REPLAY_CACHE, steps=REPLAY_STEPS):
+    """Run the default model with the local responder and export its cache to ``path``.
+
+    This is how the bundled ``resources/replay.jsonl.gz`` was made; with a real
+    provider in ``fake_client``'s place it records a study's replies the same way.
+    """
+    model = LLMOpinions()
+    for _ in range(steps):
+        model.step()
+    return model.llm.cache.export(path)
+
+```
+
+

@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Virus on a Network &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../../_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="../../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../_static/documentation_options.js?v=6efca38a"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/basic/virus_on_network';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/examples/basic/virus_on_network.html" />
+    <link rel="icon" href="../../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Conway’s Game Of “Life”" href="conways_game_of_life.html" />
+    <link rel="prev" title="Boltzmann Wealth Model (Tutorial)" href="boltzmann_wealth_model.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.2" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="schelling.html">schelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boid_flockers.html">boid flockers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boltzmann_wealth_model.html">boltzmann wealth model</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">virus on network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conways_game_of_life.html">conways game of life</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/sugarscape_g1mt.html">sugarscape g1mt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/pd_grid.html">pd grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/epstein_civil_violence.html">epstein civil violence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/alliance_formation.html">alliance formation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/wolf_sheep.html">wolf sheep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../behaviour/tram_model.html">tram model</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../examples.html" class="nav-link">Modelly Core Examples</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Virus on a Network</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="virus-on-a-network">
+<h1>Virus on a Network<a class="headerlink" href="#virus-on-a-network" title="Link to this heading">#</a></h1>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>This model is based on the NetLogo model “Virus on Network”. It demonstrates the spread of a virus through a network and follows the SIR model, commonly seen in epidemiology.</p>
+<p>The SIR model is one of the simplest compartmental models, and many models are derivatives of this basic form. The model consists of three compartments:</p>
+<p>S: The number of susceptible individuals. When a susceptible and an infectious individual come into “infectious contact”, the susceptible individual contracts the disease and transitions to the infectious compartment.
+I: The number of infectious individuals. These are individuals who have been infected and are capable of infecting susceptible individuals.
+R for the number of removed (and immune) or deceased individuals. These are individuals who have been infected and have either recovered from the disease and entered the removed compartment, or died. It is assumed that the number of deaths is negligible with respect to the total population. This compartment may also be called “recovered” or “resistant”.</p>
+<p>For more information about this model, read the NetLogo’s web page: http://ccl.northwestern.edu/netlogo/models/VirusonaNetwork.</p>
+<p>JavaScript library used in this example to render the network: <a class="reference external" href="https://d3js.org/">d3.js</a>.</p>
+</section>
+<section id="how-to-run">
+<h2>How to Run<a class="headerlink" href="#how-to-run" title="Link to this heading">#</a></h2>
+<p>Install Modelly with recommended dependencies:</p>
+<p>pip install “modelly-abm[rec]”</p>
+<p>Then run the example:</p>
+<p>solara run app.py</p>
+<p>Open the displayed local URL in your browser.</p>
+</section>
+<section id="files">
+<h2>Files<a class="headerlink" href="#files" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">model.py</span></code>: Contains the agent class, and the overall model class.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agents.py</span></code>: Contains the agent class.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">app.py</span></code>: Contains the code for the interactive Solara visualization.</p></li>
+</ul>
+</section>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="http://ccl.northwestern.edu/netlogo/models/VirusonaNetwork">Stonedahl, F. and Wilensky, U. (2008). NetLogo Virus on a Network model</a>.
+Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.</p>
+<p><a class="reference external" href="http://ccl.northwestern.edu/netlogo/">Wilensky, U. (1999). NetLogo</a>
+Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.</p>
+</section>
+<section id="agents">
+<h2>Agents<a class="headerlink" href="#agents" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">FixedAgent</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">SUSCEPTIBLE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">INFECTED</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">RESISTANT</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">VirusAgent</span><span class="p">(</span><span class="n">FixedAgent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Individual Agent definition and its properties/interaction methods."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">initial_state</span><span class="p">,</span>
+        <span class="n">virus_spread_chance</span><span class="p">,</span>
+        <span class="n">virus_check_frequency</span><span class="p">,</span>
+        <span class="n">recovery_chance</span><span class="p">,</span>
+        <span class="n">gain_resistance_chance</span><span class="p">,</span>
+        <span class="n">cell</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">initial_state</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">virus_spread_chance</span> <span class="o">=</span> <span class="n">virus_spread_chance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">virus_check_frequency</span> <span class="o">=</span> <span class="n">virus_check_frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovery_chance</span> <span class="o">=</span> <span class="n">recovery_chance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gain_resistance_chance</span> <span class="o">=</span> <span class="n">gain_resistance_chance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">try_to_infect_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="n">State</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">virus_spread_chance</span>
+            <span class="p">):</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">INFECTED</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">try_gain_resistance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">gain_resistance_chance</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">RESISTANT</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">try_remove_infection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Try to remove</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">recovery_chance</span><span class="p">:</span>
+            <span class="c1"># Success</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">try_gain_resistance</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Failed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">INFECTED</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_situation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="n">State</span><span class="o">.</span><span class="n">INFECTED</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">virus_check_frequency</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">try_remove_infection</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="n">State</span><span class="o">.</span><span class="n">INFECTED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">try_to_infect_neighbors</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_situation</span><span class="p">()</span>
+
+</pre></div>
+</div>
+</section>
+<section id="model">
+<h2>Model<a class="headerlink" href="#model" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples.basic.virus_on_network.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">State</span><span class="p">,</span> <span class="n">VirusAgent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellCollection</span><span class="p">,</span> <span class="n">Network</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">number_state</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="o">.</span><span class="n">agents</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="n">state</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">number_infected</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">number_state</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">State</span><span class="o">.</span><span class="n">INFECTED</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">number_susceptible</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">number_state</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">State</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">number_resistant</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">number_state</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">State</span><span class="o">.</span><span class="n">RESISTANT</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">VirusOnNetwork</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A virus model with some number of agents."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_nodes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">avg_node_degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">initial_outbreak_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">virus_spread_chance</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+        <span class="n">virus_check_frequency</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+        <span class="n">recovery_chance</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+        <span class="n">gain_resistance_chance</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="n">prob</span> <span class="o">=</span> <span class="n">avg_node_degree</span> <span class="o">/</span> <span class="n">num_nodes</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">erdos_renyi_graph</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">prob</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">Network</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_outbreak_size</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">initial_outbreak_size</span> <span class="k">if</span> <span class="n">initial_outbreak_size</span> <span class="o">&lt;=</span> <span class="n">num_nodes</span> <span class="k">else</span> <span class="n">num_nodes</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span> <span class="o">=</span> <span class="n">modelly</span><span class="o">.</span><span class="n">DataCollector</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">"Infected"</span><span class="p">:</span> <span class="n">number_infected</span><span class="p">,</span>
+                <span class="s2">"Susceptible"</span><span class="p">:</span> <span class="n">number_susceptible</span><span class="p">,</span>
+                <span class="s2">"Resistant"</span><span class="p">:</span> <span class="n">number_resistant</span><span class="p">,</span>
+                <span class="s2">"R over S"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">resistant_susceptible_ratio</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="n">VirusAgent</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">num_nodes</span><span class="p">,</span>
+            <span class="n">State</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span><span class="p">,</span>
+            <span class="n">virus_spread_chance</span><span class="p">,</span>
+            <span class="n">virus_check_frequency</span><span class="p">,</span>
+            <span class="n">recovery_chance</span><span class="p">,</span>
+            <span class="n">gain_resistance_chance</span><span class="p">,</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Infect some nodes</span>
+        <span class="n">infected_nodes</span> <span class="o">=</span> <span class="n">CellCollection</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_outbreak_size</span><span class="p">),</span>
+            <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">infected_nodes</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">INFECTED</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">resistant_susceptible_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">number_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">State</span><span class="o">.</span><span class="n">RESISTANT</span><span class="p">)</span> <span class="o">/</span> <span class="n">number_state</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">State</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>
+        <span class="c1"># collect data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</section>
+<section id="app">
+<h2>App<a class="headerlink" href="#app" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">solara</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.examples.basic.virus_on_network.model</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">State</span><span class="p">,</span>
+    <span class="n">VirusOnNetwork</span><span class="p">,</span>
+    <span class="n">number_infected</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Slider</span><span class="p">,</span>
+    <span class="n">SolaraViz</span><span class="p">,</span>
+    <span class="n">SpaceRenderer</span><span class="p">,</span>
+    <span class="n">make_plot_component</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentPortrayalStyle</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">agent_portrayal</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+    <span class="n">node_color_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">State</span><span class="o">.</span><span class="n">INFECTED</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">,</span>
+        <span class="n">State</span><span class="o">.</span><span class="n">SUSCEPTIBLE</span><span class="p">:</span> <span class="s2">"green"</span><span class="p">,</span>
+        <span class="n">State</span><span class="o">.</span><span class="n">RESISTANT</span><span class="p">:</span> <span class="s2">"gray"</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">AgentPortrayalStyle</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">node_color_dict</span><span class="p">[</span><span class="n">agent</span><span class="o">.</span><span class="n">state</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_resistant_susceptible_ratio</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">resistant_susceptible_ratio</span><span class="p">()</span>
+    <span class="n">ratio_text</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"$\infty$"</span> <span class="k">if</span> <span class="n">ratio</span> <span class="ow">is</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">ratio</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">infected_text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">number_infected</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">solara</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Resistant/Susceptible Ratio: </span><span class="si">{</span><span class="n">ratio_text</span><span class="si">}</span><span class="s2">&lt;br&gt;Infected Remaining: </span><span class="si">{</span><span class="n">infected_text</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span>
+
+
+<span class="n">model_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"rng"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"InputText"</span><span class="p">,</span>
+        <span class="s2">"value"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+        <span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Random Seed"</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">"num_nodes"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"Number of agents"</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="s2">"avg_node_degree"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"Avg Node Degree"</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="s2">"initial_outbreak_size"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"Initial Outbreak Size"</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="s2">"virus_spread_chance"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"Virus Spread Chance"</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="s2">"virus_check_frequency"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"Virus Check Frequency"</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="s2">"recovery_chance"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"Recovery Chance"</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="s2">"gain_resistance_chance"</span><span class="p">:</span> <span class="n">Slider</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"Gain Resistance Chance"</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">post_process_lineplot</span><span class="p">(</span><span class="n">chart</span><span class="p">):</span>
+    <span class="n">chart</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span>
+        <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">configure_legend</span><span class="p">(</span>
+        <span class="n">strokeColor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span>
+        <span class="n">fillColor</span><span class="o">=</span><span class="s2">"#ECE9E9"</span><span class="p">,</span>
+        <span class="n">orient</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span>
+        <span class="n">cornerRadius</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">padding</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">strokeWidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">chart</span>
+
+
+<span class="n">model1</span> <span class="o">=</span> <span class="n">VirusOnNetwork</span><span class="p">()</span>
+<span class="n">renderer</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">SpaceRenderer</span><span class="p">(</span><span class="n">model1</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"altair"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">setup_structure</span><span class="p">(</span>  <span class="c1"># Do this to draw the underlying network and customize it</span>
+        <span class="n">node_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"color"</span><span class="p">:</span> <span class="s2">"black"</span><span class="p">,</span> <span class="s2">"filled"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"strokeWidth"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
+        <span class="n">edge_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"strokeDash"</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">]},</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">setup_agents</span><span class="p">(</span><span class="n">agent_portrayal</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+<span class="c1"># Plot components can also be in altair and support post_process</span>
+<span class="n">StatePlot</span> <span class="o">=</span> <span class="n">make_plot_component</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">"Infected"</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">,</span> <span class="s2">"Susceptible"</span><span class="p">:</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"Resistant"</span><span class="p">:</span> <span class="s2">"gray"</span><span class="p">},</span>
+    <span class="n">backend</span><span class="o">=</span><span class="s2">"altair"</span><span class="p">,</span>
+    <span class="n">post_process</span><span class="o">=</span><span class="n">post_process_lineplot</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">page</span> <span class="o">=</span> <span class="n">SolaraViz</span><span class="p">(</span>
+    <span class="n">model1</span><span class="p">,</span>
+    <span class="n">renderer</span><span class="p">,</span>
+    <span class="n">components</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">StatePlot</span><span class="p">,</span>
+        <span class="n">get_resistant_susceptible_ratio</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">model_params</span><span class="o">=</span><span class="n">model_params</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Virus Model"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">page</span>  <span class="c1"># noqa</span>
+
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="boltzmann_wealth_model.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Boltzmann Wealth Model (Tutorial)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="conways_game_of_life.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Conway’s Game Of “Life”</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-run">How to Run</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#files">Files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further Reading</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#agents">Agents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model">Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#app">App</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/examples/basic/virus_on_network.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

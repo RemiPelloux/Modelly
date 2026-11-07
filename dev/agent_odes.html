@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="description" content="Some models need continuous dynamics inside each agent: the virus in a host, the energy budget of an animal, the capital of a firm, the membrane potential of…" />
+<meta property="og:title" content="ODEs in every agent" />
+<meta property="og:description" content="Some models need continuous dynamics inside each agent: the virus in a host, the energy budget of an animal, the capital of a firm, the membrane potential of…" />
+<meta property="og:url" content="https://remipelloux.github.io/Modelly/dev/agent_odes.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Modelly" />
+<meta property="og:image" content="https://remipelloux.github.io/Modelly/dev/_static/social-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Modelly: agent-based models in Python. An epidemic spreading on a grid." />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="alternate" type="text/markdown" href="agent_odes.md" />
+<script type="application/ld+json">{"@context": "https://schema.org", "description": "Some models need continuous dynamics inside each agent: the virus in a host, the energy budget of an animal, the capital of a firm, the membrane potential of…", "url": "https://remipelloux.github.io/Modelly/dev/agent_odes.html", "@type": "TechArticle", "headline": "ODEs in every agent", "isPartOf": {"@type": "WebSite", "name": "Modelly documentation", "url": "https://remipelloux.github.io/Modelly/dev/"}}</script>
+    <title>ODEs in every agent &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="_static/modelly.css?v=53800086" />
+    <link rel="stylesheet" type="text/css" href="_static/landing.css?v=6eff8557" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'agent_odes';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="_static/landing-sims.js?v=ec3405af"></script>
+    <script src="_static/landing.js?v=44addd4a"></script>
+    <script src="_static/hero-models.js?v=ac39659f"></script>
+    <script src="_static/hero.js?v=d4c2d651"></script>
+    <script src="_static/finder.js?v=dca20fd0"></script>
+    <script src="_static/copy-page.js?v=1a03e2e2"></script>
+    <script src="_static/a11y.js?v=a42a87aa"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/agent_odes.html" />
+    <link rel="icon" href="_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Language-model agents" href="llm_agents.html" />
+    <link rel="prev" title="Coupling agents with fields and ODEs" href="coupling.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="translations/index.html">
+    Other languages
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="translations/index.html">
+    Other languages
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Build and check a model</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Checking a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profiling a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checkpoints.html">Checkpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="figures.html">Figures and animations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="browser.html">In the browser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windows_no_admin.html">Installing on locked-down Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="event_ordering.html">Event ordering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessibility.html">Accessibility and languages</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Structure a model</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="geospatial.html">Geospatial models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">Synthetic populations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupling.html">Coupling fields and ODEs</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">ODEs in every agent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm_agents.html">Language-model agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="differentiable.html">Differentiable models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Run a study</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments and sweeps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibration.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emulators.html">Emulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="decide.html">Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="explain.html">Causes and explanations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assimilation.html">Live data and assimilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Reproducible studies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_cards.html">Model cards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hub.html">The model hub</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="guides.html" class="nav-link">Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">ODEs in every agent</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="odes-in-every-agent">
+<h1>ODEs in every agent<a class="headerlink" href="#odes-in-every-agent" title="Link to this heading">#</a></h1>
+<p>Some models need continuous dynamics inside each agent: the virus in a host, the energy budget
+of an animal, the capital of a firm, the membrane potential of a neuron. <code class="docutils literal notranslate"><span class="pre">modelly.couple</span></code> gives
+every agent its own ODE and integrates the whole population at once:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>What it is</p></th>
+<th class="head"><p>When to use it</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">solve_batch</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> for many independent systems: each keeps its own adaptive step and tolerance, the right-hand side runs once per stage for all of them</p></td>
+<td><p>integrating many systems outside a model, or inside your own step</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ODEEvent</span></code></p></td>
+<td><p>a zero crossing located per system on the step’s interpolant, terminal or not, upward, downward or both</p></td>
+<td><p>“the moment the virus passes this level”</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AgentODE</span></code></p></td>
+<td><p>a coupling component: the state variables are columns of an agent class, integrated with <code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> (or a stiff <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>) each step, events calling back into the model</p></td>
+<td><p>an ODE per agent inside a model</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>They need only numpy and scipy and work the same on Windows, macOS and Linux. For a single ODE
+or a stock-flow model per model, see <a class="reference internal" href="coupling.html"><span class="std std-doc">Coupling fields and ODEs</span></a>.</p>
+<section id="solve-batch-solve-ivp-for-a-population">
+<h2><code class="docutils literal notranslate"><span class="pre">solve_batch</span></code>: <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> for a population<a class="headerlink" href="#solve-batch-solve-ivp-for-a-population" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> integrates one system. Given <code class="docutils literal notranslate"><span class="pre">k</span></code> systems of <code class="docutils literal notranslate"><span class="pre">m</span></code> equations, <code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> takes the
+state as an array of shape <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">k)</span></code>, one column per system, and a right-hand side written with
+numpy, so it applies to every column at once:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_batch</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">decay</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""t has shape (k,), y has shape (m, k); params holds arrays of length k, or scalars."""</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">params</span><span class="p">[</span><span class="s2">"rate"</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span>
+
+
+<span class="n">rates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">solve_batch</span><span class="p">(</span>
+    <span class="n">decay</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="p">{</span><span class="s2">"rate"</span><span class="p">:</span> <span class="n">rates</span><span class="p">},</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-10</span>
+<span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">y</span>  <span class="c1"># array([[0.60653066, 0.36787944, 0.13533528]])</span>
+<span class="n">result</span><span class="o">.</span><span class="n">nsteps</span>  <span class="c1"># accepted steps per system, as len(sol.t) - 1 from solve_ivp</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">t_span</span></code> can give each system its own start and end (arrays of length <code class="docutils literal notranslate"><span class="pre">k</span></code>), and <code class="docutils literal notranslate"><span class="pre">params</span></code>
+arrays whose last axis has length <code class="docutils literal notranslate"><span class="pre">k</span></code> are cut to the systems being advanced, so each system
+sees its own parameters. A parameter that is not per system (a matrix, a constant) is passed
+whole.</p>
+<section id="the-same-answer-as-solve-ivp-system-by-system">
+<h3>The same answer as <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>, system by system<a class="headerlink" href="#the-same-answer-as-solve-ivp-system-by-system" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> runs scipy’s own Runge-Kutta pairs, <code class="docutils literal notranslate"><span class="pre">&quot;RK45&quot;</span></code> (Dormand-Prince, the default) and
+<code class="docutils literal notranslate"><span class="pre">&quot;RK23&quot;</span></code> (Bogacki-Shampine), reading their coefficients from scipy, with scipy’s initial step
+selection, error norm and step-size controller, applied to each column separately. Each system
+therefore takes exactly the steps it would take in its own <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> call, and ends where
+that call ends to round-off: the tests check, on 200 systems with random parameters, for both
+methods and at loose and tight tolerances, that every system’s number of accepted steps equals
+<code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>’s and that the final states agree to <code class="docutils literal notranslate"><span class="pre">1e-9</span></code> relative
+(<code class="docutils literal notranslate"><span class="pre">tests/couple/test_batch.py</span></code>). The difference is the order of floating-point sums.</p>
+</section>
+<section id="and-one-stacked-solve-ivp-call">
+<h3>And one stacked <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> call?<a class="headerlink" href="#and-one-stacked-solve-ivp-call" title="Link to this heading">#</a></h3>
+<p>Stacking every agent into one long vector and calling <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> once is the usual trick. It
+is fast, and it is a different method:</p>
+<ul class="simple">
+<li><p><strong>One step size for everyone.</strong> The solver takes, at every moment, the smallest step any
+agent needs, for all agents. When their dynamics peak at different times (infections that
+start on different days, animals in different patches), each agent is stepped through every
+other agent’s hard moments: more work, and usually more accuracy than it asked for.</p></li>
+<li><p><strong>Error measured over the whole population.</strong> <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> controls the RMS of the error over
+all <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">k</span></code> components, so how closely one agent is followed depends on all the others.</p></li>
+<li><p><strong>An agent’s numbers depend on the population.</strong> Add one agent, remove one, or reorder them,
+and every other agent’s trajectory changes in its last digits or more, since the shared steps
+change. With <code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> an agent’s result is the same, bit for bit, whether it is
+integrated alone or among a hundred thousand others (<code class="docutils literal notranslate"><span class="pre">tests/couple/test_batch.py</span></code> checks it):
+every operation is per column.</p></li>
+</ul>
+<p>So the two answer different questions. <code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> gives each agent what its own <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>
+call would give, the semantics of a loop of <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> calls, at the speed of array code; the
+measured times are in <a class="reference internal" href="#performance">Performance</a>.</p>
+</section>
+</section>
+<section id="events">
+<h2>Events<a class="headerlink" href="#events" title="Link to this heading">#</a></h2>
+<p>An <code class="docutils literal notranslate"><span class="pre">ODEEvent</span></code> wraps an event function as <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>’s <code class="docutils literal notranslate"><span class="pre">events=</span></code> does, one value per system:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple</span><span class="w"> </span><span class="kn">import</span> <span class="n">ODEEvent</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">below_half</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span>
+
+
+<span class="n">half_life</span> <span class="o">=</span> <span class="n">ODEEvent</span><span class="p">(</span><span class="n">below_half</span><span class="p">,</span> <span class="n">terminal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">direction</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">solve_batch</span><span class="p">(</span>
+    <span class="n">decay</span><span class="p">,</span>
+    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+    <span class="p">{</span><span class="s2">"rate"</span><span class="p">:</span> <span class="n">rates</span><span class="p">},</span>
+    <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>
+    <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span>
+    <span class="n">events</span><span class="o">=</span><span class="p">[</span><span class="n">half_life</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">t</span>  <span class="c1"># each system stopped at ln 2 / rate</span>
+<span class="n">result</span><span class="o">.</span><span class="n">stopped</span>  <span class="c1"># array([ True,  True,  True])</span>
+<span class="n">result</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rows</span>  <span class="c1"># which system crossed ...</span>
+<span class="n">result</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">t</span>  <span class="c1"># ... when ...</span>
+<span class="n">result</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span>  <span class="c1"># ... and its state there</span>
+</pre></div>
+</div>
+<p>After every accepted step, a system whose value changed sign in the event’s <code class="docutils literal notranslate"><span class="pre">direction</span></code> has the
+crossing located on the step’s dense output, the Runge-Kutta pair’s own interpolant (the one
+<code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> uses), by bisection to below one unit in the last place of the step. A terminal
+event stops that system at the crossing and the others go on; a non-terminal event records
+every crossing. The sign rule is <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>’s.</p>
+</section>
+<section id="agentode-an-ode-in-every-agent-of-a-model">
+<h2><code class="docutils literal notranslate"><span class="pre">AgentODE</span></code>: an ODE in every agent of a model<a class="headerlink" href="#agentode-an-ode-in-every-agent-of-a-model" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">AgentODE</span></code> is a <a class="reference internal" href="coupling.html"><span class="std std-doc">coupling</span></a> component. Its state variables and parameters are
+<a class="reference internal" href="performance.html"><span class="std std-doc">columns</span></a> of an agent class, so each agent still reads its own values
+(<code class="docutils literal notranslate"><span class="pre">host.virus</span></code>), the model sees all of them as arrays (<code class="docutils literal notranslate"><span class="pre">model.columns[Host].virus</span></code>), and the ODE
+writes them back in place each step. Events carry an <code class="docutils literal notranslate"><span class="pre">action(table,</span> <span class="pre">rows,</span> <span class="pre">times)</span></code>, called after
+the step’s integration with the column table, the rows that crossed and when. A terminal
+event’s agents resume from their crossing to the end of the step after the action has run, so
+an action can reset the state (a neuron that fires and resets).</p>
+<section id="a-worked-example-viral-dynamics-in-every-host">
+<h3>A worked example: viral dynamics in every host<a class="headerlink" href="#a-worked-example-viral-dynamics-in-every-host" title="Link to this heading">#</a></h3>
+<p>Each host carries the target-cell-limited model of influenza (Baccam et al., 2006): target
+cells, infected cells and virus. A host is infectious while its virus load is above a
+threshold; the moments it crosses the threshold are events, located to the instant rather than
+rounded to the day. Between hosts, a daily phase exposes susceptible hosts with a chance that
+grows with the share of infectious hosts.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.core.columns</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentODE</span><span class="p">,</span> <span class="n">Coupling</span><span class="p">,</span> <span class="n">ODEEvent</span><span class="p">,</span> <span class="n">Phase</span><span class="p">,</span> <span class="n">Solver</span>
+
+<span class="n">THRESHOLD</span> <span class="o">=</span> <span class="mf">1e-2</span>  <span class="c1"># virus load above which a host is infectious</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Host</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="n">cells</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># target cells, as a fraction</span>
+    <span class="n">infected</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>  <span class="c1"># infected cells</span>
+    <span class="n">virus</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>  <span class="c1"># this host's infection rate</span>
+    <span class="n">infectious</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">onset</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>  <span class="c1"># when its virus crossed the threshold</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">within_host</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="n">cells</span><span class="p">,</span> <span class="n">infected</span><span class="p">,</span> <span class="n">virus</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">infection</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s2">"beta"</span><span class="p">]</span> <span class="o">*</span> <span class="n">cells</span> <span class="o">*</span> <span class="n">virus</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span><span class="o">-</span><span class="n">infection</span><span class="p">,</span> <span class="n">infection</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">infected</span><span class="p">,</span> <span class="mf">20.0</span> <span class="o">*</span> <span class="n">infected</span> <span class="o">-</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">virus</span><span class="p">]</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">above</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">THRESHOLD</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">becomes_infectious</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">times</span><span class="p">):</span>
+    <span class="n">table</span><span class="p">[</span><span class="s2">"infectious"</span><span class="p">][</span><span class="n">rows</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">table</span><span class="p">[</span><span class="s2">"onset"</span><span class="p">][</span><span class="n">rows</span><span class="p">]</span> <span class="o">=</span> <span class="n">times</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">recovers</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">times</span><span class="p">):</span>
+    <span class="n">table</span><span class="p">[</span><span class="s2">"infectious"</span><span class="p">][</span><span class="n">rows</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Outbreak</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hosts</span><span class="o">=</span><span class="mi">10_000</span><span class="p">,</span> <span class="n">contacts</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="n">Host</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hosts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">Host</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">beta</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">10.0</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">hosts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">virus</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-3</span>  <span class="c1"># ten index cases</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">=</span> <span class="n">contacts</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">ODEEvent</span><span class="p">(</span><span class="n">above</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">becomes_infectious</span><span class="p">),</span>
+            <span class="n">ODEEvent</span><span class="p">(</span><span class="n">above</span><span class="p">,</span> <span class="n">direction</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">recovers</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span> <span class="o">=</span> <span class="n">Coupling</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Phase</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transmit</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">AgentODE</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">Host</span><span class="p">,</span>
+                <span class="n">within_host</span><span class="p">,</span>
+                <span class="n">state</span><span class="o">=</span><span class="p">[</span><span class="s2">"cells"</span><span class="p">,</span> <span class="s2">"infected"</span><span class="p">,</span> <span class="s2">"virus"</span><span class="p">],</span>
+                <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s2">"beta"</span><span class="p">],</span>
+                <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span>
+                <span class="n">solver</span><span class="o">=</span><span class="n">Solver</span><span class="p">(</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">),</span>
+            <span class="p">),</span>
+            <span class="n">phase</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">transmit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span>
+        <span class="n">susceptible</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">virus</span> <span class="o">==</span> <span class="mf">0.0</span>
+        <span class="n">chance</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">*</span> <span class="n">table</span><span class="o">.</span><span class="n">infectious</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">virus</span><span class="p">[</span><span class="n">susceptible</span> <span class="o">&amp;</span> <span class="n">table</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">chance</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1e-6</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># one day</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Outbreak</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Ten thousand hosts over sixty days take about four seconds on a laptop core, and the same seed
+gives the same outbreak bit for bit (<code class="docutils literal notranslate"><span class="pre">tests/couple/test_within_host.py</span></code> runs this model).</p>
+</section>
+<section id="inputs-from-the-rest-of-the-model">
+<h3>Inputs from the rest of the model<a class="headerlink" href="#inputs-from-the-rest-of-the-model" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">reads=[&quot;temperature&quot;]</span></code> passes coupling quantities to the right-hand side in <code class="docutils literal notranslate"><span class="pre">params</span></code>, held
+over the step, as an <code class="docutils literal notranslate"><span class="pre">ODE</span></code> reads them. Per-agent inputs are columns listed in <code class="docutils literal notranslate"><span class="pre">params</span></code>, written
+by an agent phase before the ODE’s phase.</p>
+</section>
+<section id="inputs-that-change-inside-the-step">
+<h3>Inputs that change inside the step<a class="headerlink" href="#inputs-that-change-inside-the-step" title="Link to this heading">#</a></h3>
+<p>An input that varies faster than the model’s step (daylight, a dosing schedule, a measured
+temperature series) is passed as a forcing. The right-hand side receives its value at each
+stage’s time, so every agent sees it at the times its own steps land on:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentODE</span><span class="p">,</span> <span class="n">Forcing</span><span class="p">,</span> <span class="n">Series</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">daylight</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">t</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+
+
+<span class="n">temperature</span> <span class="o">=</span> <span class="n">Series</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">12.0</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">])</span>  <span class="c1"># linear between the points</span>
+<span class="n">ode</span> <span class="o">=</span> <span class="n">AgentODE</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">Animal</span><span class="p">,</span>
+    <span class="n">energy</span><span class="p">,</span>
+    <span class="n">state</span><span class="o">=</span><span class="p">[</span><span class="s2">"reserve"</span><span class="p">],</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s2">"mass"</span><span class="p">],</span>
+    <span class="n">forcings</span><span class="o">=</span><span class="p">{</span><span class="s2">"light"</span><span class="p">:</span> <span class="n">Forcing</span><span class="p">(</span><span class="n">daylight</span><span class="p">),</span> <span class="s2">"temp"</span><span class="p">:</span> <span class="n">temperature</span><span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Forcing(function)</span></code> calls <code class="docutils literal notranslate"><span class="pre">function(t)</span></code> with one time per agent; it returns a scalar or one
+value per agent. <code class="docutils literal notranslate"><span class="pre">Series(times,</span> <span class="pre">values)</span></code> reads a table linearly between its times
+(<code class="docutils literal notranslate"><span class="pre">kind=&quot;previous&quot;</span></code> holds each value until the next time) and holds the end values outside
+them; values of shape <code class="docutils literal notranslate"><span class="pre">(times,</span> <span class="pre">agents)</span></code> give each agent its own series. The same inputs work in
+<code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> as entries of <code class="docutils literal notranslate"><span class="pre">params</span></code>, and on the stiff path. Against <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> with the
+forcing written inside the function, every system takes the same steps and ends at the same
+value (<code class="docutils literal notranslate"><span class="pre">tests/couple/test_inputs_dense.py</span></code>).</p>
+</section>
+<section id="reading-the-state-inside-the-step">
+<h3>Reading the state inside the step<a class="headerlink" href="#reading-the-state-inside-the-step" title="Link to this heading">#</a></h3>
+<p>With <code class="docutils literal notranslate"><span class="pre">dense_output=True</span></code>, <code class="docutils literal notranslate"><span class="pre">ode.at(t)</span></code> returns every agent’s state at a time inside the last
+step: one time, or one per agent, read on the step’s own interpolant (the polynomial
+<code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>’s <code class="docutils literal notranslate"><span class="pre">dense_output</span></code> uses), without integrating again. An agent acting at a sub-step
+time, such as a host tested at 14:00, sees the continuous value:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span> <span class="o">=</span> <span class="n">AgentODE</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">Host</span><span class="p">,</span>
+    <span class="n">tiv</span><span class="p">,</span>
+    <span class="n">state</span><span class="o">=</span><span class="p">[</span><span class="s2">"cells"</span><span class="p">,</span> <span class="s2">"infected"</span><span class="p">,</span> <span class="s2">"virus"</span><span class="p">],</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s2">"beta"</span><span class="p">],</span>
+    <span class="n">dense_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ode</span><span class="o">.</span><span class="n">advance</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">load_at_test</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">day</span> <span class="o">+</span> <span class="n">test_hour</span> <span class="o">/</span> <span class="mi">24</span><span class="p">,</span> <span class="s2">"virus"</span><span class="p">)</span>  <span class="c1"># one value per host</span>
+</pre></div>
+</div>
+<p>After a terminal event, a time past the crossing reads the integration that follows the
+event’s action, so a neuron read just after it fires reads its reset value. <code class="docutils literal notranslate"><span class="pre">at</span></code> refuses a
+time outside the last step and a population that changed since it. <code class="docutils literal notranslate"><span class="pre">solve_batch(...,</span> <span class="pre">dense_output=True)</span></code> returns the same reader as <code class="docutils literal notranslate"><span class="pre">result.sol</span></code>, with <code class="docutils literal notranslate"><span class="pre">result.sol(t)</span></code> of shape
+<code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">k)</span></code>.</p>
+</section>
+<section id="stiff-systems">
+<h3>Stiff systems<a class="headerlink" href="#stiff-systems" title="Link to this heading">#</a></h3>
+<p>With <code class="docutils literal notranslate"><span class="pre">Solver(method=&quot;BDF&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Radau&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;LSODA&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">AgentODE</span></code> stacks the agents into one
+<code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> system and passes the Jacobian’s sparsity pattern: block diagonal, since an agent’s
+equations involve only its own state, so the implicit solver’s linear algebra grows with the
+number of agents rather than its square (LSODA takes no pattern and gets none). The stiff path
+shares one step between agents, as above; events need an explicit method.</p>
+</section>
+</section>
+<section id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">benchmarks/ode/compare.py</span></code> integrates the within-host model above over ten days in two
+populations: <code class="docutils literal notranslate"><span class="pre">alike</span></code>, whose parameters vary by 10% between hosts, and <code class="docutils literal notranslate"><span class="pre">diverse</span></code>, whose infection
+rate, virus production and initial virus span one to four orders of magnitude. It compares a
+loop of <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> calls, one stacked <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> call and <code class="docutils literal notranslate"><span class="pre">solve_batch</span></code>, all <code class="docutils literal notranslate"><span class="pre">RK45</span></code> at
+<code class="docutils literal notranslate"><span class="pre">rtol=1e-6</span></code>, <code class="docutils literal notranslate"><span class="pre">atol=1e-9</span></code>, one thread on one pinned core. “Worst error” is the largest error of
+any host against a reference solved at <code class="docutils literal notranslate"><span class="pre">rtol=1e-12</span></code>, in units of that host’s own tolerance.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Population</p></th>
+<th class="head text-right"><p>Agents</p></th>
+<th class="head text-right"><p>Loop of <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code></p></th>
+<th class="head text-right"><p>One stacked <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code></p></th>
+<th class="head text-right"><p><code class="docutils literal notranslate"><span class="pre">solve_batch</span></code></p></th>
+<th class="head text-right"><p><code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> vs loop</p></th>
+<th class="head text-right"><p>Stacked time over <code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> time</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>alike</p></td>
+<td class="text-right"><p>10</p></td>
+<td class="text-right"><p>24.5 ms (0.15)</p></td>
+<td class="text-right"><p>4.4 ms (0.24)</p></td>
+<td class="text-right"><p>7.8 ms (0.15)</p></td>
+<td class="text-right"><p>3x</p></td>
+<td class="text-right"><p>0.57x</p></td>
+</tr>
+<tr class="row-odd"><td><p>alike</p></td>
+<td class="text-right"><p>100</p></td>
+<td class="text-right"><p>242 ms (0.18)</p></td>
+<td class="text-right"><p>5.0 ms (0.22)</p></td>
+<td class="text-right"><p>8.7 ms (0.18)</p></td>
+<td class="text-right"><p>28x</p></td>
+<td class="text-right"><p>0.57x</p></td>
+</tr>
+<tr class="row-even"><td><p>alike</p></td>
+<td class="text-right"><p>1,000</p></td>
+<td class="text-right"><p>2,504 ms (0.18)</p></td>
+<td class="text-right"><p>15.7 ms (0.22)</p></td>
+<td class="text-right"><p>24.0 ms (0.18)</p></td>
+<td class="text-right"><p>104x</p></td>
+<td class="text-right"><p>0.65x</p></td>
+</tr>
+<tr class="row-odd"><td><p>alike</p></td>
+<td class="text-right"><p>10,000</p></td>
+<td class="text-right"><p>38,987 ms (0.18)</p></td>
+<td class="text-right"><p>85.7 ms (0.26)</p></td>
+<td class="text-right"><p>125 ms (0.18)</p></td>
+<td class="text-right"><p>313x</p></td>
+<td class="text-right"><p>0.69x</p></td>
+</tr>
+<tr class="row-even"><td><p>alike</p></td>
+<td class="text-right"><p>100,000</p></td>
+<td class="text-right"><p>not run</p></td>
+<td class="text-right"><p>1,549 ms (0.28)</p></td>
+<td class="text-right"><p>1,705 ms (0.18)</p></td>
+<td class="text-right"><p></p></td>
+<td class="text-right"><p>0.91x</p></td>
+</tr>
+<tr class="row-odd"><td><p>diverse</p></td>
+<td class="text-right"><p>10</p></td>
+<td class="text-right"><p>22.1 ms (8.3)</p></td>
+<td class="text-right"><p>7.9 ms (0.81)</p></td>
+<td class="text-right"><p>11.6 ms (8.3)</p></td>
+<td class="text-right"><p>2x</p></td>
+<td class="text-right"><p>0.68x</p></td>
+</tr>
+<tr class="row-even"><td><p>diverse</p></td>
+<td class="text-right"><p>100</p></td>
+<td class="text-right"><p>352 ms (15)</p></td>
+<td class="text-right"><p>17.2 ms (2.3)</p></td>
+<td class="text-right"><p>26.3 ms (15)</p></td>
+<td class="text-right"><p>13x</p></td>
+<td class="text-right"><p>0.65x</p></td>
+</tr>
+<tr class="row-odd"><td><p>diverse</p></td>
+<td class="text-right"><p>1,000</p></td>
+<td class="text-right"><p>3,103 ms (19)</p></td>
+<td class="text-right"><p>49.5 ms (7.7)</p></td>
+<td class="text-right"><p>68.6 ms (19)</p></td>
+<td class="text-right"><p>45x</p></td>
+<td class="text-right"><p>0.72x</p></td>
+</tr>
+<tr class="row-even"><td><p>diverse</p></td>
+<td class="text-right"><p>10,000</p></td>
+<td class="text-right"><p>39,845 ms (21)</p></td>
+<td class="text-right"><p>283 ms (6.1)</p></td>
+<td class="text-right"><p>302 ms (21)</p></td>
+<td class="text-right"><p>132x</p></td>
+<td class="text-right"><p>0.94x</p></td>
+</tr>
+<tr class="row-odd"><td><p>diverse</p></td>
+<td class="text-right"><p>100,000</p></td>
+<td class="text-right"><p>not run</p></td>
+<td class="text-right"><p>4,420 ms (10)</p></td>
+<td class="text-right"><p>3,053 ms (29)</p></td>
+<td class="text-right"><p></p></td>
+<td class="text-right"><p>1.45x</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Times are the best of five runs (one run for the loop past 1,000 agents; the loop is not run at
+100,000, where it would take about six minutes); the worst error is in brackets. Measured with
+CPython 3.15, numpy 2.5 and scipy 1.18 on one core of an x86-64 laptop that was not idle (load
+average 7 to 12), so read the ratios rather than the last digit; <code class="docutils literal notranslate"><span class="pre">results.json</span></code> next to the
+script has every number.</p>
+<ul class="simple">
+<li><p><strong>Against a loop of <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> calls</strong>, <code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> gives the same answers (the same worst
+error, agent for agent) 100 to 300 times faster from a thousand agents up.</p></li>
+<li><p><strong>Against one stacked call</strong>, <code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> takes 1.1 to 1.8 times as long when the agents
+are alike or fewer than 100,000, and is faster (1.45 times at 100,000) when they differ, since
+the stacked call then steps everyone through every agent’s peak. The stacked call is also more
+accurate on the diverse population, for the same reason: its shared small steps follow each
+agent more closely than that agent’s own tolerance asks. If that is the accuracy you want,
+ask <code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> for it with a smaller <code class="docutils literal notranslate"><span class="pre">rtol</span></code>; if you want each agent’s result not to
+depend on the others, the stacked call cannot give it.</p></li>
+</ul>
+</section>
+<section id="delay-equations">
+<h2>Delay equations<a class="headerlink" href="#delay-equations" title="Link to this heading">#</a></h2>
+<p>When a rate depends on the state some time ago (an immune response that lags the virus, a
+maturation time, a gestation), declare the delayed variable and read it from <code class="docutils literal notranslate"><span class="pre">params</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentODE</span><span class="p">,</span> <span class="n">Delay</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">lagged</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="s2">"rate"</span><span class="p">]</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="s2">"past"</span><span class="p">]</span>  <span class="c1"># y'(t) = -rate * y(t - 1)</span>
+
+
+<span class="n">ode</span> <span class="o">=</span> <span class="n">AgentODE</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">Cell</span><span class="p">,</span>
+    <span class="n">lagged</span><span class="p">,</span>
+    <span class="n">state</span><span class="o">=</span><span class="p">[</span><span class="s2">"y"</span><span class="p">],</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s2">"rate"</span><span class="p">],</span>
+    <span class="n">delays</span><span class="o">=</span><span class="p">{</span><span class="s2">"past"</span><span class="p">:</span> <span class="n">Delay</span><span class="p">(</span><span class="s2">"y"</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">p[&quot;past&quot;]</span></code> is each agent’s <code class="docutils literal notranslate"><span class="pre">y</span></code> at <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">-</span> <span class="pre">tau</span></code>. <code class="docutils literal notranslate"><span class="pre">AgentODE</span></code> uses the method of steps: it cuts each
+step into pieces no longer than the shortest delay, so every delayed time falls in a part
+already integrated, and reads it on the dense output of the steps that integrated it. Before an
+agent’s first integration it reads <code class="docutils literal notranslate"><span class="pre">before</span></code>, a number or a function of time. The past is kept
+by the agents’ unique ids, so agents added or removed between steps keep their own; only as
+much as the longest delay can reach is kept, and it is saved with the model, so a resumed run
+reads the same past. For <code class="docutils literal notranslate"><span class="pre">y'</span> <span class="pre">=</span> <span class="pre">-a</span> <span class="pre">y(t</span> <span class="pre">-</span> <span class="pre">1)</span></code> with <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">1</span></code> before 0 the result equals the
+piecewise-polynomial closed form to <code class="docutils literal notranslate"><span class="pre">rtol</span></code> whatever the model’s step
+(<code class="docutils literal notranslate"><span class="pre">tests/couple/test_delay.py</span></code>). Delays need an explicit method.</p>
+</section>
+<section id="stochastic-equations">
+<h2>Stochastic equations<a class="headerlink" href="#stochastic-equations" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">AgentSDE</span></code> integrates an Ito equation with diagonal noise in every agent,
+<code class="docutils literal notranslate"><span class="pre">dy</span> <span class="pre">=</span> <span class="pre">drift</span> <span class="pre">dt</span> <span class="pre">+</span> <span class="pre">diffusion</span> <span class="pre">dW</span></code>, on a fixed sub-step <code class="docutils literal notranslate"><span class="pre">dt</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentSDE</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">growth</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">y</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">shocks</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="s2">"volatility"</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span>  <span class="c1"># geometric Brownian motion, one volatility per firm</span>
+
+
+<span class="n">sde</span> <span class="o">=</span> <span class="n">AgentSDE</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">Firm</span><span class="p">,</span>
+    <span class="n">growth</span><span class="p">,</span>
+    <span class="n">shocks</span><span class="p">,</span>
+    <span class="n">state</span><span class="o">=</span><span class="p">[</span><span class="s2">"capital"</span><span class="p">],</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="s2">"volatility"</span><span class="p">],</span>
+    <span class="n">dt</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">"milstein"</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The Wiener increments are drawn from <code class="docutils literal notranslate"><span class="pre">model.rng</span></code>, so a run is a function of its seed and a
+checkpoint, which saves the generator, resumes the same noise bit for bit. <code class="docutils literal notranslate"><span class="pre">scheme=&quot;euler&quot;</span></code> is
+Euler-Maruyama, of strong order one half; <code class="docutils literal notranslate"><span class="pre">scheme=&quot;milstein&quot;</span></code> is the derivative-free Milstein
+scheme of Kloeden and Platen, of strong order one for diagonal noise, with no derivative of
+the diffusion to write. Measured on geometric Brownian motion against its exact solution, over
+4,000 paths driven by one Brownian path each at five step sizes, the fitted orders are 0.53
+and 0.95 (<code class="docutils literal notranslate"><span class="pre">tests/couple/test_sde.py</span></code>). <code class="docutils literal notranslate"><span class="pre">solve_sde_batch</span></code> is the same integrator without a
+model; <code class="docutils literal notranslate"><span class="pre">noise=</span></code> drives it with given increments, to compare schemes on one path.</p>
+</section>
+<section id="the-mean-field-limit">
+<h2>The mean-field limit<a class="headerlink" href="#the-mean-field-limit" title="Link to this heading">#</a></h2>
+<p>Many agent models have an ODE limit as the population grows. <code class="docutils literal notranslate"><span class="pre">Companion</span></code> runs that limit next
+to the model, from the model’s own starting state, and records both after each step:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple</span><span class="w"> </span><span class="kn">import</span> <span class="n">Companion</span><span class="p">,</span> <span class="n">MeanField</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.couple.meanfield</span><span class="w"> </span><span class="kn">import</span> <span class="n">bass</span>
+
+<span class="n">limit</span> <span class="o">=</span> <span class="n">MeanField</span><span class="p">(</span>
+    <span class="n">bass</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">adoption</span><span class="p">],</span> <span class="p">(</span><span class="s2">"adopted"</span><span class="p">,),</span> <span class="p">{</span><span class="s2">"innovation"</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">,</span> <span class="s2">"imitation"</span><span class="p">:</span> <span class="mf">0.38</span><span class="p">}</span>
+<span class="p">)</span>
+<span class="n">companion</span> <span class="o">=</span> <span class="n">Companion</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="n">companion</span><span class="o">.</span><span class="n">advance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
+<span class="n">companion</span><span class="o">.</span><span class="n">gap</span><span class="p">()</span>  <span class="c1"># the largest difference; companion.frame() has both curves</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.couple.meanfield</span></code> has the limits of the well-mixed SIR epidemic (<code class="docutils literal notranslate"><span class="pre">sir</span></code>),
+Lotka-Volterra (<code class="docutils literal notranslate"><span class="pre">lotka_volterra</span></code>) and Bass diffusion (<code class="docutils literal notranslate"><span class="pre">bass</span></code>); any <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>-style function
+works. <code class="docutils literal notranslate"><span class="pre">gap_by_size(run,</span> <span class="pre">sizes,</span> <span class="pre">seeds)</span></code> measures the gap over population sizes and fits its
+power of the size: on the Bass zoo model, from 250 to 16,000 households, the exponent is
+-0.47, the <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">sqrt(N)</span></code> of sampling noise (<code class="docutils literal notranslate"><span class="pre">tests/couple/test_meanfield.py</span></code>). A flatter
+exponent shows where a model departs from its limit: network structure, extinctions, or its
+own time step, which leaves a floor of the order of <code class="docutils literal notranslate"><span class="pre">dt</span></code>.</p>
+</section>
+<section id="gradients-of-ode-parameters">
+<h2>Gradients of ODE parameters<a class="headerlink" href="#gradients-of-ode-parameters" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.diff.ode.ode_phase(rhs,</span> <span class="pre">state)</span></code> puts an ODE per agent into a
+<a class="reference internal" href="differentiable.html"><span class="std std-doc">differentiable model</span></a>, so <code class="docutils literal notranslate"><span class="pre">check_gradients</span></code> and <code class="docutils literal notranslate"><span class="pre">GradientCalibration</span></code> fit
+ODE parameters by gradient. It integrates with fourth-order Runge-Kutta on fixed sub-steps and
+JAX differentiates through them; see <a class="reference internal" href="differentiable.html#odes-in-a-differentiable-model"><span class="std std-ref">Differentiable models</span></a>.</p>
+</section>
+<section id="checkpoints-and-determinism">
+<h2>Checkpoints and determinism<a class="headerlink" href="#checkpoints-and-determinism" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">solve_batch</span></code> draws no random numbers and starts every call from the state it is given, so an
+<code class="docutils literal notranslate"><span class="pre">AgentODE</span></code> model saved and loaded resumes bit for bit (<code class="docutils literal notranslate"><span class="pre">tests/couple/test_agent_ode.py</span></code>). The
+sums run through <code class="docutils literal notranslate"><span class="pre">einsum</span></code> rather than BLAS, so they do not depend on the number of BLAS threads.
+Across platforms, the step-size controller uses powers that are not correctly rounded, so
+compare results between machines with a tolerance, as for any <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> result.</p>
+</section>
+<section id="limits">
+<h2>Limits<a class="headerlink" href="#limits" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Batched methods are <code class="docutils literal notranslate"><span class="pre">&quot;RK45&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;RK23&quot;</span></code>; <code class="docutils literal notranslate"><span class="pre">&quot;DOP853&quot;</span></code> and the implicit methods run through
+<code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> (the stiff path above, with one step shared by all agents).</p></li>
+<li><p>The right-hand side and event functions must be written with numpy, for arrays of shape
+<code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">k)</span></code>; a function written for one system with Python <code class="docutils literal notranslate"><span class="pre">if</span></code> statements has to be rewritten
+with <code class="docutils literal notranslate"><span class="pre">np.where</span></code>. They must be module-level functions or methods for the model to be saved.</p></li>
+<li><p>A parameter is cut per system when its last axis has length <code class="docutils literal notranslate"><span class="pre">k</span></code>; a shared array that happens
+to have that length would be cut too, so give it another shape.</p></li>
+<li><p>ODEEvent actions may change columns but not add or remove agents (rows are positions in the
+column table): add or remove them in an agent phase.</p></li>
+<li><p>An agent whose state does not move still costs a few steps per call, from the initial step
+heuristic (about seven for a day), as in <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>.</p></li>
+<li><p>Coupling quantities in <code class="docutils literal notranslate"><span class="pre">reads</span></code> are held over the step, as for <code class="docutils literal notranslate"><span class="pre">ODE</span></code>; an input that
+changes inside the step is a forcing (above).</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Kloeden, P. E. and Platen, E. (1992). <em>Numerical Solution of Stochastic Differential
+Equations</em>. Springer.</p></li>
+<li><p>Bellen, A. and Zennaro, M. (2003). <em>Numerical Methods for Delay Differential Equations</em>.
+Oxford University Press.
+Baccam, P., Beauchemin, C., Macken, C. A., Hayden, F. G. and Perelson, A. S. (2006). Kinetics of
+influenza A virus infection in humans. <em>Journal of Virology</em>, 80(15), 7590-7599.</p></li>
+</ul>
+<p>Hairer, E., Norsett, S. P. and Wanner, G. (1993). <em>Solving Ordinary Differential Equations I:
+Nonstiff Problems</em>, 2nd ed. Springer.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="coupling.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Coupling agents with fields and ODEs</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="llm_agents.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Language-model agents</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solve-batch-solve-ivp-for-a-population"><code class="docutils literal notranslate"><span class="pre">solve_batch</span></code>: <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> for a population</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-answer-as-solve-ivp-system-by-system">The same answer as <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code>, system by system</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#and-one-stacked-solve-ivp-call">And one stacked <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> call?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#events">Events</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#agentode-an-ode-in-every-agent-of-a-model"><code class="docutils literal notranslate"><span class="pre">AgentODE</span></code>: an ODE in every agent of a model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-worked-example-viral-dynamics-in-every-host">A worked example: viral dynamics in every host</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inputs-from-the-rest-of-the-model">Inputs from the rest of the model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inputs-that-change-inside-the-step">Inputs that change inside the step</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-the-state-inside-the-step">Reading the state inside the step</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stiff-systems">Stiff systems</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#performance">Performance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#delay-equations">Delay equations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-equations">Stochastic equations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mean-field-limit">The mean-field limit</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradients-of-ode-parameters">Gradients of ODE parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checkpoints-and-determinism">Checkpoints and determinism</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limits">Limits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/agent_odes.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

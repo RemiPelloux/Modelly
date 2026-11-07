@@ -1,0 +1,426 @@
+
+# Epstein Civil Violence Model
+
+## Summary
+
+This model is based on Joshua Epstein's simulation of how civil unrest grows and is suppressed. Citizen agents wander the grid randomly, and are endowed with individual risk aversion and hardship levels; there is also a universal regime legitimacy value. There are also Cop agents, who work on behalf of the regime. Cops arrest Citizens who are actively rebelling; Citizens decide whether to rebel based on their hardship and the regime legitimacy, and their perceived probability of arrest.
+
+The model generates mass uprising as self-reinforcing processes: if enough agents are rebelling, the probability of any individual agent being arrested is reduced, making more agents more likely to join the uprising. However, the more rebelling Citizens the Cops arrest, the less likely additional agents become to join.
+
+## How to Run
+
+Install Modelly with recommended dependencies:
+
+pip install "modelly-abm[rec]"
+
+Then run the example:
+
+solara run app.py
+
+Open the displayed local URL in your browser.
+
+
+
+## Files
+
+* ``model.py``: Core model code.
+* ``agents.py``: Agent classes.
+* ``app.py``: Sets up the interactive visualization.
+* ``Epstein Civil Violence.ipynb``: Jupyter notebook conducting some preliminary analysis of the model.
+
+## Further Reading
+
+This model is based adapted from:
+
+[Epstein, J. “Modeling civil violence: An agent-based computational approach”, Proceedings of the National Academy of Sciences, Vol. 99, Suppl. 3, May 14, 2002](https://doi.org/10.1073/pnas.092080199)
+
+A similar model is also included with NetLogo:
+
+Wilensky, U. (2004). NetLogo Rebellion model. http://ccl.northwestern.edu/netlogo/models/Rebellion. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+
+## Agents
+
+```python
+import math
+from enum import Enum
+
+import modelly
+
+
+class CitizenState(Enum):
+    ACTIVE = 1
+    QUIET = 2
+    ARRESTED = 3
+
+
+class EpsteinAgent(modelly.space.CellAgent):
+    def update_neighbors(self):
+        """
+        Look around and see who my neighbors are
+        """
+        self.neighborhood = self.cell.get_neighborhood(radius=self.scenario.cop_vision)
+        self.neighbors = list(self.neighborhood.agents)
+        self.empty_neighbors = self.neighborhood.empties.cells
+
+    def move(self):
+        """Move to a random empty neighboring cell if movement is enabled."""
+        if self.scenario.movement and self.empty_neighbors:
+            new_pos = self.random.choice(self.empty_neighbors)
+            self.move_to(new_pos)
+
+
+class Citizen(EpsteinAgent):
+    """
+    A member of the general population, may or may not be in active rebellion.
+    Summary of rule: If grievance - risk > threshold, rebel.
+
+    Attributes:
+        hardship: Agent's 'perceived hardship (i.e., physical or economic
+            privation).' Exogenous, drawn from U(0,1).
+        risk_aversion: Exogenous, drawn from U(0,1).
+        state: Can be CitizenState.QUIET, ACTIVE, or ARRESTED
+        jail_sentence: remaining jail time (0 if not in jail)
+        grievance: deterministic function of hardship and regime_legitimacy;
+            how aggrieved is agent at the regime?
+        arrest_probability: agent's assessment of arrest probability, given rebellion
+
+    Notes:
+        Parameters accessed via model.scenario: legitimacy, active_threshold, citizen_vision, arrest_prob_constant
+    """
+
+    def __init__(self, model):
+        """
+        Create a new Citizen.
+
+        Args:
+            model: the model to which the agent belongs
+        """
+        super().__init__(model)
+        self.hardship = self.random.random()
+        self.risk_aversion = self.random.random()
+        self.state = CitizenState.QUIET
+        self.jail_sentence = 0
+        self.grievance = self.hardship * (1 - self.scenario.legitimacy)
+        self.arrest_probability = None
+        self.neighborhood = []
+        self.neighbors = []
+        self.empty_neighbors = []
+
+    def step(self):
+        """
+        Decide whether to activate, then move if applicable.
+        """
+        if self.jail_sentence:
+            self.jail_sentence -= 1
+            return  # no other changes or movements if agent is in jail.
+        self.update_neighbors()
+        self.update_estimated_arrest_probability()
+
+        net_risk = self.risk_aversion * self.arrest_probability
+        if (self.grievance - net_risk) > self.scenario.active_threshold:
+            self.state = CitizenState.ACTIVE
+        else:
+            self.state = CitizenState.QUIET
+
+        self.move()
+
+    def update_estimated_arrest_probability(self):
+        """
+        Based on the ratio of cops to actives in my neighborhood, estimate the
+        p(Arrest | I go active).
+        """
+        cops_in_vision = 0
+        actives_in_vision = 1  # citizen counts herself
+        for neighbor in self.neighbors:
+            if isinstance(neighbor, Cop):
+                cops_in_vision += 1
+            elif neighbor.state == CitizenState.ACTIVE:
+                actives_in_vision += 1
+
+        # there is a body of literature on this equation
+        # the round is not in the pnas paper but without it, its impossible to replicate
+        # the dynamics shown there.
+        self.arrest_probability = 1 - math.exp(
+            -1
+            * self.scenario.arrest_prob_constant
+            * round(cops_in_vision / actives_in_vision)
+        )
+
+
+class Cop(EpsteinAgent):
+    """
+    A cop for life. No defection.
+    Summary of rule: Inspect local vision and arrest a random active agent.
+
+    Notes:
+        Parameters accessed via model.scenario: cop_vision, max_jail_term
+    """
+
+    def __init__(self, model):
+        """
+        Create a new Cop.
+
+        Args:
+            model: model instance
+        """
+        super().__init__(model)
+
+    def step(self):
+        """
+        Inspect local vision and arrest a random active agent. Move if
+        applicable.
+        """
+        self.update_neighbors()
+        active_neighbors = []
+        for agent in self.neighbors:
+            if isinstance(agent, Citizen) and agent.state == CitizenState.ACTIVE:
+                active_neighbors.append(agent)
+        if active_neighbors:
+            arrestee = self.random.choice(active_neighbors)
+            arrestee.jail_sentence = self.random.randint(0, self.scenario.max_jail_term)
+            arrestee.state = CitizenState.ARRESTED
+
+        self.move()
+
+```
+
+
+## Model
+
+```python
+from typing import Literal
+
+import modelly
+from modelly.examples.advanced.epstein_civil_violence.agents import (
+    Citizen,
+    CitizenState,
+    Cop,
+)
+from modelly.scenarios import Scenario
+from modelly.space import OrthogonalMooreGrid, OrthogonalVonNeumannGrid
+
+
+def jail_sentence(agent):
+    """An agent's remaining jail term, or None for agents that are never jailed."""
+    return getattr(agent, "jail_sentence", None)
+
+
+def arrest_probability(agent):
+    """A citizen's estimated arrest probability, or None for cops."""
+    return getattr(agent, "arrest_probability", None)
+
+
+# Define a typed scenario subclass with defaults
+class EpsteinScenario(Scenario):
+    """Scenario parameters for Epstein Civil Violence model."""
+
+    citizen_density: float = 0.7
+    cop_density: float = 0.074
+    citizen_vision: int = 7
+    cop_vision: int = 7
+    legitimacy: float = 0.8
+    max_jail_term: int = 1000
+    active_threshold: float = 0.1
+    arrest_prob_constant: float = 2.3
+    movement: bool = True
+    max_iters: int = 1000
+    activation_order: Literal["Random", "Sequential"] = "Random"
+    grid_type: Literal["Von Neumann", "Moore"] = "Von Neumann"
+
+
+class EpsteinCivilViolence(modelly.Model):
+    """
+    Model 1 from "Modeling civil violence: An agent-based computational
+    approach," by Joshua Epstein.
+    http://www.pnas.org/content/99/suppl_3/7243.full
+
+    Args:
+        height: grid height
+        width: grid width
+        seed: random seed for reproducibility
+        scenario: EpsteinScenario object containing model parameters.
+    """
+
+    def __init__(
+        self,
+        width=40,
+        height=40,
+        scenario: EpsteinScenario = EpsteinScenario,
+    ):
+        super().__init__(scenario=scenario)
+
+        match self.scenario.grid_type:
+            case "Moore":
+                self.grid = OrthogonalMooreGrid(
+                    (width, height), capacity=1, torus=True, random=self.random
+                )
+            case "Von Neumann":
+                self.grid = OrthogonalVonNeumannGrid(
+                    (width, height), capacity=1, torus=True, random=self.random
+                )
+            case _:
+                raise ValueError(
+                    f"Unknown value of grid_type: {self.scenario.grid_type}"
+                )
+
+        model_reporters = {
+            "active": CitizenState.ACTIVE.name,
+            "quiet": CitizenState.QUIET.name,
+            "arrested": CitizenState.ARRESTED.name,
+        }
+        agent_reporters = {
+            "jail_sentence": jail_sentence,
+            "arrest_probability": arrest_probability,
+        }
+        self.datacollector = modelly.DataCollector(
+            model_reporters=model_reporters, agent_reporters=agent_reporters
+        )
+        if self.scenario.cop_density + self.scenario.citizen_density > 1:
+            raise ValueError("Cop density + citizen density must be less than 1")
+
+        for cell in self.grid.all_cells:
+            klass = self.random.choices(
+                [Citizen, Cop, None],
+                cum_weights=[
+                    self.scenario.citizen_density,
+                    self.scenario.citizen_density + self.scenario.cop_density,
+                    1,
+                ],
+            )[0]
+
+            if klass is not None:
+                agent = klass(self)  # Either Citizen or Cop
+                agent.move_to(cell)
+
+        self.running = True
+        self._update_counts()
+        self.datacollector.collect(self)
+
+    def step(self):
+        """
+        Advance the model by one step and collect data.
+        """
+        match self.scenario.activation_order:
+            case "Random":
+                self.agents.shuffle_do("step")
+            case "Sequential":
+                self.agents.do("step")
+            case _:
+                raise ValueError(
+                    f"unknown value of activation_order: {self.scenario.activation_order}"
+                )
+
+        self._update_counts()
+        self.datacollector.collect(self)
+
+        if self.time > self.scenario.max_iters:
+            self.running = False
+
+    def _update_counts(self):
+        """Helper function for counting nr. of citizens in given state."""
+        counts = self.agents_by_type[Citizen].groupby("state").count()
+
+        for state in CitizenState:
+            setattr(self, state.name, counts.get(state, 0))
+
+```
+
+
+## App
+
+```python
+from modelly.examples.advanced.epstein_civil_violence.agents import (
+    Citizen,
+    CitizenState,
+    Cop,
+)
+from modelly.examples.advanced.epstein_civil_violence.model import EpsteinCivilViolence
+from modelly.viz import (
+    Slider,
+    SolaraViz,
+    SpaceRenderer,
+    make_plot_component,
+)
+from modelly.viz.components import AgentPortrayalStyle
+
+COP_COLOR = "#000000"
+
+agent_colors = {
+    CitizenState.ACTIVE: "#FE6100",
+    CitizenState.QUIET: "#648FFF",
+    CitizenState.ARRESTED: "#808080",
+}
+
+
+def citizen_cop_portrayal(agent):
+    if agent is None:
+        return
+
+    portrayal = AgentPortrayalStyle(size=200)
+
+    if isinstance(agent, Citizen):
+        portrayal.update(("color", agent_colors[agent.state]))
+    elif isinstance(agent, Cop):
+        portrayal.update(("color", COP_COLOR))
+
+    return portrayal
+
+
+def post_process(ax):
+    ax.set_aspect("equal")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.get_figure().set_size_inches(10, 10)
+
+
+model_params = {
+    "rng": {
+        "type": "InputText",
+        "value": 42,
+        "label": "Random Seed",
+    },
+    "height": 40,
+    "width": 40,
+    "citizen_density": Slider("Initial Agent Density", 0.7, 0.1, 0.9, 0.1),
+    "cop_density": Slider("Initial Cop Density", 0.04, 0.0, 0.1, 0.01),
+    "citizen_vision": Slider("Citizen Vision", 7, 1, 10, 1),
+    "cop_vision": Slider("Cop Vision", 7, 1, 10, 1),
+    "legitimacy": Slider("Government Legitimacy", 0.82, 0.0, 1, 0.01),
+    "max_jail_term": Slider("Max Jail Term", 30, 0, 50, 1),
+    "activation_order": {
+        "type": "Select",
+        "value": "Random",
+        "values": ["Random", "Sequential"],
+        "label": "Activation Order",
+    },
+    "grid_type": {
+        "type": "Select",
+        "value": "Von Neumann",
+        "values": ["Von Neumann", "Moore"],
+        "label": "Grid Type",
+    },
+}
+
+
+chart_component = make_plot_component(
+    {state.name.lower(): agent_colors[state] for state in CitizenState}
+)
+
+epstein_model = EpsteinCivilViolence()
+renderer = SpaceRenderer(epstein_model, backend="matplotlib").setup_agents(
+    citizen_cop_portrayal
+)
+renderer.render()
+renderer.post_process = post_process
+
+page = SolaraViz(
+    epstein_model,
+    renderer,
+    components=[chart_component],
+    model_params=model_params,
+    name="Epstein Civil Violence",
+)
+page  # noqa
+
+```
