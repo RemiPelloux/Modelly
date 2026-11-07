@@ -16,6 +16,9 @@ versioning.
   timed out publishing the 280 MB site; it is now about 216 MB.
 - The version menu names each version by the full release it holds ("1.5.1 (stable)",
   "1.4.3"), read from each build (`scripts/docs_switcher.py`).
+- The docs workflow publishes the site itself (`scripts/deploy-pages.sh`, Pages source
+  "GitHub Actions") and waits for GitHub to finish, where a branch deploy was cancelled after
+  10 minutes and left the site out of date.
 
 ## 1.5.1 - 2026-11-07
 

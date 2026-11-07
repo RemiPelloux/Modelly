@@ -9,7 +9,9 @@
 # every version lives on the orphan branch docs-site. A run builds one version, puts it
 # into a checkout of docs-site with scripts/assemble-docs-site.sh (which also rewrites
 # switcher.json) and stores the result back as a single commit (force-pushed, so the
-# branch never accumulates history). Pages is set to serve the docs-site branch.
+# branch never accumulates history). The run then uploads that site and publishes it with
+# scripts/deploy-pages.sh (Pages source: GitHub Actions), which waits for GitHub as long
+# as it needs; a branch deploy is cancelled after 10 minutes.
 #
 # Builds run only on a push to main that touches the docs or the package (-> /dev/) and
 # on a release tag vX.Y.Z (-> /X.Y/, and the root when X.Y is the newest minor). There
@@ -35,7 +37,8 @@ on:
 
 permissions:
   contents: write # push the built site to docs-site
-  pages: write # request a Pages build of docs-site
+  pages: write # publish the site
+  id-token: write # prove to Pages that this run made the upload
 
 # Queue rather than cancel: a cancelled run would drop its version from docs-site.
 concurrency:
@@ -48,6 +51,10 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 80
+    environment:
+      name: github-pages
+      url: https://remipelloux.github.io/Modelly/
     steps:
       - uses: actions/checkout@v7
       - name: Pick the version this run publishes
@@ -87,10 +94,11 @@ jobs:
           git add .
           git commit --quiet -m "docs(site): ${{ steps.version.outputs.ref }} at ${GITHUB_SHA::7}"
           git push --quiet --force origin "next:$SITE_BRANCH"
-      - name: Ask Pages to publish docs-site
-        # Pages serves the docs-site branch; each run stores a new commit there, so a
-        # release tag on the same commit as main still publishes (an Actions deploy would
-        # reuse that commit's build version and be skipped).
-        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" --silent
+      - uses: actions/upload-pages-artifact@v5
+        id: upload
+        with:
+          path: _build/site
+      - name: Publish the site
+        run: bash scripts/deploy-pages.sh "${{ steps.upload.outputs.artifact_id }}"
         env:
           GH_TOKEN: ${{ github.token }}

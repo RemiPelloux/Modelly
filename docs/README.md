@@ -42,7 +42,8 @@ The site serves the newest minor release at the root, `main` at `/dev/` and ever
 release at `/X.Y/`. The built HTML of every version is stored on the orphan branch
 `docs-site`; each workflow run builds one version, puts it into that tree with
 `scripts/assemble-docs-site.sh` (which also writes the root `switcher.json` the version
-menu reads) and deploys the whole tree. The newest minor's own `/X.Y/` folder holds small
+menu reads), stores it back and publishes the whole tree with `scripts/deploy-pages.sh`,
+which waits for GitHub as long as it takes (a branch deploy is cancelled after 10 minutes). The newest minor's own `/X.Y/` folder holds small
 redirects to the root, which already serves that release (`scripts/docs_redirects.py`); the
 folder is filled again from the root before a newer minor takes the root. Source maps are not
 published. Both keep the site small enough for GitHub Pages to publish within its time limit.
@@ -69,8 +70,8 @@ git -C ../modelly-docs-site commit -m "docs(site): 1.0 and 1.1"
 git push origin docs-site
 ```
 
-Then, in the repository settings: set Pages to "Deploy from a branch", branch `docs-site`,
-folder `/` (root); and exempt `docs-site` from any ruleset that blocks force pushes, since
+Then, in the repository settings: set the Pages source to "GitHub Actions"; let the
+`github-pages` environment deploy from `main` and from `v*` tags; and exempt `docs-site` from any ruleset that blocks force pushes, since
 the workflow force-pushes it as a single commit.
 
 Every build also writes, next to its HTML, what search engines and language models read
