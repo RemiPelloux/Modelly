@@ -4,7 +4,9 @@
     python scripts/docs_switcher.py <site> --newest   # prints the newest X.Y folder
 
 The newest X.Y folder is the stable version: its entry points at the site root, where
-a copy of it lives, and is the preferred one the old-version banner links to.
+a copy of it lives, and is the preferred one the old-version banner links to. Each
+entry is named by the full release its folder holds (``1.5.1``), read from the build's
+``_static/documentation_options.js``.
 """
 
 import json
@@ -16,6 +18,16 @@ SITE_URL = "https://remipelloux.github.io/Modelly/"
 DEV_FOLDER = "dev"
 MINOR_FOLDER = re.compile(r"^(\d+)\.(\d+)$")
 JSON_INDENT = 2
+RELEASE = re.compile(r"VERSION: '([^']+)'")
+
+
+def release_of(folder: Path, minor: str) -> str:
+    """Return the full release built into ``folder``, or ``minor`` when it is unknown."""
+    options = folder / "_static" / "documentation_options.js"
+    if not options.is_file():
+        return minor
+    found = RELEASE.search(options.read_text(encoding="utf-8"))
+    return found.group(1) if found else minor
 
 
 def minor_folders(site: Path) -> list[str]:
@@ -36,7 +48,7 @@ def switcher_entries(site: Path) -> list[dict]:
         stable = minors[0]
         entries.append(
             {
-                "name": f"{stable} (stable)",
+                "name": f"{release_of(site, stable)} (stable)",
                 "version": stable,
                 "url": SITE_URL,
                 "preferred": True,
@@ -46,7 +58,10 @@ def switcher_entries(site: Path) -> list[dict]:
         entries.append(
             {"name": "dev", "version": DEV_FOLDER, "url": f"{SITE_URL}{DEV_FOLDER}/"}
         )
-    entries += [{"name": m, "version": m, "url": f"{SITE_URL}{m}/"} for m in minors[1:]]
+    entries += [
+        {"name": release_of(site / m, m), "version": m, "url": f"{SITE_URL}{m}/"}
+        for m in minors[1:]
+    ]
     return entries
 
 

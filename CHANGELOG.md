@@ -14,6 +14,8 @@ versioning.
 - The docs site is smaller: the newest release's version folder holds redirects to the root,
   which already serves that release, and source maps are no longer published. GitHub Pages
   timed out publishing the 280 MB site; it is now about 216 MB.
+- The version menu names each version by the full release it holds ("1.5.1 (stable)",
+  "1.4.3"), read from each build (`scripts/docs_switcher.py`).
 
 ## 1.5.1 - 2026-11-07
 

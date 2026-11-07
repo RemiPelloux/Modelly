@@ -16,6 +16,8 @@ whose notes are missing (see "Release notes" in
 - **A clearer home page**: the headline spans the page, the six example models run as large
   live sketches, the guides are grouped by goal in rows, and the benchmark chart shows each
   Modelly time leaving Mesa's when it scrolls into view. [Home](index.md)
+- **The version menu shows the full release**: "1.5.1 (stable)" rather than "1.5", and each
+  older version by its last patch.
 
 ## 1.5.1 - 2026-11-07
 
