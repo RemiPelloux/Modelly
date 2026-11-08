@@ -1,0 +1,622 @@
+
+# Sugarscape Constant Growback Model with Traders
+
+## Summary
+
+This is Epstein & Axtell's Sugarscape model with Traders, a detailed description is in
+<!-- vale Google.WordList = NO -->
+Chapter four of *Growing Artificial Societies: Social Science from the Bottom Up (1996)*.
+<!-- vale Google.WordList = YES -->
+The model shows an emergent price equilibrium can happen via a decentralized dynamics.
+
+This code generally matches the code in the Complexity Explorer Tutorial, but in `.py` instead of `.ipynb` format.
+
+### Agents:
+
+- **Resource**:  Resource agents grow back at one unit of sugar and spice per time step up to a specified max amount and can be harvested and traded by the trader agents.
+  (if you do the interactive run, the color will be green if the resource agent has a bigger amount of sugar, or yellow if it has a bigger amount of spice)
+- **Traders**: Trader agents have the following attributes: (1) metabolism for sugar, (2) metabolism for spice, (3) vision,
+  (4) initial sugar endowment and (5) initial spice endowment. The traverse the landscape harvesting sugar and spice and
+trading with other agents. If they run out of sugar or spice then they are removed from the model. (red circle if you do the interactive run)
+
+The trader agents traverse the landscape according to rule **M**:
+- Look out as far as vision permits in the four principal lattice directions and identify the unoccupied site(s).
+- Considering only unoccupied sites find the nearest position that produces the most welfare using the Cobb-Douglas function.
+- Move to the new position
+- Collect all the resources (sugar and spice) at that location
+(Epstein and Axtell, 1996, p. 99)
+
+The traders trade according to rule **T**:
+- Agents and potential trade partner compute their marginal rates of substitution (MRS), if they are equal *end*.
+- Exchange resources, with spice flowing from the agent with the higher MRS to the agent with the lower MRS and sugar
+flowing the opposite direction.
+- The price (p) is calculated by taking the geometric mean of the agents' MRS.
+- If p > 1 then p units of spice are traded for 1 unit of sugar; if p < 1 then 1/p units of sugar for 1 unit of spice
+- The trade occurs if it will (a) make both agent better off (increases MRS) and (b) does not cause the agents' MRS to
+cross over one another otherwise *end*.
+- This process then repeats until an *end* condition is met.
+(Epstein and Axtell, 1996, p. 105)
+
+The model demonstrates several Modelly concepts and features:
+ - OrthogonalMooreGrid
+ - Multiple agent types (traders, sugar, spice)
+ - Dynamically removing agents from the grid and the model when they die
+ - Data Collection at the model and agent level
+ - custom solara matplotlib space visualization
+
+
+## How to Run
+
+Install Modelly with recommended dependencies:
+
+pip install "modelly-abm[rec]"
+
+Then run the example:
+
+solara run app.py
+
+Open the displayed local URL in your browser.
+
+
+## Files
+
+* `model.py`: The Sugarscape Constant Growback with Traders model.
+* `agents.py`: Defines the Trader agent class and the Resource agent class which contains an amount of sugar and spice.
+* `app.py`: Runs a visualization server via Solara (`solara run app.py`).
+* `sugar-map.txt`: Provides sugar and spice landscape in raster type format.
+
+## Further Reading
+
+- [Growing Artificial Societies](https://mitpress.mit.edu/9780262550253/growing-artificial-societies/)
+- [Complexity Explorer Sugarscape with Traders Tutorial](https://www.complexityexplorer.org/courses/172-agent-based-models-with-python-an-introduction-to-modelly)
+
+
+## Agents
+
+```python
+import math
+
+from modelly.space import CellAgent
+
+
+# Helper function
+def get_distance(cell_1, cell_2):
+    """
+    Calculate the Euclidean distance between two positions
+
+    used in trade.move()
+    """
+
+    x1, y1 = cell_1.coordinate
+    x2, y2 = cell_2.coordinate
+    dx = x1 - x2
+    dy = y1 - y2
+    return math.sqrt(dx**2 + dy**2)
+
+
+class Trader(CellAgent):
+    """
+    Trader:
+    - has a metabolism of sugar and spice
+    - harvest and trade sugar and spice to survive
+    """
+
+    def __init__(
+        self,
+        model,
+        cell,
+        sugar=0,
+        spice=0,
+        metabolism_sugar=0,
+        metabolism_spice=0,
+        vision=0,
+    ):
+        super().__init__(model)
+        self.cell = cell
+        self.sugar = sugar
+        self.spice = spice
+        self.metabolism_sugar = metabolism_sugar
+        self.metabolism_spice = metabolism_spice
+        self.vision = vision
+        self.prices = []
+        self.trade_partners = []
+
+    def get_trader(self, cell):
+        """
+        helper function used in self.trade_with_neighbors()
+        """
+
+        for agent in cell.agents:
+            if isinstance(agent, Trader):
+                return agent
+
+    def calculate_welfare(self, sugar, spice):
+        """
+        helper function
+
+        part 2 self.move()
+        self.trade()
+        """
+
+        # calculate total resources
+        m_total = self.metabolism_sugar + self.metabolism_spice
+        # Cobb-Douglas functional form; starting on p. 97
+        # on Growing Artificial Societies
+        return sugar ** (self.metabolism_sugar / m_total) * spice ** (
+            self.metabolism_spice / m_total
+        )
+
+    def is_starved(self):
+        """
+        Helper function for self.maybe_die()
+        """
+
+        return (self.sugar <= 0) or (self.spice <= 0)
+
+    def calculate_MRS(self, sugar, spice):
+        """
+        Helper function for
+          - self.trade()
+          - self.maybe_self_spice()
+
+        Determines what trader agent needs and can give up
+        """
+
+        return (spice / self.metabolism_spice) / (sugar / self.metabolism_sugar)
+
+    def calculate_sell_spice_amount(self, price):
+        """
+        helper function for self.maybe_sell_spice() which is called from
+        self.trade()
+        """
+
+        if price >= 1:
+            sugar = 1
+            spice = int(price)
+        else:
+            sugar = int(1 / price)
+            spice = 1
+        return sugar, spice
+
+    def sell_spice(self, other, sugar, spice):
+        """
+        used in self.maybe_sell_spice()
+
+        exchanges sugar and spice between traders
+        """
+
+        self.sugar += sugar
+        other.sugar -= sugar
+        self.spice -= spice
+        other.spice += spice
+
+    def maybe_sell_spice(self, other, price, welfare_self, welfare_other):
+        """
+        helper function for self.trade()
+        """
+
+        sugar_exchanged, spice_exchanged = self.calculate_sell_spice_amount(price)
+
+        # Assess new sugar and spice amount - what if change did occur
+        self_sugar = self.sugar + sugar_exchanged
+        other_sugar = other.sugar - sugar_exchanged
+        self_spice = self.spice - spice_exchanged
+        other_spice = other.spice + spice_exchanged
+
+        # double check to ensure agents have resources
+
+        if (
+            (self_sugar <= 0)
+            or (other_sugar <= 0)
+            or (self_spice <= 0)
+            or (other_spice <= 0)
+        ):
+            return False
+
+        # trade criteria #1 - are both agents better off?
+        both_agents_better_off = (
+            welfare_self < self.calculate_welfare(self_sugar, self_spice)
+        ) and (welfare_other < other.calculate_welfare(other_sugar, other_spice))
+
+        # trade criteria #2 is their mrs crossing with potential trade
+        mrs_not_crossing = self.calculate_MRS(
+            self_sugar, self_spice
+        ) > other.calculate_MRS(other_sugar, other_spice)
+
+        if not (both_agents_better_off and mrs_not_crossing):
+            return False
+
+        # criteria met, execute trade
+        self.sell_spice(other, sugar_exchanged, spice_exchanged)
+
+        return True
+
+    def trade(self, other):
+        """
+        helper function used in trade_with_neighbors()
+
+        other is a trader agent object
+        """
+
+        # sanity check to verify code is working as expected
+        assert self.sugar > 0
+        assert self.spice > 0
+        assert other.sugar > 0
+        assert other.spice > 0
+
+        # calculate marginal rate of substitution in Growing Artificial Societies p. 101
+        mrs_self = self.calculate_MRS(self.sugar, self.spice)
+        mrs_other = other.calculate_MRS(other.sugar, other.spice)
+
+        # calculate each agents welfare
+        welfare_self = self.calculate_welfare(self.sugar, self.spice)
+        welfare_other = other.calculate_welfare(other.sugar, other.spice)
+
+        if math.isclose(mrs_self, mrs_other):
+            return
+
+        # calculate price
+        price = math.sqrt(mrs_self * mrs_other)
+
+        if mrs_self > mrs_other:
+            # self is a sugar buyer, spice seller
+            sold = self.maybe_sell_spice(other, price, welfare_self, welfare_other)
+            # no trade - criteria not met
+            if not sold:
+                return
+        else:
+            # self is a spice buyer, sugar seller
+            sold = other.maybe_sell_spice(self, price, welfare_other, welfare_self)
+            # no trade - criteria not met
+            if not sold:
+                return
+
+        # Capture data
+        self.prices.append(price)
+        self.trade_partners.append(other.unique_id)
+
+        # continue trading
+        self.trade(other)
+
+    ######################################################################
+    #                                                                    #
+    #                      MAIN TRADE FUNCTIONS                          #
+    #                                                                    #
+    ######################################################################
+
+    def move(self):
+        """
+        Function for trader agent to identify optimal move for each step in 4 parts
+        1 - identify all possible moves
+        2 - determine which move maximizes welfare
+        3 - find closest best option
+        4 - move
+        """
+
+        # 1. identify all possible moves
+
+        neighboring_cells = [
+            cell
+            for cell in self.cell.get_neighborhood(self.vision, include_center=True)
+            if cell.is_empty
+        ]
+
+        if not neighboring_cells:
+            # all neighboring cells are occupied
+            return
+
+        # 2. determine which move maximizes welfare
+
+        welfares = [
+            self.calculate_welfare(
+                self.sugar + cell.sugar,
+                self.spice + cell.spice,
+            )
+            for cell in neighboring_cells
+        ]
+
+        # 3. Find closest best option
+
+        # find the highest welfare in welfares
+        max_welfare = max(welfares)
+        # Get cells with the highest welfare
+        candidates = [
+            cell
+            for cell, welfare in zip(neighboring_cells, welfares)
+            if math.isclose(welfare, max_welfare)
+        ]
+
+        min_dist = min(get_distance(self.cell, cell) for cell in candidates)
+
+        final_candidates = [
+            cell
+            for cell in candidates
+            if math.isclose(get_distance(self.cell, cell), min_dist, rel_tol=1e-02)
+        ]
+
+        # 4. Move Agent
+        self.cell = self.random.choice(final_candidates)
+
+    def eat(self):
+        self.sugar += self.cell.sugar
+        self.cell.sugar = 0
+        self.sugar -= self.metabolism_sugar
+
+        self.spice += self.cell.spice
+        self.cell.spice = 0
+        self.spice -= self.metabolism_spice
+
+    def maybe_die(self):
+        """
+        Function to remove Traders who have consumed all their sugar or spice
+        """
+
+        if self.is_starved():
+            self.remove()
+
+    def step(self):
+        """Agent step method."""
+        self.prices = []
+        self.trade_partners = []
+        self.move()
+        self.eat()
+        self.maybe_die()
+
+    def trade_with_neighbors(self):
+        """
+        Function for trader agents to decide who to trade with in three parts
+
+        1- identify neighbors who can trade
+        2- trade (2 sessions)
+        3- collect data
+        """
+        # iterate through traders in neighboring cells and trade
+        for a in self.cell.get_neighborhood(radius=self.vision).agents:
+            self.trade(a)
+
+        return
+
+```
+
+
+## Model
+
+```python
+from pathlib import Path
+
+import numpy as np
+
+import modelly
+from modelly.examples.advanced.sugarscape_g1mt.agents import Trader
+from modelly.scenarios import Scenario
+from modelly.space import OrthogonalVonNeumannGrid
+
+
+# Helper Functions
+def flatten(list_of_lists):
+    """
+    helper function for model datacollector for trade price
+    collapses agent price list into one list
+    """
+    return [item for sublist in list_of_lists for item in sublist]
+
+
+def geometric_mean(list_of_prices):
+    """
+    find the geometric mean of a list of prices
+    """
+    # protects against an invalid value if no prices
+    if len(list_of_prices) == 0:
+        return -1
+    return np.exp(np.log(list_of_prices).mean())
+
+
+def trader_count(model):
+    """Number of traders alive."""
+    return len(model.agents)
+
+
+def trade_volume(model):
+    """Number of trades made this step, counted once per partner."""
+    return sum(len(a.trade_partners) for a in model.agents)
+
+
+def trade_price(model):
+    """Geometric mean of the prices of every trade this step."""
+    return geometric_mean(flatten([a.prices for a in model.agents]))
+
+
+class SugarScapeScenario(Scenario):
+    """Sugarscape scenario class."""
+
+    initial_population: int = 200
+    endowment_min: int = 25
+    endowment_max: int = 50
+    metabolism_min: int = 1
+    metabolism_max: int = 5
+    vision_min: int = 1
+    vision_max: int = 5
+    enable_trade: bool = True
+
+
+class SugarscapeG1mt(modelly.Model):
+    """
+    Manager class to run Sugarscape with Traders
+    """
+
+    def __init__(self, scenario: SugarScapeScenario = SugarScapeScenario):
+        super().__init__(scenario=scenario)
+        # Initiate width and height of sugarscape
+        self.width = 50
+        self.height = 50
+
+        # Initiate population attributes
+        self.enable_trade = self.scenario.enable_trade
+        self.running = True
+
+        # initiate modelly grid class
+        self.grid = OrthogonalVonNeumannGrid(
+            (self.width, self.height), torus=False, random=self.random
+        )
+        # initiate datacollector
+        self.datacollector = modelly.DataCollector(
+            model_reporters={
+                "#Traders": trader_count,
+                "Trade Volume": trade_volume,
+                "Price": trade_price,
+            },
+            agent_reporters={"Trade Network": "trade_partners"},
+        )
+
+        # read in landscape file from supplementary material
+        self.sugar_distribution = np.genfromtxt(Path(__file__).parent / "sugar-map.txt")
+        self.spice_distribution = np.flip(self.sugar_distribution, 1)
+
+        self.grid.add_property_layer("sugar", self.sugar_distribution.copy())
+        self.grid.add_property_layer("spice", self.spice_distribution.copy())
+
+        n = self.scenario.initial_population
+        Trader.create_agents(
+            self,
+            self.scenario.initial_population,
+            self.random.choices(self.grid.all_cells.cells, k=n),
+            sugar=self.rng.integers(
+                self.scenario.endowment_min,
+                self.scenario.endowment_max,
+                (n,),
+                endpoint=True,
+            ),
+            spice=self.rng.integers(
+                self.scenario.endowment_min,
+                self.scenario.endowment_max,
+                (n,),
+                endpoint=True,
+            ),
+            metabolism_sugar=self.rng.integers(
+                self.scenario.metabolism_min,
+                self.scenario.metabolism_max,
+                (n,),
+                endpoint=True,
+            ),
+            metabolism_spice=self.rng.integers(
+                self.scenario.metabolism_min,
+                self.scenario.metabolism_max,
+                (n,),
+                endpoint=True,
+            ),
+            vision=self.rng.integers(
+                self.scenario.vision_min,
+                self.scenario.vision_max,
+                (n,),
+                endpoint=True,
+            ),
+        )
+
+    def step(self):
+        """
+        Unique step function that does staged activation of sugar and spice
+        and then randomly activates traders
+        """
+        self.grid.sugar[:] = np.minimum(self.grid.sugar + 1, self.sugar_distribution)
+        self.grid.spice[:] = np.minimum(self.grid.spice + 1, self.spice_distribution)
+
+        # step trader agents
+        self.agents.shuffle_do("step")
+        if self.enable_trade:
+            self.agents.shuffle_do("trade_with_neighbors")
+        self.datacollector.collect(self)
+
+    def run_model(self, step_count=1000):
+        for _ in range(step_count):
+            self.step()
+
+```
+
+
+## App
+
+```python
+from modelly.examples.advanced.sugarscape_g1mt.model import SugarscapeG1mt
+from modelly.viz import Slider, SolaraViz, SpaceRenderer, make_plot_component
+from modelly.viz.components import AgentPortrayalStyle, PropertyLayerStyle
+
+
+def agent_portrayal(agent):
+    return AgentPortrayalStyle(
+        x=agent.cell.coordinate[0],
+        y=agent.cell.coordinate[1],
+        color="red",
+        marker="o",
+        size=10,
+        zorder=1,
+    )
+
+
+def property_layer_portrayal(layer):
+    if layer == "sugar":
+        return PropertyLayerStyle(
+            color="blue", alpha=0.8, colorbar=True, vmin=0, vmax=10
+        )
+    return PropertyLayerStyle(color="red", alpha=0.8, colorbar=True, vmin=0, vmax=10)
+
+
+def post_process(chart):
+    chart = chart.properties(width=400, height=400)
+    return chart
+
+
+model_params = {
+    "rng": {
+        "type": "InputText",
+        "value": 42,
+        "label": "Random Seed",
+    },
+    "width": 50,
+    "height": 50,
+    # Population parameters
+    "initial_population": Slider(
+        "Initial Population", value=200, min=50, max=500, step=10
+    ),
+    # Agent endowment parameters
+    "endowment_min": Slider("Min Initial Endowment", value=25, min=5, max=30, step=1),
+    "endowment_max": Slider("Max Initial Endowment", value=50, min=30, max=100, step=1),
+    # Metabolism parameters
+    "metabolism_min": Slider("Min Metabolism", value=1, min=1, max=3, step=1),
+    "metabolism_max": Slider("Max Metabolism", value=5, min=3, max=8, step=1),
+    # Vision parameters
+    "vision_min": Slider("Min Vision", value=1, min=1, max=3, step=1),
+    "vision_max": Slider("Max Vision", value=5, min=3, max=8, step=1),
+    # Trade parameter
+    "enable_trade": {"type": "Checkbox", "value": True, "label": "Enable Trading"},
+}
+
+model = SugarscapeG1mt()
+
+# Here, the renderer uses the Altair backend, while the plot components
+# use the Matplotlib backend.
+# Both can be mixed and matched to enhance the visuals of your model.
+renderer = (
+    SpaceRenderer(model, backend="altair")
+    .setup_agents(agent_portrayal)
+    .setup_property_layer(property_layer_portrayal)
+)
+renderer.render()
+
+renderer.post_process = post_process
+
+# Note: It is advised to switch the pages after pausing the model
+# on the Solara dashboard.
+page = SolaraViz(
+    model,
+    renderer,
+    components=[
+        make_plot_component("#Traders", page=1),
+        make_plot_component("Price", page=1),
+    ],
+    model_params=model_params,
+    name="Sugarscape {G1, M, T}",
+    play_interval=150,
+)
+page  # noqa
+
+```

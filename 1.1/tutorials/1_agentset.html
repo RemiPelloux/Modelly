@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Working with AgentSets &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=92ce3cff" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=fc837d61"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/1_agentset';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/tutorials/1_agentset.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Agent Activation" href="2_agent_activation.html" />
+    <link rel="prev" title="Creating Your First Model" href="0_first_model.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="0_first_model.html">Creating Your First Model</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">AgentSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_agent_activation.html">Agent Activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_event_scheduling.html">Event Scheduling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_adding_space.html">Adding Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_collecting_data.html">Collecting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_visualization_basic.html">Basic Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_visualization_dynamic_agents.html">Dynamic Agent Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8_visualization_rendering_with_space_renderer.html">Visualisation using SpaceRenderer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9_visualization_property_layer_visualization.html">Property Layer Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_visualization_custom.html">Custom Visualization Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_discrete_event_simulation.html">Discrete Event Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12_hybrid_abm_devs.html">Hybrid ABM-DEVS Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best-practices.html">Best Practices</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../overview.html" class="nav-link">Overview of the MODELLY library</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Working with AgentSets</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="working-with-agentsets">
+<h1>Working with AgentSets<a class="headerlink" href="#working-with-agentsets" title="Link to this heading">#</a></h1>
+<section id="the-boltzmann-wealth-model">
+<h2>The Boltzmann Wealth Model<a class="headerlink" href="#the-boltzmann-wealth-model" title="Link to this heading">#</a></h2>
+<p><strong>Important:</strong></p>
+<ul class="simple">
+<li><p>If you are just exploring Modelly and want the fastest way to execute the code we recommend executing this tutorial online in a Colab notebook. <a class="reference external" href="https://colab.research.google.com/github/RemiPelloux/Modelly/blob/main/docs/tutorials/1_agentset.ipynb"><img alt="Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a> or if you do not have a Google account you can use <a class="reference external" href="https://mybinder.org/v2/gh/RemiPelloux/Modelly/main?labpath=docs%2Ftutorials%2F1_agentset.ipynb"><img alt="Binder" src="https://mybinder.org/badge_logo.svg" /></a> (This can take 30 seconds to 5 minutes to load)</p></li>
+<li><p>If you are running locally, please ensure you have the latest Modelly version installed.</p></li>
+</ul>
+</section>
+<section id="tutorial-description">
+<h2>Tutorial Description<a class="headerlink" href="#tutorial-description" title="Link to this heading">#</a></h2>
+<p>This tutorial builds on the Boltzmann Wealth Model from the <a class="reference internal" href="0_first_model.html"><span class="std std-doc">First Model tutorial</span></a>.
+In the first tutorial you created agents, put them in a model, and had them exchange money.
+Now we’ll explore <strong>AgentSet</strong> — Modelly’s core tool for querying, filtering, grouping, and
+inspecting collections of agents.
+By the end of this tutorial, you will know how to:</p>
+<ul class="simple">
+<li><p>Retrieve attribute values from agents</p></li>
+<li><p>Filter agents with <code class="docutils literal notranslate"><span class="pre">select</span></code></p></li>
+<li><p>Compute aggregate statistics with <code class="docutils literal notranslate"><span class="pre">agg</span></code></p></li>
+<li><p>Group agents by attributes with <code class="docutils literal notranslate"><span class="pre">groupby</span></code></p></li>
+<li><p>Combine these tools to answer questions about your model’s state
+The <em>next</em> tutorial covers how to use AgentSet for <strong>activating</strong> agents (calling their
+methods). We separate these concerns because querying agents and activating agents are
+conceptually different — you’ll often query first and activate a subset.</p></li>
+</ul>
+<section id="in-colab-run-the-next-cell">
+<h3>IN COLAB? - Run the next cell<a class="headerlink" href="#in-colab-run-the-next-cell" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># %pip install --quiet "modelly-abm[rec]"</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="import-dependencies">
+<h3>Import Dependencies<a class="headerlink" href="#import-dependencies" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="setup-the-wealth-model-with-ethnicities">
+<h2>Setup: The Wealth Model with Ethnicities<a class="headerlink" href="#setup-the-wealth-model-with-ethnicities" title="Link to this heading">#</a></h2>
+<p>We’ll use a slightly enriched version of the Boltzmann Wealth Model. Each agent has a
+<code class="docutils literal notranslate"><span class="pre">wealth</span></code> (starting at 1) and an <code class="docutils literal notranslate"><span class="pre">ethnicity</span></code> (randomly assigned from “Green”, “Blue”,
+or “Mixed”). This gives us meaningful attributes to query, filter, and group by.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MoneyAgent</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Agent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""An agent with fixed initial wealth and an ethnicity."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">ethnicity</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ethnicity</span> <span class="o">=</span> <span class="n">ethnicity</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">exchange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">other_agent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span>
+            <span class="n">other_agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">-=</span> <span class="mi">1</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MoneyModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A model with some number of agents."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">ethnicities</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Green"</span><span class="p">,</span> <span class="s2">"Blue"</span><span class="p">,</span> <span class="s2">"Mixed"</span><span class="p">]</span>
+        <span class="n">MoneyAgent</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span>
+            <span class="n">ethnicity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">ethnicities</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">n</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"exchange"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s create a model and run it for a while so agents have different wealth levels.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">MoneyModel</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="what-is-an-agentset">
+<h2>What is an AgentSet?<a class="headerlink" href="#what-is-an-agentset" title="Link to this heading">#</a></h2>
+<p>Every Modelly model automatically tracks all its agents in <code class="docutils literal notranslate"><span class="pre">model.agents</span></code>. This is an
+<strong>AgentSet</strong> — an ordered collection of agents that provides powerful methods for
+querying, filtering, and manipulating groups of agents.
+You never need to create an AgentSet yourself for basic usage. Modelly creates and maintains
+<code class="docutils literal notranslate"><span class="pre">model.agents</span></code> automatically whenever agents are added to or removed from the model.
+Let’s look at some basics:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># How many agents are in the model?</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total agents: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Iterate over agents (just the first 5 for brevity)</span>
+<span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">at_most</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"  Agent </span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">: wealth=</span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">wealth</span><span class="si">}</span><span class="s2">, ethnicity=</span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">ethnicity</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total agents: 100
+  Agent 1: wealth=1, ethnicity=Blue
+  Agent 2: wealth=3, ethnicity=Blue
+  Agent 3: wealth=0, ethnicity=Blue
+  Agent 4: wealth=1, ethnicity=Green
+  Agent 5: wealth=4, ethnicity=Green
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="retrieving-attribute-values-with-get">
+<h2>Retrieving Attribute Values with <code class="docutils literal notranslate"><span class="pre">get</span></code><a class="headerlink" href="#retrieving-attribute-values-with-get" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">get</span></code> method retrieves attribute values from every agent in the set, returning them
+as a list. This is useful whenever you want to inspect or analyze a particular attribute
+across all agents.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all wealth values</span>
+<span class="n">all_wealth</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"First 10 wealth values: </span><span class="si">{</span><span class="n">all_wealth</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total wealth in economy: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">all_wealth</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>First 10 wealth values: [1, 3, 0, 1, 4, 0, 3, 2, 0, 1]
+Total wealth in economy: 100
+</pre></div>
+</div>
+</div>
+</div>
+<p>You can also retrieve multiple attributes at once by passing a list of attribute names.
+This returns a list of lists — one inner list per agent.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get both wealth and ethnicity for each agent</span>
+<span class="n">wealth_and_ethnicity</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="s2">"ethnicity"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"First 5 agents (wealth, ethnicity):"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">wealth_and_ethnicity</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">values</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>First 5 agents (wealth, ethnicity):
+  [1, 'Blue']
+  [3, 'Blue']
+  [0, 'Blue']
+  [1, 'Green']
+  [4, 'Green']
+</pre></div>
+</div>
+</div>
+</div>
+<section id="handling-missing-attributes">
+<h3>Handling missing attributes<a class="headerlink" href="#handling-missing-attributes" title="Link to this heading">#</a></h3>
+<p>If some agents might not have a particular attribute, you can use the <code class="docutils literal notranslate"><span class="pre">handle_missing</span></code>
+parameter. By default, <code class="docutils literal notranslate"><span class="pre">get</span></code> raises an <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code> for missing attributes. Setting
+<code class="docutils literal notranslate"><span class="pre">handle_missing=&quot;default&quot;</span></code> returns a default value instead.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># This would raise AttributeError if any agent lacks 'wealth':</span>
+<span class="c1"># model.agents.get("nonexistent_attr")</span>
+
+<span class="c1"># Safe alternative — returns None for missing attributes:</span>
+<span class="n">values</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">handle_missing</span><span class="o">=</span><span class="s2">"default"</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Retrieved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2"> values safely"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieved 100 values safely
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="filtering-agents-with-select">
+<h2>Filtering Agents with <code class="docutils literal notranslate"><span class="pre">select</span></code><a class="headerlink" href="#filtering-agents-with-select" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">select</span></code> method filters agents based on criteria, returning a new AgentSet containing
+only the agents that match. This is one of the most frequently used AgentSet operations.</p>
+<section id="basic-filtering-with-a-function">
+<h3>Basic filtering with a function<a class="headerlink" href="#basic-filtering-with-a-function" title="Link to this heading">#</a></h3>
+<p>Pass a function (often a lambda) that takes an agent and returns <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select only wealthy agents (wealth &gt;= 3)</span>
+<span class="n">rich_agents</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Rich agents (wealth &gt;= 3): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rich_agents</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Select agents with no money</span>
+<span class="n">broke_agents</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Broke agents (wealth == 0): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">broke_agents</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rich agents (wealth &gt;= 3): 14
+Broke agents (wealth == 0): 46
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="filtering-by-agent-type">
+<h3>Filtering by agent type<a class="headerlink" href="#filtering-by-agent-type" title="Link to this heading">#</a></h3>
+<p>If your model has multiple agent classes, you can filter by type using the <code class="docutils literal notranslate"><span class="pre">agent_type</span></code>
+parameter. This is faster than using a lambda with <code class="docutils literal notranslate"><span class="pre">isinstance</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># In this model we only have one type, but the syntax would be:</span>
+<span class="n">money_agents</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">agent_type</span><span class="o">=</span><span class="n">MoneyAgent</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MoneyAgents: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">money_agents</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MoneyAgents: 100
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="limiting-results-with-at-most">
+<h3>Limiting results with <code class="docutils literal notranslate"><span class="pre">at_most</span></code><a class="headerlink" href="#limiting-results-with-at-most" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">at_most</span></code> parameter limits how many agents are returned. This is useful when you
+only need a few agents and want to avoid processing the entire set.</p>
+<ul class="simple">
+<li><p>Pass an <strong>integer</strong> to get at most that many agents</p></li>
+<li><p>Pass a <strong>float between 0 and 1</strong> to get at most that fraction of agents
+<strong>Important:</strong> <code class="docutils literal notranslate"><span class="pre">at_most</span></code> returns the <em>first</em> matching agents, not a random sample.
+If you want a random subset, call <code class="docutils literal notranslate"><span class="pre">shuffle()</span></code> first (covered in the activation tutorial).</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get at most 5 rich agents</span>
+<span class="n">some_rich</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">at_most</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Up to 5 rich agents: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">some_rich</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Get roughly 10% of agents</span>
+<span class="n">ten_percent</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">at_most</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"~10% of agents: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ten_percent</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Up to 5 rich agents: 5
+~10% of agents: 10
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="combining-criteria">
+<h3>Combining criteria<a class="headerlink" href="#combining-criteria" title="Link to this heading">#</a></h3>
+<p>You can combine <code class="docutils literal notranslate"><span class="pre">filter_func</span></code>, <code class="docutils literal notranslate"><span class="pre">agent_type</span></code>, and <code class="docutils literal notranslate"><span class="pre">at_most</span></code> in a single call. All
+criteria are applied together (logical AND):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># At most 10 MoneyAgents with wealth &gt; 0</span>
+<span class="n">subset</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="n">filter_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">agent_type</span><span class="o">=</span><span class="n">MoneyAgent</span><span class="p">,</span>
+    <span class="n">at_most</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Subset size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Subset size: 10
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="chaining-selects">
+<h3>Chaining selects<a class="headerlink" href="#chaining-selects" title="Link to this heading">#</a></h3>
+<p>Since <code class="docutils literal notranslate"><span class="pre">select</span></code> returns an AgentSet, you can chain multiple calls. Each successive
+<code class="docutils literal notranslate"><span class="pre">select</span></code> narrows the set further:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First get Green agents, then filter for wealthy ones</span>
+<span class="n">wealthy_green</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">ethnicity</span> <span class="o">==</span> <span class="s2">"Green"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;=</span> <span class="mi">3</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Wealthy Green agents: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">wealthy_green</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Wealthy Green agents: 2
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="computing-aggregates-with-agg">
+<h2>Computing Aggregates with <code class="docutils literal notranslate"><span class="pre">agg</span></code><a class="headerlink" href="#computing-aggregates-with-agg" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">agg</span></code> method computes aggregate statistics over an attribute for all agents in
+the set. Pass the attribute name and a function (like <code class="docutils literal notranslate"><span class="pre">min</span></code>, <code class="docutils literal notranslate"><span class="pre">max</span></code>, <code class="docutils literal notranslate"><span class="pre">sum</span></code>, or <code class="docutils literal notranslate"><span class="pre">np.mean</span></code>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Average wealth across all agents</span>
+<span class="n">avg_wealth</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average wealth: </span><span class="si">{</span><span class="n">avg_wealth</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Min and max wealth</span>
+<span class="n">min_wealth</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="nb">min</span><span class="p">)</span>
+<span class="n">max_wealth</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="nb">max</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Wealth range: </span><span class="si">{</span><span class="n">min_wealth</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">max_wealth</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Total wealth (should equal the number of agents, since money is conserved)</span>
+<span class="n">total</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="nb">sum</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total wealth: </span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Average wealth: 1.00
+Wealth range: 0 to 6
+Total wealth: 100
+</pre></div>
+</div>
+</div>
+</div>
+<section id="multiple-aggregations-at-once">
+<h3>Multiple aggregations at once<a class="headerlink" href="#multiple-aggregations-at-once" title="Link to this heading">#</a></h3>
+<p>You can pass a list of functions to compute multiple statistics in a single call:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">min_w</span><span class="p">,</span> <span class="n">max_w</span><span class="p">,</span> <span class="n">avg_w</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="p">[</span><span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Min: </span><span class="si">{</span><span class="n">min_w</span><span class="si">}</span><span class="s2">, Max: </span><span class="si">{</span><span class="n">max_w</span><span class="si">}</span><span class="s2">, Mean: </span><span class="si">{</span><span class="n">avg_w</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Min: 0, Max: 6, Mean: 1.00
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="aggregating-subsets">
+<h3>Aggregating subsets<a class="headerlink" href="#aggregating-subsets" title="Link to this heading">#</a></h3>
+<p>Since <code class="docutils literal notranslate"><span class="pre">select</span></code> returns an AgentSet, you can chain <code class="docutils literal notranslate"><span class="pre">select</span></code> and <code class="docutils literal notranslate"><span class="pre">agg</span></code> to compute
+statistics for specific subgroups:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Average wealth of Green agents only</span>
+<span class="n">green_avg</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">ethnicity</span> <span class="o">==</span> <span class="s2">"Green"</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+<span class="n">blue_avg</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">ethnicity</span> <span class="o">==</span> <span class="s2">"Blue"</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+<span class="n">mixed_avg</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">ethnicity</span> <span class="o">==</span> <span class="s2">"Mixed"</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"Average wealth — Green: </span><span class="si">{</span><span class="n">green_avg</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, Blue: </span><span class="si">{</span><span class="n">blue_avg</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, Mixed: </span><span class="si">{</span><span class="n">mixed_avg</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Average wealth — Green: 0.88, Blue: 1.02, Mixed: 1.06
+</pre></div>
+</div>
+</div>
+</div>
+<p>This pattern of select-then-aggregate is common, but when you want to do it for <em>all</em>
+groups at once, <code class="docutils literal notranslate"><span class="pre">groupby</span></code> is more elegant.</p>
+</section>
+</section>
+<section id="grouping-agents-with-groupby">
+<h2>Grouping Agents with <code class="docutils literal notranslate"><span class="pre">groupby</span></code><a class="headerlink" href="#grouping-agents-with-groupby" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">groupby</span></code> method splits agents into groups based on an attribute (or a callable),
+returning a <code class="docutils literal notranslate"><span class="pre">GroupBy</span></code> object. This is conceptually similar to pandas’ <code class="docutils literal notranslate"><span class="pre">groupby</span></code> and
+is ideal when you want to analyze or act on agents by category.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Group agents by ethnicity</span>
+<span class="n">grouped</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"ethnicity"</span><span class="p">)</span>
+
+<span class="c1"># See how many agents are in each group</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Agents per ethnicity:"</span><span class="p">,</span> <span class="n">grouped</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Agents per ethnicity: {'Blue': 40, 'Green': 26, 'Mixed': 34}
+</pre></div>
+</div>
+</div>
+</div>
+<section id="iterating-over-groups">
+<h3>Iterating over groups<a class="headerlink" href="#iterating-over-groups" title="Link to this heading">#</a></h3>
+<p>A <code class="docutils literal notranslate"><span class="pre">GroupBy</span></code> object is iterable. Each iteration yields a <code class="docutils literal notranslate"><span class="pre">(group_name,</span> <span class="pre">agent_set)</span></code> tuple:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ethnicity</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
+    <span class="n">avg</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">ethnicity</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="si">}</span><span class="s2"> agents, avg wealth = </span><span class="si">{</span><span class="n">avg</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Blue: 40 agents, avg wealth = 1.02
+  Green: 26 agents, avg wealth = 0.88
+  Mixed: 34 agents, avg wealth = 1.06
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="aggregating-across-groups">
+<h3>Aggregating across groups<a class="headerlink" href="#aggregating-across-groups" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">agg</span></code> method on <code class="docutils literal notranslate"><span class="pre">GroupBy</span></code> computes an aggregate for each group in one call:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mean wealth by ethnicity</span>
+<span class="n">mean_by_group</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Mean wealth by ethnicity:"</span><span class="p">,</span> <span class="n">mean_by_group</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mean wealth by ethnicity: {'Blue': np.float64(1.025), 'Green': np.float64(0.8846153846153846), 'Mixed': np.float64(1.0588235294117647)}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="grouping-by-a-function">
+<h3>Grouping by a function<a class="headerlink" href="#grouping-by-a-function" title="Link to this heading">#</a></h3>
+<p>Instead of an attribute name, you can pass a callable that computes the group key
+for each agent. This is useful for creating custom groupings:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Group agents into wealth brackets</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">wealth_bracket</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"broke"</span>
+    <span class="k">elif</span> <span class="n">agent</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"modest"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"wealthy"</span>
+
+
+<span class="n">brackets</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">wealth_bracket</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Agents per wealth bracket:"</span><span class="p">,</span> <span class="n">brackets</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Agents per wealth bracket: {'modest': 40, 'wealthy': 14, 'broke': 46}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="setting-attributes-with-set">
+<h2>Setting Attributes with <code class="docutils literal notranslate"><span class="pre">set</span></code><a class="headerlink" href="#setting-attributes-with-set" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">set</span></code> method assigns a value to an attribute for all agents in the set. This is
+useful for bulk updates — for example, applying a policy change to a group of agents.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Give all broke agents a subsidy of 1</span>
+<span class="n">broke</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Broke agents before subsidy: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">broke</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="n">broke</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Verify</span>
+<span class="n">still_broke</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Broke agents after subsidy: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">still_broke</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Broke agents before subsidy: 46
+Broke agents after subsidy: 0
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">set</span></code> modifies agents in place and returns the AgentSet, so you can chain it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"taxed"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sorting-agents-with-sort">
+<h2>Sorting Agents with <code class="docutils literal notranslate"><span class="pre">sort</span></code><a class="headerlink" href="#sorting-agents-with-sort" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">sort</span></code> method orders agents by an attribute or a custom key function. By default,
+it returns a new sorted AgentSet (use <code class="docutils literal notranslate"><span class="pre">inplace=True</span></code> to sort in place).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sort by wealth (descending by default)</span>
+<span class="n">richest_first</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">)</span>
+<span class="n">top_5</span> <span class="o">=</span> <span class="n">richest_first</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">at_most</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Top 5 wealthiest agents:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">top_5</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Agent </span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">: wealth=</span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">wealth</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Sort ascending</span>
+<span class="n">poorest_first</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">bottom_5</span> <span class="o">=</span> <span class="n">poorest_first</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">at_most</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Bottom 5:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">bottom_5</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Agent </span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">: wealth=</span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">wealth</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Top 5 wealthiest agents:
+  Agent 15: wealth=6
+  Agent 71: wealth=5
+  Agent 5: wealth=4
+  Agent 62: wealth=4
+  Agent 79: wealth=4
+
+Bottom 5:
+  Agent 1: wealth=1
+  Agent 3: wealth=1
+  Agent 4: wealth=1
+  Agent 6: wealth=1
+  Agent 9: wealth=1
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="converting-to-a-list">
+<h2>Converting to a List<a class="headerlink" href="#converting-to-a-list" title="Link to this heading">#</a></h2>
+<p>If you need standard list operations like indexing or slicing, use the <code class="docutils literal notranslate"><span class="pre">to_list()</span></code> method
+to convert the AgentSet to a plain Python list:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent_list</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"First agent: </span><span class="si">{</span><span class="n">agent_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Last agent: </span><span class="si">{</span><span class="n">agent_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>First agent: 1
+Last agent: 100
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="putting-it-together-analyzing-the-model">
+<h2>Putting It Together: Analyzing the Model<a class="headerlink" href="#putting-it-together-analyzing-the-model" title="Link to this heading">#</a></h2>
+<p>Let’s combine what we’ve learned to produce a summary analysis of the model state.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"=== Model Summary After 50 Steps ===</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Overall statistics</span>
+<span class="n">min_w</span><span class="p">,</span> <span class="n">max_w</span><span class="p">,</span> <span class="n">avg_w</span><span class="p">,</span> <span class="n">total_w</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="p">[</span><span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="nb">sum</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Agents: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"Total wealth: </span><span class="si">{</span><span class="n">total_w</span><span class="si">}</span><span class="s2"> (conserved: </span><span class="si">{</span><span class="s1">'yes'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">total_w</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'no, subsidy applied'</span><span class="si">}</span><span class="s2">)"</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Wealth range: </span><span class="si">{</span><span class="n">min_w</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">max_w</span><span class="si">}</span><span class="s2">, mean: </span><span class="si">{</span><span class="n">avg_w</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># By ethnicity</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"By ethnicity:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ethnicity</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"ethnicity"</span><span class="p">):</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+    <span class="n">avg</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+    <span class="n">broke</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">ethnicity</span><span class="si">:</span><span class="s2">6s</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2"> agents, avg wealth = </span><span class="si">{</span><span class="n">avg</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, broke = </span><span class="si">{</span><span class="n">broke</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span>
+
+<span class="c1"># Wealth distribution</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Wealth brackets:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">bracket</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">wealth_bracket</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">bracket</span><span class="si">:</span><span class="s2">8s</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="si">}</span><span class="s2"> agents"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== Model Summary After 50 Steps ===
+
+Agents: 100
+Total wealth: 146 (conserved: no, subsidy applied)
+Wealth range: 1 to 6, mean: 1.46
+
+By ethnicity:
+  Blue  :  40 agents, avg wealth = 1.40, broke = 0
+  Green :  26 agents, avg wealth = 1.42, broke = 0
+  Mixed :  34 agents, avg wealth = 1.56, broke = 0
+
+Wealth brackets:
+  modest  : 86 agents
+  wealthy : 14 agents
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualizing-the-results">
+<h2>Visualizing the Results<a class="headerlink" href="#visualizing-the-results" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Collect data for plotting</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"wealth"</span><span class="p">:</span> <span class="n">agent</span><span class="o">.</span><span class="n">wealth</span><span class="p">,</span> <span class="s2">"ethnicity"</span><span class="p">:</span> <span class="n">agent</span><span class="o">.</span><span class="n">ethnicity</span><span class="p">})</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">palette</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Green"</span><span class="p">:</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"Blue"</span><span class="p">:</span> <span class="s2">"blue"</span><span class="p">,</span> <span class="s2">"Mixed"</span><span class="p">:</span> <span class="s2">"purple"</span><span class="p">}</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">"wealth"</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">"ethnicity"</span><span class="p">,</span> <span class="n">discrete</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">palette</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Wealth distribution by ethnicity"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"Wealth"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"Number of agents"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Text(0.5, 1.0, 'Wealth distribution by ethnicity'),
+ Text(0.5, 0, 'Wealth'),
+ Text(0, 0.5, 'Number of agents')]
+</pre></div>
+</div>
+<img alt="../_images/c8689e0ddd92cfe06d9615dd0f1b549cac0d216a176d93c93beb73c06e4f3a37.png" src="../_images/c8689e0ddd92cfe06d9615dd0f1b549cac0d216a176d93c93beb73c06e4f3a37.png" />
+</div>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>In this tutorial you learned the core AgentSet <strong>query</strong> methods:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">get(attr)</span></code></p></td>
+<td><p>Retrieve attribute values from all agents</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">select(func)</span></code></p></td>
+<td><p>Filter agents by criteria</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">agg(attr,</span> <span class="pre">func)</span></code></p></td>
+<td><p>Compute aggregate statistics</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">groupby(attr)</span></code></p></td>
+<td><p>Group agents by attribute or function</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">set(attr,</span> <span class="pre">value)</span></code></p></td>
+<td><p>Bulk-assign attribute values</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sort(key)</span></code></p></td>
+<td><p>Order agents by attribute</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">to_list()</span></code></p></td>
+<td><p>Convert to a plain Python list</p></td>
+</tr>
+<tr class="row-odd"><td><p>These methods are about <em>inspecting</em> and <em>organizing</em> agents. In the next tutorial,</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>we’ll cover how to <strong>activate</strong> agents — making them actually <em>do</em> things — using</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">do</span></code>, <code class="docutils literal notranslate"><span class="pre">shuffle_do</span></code>, and <code class="docutils literal notranslate"><span class="pre">map</span></code>.</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<p>Check out the <a class="reference internal" href="2_agent_activation.html"><span class="doc std std-doc">Agent Activation tutorial</span></a>
+to learn how to make your agents act, in different orders and patterns.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="0_first_model.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Creating Your First Model</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="2_agent_activation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Agent Activation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-boltzmann-wealth-model">The Boltzmann Wealth Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-description">Tutorial Description</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-colab-run-the-next-cell">IN COLAB? - Run the next cell</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#import-dependencies">Import Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-the-wealth-model-with-ethnicities">Setup: The Wealth Model with Ethnicities</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-an-agentset">What is an AgentSet?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#retrieving-attribute-values-with-get">Retrieving Attribute Values with <code class="docutils literal notranslate"><span class="pre">get</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-missing-attributes">Handling missing attributes</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-agents-with-select">Filtering Agents with <code class="docutils literal notranslate"><span class="pre">select</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-filtering-with-a-function">Basic filtering with a function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-by-agent-type">Filtering by agent type</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limiting-results-with-at-most">Limiting results with <code class="docutils literal notranslate"><span class="pre">at_most</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combining-criteria">Combining criteria</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chaining-selects">Chaining selects</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-aggregates-with-agg">Computing Aggregates with <code class="docutils literal notranslate"><span class="pre">agg</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-aggregations-at-once">Multiple aggregations at once</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aggregating-subsets">Aggregating subsets</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grouping-agents-with-groupby">Grouping Agents with <code class="docutils literal notranslate"><span class="pre">groupby</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iterating-over-groups">Iterating over groups</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aggregating-across-groups">Aggregating across groups</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grouping-by-a-function">Grouping by a function</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-attributes-with-set">Setting Attributes with <code class="docutils literal notranslate"><span class="pre">set</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sorting-agents-with-sort">Sorting Agents with <code class="docutils literal notranslate"><span class="pre">sort</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#converting-to-a-list">Converting to a List</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#putting-it-together-analyzing-the-model">Putting It Together: Analyzing the Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualizing-the-results">Visualizing the Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/tutorials/1_agentset.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

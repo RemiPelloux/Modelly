@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="description" content="This page is for instructors who teach agent-based modelling with NetLogo and want to move a course to Modelly. It maps the NetLogo concepts to Modelly, shows…" />
+<meta property="og:title" content="From NetLogo: a track for instructors" />
+<meta property="og:description" content="This page is for instructors who teach agent-based modelling with NetLogo and want to move a course to Modelly. It maps the NetLogo concepts to Modelly, shows…" />
+<meta property="og:url" content="https://remipelloux.github.io/Modelly/dev/course/from_netlogo.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Modelly" />
+<meta property="og:image" content="https://remipelloux.github.io/Modelly/dev/_static/social-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Modelly: agent-based models in Python. An epidemic spreading on a grid." />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="alternate" type="text/markdown" href="from_netlogo.md" />
+<script type="application/ld+json">{"@context": "https://schema.org", "description": "This page is for instructors who teach agent-based modelling with NetLogo and want to move a course to Modelly. It maps the NetLogo concepts to Modelly, shows…", "url": "https://remipelloux.github.io/Modelly/dev/course/from_netlogo.html", "@type": "TechArticle", "headline": "From NetLogo: a track for instructors", "isPartOf": {"@type": "WebSite", "name": "Modelly documentation", "url": "https://remipelloux.github.io/Modelly/dev/"}}</script>
+    <title>From NetLogo: a track for instructors &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=53800086" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=6eff8557" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'course/from_netlogo';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=44addd4a"></script>
+    <script src="../_static/hero-models.js?v=ac39659f"></script>
+    <script src="../_static/hero.js?v=d4c2d651"></script>
+    <script src="../_static/finder.js?v=dca20fd0"></script>
+    <script src="../_static/copy-page.js?v=1a03e2e2"></script>
+    <script src="../_static/a11y.js?v=a42a87aa"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/course/from_netlogo.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Domain tutorials" href="../tutorials/domains/index.html" />
+    <link rel="prev" title="Instructor notes" href="instructors.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../translations/index.html">
+    Other languages
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../translations/index.html">
+    Other languages
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../overview.html">Overview and tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/0_first_model.html">Creating Your First Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/1_agentset.html">AgentSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/2_agent_activation.html">Agent Activation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/3_event_scheduling.html">Event Scheduling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/4_adding_space.html">Adding Space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/5_collecting_data.html">Collecting Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/6_visualization_basic.html">Basic Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/7_visualization_dynamic_agents.html">Dynamic Agent Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/8_visualization_rendering_with_space_renderer.html">Visualisation using SpaceRenderer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/9_visualization_property_layer_visualization.html">Property Layer Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/10_visualization_custom.html">Custom Visualization Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/11_discrete_event_simulation.html">Discrete Event Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/12_hybrid_abm_devs.html">Hybrid ABM-DEVS Models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Course</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="session_1.html">Session 1: agents, a scenario and a step</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_2.html">Session 2: data, seeds and reproducibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_3.html">Session 3: space, rasters and percolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_4.html">Session 4: networks and contact structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_5.html">Session 5: thinking in arrays, columns and cohorts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_6.html">Session 6: validation against theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_7.html">Session 7: experiments, sweeps and replications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_8.html">Session 8: from the zoo to your own project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_9.html">Session 9: model cards and the hub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_10.html">Session 10: decisions, strategies and costs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_11.html">Session 11: causes, effects, attribution and counterfactuals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="session_12.html">Session 12: continuous dynamics inside agents, and the final projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructors.html">Instructor notes</a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">From NetLogo: a track for instructors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/domains/index.html">Domain tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/domains/epidemiology.html">Epidemiology: who gets infected, and how many</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/domains/ecology.html">Ecology: fire on a landscape, and populations that feed themselves</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/domains/economics.html">Economics: where inequality comes from</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/domains/sociology.html">Sociology and political science: consensus, polarisation and culture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/domains/transport.html">Transport: traffic jams from nothing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/domains/energy.html">Energy: how rooftop solar spreads</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Your own project</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../using_modelly_in_your_project.html">Using Modelly in your project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_project.html">Starting a project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best-practices.html">Best practices</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Coming from another tool</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_mesa.html">From Mesa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../netlogo.html">From NetLogo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../r_and_julia.html">From R and Julia</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../getting_started.html" class="nav-link">Getting started</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Course: agent-based modelling with Modelly</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">From NetLogo: a track for instructors</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="from-netlogo-a-track-for-instructors">
+<h1>From NetLogo: a track for instructors<a class="headerlink" href="#from-netlogo-a-track-for-instructors" title="Link to this heading">#</a></h1>
+<p>This page is for instructors who teach agent-based modelling with NetLogo and want to move a
+course to Modelly. It maps the NetLogo concepts to Modelly, shows what <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">netlogo</span></code> does
+with a model and what is left for a person to write, and suggests which sessions of this
+course replace which usual NetLogo lessons.</p>
+<p>The translator and its exact subset are described in <a class="reference internal" href="../netlogo.html"><span class="std std-doc">From NetLogo</span></a>; this
+page only uses what is listed there.</p>
+<section id="the-concepts">
+<h2>The concepts<a class="headerlink" href="#the-concepts" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>NetLogo</p></th>
+<th class="head"><p>In a translated model</p></th>
+<th class="head"><p>In a model written for Modelly</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>turtles, <code class="docutils literal notranslate"><span class="pre">turtles-own</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Turtle</span></code> agents (a <code class="docutils literal notranslate"><span class="pre">CellAgent</span></code>), one attribute per variable</p></td>
+<td><p>an <code class="docutils literal notranslate"><span class="pre">Agent</span></code> or <code class="docutils literal notranslate"><span class="pre">CellAgent</span></code> subclass; attributes updated in bulk as <code class="docutils literal notranslate"><span class="pre">Column</span></code>s (session 5)</p></td>
+</tr>
+<tr class="row-odd"><td><p>breeds</p></td>
+<td><p>a subclass of the turtle class per breed</p></td>
+<td><p>a class per kind of agent</p></td>
+</tr>
+<tr class="row-even"><td><p>patches, <code class="docutils literal notranslate"><span class="pre">patches-own</span></code></p></td>
+<td><p>a <code class="docutils literal notranslate"><span class="pre">Patch</span></code> agent per cell of an <code class="docutils literal notranslate"><span class="pre">OrthogonalMooreGrid</span></code></p></td>
+<td><p>a grid of cells, or a <code class="docutils literal notranslate"><span class="pre">CellIndex</span></code> with per-cell arrays and rasters (session 3)</p></td>
+</tr>
+<tr class="row-odd"><td><p>links</p></td>
+<td><p>not translated: each line is reported</p></td>
+<td><p>a network from <code class="docutils literal notranslate"><span class="pre">modelly.space.networks</span></code>, influence as a sparse product (session 4)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ask</span> <span class="pre">agents</span> <span class="pre">[</span> <span class="pre">...</span> <span class="pre">]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.ask(agents,</span> <span class="pre">function)</span></code>, a new random order each time</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model.agents.shuffle_do(&quot;step&quot;)</span></code>, or one numpy update of a column for the whole population (session 5)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">[</span> <span class="pre">...</span> <span class="pre">]</span></code></p></td>
+<td><p>a list comprehension</p></td>
+<td><p>a list comprehension, or a boolean mask over a column</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ticks</span></code>, <code class="docutils literal notranslate"><span class="pre">tick</span></code>, <code class="docutils literal notranslate"><span class="pre">reset-ticks</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">self.ticks</span></code>, <code class="docutils literal notranslate"><span class="pre">self.tick()</span></code>, <code class="docutils literal notranslate"><span class="pre">self.reset_ticks()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">model.step()</span></code> advances <code class="docutils literal notranslate"><span class="pre">model.time</span></code> by one; <code class="docutils literal notranslate"><span class="pre">model.run_for(n)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setup</span></code>, <code class="docutils literal notranslate"><span class="pre">go</span></code></p></td>
+<td><p>run by <code class="docutils literal notranslate"><span class="pre">__init__</span></code> and by <code class="docutils literal notranslate"><span class="pre">step()</span></code>; <code class="docutils literal notranslate"><span class="pre">stop</span></code> sets <code class="docutils literal notranslate"><span class="pre">running</span> <span class="pre">=</span> <span class="pre">False</span></code></p></td>
+<td><p>the model’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> and <code class="docutils literal notranslate"><span class="pre">step</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">globals</span></code></p></td>
+<td><p>model attributes</p></td>
+<td><p>model attributes; the inputs among them belong in the <code class="docutils literal notranslate"><span class="pre">Scenario</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>sliders and switches</p></td>
+<td><p>fields of the generated <code class="docutils literal notranslate"><span class="pre">Scenario</span></code></p></td>
+<td><p>fields of the <code class="docutils literal notranslate"><span class="pre">Scenario</span></code> (session 1)</p></td>
+</tr>
+<tr class="row-even"><td><p>the view</p></td>
+<td><p>the <code class="docutils literal notranslate"><span class="pre">min_pxcor</span></code> … <code class="docutils literal notranslate"><span class="pre">max_pycor</span></code> and <code class="docutils literal notranslate"><span class="pre">wrap</span></code> fields of the <code class="docutils literal notranslate"><span class="pre">Scenario</span></code></p></td>
+<td><p>the grid’s size, from the <code class="docutils literal notranslate"><span class="pre">Scenario</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>plots and monitors</p></td>
+<td><p>a <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> of <code class="docutils literal notranslate"><span class="pre">ticks</span></code>, every global and every breed’s size</p></td>
+<td><p>a <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> with the reporters you choose (session 2)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">random</span></code>, <code class="docutils literal notranslate"><span class="pre">random-float</span></code>, <code class="docutils literal notranslate"><span class="pre">one-of</span></code></p></td>
+<td><p>draws from the model’s seeded <code class="docutils literal notranslate"><span class="pre">self.random</span></code></p></td>
+<td><p>draws from <code class="docutils literal notranslate"><span class="pre">model.rng</span></code> or <code class="docutils literal notranslate"><span class="pre">model.random</span></code> only; <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">lint</span></code> reports any other (session 2)</p></td>
+</tr>
+<tr class="row-odd"><td><p>BehaviorSpace</p></td>
+<td><p>not translated</p></td>
+<td><p>a run function and <code class="docutils literal notranslate"><span class="pre">modelly.batch.run_grid</span></code>, seeds spawned per run (session 7)</p></td>
+</tr>
+<tr class="row-even"><td><p>the Info tab</p></td>
+<td><p>not translated</p></td>
+<td><p>a model card, <code class="docutils literal notranslate"><span class="pre">card.toml</span></code>, checked against the tests (session 9)</p></td>
+</tr>
+<tr class="row-odd"><td><p>the models library</p></td>
+<td><p>two bundled models, <code class="docutils literal notranslate"><span class="pre">fire</span></code> and <code class="docutils literal notranslate"><span class="pre">wolf_sheep</span></code></p></td>
+<td><p>the <a class="reference internal" href="../zoo/index.html"><span class="std std-doc">zoo</span></a> and the <a class="reference internal" href="../hub.html"><span class="std std-doc">hub</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Two differences matter from the first lesson:</p>
+<ul class="simple">
+<li><p><strong>Every random draw is seeded.</strong> A NetLogo run is reproducible only with <code class="docutils literal notranslate"><span class="pre">random-seed</span></code>; a
+Modelly model takes its seed in the <code class="docutils literal notranslate"><span class="pre">Scenario</span></code> (<code class="docutils literal notranslate"><span class="pre">rng=1</span></code>), and the same seed gives the same
+run, including the order of every <code class="docutils literal notranslate"><span class="pre">ask</span></code>.</p></li>
+<li><p><strong>The interface is a <code class="docutils literal notranslate"><span class="pre">Scenario</span></code>.</strong> The sliders are fields with types and defaults, so a run
+with other values is <code class="docutils literal notranslate"><span class="pre">FireScenario(rng=1,</span> <span class="pre">density=62)</span></code>, from a script or a test. Studio
+draws the inputs from the same fields (<code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">studio</span> <span class="pre">fire.py:FireModel</span></code>): a slider for a
+float between 0 and 1, a number field for other numbers, a checkbox for a switch.</p></li>
+</ul>
+</section>
+<section id="translating-a-model">
+<h2>Translating a model<a class="headerlink" href="#translating-a-model" title="Link to this heading">#</a></h2>
+<p>Start with the bundled fire model:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>modelly netlogo --example fire --show       print the NetLogo source
+modelly netlogo --example fire -o fire.py   translate it
+modelly lint fire.py
+</pre></div>
+</div>
+<p>The commands are the same in bash and PowerShell. The output is one module, <code class="docutils literal notranslate"><span class="pre">fire.py</span></code>, with
+a <code class="docutils literal notranslate"><span class="pre">FireScenario</span></code> (the <code class="docutils literal notranslate"><span class="pre">density</span></code> slider and the world’s size) and a <code class="docutils literal notranslate"><span class="pre">FireModel</span></code> whose methods
+are the procedures. The translation passes <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">lint</span></code>. Run it on a smaller world than
+the 251 x 251 of the interface:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">fire</span><span class="w"> </span><span class="kn">import</span> <span class="n">FireModel</span><span class="p">,</span> <span class="n">FireScenario</span>
+
+<span class="n">WORLD</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"min_pxcor"</span><span class="p">:</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="s2">"max_pxcor"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">"min_pycor"</span><span class="p">:</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="s2">"max_pycor"</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
+
+<span class="k">for</span> <span class="n">density</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">70</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">FireModel</span><span class="p">(</span><span class="n">FireScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="o">**</span><span class="n">WORLD</span><span class="p">))</span>
+    <span class="k">while</span> <span class="n">model</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">density</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">percent_burned</span><span class="p">(),</span> <span class="mi">1</span><span class="p">),</span> <span class="n">model</span><span class="o">.</span><span class="n">ticks</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>About 10% of the trees burn at a density of 50, half at 59 and almost all at 70: the
+site-percolation threshold of session 3. The zoo’s <a class="reference internal" href="../zoo/forest_fire.html"><span class="std std-doc">forest fire</span></a> is
+the same question written for Modelly, with a <code class="docutils literal notranslate"><span class="pre">CellIndex</span></code>; comparing the two is a good
+exercise for the end of session 5.</p>
+<section id="what-is-left-for-a-person">
+<h3>What is left for a person<a class="headerlink" href="#what-is-left-for-a-person" title="Link to this heading">#</a></h3>
+<p>The translator reads a subset of NetLogo. Anything outside it stays in the output as a
+<code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">NETLOGO</span></code> comment at the place it was, and is listed on stderr with its line number; the
+exit status is 1. A model of 50 turtles that links each one to a friend, <code class="docutils literal notranslate"><span class="pre">friends.nlogo</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>turtles-own [ wealth ]
+
+to setup
+  clear-all
+  create-turtles 50 [ setxy random-xcor random-ycor set wealth 10 ]
+  ask turtles [ create-link-with one-of other turtles ]
+  reset-ticks
+end
+
+to go
+  ask turtles [ rt random 360 fd 1 ]
+  tick
+end
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ modelly netlogo friends.nlogo -o friends.py
+friends.nlogo:6: not translated: unknown command 'create-link-with': ask turtles [ create-link-with one-of other turtles ]
+</pre></div>
+</div>
+<p>The rest of the model translates and runs; the person writes the missing line in Python, then
+checks the model with a test. Plan for this work when a course model uses:</p>
+<ul class="simple">
+<li><p>links, <code class="docutils literal notranslate"><span class="pre">of</span></code>, lists, <code class="docutils literal notranslate"><span class="pre">while</span></code>, <code class="docutils literal notranslate"><span class="pre">foreach</span></code>, <code class="docutils literal notranslate"><span class="pre">map</span></code>, anonymous procedures, string primitives or
+extensions;</p></li>
+<li><p>distances and positions inside a patch (<code class="docutils literal notranslate"><span class="pre">distance</span></code>, <code class="docutils literal notranslate"><span class="pre">in-radius</span></code>, <code class="docutils literal notranslate"><span class="pre">face</span></code>, flocking): a
+turtle stands on a patch, and <code class="docutils literal notranslate"><span class="pre">fd</span></code> moves whole patches along the nearest of eight
+directions, so such models translate and run but do not behave like the original;</p></li>
+<li><p>choosers and input boxes, which are reported as interface widgets;</p></li>
+<li><p>BehaviorSpace experiments, which are not read: write them as below.</p></li>
+</ul>
+<p>Display commands (<code class="docutils literal notranslate"><span class="pre">set-default-shape</span></code>, <code class="docutils literal notranslate"><span class="pre">pen-down</span></code>, <code class="docutils literal notranslate"><span class="pre">print</span></code>, …) are dropped and listed.</p>
+</section>
+<section id="behaviorspace-as-a-script">
+<h3>BehaviorSpace as a script<a class="headerlink" href="#behaviorspace-as-a-script" title="Link to this heading">#</a></h3>
+<p>A BehaviorSpace experiment is a run function and a grid. Put it in a file so that worker
+processes can import it on Windows and macOS (session 7):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># experiment.py: density 50 to 70, five runs each</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fire</span><span class="w"> </span><span class="kn">import</span> <span class="n">FireModel</span><span class="p">,</span> <span class="n">FireScenario</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_grid</span>
+
+<span class="n">WORLD</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"min_pxcor"</span><span class="p">:</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="s2">"max_pxcor"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">"min_pycor"</span><span class="p">:</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="s2">"max_pycor"</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">FireModel</span><span class="p">(</span><span class="n">FireScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">task</span><span class="p">[</span><span class="s2">"seed"</span><span class="p">],</span> <span class="n">density</span><span class="o">=</span><span class="n">task</span><span class="p">[</span><span class="s2">"density"</span><span class="p">],</span> <span class="o">**</span><span class="n">WORLD</span><span class="p">))</span>
+    <span class="k">while</span> <span class="n">model</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"percent_burned"</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">percent_burned</span><span class="p">(),</span> <span class="s2">"ticks"</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">ticks</span><span class="p">}</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">run_grid</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="p">{</span><span class="s2">"density"</span><span class="p">:</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="mi">70</span><span class="p">]},</span> <span class="n">replicates</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"density"</span><span class="p">)[</span><span class="s2">"percent_burned"</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">"mean"</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">experiment.py</span></code> prints the mean and spread per density; every run’s seed is in the
+table, so one run can be repeated alone.</p>
+</section>
+<section id="a-test-for-the-translation">
+<h3>A test for the translation<a class="headerlink" href="#a-test-for-the-translation" title="Link to this heading">#</a></h3>
+<p>Before changing a translated model, write the test that will tell you if a change broke it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># test_fire.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fire</span><span class="w"> </span><span class="kn">import</span> <span class="n">FireModel</span><span class="p">,</span> <span class="n">FireScenario</span>
+
+<span class="n">WORLD</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"min_pxcor"</span><span class="p">:</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="s2">"max_pxcor"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">"min_pycor"</span><span class="p">:</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="s2">"max_pycor"</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">burned</span><span class="p">(</span><span class="n">density</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">FireModel</span><span class="p">(</span><span class="n">FireScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="o">**</span><span class="n">WORLD</span><span class="p">))</span>
+    <span class="k">while</span> <span class="n">model</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">percent_burned</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_same_seed_same_fire</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">burned</span><span class="p">(</span><span class="mi">59</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="n">burned</span><span class="p">(</span><span class="mi">59</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_the_fire_crosses_above_the_threshold_only</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="nb">max</span><span class="p">(</span><span class="n">burned</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span> <span class="k">for</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">30</span>
+    <span class="k">assert</span> <span class="nb">min</span><span class="p">(</span><span class="n">burned</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span> <span class="k">for</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">90</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="writing-the-model-again-for-modelly">
+<h2>Writing the model again for Modelly<a class="headerlink" href="#writing-the-model-again-for-modelly" title="Link to this heading">#</a></h2>
+<p>A translation keeps the NetLogo structure: every patch is an agent and every <code class="docutils literal notranslate"><span class="pre">ask</span></code> visits
+agents one by one. That is the right first step and a slow last one. For a large world,
+write the model again, phase by phase, with columns and a <code class="docutils literal notranslate"><span class="pre">CellIndex</span></code> (sessions 3 and 5),
+and keep the translation and its test as the reference the new version must match.</p>
+<p>The NetLogo wealth exchange, “every turtle moves to a neighbouring patch and gives one unit
+to a turtle on its patch”, reads like this when written for Modelly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">modelly</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span><span class="p">,</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.data.collector</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataCollector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.scenarios</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scenario</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.space</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellAgent</span><span class="p">,</span> <span class="n">OrthogonalMooreGrid</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Trader</span><span class="p">(</span><span class="n">CellAgent</span><span class="p">):</span>
+    <span class="n">wealth</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">select_random_cell</span><span class="p">()</span>
+        <span class="n">others</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">agents</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">others</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">others</span><span class="p">)</span><span class="o">.</span><span class="n">wealth</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wealth</span> <span class="o">-=</span> <span class="mi">1</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MarketScenario</span><span class="p">(</span><span class="n">Scenario</span><span class="p">):</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Market</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario</span><span class="p">:</span> <span class="n">MarketScenario</span> <span class="o">=</span> <span class="n">MarketScenario</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">scenario</span><span class="o">=</span><span class="n">scenario</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">OrthogonalMooreGrid</span><span class="p">((</span><span class="n">s</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">random</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+        <span class="n">cells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">all_cells</span><span class="o">.</span><span class="n">cells</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">Trader</span><span class="o">.</span><span class="n">create_agents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">cells</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span> <span class="o">=</span> <span class="n">DataCollector</span><span class="p">(</span>
+            <span class="n">model_reporters</span><span class="o">=</span><span class="p">{</span><span class="s2">"broke"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">wealth</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">agents</span><span class="p">)}</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">shuffle_do</span><span class="p">(</span><span class="s2">"step"</span><span class="p">)</span>  <span class="c1"># ask turtles [ ... ], in a new random order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Market</span><span class="p">(</span><span class="n">MarketScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_for</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">datacollector</span><span class="o">.</span><span class="n">get_model_vars_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Studio’s <strong>Builder</strong> tab writes models of this shape from a form (walk to a neighbouring
+cell, give wealth to a cellmate, catch and recover from an infection), and shows the code:
+a way to show a NetLogo class that the code is short. See
+<a class="reference internal" href="../studio.html#studio-for-everyone"><span class="std std-ref">Studio for everyone</span></a>.</p>
+</section>
+<section id="which-sessions-replace-which-lessons">
+<h2>Which sessions replace which lessons<a class="headerlink" href="#which-sessions-replace-which-lessons" title="Link to this heading">#</a></h2>
+<p>A NetLogo course usually runs through the interface, turtles and patches, plots,
+BehaviorSpace and the models library. The sessions of this course cover the same ground,
+in Python, and add what NetLogo courses rarely teach: seeds, validation tests, cards and
+comparisons with intervals.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Usual NetLogo lesson</p></th>
+<th class="head"><p>Session that replaces it</p></th>
+<th class="head"><p>What changes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>The interface, turtles, <code class="docutils literal notranslate"><span class="pre">setup</span></code> and <code class="docutils literal notranslate"><span class="pre">go</span></code></p></td>
+<td><p><a class="reference internal" href="session_1.html"><span class="std std-doc">1</span></a>, with the translated <code class="docutils literal notranslate"><span class="pre">fire</span></code> or <code class="docutils literal notranslate"><span class="pre">wolf_sheep</span></code> as a warm-up</p></td>
+<td><p>the sliders become a <code class="docutils literal notranslate"><span class="pre">Scenario</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Plots and monitors</p></td>
+<td><p><a class="reference internal" href="session_2.html"><span class="std std-doc">2</span></a></p></td>
+<td><p>a <code class="docutils literal notranslate"><span class="pre">DataCollector</span></code> and a DataFrame; seeds and reproducibility</p></td>
+</tr>
+<tr class="row-even"><td><p>Patches, diffusion, fire</p></td>
+<td><p><a class="reference internal" href="session_3.html"><span class="std std-doc">3</span></a></p></td>
+<td><p>per-cell arrays and a <code class="docutils literal notranslate"><span class="pre">CellIndex</span></code>; the percolation threshold</p></td>
+</tr>
+<tr class="row-odd"><td><p>Links and networks</p></td>
+<td><p><a class="reference internal" href="session_4.html"><span class="std std-doc">4</span></a></p></td>
+<td><p>networks written by hand, since links are not translated</p></td>
+</tr>
+<tr class="row-even"><td><p>Making a model faster</p></td>
+<td><p><a class="reference internal" href="session_5.html"><span class="std std-doc">5</span></a></p></td>
+<td><p>columns and cohorts instead of <code class="docutils literal notranslate"><span class="pre">ask</span></code> one by one</p></td>
+</tr>
+<tr class="row-odd"><td><p>Verification</p></td>
+<td><p><a class="reference internal" href="session_6.html"><span class="std std-doc">6</span></a></p></td>
+<td><p>a pytest test against a known result</p></td>
+</tr>
+<tr class="row-even"><td><p>BehaviorSpace</p></td>
+<td><p><a class="reference internal" href="session_7.html"><span class="std std-doc">7</span></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">run_grid</span></code> in a script, with spawned seeds</p></td>
+</tr>
+<tr class="row-odd"><td><p>A student project</p></td>
+<td><p><a class="reference internal" href="session_8.html"><span class="std std-doc">8</span></a></p></td>
+<td><p>started from a zoo model with <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">zoo</span> <span class="pre">copy</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>The Info tab, the models library</p></td>
+<td><p><a class="reference internal" href="session_9.html"><span class="std std-doc">9</span></a></p></td>
+<td><p>a model card checked against the tests; the hub</p></td>
+</tr>
+<tr class="row-odd"><td><p>(no usual counterpart)</p></td>
+<td><p><a class="reference internal" href="session_10.html"><span class="std std-doc">10</span></a>, <a class="reference internal" href="session_11.html"><span class="std std-doc">11</span></a>, <a class="reference internal" href="session_12.html"><span class="std std-doc">12</span></a></p></td>
+<td><p>decisions with costs, causes, ODEs inside agents</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A first course can keep NetLogo for the first week, translate the students’ first model with
+<code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">netlogo</span></code> in session 1, and run the rest of the course in Modelly. The
+<a class="reference internal" href="instructors.html"><span class="std std-doc">instructor notes</span></a> give the timing and the misconceptions of each session.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="instructors.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Instructor notes</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../tutorials/domains/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Domain tutorials</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-concepts">The concepts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#translating-a-model">Translating a model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-left-for-a-person">What is left for a person</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#behaviorspace-as-a-script">BehaviorSpace as a script</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-test-for-the-translation">A test for the translation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-the-model-again-for-modelly">Writing the model again for Modelly</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#which-sessions-replace-which-lessons">Which sessions replace which lessons</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/course/from_netlogo.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

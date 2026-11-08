@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Scenarios &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=92ce3cff" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=fc837d61"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'apis/scenarios';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/apis/scenarios.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Batch" href="batch.html" />
+    <link rel="prev" title="Behaviour" href="behaviour.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="space.html">Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time.html">Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="behaviour.html">Behaviour</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viz.html">Viz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrate.html">Migrate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Lint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profile</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="api_main.html" class="nav-link">APIs</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Scenarios</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="scenarios">
+<h1>Scenarios<a class="headerlink" href="#scenarios" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.scenarios</span></code> describes the parameters of a run as a typed <code class="docutils literal notranslate"><span class="pre">Scenario</span></code> (with its seed),
+runs many scenarios and keeps their results in a <code class="docutils literal notranslate"><span class="pre">Store</span></code>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Module</p></th>
+<th class="head"><p>Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.scenarios.scenario</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Scenario</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.scenarios.runner</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">run_scenarios</span></code>, <code class="docutils literal notranslate"><span class="pre">RunConfiguration</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.scenarios.sampling</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rescale_samples</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.scenarios.store</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Store</span></code>, <code class="docutils literal notranslate"><span class="pre">RunId</span></code>, <code class="docutils literal notranslate"><span class="pre">RunRecord</span></code> and the in-memory store</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.scenarios.exceptions</span></code></p></td>
+<td><p>the exceptions raised while running scenarios</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="module-modelly.scenarios.scenario">
+<span id="scenario"></span><h2>Scenario<a class="headerlink" href="#module-modelly.scenarios.scenario" title="Link to this heading">#</a></h2>
+<p>Base Scenario class.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.scenario.Scenario">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Scenario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">BitGenerator</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">integer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SeedSequence</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replication_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/scenario.html#Scenario"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.scenario.Scenario" title="Link to this definition">#</a></dt>
+<dd><p>A Scenario class for defining model parameters and experiments.</p>
+<p>Supports both simple instantiation and type-hinted subclassing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simple usage</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">Scenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">minority_pc</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Type-hinted subclass (recommended for complex models)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyScenario</span><span class="p">(</span><span class="n">Scenario</span><span class="p">):</span>
+    <span class="n">citizen_density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span>
+    <span class="n">cop_vision</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">movement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">MyScenario</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">cop_vision</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># Override defaults</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scenario_id</strong> – A unique identifier for this scenario, auto-generated starting from 0</p></li>
+<li><p><strong>experiment_id</strong> – Identifies the design point (e.g., row in a QMC sample matrix)</p></li>
+<li><p><strong>replication_id</strong> – Identifies the stochastic replication within a design point</p></li>
+<li><p><strong>rng</strong> – Random number generator seed value</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>All parameters are accessible via attribute access (scenario.param).
+Class-level attributes in subclasses serve as default values.
+Scenario instances are frozen after initialisation; parameters cannot be modified.
+To create replications with derived seeds, use spawn_replications().</p>
+<p>Initialize a Scenario.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rng</strong> – Seed for the random number generator. Accepts any value accepted by
+numpy.random.default_rng(). scenario.rng is always a Generator after
+initialisation. The initial seed sequence is stored in scenario.seed_sequence
+and used by spawn_replications() to derive child seeds.</p></li>
+<li><p><strong>scenario_id</strong> – Index of the design point in the experiment matrix.</p></li>
+<li><p><strong>replication_id</strong> – Index of the stochastic replication for this design point.
+defaults to PARENT_REPLICATION_ID (-1). It is advised to use spawn_replications() to create
+replications for a given scenario, rather than handling this yourself.</p></li>
+<li><p><strong>**kwargs</strong> – All other scenario parameters (override class-level defaults).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.scenario.Scenario.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/scenario.html#Scenario.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.scenario.Scenario.to_dict" title="Link to this definition">#</a></dt>
+<dd><p>Return dict representation of the scenario.</p>
+<p>Seed_sequence_entropy and seed_sequence_spawn_key together can be used to reconstruct the SeedSequence.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.scenario.Scenario.spawn_replications">
+<span class="sig-name descname"><span class="pre">spawn_replications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/scenario.html#Scenario.spawn_replications"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.scenario.Scenario.spawn_replications" title="Link to this definition">#</a></dt>
+<dd><p>Spawn n replications of this scenario with deterministically derived seeds.</p>
+<p>Each replication has identical user provided parameters but a unique random number generator and replication_id.
+The rng is spawned from the original rng of the base scenario instance. Indexing for replication_id starts
+from 0. This assumes that the instance on which this is called has replication_id == PARENT_REPLICATION_ID. If
+this assumption does not hold, a user warning is issued.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> – Number of replications to create.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of n Scenario instances with replication_id 0..n-1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.scenario.Scenario.from_dataframe">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">integer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SeedSequence</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replications</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/scenario.html#Scenario.from_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.scenario.Scenario.from_dataframe" title="Link to this definition">#</a></dt>
+<dd><p>Turn a dataframe into a list of scenarios.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiments</strong> – Dataframe containing the parameters for the scenarios.</p></li>
+<li><p><strong>rng</strong> – the number of random seeds to use or a list of seeds.</p></li>
+<li><p><strong>replications</strong> – the number of replications to create for each scenario</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of scenario instances</p>
+</dd>
+</dl>
+<p>If rng is an integer, numpy will be used to generate that many seed values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.scenario.Scenario.from_ndarray">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">integer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SeedSequence</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replications</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/scenario.html#Scenario.from_ndarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.scenario.Scenario.from_ndarray" title="Link to this definition">#</a></dt>
+<dd><p>Turn a numpy array into a list of scenarios.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiments</strong> – Dataframe containing the parameters for the scenarios.</p></li>
+<li><p><strong>parameter_names</strong> – the names of the parameters</p></li>
+<li><p><strong>rng</strong> – the number of random seeds to use or a list of seeds.</p></li>
+<li><p><strong>replications</strong> – the number of replications to create for each scenario</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of scenario instances</p>
+</dd>
+</dl>
+<p>If rng is an integer, numpy will be used to generate that many seed values.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modelly.scenarios.runner">
+<span id="running-scenarios"></span><h2>Running scenarios<a class="headerlink" href="#module-modelly.scenarios.runner" title="Link to this heading">#</a></h2>
+<p>Classes for running parameter sweeps over scenarios.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.runner.RunConfiguration">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">RunConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">until</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcomes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_recorder_attr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data_recorder'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/runner.html#RunConfiguration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.runner.RunConfiguration" title="Link to this definition">#</a></dt>
+<dd><p>Defines how a single Scenario is executed and what is extracted from it.</p>
+<p>Can be used as is for simple use cases or subclassed by overriding one or more of the following
+methods</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">instantiate_model</span></code> — construct a Model from a Scenario (default:
+<code class="docutils literal notranslate"><span class="pre">model_class(*model_args,</span> <span class="pre">scenario=scenario,</span> <span class="pre">**model_kwargs)</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_model</span></code> — advance the model. Default delegates to <code class="docutils literal notranslate"><span class="pre">model.run_until</span></code> based on the <code class="docutils literal notranslate"><span class="pre">until</span></code> attribute.
+Override for alternative run control</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extract_output</span></code> — return a dict with outcome names as key and dataframes as values</p></li>
+</ul>
+<p>Stopping is the model’s responsibility. <code class="docutils literal notranslate"><span class="pre">RunConfiguration</span></code> only chooses
+which run primitive to call.</p>
+<p>Initialize a RunConfiguration object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_class</strong> – the model class to instantiate</p></li>
+<li><p><strong>until</strong> – until which time to run the model</p></li>
+<li><p><strong>model_args</strong> – any additional model arguments</p></li>
+<li><p><strong>model_kwargs</strong> – any additional model keyword arguments</p></li>
+<li><p><strong>outcomes</strong> – the outcomes to extract. If None, extract all outcomes.</p></li>
+<li><p><strong>data_recorder_attr_name</strong> – the name of the data recorder attribute to use on the model</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.runner.RunConfiguration.instantiate_model">
+<span class="sig-name descname"><span class="pre">instantiate_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/runner.html#RunConfiguration.instantiate_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.runner.RunConfiguration.instantiate_model" title="Link to this definition">#</a></dt>
+<dd><p>Instantiate the model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.runner.RunConfiguration.run_model">
+<span class="sig-name descname"><span class="pre">run_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/runner.html#RunConfiguration.run_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.runner.RunConfiguration.run_model" title="Link to this definition">#</a></dt>
+<dd><p>Run the model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.runner.RunConfiguration.extract_output">
+<span class="sig-name descname"><span class="pre">extract_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/runner.html#RunConfiguration.extract_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.runner.RunConfiguration.extract_output" title="Link to this definition">#</a></dt>
+<dd><p>Extract output from model.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.scenarios.runner.run_scenarios">
+<span class="sig-name descname"><span class="pre">run_scenarios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenarios</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.runner.RunConfiguration" title="modelly.scenarios.runner.RunConfiguration"><span class="pre">RunConfiguration</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">executor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Executor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.Store" title="modelly.scenarios.store.Store"><span class="pre">Store</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.scenarios.store.Store" title="modelly.scenarios.store.Store"><span class="pre">Store</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/runner.html#run_scenarios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.runner.run_scenarios" title="Link to this definition">#</a></dt>
+<dd><p>Run the scenarios and return a Store object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scenarios</strong> – an iterable of scenarios to run
+Scenarios to execute. For replications, construct these via
+<code class="docutils literal notranslate"><span class="pre">MyScenario.from_dataframe(df,</span> <span class="pre">replications=n)</span></code> — replication is
+handled at scenario construction, not here.</p></li>
+<li><p><strong>config</strong> – a RunConfiguration instance
+Per-scenario execution unit. Must be picklable when using a
+distributed executor (e.g., ProcessPoolExecutor).</p></li>
+<li><p><strong>executor</strong> – an executor to run the scenarios
+Execution backend. If None, scenarios run sequentially in the
+calling thread (useful for debugging and small experiments).
+Otherwise, pass a user-constructed executor; its lifetime is the
+caller’s responsibility (use a <code class="docutils literal notranslate"><span class="pre">with</span></code> block).</p></li>
+<li><p><strong>store</strong> – the Storage backend to use</p></li>
+<li><p><strong>progress</strong> – whether to display the progress
+Display a progress bar via <code class="docutils literal notranslate"><span class="pre">tqdm</span></code> if installed.</p></li>
+<li><p><strong>workers</strong> – run the scenarios in this many processes
+A shortcut for passing a <code class="docutils literal notranslate"><span class="pre">ProcessPoolExecutor</span></code>: the pool is created
+and closed here. Ignored when <code class="docutils literal notranslate"><span class="pre">executor</span></code> is given. The model class,
+the scenarios and the config must be importable (picklable).</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: a Store instance</p>
+</dd></dl>
+
+<p id="module-modelly.scenarios.sampling">Sampling helpers for building experiment designs.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.scenarios.sampling.rescale_samples">
+<span class="sig-name descname"><span class="pre">rescale_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/sampling.html#rescale_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.sampling.rescale_samples" title="Link to this definition">#</a></dt>
+<dd><p>Rescale samples from the unit interval [0, 1] to parameter ranges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>samples</strong> – Array of shape (n, d) drawn from the unit interval.</p></li>
+<li><p><strong>ranges</strong> – Array of shape (d, 2) giving <code class="docutils literal notranslate"><span class="pre">[[min,</span> <span class="pre">max],</span> <span class="pre">...]</span></code> per parameter.</p></li>
+<li><p><strong>inplace</strong> – If True, <code class="docutils literal notranslate"><span class="pre">samples</span></code> is overwritten with the result; if False
+(default), a new array is returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The rescaled samples, shape (n, d).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-modelly.scenarios.store">
+<span id="storing-results"></span><h2>Storing results<a class="headerlink" href="#module-modelly.scenarios.store" title="Link to this heading">#</a></h2>
+<p>Storage for parameter sweeps.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Status">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Status" title="Link to this definition">#</a></dt>
+<dd><p>Enumeration for scenario run status.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.store.RunId">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">RunId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenario_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">replication_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#RunId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.RunId" title="Link to this definition">#</a></dt>
+<dd><p>Identifier for a specific scenario replication combination.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.store.RunRecord">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">RunRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.Status" title="modelly.scenarios.store.Status"><span class="pre">Status</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Status.PENDING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.exceptions.FailureInfo" title="modelly.scenarios.exceptions.FailureInfo"><span class="pre">FailureInfo</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#RunRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.RunRecord" title="Link to this definition">#</a></dt>
+<dd><p>All state associated with a single run.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Writer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Writer" title="Link to this definition">#</a></dt>
+<dd><p>Worker-side handle that produces references.</p>
+<p>Picklable; carries only configuration, never the store’s durable record.
+This is the ONLY store capability a worker receives.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Writer.to_reference">
+<span class="sig-name descname"><span class="pre">to_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcome</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.scenarios.store.Reference" title="modelly.scenarios.store.Reference"><span class="pre">Reference</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Writer.to_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Writer.to_reference" title="Link to this definition">#</a></dt>
+<dd><p>Persist a run’s outcome and return a reference to it.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store" title="Link to this definition">#</a></dt>
+<dd><p>The Store interface.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.writer">
+<span class="sig-name descname"><span class="pre">writer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.scenarios.store.Writer" title="modelly.scenarios.store.Writer"><span class="pre">Writer</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.writer" title="Link to this definition">#</a></dt>
+<dd><p>Return the pickleable, write-only handle to hand to workers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.retrieve_output">
+<span class="sig-name descname"><span class="pre">retrieve_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.retrieve_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.retrieve_output" title="Link to this definition">#</a></dt>
+<dd><p>Resolve a reference back to its outcome.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.write_scenarios">
+<span class="sig-name descname"><span class="pre">write_scenarios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenarios</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.write_scenarios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.write_scenarios" title="Link to this definition">#</a></dt>
+<dd><p>Record the full ensemble of scenarios before dispatch.</p>
+<p>It is critical that this method is called prior to executing any runs, because mark_succeeded and mark_failed
+will check against the registered runs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.read_scenarios">
+<span class="sig-name descname"><span class="pre">read_scenarios</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.read_scenarios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.read_scenarios" title="Link to this definition">#</a></dt>
+<dd><p>Return the recorded scenarios.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.mark_succeeded">
+<span class="sig-name descname"><span class="pre">mark_succeeded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.Reference" title="modelly.scenarios.store.Reference"><span class="pre">Reference</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.mark_succeeded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.mark_succeeded" title="Link to this definition">#</a></dt>
+<dd><p>Record that a run completed and its outcome was received.</p>
+<p>For a run to be marked, the scenario should first have been registered via write_scenarios.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.mark_failed">
+<span class="sig-name descname"><span class="pre">mark_failed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">failure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.exceptions.FailureInfo" title="modelly.scenarios.exceptions.FailureInfo"><span class="pre">FailureInfo</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.mark_failed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.mark_failed" title="Link to this definition">#</a></dt>
+<dd><p>Record that a run failed, with its origin and diagnostics.</p>
+<p>For a run to be marked, the scenario should first have been registered via write_scenarios.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.mark_aborted">
+<span class="sig-name descname"><span class="pre">mark_aborted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">failure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.exceptions.FailureInfo" title="modelly.scenarios.exceptions.FailureInfo"><span class="pre">FailureInfo</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.mark_aborted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.mark_aborted" title="Link to this definition">#</a></dt>
+<dd><p>Record that a run was aborted (e.g. because the executor pool broke).</p>
+<p>For a run to be marked, the scenario should first have been registered via write_scenarios.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.status">
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.status" title="Link to this definition">#</a></dt>
+<dd><p>One row per scenario: pending / succeeded / failed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.check_status">
+<span class="sig-name descname"><span class="pre">check_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.scenarios.store.Status" title="modelly.scenarios.store.Status"><span class="pre">Status</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.check_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.check_status" title="Link to this definition">#</a></dt>
+<dd><p>Check the status of the run id.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.succeeded">
+<span class="sig-name descname"><span class="pre">succeeded</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.store.RunRecord" title="modelly.scenarios.store.RunRecord"><span class="pre">RunRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.succeeded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.succeeded" title="Link to this definition">#</a></dt>
+<dd><p>Return all succeeded RunIds and their run record.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.failed">
+<span class="sig-name descname"><span class="pre">failed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.store.RunRecord" title="modelly.scenarios.store.RunRecord"><span class="pre">RunRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.failed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.failed" title="Link to this definition">#</a></dt>
+<dd><p>Return all failed RunIds and their run record.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.pending">
+<span class="sig-name descname"><span class="pre">pending</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.store.RunRecord" title="modelly.scenarios.store.RunRecord"><span class="pre">RunRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.pending"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.pending" title="Link to this definition">#</a></dt>
+<dd><p>Return all pending RunIds and their run record.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Store.aborted">
+<span class="sig-name descname"><span class="pre">aborted</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.store.RunRecord" title="modelly.scenarios.store.RunRecord"><span class="pre">RunRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Store.aborted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Store.aborted" title="Link to this definition">#</a></dt>
+<dd><p>Return all aborted RunIds and their run record.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Reference">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#Reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.Reference" title="Link to this definition">#</a></dt>
+<dd><p>A small, picklable handle to a single run’s outcome.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Reference.run_id">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">run_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span><a class="headerlink" href="#modelly.scenarios.store.Reference.run_id" title="Link to this definition">#</a></dt>
+<dd><p>Return the run_id.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.scenarios.store.Reference.payload">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">payload</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><a class="headerlink" href="#modelly.scenarios.store.Reference.payload" title="Link to this definition">#</a></dt>
+<dd><p>Return the payload.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryReference">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">InMemoryReference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryReference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryReference" title="Link to this definition">#</a></dt>
+<dd><p>In-memory reference for scenario runs.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryWriter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">InMemoryWriter</span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryWriter" title="Link to this definition">#</a></dt>
+<dd><p>Writer for in-memory store.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryWriter.to_reference">
+<span class="sig-name descname"><span class="pre">to_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcome</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.scenarios.store.InMemoryReference" title="modelly.scenarios.store.InMemoryReference"><span class="pre">InMemoryReference</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryWriter.to_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryWriter.to_reference" title="Link to this definition">#</a></dt>
+<dd><p>Persist a run’s outcome and return a reference to it.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">InMemoryStore</span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore" title="Link to this definition">#</a></dt>
+<dd><p>Implements in-memory store following the Store protocol.</p>
+<p>Initialize in-memory store.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.writer">
+<span class="sig-name descname"><span class="pre">writer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.scenarios.store.InMemoryWriter" title="modelly.scenarios.store.InMemoryWriter"><span class="pre">InMemoryWriter</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.writer" title="Link to this definition">#</a></dt>
+<dd><p>Return the pickleable, write-only handle to hand to workers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.retrieve_output">
+<span class="sig-name descname"><span class="pre">retrieve_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.retrieve_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.retrieve_output" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve a run’s output.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.write_scenarios">
+<span class="sig-name descname"><span class="pre">write_scenarios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenarios</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.write_scenarios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.write_scenarios" title="Link to this definition">#</a></dt>
+<dd><p>Record the full ensemble of scenarios before dispatch.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.read_scenarios">
+<span class="sig-name descname"><span class="pre">read_scenarios</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.read_scenarios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.read_scenarios" title="Link to this definition">#</a></dt>
+<dd><p>Return the recorded scenarios.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.mark_succeeded">
+<span class="sig-name descname"><span class="pre">mark_succeeded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.Reference" title="modelly.scenarios.store.Reference"><span class="pre">Reference</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.mark_succeeded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.mark_succeeded" title="Link to this definition">#</a></dt>
+<dd><p>Record that a run completed and its outcome was received.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.mark_failed">
+<span class="sig-name descname"><span class="pre">mark_failed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">failure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.exceptions.FailureInfo" title="modelly.scenarios.exceptions.FailureInfo"><span class="pre">FailureInfo</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.mark_failed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.mark_failed" title="Link to this definition">#</a></dt>
+<dd><p>Record that a run failed, with its origin and diagnostics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.mark_aborted">
+<span class="sig-name descname"><span class="pre">mark_aborted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">failure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.exceptions.FailureInfo" title="modelly.scenarios.exceptions.FailureInfo"><span class="pre">FailureInfo</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.mark_aborted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.mark_aborted" title="Link to this definition">#</a></dt>
+<dd><p>Record that a run was aborted (e.g. because the executor pool broke).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.status">
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.status" title="Link to this definition">#</a></dt>
+<dd><p>One row per design point: pending / succeeded / failed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.check_status">
+<span class="sig-name descname"><span class="pre">check_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.scenarios.store.Status" title="modelly.scenarios.store.Status"><span class="pre">Status</span></a></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.check_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.check_status" title="Link to this definition">#</a></dt>
+<dd><p>Check the status of a run.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.succeeded">
+<span class="sig-name descname"><span class="pre">succeeded</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.store.RunRecord" title="modelly.scenarios.store.RunRecord"><span class="pre">RunRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.succeeded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.succeeded" title="Link to this definition">#</a></dt>
+<dd><p>Return all succeeded runs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.failed">
+<span class="sig-name descname"><span class="pre">failed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.store.RunRecord" title="modelly.scenarios.store.RunRecord"><span class="pre">RunRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.failed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.failed" title="Link to this definition">#</a></dt>
+<dd><p>Return all failed runs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.pending">
+<span class="sig-name descname"><span class="pre">pending</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.store.RunRecord" title="modelly.scenarios.store.RunRecord"><span class="pre">RunRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.pending"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.pending" title="Link to this definition">#</a></dt>
+<dd><p>Return all pending runs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.scenarios.store.InMemoryStore.aborted">
+<span class="sig-name descname"><span class="pre">aborted</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.store.RunRecord" title="modelly.scenarios.store.RunRecord"><span class="pre">RunRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/scenarios/store.html#InMemoryStore.aborted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.store.InMemoryStore.aborted" title="Link to this definition">#</a></dt>
+<dd><p>Return all aborted runs.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modelly.scenarios.exceptions">
+<span id="exceptions"></span><h2>Exceptions<a class="headerlink" href="#module-modelly.scenarios.exceptions" title="Link to this heading">#</a></h2>
+<p>Exceptions for the scenarios module.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.FailureOrigin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">FailureOrigin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/exceptions.html#FailureOrigin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.exceptions.FailureOrigin" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>Enum describing where a scenario run failed.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.FailureInfo">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">FailureInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.exceptions.FailureOrigin" title="modelly.scenarios.exceptions.FailureOrigin"><span class="pre">FailureOrigin</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">traceback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/exceptions.html#FailureInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.exceptions.FailureInfo" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Structured diagnostics for a failed run.</p>
+<p>ensures traceback information can be safely sent from workers to root.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.RunStageException">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">RunStageException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/exceptions.html#RunStageException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.exceptions.RunStageException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#modelly.core.exceptions.ModellyException" title="modelly.core.exceptions.ModellyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModellyException</span></code></a></p>
+<p>Base for failures attributable to a stage of a single run.</p>
+<p>Initialize a run-stage exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> – human-readable description of the stage failure. The
+underlying cause should be attached via <code class="docutils literal notranslate"><span class="pre">raise</span> <span class="pre">...</span> <span class="pre">from</span> <span class="pre">e</span></code>.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.RunStageException.origin">
+<span class="sig-name descname"><span class="pre">origin</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.exceptions.FailureOrigin" title="modelly.scenarios.exceptions.FailureOrigin"><span class="pre">FailureOrigin</span></a></span><a class="headerlink" href="#modelly.scenarios.exceptions.RunStageException.origin" title="Link to this definition">#</a></dt>
+<dd><p>The stage this exception represents. Set by each subclass.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.ModelInstantiationException">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ModelInstantiationException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><span class="pre">type</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.scenario.Scenario" title="modelly.scenarios.scenario.Scenario"><span class="pre">Scenario</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/exceptions.html#ModelInstantiationException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.exceptions.ModelInstantiationException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelly.scenarios.exceptions.RunStageException" title="modelly.scenarios.exceptions.RunStageException"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunStageException</span></code></a></p>
+<p>Raised when a model cannot be instantiated for a scenario.</p>
+<p>Initialize a model instantiation exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_class</strong> – the model class that failed to instantiate</p></li>
+<li><p><strong>model_args</strong> – the positional args passed to the model</p></li>
+<li><p><strong>model_kwargs</strong> – the keyword args passed to the model</p></li>
+<li><p><strong>scenario</strong> – the scenario being instantiated</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.ModelInstantiationException.origin">
+<span class="sig-name descname"><span class="pre">origin</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.exceptions.FailureOrigin" title="modelly.scenarios.exceptions.FailureOrigin"><span class="pre">FailureOrigin</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'instantiating'</span></span><a class="headerlink" href="#modelly.scenarios.exceptions.ModelInstantiationException.origin" title="Link to this definition">#</a></dt>
+<dd><p>The stage this exception represents. Set by each subclass.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.ModelRunException">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ModelRunException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/exceptions.html#ModelRunException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.exceptions.ModelRunException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelly.scenarios.exceptions.RunStageException" title="modelly.scenarios.exceptions.RunStageException"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunStageException</span></code></a></p>
+<p>Raised when a model fails while advancing (run_model).</p>
+<p>Initialize a model run exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>run_id</strong> – identifier of the run that failed during execution</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.ModelRunException.origin">
+<span class="sig-name descname"><span class="pre">origin</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.exceptions.FailureOrigin" title="modelly.scenarios.exceptions.FailureOrigin"><span class="pre">FailureOrigin</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'running'</span></span><a class="headerlink" href="#modelly.scenarios.exceptions.ModelRunException.origin" title="Link to this definition">#</a></dt>
+<dd><p>The stage this exception represents. Set by each subclass.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.OutcomeExtractionException">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">OutcomeExtractionException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcomes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/exceptions.html#OutcomeExtractionException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.exceptions.OutcomeExtractionException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelly.scenarios.exceptions.RunStageException" title="modelly.scenarios.exceptions.RunStageException"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunStageException</span></code></a></p>
+<p>Raised when extracting outcomes from a finished model fails.</p>
+<p>Initialize an outcome extraction exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_id</strong> – identifier of the run whose extraction failed</p></li>
+<li><p><strong>outcomes</strong> – the requested outcome keys (None means “all”)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.OutcomeExtractionException.origin">
+<span class="sig-name descname"><span class="pre">origin</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#modelly.scenarios.exceptions.FailureOrigin" title="modelly.scenarios.exceptions.FailureOrigin"><span class="pre">FailureOrigin</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'extracting'</span></span><a class="headerlink" href="#modelly.scenarios.exceptions.OutcomeExtractionException.origin" title="Link to this definition">#</a></dt>
+<dd><p>The stage this exception represents. Set by each subclass.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.ScenarioNotFoundException">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ScenarioNotFoundException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/exceptions.html#ScenarioNotFoundException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.exceptions.ScenarioNotFoundException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#modelly.core.exceptions.ModellyException" title="modelly.core.exceptions.ModellyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModellyException</span></code></a></p>
+<p>Raised when no run is recorded for a given RunId.</p>
+<p>Initialize a scenario-not-found exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>run_id</strong> – the RunId that could not be found, if known</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.ScenarioNotReadyException">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ScenarioNotReadyException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/exceptions.html#ScenarioNotReadyException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.exceptions.ScenarioNotReadyException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#modelly.core.exceptions.ModellyException" title="modelly.core.exceptions.ModellyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModellyException</span></code></a></p>
+<p>Raised when a run’s output is requested before it has completed.</p>
+<p>Initialize a scenario-not-ready exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>run_id</strong> – the RunId whose output is not yet available</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.ScenarioFailedException">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ScenarioFailedException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.exceptions.FailureInfo" title="modelly.scenarios.exceptions.FailureInfo"><span class="pre">FailureInfo</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/exceptions.html#ScenarioFailedException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.exceptions.ScenarioFailedException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#modelly.core.exceptions.ModellyException" title="modelly.core.exceptions.ModellyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModellyException</span></code></a></p>
+<p>Raised when a failed run’s output is requested.</p>
+<p>Initialize a scenario-failed exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_id</strong> – the RunId of the failed run</p></li>
+<li><p><strong>failure</strong> – structured failure diagnostics for the run, if available</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelly.scenarios.exceptions.ScenarioAbortedException">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ScenarioAbortedException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.store.RunId" title="modelly.scenarios.store.RunId"><span class="pre">RunId</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.scenarios.exceptions.FailureInfo" title="modelly.scenarios.exceptions.FailureInfo"><span class="pre">FailureInfo</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/scenarios/exceptions.html#ScenarioAbortedException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.scenarios.exceptions.ScenarioAbortedException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#modelly.core.exceptions.ModellyException" title="modelly.core.exceptions.ModellyException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModellyException</span></code></a></p>
+<p>Raised when an aborted run’s output is requested.</p>
+<p>Initialize a scenario-aborted exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_id</strong> – the RunId of the aborted run</p></li>
+<li><p><strong>failure</strong> – structured failure diagnostics for the run, if available</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="behaviour.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Behaviour</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="batch.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Batch</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.scenarios.scenario">Scenario</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.scenario.Scenario"><code class="docutils literal notranslate"><span class="pre">Scenario</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.scenario.Scenario.to_dict"><code class="docutils literal notranslate"><span class="pre">Scenario.to_dict()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.scenario.Scenario.spawn_replications"><code class="docutils literal notranslate"><span class="pre">Scenario.spawn_replications()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.scenario.Scenario.from_dataframe"><code class="docutils literal notranslate"><span class="pre">Scenario.from_dataframe()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.scenario.Scenario.from_ndarray"><code class="docutils literal notranslate"><span class="pre">Scenario.from_ndarray()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.scenarios.runner">Running scenarios</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.runner.RunConfiguration"><code class="docutils literal notranslate"><span class="pre">RunConfiguration</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.runner.RunConfiguration.instantiate_model"><code class="docutils literal notranslate"><span class="pre">RunConfiguration.instantiate_model()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.runner.RunConfiguration.run_model"><code class="docutils literal notranslate"><span class="pre">RunConfiguration.run_model()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.runner.RunConfiguration.extract_output"><code class="docutils literal notranslate"><span class="pre">RunConfiguration.extract_output()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.runner.run_scenarios"><code class="docutils literal notranslate"><span class="pre">run_scenarios()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.sampling.rescale_samples"><code class="docutils literal notranslate"><span class="pre">rescale_samples()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.scenarios.store">Storing results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Status"><code class="docutils literal notranslate"><span class="pre">Status</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.RunId"><code class="docutils literal notranslate"><span class="pre">RunId</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.RunRecord"><code class="docutils literal notranslate"><span class="pre">RunRecord</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Writer"><code class="docutils literal notranslate"><span class="pre">Writer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Writer.to_reference"><code class="docutils literal notranslate"><span class="pre">Writer.to_reference()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store"><code class="docutils literal notranslate"><span class="pre">Store</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.writer"><code class="docutils literal notranslate"><span class="pre">Store.writer()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.retrieve_output"><code class="docutils literal notranslate"><span class="pre">Store.retrieve_output()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.write_scenarios"><code class="docutils literal notranslate"><span class="pre">Store.write_scenarios()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.read_scenarios"><code class="docutils literal notranslate"><span class="pre">Store.read_scenarios()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.mark_succeeded"><code class="docutils literal notranslate"><span class="pre">Store.mark_succeeded()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.mark_failed"><code class="docutils literal notranslate"><span class="pre">Store.mark_failed()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.mark_aborted"><code class="docutils literal notranslate"><span class="pre">Store.mark_aborted()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.status"><code class="docutils literal notranslate"><span class="pre">Store.status()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.check_status"><code class="docutils literal notranslate"><span class="pre">Store.check_status()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.succeeded"><code class="docutils literal notranslate"><span class="pre">Store.succeeded()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.failed"><code class="docutils literal notranslate"><span class="pre">Store.failed()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.pending"><code class="docutils literal notranslate"><span class="pre">Store.pending()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Store.aborted"><code class="docutils literal notranslate"><span class="pre">Store.aborted()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Reference"><code class="docutils literal notranslate"><span class="pre">Reference</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Reference.run_id"><code class="docutils literal notranslate"><span class="pre">Reference.run_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.Reference.payload"><code class="docutils literal notranslate"><span class="pre">Reference.payload</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryReference"><code class="docutils literal notranslate"><span class="pre">InMemoryReference</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryWriter"><code class="docutils literal notranslate"><span class="pre">InMemoryWriter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryWriter.to_reference"><code class="docutils literal notranslate"><span class="pre">InMemoryWriter.to_reference()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore"><code class="docutils literal notranslate"><span class="pre">InMemoryStore</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.writer"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.writer()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.retrieve_output"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.retrieve_output()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.write_scenarios"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.write_scenarios()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.read_scenarios"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.read_scenarios()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.mark_succeeded"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.mark_succeeded()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.mark_failed"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.mark_failed()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.mark_aborted"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.mark_aborted()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.status"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.status()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.check_status"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.check_status()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.succeeded"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.succeeded()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.failed"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.failed()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.pending"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.pending()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.store.InMemoryStore.aborted"><code class="docutils literal notranslate"><span class="pre">InMemoryStore.aborted()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.scenarios.exceptions">Exceptions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.FailureOrigin"><code class="docutils literal notranslate"><span class="pre">FailureOrigin</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.FailureInfo"><code class="docutils literal notranslate"><span class="pre">FailureInfo</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.RunStageException"><code class="docutils literal notranslate"><span class="pre">RunStageException</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.RunStageException.origin"><code class="docutils literal notranslate"><span class="pre">RunStageException.origin</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.ModelInstantiationException"><code class="docutils literal notranslate"><span class="pre">ModelInstantiationException</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.ModelInstantiationException.origin"><code class="docutils literal notranslate"><span class="pre">ModelInstantiationException.origin</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.ModelRunException"><code class="docutils literal notranslate"><span class="pre">ModelRunException</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.ModelRunException.origin"><code class="docutils literal notranslate"><span class="pre">ModelRunException.origin</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.OutcomeExtractionException"><code class="docutils literal notranslate"><span class="pre">OutcomeExtractionException</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.OutcomeExtractionException.origin"><code class="docutils literal notranslate"><span class="pre">OutcomeExtractionException.origin</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.ScenarioNotFoundException"><code class="docutils literal notranslate"><span class="pre">ScenarioNotFoundException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.ScenarioNotReadyException"><code class="docutils literal notranslate"><span class="pre">ScenarioNotReadyException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.ScenarioFailedException"><code class="docutils literal notranslate"><span class="pre">ScenarioFailedException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.scenarios.exceptions.ScenarioAbortedException"><code class="docutils literal notranslate"><span class="pre">ScenarioAbortedException</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/apis/scenarios.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,218 @@
+# 1.6.0: finish and bridge
+
+**Status:** in progress (S1) · **Base:** 1.5.1
+
+1.6.0 sits between 1.5 and 2.0 and does two jobs. It **finishes what 1.5 left open**: a hub
+with real publications and community models, third-party plugins, the R and Julia packages'
+second round, and the reviews by people that automated checks cannot replace. It **builds 2.0's
+riskiest designs early, as opt-in previews**: the one space protocol, the migration tool as a
+dry run, and the checkpoint format v2. Users try them on real models a full release before
+2.0 makes them the default. And it gives Studio the professional workbench it lacked. Nine
+epics, eight sprints, all on Windows, macOS and Linux (see [Platforms](platforms.md)).
+Backward compatible with 1.5: 1.6 adds and deprecates, it removes nothing. As the last 1.x
+minor, 1.6 becomes the long-term-support line for people who cannot move to 2.0 yet.
+
+## Where we start
+
+| 1.5 gives | 1.6.0 adds |
+|---|---|
+| A hub with the zoo models, Zenodo and Sigstore as dry runs | Real publications with DOIs, signed; community models; install checked on every OS |
+| Plugin API v1, frozen, with a template | Three third-party plugins listed and tested |
+| R and Julia packages, run on three OSs | ggplot2 methods, a package repository for R, the Julia registry |
+| A 2.0 plan, every 2.0 change warned | 2.0's space protocol, migration and checkpoint format to try now, opt-in |
+| Studio for everyone, on Solara's default look | A workbench layout: run bar, side panels, tabs, timeline and status bar |
+| Translations and an automated accessibility audit | Native-speaker reviews and screen-reader passes by hand |
+
+## Who 1.6.0 is for
+
+| Audience | What 1.6.0 unlocks |
+|---|---|
+| Model authors | Publish to the hub and get a DOI; see what 2.0 will change in their model, without changing it |
+| Everyone using Studio | A clear, dense workbench: controls where IDE users expect them, the model's views first |
+| Plugin authors | A documented path from template to a listed, tested plugin |
+| R and Julia users | Plots in their own idiom; installation from their language's package index |
+| Language-model agent researchers | A measured comparison of three providers: agreement, cost, latency |
+| Teachers | A builder with several agent classes and spaces |
+| People using assistive technology | Studio checked by hand with three screen readers |
+
+## Epics
+
+### I1 · Studio workbench
+
+**Goal:** Studio looks and works like the professional tools its users know (JupyterLab, VS
+Code, RStudio): the model's views take the space, the controls are where the eye expects them.
+
+**Work items:** the workbench layout (top run bar with the live step, activity bar opening the
+Parameters and Export panels, document tabs, timeline bar, status bar); a dark theme that
+follows the system setting; keyboard shortcuts (space to play or pause, the arrow keys to step
+and scrub, a list of them on `?`); a side panel that can be resized; the space view drawn in
+the same style as the rest (frame, ticks, palette); tabs grouped when there are many (views,
+studies, tools, sharing); the open tab and panel remembered per browser.
+
+**Done when:** axe-core finds no WCAG A or AA violation in the light and dark themes; the
+browser tests pass on Chromium, Firefox and WebKit; five people who have never used Studio
+open a model, change a parameter, scrub back and export a figure without help.
+
+**Progress (S1):** the workbench layout (`modelly/studio/shell.py`,
+`modelly/templates/studio.css`), with the four translations, no WCAG A or AA violation, and the
+guide's screenshots retaken by `tools/studio/screenshots.py`.
+
+**Size:** M · **Depends on:** 1.5 G7, G8
+
+### I2 · The hub in practice
+
+**Goal:** the hub holds published, citable work, not only the zoo.
+
+**Work items:** the first real Zenodo publication with a DOI, and Sigstore signing outside dry
+runs; install and verify checked on Windows and macOS as well as Linux; three community models
+reviewed and listed; a "publish your model" walkthrough timed from project to DOI.
+
+**Done when:** at least one model has a real DOI and a verified signature; three community
+models are listed; publishing takes under ten minutes, timed.
+
+**Size:** M · **Depends on:** 1.5 G1, G2
+
+### I3 · Plugins in the wild
+
+**Goal:** the plugin API v1 proven by plugins Modelly's authors did not write.
+
+**Work items:** three third-party plugins (a space, an executor, a Studio view) listed on the hub
+and tested against 1.6 on all three platforms; the plugin guide revised from their authors'
+questions.
+
+**Size:** S · **Depends on:** 1.5 G9
+
+### I4 · R and Julia II
+
+**Work items:** ggplot2 methods for the R package (carried over from 1.5 S4); the R package on
+r-universe, and a decision on CRAN; the Julia package in the General registry; the R and Julia
+tutorials run on all three operating systems in the release workflow.
+
+**Size:** M · **Depends on:** 1.5 G6
+
+### I5 · Language-model agents: providers compared
+
+**Work items:** the evaluation harness run on three real providers and a local model, on the
+conversational market and one more model: agreement between providers, cost and latency per
+step, reported in the guide; recorded replies kept so the comparison replays offline.
+
+**Size:** S · **Depends on:** 1.5 G5
+
+### I6 · Builder II
+
+**Work items:** the Studio builder with several agent classes, grids, networks and continuous
+space, and more behaviours; the code it writes passes `modelly lint` and runs unchanged.
+
+**Size:** M · **Depends on:** 1.5 G7, G10
+
+### I7 · Accessibility and languages II
+
+**Work items:** the French, Spanish, Portuguese and Chinese translations reviewed by native
+speakers; keyboard-only and screen-reader passes by hand (NVDA on Windows, VoiceOver on macOS,
+Orca on Linux) of Studio and the docs, their findings fixed and the method written down.
+
+**Size:** S · **Depends on:** 1.5 G8
+
+### I8 · 2.0 previews: space protocol, migration, formats
+
+**Goal:** 2.0's three riskiest designs used on real models before they become the default.
+
+**Work items:**
+
+- **Space protocol (2.0 H2), provisional:** the `Space` protocol (`place`, `move`, `neighbors`,
+  `within`, `positions`) implemented by grids, networks, continuous and geographic space, opt in
+  per model; today's classes unchanged. A tutorial switches a model from grid to network to
+  continuous space by changing one line.
+- **Migration dry run (2.0 H1):** `modelly migrate --to 2.0 --dry-run` prints the diff it would
+  apply and a report of what needs a human, and writes nothing.
+- **Checkpoint format v2 (2.0 H8), opt in:** columns as Arrow, structure as JSON, only user
+  objects pickled; 1.6 reads and writes it, so 2.0 checkpoints can come back to the
+  long-term-support line.
+
+**Done when:** every zoo model runs on the space protocol in the test suite with the same
+results; the dry run reports on every zoo and hub model; every zoo model's checkpoint round
+trips through format v2 and resumes with the same results.
+
+**Size:** L · **Depends on:** 1.5 G11; designs in [2.0.0](2.0.0.md) H1, H2, H8
+
+### I9 · Quality and platforms
+
+**Work items:** the release gate as for 1.5 (benchmark against the previous release, the
+notebooks, the three-OS matrix, the accessibility stage); the public names' stability list
+(`docs/api_stability.toml`) kept in step with the previews, which enter as provisional; 1.6
+announced as the long-term-support line.
+
+**Size:** S (continuous)
+
+## Priorities
+
+| Priority | Epics |
+|---|---|
+| **Must** | I1 Studio workbench, I2 The hub in practice, I8 2.0 previews, I9 Quality |
+| **Should** | I3 Plugins, I4 R and Julia II, I7 Accessibility and languages II |
+| **Could** | I5 Providers compared, I6 Builder II |
+| **Won't** | Removals or breaking changes; new feature families (they go to 2.1) |
+
+## Sprint plan
+
+| Sprint | Goal | Main items | Exit |
+|---|---|---|---|
+| S1 | Studio workbench | Workbench layout, dark theme, shortcuts, resizable panel | No WCAG A or AA violation in both themes; browser tests on three engines |
+| S2 | Hub and plugins | A real publication; community models and plugins invited and reviewed | One model with a real DOI installed on the three OSs |
+| S3 | Space protocol · **a1** | The protocol; grids and networks on it | Grid and network zoo models pass on the protocol |
+| S4 | Protocol II and migration | Continuous and geographic space; `migrate --to 2.0 --dry-run` | Every zoo model on the protocol; a dry-run report for each |
+| S5 | Formats and bindings | Checkpoint format v2; ggplot2 methods, r-universe, the Julia registry | Zoo checkpoints round trip; R and Julia tutorials on three OSs |
+| S6 | Providers and builder · **b1** | Three providers compared; builder II | Must and Should epics feature complete; previews' API frozen for 1.6 |
+| S7 | Reviews · **rc1** | Native-speaker reviews; screen-reader passes; user test of Studio | No open blocker |
+| S8 | Hardening · **1.6.0** | Release gate; long-term-support announcement | All gates pass |
+
+## Release gates
+
+| Release | Gate |
+|---|---|
+| 1.6.0a1 | Studio workbench in; one real hub publication; the protocol on grids and networks |
+| 1.6.0b1 | Must and Should epics feature complete; previews' API frozen for 1.6 |
+| 1.6.0rc1 | No open blocker; translations reviewed; screen-reader passes done |
+| 1.6.0 | Benchmark against 1.5.1 with no slower playbook; notebooks run; three-OS matrix green |
+
+## Success metrics
+
+| Metric | 1.5.1 | 1.6.0 target |
+|---|---|---|
+| Hub models with a real DOI | 0 | at least 1 |
+| Community models on the hub | 0 | at least 3 |
+| Third-party plugins | 0 | at least 3 |
+| Zoo models on the space protocol (tests) | 0 | all |
+| Zoo and hub models with a migration dry-run report | 0 | all |
+| Translations reviewed by native speakers | 0 of 4 | 4 of 4 |
+| Screen readers Studio is checked with by hand | 0 | 3 |
+| Studio usability: first-time users finishing the four tasks unaided | not measured | 5 of 5 |
+
+## Risks
+
+| Risk | Likelihood | Impact | Mitigation |
+|---|---|---|---|
+| Community models and plugins depend on other people's time | High | Medium | Invite early (S2); the template and the walkthrough cut the work; count what is under review |
+| The space protocol cannot express a space well | Medium | High | It is provisional in 1.6: the design can change before 2.0; today's classes stay |
+| Publication and provider comparison need accounts and keys | Medium | Low | The dry runs and recorded replies stay as fallbacks; the gate names what is missing |
+| A Solara upgrade breaks Studio's look | Medium | Medium | Styles are scoped to Studio's own classes; browser tests on three engines; the Solara range is tested in the gate |
+
+## Open questions
+
+- [ ] R: r-universe only, or CRAN as well (strict policies, slower updates)?
+- [ ] Which three providers and which local model for the comparison?
+- [ ] When does the 1.6 long-term-support line end: when 2.1 ships, or when the hub's models
+  have all migrated?
+
+## Sprint review log
+
+| Sprint | Shipped | Slipped | Notes |
+|---|---|---|---|
+| S1 | The workbench layout (run bar, activity bar and panels, tabs, timeline bar, status bar), the reporters plot restyled, the guide's screenshots retaken | | In progress: dark theme, shortcuts and the resizable panel remain |
+| S2 | | | |
+| S3 | | | |
+| S4 | | | |
+| S5 | | | |
+| S6 | | | |
+| S7 | | | |
+| S8 | | | |

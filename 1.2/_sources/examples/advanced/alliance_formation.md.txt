@@ -1,0 +1,370 @@
+
+# Alliance Formation Model (Meta-Agent Example)
+
+## Summary
+
+This model demonstrates Modelly's meta agent capability.
+
+**Overview of meta agent:** Complex systems often have multiple levels of components. A city is not a single entity, but it is made of districts,neighborhoods, buildings, and people. A forest comprises an ecosystem of trees, plants, animals, and microorganisms. An organization is not one entity, but is made of departments, sub-departments, and people. A person is not a single entity, but it is made of micro biomes, organs and cells.
+
+This reality is the motivation for meta-agents. It allows users to represent these multiple levels, where each level can have agents with sub-agents.
+
+This model demonstrates Modelly's ability to dynamically create new classes of agents that are composed of existing agents. These meta-agents inherits functions and attributes from their sub-agents and users can specify new capabilities or attributes they want the meta agent to have. For example, if a user is doing a factory simulation with autonomous systems, each major component of that system can be a sub-agent of the overall robot agent. Or, if someone is doing a simulation of an organization, individuals can be part of different organizational units that are working for some purpose.
+
+To provide a simple demonstration of this capability is an alliance formation model.
+
+In this simulation n agents are created, who have two attributes (1) power and (2) preference. Each attribute is a number between 0 and 1 over a gaussian distribution. Agents then randomly select other agents and use the [bilateral shapley value](https://en.wikipedia.org/wiki/Shapley_value) to determine if they should form an alliance. If the expected utility support an alliances, the agent creates a meta-agent. Subsequent steps may add agents to the meta-agent, create new instances of similar hierarchy, or create a new hierarchy level where meta-agents form an alliance of meta-agents. In this visualization of this model a new meta-agent hierarchy will be a larger node and a new color.
+
+A membership manager (`model.meta_agents`) tracks who belongs to which alliance, including overlapping and nested groups.
+
+
+## Files
+
+- `model.py`: Contains creation of agents, the network and management of agent execution.
+- `agents.py`: Contains logic for forming alliances and creation of new agents
+- `app.py`: Contains the code for the interactive Solara visualization.
+
+## Further Reading
+
+The meta-agent API this model uses lives in `modelly.behaviour.meta_agents`.
+
+An example of the bilateral shapley value in another model:
+[Techno-Social Energy Infrastructure Siting: Sustainable Energy Modeling Programming (SEMPro)](https://www.jasss.org/16/3/6.html)
+
+
+## How to Run
+
+Install Modelly with recommended dependencies:
+
+pip install "modelly-abm[rec]"
+
+Then run the example:
+
+solara run app.py
+
+Open the displayed local URL in your browser.
+
+
+## Agents
+
+```python
+import modelly
+
+
+class AllianceAgent(modelly.Agent):
+    """
+    Agent has three attributes power (float), position (float) and level (int)
+
+    """
+
+    def __init__(self, model, power, position, level=0):
+        super().__init__(model)
+        self.power = power
+        self.position = position
+        self.level = level
+
+    """
+    For this demo model agent only need attributes.
+
+    More complex models could have functions that define agent behavior.
+    """
+
+```
+
+
+## Model
+
+```python
+import networkx as nx
+import numpy as np
+
+import modelly
+from modelly.behaviour.meta_agents import MetaAgents
+from modelly.examples.advanced.alliance_formation.agents import AllianceAgent
+from modelly.scenarios import Scenario
+
+
+class AllianceScenario(Scenario):
+    """Scenario for the Alliance model."""
+
+    n: int = 50
+    mean: float = 0.5
+    std_dev: float = 0.1
+
+
+class MultiLevelAllianceModel(modelly.Model):
+    """
+    Model for simulating multi-level alliances among agents.
+    """
+
+    def __init__(self, scenario: AllianceScenario = AllianceScenario):
+        """
+        Initialize the model.
+
+        Args:
+            n (int): Number of agents.
+            mean (float): Mean value for normal distribution.
+            std_dev (float): Standard deviation for normal distribution.
+            rng (int): Random rng.
+        """
+        super().__init__(scenario=scenario)
+        self.network = nx.Graph()  # Initialize the network
+        self.datacollector = modelly.DataCollector(
+            model_reporters={"Network": "network"}
+        )
+        self.meta_agents = MetaAgents(self)
+        self.membership_backend = self.meta_agents.backend
+
+        # Create Agents
+        power = self.rng.normal(scenario.mean, scenario.std_dev, scenario.n)
+        power = np.clip(power, 0, 1)
+        position = self.rng.normal(scenario.mean, scenario.std_dev, scenario.n)
+        position = np.clip(position, 0, 1)
+        AllianceAgent.create_agents(self, scenario.n, power, position)
+        agent_ids = [
+            (agent.unique_id, {"size": 300, "level": 0}) for agent in self.agents
+        ]
+        self.network.add_nodes_from(agent_ids)
+
+    def add_link(self, meta_agent, agents):
+        """
+        Add links between a meta agent and its constituent agents in the network.
+
+        Args:
+            meta_agent (MetaAgent): The meta agent.
+            agents (list): List of agents.
+        """
+        for agent in agents:
+            self.network.add_edge(meta_agent.unique_id, agent.unique_id)
+
+    def calculate_shapley_value(self, agents):
+        """
+        Calculate the Shapley value of the two agents.
+
+        Args:
+            agents: Pair of agents.
+
+        Returns:
+            tuple: Potential utility, new position, and level.
+        """
+        agent_0, agent_1 = agents
+
+        new_position = 1 - (
+            max(agent_0.position, agent_1.position)
+            - min(agent_0.position, agent_1.position)
+        )
+        potential_utility = (agent_0.power + agent_1.power) * 1.2 * new_position
+
+        value_0 = 0.5 * agent_0.power + 0.5 * (potential_utility - agent_1.power)
+        value_1 = 0.5 * agent_1.power + 0.5 * (potential_utility - agent_0.power)
+
+        if value_0 > agent_0.power and value_1 > agent_1.power:
+            if agent_0.level > agent_1.level:
+                level = agent_0.level
+            elif agent_0.level == agent_1.level:
+                level = agent_0.level + 1
+            else:
+                level = agent_1.level
+
+            return potential_utility, new_position, level
+
+    def only_best_combination(self, combinations):
+        """
+        Filter to keep only the best combination for each agent.
+
+        Args:
+            combinations (list): List of combinations.
+
+        Returns:
+            dict: Unique combinations.
+        """
+        best = {}
+        # Determine best option for EACH agent
+        for group, value in combinations:
+            agent_ids = sorted(a.unique_id for a in group)
+            # Deal with all possibilities
+            if (
+                agent_ids[0] not in best and agent_ids[1] not in best
+            ):  # if neither in add both
+                best[agent_ids[0]] = [group, value, agent_ids]
+                best[agent_ids[1]] = [group, value, agent_ids]
+            elif (
+                agent_ids[0] in best and agent_ids[1] in best
+            ):  # if both in, see if both would be trading up
+                if (
+                    value[0] > best[agent_ids[0]][1][0]
+                    and value[0] > best[agent_ids[1]][1][0]
+                ):
+                    # Remove the old alliances
+                    del best[best[agent_ids[0]][2][1]]
+                    del best[best[agent_ids[1]][2][0]]
+                    # Add the new alliance
+                    best[agent_ids[0]] = [group, value, agent_ids]
+                    best[agent_ids[1]] = [group, value, agent_ids]
+            elif (
+                agent_ids[0] in best
+            ):  # if only agent_ids[0] in, see if it would be trading up
+                if value[0] > best[agent_ids[0]][1][0]:
+                    # Remove the old alliance for agent_ids[0]
+                    del best[best[agent_ids[0]][2][1]]
+                    # Add the new alliance
+                    best[agent_ids[0]] = [group, value, agent_ids]
+                    best[agent_ids[1]] = [group, value, agent_ids]
+            elif (
+                agent_ids[1] in best
+            ):  # if only agent_ids[1] in, see if it would be trading up
+                if value[0] > best[agent_ids[1]][1][0]:
+                    # Remove the old alliance for agent_ids[1]
+                    del best[best[agent_ids[1]][2][0]]
+                    # Add the new alliance
+                    best[agent_ids[0]] = [group, value, agent_ids]
+                    best[agent_ids[1]] = [group, value, agent_ids]
+
+        # Create a unique dictionary of the best combinations
+        unique_combinations = {}
+        for group, value, agents_nums in best.values():
+            unique_combinations[tuple(agents_nums)] = [group, value]
+
+        return unique_combinations.values()
+
+    def step(self):
+        """
+        Execute one step of the model.
+        """
+        # Agents at the same hierarchy level can form an alliance. Meta-agents
+        # use dynamically generated classes, so grouping by concrete type would
+        # isolate every meta-agent and prevent higher-level alliances.
+        agents_by_level = {}
+        for agent in self.agents:
+            agents_by_level.setdefault(agent.level, []).append(agent)
+
+        for similar_agents in agents_by_level.values():
+            # Find the best combinations using find_combinations
+            if (
+                len(similar_agents) > 1
+            ):  # only form alliances if there are more than 1 agent
+                combinations = self.meta_agents.find_combinations(
+                    similar_agents,
+                    size=2,
+                    evaluation_func=self.calculate_shapley_value,
+                    filter_func=self.only_best_combination,
+                )
+
+                for alliance, attributes in combinations:
+                    alliance_members = tuple(
+                        sorted(alliance, key=lambda agent: agent.unique_id)
+                    )
+                    alliance_signature = "_".join(
+                        str(agent.unique_id) for agent in alliance_members
+                    )
+                    class_name = f"MetaAgentLevel{attributes[2]}_{alliance_signature}"
+                    meta = self.meta_agents.create(
+                        class_name,
+                        alliance_members,
+                        meta_attributes={
+                            "level": attributes[2],
+                            "power": attributes[0],
+                            "position": attributes[1],
+                        },
+                    )
+
+                    # Update the network if a new meta agent instance created
+                    if meta:
+                        self.network.add_node(
+                            meta.unique_id,
+                            size=(meta.level + 1) * 300,
+                            level=meta.level,
+                        )
+                        self.add_link(meta, alliance_members)
+
+```
+
+
+## App
+
+```python
+import matplotlib.pyplot as plt
+import networkx as nx
+import solara
+from matplotlib.figure import Figure
+
+from modelly.examples.advanced.alliance_formation.model import (
+    AllianceScenario,
+    MultiLevelAllianceModel,
+)
+from modelly.viz import SolaraViz
+from modelly.viz.utils import update_counter
+
+model_params = {
+    "rng": {
+        "type": "InputText",
+        "value": 42,
+        "label": "Random Seed",
+    },
+    "n": {
+        "type": "SliderInt",
+        "value": 50,
+        "label": "Number of agents:",
+        "min": 10,
+        "max": 100,
+        "step": 1,
+    },
+    "std_dev": {
+        "type": "SliderFloat",
+        "value": 0.1,
+        "label": "Attribute variation:",
+        "min": 0.01,
+        "max": 0.4,
+        "step": 0.01,
+    },
+}
+
+# Create visualization elements. The visualization elements are solara components
+# that receive the model instance as a "prop" and display it in a certain way.
+# Under the hood these are just classes that receive the model instance.
+# You can also author your own visualization elements, which can also be functions
+# that receive the model instance and return a valid solara component.
+
+
+@solara.component
+def plot_network(model):
+    update_counter.get()
+    g = model.network
+    pos = nx.multipartite_layout(g, subset_key="level", align="horizontal")
+    fig = Figure()
+    ax = fig.subplots()
+    labels = {agent.unique_id: agent.unique_id for agent in model.agents}
+    node_sizes = [g.nodes[node]["size"] for node in g.nodes]
+    node_colors = [g.nodes[node]["level"] for node in g.nodes()]
+
+    nx.draw(
+        g,
+        pos,
+        node_size=node_sizes,
+        node_color=node_colors,
+        cmap=plt.cm.coolwarm,
+        labels=labels,
+        ax=ax,
+    )
+    ax.set_axis_off()
+
+    solara.FigureMatplotlib(fig)
+
+
+# Create initial model instance
+model = MultiLevelAllianceModel(scenario=AllianceScenario(n=50, rng=42))
+
+# Create the SolaraViz page. This will automatically create a server and display the
+# visualization elements in a web browser.
+# Display it using the following command in the example directory:
+# solara run app.py
+# It will automatically update and display any changes made to this file
+page = SolaraViz(
+    model,
+    components=[plot_network],
+    model_params=model_params,
+    name="Alliance Formation Model",
+)
+page  # noqa
+
+```

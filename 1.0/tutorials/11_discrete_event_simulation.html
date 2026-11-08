@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Discrete Event Simulation with Modelly &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=92ce3cff" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=292eb321"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/11_discrete_event_simulation';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/tutorials/11_discrete_event_simulation.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Hybrid ABM-DEVS Models with Modelly" href="12_hybrid_abm_devs.html" />
+    <link rel="prev" title="Visualization - Custom Components" href="10_visualization_custom.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.0" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="0_first_model.html">Creating Your First Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_agentset.html">AgentSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_agent_activation.html">Agent Activation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_event_scheduling.html">Event Scheduling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_adding_space.html">Adding Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_collecting_data.html">Collecting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_visualization_basic.html">Basic Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_visualization_dynamic_agents.html">Dynamic Agent Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8_visualization_rendering_with_space_renderer.html">Visualisation using SpaceRenderer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9_visualization_property_layer_visualization.html">Property Layer Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_visualization_custom.html">Custom Visualization Components</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Discrete Event Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12_hybrid_abm_devs.html">Hybrid ABM-DEVS Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best-practices.html">Best Practices</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../overview.html" class="nav-link">Overview of the MODELLY library</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Discrete Event Simulation with Modelly</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="discrete-event-simulation-with-modelly">
+<h1>Discrete Event Simulation with Modelly<a class="headerlink" href="#discrete-event-simulation-with-modelly" title="Link to this heading">#</a></h1>
+<section id="tutorial-description">
+<h2>Tutorial Description<a class="headerlink" href="#tutorial-description" title="Link to this heading">#</a></h2>
+<p>This tutorial introduces <strong>Discrete Event Simulation (DEVS)</strong> with Modelly. You’ll learn how to model systems where events occur at specific points in time, rather than in fixed time steps, using Modelly’s event scheduling API: <code class="docutils literal notranslate"><span class="pre">Model.schedule_event()</span></code>, <code class="docutils literal notranslate"><span class="pre">Model.schedule_recurring()</span></code>, <code class="docutils literal notranslate"><span class="pre">Model.run_until()</span></code> and <code class="docutils literal notranslate"><span class="pre">Model.run_for()</span></code>.</p>
+<p><strong>Learning Objectives:</strong></p>
+<ul class="simple">
+<li><p>Understand the difference between tick-based and event-based simulation</p></li>
+<li><p>Learn when to use event-driven models instead of traditional step-based ABM</p></li>
+<li><p>Build a <em>pure</em> event-driven model that schedules everything itself</p></li>
+<li><p>Apply queuing theory to validate simulation results</p></li>
+<li><p>Build an M/M/1 queue system from scratch</p></li>
+</ul>
+<p><strong>Prerequisites:</strong></p>
+<ul class="simple">
+<li><p>Complete Tutorial 0 (First Model)</p></li>
+<li><p>Complete Tutorial 3 (Event Scheduling &amp; Time) - REQUIRED, this tutorial builds directly on it</p></li>
+<li><p>Basic understanding of probability distributions</p></li>
+</ul>
+<p><strong>What You’ll Build:</strong>
+A bank queue system with random customer arrivals and service times, analyzing wait times and queue lengths using both simulation and theoretical predictions.</p>
+<p><strong>Important:</strong></p>
+<ul class="simple">
+<li><p>If you are just exploring Modelly and want the fastest way to execute the code we recommend executing this tutorial online in a Colab notebook. <a class="reference external" href="https://colab.research.google.com/github/RemiPelloux/Modelly/blob/main/docs/tutorials/11_discrete_event_simulation.ipynb"><img alt="Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p></li>
+<li><p>If you do not have a Google account you can use <a class="reference external" href="https://mybinder.org/v2/gh/RemiPelloux/Modelly/main?labpath=docs%2Ftutorials%2F11_discrete_event_simulation.ipynb"><img alt="Binder" src="https://mybinder.org/badge_logo.svg" /></a></p></li>
+<li><p>If you are running locally, please ensure you have the latest Modelly version installed.</p></li>
+</ul>
+<section id="tutorial-setup">
+<h3>Tutorial Setup<a class="headerlink" href="#tutorial-setup" title="Link to this heading">#</a></h3>
+<p>If running locally, ensure Modelly is installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"modelly-abm[rec]"</span>
+</pre></div>
+</div>
+<p>For this tutorial, we’ll also use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>matplotlib<span class="w"> </span>scipy
+</pre></div>
+</div>
+</section>
+</section>
+<section id="what-is-discrete-event-simulation">
+<h2>What is Discrete Event Simulation?<a class="headerlink" href="#what-is-discrete-event-simulation" title="Link to this heading">#</a></h2>
+<p>In traditional agent-based models (ABM), time advances in <strong>fixed increments</strong> called ticks. At each tick, all agents are activated:</p>
+<p><strong>Tick-Based ABM:</strong></p>
+<ul class="simple">
+<li><p>Time: 0, 1, 2, 3, 4, … (discrete, uniform steps)</p></li>
+<li><p>Every agent’s <code class="docutils literal notranslate"><span class="pre">step()</span></code> method is called each tick</p></li>
+<li><p>Works well when agents are frequently active</p></li>
+</ul>
+<p><strong>Event-Based Simulation (DEVS):</strong></p>
+<ul class="simple">
+<li><p>Time: 0, 1.3, 2.7, 5.2, … (discrete, non-uniform)</p></li>
+<li><p>Only agents/events scheduled for specific times execute</p></li>
+<li><p>Efficient when agents are dormant for long periods</p></li>
+</ul>
+<p>The difference in code looks like this (illustrative sketch, not meant to be run):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Traditional tick-based model</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TickBasedModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># ALL agents activated EVERY tick - even if doing nothing!</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">has_work_to_do</span><span class="p">():</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">do_work</span><span class="p">()</span>
+            <span class="c1"># Problem: We check even when agent is idle</span>
+
+
+<span class="c1"># Event-based model</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EventBasedModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Only schedule events when an agent actually has work</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">has_work_to_do</span><span class="p">():</span>
+                <span class="c1"># Schedule the exact time this agent needs to act</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">do_work</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="n">agent</span><span class="o">.</span><span class="n">work_time</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="when-should-you-use-devs">
+<h3>When Should You Use DEVS?<a class="headerlink" href="#when-should-you-use-devs" title="Link to this heading">#</a></h3>
+<p><strong>Use DEVS when:</strong></p>
+<ul class="simple">
+<li><p>Agents spend long periods dormant (e.g., waiting, sleeping, traveling)</p></li>
+<li><p>Events occur at irregular intervals (arrivals, failures, completions)</p></li>
+<li><p>You need continuous time (non-integer time values)</p></li>
+<li><p>Performance matters and most agents are inactive</p></li>
+<li><p>Modeling queuing systems, manufacturing, logistics</p></li>
+</ul>
+<p><strong>Use Traditional ABM when:</strong></p>
+<ul class="simple">
+<li><p>Most agents are active every time step</p></li>
+<li><p>Time steps are naturally discrete (e.g., days, rounds)</p></li>
+<li><p>Agent interactions happen synchronously</p></li>
+<li><p>Simplicity is more important than efficiency</p></li>
+</ul>
+</section>
+<section id="real-world-devs-applications">
+<h3>Real-World DEVS Applications<a class="headerlink" href="#real-world-devs-applications" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Queuing Systems</strong>: Bank tellers, call centers, checkout lines</p></li>
+<li><p><strong>Manufacturing</strong>: Machine failures, repair schedules, production runs</p></li>
+<li><p><strong>Healthcare</strong>: Patient arrivals, surgery durations, bed availability</p></li>
+<li><p><strong>Transportation</strong>: Traffic lights, vehicle arrivals, route planning</p></li>
+<li><p><strong>Computer Systems</strong>: Packet routing, process scheduling, server requests</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import required libraries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Modelly imports</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">modelly</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Priority</span>
+
+<span class="c1"># Set random seed for reproducibility of the plain numpy examples</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="mathematical-foundations-queuing-theory">
+<h2>Mathematical Foundations: Queuing Theory<a class="headerlink" href="#mathematical-foundations-queuing-theory" title="Link to this heading">#</a></h2>
+<p>Before building our simulation, let’s understand the <strong>mathematics</strong> behind queuing systems.</p>
+<section id="the-m-m-1-queue">
+<h3>The M/M/1 Queue<a class="headerlink" href="#the-m-m-1-queue" title="Link to this heading">#</a></h3>
+<p>Our bank queue is an <strong>M/M/1 system</strong>:</p>
+<ul class="simple">
+<li><p><strong>M</strong> (Markov): Arrivals follow a Poisson process (exponential inter-arrival times)</p></li>
+<li><p><strong>M</strong> (Markov): Service times are exponentially distributed</p></li>
+<li><p><strong>1</strong>: One server</p></li>
+</ul>
+</section>
+<section id="key-parameters">
+<h3>Key Parameters<a class="headerlink" href="#key-parameters" title="Link to this heading">#</a></h3>
+<p><strong>Arrival Rate (λ)</strong>: Average number of customers arriving per time unit<br />
+<strong>Service Rate (μ)</strong>: Average number of customers served per time unit</p>
+<p><strong>Example</strong>: If λ = 2 customers/hour and μ = 3 customers/hour, the server can handle the load.</p>
+</section>
+<section id="system-utilization">
+<h3>System Utilization (ρ)<a class="headerlink" href="#system-utilization" title="Link to this heading">#</a></h3>
+<p>The <strong>utilization</strong> is the fraction of time the server is busy:</p>
+<p>$$\rho = \frac{\lambda}{\mu}$$</p>
+<p><strong>Critical Condition</strong>: For a stable system, we need <strong>ρ &lt; 1</strong></p>
+<ul class="simple">
+<li><p>If ρ &gt;= 1, arrivals occur faster than service -&gt; queue grows infinitely!</p></li>
+<li><p>If ρ = 0.67, server is busy 67% of the time</p></li>
+</ul>
+<p><strong>Check</strong>: With λ = 2, μ = 3:
+$$\rho = \frac{2}{3} = 0.67$$ (Stable system)</p>
+</section>
+<section id="theoretical-performance-metrics">
+<h3>Theoretical Performance Metrics<a class="headerlink" href="#theoretical-performance-metrics" title="Link to this heading">#</a></h3>
+<p>For a stable M/M/1 queue (ρ &lt; 1), we can <strong>predict</strong> performance:</p>
+<p><strong>Average Number in System</strong>:
+$$L = \frac{\rho}{1 - \rho} = \frac{\lambda}{\mu - \lambda}$$</p>
+<p><strong>Average Time in System</strong>:
+$$W = \frac{1}{\mu - \lambda}$$</p>
+<p><strong>Average Queue Length</strong>:
+$$L_q = \frac{\rho^2}{1 - \rho} = \frac{\lambda^2}{\mu(\mu - \lambda)}$$</p>
+<p><strong>Average Wait Time</strong> (excluding service):
+$$W_q = \frac{\lambda}{\mu(\mu - \lambda)}$$</p>
+<p>These formulas let us <strong>validate</strong> our simulation!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Calculate theoretical predictions for λ=2, μ=3</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_mm1_metrics</span><span class="p">(</span><span class="n">arrival_rate</span><span class="p">,</span> <span class="n">service_rate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Calculate theoretical metrics for M/M/1 queue."""</span>
+    <span class="n">lambda_rate</span> <span class="o">=</span> <span class="n">arrival_rate</span>
+    <span class="n">mu_rate</span> <span class="o">=</span> <span class="n">service_rate</span>
+
+    <span class="c1"># Check stability</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="n">lambda_rate</span> <span class="o">/</span> <span class="n">mu_rate</span>
+    <span class="k">if</span> <span class="n">rho</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"System is unstable! (rho &gt;= 1)"</span>
+
+    <span class="c1"># Calculate metrics</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="p">)</span>  <span class="c1"># Avg customers in system</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">mu_rate</span> <span class="o">-</span> <span class="n">lambda_rate</span><span class="p">)</span>  <span class="c1"># Avg time in system</span>
+    <span class="n">Lq</span> <span class="o">=</span> <span class="p">(</span><span class="n">rho</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="p">)</span>  <span class="c1"># Avg queue length</span>
+    <span class="n">Wq</span> <span class="o">=</span> <span class="n">lambda_rate</span> <span class="o">/</span> <span class="p">(</span><span class="n">mu_rate</span> <span class="o">*</span> <span class="p">(</span><span class="n">mu_rate</span> <span class="o">-</span> <span class="n">lambda_rate</span><span class="p">))</span>  <span class="c1"># Avg wait time</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"Utilization (rho)"</span><span class="p">:</span> <span class="n">rho</span><span class="p">,</span>
+        <span class="s2">"Avg in System (L)"</span><span class="p">:</span> <span class="n">L</span><span class="p">,</span>
+        <span class="s2">"Avg Time in System (W)"</span><span class="p">:</span> <span class="n">W</span><span class="p">,</span>
+        <span class="s2">"Avg in Queue (Lq)"</span><span class="p">:</span> <span class="n">Lq</span><span class="p">,</span>
+        <span class="s2">"Avg Wait Time (Wq)"</span><span class="p">:</span> <span class="n">Wq</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="c1"># Example calculation</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="n">calculate_mm1_metrics</span><span class="p">(</span><span class="n">arrival_rate</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">service_rate</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Utilization (rho): 0.6667
+Avg in System (L): 2.0000
+Avg Time in System (W): 1.0000
+Avg in Queue (Lq): 1.3333
+Avg Wait Time (Wq): 0.6667
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-exponential-distribution">
+<h3>The Exponential Distribution<a class="headerlink" href="#the-exponential-distribution" title="Link to this heading">#</a></h3>
+<p><strong>Why exponential?</strong> It has the <strong>memoryless property</strong>:</p>
+<blockquote>
+<div><p>The probability of an event occurring in the next Δt time units is <strong>independent</strong> of how long you’ve already waited.</p>
+</div></blockquote>
+<p><strong>Probability Density Function</strong>:
+$$f(t) = \lambda e^{-\lambda t}$$</p>
+<p><strong>Mean</strong>: $\frac{1}{\lambda}$</p>
+<p><strong>In Python</strong>: <code class="docutils literal notranslate"><span class="pre">np.random.exponential(1/rate)</span></code> or <code class="docutils literal notranslate"><span class="pre">random.expovariate(rate)</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize exponential distribution for inter-arrival times</span>
+<span class="n">arrival_rate</span> <span class="o">=</span> <span class="mf">2.0</span>  <span class="c1"># 2 customers per hour</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">exponential</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">arrival_rate</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Simulated"</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">arrival_rate</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">arrival_rate</span> <span class="o">*</span> <span class="n">x</span><span class="p">),</span> <span class="s2">"r-"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Theoretical"</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Inter-arrival Time (hours)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Probability Density"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Exponential Distribution (λ=2)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Inter-arrival Time (hours)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Cumulative Probability"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Cumulative Distribution"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Theoretical mean: </span><span class="si">{</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">arrival_rate</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Simulated mean: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/682c68653666a74cf31908756dec075f509e5d0d9ee5a0c82e93efdac23c4dd0.png" src="../_images/682c68653666a74cf31908756dec075f509e5d0d9ee5a0c82e93efdac23c4dd0.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Theoretical mean: 0.5000
+Simulated mean: 0.4863
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="core-concepts-event-scheduling-on-the-model">
+<h2>Core Concepts: Event Scheduling on the Model<a class="headerlink" href="#core-concepts-event-scheduling-on-the-model" title="Link to this heading">#</a></h2>
+<p>In Modelly, every <code class="docutils literal notranslate"><span class="pre">Model</span></code> owns an event list. There is no separate simulator object
+to create or set up: you schedule events directly on the model and then advance time with
+<code class="docutils literal notranslate"><span class="pre">run_until()</span></code> or <code class="docutils literal notranslate"><span class="pre">run_for()</span></code>.</p>
+<p><strong>Key Features</strong>:</p>
+<ul class="simple">
+<li><p><strong>Float time units</strong>: Continuous time (0.0, 1.3, 2.7, …)</p></li>
+<li><p><strong>Event-driven</strong>: Time jumps from one scheduled event to the next</p></li>
+<li><p><strong>Priority queue</strong>: Events sorted by time, then priority</p></li>
+<li><p><strong>Weak references</strong>: Events never keep your agents alive (more on this below)</p></li>
+</ul>
+<p><strong>Architecture</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>modelly.Model
+  ├── EventList (priority queue)
+  │     └── Event(time, function, priority)
+  ├── schedule_event(function, at=... / after=..., priority=...)
+  ├── schedule_recurring(function, Schedule(...), priority=...)
+  ├── run_until(end_time) - Run until an absolute time
+  └── run_for(duration) - Run for a duration
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>Note:</strong> Every Modelly model also schedules its <code class="docutils literal notranslate"><span class="pre">step()</span></code> method as a recurring event (once per
+time unit). In a pure event-driven model we simply don’t override <code class="docutils literal notranslate"><span class="pre">step()</span></code>, so this
+default is an empty function and has no effect on the results.</p>
+</div></blockquote>
+<section id="event-scheduling-methods">
+<h3>Event Scheduling Methods<a class="headerlink" href="#event-scheduling-methods" title="Link to this heading">#</a></h3>
+<p>The model provides two ways to schedule a <strong>one-off</strong> event, plus one for <strong>recurring</strong> events:</p>
+<ol class="arabic simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">model.schedule_event(function,</span> <span class="pre">at=time,</span> <span class="pre">priority=DEFAULT)</span></code></strong></p>
+<ul class="simple">
+<li><p>Schedule an event at a specific (absolute) simulation time</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">time</span></code> must be &gt;= the current simulation time</p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">model.schedule_event(function,</span> <span class="pre">after=delay,</span> <span class="pre">priority=DEFAULT)</span></code></strong></p>
+<ul class="simple">
+<li><p>Schedule an event relative to the current time (<code class="docutils literal notranslate"><span class="pre">model.time</span> <span class="pre">+</span> <span class="pre">delay</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">after=0</span></code> schedules an event for the current instant</p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">model.schedule_recurring(function,</span> <span class="pre">Schedule(...),</span> <span class="pre">priority=DEFAULT)</span></code></strong></p>
+<ul class="simple">
+<li><p>Repeat an event on a schedule (see Tutorial 3)</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Arguments</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">function</span></code>: Callable to execute (a bound method, not a lambda!)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">priority</span></code>: Event priority (HIGH=1, DEFAULT=5, LOW=10)</p></li>
+<li><p>Exactly one of <code class="docutils literal notranslate"><span class="pre">at</span></code> / <code class="docutils literal notranslate"><span class="pre">after</span></code> must be given</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">schedule_event</span></code> returns an <code class="docutils literal notranslate"><span class="pre">Event</span></code> that you can keep around to cancel it later with
+<code class="docutils literal notranslate"><span class="pre">event.cancel()</span></code>.</p>
+<p><strong>Passing state to an event</strong>: scheduled functions are called without arguments. Keep the
+state you need on the model or the agent (as we do with <code class="docutils literal notranslate"><span class="pre">current_customer</span></code> below).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simple example: Schedule three events</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleModel</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events_executed</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Schedule events (absolute and relative)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_at_time_5</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_at_time_10</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_relative</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="mf">7.5</span><span class="p">)</span>  <span class="c1"># at time 7.5</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">event_at_time_5</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events_executed</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"Event A"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Event A executed at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">event_at_time_10</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events_executed</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"Event B"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Event B executed at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">event_relative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events_executed</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"Event C"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Event C executed at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="c1"># Create the model and run the simulation</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SimpleModel</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="mf">15.0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Final time: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Events executed: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">events_executed</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Event A executed at time 5.0
+Event C executed at time 7.5
+Event B executed at time 10.0
+
+Final time: 15.0
+Events executed: [('Event A', 5.0), ('Event C', 7.5), ('Event B', 10.0)]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="event-priority">
+<h3>Event Priority<a class="headerlink" href="#event-priority" title="Link to this heading">#</a></h3>
+<p>When multiple events are scheduled for the <strong>same time</strong>, priority determines execution order:</p>
+<p><strong>Priority Levels</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Priority.HIGH</span> <span class="pre">=</span> <span class="pre">1</span></code> - Execute first</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Priority.DEFAULT</span> <span class="pre">=</span> <span class="pre">5</span></code> - Normal priority</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Priority.LOW</span> <span class="pre">=</span> <span class="pre">10</span></code> - Execute last</p></li>
+</ul>
+<p><strong>Use Cases</strong>:</p>
+<ul class="simple">
+<li><p>HIGH: Critical events (arrivals, failures)</p></li>
+<li><p>DEFAULT: Normal processing</p></li>
+<li><p>LOW: Cleanup, logging, statistics collection</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Demonstrate priority ordering</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PriorityDemo</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Schedule all at time 10.0 with different priorities</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Scheduling events at time 10.0:"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_priority</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="n">Priority</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low_priority</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="n">Priority</span><span class="o">.</span><span class="n">LOW</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high_priority</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="n">Priority</span><span class="o">.</span><span class="n">HIGH</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">high_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  HIGH priority event at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  DEFAULT priority event at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">low_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  LOW priority event at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">PriorityDemo</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Execution order:"</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="mf">11.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Scheduling events at time 10.0:
+
+Execution order:
+  HIGH priority event at time 10.0
+  DEFAULT priority event at time 10.0
+  LOW priority event at time 10.0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="example-m-m-1-bank-queue-system">
+<h2>Example: M/M/1 Bank Queue System<a class="headerlink" href="#example-m-m-1-bank-queue-system" title="Link to this heading">#</a></h2>
+<p>Let’s build a complete queuing system simulation!</p>
+<p><strong>Scenario</strong>: A bank with one teller serving customers.</p>
+<p><strong>System Dynamics</strong>:</p>
+<ol class="arabic simple">
+<li><p>Customers arrive randomly (Poisson process, rate λ)</p></li>
+<li><p>Inter-arrival times are exponential with mean 1/λ</p></li>
+<li><p>Service times are exponential with mean 1/μ</p></li>
+<li><p>One server, FIFO (first-in-first-out) queue</p></li>
+<li><p>No customer abandons the queue</p></li>
+</ol>
+<p><strong>Metrics to Track</strong>:</p>
+<ul class="simple">
+<li><p>Wait time (time from arrival to service start)</p></li>
+<li><p>Time in system (wait time + service time)</p></li>
+<li><p>Queue length over time</p></li>
+<li><p>Server utilization</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Customer</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Agent</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A customer in the bank queue."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">arrival_time</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arrival_time</span> <span class="o">=</span> <span class="n">arrival_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_start_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_end_time</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wait_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Time spent waiting in queue."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_start_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrival_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">service_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Time spent being served."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_end_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_end_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_start_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Total time in system."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_end_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrival_time</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">BankQueue</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""M/M/1 Queue: Single server with exponential arrivals and service."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arrival_rate</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">service_rate</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arrival_rate</span> <span class="o">=</span> <span class="n">arrival_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_rate</span> <span class="o">=</span> <span class="n">service_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+        <span class="c1"># Queue and server state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_busy</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_customer</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Statistics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed_customers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customer_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Schedule the first arrival. Every later arrival is scheduled by the</span>
+        <span class="c1"># previous one (event chaining).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_next_arrival</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Print a message prefixed with the current time (if verbose)."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">schedule_next_arrival</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Schedule the next customer arrival."""</span>
+        <span class="c1"># Exponential inter-arrival time</span>
+        <span class="n">inter_arrival_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">expovariate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arrival_rate</span><span class="p">)</span>
+
+        <span class="c1"># Schedule arrival event</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">customer_arrival</span><span class="p">,</span>
+            <span class="n">after</span><span class="o">=</span><span class="n">inter_arrival_time</span><span class="p">,</span>
+            <span class="n">priority</span><span class="o">=</span><span class="n">Priority</span><span class="o">.</span><span class="n">HIGH</span><span class="p">,</span>  <span class="c1"># Arrivals are high priority</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">customer_arrival</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Handle a customer arrival."""</span>
+        <span class="c1"># Create new customer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customer_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">customer</span> <span class="o">=</span> <span class="n">Customer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arrival_time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+        <span class="c1"># Add to queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">customer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Customer </span><span class="si">{</span><span class="n">customer</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2"> arrived. Queue length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+        <span class="c1"># If server is idle, start service immediately</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_busy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_service</span><span class="p">()</span>
+
+        <span class="c1"># Schedule next arrival</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_next_arrival</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Start serving the next customer in queue."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># No customers to serve</span>
+
+        <span class="c1"># Take first customer from queue</span>
+        <span class="n">customer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">customer</span><span class="o">.</span><span class="n">service_start_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_customer</span> <span class="o">=</span> <span class="n">customer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_busy</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Generate service time</span>
+        <span class="n">service_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">expovariate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service_rate</span><span class="p">)</span>
+
+        <span class="c1"># Schedule service completion. The customer being served is stored in</span>
+        <span class="c1"># self.current_customer, so finish_service needs no arguments.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finish_service</span><span class="p">,</span>
+            <span class="n">after</span><span class="o">=</span><span class="n">service_time</span><span class="p">,</span>
+            <span class="n">priority</span><span class="o">=</span><span class="n">Priority</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Customer </span><span class="si">{</span><span class="n">customer</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2"> service started (will take </span><span class="si">{</span><span class="n">service_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">finish_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Handle service completion."""</span>
+        <span class="n">customer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_customer</span>
+        <span class="n">customer</span><span class="o">.</span><span class="n">service_end_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed_customers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">customer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_busy</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_customer</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Customer </span><span class="si">{</span><span class="n">customer</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2"> service completed. Wait time: </span><span class="si">{</span><span class="n">customer</span><span class="o">.</span><span class="n">wait_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Start serving next customer if any</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_service</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="running-the-simulation">
+<h3>Running the Simulation<a class="headerlink" href="#running-the-simulation" title="Link to this heading">#</a></h3>
+<p>Let’s simulate the bank queue for 100 time units with:</p>
+<ul class="simple">
+<li><p>λ = 2 customers/hour</p></li>
+<li><p>μ = 3 customers/hour</p></li>
+<li><p>ρ = 2/3 = 0.67 (stable system)</p></li>
+</ul>
+<p>We print what happens during the first 5 time units, then switch the printing off and
+continue. You can call <code class="docutils literal notranslate"><span class="pre">run_until()</span></code> repeatedly: each call continues where the last one
+stopped.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create and run simulation</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">BankQueue</span><span class="p">(</span><span class="n">arrival_rate</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">service_rate</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Starting Bank Queue Simulation"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Arrival rate (λ): 2.0 customers/hour"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Service rate (μ): 3.0 customers/hour"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># First 5 time units: print every event</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="mf">5.0</span><span class="p">)</span>
+
+<span class="c1"># Remaining time: run quietly</span>
+<span class="n">model</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="mf">100.0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Simulation Complete"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total customers arrived: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">customer_count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total customers served: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">completed_customers</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Customers still in queue: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>============================================================
+Starting Bank Queue Simulation
+Arrival rate (λ): 2.0 customers/hour
+Service rate (μ): 3.0 customers/hour
+============================================================
+
+Time 0.80: Customer 1 arrived. Queue length: 1
+Time 0.80: Customer 1 service started (will take 1.64)
+Time 1.18: Customer 2 arrived. Queue length: 1
+Time 1.64: Customer 3 arrived. Queue length: 2
+Time 2.44: Customer 1 service completed. Wait time: 0.00
+Time 2.44: Customer 2 service started (will take 0.45)
+Time 2.89: Customer 2 service completed. Wait time: 1.26
+Time 2.89: Customer 3 service started (will take 0.19)
+Time 2.92: Customer 4 arrived. Queue length: 1
+Time 3.05: Customer 5 arrived. Queue length: 2
+Time 3.08: Customer 3 service completed. Wait time: 1.25
+Time 3.08: Customer 4 service started (will take 0.90)
+Time 3.27: Customer 6 arrived. Queue length: 2
+Time 3.97: Customer 4 service completed. Wait time: 0.16
+Time 3.97: Customer 5 service started (will take 0.10)
+Time 4.07: Customer 5 service completed. Wait time: 0.92
+Time 4.07: Customer 6 service started (will take 0.00)
+Time 4.07: Customer 6 service completed. Wait time: 0.80
+Time 4.60: Customer 7 arrived. Queue length: 1
+Time 4.60: Customer 7 service started (will take 0.08)
+Time 4.68: Customer 7 service completed. Wait time: 0.00
+Time 4.82: Customer 8 arrived. Queue length: 1
+Time 4.82: Customer 8 service started (will take 0.53)
+
+============================================================
+Simulation Complete
+Total customers arrived: 187
+Total customers served: 187
+Customers still in queue: 0
+============================================================
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="warm-up-period">
+<h3>Warm-Up Period<a class="headerlink" href="#warm-up-period" title="Link to this heading">#</a></h3>
+<p>Notice the first few customers might experience different wait times because the system starts <strong>empty</strong>. This is called the <strong>transient period</strong>.</p>
+<p>For accurate steady-state statistics, we should:</p>
+<ol class="arabic simple">
+<li><p>Run a warm-up period (discard early data)</p></li>
+<li><p>Run multiple replications</p></li>
+<li><p>Use longer simulation times</p></li>
+</ol>
+<p>We’ll analyze this in the next section!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Quick look at results</span>
+<span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">completed_customers</span><span class="p">:</span>
+    <span class="n">wait_times</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">wait_time</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">completed_customers</span><span class="p">]</span>
+    <span class="n">service_times</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">service_time</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">completed_customers</span><span class="p">]</span>
+    <span class="n">total_times</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">total_time</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">completed_customers</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average wait time: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">wait_times</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average service time: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">service_times</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average total time: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">total_times</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Average wait time: 0.4410
+Average service time: 0.3101
+Average total time: 0.7511
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="statistical-analysis-comparing-simulation-vs-theory">
+<h2>Statistical Analysis: Comparing Simulation vs Theory<a class="headerlink" href="#statistical-analysis-comparing-simulation-vs-theory" title="Link to this heading">#</a></h2>
+<p>To properly analyze the system, we’ll:</p>
+<ol class="arabic simple">
+<li><p>Run a <strong>warm-up period</strong> (50 time units)</p></li>
+<li><p>Collect data from the <strong>steady-state period</strong></p></li>
+<li><p>Run <strong>multiple replications</strong> for confidence</p></li>
+<li><p>Compare simulation results with <strong>theoretical predictions</strong></p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">run_bank_simulation</span><span class="p">(</span><span class="n">arrival_rate</span><span class="p">,</span> <span class="n">service_rate</span><span class="p">,</span> <span class="n">run_time</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Run one replication of the bank queue simulation."""</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">BankQueue</span><span class="p">(</span><span class="n">arrival_rate</span><span class="p">,</span> <span class="n">service_rate</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="n">run_time</span><span class="p">)</span>
+
+    <span class="c1"># Filter customers that arrived after the warm-up period</span>
+    <span class="n">steady_state_customers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">completed_customers</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">arrival_time</span> <span class="o">&gt;=</span> <span class="n">warmup</span>
+    <span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">steady_state_customers</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"wait_times"</span><span class="p">:</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">wait_time</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">steady_state_customers</span><span class="p">],</span>
+        <span class="s2">"total_times"</span><span class="p">:</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">total_time</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">steady_state_customers</span><span class="p">],</span>
+        <span class="s2">"n_customers"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">steady_state_customers</span><span class="p">),</span>
+    <span class="p">}</span>
+
+
+<span class="c1"># Run 20 replications</span>
+<span class="n">n_reps</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">arrival_rate</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">service_rate</span> <span class="o">=</span> <span class="mf">3.0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Running </span><span class="si">{</span><span class="n">n_reps</span><span class="si">}</span><span class="s2"> replications..."</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_reps</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">run_bank_simulation</span><span class="p">(</span>
+        <span class="n">arrival_rate</span><span class="p">,</span> <span class="n">service_rate</span><span class="p">,</span> <span class="n">run_time</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">i</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Completed </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_reps</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Successfully completed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> replications"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running 20 replications...
+  Completed 5/20
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Completed 10/20
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Completed 15/20
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Completed 20/20
+Successfully completed 20 replications
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Aggregate all wait times across replications</span>
+<span class="n">all_wait_times</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">all_total_times</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">mean_wait_times</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="n">all_wait_times</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">"wait_times"</span><span class="p">])</span>
+    <span class="n">all_total_times</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">"total_times"</span><span class="p">])</span>
+    <span class="n">mean_wait_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">"wait_times"</span><span class="p">]))</span>
+
+<span class="c1"># Calculate statistics</span>
+<span class="n">sim_mean_wait</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">all_wait_times</span><span class="p">)</span>
+<span class="n">sim_std_wait</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">all_wait_times</span><span class="p">)</span>
+<span class="n">sim_mean_total</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">all_total_times</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Simulation Results (Steady-State):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Mean wait time: </span><span class="si">{</span><span class="n">sim_mean_wait</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Std wait time: </span><span class="si">{</span><span class="n">sim_std_wait</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Mean total time: </span><span class="si">{</span><span class="n">sim_mean_total</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Total customers analyzed: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_wait_times</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulation Results (Steady-State):
+  Mean wait time: 0.5960
+  Std wait time: 0.8237
+  Mean total time: 0.9208
+  Total customers analyzed: 5999
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate theoretical values</span>
+<span class="n">lambda_val</span> <span class="o">=</span> <span class="n">arrival_rate</span>
+<span class="n">mu_val</span> <span class="o">=</span> <span class="n">service_rate</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="n">lambda_val</span> <span class="o">/</span> <span class="n">mu_val</span>
+
+<span class="c1"># Theoretical metrics</span>
+<span class="n">theory_Wq</span> <span class="o">=</span> <span class="n">lambda_val</span> <span class="o">/</span> <span class="p">(</span><span class="n">mu_val</span> <span class="o">*</span> <span class="p">(</span><span class="n">mu_val</span> <span class="o">-</span> <span class="n">lambda_val</span><span class="p">))</span>
+<span class="n">theory_W</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">mu_val</span> <span class="o">-</span> <span class="n">lambda_val</span><span class="p">)</span>
+<span class="n">theory_Lq</span> <span class="o">=</span> <span class="p">(</span><span class="n">rho</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="p">)</span>
+<span class="n">theory_L</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Theoretical Predictions (M/M/1):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Mean wait time (Wq): </span><span class="si">{</span><span class="n">theory_Wq</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Mean total time (W): </span><span class="si">{</span><span class="n">theory_W</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Mean queue length (Lq): </span><span class="si">{</span><span class="n">theory_Lq</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Mean in system (L): </span><span class="si">{</span><span class="n">theory_L</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Comparison:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"  Wait time - Simulation: </span><span class="si">{</span><span class="n">sim_mean_wait</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, Theory: </span><span class="si">{</span><span class="n">theory_Wq</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, Error: </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">sim_mean_wait</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">theory_Wq</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">theory_Wq</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%"</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"  Total time - Simulation: </span><span class="si">{</span><span class="n">sim_mean_total</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, Theory: </span><span class="si">{</span><span class="n">theory_W</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, Error: </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">sim_mean_total</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">theory_W</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">theory_W</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Theoretical Predictions (M/M/1):
+  Mean wait time (Wq): 0.6667
+  Mean total time (W): 1.0000
+  Mean queue length (Lq): 1.3333
+  Mean in system (L): 2.0000
+
+Comparison:
+  Wait time - Simulation: 0.5960, Theory: 0.6667, Error: 10.61%
+  Total time - Simulation: 0.9208, Theory: 1.0000, Error: 7.92%
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize wait time distribution</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Histogram of wait times</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">all_wait_times</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Simulated"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span>
+    <span class="n">sim_mean_wait</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span>
+    <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Sim Mean: </span><span class="si">{</span><span class="n">sim_mean_wait</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span>
+    <span class="n">theory_Wq</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span>
+    <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Theory Mean: </span><span class="si">{</span><span class="n">theory_Wq</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Wait Time"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Probability Density"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Wait Time Distribution"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="c1"># Box plot of mean wait times per replication</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">mean_wait_times</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">theory_Wq</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Theory"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Mean Wait Time"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Distribution Across </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> Replications"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># Q-Q plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+
+<span class="n">stats</span><span class="o">.</span><span class="n">probplot</span><span class="p">(</span><span class="n">all_wait_times</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="s2">"expon"</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="n">plt</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Q-Q Plot (Exponential)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/6f8463d953642dcaf688b68a55ac7b80bb730e8375992213553a6666b1747b11.png" src="../_images/6f8463d953642dcaf688b68a55ac7b80bb730e8375992213553a6666b1747b11.png" />
+</div>
+</div>
+<section id="analysis-conclusion">
+<h3>Analysis Conclusion<a class="headerlink" href="#analysis-conclusion" title="Link to this heading">#</a></h3>
+<p>Our simulation results match the theoretical predictions very closely!</p>
+<p><strong>Key Takeaways</strong>:</p>
+<ol class="arabic simple">
+<li><p>Simulation validates queuing theory formulas</p></li>
+<li><p>Warm-up period removes transient effects</p></li>
+<li><p>Multiple replications reduce variance</p></li>
+<li><p>DEVS efficiently simulates sparse events</p></li>
+</ol>
+<p>The small differences come from:</p>
+<ul class="simple">
+<li><p>Finite simulation time</p></li>
+<li><p>Random sampling variation</p></li>
+<li><p>Warm-up period approximation</p></li>
+</ul>
+</section>
+</section>
+<section id="advanced-topics">
+<h2>Advanced Topics<a class="headerlink" href="#advanced-topics" title="Link to this heading">#</a></h2>
+<section id="event-cancellation">
+<h3>Event Cancellation<a class="headerlink" href="#event-cancellation" title="Link to this heading">#</a></h3>
+<p>Sometimes you need to cancel a scheduled event (e.g., customer leaves queue).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CancellationDemo</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Schedule an event at time 10 and keep the Event so we can cancel it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scheduled_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_to_cancel</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+        <span class="c1"># Schedule the cancellation decision at time 5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cancellation_decision</span><span class="p">,</span> <span class="n">at</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">event_to_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"This event was NOT cancelled (time=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cancellation_decision</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Cancel the event scheduled for time 10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scheduled_event</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Event cancelled at time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">CancellationDemo</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="mf">15.0</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">cancelled</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Event was successfully cancelled"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Event was NOT cancelled"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Event cancelled at time 5.0
+Event was successfully cancelled
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="warning-weak-references">
+<h3>Warning: Weak References<a class="headerlink" href="#warning-weak-references" title="Link to this heading">#</a></h3>
+<p>Events only hold a <strong>weak reference</strong> to the function they will call. Two consequences:</p>
+<p><strong>1. Lambda functions are rejected.</strong> A lambda would be garbage collected immediately, so
+Modelly raises a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> when you try to schedule one:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># WRONG - raises ValueError: function must be alive at Event creation.</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">),</span> <span class="n">after</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+
+<span class="c1"># CORRECT - Use a method (or a function that stays alive)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">)</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">schedule_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">my_event</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you need to bind arguments, keep the <code class="docutils literal notranslate"><span class="pre">functools.partial</span></code> object in a variable (e.g. an
+attribute) for as long as the event is pending.</p>
+<p><strong>2. Events don’t keep agents alive.</strong> If an agent is removed from the model before its
+event fires, the event silently does nothing, so you don’t have to cancel it. (You can still
+cancel it explicitly to keep the event list small.)</p>
+</section>
+<section id="debugging-event-driven-models">
+<h3>Debugging Event-Driven Models<a class="headerlink" href="#debugging-event-driven-models" title="Link to this heading">#</a></h3>
+<p><strong>Common Issues</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">ValueError</span></code> when scheduling</strong>: You passed a lambda (use a method reference instead)</p></li>
+<li><p><strong>Time doesn’t advance as expected</strong>: Make sure you scheduled at least one event, or that the next
+event is scheduled before the time you run until</p></li>
+<li><p><strong>Queue order wrong</strong>: Check priority levels (HIGH &lt; DEFAULT &lt; LOW)</p></li>
+<li><p><strong>Infinite loop</strong>: Verify each event schedules correctly. A recurring chain that never stops
+is fine with <code class="docutils literal notranslate"><span class="pre">run_until()</span></code>, but a model that reschedules itself at the <em>same</em> time will never advance</p></li>
+</ol>
+<p><strong>Debugging Tools</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Peek at the pending events (note: _event_list is an internal attribute,</span>
+<span class="c1"># useful for debugging but not part of the public API)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Events pending: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_event_list</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">_event_list</span><span class="o">.</span><span class="n">peek_ahead</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Time: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">, Priority: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">priority</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
+<section id="exercise-1-multiple-servers-m-m-c-queue">
+<h3>Exercise 1: Multiple Servers (M/M/c Queue)<a class="headerlink" href="#exercise-1-multiple-servers-m-m-c-queue" title="Link to this heading">#</a></h3>
+<p>Modify the <code class="docutils literal notranslate"><span class="pre">BankQueue</span></code> model to have <strong>c servers</strong> instead of one.</p>
+<p><strong>Changes needed</strong>:</p>
+<ul class="simple">
+<li><p>Track which servers are busy (list or counter)</p></li>
+<li><p>Modify <code class="docutils literal notranslate"><span class="pre">start_service()</span></code> to check for available servers</p></li>
+<li><p>Update theoretical formulas for M/M/c</p></li>
+</ul>
+<p><strong>Hint</strong>: With c servers, the system is stable if ρ = λ/(c·μ) &lt; 1</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># FIXME: Implement M/M/c queue with c=3 servers</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiServerBank</span><span class="p">(</span><span class="n">modelly</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arrival_rate</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">service_rate</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">num_servers</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arrival_rate</span> <span class="o">=</span> <span class="n">arrival_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_rate</span> <span class="o">=</span> <span class="n">service_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_servers</span> <span class="o">=</span> <span class="n">num_servers</span>
+
+        <span class="c1"># FIXME: Track server states</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">servers_busy</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Count of busy servers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># TODO: Implement the rest...</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="exercise-2-priority-customers">
+<h3>Exercise 2: Priority Customers<a class="headerlink" href="#exercise-2-priority-customers" title="Link to this heading">#</a></h3>
+<p>Add a <strong>VIP lane</strong> where priority customers:</p>
+<ul class="simple">
+<li><p>Get served before regular customers</p></li>
+<li><p>Have different arrival rate</p></li>
+</ul>
+<p><strong>Hints</strong>:</p>
+<ul class="simple">
+<li><p>Use two queues: <code class="docutils literal notranslate"><span class="pre">vip_queue</span></code> and <code class="docutils literal notranslate"><span class="pre">regular_queue</span></code></p></li>
+<li><p>In <code class="docutils literal notranslate"><span class="pre">start_service()</span></code>, check VIP queue first</p></li>
+<li><p>Schedule two arrival processes</p></li>
+</ul>
+</section>
+<section id="exercise-3-customer-balking">
+<h3>Exercise 3: Customer Balking<a class="headerlink" href="#exercise-3-customer-balking" title="Link to this heading">#</a></h3>
+<p>Customers <strong>leave if queue is too long</strong> (balking).</p>
+<p><strong>Changes</strong>:</p>
+<ul class="simple">
+<li><p>In <code class="docutils literal notranslate"><span class="pre">customer_arrival()</span></code>, check queue length</p></li>
+<li><p>If queue &gt; threshold, customer leaves (track this!)</p></li>
+<li><p>Calculate <strong>balking probability</strong> from simulation</p></li>
+</ul>
+<p><strong>Question</strong>: How does balking affect wait times?</p>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<p>Congratulations! You’ve mastered pure discrete event simulation with Modelly’s event scheduling.</p>
+<p><strong>You learned</strong>:</p>
+<ul class="simple">
+<li><p>When to use event-driven models vs tick-based ABM</p></li>
+<li><p>Mathematical foundations (queuing theory, exponential distributions)</p></li>
+<li><p>Building event-driven models with <code class="docutils literal notranslate"><span class="pre">schedule_event</span></code></p></li>
+<li><p>Validating simulations with theoretical predictions</p></li>
+<li><p>Statistical analysis of simulation results</p></li>
+</ul>
+<section id="continue-learning">
+<h3>Continue Learning<a class="headerlink" href="#continue-learning" title="Link to this heading">#</a></h3>
+<p><strong>Tutorial 12: Hybrid ABM-DEVS Models</strong></p>
+<ul class="simple">
+<li><p>Combine <code class="docutils literal notranslate"><span class="pre">step()</span></code>-based agent activation with scheduled events</p></li>
+<li><p>Build a spatial model with event scheduling</p></li>
+<li><p>Learn when events actually pay off performance-wise</p></li>
+</ul>
+<p><strong>Additional Resources</strong>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://remipelloux.github.io/Modelly/apis/time.html">Modelly time and event scheduling API documentation</a></p></li>
+<li><p><a class="reference external" href="https://github.com/RemiPelloux/Modelly/tree/main/modelly/examples">Modelly examples</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Queueing_theory">Queuing Theory Reference</a></p></li>
+</ul>
+</section>
+</section>
+<section id="happy-modeling">
+<h2>Happy Modeling!<a class="headerlink" href="#happy-modeling" title="Link to this heading">#</a></h2>
+<p>This tutorial is a work in progress. If you found any errors, have suggestions, or need clarification, please:</p>
+<ul class="simple">
+<li><p>Open an issue: <a class="reference external" href="https://github.com/RemiPelloux/Modelly/issues">Modelly GitHub Issues</a></p></li>
+<li><p>Ask in chat: <a class="reference external" href="https://matrix.to/#/#project-modelly:matrix.org">Modelly Matrix Chat</a></p></li>
+<li><p>Check documentation: <a class="reference external" href="https://remipelloux.github.io/Modelly/">Modelly Docs</a></p></li>
+</ul>
+<p><strong>References</strong></p>
+<p>[QueueingTheory] Gross, D., et al. “Fundamentals of Queueing Theory.” 4th Edition, Wiley, 2008.<br />
+[DEVS] Zeigler, B. P. “Theory of Modeling and Simulation.” 3rd Edition, Academic Press, 2018.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="10_visualization_custom.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Visualization - Custom Components</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="12_hybrid_abm_devs.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Hybrid ABM-DEVS Models with Modelly</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-description">Tutorial Description</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-setup">Tutorial Setup</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-discrete-event-simulation">What is Discrete Event Simulation?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-should-you-use-devs">When Should You Use DEVS?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#real-world-devs-applications">Real-World DEVS Applications</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-foundations-queuing-theory">Mathematical Foundations: Queuing Theory</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-m-m-1-queue">The M/M/1 Queue</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-parameters">Key Parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#system-utilization">System Utilization (ρ)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#theoretical-performance-metrics">Theoretical Performance Metrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-exponential-distribution">The Exponential Distribution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-concepts-event-scheduling-on-the-model">Core Concepts: Event Scheduling on the Model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#event-scheduling-methods">Event Scheduling Methods</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#event-priority">Event Priority</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-m-m-1-bank-queue-system">Example: M/M/1 Bank Queue System</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-simulation">Running the Simulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-period">Warm-Up Period</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-analysis-comparing-simulation-vs-theory">Statistical Analysis: Comparing Simulation vs Theory</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis-conclusion">Analysis Conclusion</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-topics">Advanced Topics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#event-cancellation">Event Cancellation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warning-weak-references">Warning: Weak References</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-event-driven-models">Debugging Event-Driven Models</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1-multiple-servers-m-m-c-queue">Exercise 1: Multiple Servers (M/M/c Queue)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2-priority-customers">Exercise 2: Priority Customers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-3-customer-balking">Exercise 3: Customer Balking</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continue-learning">Continue Learning</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#happy-modeling">Happy Modeling!</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/tutorials/11_discrete_event_simulation.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

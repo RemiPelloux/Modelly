@@ -1,0 +1,304 @@
+
+# Schelling Segregation Model
+
+## Summary
+
+The Schelling segregation model is a classic agent-based model, demonstrating how even a mild preference for similar neighbors can lead to a much higher degree of segregation than we would intuitively expect. The model consists of agents on a square grid, where each grid cell can contain at most one agent. Agents come in two colors: orange and blue. They are happy if a certain number of their eight possible neighbors are of the same color, and unhappy otherwise. Unhappy agents will pick a random empty cell to move to each step, until they are happy. The model keeps running until there are no unhappy agents.
+
+By default, the number of similar neighbors the agents need to be happy is set to 3. That means the agents would be perfectly happy with a majority of their neighbors being of a different color (e.g. a Blue agent would be happy with five Orange neighbors and three Blue ones). Despite this, the model consistently leads to a high degree of segregation, with most agents ending up with no neighbors of a different color.
+
+## How to Run
+
+Install Modelly with recommended dependencies:
+
+pip install "modelly-abm[rec]"
+
+Then run the example:
+
+solara run app.py
+
+Open the displayed local URL in your browser.
+
+
+## Files
+
+* ``model.py``: Contains the Schelling model class
+*  ``agents.py``: Contains the Schelling agent class
+* ``app.py``: Code for the interactive visualization.
+* ``resources/``: Images used by the visualization.
+
+## Further Reading
+
+Schelling's original paper describing the model:
+
+[Schelling, Thomas C. Dynamic Models of Segregation. Journal of Mathematical Sociology. 1971, Vol. 1, pp 143-186.](https://www.stat.berkeley.edu/~aldous/157/Papers/Schelling_Seg_Models.pdf)
+
+An interactive, browser-based explanation and implementation:
+
+[Parable of the Polygons](http://ncase.me/polygons/), by Vi Hart and Nicky Case.
+
+
+## Agents
+
+```python
+from modelly.space import CellAgent
+
+
+class SchellingAgent(CellAgent):
+    """Schelling segregation agent."""
+
+    def __init__(
+        self, model, cell, agent_type: int, homophily: float = 0.4, radius: int = 1
+    ) -> None:
+        """Create a new Schelling agent.
+        Args:
+            model: The model instance the agent belongs to
+            agent_type: Indicator for the agent's type (minority=1, majority=0)
+            homophily: Minimum number of similar neighbors needed for happiness
+            radius: Search radius for checking neighbor similarity
+        """
+        super().__init__(model)
+        self.cell = cell
+        self.type = agent_type
+        self.homophily = homophily
+        self.radius = radius
+        self.happy = False
+
+    def assign_state(self) -> None:
+        """Determine if agent is happy and move if necessary."""
+        neighbors = list(self.cell.get_neighborhood(radius=self.radius).agents)
+
+        # Count similar neighbors
+        similar_neighbors = len([n for n in neighbors if n.type == self.type])
+
+        # Calculate the fraction of similar neighbors
+        if (valid_neighbors := len(neighbors)) > 0:
+            similarity_fraction = similar_neighbors / valid_neighbors
+        else:
+            # If there are no neighbors, the similarity fraction is 0
+            similarity_fraction = 0.0
+
+        if similarity_fraction < self.homophily:
+            self.happy = False
+        else:
+            self.happy = True
+            self.model.happy += 1
+
+    def step(self) -> None:
+        # Move if unhappy
+        if not self.happy:
+            self.cell = self.model.grid.select_random_empty_cell()
+
+```
+
+
+## Model
+
+```python
+from modelly import Model
+from modelly.data.collector import DataCollector
+from modelly.examples.basic.schelling.agents import SchellingAgent
+from modelly.scenarios import Scenario
+from modelly.space import OrthogonalMooreGrid
+
+
+class SchellingScenario(Scenario):
+    """Scenario for the Schelling model.
+
+    Args:
+        width: Width of the grid
+        height: Height of the grid
+        density: Initial chance for a cell to be populated (0-1)
+        minority_pc: Chance for an agent to be in minority class (0-1)
+        homophily: Minimum number of similar neighbors needed for happiness
+        radius: Search radius for checking neighbor similarity
+        rng: Seed for reproducibility
+    """
+
+    height: int = 20
+    width: int = 20
+    density: float = 0.8
+    minority_pc: float = 0.5
+    homophily: float = 0.4
+    radius: int = 1
+
+
+# Module-level reporters rather than lambdas, so the model can be checkpointed.
+def pct_happy(m):
+    """Percentage of agents that are happy."""
+    return (m.happy / len(m.agents)) * 100 if len(m.agents) > 0 else 0
+
+
+def population(m):
+    """Number of agents."""
+    return len(m.agents)
+
+
+def minority_pct(m):
+    """Percentage of agents in the minority group."""
+    return (
+        sum(1 for agent in m.agents if agent.type == 1) / len(m.agents) * 100
+        if len(m.agents) > 0
+        else 0
+    )
+
+
+class Schelling(Model):
+    """Model class for the Schelling segregation model."""
+
+    def __init__(self, scenario: SchellingScenario = SchellingScenario):
+        """Create a new Schelling model.
+
+        Args:
+            scenario: SchellingScenario containing model parameters.
+        """
+        super().__init__(scenario=scenario)
+
+        # Model parameters
+        self.density = scenario.density
+        self.minority_pc = scenario.minority_pc
+
+        # Initialize grid
+        self.grid = OrthogonalMooreGrid(
+            (scenario.width, scenario.height), random=self.random, capacity=1
+        )
+
+        # Track happiness
+        self.happy = 0
+
+        # Set up data collection
+        self.datacollector = DataCollector(
+            model_reporters={
+                "happy": "happy",
+                "pct_happy": pct_happy,
+                "population": population,
+                "minority_pct": minority_pct,
+            },
+            agent_reporters={"agent_type": "type"},
+        )
+
+        # Create agents and place them on the grid
+        for cell in self.grid.all_cells:
+            if self.random.random() < self.density:
+                agent_type = 1 if self.random.random() < scenario.minority_pc else 0
+                SchellingAgent(
+                    self,
+                    cell,
+                    agent_type,
+                    homophily=scenario.homophily,
+                    radius=scenario.radius,
+                )
+
+        # Collect initial state
+        self.agents.do("assign_state")
+        self.datacollector.collect(self)
+
+    def step(self):
+        """Run one step of the model."""
+        self.happy = 0  # Reset counter of happy agents
+        self.agents.shuffle_do("step")  # Activate all agents in random order
+        self.agents.do("assign_state")
+        self.datacollector.collect(self)  # Collect data
+        self.running = self.happy < len(self.agents)  # Continue until everyone is happy
+
+```
+
+
+## App
+
+```python
+import os
+
+import solara
+
+from modelly.examples.basic.schelling.model import Schelling, SchellingScenario
+from modelly.viz import (
+    Slider,
+    SolaraViz,
+    SpaceRenderer,
+    make_plot_component,
+)
+from modelly.viz.components import AgentPortrayalStyle
+
+
+def get_happy_agents(model):
+    """Display a text count of how many happy agents there are."""
+    return solara.Markdown(f"**Happy agents: {model.happy}**")
+
+
+path = os.path.dirname(os.path.abspath(__file__))
+
+
+def agent_portrayal(agent):
+    style = AgentPortrayalStyle(
+        x=agent.cell.coordinate[0],
+        y=agent.cell.coordinate[1],
+        marker=os.path.join(path, "resources", "orange_happy.png"),
+        size=75,
+    )
+    if agent.type == 0:
+        if agent.happy:
+            style.update(
+                (
+                    "marker",
+                    os.path.join(path, "resources", "blue_happy.png"),
+                ),
+            )
+        else:
+            style.update(
+                (
+                    "marker",
+                    os.path.join(path, "resources", "blue_unhappy.png"),
+                ),
+                ("size", 50),
+                ("zorder", 2),
+            )
+    else:
+        if not agent.happy:
+            style.update(
+                (
+                    "marker",
+                    os.path.join(path, "resources", "orange_unhappy.png"),
+                ),
+                ("size", 50),
+                ("zorder", 2),
+            )
+
+    return style
+
+
+model_params = {
+    "rng": {
+        "type": "InputText",
+        "value": 42,
+        "label": "Random Seed",
+    },
+    "density": Slider("Agent density", 0.8, 0.1, 1.0, 0.1),
+    "minority_pc": Slider("Fraction minority", 0.2, 0.0, 1.0, 0.05),
+    "homophily": Slider("Homophily", 0.4, 0.0, 1.0, 0.125),
+    "width": 20,
+    "height": 20,
+}
+
+# Note: Models with images as markers are very performance intensive.
+model1 = Schelling(scenario=SchellingScenario())
+renderer = SpaceRenderer(model1, backend="matplotlib").setup_agents(agent_portrayal)
+# Here we use renderer.render() to render the agents and grid in one go.
+# This function always renders the grid and then renders the agents or
+# property layers on top of it if specified.
+renderer.render()
+
+HappyPlot = make_plot_component({"happy": "tab:green"})
+
+page = SolaraViz(
+    model1,
+    renderer,
+    components=[
+        HappyPlot,
+        get_happy_agents,
+    ],
+    model_params=model_params,
+)
+page  # noqa
+
+```

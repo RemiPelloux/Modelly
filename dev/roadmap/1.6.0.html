@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="description" content="1.6.0 sits between 1.5 and 2.0 and does two jobs. It finishes what 1.5 left open: a hub with real publications and community models, third-party plugins, the…" />
+<meta property="og:title" content="1.6.0: finish and bridge" />
+<meta property="og:description" content="1.6.0 sits between 1.5 and 2.0 and does two jobs. It finishes what 1.5 left open: a hub with real publications and community models, third-party plugins, the…" />
+<meta property="og:url" content="https://remipelloux.github.io/Modelly/dev/roadmap/1.6.0.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Modelly" />
+<meta property="og:image" content="https://remipelloux.github.io/Modelly/dev/_static/social-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Modelly: agent-based models in Python. An epidemic spreading on a grid." />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="alternate" type="text/markdown" href="1.6.0.md" />
+<script type="application/ld+json">{"@context": "https://schema.org", "description": "1.6.0 sits between 1.5 and 2.0 and does two jobs. It finishes what 1.5 left open: a hub with real publications and community models, third-party plugins, the…", "url": "https://remipelloux.github.io/Modelly/dev/roadmap/1.6.0.html", "@type": "TechArticle", "headline": "1.6.0: finish and bridge", "isPartOf": {"@type": "WebSite", "name": "Modelly documentation", "url": "https://remipelloux.github.io/Modelly/dev/"}}</script>
+    <title>1.6.0: finish and bridge &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=53800086" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=6eff8557" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'roadmap/1.6.0';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=44addd4a"></script>
+    <script src="../_static/hero-models.js?v=ac39659f"></script>
+    <script src="../_static/hero.js?v=d4c2d651"></script>
+    <script src="../_static/finder.js?v=dca20fd0"></script>
+    <script src="../_static/copy-page.js?v=1a03e2e2"></script>
+    <script src="../_static/a11y.js?v=a42a87aa"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/roadmap/1.6.0.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.0.0: clean foundations" href="2.0.0.html" />
+    <link rel="prev" title="1.5.0: ecosystem and collaboration" href="1.5.0.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../translations/index.html">
+    Other languages
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../translations/index.html">
+    Other languages
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../models.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../guides.html">
+    Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../scale.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../releases.html">
+    Releases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../whats_new.html">What's new</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/RemiPelloux/Modelly/blob/main/CHANGELOG.md">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Roadmap</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="1.3.0.html">1.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.4.0.html">1.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.5.0.html">1.5.0</a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">1.6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.0.0.html">2.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platforms.html">Platforms</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../design/index.html">Design reviews</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../design/calibration.html">Calibration (E1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../design/sensitivity.html">Sensitivity analysis (E2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../design/llm-agents.html">Language-model agents (E7)</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../releases.html" class="nav-link">Releases</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Roadmap</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">1.6.0: finish and bridge</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="finish-and-bridge">
+<h1>1.6.0: finish and bridge<a class="headerlink" href="#finish-and-bridge" title="Link to this heading">#</a></h1>
+<p><strong>Status:</strong> in progress (S1) · <strong>Base:</strong> 1.5.1</p>
+<p>1.6.0 sits between 1.5 and 2.0 and does two jobs. It <strong>finishes what 1.5 left open</strong>: a hub
+with real publications and community models, third-party plugins, the R and Julia packages’
+second round, and the reviews by people that automated checks cannot replace. It <strong>builds 2.0’s
+riskiest designs early, as opt-in previews</strong>: the one space protocol, the migration tool as a
+dry run, and the checkpoint format v2. Users try them on real models a full release before
+2.0 makes them the default. And it gives Studio the professional workbench it lacked. Nine
+epics, eight sprints, all on Windows, macOS and Linux (see <a class="reference internal" href="platforms.html"><span class="std std-doc">Platforms</span></a>).
+Backward compatible with 1.5: 1.6 adds and deprecates, it removes nothing. As the last 1.x
+minor, 1.6 becomes the long-term-support line for people who cannot move to 2.0 yet.</p>
+<section id="where-we-start">
+<h2>Where we start<a class="headerlink" href="#where-we-start" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>1.5 gives</p></th>
+<th class="head"><p>1.6.0 adds</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>A hub with the zoo models, Zenodo and Sigstore as dry runs</p></td>
+<td><p>Real publications with DOIs, signed; community models; install checked on every OS</p></td>
+</tr>
+<tr class="row-odd"><td><p>Plugin API v1, frozen, with a template</p></td>
+<td><p>Three third-party plugins listed and tested</p></td>
+</tr>
+<tr class="row-even"><td><p>R and Julia packages, run on three OSs</p></td>
+<td><p>ggplot2 methods, a package repository for R, the Julia registry</p></td>
+</tr>
+<tr class="row-odd"><td><p>A 2.0 plan, every 2.0 change warned</p></td>
+<td><p>2.0’s space protocol, migration and checkpoint format to try now, opt-in</p></td>
+</tr>
+<tr class="row-even"><td><p>Studio for everyone, on Solara’s default look</p></td>
+<td><p>A workbench layout: run bar, side panels, tabs, timeline and status bar</p></td>
+</tr>
+<tr class="row-odd"><td><p>Translations and an automated accessibility audit</p></td>
+<td><p>Native-speaker reviews and screen-reader passes by hand</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="who-1-6-0-is-for">
+<h2>Who 1.6.0 is for<a class="headerlink" href="#who-1-6-0-is-for" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Audience</p></th>
+<th class="head"><p>What 1.6.0 unlocks</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Model authors</p></td>
+<td><p>Publish to the hub and get a DOI; see what 2.0 will change in their model, without changing it</p></td>
+</tr>
+<tr class="row-odd"><td><p>Everyone using Studio</p></td>
+<td><p>A clear, dense workbench: controls where IDE users expect them, the model’s views first</p></td>
+</tr>
+<tr class="row-even"><td><p>Plugin authors</p></td>
+<td><p>A documented path from template to a listed, tested plugin</p></td>
+</tr>
+<tr class="row-odd"><td><p>R and Julia users</p></td>
+<td><p>Plots in their own idiom; installation from their language’s package index</p></td>
+</tr>
+<tr class="row-even"><td><p>Language-model agent researchers</p></td>
+<td><p>A measured comparison of three providers: agreement, cost, latency</p></td>
+</tr>
+<tr class="row-odd"><td><p>Teachers</p></td>
+<td><p>A builder with several agent classes and spaces</p></td>
+</tr>
+<tr class="row-even"><td><p>People using assistive technology</p></td>
+<td><p>Studio checked by hand with three screen readers</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="epics">
+<h2>Epics<a class="headerlink" href="#epics" title="Link to this heading">#</a></h2>
+<section id="i1-studio-workbench">
+<h3>I1 · Studio workbench<a class="headerlink" href="#i1-studio-workbench" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> Studio looks and works like the professional tools its users know (JupyterLab, VS
+Code, RStudio): the model’s views take the space, the controls are where the eye expects them.</p>
+<p><strong>Work items:</strong> the workbench layout (top run bar with the live step, activity bar opening the
+Parameters and Export panels, document tabs, timeline bar, status bar); a dark theme that
+follows the system setting; keyboard shortcuts (space to play or pause, the arrow keys to step
+and scrub, a list of them on <code class="docutils literal notranslate"><span class="pre">?</span></code>); a side panel that can be resized; the space view drawn in
+the same style as the rest (frame, ticks, palette); tabs grouped when there are many (views,
+studies, tools, sharing); the open tab and panel remembered per browser.</p>
+<p><strong>Done when:</strong> axe-core finds no WCAG A or AA violation in the light and dark themes; the
+browser tests pass on Chromium, Firefox and WebKit; five people who have never used Studio
+open a model, change a parameter, scrub back and export a figure without help.</p>
+<p><strong>Progress (S1):</strong> the workbench layout (<code class="docutils literal notranslate"><span class="pre">modelly/studio/shell.py</span></code>,
+<code class="docutils literal notranslate"><span class="pre">modelly/templates/studio.css</span></code>), with the four translations, no WCAG A or AA violation, and the
+guide’s screenshots retaken by <code class="docutils literal notranslate"><span class="pre">tools/studio/screenshots.py</span></code>.</p>
+<p><strong>Size:</strong> M · <strong>Depends on:</strong> 1.5 G7, G8</p>
+</section>
+<section id="i2-the-hub-in-practice">
+<h3>I2 · The hub in practice<a class="headerlink" href="#i2-the-hub-in-practice" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> the hub holds published, citable work, not only the zoo.</p>
+<p><strong>Work items:</strong> the first real Zenodo publication with a DOI, and Sigstore signing outside dry
+runs; install and verify checked on Windows and macOS as well as Linux; three community models
+reviewed and listed; a “publish your model” walkthrough timed from project to DOI.</p>
+<p><strong>Done when:</strong> at least one model has a real DOI and a verified signature; three community
+models are listed; publishing takes under ten minutes, timed.</p>
+<p><strong>Size:</strong> M · <strong>Depends on:</strong> 1.5 G1, G2</p>
+</section>
+<section id="i3-plugins-in-the-wild">
+<h3>I3 · Plugins in the wild<a class="headerlink" href="#i3-plugins-in-the-wild" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> the plugin API v1 proven by plugins Modelly’s authors did not write.</p>
+<p><strong>Work items:</strong> three third-party plugins (a space, an executor, a Studio view) listed on the hub
+and tested against 1.6 on all three platforms; the plugin guide revised from their authors’
+questions.</p>
+<p><strong>Size:</strong> S · <strong>Depends on:</strong> 1.5 G9</p>
+</section>
+<section id="i4-r-and-julia-ii">
+<h3>I4 · R and Julia II<a class="headerlink" href="#i4-r-and-julia-ii" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> ggplot2 methods for the R package (carried over from 1.5 S4); the R package on
+r-universe, and a decision on CRAN; the Julia package in the General registry; the R and Julia
+tutorials run on all three operating systems in the release workflow.</p>
+<p><strong>Size:</strong> M · <strong>Depends on:</strong> 1.5 G6</p>
+</section>
+<section id="i5-language-model-agents-providers-compared">
+<h3>I5 · Language-model agents: providers compared<a class="headerlink" href="#i5-language-model-agents-providers-compared" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> the evaluation harness run on three real providers and a local model, on the
+conversational market and one more model: agreement between providers, cost and latency per
+step, reported in the guide; recorded replies kept so the comparison replays offline.</p>
+<p><strong>Size:</strong> S · <strong>Depends on:</strong> 1.5 G5</p>
+</section>
+<section id="i6-builder-ii">
+<h3>I6 · Builder II<a class="headerlink" href="#i6-builder-ii" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> the Studio builder with several agent classes, grids, networks and continuous
+space, and more behaviours; the code it writes passes <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">lint</span></code> and runs unchanged.</p>
+<p><strong>Size:</strong> M · <strong>Depends on:</strong> 1.5 G7, G10</p>
+</section>
+<section id="i7-accessibility-and-languages-ii">
+<h3>I7 · Accessibility and languages II<a class="headerlink" href="#i7-accessibility-and-languages-ii" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> the French, Spanish, Portuguese and Chinese translations reviewed by native
+speakers; keyboard-only and screen-reader passes by hand (NVDA on Windows, VoiceOver on macOS,
+Orca on Linux) of Studio and the docs, their findings fixed and the method written down.</p>
+<p><strong>Size:</strong> S · <strong>Depends on:</strong> 1.5 G8</p>
+</section>
+<section id="i8-2-0-previews-space-protocol-migration-formats">
+<h3>I8 · 2.0 previews: space protocol, migration, formats<a class="headerlink" href="#i8-2-0-previews-space-protocol-migration-formats" title="Link to this heading">#</a></h3>
+<p><strong>Goal:</strong> 2.0’s three riskiest designs used on real models before they become the default.</p>
+<p><strong>Work items:</strong></p>
+<ul class="simple">
+<li><p><strong>Space protocol (2.0 H2), provisional:</strong> the <code class="docutils literal notranslate"><span class="pre">Space</span></code> protocol (<code class="docutils literal notranslate"><span class="pre">place</span></code>, <code class="docutils literal notranslate"><span class="pre">move</span></code>, <code class="docutils literal notranslate"><span class="pre">neighbors</span></code>,
+<code class="docutils literal notranslate"><span class="pre">within</span></code>, <code class="docutils literal notranslate"><span class="pre">positions</span></code>) implemented by grids, networks, continuous and geographic space, opt in
+per model; today’s classes unchanged. A tutorial switches a model from grid to network to
+continuous space by changing one line.</p></li>
+<li><p><strong>Migration dry run (2.0 H1):</strong> <code class="docutils literal notranslate"><span class="pre">modelly</span> <span class="pre">migrate</span> <span class="pre">--to</span> <span class="pre">2.0</span> <span class="pre">--dry-run</span></code> prints the diff it would
+apply and a report of what needs a human, and writes nothing.</p></li>
+<li><p><strong>Checkpoint format v2 (2.0 H8), opt in:</strong> columns as Arrow, structure as JSON, only user
+objects pickled; 1.6 reads and writes it, so 2.0 checkpoints can come back to the
+long-term-support line.</p></li>
+</ul>
+<p><strong>Done when:</strong> every zoo model runs on the space protocol in the test suite with the same
+results; the dry run reports on every zoo and hub model; every zoo model’s checkpoint round
+trips through format v2 and resumes with the same results.</p>
+<p><strong>Size:</strong> L · <strong>Depends on:</strong> 1.5 G11; designs in <a class="reference internal" href="2.0.0.html"><span class="std std-doc">2.0.0</span></a> H1, H2, H8</p>
+</section>
+<section id="i9-quality-and-platforms">
+<h3>I9 · Quality and platforms<a class="headerlink" href="#i9-quality-and-platforms" title="Link to this heading">#</a></h3>
+<p><strong>Work items:</strong> the release gate as for 1.5 (benchmark against the previous release, the
+notebooks, the three-OS matrix, the accessibility stage); the public names’ stability list
+(<code class="docutils literal notranslate"><span class="pre">docs/api_stability.toml</span></code>) kept in step with the previews, which enter as provisional; 1.6
+announced as the long-term-support line.</p>
+<p><strong>Size:</strong> S (continuous)</p>
+</section>
+</section>
+<section id="priorities">
+<h2>Priorities<a class="headerlink" href="#priorities" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Priority</p></th>
+<th class="head"><p>Epics</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must</strong></p></td>
+<td><p>I1 Studio workbench, I2 The hub in practice, I8 2.0 previews, I9 Quality</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Should</strong></p></td>
+<td><p>I3 Plugins, I4 R and Julia II, I7 Accessibility and languages II</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Could</strong></p></td>
+<td><p>I5 Providers compared, I6 Builder II</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Won’t</strong></p></td>
+<td><p>Removals or breaking changes; new feature families (they go to 2.1)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="sprint-plan">
+<h2>Sprint plan<a class="headerlink" href="#sprint-plan" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Sprint</p></th>
+<th class="head"><p>Goal</p></th>
+<th class="head"><p>Main items</p></th>
+<th class="head"><p>Exit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>S1</p></td>
+<td><p>Studio workbench</p></td>
+<td><p>Workbench layout, dark theme, shortcuts, resizable panel</p></td>
+<td><p>No WCAG A or AA violation in both themes; browser tests on three engines</p></td>
+</tr>
+<tr class="row-odd"><td><p>S2</p></td>
+<td><p>Hub and plugins</p></td>
+<td><p>A real publication; community models and plugins invited and reviewed</p></td>
+<td><p>One model with a real DOI installed on the three OSs</p></td>
+</tr>
+<tr class="row-even"><td><p>S3</p></td>
+<td><p>Space protocol · <strong>a1</strong></p></td>
+<td><p>The protocol; grids and networks on it</p></td>
+<td><p>Grid and network zoo models pass on the protocol</p></td>
+</tr>
+<tr class="row-odd"><td><p>S4</p></td>
+<td><p>Protocol II and migration</p></td>
+<td><p>Continuous and geographic space; <code class="docutils literal notranslate"><span class="pre">migrate</span> <span class="pre">--to</span> <span class="pre">2.0</span> <span class="pre">--dry-run</span></code></p></td>
+<td><p>Every zoo model on the protocol; a dry-run report for each</p></td>
+</tr>
+<tr class="row-even"><td><p>S5</p></td>
+<td><p>Formats and bindings</p></td>
+<td><p>Checkpoint format v2; ggplot2 methods, r-universe, the Julia registry</p></td>
+<td><p>Zoo checkpoints round trip; R and Julia tutorials on three OSs</p></td>
+</tr>
+<tr class="row-odd"><td><p>S6</p></td>
+<td><p>Providers and builder · <strong>b1</strong></p></td>
+<td><p>Three providers compared; builder II</p></td>
+<td><p>Must and Should epics feature complete; previews’ API frozen for 1.6</p></td>
+</tr>
+<tr class="row-even"><td><p>S7</p></td>
+<td><p>Reviews · <strong>rc1</strong></p></td>
+<td><p>Native-speaker reviews; screen-reader passes; user test of Studio</p></td>
+<td><p>No open blocker</p></td>
+</tr>
+<tr class="row-odd"><td><p>S8</p></td>
+<td><p>Hardening · <strong>1.6.0</strong></p></td>
+<td><p>Release gate; long-term-support announcement</p></td>
+<td><p>All gates pass</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="release-gates">
+<h2>Release gates<a class="headerlink" href="#release-gates" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Release</p></th>
+<th class="head"><p>Gate</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1.6.0a1</p></td>
+<td><p>Studio workbench in; one real hub publication; the protocol on grids and networks</p></td>
+</tr>
+<tr class="row-odd"><td><p>1.6.0b1</p></td>
+<td><p>Must and Should epics feature complete; previews’ API frozen for 1.6</p></td>
+</tr>
+<tr class="row-even"><td><p>1.6.0rc1</p></td>
+<td><p>No open blocker; translations reviewed; screen-reader passes done</p></td>
+</tr>
+<tr class="row-odd"><td><p>1.6.0</p></td>
+<td><p>Benchmark against 1.5.1 with no slower playbook; notebooks run; three-OS matrix green</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="success-metrics">
+<h2>Success metrics<a class="headerlink" href="#success-metrics" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Metric</p></th>
+<th class="head"><p>1.5.1</p></th>
+<th class="head"><p>1.6.0 target</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Hub models with a real DOI</p></td>
+<td><p>0</p></td>
+<td><p>at least 1</p></td>
+</tr>
+<tr class="row-odd"><td><p>Community models on the hub</p></td>
+<td><p>0</p></td>
+<td><p>at least 3</p></td>
+</tr>
+<tr class="row-even"><td><p>Third-party plugins</p></td>
+<td><p>0</p></td>
+<td><p>at least 3</p></td>
+</tr>
+<tr class="row-odd"><td><p>Zoo models on the space protocol (tests)</p></td>
+<td><p>0</p></td>
+<td><p>all</p></td>
+</tr>
+<tr class="row-even"><td><p>Zoo and hub models with a migration dry-run report</p></td>
+<td><p>0</p></td>
+<td><p>all</p></td>
+</tr>
+<tr class="row-odd"><td><p>Translations reviewed by native speakers</p></td>
+<td><p>0 of 4</p></td>
+<td><p>4 of 4</p></td>
+</tr>
+<tr class="row-even"><td><p>Screen readers Studio is checked with by hand</p></td>
+<td><p>0</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p>Studio usability: first-time users finishing the four tasks unaided</p></td>
+<td><p>not measured</p></td>
+<td><p>5 of 5</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="risks">
+<h2>Risks<a class="headerlink" href="#risks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Risk</p></th>
+<th class="head"><p>Likelihood</p></th>
+<th class="head"><p>Impact</p></th>
+<th class="head"><p>Mitigation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Community models and plugins depend on other people’s time</p></td>
+<td><p>High</p></td>
+<td><p>Medium</p></td>
+<td><p>Invite early (S2); the template and the walkthrough cut the work; count what is under review</p></td>
+</tr>
+<tr class="row-odd"><td><p>The space protocol cannot express a space well</p></td>
+<td><p>Medium</p></td>
+<td><p>High</p></td>
+<td><p>It is provisional in 1.6: the design can change before 2.0; today’s classes stay</p></td>
+</tr>
+<tr class="row-even"><td><p>Publication and provider comparison need accounts and keys</p></td>
+<td><p>Medium</p></td>
+<td><p>Low</p></td>
+<td><p>The dry runs and recorded replies stay as fallbacks; the gate names what is missing</p></td>
+</tr>
+<tr class="row-odd"><td><p>A Solara upgrade breaks Studio’s look</p></td>
+<td><p>Medium</p></td>
+<td><p>Medium</p></td>
+<td><p>Styles are scoped to Studio’s own classes; browser tests on three engines; the Solara range is tested in the gate</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="open-questions">
+<h2>Open questions<a class="headerlink" href="#open-questions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>[ ] R: r-universe only, or CRAN as well (strict policies, slower updates)?</p></li>
+<li><p>[ ] Which three providers and which local model for the comparison?</p></li>
+<li><p>[ ] When does the 1.6 long-term-support line end: when 2.1 ships, or when the hub’s models
+have all migrated?</p></li>
+</ul>
+</section>
+<section id="sprint-review-log">
+<h2>Sprint review log<a class="headerlink" href="#sprint-review-log" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Sprint</p></th>
+<th class="head"><p>Shipped</p></th>
+<th class="head"><p>Slipped</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>S1</p></td>
+<td><p>The workbench layout (run bar, activity bar and panels, tabs, timeline bar, status bar), the reporters plot restyled, the guide’s screenshots retaken</p></td>
+<td><p></p></td>
+<td><p>In progress: dark theme, shortcuts and the resizable panel remain</p></td>
+</tr>
+<tr class="row-odd"><td><p>S2</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>S3</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>S4</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>S5</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>S6</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>S7</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>S8</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="1.5.0.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">1.5.0: ecosystem and collaboration</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="2.0.0.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">2.0.0: clean foundations</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-we-start">Where we start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#who-1-6-0-is-for">Who 1.6.0 is for</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epics">Epics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i1-studio-workbench">I1 · Studio workbench</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i2-the-hub-in-practice">I2 · The hub in practice</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i3-plugins-in-the-wild">I3 · Plugins in the wild</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i4-r-and-julia-ii">I4 · R and Julia II</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i5-language-model-agents-providers-compared">I5 · Language-model agents: providers compared</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i6-builder-ii">I6 · Builder II</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i7-accessibility-and-languages-ii">I7 · Accessibility and languages II</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i8-2-0-previews-space-protocol-migration-formats">I8 · 2.0 previews: space protocol, migration, formats</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i9-quality-and-platforms">I9 · Quality and platforms</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#priorities">Priorities</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sprint-plan">Sprint plan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-gates">Release gates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#success-metrics">Success metrics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#risks">Risks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#open-questions">Open questions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sprint-review-log">Sprint review log</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/roadmap/1.6.0.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>
