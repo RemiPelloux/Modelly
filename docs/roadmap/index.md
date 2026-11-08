@@ -1,9 +1,8 @@
 # Roadmap
 
-**Status:** 1.3 released, 1.4.0 in release (every epic merged except F10 Studio II, release gate
-pending) · **Current release:** 1.3.3
+**Status:** 1.5 released, 1.6.0 in progress (S1) · **Current release:** 1.5.1
 
-Four releases take Modelly from a fast agent-based modelling framework to the research platform
+Five releases take Modelly from a fast agent-based modelling framework to the research platform
 people use to **build, calibrate, explain, scale, share and publish** a model, in any field, on
 **Windows, macOS and Linux alike**.
 
@@ -12,6 +11,7 @@ people use to **build, calibrate, explain, scale, share and publish** a model, i
 | [1.3.0](1.3.0.md) | Answers and trust | Calibrate, explain and publish a model: experiments, calibration, sensitivity, provenance, Studio, model zoo |
 | [1.4.0](1.4.0.md) | Scale out and connect | Split runs over MPI and Dask, a GPU backend, differentiable models, data assimilation, coupled fields and ODEs, synthetic populations, emulators, Modelly in the browser |
 | [1.5.0](1.5.0.md) | Ecosystem and collaboration | Model hub, model cards, policy and causal tools, LLM agents II, R and Julia bindings, differential equations in agents |
+| [1.6.0](1.6.0.md) | Finish and bridge | Real hub publications, community models and plugins, R and Julia II, a Studio workbench, and 2.0's space protocol, migration and checkpoint format as opt-in previews |
 | [2.0.0](2.0.0.md) | Clean foundations | One space API, one clock, columns by default, typed scenarios, stable ABI and checkpoint format |
 
 Every feature on these pages must work on Windows, macOS and Linux before it ships. How that is
@@ -19,7 +19,7 @@ guaranteed, and the support matrix for each release, is on [Platforms](platforms
 
 ## Order, not dates
 
-The roadmap has no dates. The releases ship in order (1.3.0, 1.4.0, 1.5.0, 2.0.0) because each
+The roadmap has no dates. The releases ship in order (1.3.0, 1.4.0, 1.5.0, 1.6.0, 2.0.0) because each
 one stands on the one before, as the diagram below shows. Inside a release, work is split into
 eight sprints: a sprint is a unit of work with exit criteria, not a period of time, and the next
 sprint starts as soon as the previous one's criteria hold. Each release has three public
@@ -47,6 +47,10 @@ flowchart LR
         K[Policy and causal tools]
         B[R and Julia bindings]
     end
+    subgraph R16["1.6.0 Finish and bridge"]
+        V[2.0 previews]
+        T[Studio workbench]
+    end
     subgraph R20["2.0.0 Clean foundations"]
         U[One space API, one clock]
         A[Stable ABI and formats]
@@ -58,14 +62,17 @@ flowchart LR
     P --> H
     Z --> H
     C --> K
-    D --> U
     G --> U
-    H --> A
+    S --> T
+    H --> V
+    D --> V
+    V --> U
+    V --> A
 ```
 
 ## What every release promises
 
-- **Backward compatibility within 1.x.** A model written for 1.2 runs on 1.5. What changes is
+- **Backward compatibility within 1.x.** A model written for 1.2 runs on 1.6. What changes is
   deprecated with a warning naming the replacement, and removed only in 2.0.
 - **Reproducibility.** The same seed gives the same result, with the compiled modules or their
   pure-Python twins, on every supported platform. Each release widens what "the same" covers.
@@ -96,6 +103,7 @@ release page says which of them each feature serves.
 1.3.0 <1.3.0>
 1.4.0 <1.4.0>
 1.5.0 <1.5.0>
+1.6.0 <1.6.0>
 2.0.0 <2.0.0>
 Platforms <platforms>
 Design reviews <../design/index>

@@ -6,6 +6,7 @@ The roadmap lives in the documentation, one page per release:
 - [1.3.0: answers and trust](docs/roadmap/1.3.0.md)
 - [1.4.0: scale out and connect](docs/roadmap/1.4.0.md)
 - [1.5.0: ecosystem and collaboration](docs/roadmap/1.5.0.md)
+- [1.6.0: finish and bridge](docs/roadmap/1.6.0.md)
 - [2.0.0: clean foundations](docs/roadmap/2.0.0.md)
 - [Platforms: Windows, macOS and Linux](docs/roadmap/platforms.md)
 

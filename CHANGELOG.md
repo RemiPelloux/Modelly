@@ -5,7 +5,23 @@ versioning.
 
 ## Unreleased
 
+### Changed
+
+- Studio has a new layout, like a notebook workbench (`modelly/studio/shell.py`,
+  `modelly/templates/studio.css`). A navy top bar holds the model's name and the run toolbar
+  (Step, Play, Reset, Run N, the live step). An activity bar opens the Parameters panel (with
+  the new Playback section for the pause between steps) or the Export panel. The views are
+  compact document tabs, the timeline is a bar under them, and a status bar shows live or
+  past step, seed, agent count and whether the run is playing. Panels are flat and bordered,
+  buttons and tabs are in sentence case, and the reporters plot has a lighter frame and grid.
+  Solara's corner banner is replaced by a credit in the status bar. The labels are
+  translated in the four catalogs, and axe-core finds no WCAG A/AA violation.
+  `tools/studio/screenshots.py` retakes the guide's screenshots.
+
 ### Documentation
+
+- The 1.6.0 roadmap: a bridge release between 1.5 and 2.0 that closes what 1.5 left open and
+  ships 2.0's riskiest designs as opt-in previews.
 
 - The home page is redesigned on one container shared by the hero, every section and the
   footer: a full-width headline, the six use-case sketches as a large grid, the guides as one

@@ -10,25 +10,25 @@ cluster runs Linux.
 Wheels carry the compiled modules; every other platform installs the pure-Python wheel, which
 gives the same results, more slowly.
 
-| Platform | 1.2.0 (today) | 1.3.0 | 1.4.0 | 1.5.0 | 2.0.0 |
-|---|---|---|---|---|---|
-| Linux x86-64 (manylinux) | compiled | compiled | compiled | compiled | compiled, abi3 |
-| Linux ARM64 (manylinux) | compiled | compiled | compiled | compiled | compiled, abi3 |
-| Linux musllinux (Alpine), x86-64 and ARM64 | compiled | compiled | compiled | compiled | compiled, abi3 |
-| macOS Apple silicon (ARM64) | compiled | compiled | compiled | compiled | compiled, abi3 |
-| macOS Intel (x86-64) | compiled | compiled | compiled | compiled | compiled, abi3 |
-| Windows x86-64 | compiled | compiled | compiled | compiled | compiled, abi3 |
-| Windows ARM64 | pure | compiled | compiled | compiled | compiled, abi3 |
-| Free-threaded CPython (3.14t and later), all of the above | pure | compiled | compiled | compiled | compiled |
-| Browser (Pyodide, WebAssembly) | not supported | pure (experimental) | compiled | compiled | compiled |
+| Platform | 1.2.0 (today) | 1.3.0 | 1.4.0 | 1.5.0 | 1.6.0 | 2.0.0 |
+|---|---|---|---|---|---|---|
+| Linux x86-64 (manylinux) | compiled | compiled | compiled | compiled | compiled | compiled, abi3 |
+| Linux ARM64 (manylinux) | compiled | compiled | compiled | compiled | compiled | compiled, abi3 |
+| Linux musllinux (Alpine), x86-64 and ARM64 | compiled | compiled | compiled | compiled | compiled | compiled, abi3 |
+| macOS Apple silicon (ARM64) | compiled | compiled | compiled | compiled | compiled | compiled, abi3 |
+| macOS Intel (x86-64) | compiled | compiled | compiled | compiled | compiled | compiled, abi3 |
+| Windows x86-64 | compiled | compiled | compiled | compiled | compiled | compiled, abi3 |
+| Windows ARM64 | pure | compiled | compiled | compiled | compiled | compiled, abi3 |
+| Free-threaded CPython (3.14t and later), all of the above | pure | compiled | compiled | compiled | compiled | compiled |
+| Browser (Pyodide, WebAssembly) | not supported | pure (experimental) | compiled | compiled | compiled | compiled |
 
-| Python | 1.2.0 | 1.3.0 | 1.4.0 | 1.5.0 | 2.0.0 |
-|---|---|---|---|---|---|
-| 3.12 | yes | yes | yes | yes | no |
-| 3.13 | yes | yes | yes | yes | yes |
-| 3.14 | yes | yes | yes | yes | yes |
-| 3.15 | yes | yes | yes | yes | yes |
-| 3.16 | no | no | yes (when released) | yes | yes |
+| Python | 1.2.0 | 1.3.0 | 1.4.0 | 1.5.0 | 1.6.0 | 2.0.0 |
+|---|---|---|---|---|---|---|
+| 3.12 | yes | yes | yes | yes | yes | no |
+| 3.13 | yes | yes | yes | yes | yes | yes |
+| 3.14 | yes | yes | yes | yes | yes | yes |
+| 3.15 | yes | yes | yes | yes | yes | yes |
+| 3.16 | no | no | yes (when released) | yes | yes | yes |
 
 "abi3" in 2.0.0 means one wheel per platform serves every supported Python version (the stable
 ABI), so a new Python release works on day one.
@@ -90,4 +90,5 @@ path on every operating system, and the docs say which.
 | 1.3.0 | Windows ARM64 wheels; free-threaded wheels on all three; `python -m modelly.dev gate`; unspecified-encoding rule; cross-platform determinism suite; `spawn`-safe lint rule; Pyodide pure-wheel smoke test |
 | 1.4.0 | WebAssembly build of the compiled modules; MPI on all three (MS-MPI on Windows); GPU backends per platform; PGO wheels per compiler (GCC, Clang, MSVC) measured separately |
 | 1.5.0 | R and Julia bindings tested on all three; Studio accessibility audit on all three browsers' engines; installer guide for locked-down Windows machines (no admin rights) |
+| 1.6.0 | Studio's browser tests on Chromium, Firefox and WebKit; the hub's install and verify, R and Julia packages checked on all three; screen-reader passes on each OS (NVDA, VoiceOver, Orca) |
 | 2.0.0 | Stable ABI (abi3) wheels; Python 3.13 minimum; a single test and release matrix for every platform in the support table |

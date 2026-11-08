@@ -89,8 +89,8 @@ rewrite what can be rewritten.
 | 2.0 change | What you use today | Warns |
 |---|---|---|
 | The geographic space no longer holds the synthetic-population helpers (one home per feature) | `modelly.population` | from 1.4 (table above) |
-| Everything deprecated in 1.3 to 1.5 is removed (H1) | the replacements in the table above | from the release that deprecated it |
-| Per-agent random streams become the default (H6): agents draw from streams of their own, so a model without `agent_streams` draws other numbers for the same seed | set `agent_streams = True` now to get 2.0's numbers; the 1.5 long-term-support line keeps 1.x's | no warning: the numbers change, no call does; the migration guide and an agreement test cover it |
+| Everything deprecated in 1.3 to 1.6 is removed (H1) | the replacements in the table above | from the release that deprecated it |
+| Per-agent random streams become the default (H6): agents draw from streams of their own, so a model without `agent_streams` draws other numbers for the same seed | set `agent_streams = True` now to get 2.0's numbers; the 1.6 long-term-support line keeps 1.x's | no warning: the numbers change, no call does; the migration guide and an agreement test cover it |
 | One space protocol for grids, networks, continuous and geographic space (H2); property layers become fields on every space | today's space classes, which stay as thin aliases through 2.x where they map cleanly | no warning in 1.x: no class goes in 2.0; one that does not map warns in 2.x before 3.0 removes it |
 | Columns by default (H3): typed attributes become columns | `Column(...)` declarations | no warning: models keep their attributes |
 | One clock (H4): steps are events at integer times, one documented tie-breaking order, one (compiled) scheduler | `step`, `run_for`, `schedule_event` keep their meaning | no warning: 1.x already orders events by time, priority, then insertion order, the 2.0 rule ([Event ordering](event_ordering.md)) |
