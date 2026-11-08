@@ -14,16 +14,33 @@ from modelly.viz.mpl.figure import _SpaceFigure
 def _scrub_buttons(state: StudioState, last: int) -> None:
     """Back to the live model; replay from the shown step."""
     session = state.session
-    with solara.Row():
-        solara.Button(
-            t("Back to live"),
-            on_click=lambda: state.act(session.scrub, last),
-            disabled=session.view is None,
-        )
-        solara.Button(
-            t("Replay from here"),
-            on_click=lambda: state.act(session.replay),
-            disabled=session.view is None,
+    solara.Button(
+        t("Back to live"),
+        on_click=lambda: state.act(session.scrub, last),
+        disabled=session.view is None,
+        outlined=True,
+    )
+    solara.Button(
+        t("Replay from here"),
+        on_click=lambda: state.act(session.replay),
+        disabled=session.view is None,
+        outlined=True,
+    )
+
+
+def _scrub_slider(state: StudioState, span: tuple[int, int], shown: int) -> None:
+    """The timeline's slider, from the first recorded step to the live one."""
+    session = state.session
+    first, last = span
+    how = "replays the run" if session.replaying else "restores a checkpoint"
+    with solara.Div(classes=["mx-timeline-track"]):
+        solara.SliderInt(
+            f"step (live: {last}); scrubbing {how}",
+            value=shown,
+            min=first,
+            max=max(last, first + 1),
+            on_value=lambda step: state.act(session.scrub, step),
+            disabled=state.playing.value,
         )
 
 
@@ -34,20 +51,18 @@ def Scrubber(state: StudioState):
     session = state.session
     first, last = (int(bound) for bound in session.timeline.span)
     shown = int(session.shown.time)
-    how = "replays the run" if session.replaying else "restores a checkpoint"
-    with solara.Card(t("Timeline")):
-        solara.SliderInt(
-            f"step (live: {last}); scrubbing {how}",
-            value=shown,
-            min=first,
-            max=max(last, first + 1),
-            on_value=lambda step: state.act(session.scrub, step),
-            disabled=state.playing.value,
-        )
-        _scrub_buttons(state, last)
+    past = "is-past" if session.view is not None else ""
+    with solara.Column(gap="0", classes=["mx-timeline-wrap"]):
+        with solara.Row(classes=["mx-timeline", past], gap="0"):
+            solara.Text(t("Timeline"), classes=["mx-timeline-title"])
+            solara.Text(f"{shown} / {last}", classes=["mx-timeline-at"])
+            _scrub_slider(state, (first, last), shown)
+            _scrub_buttons(state, last)
         if session.view is not None:
             solara.Info(
-                f"showing step {shown} of {last}: change parameters, then Replay from here"
+                f"showing step {shown} of {last}: change parameters, then Replay from here",
+                dense=True,
+                classes=["mx-timeline-note"],
             )
 
 

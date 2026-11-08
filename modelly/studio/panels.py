@@ -1,4 +1,4 @@
-"""The sidebar: the parameter panel, the run controls and the exports."""
+"""The controls: the run toolbar, the parameter, playback and export panels, the error banner."""
 
 from __future__ import annotations
 
@@ -106,7 +106,7 @@ def _buttons(state: StudioState, steps) -> None:
     """Step, play or pause, reset; run N steps."""
     session, playing = state.session, state.playing.value
     idle = not playing and session.model.running
-    with solara.Row():
+    with solara.Row(classes=["mx-run-group"], gap="0"):
         solara.Button(
             t("Step"), on_click=lambda: state.act(session.step, 1), disabled=not idle
         )
@@ -114,12 +114,13 @@ def _buttons(state: StudioState, steps) -> None:
             t("Pause") if playing else t("Play"),
             on_click=lambda: state.playing.set(not playing),
             disabled=not (playing or idle),
+            classes=["mx-primary"],
         )
         solara.Button(
             t("Reset"), on_click=lambda: state.act(session.reset), disabled=playing
         )
-    with solara.Row():
-        solara.InputInt(t("steps"), value=steps)
+    with solara.Row(classes=["mx-run-group"], gap="0"):
+        solara.InputInt(t("steps"), value=steps, classes=["mx-steps"])
         solara.Button(
             t("Run {steps}").format(steps=steps.value),
             on_click=lambda: state.act(session.step, steps.value or 0),
@@ -128,23 +129,34 @@ def _buttons(state: StudioState, steps) -> None:
 
 
 @solara.component
-def RunControls(state: StudioState):
-    """Step, run N steps, play and pause, reset."""
+def RunToolbar(state: StudioState):
+    """Step, run N steps, play and pause, reset, and the live step, for the top bar."""
     state.revision.get()
     model = state.session.model
     steps = solara.use_reactive(DEFAULT_RUN_STEPS)
     solara.lab.use_task(
         lambda: _play(state), dependencies=[state.playing.value], prefer_threaded=True
     )
-    with solara.Card(t("Run")):
-        stopped = "" if model.running else " (stopped)"
-        solara.Text(f"step {model.time:g}{stopped}")
+    with solara.Row(classes=["mx-run"], gap="0"):
         _buttons(state, steps)
+        stopped = "" if model.running else " (stopped)"
+        solara.Text(f"step {model.time:g}{stopped}", classes=["mx-step"])
+
+
+@solara.component
+def PlaybackPanel(state: StudioState):
+    """How long Play waits between two steps."""
+    with solara.Card(t("Playback")):
         solara.SliderInt(
             "pause between steps (ms)", value=state.interval_ms, **INTERVAL_RANGE
         )
-        if state.error.value:
-            solara.Error(state.error.value)
+
+
+@solara.component
+def ErrorBanner(state: StudioState):
+    """The last error the model raised, until the next call succeeds."""
+    if state.error.value:
+        solara.Error(state.error.value, classes=["mx-error"])
 
 
 def _checkpoint(state: StudioState) -> bytes:

@@ -108,11 +108,17 @@ The PDF holds the same, one figure per page.
 
 ## The panels
 
-**Run** (sidebar): Step, Run N steps, Play and Pause, Reset, and the pause between two steps
-while playing. Play waits for each step to be drawn before taking the next one. An exception
-raised by the model stops the run and shows under the buttons; the traceback is in the log.
+Studio is laid out like a notebook workbench. The bar at the top names the model and holds
+the run toolbar. The buttons on the left edge open the Parameters or the Export panel (click
+the open one again to close it). The views are tabs. The timeline sits under them and a
+status bar at the foot says whether you see the live run or a past step, the seed, the
+number of agents and whether the run is playing.
 
-**Parameters** (sidebar): one input per field of the model's `Scenario`, and per keyword
+**Run** (top bar): Step, Play and Pause, Reset, and Run N steps, with the live step on the
+right. Play waits for each step to be drawn before taking the next one. An exception raised by
+the model stops the run and shows above the views; the traceback is in the log.
+
+**Parameters** (left panel): one input per field of the model's `Scenario`, and per keyword
 argument with a default of its constructor:
 
 | Field | Input |
@@ -125,9 +131,10 @@ argument with a default of its constructor:
 | anything else (tuple, dict, None) | shown, not editable |
 
 and the seed. With "Restart the run when a value changes" (on by default) a change rebuilds the
-model at step 0; turn it off to keep the change for Reset, or for Replay from here.
+model at step 0; turn it off to keep the change for Reset, or for Replay from here. Under
+them, **Playback** sets the pause between two steps while playing.
 
-**Timeline**: a slider over every step of the run so far. Moving it shows the model at that step
+**Timeline** (under the views): a slider over every step of the run so far. Moving it shows the model at that step
 in every view, the live run going on untouched; Back to live returns to the latest step.
 
 **Model**: the space (orthogonal and hexagonal grids, networks, continuous space and Voronoi
@@ -160,7 +167,7 @@ could not be checkpointed.
 **Ensemble**, **Assimilation**, **Experiments** and **Analysis**: replicates and filters,
 a results store, posteriors and sensitivity results, in the sections below.
 
-**Export** (sidebar): the space view and the reporters plot as PNG or SVG, the collected model
+**Export** (left panel): the space view and the reporters plot as PNG or SVG, the collected model
 data as CSV (and Parquet when `pyarrow` is installed), a checkpoint of the state shown (load it
 with `Model.load`), and a GIF of the run's space view (at most 120 frames, sampled evenly).
 For the live run, two files that let someone else get the same run: the session as a Python

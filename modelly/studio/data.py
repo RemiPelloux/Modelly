@@ -28,6 +28,8 @@ if TYPE_CHECKING:
 ALL_CLASSES = "All"
 FIGURE_FORMATS = ("png", "svg")
 SERIES_FIGSIZE = (6.0, 4.0)
+# Studio's greys (modelly/templates/studio.css): frame, grid lines, tick labels.
+AXIS_GREY, GRID_GREY, TEXT_GREY = "#b9c2cf", "#e6eaf0", "#505b6d"
 # An animation of the timeline samples at most this many steps.
 MAX_FRAMES = 120
 
@@ -40,6 +42,17 @@ def model_series(model: Model) -> pd.DataFrame | None:
     frame = collector.get_model_vars_dataframe()
     numeric = frame.select_dtypes("number")
     return numeric if not numeric.empty else None
+
+
+def _quiet_axes(ax) -> None:
+    """Studio's plot style: no top or right frame, light grid, grey ticks."""
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_color(AXIS_GREY)
+    ax.tick_params(colors=TEXT_GREY, labelsize=9, length=3)
+    ax.grid(axis="y", color=GRID_GREY, linewidth=0.8)
+    ax.set_axisbelow(True)
 
 
 def series_figure(model: Model) -> Figure | None:
@@ -56,8 +69,9 @@ def series_figure(model: Model) -> Figure | None:
             label=str(column),
             color=OKABE_ITO[index % len(OKABE_ITO)],
         )
-    ax.set_xlabel("collection")
-    ax.legend(loc="best", frameon=False)
+    _quiet_axes(ax)
+    ax.set_xlabel("collection", color=TEXT_GREY, fontsize=9)
+    ax.legend(loc="best", frameon=False, fontsize=9)
     return figure
 
 

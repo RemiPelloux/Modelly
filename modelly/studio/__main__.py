@@ -43,6 +43,7 @@ BROWSER_POLL_S = 0.1
 SOLARA_ENVIRONMENT = {
     "SOLARA_TELEMETRY_MIXPANEL_ENABLE": "False",
     "SOLARA_MODE": "production",
+    "SOLARA_THEME_SHOW_BANNER": "False",  # the status bar credits Solara instead
 }
 
 DESCRIPTION = """\

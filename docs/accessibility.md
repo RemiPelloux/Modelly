@@ -28,7 +28,7 @@ alone. Those passes need people who use these tools; please
 - **Names.** Every slider is named after its field and every icon button after its icon.
   Every plot has alternative text from its panel's title, so a screen reader says what each
   control and figure is.
-- **Contrast and focus.** Field labels and the app bar meet 4.5:1. The keyboard focus is a
+- **Contrast and focus.** Field labels, the top bar and the status bar meet 4.5:1. The keyboard focus is a
   visible 3-pixel ring in Okabe-Ito blue.
 - **Colour.** Agents and series use the Okabe-Ito palette, which stays distinct for the
   common forms of colour blindness, by default.

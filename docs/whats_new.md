@@ -13,6 +13,11 @@ whose notes are missing (see "Release notes" in
 
 ### Changed
 
+- **A new Studio layout**: Studio is laid out like a notebook workbench. The run toolbar is in
+  the top bar, Parameters and Export open from the left edge, the views are tabs, the
+  timeline sits under them and a status bar says whether you see the live run or a past
+  step. [Studio](studio.md)
+
 - **A clearer home page**: the headline spans the page, the six example models run as large
   live sketches, the guides are grouped by goal in rows, and the benchmark chart shows each
   Modelly time leaving Mesa's when it scrolls into view. [Home](index.md)

@@ -25,7 +25,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "docs" / "_static" / "studio" / "studio-tour.webm"
 TARGET = "modelly.examples.advanced.wolf_sheep.model:WolfSheep"
-SIZE = {"width": 1280, "height": 800}  # wide enough for the sidebar not to overlap
+SIZE = {"width": 1280, "height": 800}  # wide enough for the side panel not to overlap
 # The page is recorded scaled down: the file stays under 3 MB that way.
 VIDEO = {"width": 960, "height": 600}
 START_TIMEOUT_S = 60
@@ -62,16 +62,13 @@ def tour(page) -> None:
     page.get_by_role("button", name="Run 10").click()
     page.get_by_text("step 11", exact=True).wait_for(timeout=WAIT_MS)
     page.wait_for_timeout(PAUSE_MS)
-    timeline = page.locator(".v-card", has_text="scrubbing restores").last
-    slider = timeline.get_by_role("slider").first
+    slider = page.locator(".mx-timeline").get_by_role("slider").first
     slider.focus()
     for _ in range(6):
         slider.press("ArrowLeft")
         page.wait_for_timeout(SHORT_MS // 2)
     page.wait_for_timeout(PAUSE_MS)
-    back = page.get_by_role("button", name="Back to live")
-    back.focus()  # the slider's label overlaps it in a narrow window
-    back.press("Enter")
+    page.get_by_role("button", name="Back to live").click()
     page.get_by_role("tab", name="Map").click()
     page.locator("canvas.modelly-map-canvas[data-points]").wait_for(timeout=WAIT_MS)
     page.wait_for_timeout(PAUSE_MS)

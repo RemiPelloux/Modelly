@@ -22,8 +22,14 @@ from modelly.studio.everyone import NO_CODE_TABS, BuilderTab, CardTab, CompareTa
 from modelly.studio.i18n import direction, set_language, t
 from modelly.studio.loader import load_model_class, load_portrayal
 from modelly.studio.mapview import MapView
-from modelly.studio.panels import ExportPanel, ParameterPanel, RunControls
+from modelly.studio.panels import ErrorBanner
 from modelly.studio.session import StudioSession
+from modelly.studio.shell import (
+    Layout,  # noqa: F401 (Solara uses the app module's Layout)
+    SidePanel,
+    StatusBar,
+    TopBar,
+)
 from modelly.studio.state import use_studio_state
 from modelly.studio.tools import LintPanel, LogPanel, ProfilerPanel
 from modelly.studio.views import AgentTable, Scrubber, SeriesView, SpaceView
@@ -33,7 +39,7 @@ TITLE = "Modelly Studio"
 
 @solara.component
 def StudioApp(session: StudioSession):
-    """The Studio layout for one session: sidebar controls, views and tool tabs."""
+    """The Studio frame for one session: run bar, side panel, tabbed views, status bar."""
     set_language(session.config.language)
     state = use_studio_state(session)
     solara.use_effect(state.drawn.set, [state.revision.value])
@@ -41,20 +47,29 @@ def StudioApp(session: StudioSession):
     if direction() == "rtl":
         solara.Style("body, .v-application { direction: rtl; text-align: right; }")
     solara.Title(f"{TITLE}: {session.model_class.__name__}")
-    with solara.AppBar():
-        solara.AppBarTitle(f"{TITLE} · {session.model_class.__name__}")
-    with solara.Sidebar(), solara.Column():
-        RunControls(state)
-        ParameterPanel(state)
-        ExportPanel(state)
+    with solara.Column(classes=["mx-shell"], gap="0"):
+        TopBar(state)
+        with solara.Row(classes=["mx-body"], gap="0"):
+            SidePanel(state)
+            Workspace(state)
+        StatusBar(state)
+
+
+@solara.component
+def Workspace(state):
+    """The document tabs, the open tab's views and the timeline under them."""
     tab = solara.use_reactive(0)
-    with solara.Column():
-        Scrubber(state)
-        tabs = tabs_for(session.config.mode)
-        with solara.v.Tabs(v_model=tab.value, on_v_model=tab.set):
+    tabs = tabs_for(state.session.config.mode)
+    with solara.Column(classes=["mx-main"], gap="0"):
+        with solara.v.Tabs(
+            v_model=tab.value, on_v_model=tab.set, class_="mx-tabs", show_arrows=True
+        ):
             for name, _ in tabs:
                 solara.v.Tab(children=[t(name)])
-        tabs[tab.value][1](state)
+        ErrorBanner(state)
+        with solara.Column(classes=["mx-doc"], gap="0"):
+            tabs[tab.value][1](state)
+        Scrubber(state)
 
 
 def ModelTab(state):
