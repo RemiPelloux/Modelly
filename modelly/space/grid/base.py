@@ -22,7 +22,7 @@ from modelly.space.grid.cell_class import (  # noqa: F401 - re-exported for old 
     pickle_gridcell,
     unpickle_gridcell,
 )
-from modelly.space.grid.layers import EMPTY_LAYER, HasPropertyLayers, _layer_view
+from modelly.space.grid.layers import EMPTY_LAYER, HasPropertyLayers, _empty_accessor
 
 T = TypeVar("T", bound=Cell)
 
@@ -99,22 +99,7 @@ class Grid(HasPropertyLayers, DiscreteSpace[T]):
     def _install_empty_accessor(self) -> None:
         """Back ``cell.empty`` with the "empty" layer and keep the empties index in sync."""
         array = self.property_layers[EMPTY_LAYER]
-        view = _layer_view(array)  # each move that empties or fills a cell writes here
-
-        def getter(self_cell):
-            return array[self_cell.coordinate]
-
-        def setter(self_cell, value):
-            view[self_cell.coordinate] = value
-            index = self_cell._empties_index
-            if index is not None:
-                index.set_empty(self_cell, value)
-
-        setattr(
-            self.cell_klass,
-            EMPTY_LAYER,
-            property(getter, setter, doc=f"property_layer '{EMPTY_LAYER}'"),
-        )
+        setattr(self.cell_klass, EMPTY_LAYER, _empty_accessor(array))
 
     def get_neighborhood_mask(
         self, coordinate, include_center: bool = True, radius: int = 1

@@ -13,20 +13,51 @@ from typing import Any
 
 import numpy as np
 
+from modelly._native.cells import EmptyFlag
 from modelly.core.column_access import WRITE_ERRORS
 
 EMPTY_LAYER = "empty"
 
 
 def _layer_view(array: np.ndarray) -> Any:
-    """A ``memoryview`` of ``array`` that a coordinate tuple writes, else ``array``."""
+    """A ``memoryview`` of ``array`` that a coordinate tuple indexes, else ``array``.
+
+    Read through it, a cell gets a Python ``float``, ``int`` or ``bool`` (as a Column
+    does), which is cheaper to read and several times cheaper to compute with than a
+    numpy scalar. Dtypes a memoryview cannot index keep numpy's scalars.
+    """
     try:
         view = memoryview(array)
-        corner = (0,) * array.ndim
-        view[corner] = view[corner]
+        view[(0,) * array.ndim]  # probes that the format can be indexed
     except (TypeError, ValueError, NotImplementedError, BufferError, IndexError):
         return array
     return view
+
+
+def _empty_accessor(array: np.ndarray) -> Any:
+    """``cell.empty`` on a grid: the "empty" layer, kept in step with the empties index.
+
+    Every move that empties or fills a cell writes it. The compiled ``EmptyFlag`` does
+    what the property below does, in C, when it is built and takes ``array``.
+    """
+    view = _layer_view(array)
+
+    def getter(self_cell):
+        return view[self_cell.coordinate]
+
+    def setter(self_cell, value):
+        view[self_cell.coordinate] = value
+        index = self_cell._empties_index
+        if index is not None:
+            index.set_empty(self_cell, value)
+
+    accessor = property(getter, setter, doc=f"property_layer '{EMPTY_LAYER}'")
+    if EmptyFlag is None:
+        return accessor
+    try:
+        return EmptyFlag(array, accessor)
+    except (TypeError, ValueError, BufferError):  # read-only or unusual: the property
+        return accessor
 
 
 class HasPropertyLayers:
@@ -139,11 +170,12 @@ class HasPropertyLayers:
         view = _layer_view(array)
 
         def getter(self_cell):
-            return array[self_cell.coordinate]
+            return view[self_cell.coordinate]
 
         def setter(self_cell, value):
             # A memoryview write is about a third cheaper; it refuses some writes
-            # numpy accepts (a float into an int layer), which then go to numpy.
+            # numpy accepts (a float into an int layer, a read-only array), which
+            # then go to numpy.
             try:
                 view[self_cell.coordinate] = value
             except WRITE_ERRORS:

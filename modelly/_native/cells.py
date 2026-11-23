@@ -61,3 +61,6 @@ def _load() -> Any:
 _fastcell = _load()
 NATIVE: bool = _fastcell is not None
 set_cell = _fastcell.set_cell if NATIVE else py_set_cell
+# EmptyFlag(array, fallback): ``cell.empty`` on a grid in C (see emptyflag.h); None when
+# the module is not built, and the grid keeps its Python property.
+EmptyFlag = _fastcell.EmptyFlag if NATIVE else None

@@ -119,7 +119,7 @@ agent that lives on a grid subclasses `CellAgent` and has a `cell` instead of a 
 | `grid.coord_iter()` | `for cell in grid.all_cells: cell.coordinate, cell.agents` |
 | `grid.out_of_bounds(pos)` | not needed: `grid[pos]` raises for a missing cell |
 | `grid.width`, `grid.height` | same |
-| `PropertyLayer` | `grid.create_property_layer("sugar", default_value=0.0)`; then `cell.sugar` and `grid.sugar` |
+| `PropertyLayer` | `grid.create_property_layer("sugar", default_value=0.0)`; then `cell.sugar` (a Python number) and `grid.sugar` (the array) |
 
 Moving along the grid: `agent.move_relative((dx, dy))`, or `Grid2DMovingAgent` with
 `agent.move("north")`.

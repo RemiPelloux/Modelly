@@ -1800,3 +1800,22 @@ def test_a_pickle_holding_the_cached_collections_still_loads(monkeypatch):
         _cells=collection._cells, _capacity=None, random=collection.random, cells=[0]
     )
     assert old.cells == list(collection._cells)
+
+
+def test_layer_reads_are_python_numbers():
+    """A cell reads its layers as float, int and bool; other dtypes keep numpy's."""
+    grid = OrthogonalMooreGrid((3, 3), random=random.Random(1))
+    for name, dtype, value in (
+        ("sugar", float, 2.5),
+        ("count", int, 3),
+        ("wet", bool, True),
+        ("when", "datetime64[s]", np.datetime64(0, "s")),
+    ):
+        grid.create_property_layer(name, default_value=value, dtype=dtype)
+    cell = grid._cells[(1, 2)]
+    assert type(cell.sugar) is float and cell.sugar == 2.5
+    assert type(cell.count) is int and cell.count == 3
+    assert cell.wet is True and cell.empty is True
+    assert isinstance(cell.when, np.datetime64)
+    cell.count = 4.9  # numpy's cast, as before: truncated
+    assert cell.count == 4

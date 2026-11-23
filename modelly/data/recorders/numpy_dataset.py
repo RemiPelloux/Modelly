@@ -218,7 +218,6 @@ class NumpyAgentDataSet[A: Agent]:
             self._agent_to_index[swapped_agent] = index
             self._index_to_agent[index] = swapped_agent
 
-        # Remove the agent
         del self._agent_to_index[agent]
         del self._index_to_agent[last_index]
         for name in (self._index_in_table, self._dataset_in_agent):

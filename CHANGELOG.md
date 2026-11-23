@@ -34,8 +34,23 @@ versioning.
 - Property-layer and `cell.empty` writes go through a `memoryview` of the layer, which takes
   the coordinate tuple (numpy's write is kept for what a memoryview refuses, such as a float
   into an int layer): 0.8x.
+- `cell.empty` on a grid is `fastcell.EmptyFlag` (`modelly/_native/emptyflag.h`), a C data
+  descriptor that reads and writes the "empty" layer's buffer and tells the empties index,
+  as the Python property does; any other coordinate or a delete goes to that property, which
+  it keeps (and which a grid installs when the module is not built or the layer is
+  read-only). With set_cell's inline add and remove, a move that empties or fills a cell no
+  longer runs Python: cell move 0.86x against 1.5.1.
+- Against 1.5.1, five alternated runs pinned to one core: the cell-list playbooks Sugarscape
+  0.74x, predator-prey 0.86x, grid epidemic 0.89x; the Boltzmann example 0.90x; vectorised
+  playbooks within noise.
 
 ### Changed
+
+- Property layers read as Python scalars: the cell accessor indexes a `memoryview` of the
+  layer, so `cell.<layer>` is a `float`, `int`, `bool` or `complex` like a Column attribute,
+  and `cell.empty` a `bool`. Values are the same and golden digests unchanged; division of a
+  float read by zero raises and integer arithmetic no longer wraps. Dtypes a memoryview
+  cannot index keep numpy scalars.
 
 - Studio has a new layout, like a notebook workbench (`modelly/studio/shell.py`,
   `modelly/templates/studio.css`). A navy top bar holds the model's name and the run toolbar

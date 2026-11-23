@@ -29,11 +29,22 @@ Every result is unchanged: the golden digests are identical.
 - **Column attributes**: reading `agent.wealth` takes 0.78 times as long as in 1.5.1 and
   writing it 0.76 times; creating and removing agents with columns 0.91 times. On Python
   3.13 and later the column table had lost the interpreter's fast attribute path.
-- **Cell moves**: `select_random_cell` takes 0.74 times as long, and writing a property
-  layer (`cell.sugar = x`) or a cell's `empty` flag 0.8 times.
+- **Cell moves**: a move on a grid takes 0.86 times as long (the `empty` flag is now kept
+  in C), and `select_random_cell` 0.74 times.
+- **Property layers**: `cell.sugar` is read in two thirds of the time, and arithmetic on it
+  costs half as much, because it is now a Python number (see Changed).
+- **Whole models written agent by agent**, against 1.5.1: the cell-list Sugarscape playbook
+  takes 0.74 times as long, predator-prey 0.86, the grid epidemic 0.89 and Boltzmann wealth
+  0.90. Vectorised models are unchanged. [Performance](performance.md)
 
 ### Changed
 
+- **Property layers return Python numbers**: `cell.sugar` is a Python `float`, `int` or
+  `bool`, as a Column attribute already is, rather than a numpy scalar; the values are the
+  same. Two edge cases differ: dividing a float read by zero raises `ZeroDivisionError`
+  instead of giving `inf`, and integer arithmetic no longer wraps around. `cell.empty` is a
+  `bool`. Dtypes without a Python equivalent (datetimes, strings) keep numpy's scalars.
+  [Migrating from Mesa](migrating_from_mesa.md)
 - **A new Studio layout**: Studio is laid out like a notebook workbench. The run toolbar is in
   the top bar, Parameters and Export open from the left edge, the views are tabs, the
   timeline sits under them and a status bar says whether you see the live run or a past

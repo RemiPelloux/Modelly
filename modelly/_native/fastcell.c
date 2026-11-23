@@ -12,6 +12,9 @@
  * then read at their slot offsets, as the interpreter's specialised loads do.
  * Public C API only (PyUnstable_ is its unstable tier): see typelookup.h.
  *
+ * EmptyFlag (emptyflag.h) is the descriptor a grid installs as ``cell.empty``: the
+ * writes of add_agent and remove_agent then run in C too.
+ *
  * Free-threaded builds: the type cache is per thread, bind() and its readers
  * share one lock, slots are read through getattr (which takes the object's
  * lock) and an exact list's remove runs list.remove itself.
@@ -113,7 +116,8 @@ layout_of(PyObject *cell, layout_t *out)
     learn(type, entry);
     *out = *entry;
 }
-#include "cellbody.h" /* add_agent, remove_agent: Cell's own bodies, inline */
+#include "cellbody.h"  /* add_agent, remove_agent: Cell's own bodies, inline */
+#include "emptyflag.h" /* EmptyFlag: cell.empty on a grid */
 
 /* ``cell.add_agent(agent)`` or ``cell.remove_agent(agent)``, inline when Cell's own. */
 static int
@@ -208,7 +212,7 @@ PyInit_fastcell(void)
             return NULL;
     }
     PyObject *module = PyModule_Create(&module_def);
-    if (module != NULL && DECLARE_NO_GIL(module) < 0)
+    if (module != NULL && (DECLARE_NO_GIL(module) < 0 || add_emptyflag(module) < 0))
         Py_CLEAR(module);
     return module;
 }
