@@ -330,3 +330,22 @@ def test_class_label_follows_the_set_within_a_step():
     ops = prof.records[0].ops
     assert ops[("do", "Quiet", "step")][0] == 2  # the label kept for the second loop
     assert ops[("do", "Quiet|Walker", "step")][0] == 1
+
+
+def test_a_costly_flat_loop_points_at_array_phases():
+    """A dominant loop at several us per agent, flat in N, gets the vectorising hint."""
+    key = ("shuffle_do", "Grazer", "step")
+    records = []
+    for _ in range(5):
+        step = StepRecord(1, 1.0, 500, wall=0.003)  # the loop is most of the step
+        step.ops[key] = [1, 500, 500 * 5.0 / 1e6, 0.0]  # 5 us per agent, every step
+        records.append(step)
+    table = rows(records)
+    found = hints(records, table, profiled_wall(records))
+    assert any("vectorised_phases" in hint for hint in found)
+    for step in records:
+        step.ops[key][2] = 500 * 0.5 / 1e6  # cheap per agent: nothing to say
+    assert not any(
+        "vectorised_phases" in hint
+        for hint in hints(records, rows(records), profiled_wall(records))
+    )

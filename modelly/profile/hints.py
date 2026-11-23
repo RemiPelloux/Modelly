@@ -22,6 +22,9 @@ MIN_POINTS = 3
 COLLECT_SHARE = 0.3
 # Below this share of the step spent in AgentSet loops, the agents run by hand.
 LOOP_COVERAGE = 0.1
+# A dominant loop at a flat cost above this many microseconds per agent is worth
+# writing as array phases (the playbooks measure 5 to 15 times faster).
+VECTORISE_US = 2.0
 LINT = "`python -m modelly.lint`"
 
 
@@ -42,14 +45,25 @@ def growth_exponent(records: list[StepRecord], key: tuple[Any, ...]) -> float | 
 
 
 def dominant_hint(records: list[StepRecord], row: Row, share: float) -> str | None:
-    """A hint on the loop that takes most of the time, when its cost per agent grows with N."""
+    """A hint on the loop that takes most of the time.
+
+    When its cost per agent grows with N, each agent probably scans the population;
+    when it is flat but high, the step is a candidate for Column state and array phases.
+    """
     head = (
         f"{row.label} takes {share:.0%} of the profiled time, "
         f"{row.us_per_agent:.2f} us per agent"
     )
     exponent = growth_exponent(records, (row.kind, row.owner, row.name))
     if exponent is None or exponent < GROWTH_EXPONENT:
-        return None
+        if (row.us_per_agent or 0.0) < VECTORISE_US:
+            return None
+        return (
+            f"{head}. Where a phase of that step does the same to every agent (a draw, "
+            "a count of neighbours, a move), keeping the state in Column attributes and "
+            "writing the phase as one array operation is often 5 to 15 times faster "
+            "(docs/vectorised_phases.md)"
+        )
     return (
         f"{head}, and the cost per agent grows with the population (about "
         f"N^{exponent:.1f}): each agent probably scans the population. Run {LINT} "

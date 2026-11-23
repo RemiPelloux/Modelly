@@ -21,6 +21,9 @@ whose notes are missing (see "Release notes" in
 - **A resizable side panel that Studio remembers**: drag its edge (or focus it and use the
   arrows); the browser keeps its width, the open panel and the open tab for next time.
   [Studio](studio.md#the-panels)
+- **The profiler suggests array phases**: when one per-agent loop takes most of a step at a
+  few microseconds per agent, the profile's hints say which kinds of phase are worth
+  rewriting as Column arrays. [Performance](vectorised_phases.md)
 
 ### Faster
 

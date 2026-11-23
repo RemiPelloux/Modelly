@@ -15,6 +15,10 @@ versioning.
   `studio.css` is a token, redefined for dark, with Vuetify's theme variables set to match.
   Figures keep a white background. `scripts/a11y-audit.py` audits each Studio page in both
   schemes; axe-core finds no WCAG A/AA violation in Chromium and Firefox.
+- The profiler's hints (`modelly/profile/hints.py`): a do/shuffle_do loop that takes most of
+  the profiled time at a flat cost of 2 us or more per agent gets a hint pointing at Column
+  state and array phases (`docs/vectorised_phases.md`); a cost growing with N keeps its
+  MDL101/MDL102 hint.
 - The side panel is resizable: a handle between it and the views (drag, or focus and use
   the arrows; a `separator` with its value for screen readers). The browser keeps the
   width, the open panel and the open tab in local storage and restores them. The open tab
