@@ -9,7 +9,7 @@ Each release adds its section here before it is tagged: the release script refus
 whose notes are missing (see "Release notes" in
 [CONTRIBUTING](https://github.com/RemiPelloux/Modelly/blob/main/CONTRIBUTING.md)).
 
-## Unreleased
+## 1.5.2 - 2026-11-23
 
 ### New
 
