@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>modelly.viz.render.drawers.network &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/landing.css?v=16ac1da3" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../../../../_static/documentation_options.js?v=6efca38a"></script>
+    <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/modelly/viz/render/drawers/network';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../../../../../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../../../../../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/_modules/modelly/viz/render/drawers/network.html" />
+    <link rel="icon" href="../../../../../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.2" />
+  
+    
+    <script src="../../../../../_static/searchtools.js"></script>
+    <script src="../../../../../_static/language_data.js"></script>
+    <script src="../../../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../../../../../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../apis/api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">modelly.viz.render.drawers.network</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for modelly.viz.render.drawers.network</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Drawer for network spaces."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">altair</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">alt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelly.viz.render.drawers.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseSpaceDrawer</span><span class="p">,</span>
+    <span class="n">Network</span><span class="p">,</span>
+    <span class="n">chart_properties</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="NetworkSpaceDrawer">
+<a class="viewcode-back" href="../../../../../apis/viz.html#modelly.viz.render.drawers.network.NetworkSpaceDrawer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NetworkSpaceDrawer</span><span class="p">(</span><span class="n">BaseSpaceDrawer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Drawer for network-based spaces."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">space</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span>
+        <span class="n">layout_alg</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">,</span>
+        <span class="n">layout_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Initialize the network space drawer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            space: The network space to draw</span>
+<span class="sd">            layout_alg: NetworkX layout algorithm to use</span>
+<span class="sd">            layout_kwargs: Keyword arguments for the layout algorithm</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_alg</span> <span class="o">=</span> <span class="n">layout_alg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_kwargs</span> <span class="o">=</span> <span class="n">layout_kwargs</span> <span class="k">if</span> <span class="n">layout_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="s2">"seed"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+        <span class="c1"># gather locations for nodes in network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">G</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">_cells</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">"_position"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">position</span>
+
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="k">else</span> <span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_padded_limits</span><span class="p">((</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="NetworkSpaceDrawer.draw_matplotlib">
+<a class="viewcode-back" href="../../../../../apis/viz.html#modelly.viz.render.drawers.network.NetworkSpaceDrawer.draw_matplotlib">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_matplotlib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">draw_space_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Draw the network using matplotlib.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ax: Matplotlib axes object to draw on.</span>
+<span class="sd">            **draw_space_kwargs: Dictionaries of keyword arguments for styling.</span>
+<span class="sd">                Can also handle zorder for both nodes and edges if passed.</span>
+<span class="sd">                * ``node_kwargs``: A dict passed to nx.draw_networkx_nodes.</span>
+<span class="sd">                * ``edge_kwargs``: A dict passed to nx.draw_networkx_edges.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The modified axes object.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">viz_xmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">viz_xmax</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">viz_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">viz_ymax</span><span class="p">)</span>
+
+        <span class="n">node_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"alpha"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
+        <span class="n">edge_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"alpha"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">"style"</span><span class="p">:</span> <span class="s2">"--"</span><span class="p">}</span>
+
+        <span class="n">node_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">draw_space_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"node_kwargs"</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="n">edge_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">draw_space_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"edge_kwargs"</span><span class="p">,</span> <span class="p">{}))</span>
+
+        <span class="n">node_zorder</span> <span class="o">=</span> <span class="n">node_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"zorder"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">edge_zorder</span> <span class="o">=</span> <span class="n">edge_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"zorder"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">nodes</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">node_kwargs</span><span class="p">)</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">edge_kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="n">node_zorder</span><span class="p">)</span>
+        <span class="n">_set_edge_zorder</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">edge_zorder</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="NetworkSpaceDrawer.draw_altair">
+<a class="viewcode-back" href="../../../../../apis/viz.html#modelly.viz.render.drawers.network.NetworkSpaceDrawer.draw_altair">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_altair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chart_width</span><span class="o">=</span><span class="mi">450</span><span class="p">,</span> <span class="n">chart_height</span><span class="o">=</span><span class="mi">350</span><span class="p">,</span> <span class="o">**</span><span class="n">draw_chart_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Draw the network using Altair.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chart_width: Width for the shown chart</span>
+<span class="sd">            chart_height: Height for the shown chart</span>
+<span class="sd">            **draw_chart_kwargs: Dictionaries for styling the chart.</span>
+<span class="sd">                * ``node_kwargs``: A dict of properties for the node's mark_point.</span>
+<span class="sd">                * ``edge_kwargs``: A dict of properties for the edge's mark_rule.</span>
+<span class="sd">                * Other kwargs (e.g., title, width) are passed to chart.properties().</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Altair chart object representing the network.</span>
+<span class="sd">        """</span>
+        <span class="n">nodes_df</span><span class="p">,</span> <span class="n">edge_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_and_edge_frames</span><span class="p">()</span>
+
+        <span class="n">node_mark_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"filled"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"opacity"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">:</span> <span class="mi">500</span><span class="p">}</span>
+        <span class="n">edge_mark_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"opacity"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">"strokeDash"</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]}</span>
+
+        <span class="n">node_mark_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">draw_chart_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"node_kwargs"</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="n">edge_mark_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">draw_chart_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"edge_kwargs"</span><span class="p">,</span> <span class="p">{}))</span>
+
+        <span class="n">chart_props</span> <span class="o">=</span> <span class="n">chart_properties</span><span class="p">(</span><span class="n">chart_width</span><span class="p">,</span> <span class="n">chart_height</span><span class="p">,</span> <span class="n">draw_chart_kwargs</span><span class="p">)</span>
+
+        <span class="n">edge_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_chart</span><span class="p">(</span><span class="n">edge_positions</span><span class="p">,</span> <span class="n">edge_mark_kwargs</span><span class="p">)</span>
+        <span class="n">node_plot</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">nodes_df</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">mark_point</span><span class="p">(</span><span class="o">**</span><span class="n">node_mark_kwargs</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">"y"</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="p">[</span><span class="s2">"node"</span><span class="p">])</span>
+        <span class="p">)</span>
+
+        <span class="n">chart</span> <span class="o">=</span> <span class="n">edge_plot</span> <span class="o">+</span> <span class="n">node_plot</span>
+
+        <span class="k">if</span> <span class="n">chart_props</span><span class="p">:</span>
+            <span class="n">chart</span> <span class="o">=</span> <span class="n">chart</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="o">**</span><span class="n">chart_props</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">chart</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_node_and_edge_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return the node positions and the edges joined to both end positions."""</span>
+        <span class="n">nodes_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="n">nodes_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"node"</span><span class="p">,</span> <span class="s2">"x"</span><span class="p">,</span> <span class="s2">"y"</span><span class="p">]</span>
+
+        <span class="n">edges_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"source"</span><span class="p">,</span> <span class="s2">"target"</span><span class="p">])</span>
+        <span class="n">edge_positions</span> <span class="o">=</span> <span class="n">edges_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">nodes_df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s2">"source"</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s2">"node"</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">nodes_df</span><span class="p">,</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span>
+            <span class="n">left_on</span><span class="o">=</span><span class="s2">"target"</span><span class="p">,</span>
+            <span class="n">right_on</span><span class="o">=</span><span class="s2">"node"</span><span class="p">,</span>
+            <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s2">"_source"</span><span class="p">,</span> <span class="s2">"_target"</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">nodes_df</span><span class="p">,</span> <span class="n">edge_positions</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_edge_chart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge_positions</span><span class="p">,</span> <span class="n">edge_mark_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return the Altair rule chart drawing every edge."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">edge_positions</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">mark_rule</span><span class="p">(</span><span class="o">**</span><span class="n">edge_mark_kwargs</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span>
+                    <span class="s2">"x_source"</span><span class="p">,</span>
+                    <span class="n">scale</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">viz_xmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">viz_xmax</span><span class="p">]),</span>
+                    <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span>
+                    <span class="s2">"y_source"</span><span class="p">,</span>
+                    <span class="n">scale</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">viz_ymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">viz_ymax</span><span class="p">]),</span>
+                    <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">x2</span><span class="o">=</span><span class="s2">"x_target"</span><span class="p">,</span>
+                <span class="n">y2</span><span class="o">=</span><span class="s2">"y_target"</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_edge_zorder</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">edge_zorder</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Set the zorder of the drawn edges, a collection or a list of them."""</span>
+    <span class="c1"># In some matplotlib versions, edges can be a list of collections</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">edge_collection</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+            <span class="n">edge_collection</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="n">edge_zorder</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="n">edge_zorder</span><span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

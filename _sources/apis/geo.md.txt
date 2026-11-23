@@ -1,0 +1,71 @@
+# Geospatial space
+
+`modelly.space.geo` needs the optional `geo` extra (`pip install "modelly-abm[geo]"`);
+`download_osm` also needs the `osm` extra. The guide is [Geospatial models](../geospatial.md).
+
+| Module | Contents |
+|---|---|
+| `modelly.space.geo.space` | `GeoSpace`: agents as points, polygons as regions, one CRS |
+| `modelly.space.geo.regions` | region neighbourhoods: contiguity and distance |
+| `modelly.space.geo.agents` | `GeoAgent` |
+| `modelly.space.geo.raster` | `RasterLayer`: a raster band as a grid property layer |
+| `modelly.space.geo.roads` | `RoadNetwork`, `download_osm` |
+| `modelly.space.geo.population` | `ipf`, `synthesize_population`: deprecated aliases of `modelly.population` |
+| `modelly.space.geo.samples` | the bundled Burlington streets, land cover and census tracts |
+| `modelly.space.geo.export` | GeoDataFrames of a space, GeoParquet and GeoJSON output |
+
+## GeoSpace
+
+`GeoSpace` is a `ContinuousSpace`: it also has `get_agents_in_radius`, `neighbors_within` and
+`get_k_nearest_agents`, listed under [Continuous space](space.md#continuous-space).
+
+```{eval-rst}
+.. automodule:: modelly.space.geo.space
+   :members:
+   :show-inheritance:
+```
+
+```{eval-rst}
+.. automodule:: modelly.space.geo.regions
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: modelly.space.geo.agents
+   :members:
+   :show-inheritance:
+```
+
+## Rasters
+
+```{eval-rst}
+.. automodule:: modelly.space.geo.raster
+   :members:
+```
+
+## Road networks
+
+```{eval-rst}
+.. automodule:: modelly.space.geo.roads
+   :members:
+```
+
+## Synthetic populations
+
+`modelly.space.geo.population` keeps `ipf` and `synthesize_population` importable from their
+1.3 home, with a deprecation warning (removed in 2.0); they are documented, with the rest of the toolkit, under
+[Synthetic populations](population.md).
+
+## Bundled samples
+
+```{eval-rst}
+.. automodule:: modelly.space.geo.samples
+   :members:
+```
+
+## Export
+
+```{eval-rst}
+.. automodule:: modelly.space.geo.export
+   :members:
+```

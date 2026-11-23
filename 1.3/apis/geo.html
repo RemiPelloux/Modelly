@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="auto">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Geospatial space &#8212; Modelly</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "auto";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Public+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400..600&display=swap" />
+    <link rel="stylesheet" type="text/css" href="../_static/modelly.css?v=c8875225" />
+    <link rel="stylesheet" type="text/css" href="../_static/landing.css?v=5fe1370a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=8ca9e7a0"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'apis/geo';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://remipelloux.github.io/Modelly/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.3';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <script src="../_static/landing-sims.js?v=ec3405af"></script>
+    <script src="../_static/landing.js?v=e348295c"></script>
+    <link rel="canonical" href="https://remipelloux.github.io/Modelly/apis/geo.html" />
+    <link rel="icon" href="../_static/modelly_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Networks" href="networks.html" />
+    <link rel="prev" title="Space" href="space.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.3" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="auto">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/modelly-mark.svg" class="logo__image only-light" alt="Modelly home"/>
+    <img src="../_static/modelly-mark.svg" class="logo__image only-dark pst-js-only" alt="Modelly home"/>
+  
+  
+    <p class="title logo__title">Modelly</p>
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../using_modelly_in_your_project.html">
+    Your project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../new_project.html">
+    Starting a project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migrating_from_mesa.html">
+    From Mesa
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../performance.html">
+    Performance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api_main.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../best-practices.html">
+    Best practices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lint.html">
+    Checking a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../profile.html">
+    Profiling a model
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../experiments.html">
+    Experiments and sweeps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../llm_agents.html">
+    Language-model agents
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../calibration.html">
+    Calibration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../sensitivity.html">
+    Sensitivity analysis
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../checkpoints.html">
+    Checkpoints
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../provenance.html">
+    Reproducible studies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../timetravel.html">
+    Time travel
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../geospatial.html">
+    Geospatial models
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../networks.html">
+    Networks
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../zoo/index.html">
+    Model zoo
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../gallery.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorials/domains/index.html">
+    Domain tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../course/index.html">
+    Course
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../plugins.html">
+    Plugins
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../studio.html">
+    Studio
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../figures.html">
+    Figures and animations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../vectorised_phases.html">
+    Vectorised step phases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../determinism.html">
+    Determinism and platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../deprecations.html">
+    Deprecations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap/index.html">
+    Roadmap
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/RemiPelloux/Modelly" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="space.html">Space</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Geospatial space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="time.html">Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="behaviour.html">Behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scenarios.html">Scenarios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibrate.html">Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viz.html">Viz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timetravel.html">Time travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="studio.html">Studio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrate.html">Migrate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lint.html">Lint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile.html">Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="provenance.html">Provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">LLM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zoo.html">Model zoo</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="api_main.html" class="nav-link">APIs</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Geospatial space</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="geospatial-space">
+<h1>Geospatial space<a class="headerlink" href="#geospatial-space" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">modelly.space.geo</span></code> needs the optional <code class="docutils literal notranslate"><span class="pre">geo</span></code> extra (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;modelly-abm[geo]&quot;</span></code>);
+<code class="docutils literal notranslate"><span class="pre">download_osm</span></code> also needs the <code class="docutils literal notranslate"><span class="pre">osm</span></code> extra. The guide is <a class="reference internal" href="../geospatial.html"><span class="std std-doc">Geospatial models</span></a>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Module</p></th>
+<th class="head"><p>Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.space.geo.space</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GeoSpace</span></code>: agents as points, polygons as regions, one CRS</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.space.geo.regions</span></code></p></td>
+<td><p>region neighbourhoods: contiguity and distance</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.space.geo.agents</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GeoAgent</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.space.geo.raster</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">RasterLayer</span></code>: a raster band as a grid property layer</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.space.geo.roads</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">RoadNetwork</span></code>, <code class="docutils literal notranslate"><span class="pre">download_osm</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.space.geo.population</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ipf</span></code>, <code class="docutils literal notranslate"><span class="pre">synthesize_population</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modelly.space.geo.export</span></code></p></td>
+<td><p>GeoDataFrames of a space, GeoParquet and GeoJSON output</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="geospace">
+<h2>GeoSpace<a class="headerlink" href="#geospace" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">GeoSpace</span></code> is a <code class="docutils literal notranslate"><span class="pre">ContinuousSpace</span></code>: it also has <code class="docutils literal notranslate"><span class="pre">get_agents_in_radius</span></code>, <code class="docutils literal notranslate"><span class="pre">neighbors_within</span></code> and
+<code class="docutils literal notranslate"><span class="pre">get_k_nearest_agents</span></code>, listed under <a class="reference internal" href="space.html#continuous-space"><span class="std std-ref">Continuous space</span></a>.</p>
+<p id="module-modelly.space.geo.space">A vector geospatial space: agents as points, polygons as regions, one CRS.</p>
+<p><code class="docutils literal notranslate"><span class="pre">GeoSpace</span></code> is a <code class="docutils literal notranslate"><span class="pre">ContinuousSpace</span></code> whose coordinates are those of a projected
+coordinate reference system (metres for UTM), so the continuous space’s KD-tree
+queries (<code class="docutils literal notranslate"><span class="pre">get_agents_in_radius</span></code>, <code class="docutils literal notranslate"><span class="pre">neighbors_within</span></code>, <code class="docutils literal notranslate"><span class="pre">get_k_nearest_agents</span></code>)
+measure real distances. Agent positions stay one numpy array; regions are the rows
+of a GeoDataFrame, indexed by an STRtree for point-in-polygon and distance lookups.</p>
+<p>The CRS is set once, at the space. Inputs that carry another CRS (regions, points,
+geometries) are reprojected into it; a geographic CRS (latitude and longitude) is
+replaced by the UTM zone that covers the regions, since degrees are not distances.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">GeoSpace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/random.html#random.Random" title="(in Python v3.15)"><span class="pre">Random</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_agents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelly.space.geo.regions.RegionQueriesMixin" title="modelly.space.geo.regions.RegionQueriesMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegionQueriesMixin</span></code></a>, <a class="reference internal" href="space.html#modelly.space.continuous.space.ContinuousSpace" title="modelly.space.continuous.space.ContinuousSpace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContinuousSpace</span></code></a></p>
+<p>Agents as points and polygons as regions, in one projected CRS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>crs</strong> – the space’s <code class="docutils literal notranslate"><span class="pre">pyproj.CRS</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code> for plain planar coordinates.</p></li>
+<li><p><strong>regions</strong> – a GeoDataFrame of the region polygons in <code class="docutils literal notranslate"><span class="pre">crs</span></code>; its index labels the regions.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Create a geospatial space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regions</strong> – polygons that make up the study area, in any CRS; reprojected to <code class="docutils literal notranslate"><span class="pre">crs</span></code>.</p></li>
+<li><p><strong>crs</strong> – the space’s CRS (anything <code class="docutils literal notranslate"><span class="pre">pyproj.CRS</span></code> accepts). Defaults to the CRS of
+<code class="docutils literal notranslate"><span class="pre">regions</span></code>, or to its UTM zone when that CRS is geographic.</p></li>
+<li><p><strong>random</strong> – a seeded <code class="docutils literal notranslate"><span class="pre">random.Random</span></code>, usually <code class="docutils literal notranslate"><span class="pre">model.random</span></code>.</p></li>
+<li><p><strong>bounds</strong> – <code class="docutils literal notranslate"><span class="pre">(minx,</span> <span class="pre">miny,</span> <span class="pre">maxx,</span> <span class="pre">maxy)</span></code> in <code class="docutils literal notranslate"><span class="pre">crs</span></code>; defaults to the regions’ bounds.</p></li>
+<li><p><strong>n_agents</strong> – the expected number of agents, to size the position array.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.project">
+<span class="sig-name descname"><span class="pre">project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.project" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">geometry</span></code> in the space’s CRS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geometry</strong> – a Shapely geometry, a GeoSeries or a GeoDataFrame.</p></li>
+<li><p><strong>crs</strong> – the CRS <code class="docutils literal notranslate"><span class="pre">geometry</span></code> is in; GeoPandas objects default to their own CRS.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> for a Shapely geometry means it is already in the space’s CRS.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.project_points">
+<span class="sig-name descname"><span class="pre">project_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.project_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.project_points" title="Link to this definition">#</a></dt>
+<dd><p>Return an <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">2)</span></code> array of coordinates in <code class="docutils literal notranslate"><span class="pre">crs</span></code> reprojected to the space’s CRS.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.move_to">
+<span class="sig-name descname"><span class="pre">move_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#modelly.core.agent.Agent" title="modelly.core.agent.Agent"><span class="pre">Agent</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.move_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.move_to" title="Link to this definition">#</a></dt>
+<dd><p>Move <code class="docutils literal notranslate"><span class="pre">agent</span></code> to <code class="docutils literal notranslate"><span class="pre">point</span></code> (a Shapely <code class="docutils literal notranslate"><span class="pre">Point</span></code> or <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code>, in <code class="docutils literal notranslate"><span class="pre">crs</span></code>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.region_of">
+<span class="sig-name descname"><span class="pre">region_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.region_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.region_of" title="Link to this definition">#</a></dt>
+<dd><p>Return the label of the region containing <code class="docutils literal notranslate"><span class="pre">point</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code> outside all regions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.regions_of">
+<span class="sig-name descname"><span class="pre">regions_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.regions_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.regions_of" title="Link to this definition">#</a></dt>
+<dd><p>Region row (position in <code class="docutils literal notranslate"><span class="pre">regions</span></code>) of every point in <code class="docutils literal notranslate"><span class="pre">xy</span></code>; <code class="docutils literal notranslate"><span class="pre">-1</span></code> outside.</p>
+<p>A point on a shared border belongs to the region listed first.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.agent_regions">
+<span class="sig-name descname"><span class="pre">agent_regions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.agent_regions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.agent_regions" title="Link to this definition">#</a></dt>
+<dd><p>Region row of every agent, in <code class="docutils literal notranslate"><span class="pre">active_agents</span></code> order; cached until an agent moves.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.agents_in_region">
+<span class="sig-name descname"><span class="pre">agents_in_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="core.html#modelly.core.agent.Agent" title="modelly.core.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.agents_in_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.agents_in_region" title="Link to this definition">#</a></dt>
+<dd><p>The agents whose position lies in the region labelled <code class="docutils literal notranslate"><span class="pre">label</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.region_counts">
+<span class="sig-name descname"><span class="pre">region_counts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.region_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.region_counts" title="Link to this definition">#</a></dt>
+<dd><p>Number of agents in every region, indexed by region label.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.agents_within">
+<span class="sig-name descname"><span class="pre">agents_within</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="core.html#modelly.core.agent.Agent" title="modelly.core.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.agents_within"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.agents_within" title="Link to this definition">#</a></dt>
+<dd><p>The agents inside <code class="docutils literal notranslate"><span class="pre">target</span></code>, or within <code class="docutils literal notranslate"><span class="pre">distance</span></code> of it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – a Shapely geometry or an <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> point.</p></li>
+<li><p><strong>distance</strong> – in the space’s units; <code class="docutils literal notranslate"><span class="pre">None</span></code> means inside (or on) <code class="docutils literal notranslate"><span class="pre">target</span></code> itself.</p></li>
+<li><p><strong>crs</strong> – the CRS of <code class="docutils literal notranslate"><span class="pre">target</span></code>, if not the space’s.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.random_points">
+<span class="sig-name descname"><span class="pre">random_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generator</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.random_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.random_points" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">n</span></code> points drawn uniformly inside region <code class="docutils literal notranslate"><span class="pre">label</span></code>, as an <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">2)</span></code> array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> – the region label.</p></li>
+<li><p><strong>n</strong> – the number of points.</p></li>
+<li><p><strong>rng</strong> – a numpy generator, usually <code class="docutils literal notranslate"><span class="pre">model.rng</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.to_geodataframe">
+<span class="sig-name descname"><span class="pre">to_geodataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'agents'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.to_geodataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.to_geodataframe" title="Link to this definition">#</a></dt>
+<dd><p>The agents (as points, with <code class="docutils literal notranslate"><span class="pre">attributes</span></code>) or the regions (with agent counts).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.space.GeoSpace.to_file">
+<span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'agents'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/space.html#GeoSpace.to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.space.GeoSpace.to_file" title="Link to this definition">#</a></dt>
+<dd><p>Write <code class="docutils literal notranslate"><span class="pre">to_geodataframe(what,</span> <span class="pre">attributes)</span></code> as GeoParquet or GeoJSON, by suffix.</p>
+<p><code class="docutils literal notranslate"><span class="pre">.parquet</span></code> and <code class="docutils literal notranslate"><span class="pre">.geoparquet</span></code> write GeoParquet (needs <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code>); <code class="docutils literal notranslate"><span class="pre">.geojson</span></code>
+and <code class="docutils literal notranslate"><span class="pre">.json</span></code> write GeoJSON in WGS 84, as the GeoJSON standard asks.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.space.geo.regions">Region neighbourhoods of a <code class="docutils literal notranslate"><span class="pre">GeoSpace</span></code>: contiguity (queen, rook) and distance.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.space.geo.regions.RegionQueriesMixin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">RegionQueriesMixin</span></span><a class="reference internal" href="../_modules/modelly/space/geo/regions.html#RegionQueriesMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.regions.RegionQueriesMixin" title="Link to this definition">#</a></dt>
+<dd><p>Neighbourhoods between the polygons of <code class="docutils literal notranslate"><span class="pre">regions</span></code>, built on one STRtree.</p>
+<p>Relies on the host providing <code class="docutils literal notranslate"><span class="pre">regions</span></code> (a GeoDataFrame), and the cache slots
+<code class="docutils literal notranslate"><span class="pre">_region_tree_cache</span></code> and <code class="docutils literal notranslate"><span class="pre">_contiguity_cache</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.regions.RegionQueriesMixin.contiguity">
+<span class="sig-name descname"><span class="pre">contiguity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'queen'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">csr_matrix</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/regions.html#RegionQueriesMixin.contiguity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.regions.RegionQueriesMixin.contiguity" title="Link to this definition">#</a></dt>
+<dd><p>The region adjacency as a symmetric CSR matrix, rows in <code class="docutils literal notranslate"><span class="pre">regions</span></code> order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kind</strong> – <code class="docutils literal notranslate"><span class="pre">&quot;queen&quot;</span></code>: regions sharing at least one point are neighbours;
+<code class="docutils literal notranslate"><span class="pre">&quot;rook&quot;</span></code>: they must share a border of positive length.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.regions.RegionQueriesMixin.region_neighbors">
+<span class="sig-name descname"><span class="pre">region_neighbors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'queen'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/regions.html#RegionQueriesMixin.region_neighbors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.regions.RegionQueriesMixin.region_neighbors" title="Link to this definition">#</a></dt>
+<dd><p>Labels of the regions next to region <code class="docutils literal notranslate"><span class="pre">label</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> – the region label.</p></li>
+<li><p><strong>kind</strong> – <code class="docutils literal notranslate"><span class="pre">&quot;queen&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;rook&quot;</span></code> contiguity, used when <code class="docutils literal notranslate"><span class="pre">distance</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>distance</strong> – if given, every other region within this distance of <code class="docutils literal notranslate"><span class="pre">label</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.regions.RegionQueriesMixin.regions_within">
+<span class="sig-name descname"><span class="pre">regions_within</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/regions.html#RegionQueriesMixin.regions_within"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.regions.RegionQueriesMixin.regions_within" title="Link to this definition">#</a></dt>
+<dd><p>Labels of the regions that intersect <code class="docutils literal notranslate"><span class="pre">geometry</span></code>, or lie within <code class="docutils literal notranslate"><span class="pre">distance</span></code> of it.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-modelly.space.geo.agents">Agents located at a point of a <code class="docutils literal notranslate"><span class="pre">GeoSpace</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.space.geo.agents.GeoAgent">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">GeoAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.space.geo.space.GeoSpace" title="modelly.space.geo.space.GeoSpace"><span class="pre">GeoSpace</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#modelly.core.model.Model" title="modelly.core.model.Model"><span class="pre">Model</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/space/geo/agents.html#GeoAgent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.agents.GeoAgent" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="space.html#modelly.space.continuous.agents.ContinuousSpaceAgent" title="modelly.space.continuous.agents.ContinuousSpaceAgent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContinuousSpaceAgent</span></code></a></p>
+<p>An agent at a point of a <code class="docutils literal notranslate"><span class="pre">GeoSpace</span></code>; its position is a row of the position array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>space</strong> (<a class="reference internal" href="#modelly.space.geo.space.GeoSpace" title="modelly.space.geo.space.GeoSpace"><em>GeoSpace</em></a>) – the space the agent is in.</p></li>
+<li><p><strong>position</strong> (<em>np.ndarray</em>) – <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> in the space’s CRS.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Place a new agent in <code class="docutils literal notranslate"><span class="pre">space</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>space</strong> – the geospatial space.</p></li>
+<li><p><strong>model</strong> – the model the agent belongs to.</p></li>
+<li><p><strong>position</strong> – a Shapely <code class="docutils literal notranslate"><span class="pre">Point</span></code> or <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code>; defaults to the centre of the space.</p></li>
+<li><p><strong>crs</strong> – the CRS of <code class="docutils literal notranslate"><span class="pre">position</span></code>, if not the space’s.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.agents.GeoAgent.move_to">
+<span class="sig-name descname"><span class="pre">move_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/agents.html#GeoAgent.move_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.agents.GeoAgent.move_to" title="Link to this definition">#</a></dt>
+<dd><p>Move to <code class="docutils literal notranslate"><span class="pre">point</span></code> (a Shapely <code class="docutils literal notranslate"><span class="pre">Point</span></code> or <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code>, in <code class="docutils literal notranslate"><span class="pre">crs</span></code>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.space.geo.agents.GeoAgent.region">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">region</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><a class="headerlink" href="#modelly.space.geo.agents.GeoAgent.region" title="Link to this definition">#</a></dt>
+<dd><p>The label of the region the agent is in, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.space.geo.agents.GeoAgent.geometry">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">geometry</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Point</span></span><a class="headerlink" href="#modelly.space.geo.agents.GeoAgent.geometry" title="Link to this definition">#</a></dt>
+<dd><p>The agent’s position as a Shapely <code class="docutils literal notranslate"><span class="pre">Point</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modelly.space.geo.raster">
+<span id="rasters"></span><h2>Rasters<a class="headerlink" href="#module-modelly.space.geo.raster" title="Link to this heading">#</a></h2>
+<p>Rasters as property layers: a GeoTIFF band aligned to a grid space.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">RasterLayer</span></code> keeps one band in <code class="docutils literal notranslate"><span class="pre">values</span></code>, shaped like an orthogonal grid
+(<code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code>, indexed <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y]</span></code> with <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">0</span></code> the southern row), so it can be
+attached to a grid as a property layer: <code class="docutils literal notranslate"><span class="pre">cell.&lt;name&gt;</span></code> and the raster share one array,
+and a vectorised update of the layer is a raster update. The affine <code class="docutils literal notranslate"><span class="pre">transform</span></code> maps
+pixel <code class="docutils literal notranslate"><span class="pre">(column,</span> <span class="pre">row)</span></code> of the north-up band to map coordinates in <code class="docutils literal notranslate"><span class="pre">crs</span></code>, as in rasterio.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">RasterLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/space/geo/raster.html#RasterLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer" title="Link to this definition">#</a></dt>
+<dd><p>One raster band with its transform, CRS and nodata value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – the band, shape <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code>, indexed <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y]</span></code> with <code class="docutils literal notranslate"><span class="pre">y</span></code> northward.</p></li>
+<li><p><strong>transform</strong> – the <code class="docutils literal notranslate"><span class="pre">affine.Affine</span></code> from pixel <code class="docutils literal notranslate"><span class="pre">(column,</span> <span class="pre">row)</span></code> to map coordinates.</p></li>
+<li><p><strong>crs</strong> – the <code class="docutils literal notranslate"><span class="pre">pyproj.CRS</span></code> of the map coordinates, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>nodata</strong> – the value marking missing cells, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Wrap a north-up band (rows from north to south, as rasterio reads it).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – a 2-D array, shape <code class="docutils literal notranslate"><span class="pre">(rows,</span> <span class="pre">columns)</span></code>.</p></li>
+<li><p><strong>transform</strong> – an <code class="docutils literal notranslate"><span class="pre">affine.Affine</span></code>, or its six coefficients <code class="docutils literal notranslate"><span class="pre">(a,</span> <span class="pre">b,</span> <span class="pre">c,</span> <span class="pre">d,</span> <span class="pre">e,</span> <span class="pre">f)</span></code>.</p></li>
+<li><p><strong>crs</strong> – anything <code class="docutils literal notranslate"><span class="pre">pyproj.CRS</span></code> accepts.</p></li>
+<li><p><strong>nodata</strong> – the value of missing cells.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.shape">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">shape</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.shape" title="Link to this definition">#</a></dt>
+<dd><p>the dimensions of a grid aligned to the raster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.array">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">array</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.array" title="Link to this definition">#</a></dt>
+<dd><p>a view of <code class="docutils literal notranslate"><span class="pre">values</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The band north-up, shape <code class="docutils literal notranslate"><span class="pre">(rows,</span> <span class="pre">columns)</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.from_file">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.space.geo.raster.RasterLayer" title="modelly.space.geo.raster.RasterLayer"><span class="pre">RasterLayer</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/raster.html#RasterLayer.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.from_file" title="Link to this definition">#</a></dt>
+<dd><p>Read one band of a raster file (GeoTIFF or any format rasterio reads).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.to_file">
+<span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/raster.html#RasterLayer.to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.to_file" title="Link to this definition">#</a></dt>
+<dd><p>Write the band, with its transform, CRS and nodata value, as a GeoTIFF.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.cells_of">
+<span class="sig-name descname"><span class="pre">cells_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/raster.html#RasterLayer.cells_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.cells_of" title="Link to this definition">#</a></dt>
+<dd><p>Grid coordinate <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> of the cell under every point, <code class="docutils literal notranslate"><span class="pre">-1</span></code> outside.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xy</strong> – an <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">2)</span></code> array of map coordinates.</p></li>
+<li><p><strong>crs</strong> – the CRS of <code class="docutils literal notranslate"><span class="pre">xy</span></code> when it differs from the raster’s.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/raster.html#RasterLayer.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.sample" title="Link to this definition">#</a></dt>
+<dd><p>The raster value under every point, as floats; <code class="docutils literal notranslate"><span class="pre">nan</span></code> outside or on nodata.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.sample_agents">
+<span class="sig-name descname"><span class="pre">sample_agents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.space.geo.space.GeoSpace" title="modelly.space.geo.space.GeoSpace"><span class="pre">GeoSpace</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/raster.html#RasterLayer.sample_agents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.sample_agents" title="Link to this definition">#</a></dt>
+<dd><p>The raster value at every agent of <code class="docutils literal notranslate"><span class="pre">space</span></code>, in <code class="docutils literal notranslate"><span class="pre">active_agents</span></code> order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.cell_centers">
+<span class="sig-name descname"><span class="pre">cell_centers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/raster.html#RasterLayer.cell_centers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.cell_centers" title="Link to this definition">#</a></dt>
+<dd><p>Map coordinates of every cell centre, shape <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height,</span> <span class="pre">2)</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="space.html#modelly.space.grid.layers.HasPropertyLayers" title="modelly.space.grid.layers.HasPropertyLayers"><span class="pre">HasPropertyLayers</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/raster.html#RasterLayer.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.attach" title="Link to this definition">#</a></dt>
+<dd><p>Attach <code class="docutils literal notranslate"><span class="pre">values</span></code> to <code class="docutils literal notranslate"><span class="pre">grid</span></code> as property layer <code class="docutils literal notranslate"><span class="pre">name</span></code> (shared, not copied).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.to_grid">
+<span class="sig-name descname"><span class="pre">to_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">random</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Random</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="space.html#modelly.space.grid.grids.OrthogonalMooreGrid" title="modelly.space.grid.grids.OrthogonalMooreGrid"><span class="pre">OrthogonalMooreGrid</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/raster.html#RasterLayer.to_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.to_grid" title="Link to this definition">#</a></dt>
+<dd><p>A new <code class="docutils literal notranslate"><span class="pre">OrthogonalMooreGrid</span></code> of the raster’s shape with the band as layer <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
+<p>Extra keyword arguments (<code class="docutils literal notranslate"><span class="pre">torus</span></code>, <code class="docutils literal notranslate"><span class="pre">capacity</span></code>, …) go to the grid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.raster.RasterLayer.reproject">
+<span class="sig-name descname"><span class="pre">reproject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'nearest'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.space.geo.raster.RasterLayer" title="modelly.space.geo.raster.RasterLayer"><span class="pre">RasterLayer</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/raster.html#RasterLayer.reproject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.raster.RasterLayer.reproject" title="Link to this definition">#</a></dt>
+<dd><p>A new layer warped to <code class="docutils literal notranslate"><span class="pre">crs</span></code> with rasterio (<code class="docutils literal notranslate"><span class="pre">resampling</span></code> names the method).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-modelly.space.geo.roads">
+<span id="road-networks"></span><h2>Road networks<a class="headerlink" href="#module-modelly.space.geo.roads" title="Link to this heading">#</a></h2>
+<p>Road networks: a NetworkX graph with node coordinates as a <code class="docutils literal notranslate"><span class="pre">Network</span></code> space, and routing.</p>
+<p>Nodes carry their coordinates as <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> attributes (the OSMnx convention) and
+edges a <code class="docutils literal notranslate"><span class="pre">length</span></code>; edges without one get the straight-line length between their ends.
+The graph is reprojected once into the network’s CRS. Agents can stand on its nodes as
+<code class="docutils literal notranslate"><span class="pre">CellAgent``s</span> <span class="pre">of</span> <span class="pre">``space</span></code>, and route with NetworkX (one pair) or scipy (many sources).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">RoadNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/random.html#random.Random" title="(in Python v3.15)"><span class="pre">Random</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'length'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork" title="Link to this definition">#</a></dt>
+<dd><p>A road graph in one projected CRS, its <code class="docutils literal notranslate"><span class="pre">Network</span></code> space and shortest paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> – the NetworkX graph (any of Graph, DiGraph, MultiGraph, MultiDiGraph).</p></li>
+<li><p><strong>crs</strong> – the <code class="docutils literal notranslate"><span class="pre">pyproj.CRS</span></code> of the node coordinates, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>space</strong> – a <code class="docutils literal notranslate"><span class="pre">Network</span></code> space with one cell per node, at the node’s coordinates.</p></li>
+<li><p><strong>weight</strong> – the default edge attribute for routing.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Wrap <code class="docutils literal notranslate"><span class="pre">graph</span></code>; its own CRS is <code class="docutils literal notranslate"><span class="pre">graph.graph[&quot;crs&quot;]</span></code>, as OSMnx sets it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> – a NetworkX graph whose nodes have <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> attributes.</p></li>
+<li><p><strong>crs</strong> – the CRS to route in; defaults to the graph’s, or its UTM zone if geographic.</p></li>
+<li><p><strong>random</strong> – a seeded <code class="docutils literal notranslate"><span class="pre">random.Random</span></code> for the <code class="docutils literal notranslate"><span class="pre">Network</span></code> space.</p></li>
+<li><p><strong>weight</strong> – the default edge attribute shortest paths minimise.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.node_of">
+<span class="sig-name descname"><span class="pre">node_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.node_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.node_of" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">point</span></code> itself if it is a node, else the node nearest to it (<code class="docutils literal notranslate"><span class="pre">Point</span></code> or <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.nearest_nodes">
+<span class="sig-name descname"><span class="pre">nearest_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.nearest_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.nearest_nodes" title="Link to this definition">#</a></dt>
+<dd><p>Row (position in <code class="docutils literal notranslate"><span class="pre">nodes</span></code>) of the node nearest to every point of <code class="docutils literal notranslate"><span class="pre">xy</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.shortest_path">
+<span class="sig-name descname"><span class="pre">shortest_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.shortest_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.shortest_path" title="Link to this definition">#</a></dt>
+<dd><p>The nodes of a shortest path; <code class="docutils literal notranslate"><span class="pre">origin</span></code> and <code class="docutils literal notranslate"><span class="pre">destination</span></code> are nodes or points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.path_length">
+<span class="sig-name descname"><span class="pre">path_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.path_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.path_length" title="Link to this definition">#</a></dt>
+<dd><p>The total <code class="docutils literal notranslate"><span class="pre">weight</span></code> of a shortest path between two nodes or points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.travel_time">
+<span class="sig-name descname"><span class="pre">travel_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.travel_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.travel_time" title="Link to this definition">#</a></dt>
+<dd><p>The shortest travel time between two nodes or points (see <code class="docutils literal notranslate"><span class="pre">add_travel_times</span></code>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.add_travel_times">
+<span class="sig-name descname"><span class="pre">add_travel_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.add_travel_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.add_travel_times" title="Link to this definition">#</a></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">travel_time</span> <span class="pre">=</span> <span class="pre">length</span> <span class="pre">/</span> <span class="pre">speed</span></code> on every edge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>speed</strong> – in CRS units per unit of model time, for edges without a <code class="docutils literal notranslate"><span class="pre">speed</span></code>
+attribute of their own.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.distances_from">
+<span class="sig-name descname"><span class="pre">distances_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.distances_from"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.distances_from" title="Link to this definition">#</a></dt>
+<dd><p>Shortest <code class="docutils literal notranslate"><span class="pre">weight</span></code> from <code class="docutils literal notranslate"><span class="pre">origin</span></code> to every node reachable within <code class="docutils literal notranslate"><span class="pre">cutoff</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.distance_matrix">
+<span class="sig-name descname"><span class="pre">distance_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.distance_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.distance_matrix" title="Link to this definition">#</a></dt>
+<dd><p>Shortest <code class="docutils literal notranslate"><span class="pre">weight</span></code> from every origin (nodes or points) to every node, with scipy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>an array of shape <code class="docutils literal notranslate"><span class="pre">(len(origins),</span> <span class="pre">len(nodes))</span></code>; unreachable nodes are <code class="docutils literal notranslate"><span class="pre">inf</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.routing_matrix">
+<span class="sig-name descname"><span class="pre">routing_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">csr_matrix</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.routing_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.routing_matrix" title="Link to this definition">#</a></dt>
+<dd><p>The graph as a CSR matrix of <code class="docutils literal notranslate"><span class="pre">weight</span></code>, rows in <code class="docutils literal notranslate"><span class="pre">nodes</span></code> order.</p>
+<p>Parallel edges keep the smallest weight; an undirected edge counts both ways.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.invalidate">
+<span class="sig-name descname"><span class="pre">invalidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.invalidate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.invalidate" title="Link to this definition">#</a></dt>
+<dd><p>Forget the routing matrix of <code class="docutils literal notranslate"><span class="pre">weight</span></code> (all when <code class="docutils literal notranslate"><span class="pre">None</span></code>) after edges changed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.path_geometry">
+<span class="sig-name descname"><span class="pre">path_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">LineString</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.path_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.path_geometry" title="Link to this definition">#</a></dt>
+<dd><p>The polyline through the coordinates of the nodes of <code class="docutils literal notranslate"><span class="pre">path</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.RoadNetwork.agents_within">
+<span class="sig-name descname"><span class="pre">agents_within</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.space.geo.space.GeoSpace" title="modelly.space.geo.space.GeoSpace"><span class="pre">GeoSpace</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="core.html#modelly.core.agent.Agent" title="modelly.core.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#RoadNetwork.agents_within"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.RoadNetwork.agents_within" title="Link to this definition">#</a></dt>
+<dd><p>The agents of <code class="docutils literal notranslate"><span class="pre">space</span></code> whose nearest node is within network <code class="docutils literal notranslate"><span class="pre">distance</span></code> of <code class="docutils literal notranslate"><span class="pre">origin</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.space.geo.roads.download_osm">
+<span class="sig-name descname"><span class="pre">download_osm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">place</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">network_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'drive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/random.html#random.Random" title="(in Python v3.15)"><span class="pre">Random</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#modelly.space.geo.roads.RoadNetwork" title="modelly.space.geo.roads.RoadNetwork"><span class="pre">RoadNetwork</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/roads.html#download_osm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.roads.download_osm" title="Link to this definition">#</a></dt>
+<dd><p>Download the road network of <code class="docutils literal notranslate"><span class="pre">place</span></code> from OpenStreetMap (needs the <code class="docutils literal notranslate"><span class="pre">osm</span></code> extra).</p>
+<p>Edges get OSMnx’s <code class="docutils literal notranslate"><span class="pre">speed_kph</span></code> and <code class="docutils literal notranslate"><span class="pre">travel_time</span></code> (seconds) attributes. This makes a
+network request: cache the result (<code class="docutils literal notranslate"><span class="pre">osmnx.save_graphml</span></code>) rather than calling it per run.</p>
+</dd></dl>
+
+</section>
+<section id="module-modelly.space.geo.population">
+<span id="synthetic-populations"></span><h2>Synthetic populations<a class="headerlink" href="#module-modelly.space.geo.population" title="Link to this heading">#</a></h2>
+<p>Synthetic populations from census-style marginals, by iterative proportional fitting.</p>
+<p>Census tables usually give, per region, the count of people in each level of each
+attribute (age band, sex, household size) but not the joint table. <code class="docutils literal notranslate"><span class="pre">ipf</span></code> fits a joint
+table to those marginals, starting from a <code class="docutils literal notranslate"><span class="pre">seed</span></code> (a microsample cross-tabulation, or
+ones), and <code class="docutils literal notranslate"><span class="pre">synthesize_population</span></code> turns the fitted tables into one row per person,
+ready to create one agent per row.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.space.geo.population.ipf">
+<span class="sig-name descname"><span class="pre">ipf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marginals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/population.html#ipf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.population.ipf" title="Link to this definition">#</a></dt>
+<dd><p>Fit a table to its one-dimensional marginals by iterative proportional fitting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> – the starting table, one axis per attribute; its zeros stay zero.</p></li>
+<li><p><strong>marginals</strong> – the target totals along each axis, in axis order; all sum to the same total.</p></li>
+<li><p><strong>tolerance</strong> – stop when no marginal is off by more than <code class="docutils literal notranslate"><span class="pre">tolerance</span></code> times the total.</p></li>
+<li><p><strong>max_iterations</strong> – the most fitting rounds.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the fitted table, of the shape of <code class="docutils literal notranslate"><span class="pre">seed</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.space.geo.population.synthesize_population">
+<span class="sig-name descname"><span class="pre">synthesize_population</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marginals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Generator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/population.html#synthesize_population"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.population.synthesize_population" title="Link to this definition">#</a></dt>
+<dd><p>One row per synthetic person, with a <code class="docutils literal notranslate"><span class="pre">region</span></code> column and one column per attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>categories</strong> – attribute name to its levels, for example <code class="docutils literal notranslate"><span class="pre">{&quot;age&quot;:</span> <span class="pre">[&quot;0-17&quot;,</span> <span class="pre">&quot;18+&quot;]}</span></code>.</p></li>
+<li><p><strong>marginals</strong> – region label to, per attribute, the count of people at each level.</p></li>
+<li><p><strong>rng</strong> – a numpy generator (<code class="docutils literal notranslate"><span class="pre">model.rng</span></code>) to round fitted counts to whole people.</p></li>
+<li><p><strong>seed</strong> – the starting joint table (shape: one axis per attribute); defaults to ones.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a DataFrame. The fitted table is rounded to whole people at random, one level of
+the first attribute at a time (floors, then the remainder drawn in proportion to
+the fractional parts). With whole-number marginals every region gets exactly its
+total and its first attribute’s counts; the other marginals are met in
+expectation, each count off by less than the number of first-attribute levels.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-modelly.space.geo.export">
+<span id="export"></span><h2>Export<a class="headerlink" href="#module-modelly.space.geo.export" title="Link to this heading">#</a></h2>
+<p>GeoDataFrames of a <code class="docutils literal notranslate"><span class="pre">GeoSpace</span></code> and writing them as GeoParquet or GeoJSON.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.space.geo.export.agents_frame">
+<span class="sig-name descname"><span class="pre">agents_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.space.geo.space.GeoSpace" title="modelly.space.geo.space.GeoSpace"><span class="pre">GeoSpace</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gpd.GeoDataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/export.html#agents_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.export.agents_frame" title="Link to this definition">#</a></dt>
+<dd><p>One row per agent: <code class="docutils literal notranslate"><span class="pre">unique_id</span></code>, <code class="docutils literal notranslate"><span class="pre">region</span></code>, the named attributes and a point.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.space.geo.export.regions_frame">
+<span class="sig-name descname"><span class="pre">regions_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#modelly.space.geo.space.GeoSpace" title="modelly.space.geo.space.GeoSpace"><span class="pre">GeoSpace</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gpd.GeoDataFrame</span></span></span><a class="reference internal" href="../_modules/modelly/space/geo/export.html#regions_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.export.regions_frame" title="Link to this definition">#</a></dt>
+<dd><p>The regions with an <code class="docutils literal notranslate"><span class="pre">n_agents</span></code> column counting the agents in each.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelly.space.geo.export.write_frame">
+<span class="sig-name descname"><span class="pre">write_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../_modules/modelly/space/geo/export.html#write_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelly.space.geo.export.write_frame" title="Link to this definition">#</a></dt>
+<dd><p>Write <code class="docutils literal notranslate"><span class="pre">frame</span></code> to <code class="docutils literal notranslate"><span class="pre">path</span></code>: GeoParquet or GeoJSON, chosen by the suffix.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="space.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Space</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="networks.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Networks</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geospace">GeoSpace</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace"><code class="docutils literal notranslate"><span class="pre">GeoSpace</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.project"><code class="docutils literal notranslate"><span class="pre">GeoSpace.project()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.project_points"><code class="docutils literal notranslate"><span class="pre">GeoSpace.project_points()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.move_to"><code class="docutils literal notranslate"><span class="pre">GeoSpace.move_to()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.region_of"><code class="docutils literal notranslate"><span class="pre">GeoSpace.region_of()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.regions_of"><code class="docutils literal notranslate"><span class="pre">GeoSpace.regions_of()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.agent_regions"><code class="docutils literal notranslate"><span class="pre">GeoSpace.agent_regions()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.agents_in_region"><code class="docutils literal notranslate"><span class="pre">GeoSpace.agents_in_region()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.region_counts"><code class="docutils literal notranslate"><span class="pre">GeoSpace.region_counts()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.agents_within"><code class="docutils literal notranslate"><span class="pre">GeoSpace.agents_within()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.random_points"><code class="docutils literal notranslate"><span class="pre">GeoSpace.random_points()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.to_geodataframe"><code class="docutils literal notranslate"><span class="pre">GeoSpace.to_geodataframe()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.space.GeoSpace.to_file"><code class="docutils literal notranslate"><span class="pre">GeoSpace.to_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.regions.RegionQueriesMixin"><code class="docutils literal notranslate"><span class="pre">RegionQueriesMixin</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.regions.RegionQueriesMixin.contiguity"><code class="docutils literal notranslate"><span class="pre">RegionQueriesMixin.contiguity()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.regions.RegionQueriesMixin.region_neighbors"><code class="docutils literal notranslate"><span class="pre">RegionQueriesMixin.region_neighbors()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.regions.RegionQueriesMixin.regions_within"><code class="docutils literal notranslate"><span class="pre">RegionQueriesMixin.regions_within()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.agents.GeoAgent"><code class="docutils literal notranslate"><span class="pre">GeoAgent</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.agents.GeoAgent.move_to"><code class="docutils literal notranslate"><span class="pre">GeoAgent.move_to()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.agents.GeoAgent.region"><code class="docutils literal notranslate"><span class="pre">GeoAgent.region</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.agents.GeoAgent.geometry"><code class="docutils literal notranslate"><span class="pre">GeoAgent.geometry</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.space.geo.raster">Rasters</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer"><code class="docutils literal notranslate"><span class="pre">RasterLayer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.shape"><code class="docutils literal notranslate"><span class="pre">RasterLayer.shape</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.array"><code class="docutils literal notranslate"><span class="pre">RasterLayer.array</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.from_file"><code class="docutils literal notranslate"><span class="pre">RasterLayer.from_file()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.to_file"><code class="docutils literal notranslate"><span class="pre">RasterLayer.to_file()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.cells_of"><code class="docutils literal notranslate"><span class="pre">RasterLayer.cells_of()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.sample"><code class="docutils literal notranslate"><span class="pre">RasterLayer.sample()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.sample_agents"><code class="docutils literal notranslate"><span class="pre">RasterLayer.sample_agents()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.cell_centers"><code class="docutils literal notranslate"><span class="pre">RasterLayer.cell_centers()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.attach"><code class="docutils literal notranslate"><span class="pre">RasterLayer.attach()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.to_grid"><code class="docutils literal notranslate"><span class="pre">RasterLayer.to_grid()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.raster.RasterLayer.reproject"><code class="docutils literal notranslate"><span class="pre">RasterLayer.reproject()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.space.geo.roads">Road networks</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork"><code class="docutils literal notranslate"><span class="pre">RoadNetwork</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.node_of"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.node_of()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.nearest_nodes"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.nearest_nodes()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.shortest_path"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.shortest_path()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.path_length"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.path_length()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.travel_time"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.travel_time()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.add_travel_times"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.add_travel_times()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.distances_from"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.distances_from()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.distance_matrix"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.distance_matrix()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.routing_matrix"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.routing_matrix()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.invalidate"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.invalidate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.path_geometry"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.path_geometry()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.RoadNetwork.agents_within"><code class="docutils literal notranslate"><span class="pre">RoadNetwork.agents_within()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.roads.download_osm"><code class="docutils literal notranslate"><span class="pre">download_osm()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.space.geo.population">Synthetic populations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.population.ipf"><code class="docutils literal notranslate"><span class="pre">ipf()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.population.synthesize_population"><code class="docutils literal notranslate"><span class="pre">synthesize_population()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-modelly.space.geo.export">Export</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.export.agents_frame"><code class="docutils literal notranslate"><span class="pre">agents_frame()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.export.regions_frame"><code class="docutils literal notranslate"><span class="pre">regions_frame()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelly.space.geo.export.write_frame"><code class="docutils literal notranslate"><span class="pre">write_frame()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/RemiPelloux/Modelly/edit/main/docs/apis/geo.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Rémi Pelloux and Modelly contributors.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

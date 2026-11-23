@@ -1,0 +1,375 @@
+# 1.5.0: ecosystem and collaboration
+
+**Status:** released (sprints S1 to S8) · **Base:** 1.4.0
+
+By 1.5.0 a single researcher can build, calibrate, scale and publish a model. 1.5.0 is about
+**everyone else**: the colleague who wants to reuse it, the policy team that has to decide with
+it, the R or Julia user who never writes Python, the student, the reviewer. **A model hub,
+model cards, decision and causal tools, richer language-model agents, R and Julia bindings,
+accessibility, a stable plugin API and differential equations inside agents.** Twelve epics, eight sprints, all on Windows, macOS and
+Linux (see [Platforms](platforms.md)). Backward compatible with 1.4; it is also the last
+release before 2.0, so every deprecation 2.0 needs is announced here.
+
+## Where we start
+
+| 1.4.0 gives | 1.5.0 adds |
+|---|---|
+| Run bundles, manifests, `modelly verify` | A hub where bundles and models are published, found, installed and cited |
+| ODD skeletons and zoo validations | Model cards: purpose, validation, limits, generated and kept up to date |
+| Calibration, sensitivity, emulators | Decision tools: scenario comparison, robust decision making, intervention optimisation |
+| Seeded replicates | Causal analysis with common random numbers; explanations of outcomes |
+| `ODE` and `StockFlow`: one system per model, integrated by `solve_ivp` | An ODE in every agent solved as one vectorised system; events, noise, delays and gradients |
+| LLM agents with caching and budgets | Memory, planning, tools, conversation, and an evaluation harness |
+| A Python API | R and Julia packages; Studio for non-programmers |
+
+## Who 1.5.0 is for
+
+| Audience | What 1.5.0 unlocks |
+|---|---|
+| Research groups | Publish a model to the hub with a DOI; colleagues install it with one command |
+| Policy analysts and public agencies | Compare interventions with confidence intervals and costs, without writing code, in Studio |
+| R users (epidemiology, ecology, social science) | `library(modelly)`: run, calibrate and analyse Modelly models from R |
+| Julia users | Call Modelly from Julia and pass arrays without copies |
+| Reviewers and journals | Model cards and verifiable bundles attached to papers |
+| Educators | A visual builder that writes real Modelly code; a course pack v2 |
+| People using assistive technology | Studio conformant with WCAG 2.2 AA |
+
+## Epics
+
+### G1 · Modelly Hub
+
+**Goal:** publish, discover, install and cite models and studies.
+
+**Platforms:** the hub is a static index on GitHub Pages plus Zenodo for archives: no server to
+run or pay for; the client is pure Python on all three.
+
+**User stories**
+
+- As an author, `modelly hub publish` turns my project into an installable package with a model
+  card and a DOI.
+- As a researcher, `modelly hub search "malaria"` lists published models with their validation
+  status, and `modelly hub install` gets one with its exact environment.
+- As a reviewer, a paper's DOI resolves to a bundle I can `modelly verify`.
+
+**Design:** packages are ordinary Python packages with an entry point and a model card; the index
+is a JSON file in a public repository, updated by pull request (reviewed, with automatic checks:
+lint clean, determinism test, card complete); archives on Zenodo; signatures with Sigstore.
+
+**Done when:** ten zoo models and three community models are on the hub; install and verify work
+on all three platforms; publishing a model takes under ten minutes, timed.
+
+**Progress (S2):** `modelly.hub` and `modelly hub search|info|install|publish|check|zoo-index`;
+the index format (schema 1) with cards, supported versions, sha256, DOI and signature; the
+public index in RemiPelloux/modelly-hub on GitHub Pages, its pull requests checked by `modelly
+hub check`; the eighteen zoo models listed. Zenodo archiving and Sigstore signing are built
+and tested as dry runs; a first real publication waits for a Zenodo token. Install checked on
+Linux; Windows and macOS remain for the three-OS run.
+
+**Size:** L · **Depends on:** 1.3 E4, E10
+
+### G2 · Model cards
+
+**Goal:** every model carries a short, standard, honest description of what it is for, how it
+was validated, and where it should not be used.
+
+**Design:** generated from the ODD skeleton, the scenario, the zoo or user validation tests and
+the calibration report; sections for intended use, out-of-scope use, data, validation, known
+limits, ethical considerations; rendered in docs, Studio and the hub; a lint check that the card
+exists and is not stale (validation re-run since the last model change).
+
+**Progress (S1):** `modelly.card` and `modelly card new|check|show|stamp`; every zoo model has
+a stamped card, rendered on its page and checked by the tests; a pre-commit hook. Rendering in
+Studio and the hub comes with G1 and G7.
+
+**Size:** M · **Depends on:** 1.3 E4
+
+### G3 · Decision and policy toolkit (`modelly.decide`)
+
+**Goal:** turn model runs into decisions people can defend.
+
+**Work items:** scenario comparison with paired replicates and intervals; cost and
+cost-effectiveness outputs (per-scenario costs, incremental ratios); robust decision making
+(many futures, find policies that do well across them); intervention optimisation through an
+optional Optuna extra, with the optimiser's randomness seeded from the experiment; Studio
+"compare scenarios" view for non-programmers.
+
+**Done when:** a vaccination-strategy tutorial produces a ranked comparison with intervals and
+costs; the same study rerun gives the same ranking.
+
+**Progress (S3):** `modelly.decide`: `compare` on common random numbers (paired intervals,
+rankings with best shares), `cost_effectiveness` and `net_benefit`, `robust` with
+`sample_futures` (minimax regret, satisficing), `optimise` (seeded Optuna, the `decide`
+extra). The vaccination study ranks four strategies with intervals and costs, and the same
+study rerun gives the same ranking (tested). The Studio "compare scenarios" view moves to S6
+with the no-code mode.
+
+**Size:** L · **Depends on:** 1.3 E3, 1.4 F7
+
+### G4 · Causal analysis and explanations (`modelly.explain`)
+
+**Goal:** say why an outcome happened, not only that it did.
+
+**Work items:** common random numbers so paired scenarios differ only by the intervention
+(variance reduction, reported); average treatment effects with intervals across replicates;
+agent- and event-level attribution (which agents or events, removed, change the outcome);
+SHAP-style explanations on emulators; counterfactual replay through time travel.
+
+**Done when:** a tutorial shows the variance reduction of common random numbers on a zoo model
+(measured); attribution finds the seeded "patient zero" in a synthetic outbreak.
+
+**Progress (S4):** `modelly.explain`: `treatment_effect` (common random numbers, variance
+reduction measured: 49.8 times on the Bass zoo model, none on age_seir vaccination, 1.9
+times on the hospital epidemic's peak), `attribute` (finds the index case of a network
+outbreak, three seeds), `counterfactual` through time travel, exact `shapley` on emulators.
+
+**Size:** M · **Depends on:** 1.3 E6, 1.4 F7
+
+### G5 · Language-model agents II
+
+**Goal:** richer generative agents that stay reproducible and affordable.
+
+**Work items:** memory (episodic and summarised, stored in checkpoints); planning and reflection
+loops; tool use (agents calling model functions); agent-to-agent conversation with turn
+scheduling; an evaluation harness (behavioural benchmarks, consistency across seeds, cost
+reports); every response still cached and part of the bundle.
+
+**Done when:** a 500-agent conversational market runs, caches and replays offline; the evaluation
+harness reports cost, consistency and behaviour metrics for three providers or local models.
+
+**Progress (S5):** `MemoryAgent`, `plan`, `reflect`, `use_tools`, `converse_many`,
+`evaluate`, and the 500-trader conversational market, which runs, caches and replays offline
+(tested). The harness compares three stand-in providers in the tests; a comparison of three
+real providers needs their keys.
+
+**Size:** L · **Depends on:** 1.3 E7
+
+### G6 · R and Julia bindings
+
+**Goal:** Modelly for people who do not write Python.
+
+**Platforms:** the R package through reticulate and the Julia package through PythonCall, both
+tested on Windows, macOS and Linux, with an installer that sets up the Python side automatically.
+
+**Work items:** R: build and run models from R, scenario objects as lists, results as data frames
+or tibbles, calibration and sensitivity results with ggplot2 methods; CRAN-ready package.
+Julia: zero-copy array access to columns, results as DataFrames.jl.
+
+**Done when:** the SIR calibration tutorial runs end to end in R and in Julia on all three OSs.
+
+**Progress (S4):** the R package (`r/modelly`) on `modelly.bindings`: run, parameters, the
+model object, ABC-SMC calibration with priors, print and plot. The SIR tutorial runs end to
+end in R 4.5 on Linux with the Python posterior to the last digit; `R CMD check` clean.
+CRAN or r-universe, Windows and macOS remain. S5: `Modelly.jl` on the same bindings, with
+zero-copy columns; the SIR tutorial gives the same posterior in Julia 1.13 on Linux. S7: the
+release workflow runs `R CMD check` of the R package and the Julia package's tests on Linux,
+macOS and Windows, and PyPI waits for them; all three pass (build-only run of the release
+workflow).
+
+**Size:** L
+
+### G7 · Studio for everyone
+
+**Work items:** a no-code mode (open a published model, change parameters, run experiments,
+compare scenarios, export a report); a visual model builder for teaching that writes ordinary
+Modelly code; report export (HTML and PDF) with the model card, figures and the run manifest.
+
+**Size:** L · **Depends on:** 1.4 F10
+
+**Progress (S6):** `--no-code` with the Compare (moved here from G3), Card and Builder tabs,
+HTML and PDF reports with the card, figures and the run manifest, `--hub NAME`. The builder
+is a preview: one agent class on a grid, four behaviours.
+
+### G8 · Accessibility and languages
+
+**Work items:** WCAG 2.2 AA audit and fixes for Studio and the docs (keyboard navigation, screen
+readers, contrast, colour-blind-safe palettes by default); translations of Studio and the
+getting-started docs (French, Spanish, Portuguese, Chinese, then by demand); right-to-left
+layout support.
+
+**Size:** M
+
+**Progress (S7):** axe-core finds no WCAG 2.0-2.2 A or AA violation on the audited docs pages
+and on Studio (English, no-code French, Arabic right to left), checked by the `a11y` release
+stage; Studio in French, Spanish, Portuguese and Chinese, right to left supported; the
+getting-started page in the four languages. The translations are drafts awaiting review by
+native speakers; keyboard and screen-reader passes by hand remain before the release.
+
+### G9 · Plugin API v1
+
+**Goal:** a stable, documented way to extend Modelly from separate packages.
+
+**Design:** entry-point groups for spaces, executors, samplers, collectors, Studio views, lint
+rules and hub sources; a compatibility declaration per plugin; a plugin template
+(`modelly new --template plugin`); the API is frozen for the 1.x line and carried into 2.0
+unchanged or with a migration path.
+
+**Done when:** three third-party plugins (one space, one executor, one Studio view) are listed
+on the hub and tested against 1.5 on all three platforms.
+
+**Progress (S1):** plugin API v1 marked stable and frozen; compatibility read from the
+plugin's `modelly-abm` requirement; `modelly plugins --check`; `modelly new --template plugin`.
+S2 added the `modelly.hub_sources` group with the hub: an entry point names an index URL or
+path, or a function returning them.
+
+**Size:** M
+
+### G10 · Education II
+
+**Work items:** course pack v2 (twelve sessions, assessments, instructor notes); classroom mode
+in Studio (shared parameters, collect students' runs); a "from NetLogo" track for instructors
+moving their courses.
+
+**Progress (S7):** course pack v2 (twelve sessions, instructor notes, a project rubric and
+two graded exercises), classroom mode in Studio (`--classroom DIR`), the "from NetLogo" track.
+
+**Size:** M · **Depends on:** G7
+
+### G11 · Quality, 2.0 preparation and platforms
+
+**Work items:** every 2.0 change deprecated with a warning naming the replacement; `modelly
+migrate --check-2.0` reports what a project must change; the bindings, hub client and Studio in
+the three-OS test matrix; installer guide for locked-down Windows machines (no admin rights).
+
+**Progress (S1):** the 2.0 inventory, `modelly/_inventory.py`: eleven deprecations that warn
+now and ten 2.0 changes, three of them waiting to warn until their replacement ships (H2 one
+space protocol, H4 one clock, H5 typed scenarios); a test keeps it in agreement with the code
+and `docs/deprecations.md`.
+
+**Progress (S8):** every 2.0 change warns or changes no call: typed scenarios (H5) warn
+from 1.5; the event ordering (H4) is already 2.0's and is documented and tested; the space
+classes (H2) stay as aliases through 2.x. `modelly migrate --check-2.0`; the bindings, the hub
+client and Studio in the three-OS release workflow; the guide for locked-down Windows
+machines.
+
+**Size:** M (continuous)
+
+### G12 · Differential equations II (`modelly.couple`)
+
+**Goal:** continuous dynamics anywhere in a model, at agent scale, as easily as `solve_ivp`.
+
+**Where we start:** `ODE` and `StockFlow` integrate one system per model with `solve_ivp`; the
+inputs are held over the agents' step, and the integrator stops only at step boundaries.
+
+**User stories**
+
+- As an epidemiologist, each host carries its own viral-load ODE, and a host becomes
+  infectious at the moment its load crosses a threshold, not at the next step.
+- As an ecologist, each animal's energy budget is an ODE driven by the field it stands on, and
+  ten thousand animals cost one integration, not ten thousand.
+- As an economist, firms' capital follows a stochastic differential equation whose noise comes
+  from the model's seed, so a rerun is the same run.
+
+**Work items**
+
+- **Per-agent ODEs:** `AgentODE(columns=[...], rhs)` keeps each agent's state in columns and
+  integrates the whole population as one system: `rhs` works on arrays of shape
+  `(variables, agents)`, `solve_ivp` sees them flattened, births and deaths resize between
+  steps. A sparse block-diagonal Jacobian makes the stiff methods (`"BDF"`, `"Radau"`) usable
+  at scale.
+- **Events:** `ODEEvent(condition, action, terminal=True, direction=1)` wraps `solve_ivp`'s event
+  functions: the step stops at the crossing, the action runs on the agents that crossed, the
+  crossing times are recorded, and the integration resumes to the end of the step.
+- **Time-varying inputs and dense output:** inputs given as functions of time or interpolated
+  between steps instead of held; `ode.at(t)` reads the state inside a step, so agents acting at
+  sub-step times see the continuous value.
+- **Stochastic equations:** `SDE(drift, diffusion)` with Euler-Maruyama and Milstein schemes,
+  increments drawn from the model's seeded stream; checkpoints keep the stream position.
+- **Delay equations:** fixed delays through a history buffer and the method of steps, the
+  history saved in checkpoints.
+- **Mean-field companion:** the ODE limit of an agent model (SIR, Lotka-Volterra, Bass) run next
+  to it, with a helper that reports the gap between the two as the population grows.
+- **Gradients:** a JAX path (optional `diffrax` extra) so `modelly.diff` calibrates ODE
+  parameters by gradient, checked against finite differences.
+
+**Done when:** a within-host and between-host epidemic joins the zoo (per-agent viral ODEs, one
+hundred thousand hosts) and its vectorised integration matches a per-agent `solve_ivp` loop
+within tolerance while running faster (measured); event times match the analytic crossing of
+exponential decay to `rtol`; Euler-Maruyama's strong order of one half is measured on geometric
+Brownian motion; a resumed run equals a straight one bit for bit; all on the three platforms.
+
+**Progress:** per-agent ODEs and events shipped in 1.4.3: `solve_batch`, `ODEEvent` and
+`AgentODE`, guide in [ODEs in every agent](../agent_odes.md). Every system takes exactly the
+steps of its own `solve_ivp` call (tested on 200 random systems, both methods, two tolerances).
+S1 added time-varying inputs (`Forcing`, `Series`), dense output (`ode.at(t)`,
+`solve_batch(dense_output=True)`) and the zoo model `within_host`: 100,000 hosts, each host's
+integration equal to its own `solve_ivp` call, one day 34 times faster than the loop
+(measured), clearance times equal to the analytic exponential decay to a relative 1e-6, a
+resumed run equal to a straight one bit for bit. S2 added delay equations (method of steps,
+history by agent id, in checkpoints), stochastic equations (`AgentSDE`, strong orders measured
+on geometric Brownian motion: Euler-Maruyama 0.53, Milstein 0.95), the mean-field companion
+(gap exponent -0.47 on the Bass zoo model) and gradients (`modelly.diff.ode_phase`: RK4
+differentiated through its steps rather than the diffrax extra, since an adjoint integrated
+backwards is unstable for decaying systems; checked against finite differences). G12 is
+complete apart from the three-OS run.
+
+**Size:** L · **Depends on:** 1.4 F6 (coupling), F3 (differentiable models)
+
+## Priorities
+
+| Priority | Epics |
+|---|---|
+| **Must** | G1 Hub, G2 Model cards, G9 Plugin API v1, G11 Quality and 2.0 preparation |
+| **Should** | G3 Decisions, G4 Causal, G5 LLM agents II, G6 R and Julia, G12 Differential equations II |
+| **Could** | G7 Studio for everyone, G8 Accessibility and languages, G10 Education II |
+| **Won't** | A hosted service with accounts; breaking changes |
+
+## Sprint plan
+
+| Sprint | Goal | Main items | Exit |
+|---|---|---|---|
+| S1 | Foundations | Model card schema and generator; plugin entry-point groups; 2.0 deprecation inventory; per-agent ODEs, events and time-varying inputs (G12) | Every zoo model has a card; the within-host epidemic matches the per-agent `solve_ivp` loop |
+| S2 | Hub | Index format, `publish`, `search`, `install`; Zenodo and Sigstore; stochastic and delay equations, mean-field companion, gradients (G12) | A zoo model published and installed on all three OSs; SDE order measured |
+| S3 | Decisions · **a1** | Scenario comparison, costs, robust decision making | Vaccination tutorial ranks strategies reproducibly |
+| S4 | Causal and R | Common random numbers, effects, attribution; R package core | Variance reduction measured; R runs the SIR tutorial |
+| S5 | LLM agents II and Julia | Memory, planning, conversation, evaluation; Julia package | Conversational market replays offline |
+| S6 | Studio for everyone · **b1** | No-code mode, report export, builder preview | Feature complete; API frozen |
+| S7 | Access and education · **rc1** | WCAG fixes, translations, course pack v2 | No open blocker |
+| S8 | Hardening · **1.5.0** | Three-OS matrix for bindings and hub; `--check-2.0`; docs | All gates pass |
+
+## Release gates
+
+| Release | Gate |
+|---|---|
+| 1.5.0a1 | Hub publish and install on all three OSs; model cards for the zoo |
+| 1.5.0b1 | Must and Should epics feature complete; plugin API frozen |
+| 1.5.0rc1 | No open blocker; R and Julia tutorials pass on all three OSs |
+| 1.5.0 | Every 2.0 change has a deprecation warning; `migrate --check-2.0` covers it |
+
+## Success metrics
+
+| Metric | 1.4.0 | 1.5.0 target |
+|---|---|---|
+| Models on the hub | 0 | 10 zoo plus at least 3 community |
+| Languages with a binding | Python | Python, R, Julia |
+| Third-party plugins | 0 | at least 3 |
+| Studio accessibility | not audited | WCAG 2.2 AA |
+| Docs languages | English, French, Spanish (getting started) | plus Portuguese and Chinese |
+| 2.0 changes with a deprecation warning | partial | all |
+
+## Risks
+
+| Risk | Likelihood | Impact | Mitigation |
+|---|---|---|---|
+| The hub needs moderation effort | Medium | Medium | Automatic checks on every pull request; clear inclusion rules |
+| R and Julia bindings break with Python environment changes | High | Medium | Installer pins the Python side; three-OS CI for both packages |
+| Decision tools are misused as forecasts | Medium | High | Model cards, intervals shown by default, wording reviewed by domain users |
+| LLM agent costs | Medium | Medium | Budgets, caching, local models; evaluation harness reports cost |
+
+## Open questions
+
+- [ ] Hub index: one repository for everything, or one per field?
+- [ ] R package on CRAN (strict policies) or r-universe first?
+- [ ] Which translations first, by user demand or by community volunteers?
+
+## Sprint review log
+
+| Sprint | Shipped | Slipped | Notes |
+|---|---|---|---|
+| S1 | Model cards for the 18 zoo models; plugin API v1 frozen with compatibility declarations, `modelly plugins`, a plugin template; the 2.0 inventory; time-varying ODE inputs, dense output, the within-host zoo model | the `modelly.hub_sources` group, to S2 with the hub | Exit met: every zoo model has a stamped card; the within-host epidemic matches the per-host `solve_ivp` loop |
+| S2 | The hub: `modelly hub` client, index schema, the public index (RemiPelloux/modelly-hub on Pages, pull requests checked), the 18 zoo models listed, Zenodo and Sigstore as dry runs; G12 finished: delays, SDEs (orders 0.53 and 0.95 measured), mean-field companion, ODE gradients | a real Zenodo publication (needs a token); install on Windows and macOS (the three-OS run) | Exit met on Linux: a zoo model installed from the public index and run; SDE order measured |
+| S3 | `modelly.decide` (paired comparisons, cost-effectiveness, robust decisions, seeded Optuna optimisation); the vaccination study; `age_seir` vaccination; pre-releases in `release.py`; a hub smoke test on every OS in the release workflow | the Studio compare view, to S6 | 1.5.0a1 cut when its gate passes: hub install on the three OSs is checked by the release workflow's wheel tests |
+| S4 | `modelly.explain` (effects with measured variance reduction, attribution, counterfactuals, Shapley); the R package core | ggplot2 methods, to the R package's next round | Exit met: variance reduction measured (49.8 times on Bass); R runs the SIR tutorial |
+| S5 | LLM agents II (memory, plans, reflection, tools, conversations, evaluation harness, the conversational market); the Julia package | a comparison of three real providers (needs keys); R and Julia on Windows and macOS | Exit met: the 500-trader market replays offline |
+| S6 | Studio for everyone: no-code mode, Compare, Card and Builder tabs, HTML and PDF reports, `--hub` | a builder with several agent classes and spaces, to Education II | Exit: feature complete; plugin API frozen since S1; 1.5.0b1 at its gate |
+| S7 | WCAG 2.2 AA audit and fixes (axe-core release stage), Studio in four more languages with right-to-left support, translated getting started, course pack v2, classroom mode, the NetLogo track; R and Julia on three OSs in the release workflow | native-speaker review of the translations; keyboard and screen-reader passes by hand | Exit: no open blocker known; rc1 at its gate |
+| S8 | `--check-2.0`, typed-scenario warnings, the event-ordering page, the locked-down Windows guide; a faster gate (parallel tests, no repeated gate) and release workflow (macOS split, one hub smoke per OS) | the H2 space protocol stays a 2.0 epic (no 1.x warning needed) | 1.5.0 at its gate |
