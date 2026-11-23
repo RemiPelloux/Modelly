@@ -546,7 +546,7 @@ would forbid a subclass from relying on `Agent.__dict__` semantics. The two regi
 are the next target; a more compact registry must keep iteration order, membership in C and
 the removal semantics, so it is a design change rather than a patch.
 
-### Attribute loads, layers and cell moves (1.6)
+### Attribute loads, layers and cell moves (1.5.2)
 
 On CPython 3.13 and later an object whose `__dict__` has been read or written (directly, or by
 `functools.cached_property`) loses the interpreter's specialised attribute loads: a load of an
@@ -556,14 +556,14 @@ and every Column read and write loads `table._views`; the cell collections and t
 `memoryview` and return Python numbers, and the grid's `cell.empty` flag is a C descriptor, so
 a cell move that empties or fills a cell runs no Python.
 
-| Operation (python -m modelly.dev perf) | 1.5.1 | 1.6 | ratio |
+| Operation (python -m modelly.dev perf) | 1.5.1 | 1.5.2 | ratio |
 |---|---|---|---|
 | Column read | 62 ns | 48 ns | 0.77 |
 | Column write | 91 ns | 65 ns | 0.72 |
 | Column agents created and removed | 1267 ns | 1149 ns | 0.91 |
 | Cell move | 560 ns | 487 ns | 0.86 |
 
-| Whole run (five alternated runs, one core) | 1.5.1 | 1.6 | ratio |
+| Whole run (five alternated runs, one core) | 1.5.1 | 1.5.2 | ratio |
 |---|---|---|---|
 | Sugarscape playbook, cell lists | 932 ms | 687 ms | 0.74 |
 | Predator-prey playbook, cell lists | 2262 ms | 1956 ms | 0.86 |
@@ -944,7 +944,7 @@ state on the roadmap, not more micro-tuning.
 
 ## Behaviour notes
 
-- Property layers read as Python numbers since 1.6 (`cell.sugar` is a `float`, `cell.empty` a
+- Property layers read as Python numbers since 1.5.2 (`cell.sugar` is a `float`, `cell.empty` a
   `bool`), as Column attributes do: a float read divided by zero raises `ZeroDivisionError`
   rather than giving `inf`, and integer arithmetic no longer wraps.
 - Seeded runs that call `select_random_empty_cell` on a dense grid draw from the index instead of
@@ -970,7 +970,7 @@ These are the changes with the largest remaining upside. Each is a project, not 
    registries now run in `modelly/_native/fastloop.c`, the cell move in
    `modelly/_native/fastcell.c` (7 to 14% on the cell-list playbooks), and `select`, `agg`
    and the weak views in `modelly/_native/fastset.c`. The property-layer `empty` flag is in C
-   too since 1.6 (`modelly/_native/emptyflag.h`). What remains per agent is the
+   too since 1.5.2 (`modelly/_native/emptyflag.h`). What remains per agent is the
    random-neighbour lookup around the draw.
 4. **Parallel agent phases on free-threaded CPython.** A phase whose agents only read shared
    state could run on several cores; it needs a rule for what a phase may write and a
