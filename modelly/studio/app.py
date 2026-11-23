@@ -25,6 +25,7 @@ from modelly.studio.mapview import MapView
 from modelly.studio.panels import ErrorBanner
 from modelly.studio.session import StudioSession
 from modelly.studio.shell import (
+    PANELS,
     Layout,  # noqa: F401 (Solara uses the app module's Layout)
     SidePanel,
     StatusBar,
@@ -33,6 +34,7 @@ from modelly.studio.shell import (
 from modelly.studio.state import use_studio_state
 from modelly.studio.tools import LintPanel, LogPanel, ProfilerPanel
 from modelly.studio.views import AgentTable, Scrubber, SeriesView, SpaceView
+from modelly.studio.workbench import Workbench
 
 TITLE = "Modelly Studio"
 
@@ -47,28 +49,39 @@ def StudioApp(session: StudioSession):
     if direction() == "rtl":
         solara.Style("body, .v-application { direction: rtl; text-align: right; }")
     solara.Title(f"{TITLE}: {session.model_class.__name__}")
+    # The open panel and tab: the browser keeps them (see modelly.studio.workbench).
+    panel = solara.use_reactive(PANELS[0][0])
+    tab = solara.use_reactive(TABS[0][0])
     with solara.Column(classes=["mx-shell"], gap="0"):
         TopBar(state)
         with solara.Row(classes=["mx-body"], gap="0"):
-            SidePanel(state)
-            Workspace(state)
+            SidePanel(state, panel)
+            Workbench(state, panel, tab)
+            Workspace(state, tab)
         StatusBar(state)
 
 
 @solara.component
-def Workspace(state):
-    """The document tabs, the open tab's views and the timeline under them."""
-    tab = solara.use_reactive(0)
+def Workspace(state, tab: solara.Reactive[str]):
+    """The document tabs, the open tab's views and the timeline under them.
+
+    ``tab`` names the open tab; a name this mode does not show opens the first one.
+    """
     tabs = tabs_for(state.session.config.mode)
+    names = [name for name, _ in tabs]
+    index = names.index(tab.value) if tab.value in names else 0
     with solara.Column(classes=["mx-main"], gap="0"):
         with solara.v.Tabs(
-            v_model=tab.value, on_v_model=tab.set, class_="mx-tabs", show_arrows=True
+            v_model=index,
+            on_v_model=lambda chosen: chosen is None or tab.set(names[chosen]),
+            class_="mx-tabs",
+            show_arrows=True,
         ):
-            for name, _ in tabs:
+            for name in names:
                 solara.v.Tab(children=[t(name)])
         ErrorBanner(state)
         with solara.Column(classes=["mx-doc"], gap="0"):
-            tabs[tab.value][1](state)
+            tabs[index][1](state)
         Scrubber(state)
 
 

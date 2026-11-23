@@ -114,6 +114,23 @@ the open one again to close it). The views are tabs. The timeline sits under the
 status bar at the foot says whether you see the live run or a past step, the seed, the
 number of agents and whether the run is playing.
 
+Drag the edge of the open panel to make it wider or narrower, or focus that edge with Tab and
+use the left and right arrows. The browser remembers the panel's width, the open panel and
+the open tab, and Studio opens with them next time. Studio follows the system's light or dark
+setting; figures keep their white background in the dark theme.
+
+**Keyboard shortcuts** (press `?` in Studio to list them):
+
+| Key | Does |
+|---|---|
+| Space | Play or pause |
+| → | Step forward; on a past step, move forward through the timeline |
+| ← | Move back through the timeline |
+| End | Back to the live step |
+| `?` | Show or hide the shortcuts |
+
+A key typed into a field, the timeline slider or the tab strip goes to that control, as usual.
+
 **Run** (top bar): Step, Play and Pause, Reset, and Run N steps, with the live step on the
 right. Play waits for each step to be drawn before taking the next one. An exception raised by
 the model stops the run and shows above the views; the traceback is in the log.

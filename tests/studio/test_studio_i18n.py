@@ -9,7 +9,7 @@ import pytest
 solara = pytest.importorskip("solara")
 v = pytest.importorskip("ipyvuetify")
 
-from modelly.studio import app, i18n  # noqa: E402
+from modelly.studio import app, i18n, workbench  # noqa: E402
 from modelly.studio.config import StudioConfig  # noqa: E402
 
 STUDIO = Path(i18n.__file__).parent
@@ -17,8 +17,9 @@ BOLTZMANN = "modelly.examples.basic.boltzmann_wealth_model.model:BoltzmannWealth
 
 
 def labels() -> set[str]:
-    """Every ``t("...")`` of the Studio code, and the tab names."""
-    found = {name for name, _ in app.TABS}
+    """Every ``t("...")`` of the Studio code, the tab names and the workbench's labels."""
+    found = {name for name, _ in app.TABS} | set(workbench.LABELS)
+    found |= {what for _, what in workbench.SHORTCUTS}
     for path in STUDIO.glob("*.py"):
         for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
             called = (

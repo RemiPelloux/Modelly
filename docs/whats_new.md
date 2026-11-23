@@ -11,6 +11,17 @@ whose notes are missing (see "Release notes" in
 
 ## Unreleased
 
+### New
+
+- **Studio keyboard shortcuts**: space plays or pauses, the arrow keys step and move
+  through the timeline, End goes back to the live step, and `?` lists them.
+  [Studio](studio.md#the-panels)
+- **A dark Studio**: Studio follows the system's light or dark setting, and both pass the
+  WCAG A and AA accessibility audit. [Studio](studio.md#the-panels)
+- **A resizable side panel that Studio remembers**: drag its edge (or focus it and use the
+  arrows); the browser keeps its width, the open panel and the open tab for next time.
+  [Studio](studio.md#the-panels)
+
 ### Faster
 
 Every result is unchanged: the golden digests are identical.

@@ -71,9 +71,8 @@ def _activity_button(name: str, icon: str, open_panel) -> None:
 
 
 @solara.component
-def SidePanel(state: StudioState):
+def SidePanel(state: StudioState, open_panel: solara.Reactive[str | None]):
     """The activity bar and the open panel; a closed panel keeps its state, hidden."""
-    open_panel = solara.use_reactive(PANELS[0][0])
     with solara.Row(classes=["mx-side"], gap="0"):
         with solara.Column(classes=["mx-activity"], gap="0"):
             for name, icon in PANELS:

@@ -1,8 +1,8 @@
 """Accessibility audit (WCAG 2.0, 2.1 and 2.2, levels A and AA) with axe-core in Chromium.
 
 Run by ``scripts/release-checks.sh a11y``: it serves a built documentation folder, starts
-``modelly studio`` in English, in no-code French and right to left in Arabic, and runs
-axe-core on each page. Any violation fails the stage and is printed with the elements it
+``modelly studio`` in English, in no-code French and right to left in Arabic, each in the
+light and the dark colour scheme, and runs axe-core on each page. Any violation fails the stage and is printed with the elements it
 names.
 
     python scripts/a11y-audit.py path/to/axe.min.js path/to/built/html
@@ -25,6 +25,7 @@ PAGES = ("index.html", "getting_started.html", "translations/fr/getting_started.
 TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]
 TARGET = "modelly.examples.basic.boltzmann_wealth_model.model:BoltzmannWealth"
 STUDIOS = ((), ("--language", "fr", "--no-code"), ("--language", "ar"))
+SCHEMES = ("light", "dark")  # Studio follows the system's colour scheme
 START_TIMEOUT_S, PAGE_TIMEOUT_MS = 90, 90_000
 
 
@@ -108,14 +109,16 @@ def main(axe_file: str, html: str) -> int:
         page = browser.new_page()
         for name in PAGES:
             found += violations(page, f"http://127.0.0.1:{port}/{name}", axe)
-        for options in STUDIOS:
-            found += audit_studio(page, options, axe)
+        for scheme in SCHEMES:
+            page.emulate_media(color_scheme=scheme)
+            for options in STUDIOS:
+                found += [f"{scheme}: {v}" for v in audit_studio(page, options, axe)]
         browser.close()
     server.shutdown()
     sys.stdout.write(
         "\n".join(found) + "\n"
         if found
-        else f"no WCAG A/AA violation on {len(PAGES)} pages and {len(STUDIOS)} Studio pages\n"
+        else f"no WCAG A/AA violation on {len(PAGES)} pages and {len(STUDIOS) * len(SCHEMES)} Studio pages\n"
     )
     return 1 if found else 0
 

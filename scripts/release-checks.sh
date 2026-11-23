@@ -16,7 +16,7 @@
 #   studio    Studio's views in headless Chromium, Firefox and WebKit (Playwright browsers;
 #             MODELLY_BROWSER_EXECUTABLE points WebKit at a wrapper where its libraries lack)
 #   docs      the documentation builds with warnings as errors
-#   a11y      axe-core finds no WCAG 2.2 A or AA violation on the docs and on Studio (en, fr, ar)
+#   a11y      axe-core finds no WCAG 2.2 A or AA violation on the docs and on Studio (en, fr, ar; light and dark)
 #   native    the compiled modules and their pure-Python twins, a wheel that must compile
 #             them all, and the free-threaded build when FT_PYTHON names its interpreter
 #   bench     every playbook against the last release (or AGAINST=x.y.z), results identical

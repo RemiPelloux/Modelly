@@ -5,6 +5,22 @@ versioning.
 
 ## Unreleased
 
+### Added
+
+- Studio keyboard shortcuts (`modelly/studio/workbench.py`, `workbench.vue`): space plays or
+  pauses, the right arrow steps (or moves forward through the timeline on a past step), the
+  left arrow moves back through it, End returns to the live step, `?` opens a dialog listing
+  them. Keys typed into a field, a slider, the tab strip or a button go to that control.
+- A dark theme for Studio that follows `prefers-color-scheme`: every colour of
+  `studio.css` is a token, redefined for dark, with Vuetify's theme variables set to match.
+  Figures keep a white background. `scripts/a11y-audit.py` audits each Studio page in both
+  schemes; axe-core finds no WCAG A/AA violation in Chromium and Firefox.
+- The side panel is resizable: a handle between it and the views (drag, or focus and use
+  the arrows; a `separator` with its value for screen readers). The browser keeps the
+  width, the open panel and the open tab in local storage and restores them. The open tab
+  is now kept by name (`Workspace(state, tab)`), so a tab the mode does not show opens the
+  first one.
+
 ### Performance
 
 - `ColumnTable` no longer reads or writes its own `__dict__`. On CPython 3.13 and later an
