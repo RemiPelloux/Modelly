@@ -638,7 +638,9 @@ checks are in [benchmarks/playbooks/results/README.md](https://github.com/RemiPe
 Each release page records what shipped and what fell short, measured: [1.3.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.3.0.md)
 (calibration, sensitivity, experiments, provenance, Studio, the zoo), [1.4.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.4.0.md)
 (scale out and connect) and [1.5.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.5.0.md) (the section above). Next, without dates:
-[2.0.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/2.0.0.md), one space API, one clock, columns by default, typed scenarios, a
+[1.6.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/1.6.0.md), in progress, finishes what 1.5 left open (hub publications, community
+plugins, R and Julia II, a Studio workbench) and ships 2.0's riskiest designs as opt-in
+previews; then [2.0.0](https://github.com/RemiPelloux/Modelly/blob/main/docs/roadmap/2.0.0.md), one space API, one clock, columns by default, typed scenarios, a
 stable ABI and checkpoint format, with its deprecations already announced in
 [docs/deprecations.md](https://github.com/RemiPelloux/Modelly/blob/main/docs/deprecations.md) and checked by `modelly migrate --check-2.0`. Each
 item keeps today's authoring model: you still write a `Model`, an `Agent` subclass and a
