@@ -233,11 +233,9 @@ def SolaraViz(
             Can include user-adjustable parameters and fixed parameters. Defaults to None.
         name (str | None, optional): Name of the visualization. Defaults to the model's class name.
         **console_kwargs (dict, optional): Arguments to pass to the command console.
-            Currently supported arguments:
-            - additional_imports: Dictionary of names to objects to import into the command console.
-                - Example:
-                    >>> console_kwargs = {"additional_imports": {"numpy": np}}
-                    >>> SolaraViz(model, console_kwargs=console_kwargs)
+            The one supported is ``additional_imports``, a dictionary of names to objects
+            to import into the console, for example
+            ``SolaraViz(model, additional_imports={"numpy": np})``.
 
     Returns:
         solara.component: A Solara component that renders the visualization interface for the model.

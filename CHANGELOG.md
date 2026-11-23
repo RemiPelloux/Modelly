@@ -50,6 +50,8 @@ versioning.
 
 ### Documentation
 
+- `SolaraViz`'s docstring: the `**console_kwargs` entry is valid reStructuredText again (the
+  docs build stopped on it) and its example passes `additional_imports=` directly.
 - The 1.6.0 roadmap: a bridge release between 1.5 and 2.0 that closes what 1.5 left open and
   ships 2.0's riskiest designs as opt-in previews.
 
