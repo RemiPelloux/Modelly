@@ -18,7 +18,6 @@ from __future__ import annotations
 import itertools
 import warnings
 from collections.abc import Callable, Iterable, Mapping
-from functools import cached_property
 from random import Random
 from typing import TYPE_CHECKING, TypeVar
 
@@ -116,9 +115,17 @@ class CellCollection[T: Cell]:
     def __repr__(self):  # noqa
         return f"CellCollection({self._cells})"
 
-    @cached_property
+    # The cells as a list, made on first use. Not a cached_property: that writes the
+    # instance __dict__, and on CPython 3.13+ an object whose __dict__ was touched
+    # loses the interpreter's fast attribute loads (select_random_cell is per agent).
+    _cell_list: list | None = None
+
+    @property
     def cells(self) -> list[T]:  # noqa
-        return list(self._cells.keys())
+        cells = self._cell_list
+        if cells is None:
+            cells = self._cell_list = list(self._cells)
+        return cells
 
     @property
     def agents(self) -> Iterable[CellAgent]:  # noqa
@@ -154,7 +161,8 @@ class CellCollection[T: Cell]:
                 raise LookupError("Cannot select random cell from empty collection")
             return default
 
-        return self.random.choice(self.cells)
+        cells = self._cell_list
+        return self.random.choice(self.cells if cells is None else cells)
 
     def select_random_agent(self, default=RAISES) -> CellAgent | None:
         """Select a random agent from the collection.

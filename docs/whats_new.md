@@ -11,6 +11,16 @@ whose notes are missing (see "Release notes" in
 
 ## Unreleased
 
+### Faster
+
+Every result is unchanged: the golden digests are identical.
+
+- **Column attributes**: reading `agent.wealth` takes 0.78 times as long as in 1.5.1 and
+  writing it 0.76 times; creating and removing agents with columns 0.91 times. On Python
+  3.13 and later the column table had lost the interpreter's fast attribute path.
+- **Cell moves**: `select_random_cell` takes 0.74 times as long, and writing a property
+  layer (`cell.sugar = x`) or a cell's `empty` flag 0.8 times.
+
 ### Changed
 
 - **A new Studio layout**: Studio is laid out like a notebook workbench. The run toolbar is in

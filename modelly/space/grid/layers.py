@@ -9,10 +9,24 @@ vectorised updates on the array and per-cell reads stay in sync for free.
 from __future__ import annotations
 
 from itertools import chain
+from typing import Any
 
 import numpy as np
 
+from modelly.core.column_access import WRITE_ERRORS
+
 EMPTY_LAYER = "empty"
+
+
+def _layer_view(array: np.ndarray) -> Any:
+    """A ``memoryview`` of ``array`` that a coordinate tuple writes, else ``array``."""
+    try:
+        view = memoryview(array)
+        corner = (0,) * array.ndim
+        view[corner] = view[corner]
+    except (TypeError, ValueError, NotImplementedError, BufferError, IndexError):
+        return array
+    return view
 
 
 class HasPropertyLayers:
@@ -96,7 +110,9 @@ class HasPropertyLayers:
         if name in self.property_layers:
             raise ValueError(f"property_layer '{name}' already exists.")
 
-        if name in self.__dict__ or any(name in c.__dict__ for c in type(self).__mro__):
+        # hasattr, not self.__dict__: reading __dict__ costs the grid the
+        # interpreter's fast attribute loads on CPython 3.13+.
+        if hasattr(self, name) or any(name in c.__dict__ for c in type(self).__mro__):
             raise ValueError(
                 f"property_layer '{name}' conflicts with an existing Grid attribute."
             )
@@ -120,12 +136,18 @@ class HasPropertyLayers:
         self, name: str, array: np.ndarray, read_only: bool
     ) -> None:
         """Install ``cell.<name>`` on the grid's cell class, reading/writing ``array``."""
+        view = _layer_view(array)
 
         def getter(self_cell):
             return array[self_cell.coordinate]
 
         def setter(self_cell, value):
-            array[self_cell.coordinate] = value
+            # A memoryview write is about a third cheaper; it refuses some writes
+            # numpy accepts (a float into an int layer), which then go to numpy.
+            try:
+                view[self_cell.coordinate] = value
+            except WRITE_ERRORS:
+                array[self_cell.coordinate] = value
 
         accessor = (
             property(getter, doc=f"property_layer '{name}'")

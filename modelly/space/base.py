@@ -18,7 +18,6 @@ from __future__ import annotations
 import warnings
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
-from functools import cached_property
 from random import Random
 from typing import TYPE_CHECKING, TypeVar
 
@@ -143,7 +142,7 @@ class DiscreteSpace[T: Cell](ABC):
 
             Ensure the target coordinates are vacant before calling this method.
         """
-        self.__dict__.pop("all_cells", None)
+        self._all_cells = None
         self._cells[cell.coordinate] = cell
         cell._empties_index = None  # it may come from another space's index
         self._reset_empties()
@@ -166,7 +165,7 @@ class DiscreteSpace[T: Cell](ABC):
         except KeyError as e:
             raise CellMissingException(cell.coordinate) from e
 
-        self.__dict__.pop("all_cells", None)
+        self._all_cells = None
         self._reset_empties()
 
         # iterate over all neighbors
@@ -200,12 +199,21 @@ class DiscreteSpace[T: Cell](ABC):
         cell1.disconnect(cell2)
         cell2.disconnect(cell1)
 
-    @cached_property
-    def all_cells(self):
+    # Made on first use and dropped when cells come or go. Not a cached_property: that
+    # writes the instance __dict__, and on CPython 3.13+ an object whose __dict__ was
+    # touched loses the interpreter's fast attribute loads.
+    _all_cells: CellCollection | None = None
+
+    @property
+    def all_cells(self) -> CellCollection[T]:
         """Return all cells in space."""
-        return CellCollection(
-            {cell: cell._agents for cell in self._cells.values()}, random=self.random
-        )
+        cells = self._all_cells
+        if cells is None:
+            cells = self._all_cells = CellCollection(
+                {cell: cell._agents for cell in self._cells.values()},
+                random=self.random,
+            )
+        return cells
 
     def __iter__(self):  # noqa
         return iter(self._cells.values())
@@ -257,7 +265,10 @@ class DiscreteSpace[T: Cell](ABC):
         The empties index is kept, not rebuilt: the order of its cells decides
         which empty cell a draw picks, so a restored space draws as the original.
         """
-        self.__dict__ = state
+        # A pickle from 1.5 or earlier may hold the cached all_cells: rebuilt on use.
+        for name, value in state.items():
+            if name != "all_cells":
+                object.__setattr__(self, name, value)
         empties = self._empties
 
         if self._cells:

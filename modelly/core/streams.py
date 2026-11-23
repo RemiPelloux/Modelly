@@ -54,20 +54,20 @@ def stream_seed(agent: Agent) -> np.random.SeedSequence:
 def own_random(agent: Agent) -> Random:
     """``agent``'s stdlib-compatible generator, created on first use."""
     try:
-        return agent.__dict__[_RANDOM]
-    except KeyError:
+        return getattr(agent, _RANDOM)
+    except AttributeError:
         seed = int(stream_seed(agent).generate_state(1, dtype=np.uint32)[0])
-        generator = agent.__dict__[_RANDOM] = FastRandom(seed)
+        generator = FastRandom(seed)
+        setattr(agent, _RANDOM, generator)
         return generator
 
 
 def own_rng(agent: Agent) -> np.random.Generator:
     """``agent``'s numpy generator, of the scenario's bit generator, created on first use."""
     try:
-        return agent.__dict__[_RNG]
-    except KeyError:
+        return getattr(agent, _RNG)
+    except AttributeError:
         bit_generator = getattr(np.random, agent.model.scenario._generator_class)
-        generator = agent.__dict__[_RNG] = np.random.Generator(
-            bit_generator(stream_seed(agent))
-        )
+        generator = np.random.Generator(bit_generator(stream_seed(agent)))
+        setattr(agent, _RNG, generator)
         return generator

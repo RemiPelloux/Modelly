@@ -1771,3 +1771,32 @@ def test_network_select_random_empty_cell_uses_the_index():
     agent.cell = None
     assert space.select_random_empty_cell() is cells[11]
     assert len(space.empties) == 1
+
+
+def test_all_cells_follows_added_and_removed_cells():
+    """The space's collection of all cells is rebuilt after a cell comes or goes."""
+    grid = OrthogonalMooreGrid((3, 3), random=random.Random(1))
+    before = grid.all_cells
+    assert grid.all_cells is before  # made once, then reused
+    cell = grid._cells[(0, 0)]
+    grid.remove_cell(cell)
+    assert cell not in grid.all_cells.cells
+    grid.add_cell(cell)
+    assert cell in grid.all_cells.cells
+
+
+def test_a_pickle_holding_the_cached_collections_still_loads(monkeypatch):
+    """States from 1.5 kept ``all_cells`` and ``cells`` in the instance dict: ignored."""
+    grid = OrthogonalMooreGrid((3, 3), random=random.Random(1))
+    getstate = type(grid).__getstate__
+    monkeypatch.setattr(
+        type(grid), "__getstate__", lambda self: getstate(self) | {"all_cells": 1}
+    )
+    restored = pickle.loads(pickle.dumps(grid))  # noqa: S301 (its own pickle)
+    assert len(restored.all_cells.cells) == len(grid._cells)
+    collection = grid.all_cells
+    old = object.__new__(type(collection))
+    old.__dict__.update(
+        _cells=collection._cells, _capacity=None, random=collection.random, cells=[0]
+    )
+    assert old.cells == list(collection._cells)

@@ -5,6 +5,20 @@ versioning.
 
 ## Unreleased
 
+### Performance
+
+- `ColumnTable` no longer reads or writes its own `__dict__`. On CPython 3.13 and later an
+  object whose `__dict__` was touched loses the specialised attribute loads, and every
+  Column read and write loads the table's `_views`: column read 0.78x, write 0.76x, column
+  create+remove 0.91x against 1.5.1 (`python -m modelly.dev perf`).
+- The same for `CellCollection.cells` and `DiscreteSpace.all_cells` (lazy attributes instead
+  of `functools.cached_property`, which writes `__dict__`), per-agent random streams, the
+  numpy dataset recorder's agent attributes and the grid's layer-name check:
+  `select_random_cell` 0.74x.
+- Property-layer and `cell.empty` writes go through a `memoryview` of the layer, which takes
+  the coordinate tuple (numpy's write is kept for what a memoryview refuses, such as a float
+  into an int layer): 0.8x.
+
 ### Changed
 
 - Studio has a new layout, like a notebook workbench (`modelly/studio/shell.py`,

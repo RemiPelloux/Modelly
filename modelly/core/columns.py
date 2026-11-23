@@ -42,8 +42,9 @@ else:
 INITIAL_CAPACITY = 64
 GROWTH_FACTOR = 2
 ID_COLUMN = "unique_id"
-# Table attributes rebuilt from ``_data`` by ``_refresh_views``, never pickled.
-_DERIVED = frozenset({"_views", "_all_views", "_defaults", "_capacity"})
+# The table attributes a pickle keeps; the others (``_views``, ``_all_views``,
+# ``_defaults``, ``_capacity``) are rebuilt from ``_data`` by ``_refresh_views``.
+_PICKLED = ("_specs", "random", "rng", "_agents", "_storage", "_data")
 
 
 class Column:
@@ -110,26 +111,30 @@ class ColumnTable:
         ``_views`` has one view per column in specs order (the column
         properties read it); ``_all_views`` adds the id column first, for the
         row moves of ``remove``. Views and capacity change only when the arrays do.
+        The table never touches its own ``__dict__``: on CPython 3.13 and later an
+        object whose ``__dict__`` was read loses the interpreter's fast attribute
+        loads, and every Column read and write loads ``_views``.
         """
         data = self._data
-        state = self.__dict__
         views = [fast_view(data[name]) for name in self._specs]
-        state["_views"] = views
-        state["_all_views"] = [fast_view(data[ID_COLUMN]), *views]
-        state["_defaults"] = [
+        defaults = [
             _default_writer(view, data[name], spec.default)
             for view, (name, spec) in zip(views, self._specs.items(), strict=True)
         ]
-        state["_capacity"] = data[ID_COLUMN].shape[0]
+        set_ = object.__setattr__
+        set_(self, "_views", views)
+        set_(self, "_all_views", [fast_view(data[ID_COLUMN]), *views])
+        set_(self, "_defaults", defaults)
+        set_(self, "_capacity", data[ID_COLUMN].shape[0])
 
     def __getstate__(self) -> dict:
         """Drop the memoryviews, which do not pickle; memory-mapped arrays go as rows."""
-        state = self.__dict__.items()
-        return pickled({k: v for k, v in state if k not in _DERIVED})
+        return pickled({name: getattr(self, name) for name in _PICKLED})
 
     def __setstate__(self, state: dict) -> None:
         """Restore the arrays into the table's storage and rebuild the views."""
-        self.__dict__.update(restored(state))
+        for name, value in restored(state).items():
+            object.__setattr__(self, name, value)
         self._refresh_views()
 
     def __len__(self) -> int:
@@ -156,9 +161,9 @@ class ColumnTable:
 
     def __getattr__(self, name: str) -> np.ndarray:
         """Return a view of column ``name``; only reached for non-attribute names."""
-        data = self.__dict__.get("_data")
+        data = _own(self, "_data")
         if data is not None and name in data:
-            return data[name][: len(self.__dict__["_agents"])]
+            return data[name][: len(self._agents)]
         raise AttributeError(f"{type(self).__name__} has no column {name!r}")
 
     def __setattr__(self, name: str, value: Any) -> None:
@@ -167,9 +172,9 @@ class ColumnTable:
         That makes the augmented forms safe: ``table.energy -= 1`` reads the
         view, subtracts, and writes the result back into the column.
         """
-        data = self.__dict__.get("_data")
+        data = _own(self, "_data")
         if data is not None and name in data:
-            data[name][: len(self.__dict__["_agents"])] = value
+            data[name][: len(self._agents)] = value
             return
         object.__setattr__(self, name, value)
 
@@ -271,6 +276,14 @@ class ColumnTable:
     def __repr__(self) -> str:
         """Return the row count and column names."""
         return f"<ColumnTable {len(self)} rows, columns={self.columns}>"
+
+
+def _own(table: ColumnTable, name: str) -> Any:
+    """``table.<name>`` without ``__getattr__``, or None while it is not set yet."""
+    try:
+        return object.__getattribute__(table, name)
+    except AttributeError:
+        return None
 
 
 __all__ = ["Column", "ColumnStore", "ColumnTable"]  # noqa: F822 (see __getattr__)

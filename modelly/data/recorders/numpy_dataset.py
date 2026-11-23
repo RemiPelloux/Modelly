@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import weakref
 from contextlib import suppress
+from operator import attrgetter
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -96,7 +97,7 @@ class NumpyAgentDataSet[A: Agent]:
             # A checkpoint of 1.4.1 or earlier: its agents hold only their row index.
             self._dataset_in_agent = f"_datatable_{self.name}"
             for agent in self._index_to_agent.values():
-                agent.__dict__[self._dataset_in_agent] = self
+                setattr(agent, self._dataset_in_agent, self)
         if not self._closed:
             self._attach_to_class()
 
@@ -119,16 +120,15 @@ class NumpyAgentDataSet[A: Agent]:
     def _make_getter_setter(self, attribute_name: str):
         """Generate getter and setter for the specified attribute."""
         j = self._attribute_to_index[attribute_name]
-        index_attr = self._index_in_table
-        dataset_attr = self._dataset_in_agent
+        # Not agent.__dict__: touching it costs the agent CPython 3.13+'s fast loads.
+        row_of = attrgetter(self._index_in_table)
+        dataset_of = attrgetter(self._dataset_in_agent)
 
         def getter(agent: A):
-            state = agent.__dict__
-            return state[dataset_attr]._agent_data[state[index_attr], j]
+            return dataset_of(agent)._agent_data[row_of(agent), j]
 
         def setter(agent: A, value):
-            state = agent.__dict__
-            state[dataset_attr]._agent_data[state[index_attr], j] = value
+            dataset_of(agent)._agent_data[row_of(agent), j] = value
 
         return getter, setter
 
@@ -177,8 +177,8 @@ class NumpyAgentDataSet[A: Agent]:
             self._expand_storage()
 
         # Store the dataset and the index on the agent, for its field properties
-        agent.__dict__[self._dataset_in_agent] = self
-        agent.__dict__[self._index_in_table] = index
+        setattr(agent, self._dataset_in_agent, self)
+        setattr(agent, self._index_in_table, index)
 
         # Update mappings
 
@@ -200,7 +200,7 @@ class NumpyAgentDataSet[A: Agent]:
 
         """
         self._check_closed()
-        index = agent.__dict__.get(self._index_in_table)
+        index = getattr(agent, self._index_in_table, None)
         if index is None:
             raise ValueError("agent not in dataset")
 
@@ -213,7 +213,7 @@ class NumpyAgentDataSet[A: Agent]:
 
             # Update the swapped agent's index
             swapped_agent = self._index_to_agent[last_index]
-            swapped_agent.__dict__[self._index_in_table] = index
+            setattr(swapped_agent, self._index_in_table, index)
 
             self._agent_to_index[swapped_agent] = index
             self._index_to_agent[index] = swapped_agent
@@ -221,8 +221,9 @@ class NumpyAgentDataSet[A: Agent]:
         # Remove the agent
         del self._agent_to_index[agent]
         del self._index_to_agent[last_index]
-        agent.__dict__.pop(self._index_in_table, None)
-        agent.__dict__.pop(self._dataset_in_agent, None)
+        for name in (self._index_in_table, self._dataset_in_agent):
+            with suppress(AttributeError):
+                delattr(agent, name)
         self._n_active -= 1
 
     @property
