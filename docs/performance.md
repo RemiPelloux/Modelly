@@ -563,13 +563,18 @@ a cell move that empties or fills a cell runs no Python.
 | Column agents created and removed | 1267 ns | 1149 ns | 0.91 |
 | Cell move | 560 ns | 487 ns | 0.86 |
 
-| Whole run (five alternated runs, one core) | 1.5.1 | 1.5.2 | ratio |
+| Playbook (`modelly bench`, 1.5.1 wheel, 9 rounds, one core) | 1.5.1 | 1.5.2 | ratio |
 |---|---|---|---|
-| Sugarscape playbook, cell lists | 932 ms | 687 ms | 0.74 |
-| Predator-prey playbook, cell lists | 2262 ms | 1956 ms | 0.86 |
-| Grid epidemic playbook, cell lists | 2761 ms | 2480 ms | 0.89 |
-| Boltzmann wealth example | 287 ms | 258 ms | 0.90 |
-| Vectorised playbooks, other examples | | | 0.96 to 1.01 |
+| Sugarscape, cell lists | 0.464 s | 0.377 s | 0.81 |
+| Predator-prey, cell lists | 0.837 s | 0.761 s | 0.92 |
+| Grid epidemic, cell lists | 1.062 s | 0.998 s | 0.94 |
+| Insect cohorts | 0.199 s | 0.187 s | 0.94 |
+| Schelling, cell lists | 0.226 s | 0.214 s | 0.95 |
+| Vectorised playbooks | | | 0.96 to 1.01 |
+
+Every playbook gives results identical to 1.5.1's. At the larger sizes of the `large`
+configuration the per-agent playbooks gain more (Sugarscape 0.74, predator-prey 0.86, five
+alternated runs against a 1.5.1 checkout).
 
 A layer read went from 63 to about 40 ns, and `cell.sugar * 0.5 + 1` from 131 to about 50 ns:
 the arithmetic is Python's rather than numpy's scalar path. Models that write their phases as

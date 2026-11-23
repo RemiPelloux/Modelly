@@ -36,9 +36,10 @@ Every result is unchanged: the golden digests are identical.
   in C), and `select_random_cell` 0.74 times.
 - **Property layers**: `cell.sugar` is read in two thirds of the time, and arithmetic on it
   costs half as much, because it is now a Python number (see Changed).
-- **Whole models written agent by agent**, against 1.5.1: the cell-list Sugarscape playbook
-  takes 0.74 times as long, predator-prey 0.86, the grid epidemic 0.89 and Boltzmann wealth
-  0.90. Vectorised models are unchanged. [Performance](performance.md)
+- **Whole models written agent by agent**, against the 1.5.1 wheel: the cell-list Sugarscape
+  playbook takes 0.81 times as long, predator-prey 0.92, the grid epidemic 0.94 and Schelling
+  0.95, with identical results. Vectorised models are unchanged.
+  [Performance](performance.md)
 
 ### Changed
 

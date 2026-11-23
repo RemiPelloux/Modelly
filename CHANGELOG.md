@@ -44,9 +44,9 @@ versioning.
   it keeps (and which a grid installs when the module is not built or the layer is
   read-only). With set_cell's inline add and remove, a move that empties or fills a cell no
   longer runs Python: cell move 0.86x against 1.5.1.
-- Against 1.5.1, five alternated runs pinned to one core: the cell-list playbooks Sugarscape
-  0.74x, predator-prey 0.86x, grid epidemic 0.89x; the Boltzmann example 0.90x; vectorised
-  playbooks within noise.
+- Against the 1.5.1 wheel (`modelly bench --rounds 9 --core 3`, results identical): the
+  cell-list playbooks Sugarscape 0.81x, predator-prey 0.92x, grid epidemic 0.94x, Schelling
+  0.95x; insect cohorts 0.94x; no playbook slower.
 
 ### Changed
 
